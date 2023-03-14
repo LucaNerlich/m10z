@@ -62,6 +62,18 @@ const config = {
           {
             to: 'tags',
             label: 'Categories'
+          },
+          {
+            to: '/',
+            label: 'Podcasts'
+          },
+          {
+            to: '/',
+            label: 'Artikel'
+          },
+          {
+            to: '/',
+            label: 'Ueber uns'
           }
         ],
       },
