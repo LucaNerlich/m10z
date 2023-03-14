@@ -56,9 +56,9 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'My Site',
+        title: 'Ex Nihilo Wasted',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'Ex Nihilo Wasted Logo',
           src: 'img/logo.svg',
         },
         items: [
