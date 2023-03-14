@@ -43,6 +43,22 @@ const config = {
           showReadingTime: true,
           editUrl: 'https://github.com/LucaNerlich/ex-nihilo-wasted',
         },
+        pages: {
+          path: 'src/pages',
+          routeBasePath: '/content',
+          include: ['**/*.{js,jsx,ts,tsx,md,mdx}'],
+          exclude: [
+            '**/_*.{js,jsx,ts,tsx,md,mdx}',
+            '**/_*/**',
+            '**/*.test.{js,jsx,ts,tsx}',
+            '**/__tests__/**',
+          ],
+          mdxPageComponent: '@theme/MDXPage',
+          remarkPlugins: [],
+          rehypePlugins: [],
+          beforeDefaultRemarkPlugins: [],
+          beforeDefaultRehypePlugins: [],
+        },
       }),
     ],
   ],
@@ -64,15 +80,15 @@ const config = {
             label: 'Categories'
           },
           {
-            to: '/',
+            to: '/tags/podcast',
             label: 'Podcasts'
           },
           {
-            to: '/',
+            to: '/tags/article',
             label: 'Artikel'
           },
           {
-            to: '/',
+            to: '/content/hello',
             label: 'Ueber uns'
           }
         ],
