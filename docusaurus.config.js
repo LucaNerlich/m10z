@@ -62,6 +62,10 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
+          {
+            to: 'tags',
+            label: 'Categories'
+          }
         ],
       },
       footer: {
