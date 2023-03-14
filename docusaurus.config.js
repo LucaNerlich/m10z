@@ -43,9 +43,6 @@ const config = {
           showReadingTime: true,
           editUrl: 'https://github.com/LucaNerlich/ex-nihilo-wasted',
         },
-        theme: {
-          customCss: require.resolve('./src/css/custom.css'),
-        },
       }),
     ],
   ],
