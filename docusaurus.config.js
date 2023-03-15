@@ -45,6 +45,8 @@ const config = {
         blog: {
           routeBasePath: '/',
           showReadingTime: true,
+          blogSidebarTitle: 'Jüngste Beiträge',
+          blogSidebarCount: 10,
           editUrl: 'https://github.com/LucaNerlich/ex-nihilo-wasted',
         },
         pages: {
