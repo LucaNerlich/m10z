@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Ex Nihilo Wasted',
-  tagline: 'Mindestens 10 Zeichen',
+  title: 'Mindestens 10 Zeichen',
+  tagline: 'M10Z',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -75,9 +75,9 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'Ex Nihilo Wasted',
+        title: 'Mindestens 10 Zeichen',
         logo: {
-          alt: 'Ex Nihilo Wasted Logo',
+          alt: 'M10Z Logo',
           src: 'img/logo.svg',
         },
         items: [
