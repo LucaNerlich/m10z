@@ -32,6 +32,10 @@ const config = {
     locales: ['en'],
   },
 
+  plugins: [
+      'docusaurus-plugin-sass'
+  ],
+
   presets: [
     [
       'classic',
