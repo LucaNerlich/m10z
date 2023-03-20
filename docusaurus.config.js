@@ -108,10 +108,10 @@ const config = {
                         to: 'tags',
                         label: 'Kategorien'
                     },
-                    {
-                        to: '/tags/podcast',
-                        label: 'Podcasts'
-                    },
+                    // {
+                    //     to: '/tags/podcast',
+                    //     label: 'Podcasts'
+                    // },
                     {
                         to: '/tags/article',
                         label: 'Artikel'
