@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
     title: 'Mindestens 10 Zeichen',
     tagline: 'M10Z',
-    favicon: 'img/favicon.ico',
+    favicon: 'img/M10Z_Transparent.ico',
 
     // Set the production url of your site here
     url: 'https://m10z.vercel.app/',
