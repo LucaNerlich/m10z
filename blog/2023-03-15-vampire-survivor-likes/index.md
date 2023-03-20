@@ -6,8 +6,6 @@ tags: [article, review]
 draft: true
 ---
 
-# Ein Überblick empfehlenswerter Vampire Survivors-Likes
-
 > WIP!
 
 <!--truncate-->
