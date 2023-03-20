@@ -16,3 +16,9 @@
     --ifm-color-primary: #ef702c;
     --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Custom Additions */
+
+.font-red {
+    color: orangered;
+}
