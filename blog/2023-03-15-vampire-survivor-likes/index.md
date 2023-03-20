@@ -3,11 +3,14 @@ slug: vampire-survivors-likes
 title: Vampire Survivors Likes
 authors: [lucan]
 tags: [article, review]
+draft: true
 ---
 
 # Ein Überblick empfehlenswerter Vampire Survivors-Likes
 
 > WIP!
+
+<!--truncate-->
 
 ## Vampire Survivors — The 'OG'
 
