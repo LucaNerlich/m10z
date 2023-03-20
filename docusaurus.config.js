@@ -118,7 +118,7 @@ const config = {
                     },
                     {
                         to: '/content/hello',
-                        label: 'Wer sind wir'
+                        label: 'Wer wir sind'
                     }
                 ],
             },

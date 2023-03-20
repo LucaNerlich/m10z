@@ -14,6 +14,8 @@ export default function Hello() {
                 }}>
                 <p>
                    Hi, this is us! :)
+
+                    WORK IN PROGRESS
                 </p>
             </div>
         </Layout>
