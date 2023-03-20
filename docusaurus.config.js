@@ -126,37 +126,15 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Home',
+                        title: 'Rechtliches',
                         items: [
                             {
-                                label: 'Home',
-                                to: '/',
-                            },
-                        ],
-                    },
-                    {
-                        title: 'Community',
-                        items: [
-                            {
-                                label: 'Stack Overflow',
-                                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                                label: 'Impressum',
+                                href: '/content/imprint',
                             },
                             {
-                                label: 'Discord',
-                                href: 'https://discordapp.com/invite/docusaurus',
-                            },
-                            {
-                                label: 'Twitter',
-                                href: 'https://twitter.com/docusaurus',
-                            },
-                        ],
-                    },
-                    {
-                        title: 'More',
-                        items: [
-                            {
-                                label: 'GitHub',
-                                href: 'https://github.com/facebook/docusaurus',
+                                label: 'Datenschutz',
+                                href: '/content/privacy',
                             },
                         ],
                     },
