@@ -9,6 +9,8 @@ tags: [article, review]
 
 > WIP!
 
+<!--truncate-->
+
 ## Vampire Survivors — The 'OG'
 
 https://store.steampowered.com/app/1059980/Just_King/
