@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
     title: 'Mindestens 10 Zeichen',
     tagline: 'M10Z',
-    favicon: 'img/M10Z_Transparent.ico',
+    favicon: 'img/M10Z_Orange.ico',
 
     // Set the production url of your site here
     url: 'https://m10z.de',
@@ -85,7 +85,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
             // Replace with your project's social card
-            image: 'img/M10Z_Hell.jpg',
+            image: 'img/M10Z_Orange.png',
             docs: {
                 sidebar: {
                     hideable: true
@@ -101,7 +101,7 @@ const config = {
                 title: 'Mindestens 10 Zeichen',
                 logo: {
                     alt: 'M10Z Logo',
-                    src: 'img/M10Z_Transparent.svg',
+                    src: 'img/M10Z_Orange.svg',
                 },
                 items: [
                     {
