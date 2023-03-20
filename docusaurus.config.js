@@ -11,7 +11,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://ex-nihilo-wasted.vercel.app/',
+  url: 'https://m10z.vercel.app/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -19,7 +19,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'LucaNerlich', // Usually your GitHub org/user name.
-  projectName: 'ex-nihilo-wasted', // Usually your repo name.
+  projectName: 'm10z', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -28,8 +28,8 @@ const config = {
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'de',
+    locales: ['en', 'de'],
   },
 
   plugins: [
@@ -47,7 +47,7 @@ const config = {
           showReadingTime: true,
           blogSidebarTitle: 'Jüngste Beiträge',
           blogSidebarCount: 10,
-          editUrl: 'https://github.com/LucaNerlich/ex-nihilo-wasted',
+          editUrl: 'https://github.com/LucaNerlich/m10z',
         },
         pages: {
           path: 'src/pages',
@@ -73,12 +73,12 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/M10Z_Hell.jpg',
       navbar: {
         title: 'Mindestens 10 Zeichen',
         logo: {
           alt: 'M10Z Logo',
-          src: 'img/logo.svg',
+          src: 'img/M10Z_Transparent.svg',
         },
         items: [
           {
