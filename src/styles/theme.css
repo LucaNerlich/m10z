@@ -13,6 +13,6 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-    --ifm-color-primary: #efc22f;
+    --ifm-color-primary: #ea661f;
     --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
