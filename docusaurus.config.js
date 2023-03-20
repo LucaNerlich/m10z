@@ -106,7 +106,7 @@ const config = {
                 items: [
                     {
                         to: 'tags',
-                        label: 'Categories'
+                        label: 'Kategorien'
                     },
                     {
                         to: '/tags/podcast',
@@ -118,7 +118,7 @@ const config = {
                     },
                     {
                         to: '/content/hello',
-                        label: 'Ueber uns'
+                        label: 'Wer sind wir'
                     }
                 ],
             },
