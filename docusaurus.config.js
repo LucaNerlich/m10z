@@ -145,14 +145,14 @@ const config = {
                                 target: '_blank',
                                 download: true,
                                 position: 'left',
-                                label: '🔊Feed',
+                                label: '🔊Audio Feed',
                             },
                             {
                                 href: '/rss.xml',
                                 target: '_blank',
                                 download: true,
                                 position: 'left',
-                                label: '📖Feed'
+                                label: '📖Artikel Feed'
                             },
                         ]
                     },
