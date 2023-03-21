@@ -1,62 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"
-     xmlns:atom="http://www.w3.org/2005/Atom"
-     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
-     xmlns:content="http://purl.org/rss/1.0/modules/content/">
-
-    <!-- https://www.gbmb.org/mb-to-bytes -->
-    <!-- Tracks > Align Tracks > End-To-End -->
-    <!-- Tracks > Mix -> Stereo to Mono  -->
+<rss version="2.0">
 
     <channel>
         <title>Mindestens 10 Zeichen</title>
         <link>https://m10z.de</link>
         <description>Mindestens 10 Zeichen - Wir stellen die Weichen</description>
-        <lastBuildDate>Mon, 20 March 2023 10:00:00 +0000</lastBuildDate>
 
         <image>
             <url>https://m10z.de/img/logo.png</url>
             <title>Mindestens 10 Zeichen</title>
             <link>https://m10z.de</link>
         </image>
-        <atom:link rel="self" type="application/rss+xml"
-                   title="Mindestens 10 Zeichen"
-                   href="https://lucanerlich.com/sfs.xml"/>
         <language>de-DE</language>
 
-        <itunes:author>Mindestens 10 Zeichen</itunes:author>
-        <itunes:type>episodic</itunes:type>
-        <itunes:summary>Mindestens 10 Zeichen</itunes:summary>
-        <itunes:category text="Games &amp; Hobbies">
-            <itunes:category text="Video Games"></itunes:category>
-        </itunes:category>
-    
-        <itunes:owner>
-            <itunes:name>Some Name</itunes:name>
-            <itunes:email>some@mail.de</itunes:email>
-        </itunes:owner>
-        <itunes:image href="https://m10z.de/img/logo.png"/>
-        <itunes:subtitle>Mindestens 10 Zeichen</itunes:subtitle>
-        <itunes:block>yes</itunes:block>
-        <itunes:explicit>yes</itunes:explicit>
-    
+
         <item>
             <title>Ein neuer Podcast Title</title>
             <pubDate>Sun, 12 March 2023 17:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash</guid>
             <description><![CDATA[Ein neuer Podcast Title]]></description>
-        
+            <link>Link zum vollständigen Eintrag</link>
+            <author>Autor des Artikels, E-Mail-Adresse</author>
+
             <enclosure url="https://url-zur-mp3.de"
                        length="groesse-in-byte "
                        type="audio/mpeg"/>
-        
-            <itunes:duration>18:08:20</itunes:duration>
-            <itunes:author>Mindestens 10 Zeichen</itunes:author>
-            <itunes:episodeType>full</itunes:episodeType>
-            <itunes:summary>Ein neuer Podcast Title</itunes:summary>
-        
-            <content:encoded><![CDATA[Ein neuer Podcast Title]]></content:encoded>
         </item>
-    
     </channel>
 </rss>
