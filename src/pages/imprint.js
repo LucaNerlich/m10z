@@ -27,7 +27,7 @@ export default function Hello() {
                 <h2>Redaktionell verantwortlich</h2>
                 Tilman Breidenbach<br>
                 Bussardweg 13<br>
-                58579  Schalksmühle<br> 
+                58579  Schalksmühle<br/> 
             </div>
         </Layout>
     );
