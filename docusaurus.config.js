@@ -59,7 +59,6 @@ const config = {
                     showReadingTime: true,
                     blogSidebarTitle: 'Jüngste Beiträge',
                     blogSidebarCount: 10,
-                    editUrl: 'https://github.com/LucaNerlich/m10z',
                 },
                 pages: {
                     path: 'src/pages',
