@@ -117,6 +117,12 @@ const config = {
                         label: 'Artikel'
                     },
                     {
+                        href: '/audiofeed.xml',
+                        target: '_blank',
+                        download: true,
+                        label: '🔊Feed'
+                    },
+                    {
                         to: '/content/hello',
                         label: 'Wer sind wir'
                     }
