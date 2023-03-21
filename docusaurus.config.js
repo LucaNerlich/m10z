@@ -129,20 +129,6 @@ const config = {
                         label: 'Artikel'
                     },
                     {
-                        href: '/audiofeed.xml',
-                        target: '_blank',
-                        download: true,
-                        position: 'left',
-                        label: '🔊Feed',
-                    },
-                    {
-                        href: '/rss.xml',
-                        target: '_blank',
-                        download: true,
-                        position: 'left',
-                        label: '📖Feed'
-                    },
-                    {
                         to: '/content/hello',
                         label: 'Wer sind wir'
                     }
@@ -152,39 +138,23 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Home',
+                        title: 'Feeds',
                         items: [
                             {
-                                label: 'Home',
-                                to: '/',
-                            },
-                        ],
-                    },
-                    {
-                        title: 'Community',
-                        items: [
-                            {
-                                label: 'Stack Overflow',
-                                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                                href: '/audiofeed.xml',
+                                target: '_blank',
+                                download: true,
+                                position: 'left',
+                                label: '🔊Feed',
                             },
                             {
-                                label: 'Discord',
-                                href: 'https://discordapp.com/invite/docusaurus',
+                                href: '/rss.xml',
+                                target: '_blank',
+                                download: true,
+                                position: 'left',
+                                label: '📖Feed'
                             },
-                            {
-                                label: 'Twitter',
-                                href: 'https://twitter.com/docusaurus',
-                            },
-                        ],
-                    },
-                    {
-                        title: 'More',
-                        items: [
-                            {
-                                label: 'GitHub',
-                                href: 'https://github.com/facebook/docusaurus',
-                            },
-                        ],
+                        ]
                     },
                 ],
             },
