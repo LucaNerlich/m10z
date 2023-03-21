@@ -22,7 +22,7 @@ export default function Hello() {
                 Bussardweg 13<br/>
                 58579  Schalksmühle<br/>
                 Telefon: +49 (0) 2355 5046019<br/>
-                E-Mail:  M10Z(at)Posteo(dot)de<br/></p>
+                E-Mail:  m10z(at)posteo(dot)de<br/></p>
                 
                 <p><h2>Redaktionell verantwortlich</h2>
                 Tilman Breidenbach<br/>
