@@ -60,6 +60,18 @@ const config = {
                     blogSidebarTitle: 'Jüngste Beiträge',
                     blogSidebarCount: 10,
                     editUrl: 'https://github.com/LucaNerlich/m10z',
+                    feedOptions: {
+                        type: 'all',
+                        copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
+                        createFeedItems: async (params) => {
+                            const {blogPosts, defaultCreateFeedItems, ...rest} = params;
+                            console.log(params)
+                            return defaultCreateFeedItems({
+                                blogPosts: blogPosts,
+                                ...rest,
+                            });
+                        },
+                    }
                 },
                 pages: {
                     path: 'src/pages',
@@ -126,39 +138,23 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Home',
+                        title: 'Feeds',
                         items: [
                             {
-                                label: 'Home',
-                                to: '/',
-                            },
-                        ],
-                    },
-                    {
-                        title: 'Community',
-                        items: [
-                            {
-                                label: 'Stack Overflow',
-                                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                                href: '/audiofeed.xml',
+                                target: '_blank',
+                                download: true,
+                                position: 'left',
+                                label: '🔊Audio Feed',
                             },
                             {
-                                label: 'Discord',
-                                href: 'https://discordapp.com/invite/docusaurus',
+                                href: '/rss.xml',
+                                target: '_blank',
+                                download: true,
+                                position: 'left',
+                                label: '📖Artikel Feed'
                             },
-                            {
-                                label: 'Twitter',
-                                href: 'https://twitter.com/docusaurus',
-                            },
-                        ],
-                    },
-                    {
-                        title: 'More',
-                        items: [
-                            {
-                                label: 'GitHub',
-                                href: 'https://github.com/facebook/docusaurus',
-                            },
-                        ],
+                        ]
                     },
                 ],
             },
