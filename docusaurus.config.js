@@ -60,6 +60,18 @@ const config = {
                     blogSidebarTitle: 'Jüngste Beiträge',
                     blogSidebarCount: 10,
                     editUrl: 'https://github.com/LucaNerlich/m10z',
+                    feedOptions: {
+                        type: 'all',
+                        copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
+                        createFeedItems: async (params) => {
+                            const {blogPosts, defaultCreateFeedItems, ...rest} = params;
+                            console.log(params)
+                            return defaultCreateFeedItems({
+                                blogPosts: blogPosts,
+                                ...rest,
+                            });
+                        },
+                    }
                 },
                 pages: {
                     path: 'src/pages',
@@ -120,7 +132,15 @@ const config = {
                         href: '/audiofeed.xml',
                         target: '_blank',
                         download: true,
-                        label: '🔊Feed'
+                        position: 'left',
+                        label: '🔊Feed',
+                    },
+                    {
+                        href: '/rss.xml',
+                        target: '_blank',
+                        download: true,
+                        position: 'left',
+                        label: '📖Feed'
                     },
                     {
                         to: '/content/hello',
