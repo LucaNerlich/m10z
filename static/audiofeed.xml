@@ -5,25 +5,25 @@
         <title>Mindestens 10 Zeichen</title>
         <link>https://m10z.de</link>
         <description>Mindestens 10 Zeichen - Wir stellen die Weichen</description>
+        <language>de-DE</language>
 
         <image>
-            <url>https://m10z.de/img/logo.png</url>
+            <url>https://m10z.de/img/M10Z_Orange.svg</url>
             <title>Mindestens 10 Zeichen</title>
             <link>https://m10z.de</link>
         </image>
-        <language>de-DE</language>
 
 
         <item>
             <title>Ein neuer Podcast Title</title>
             <pubDate>Sun, 12 March 2023 17:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash</guid>
-            <description><![CDATA[Ein neuer Podcast Title]]></description>
+            <description>Das ist eine Beschreibung</description>
             <link>Link zum vollständigen Eintrag</link>
             <author>Autor des Artikels, E-Mail-Adresse</author>
 
-            <enclosure url="https://url-zur-mp3.de"
-                       length="groesse-in-byte "
+            <enclosure url="http://m10z.kkuez.de:3333/kkuez-Marcel-HuntShowdown.mp3"
+                       length="9999999"
                        type="audio/mpeg"/>
         </item>
     </channel>
