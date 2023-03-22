@@ -67,7 +67,7 @@ const config = {
                             const {blogPosts, defaultCreateFeedItems, ...rest} = params;
                             console.log(params)
                             return defaultCreateFeedItems({
-                                blogPosts: blogPosts,
+                                blogPosts: blogPosts.filter((item, index) => index < 10),
                                 ...rest,
                             });
                         },
