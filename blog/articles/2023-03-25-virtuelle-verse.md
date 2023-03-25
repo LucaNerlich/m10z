@@ -2,7 +2,7 @@
 slug: virtuelle-verse-1
 title: Virtuelle Verse: Lyrik & Games
 authors: [tilmobaxter]
-tags: [art, poem]
+tags: [art, poem, tilmobaxter]
 draft: false
 ---
 
