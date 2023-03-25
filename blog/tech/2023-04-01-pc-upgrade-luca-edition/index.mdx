@@ -23,7 +23,7 @@ Das System ist auch nach 2023 noch mindestens als "mid-class" einzustufen. Daher
     - Leider ein bekanntes Ryzen Problem. Hier 15 Seiten im [Computerbase Forum](https://www.computerbase.de/forum/threads/pc-stuerzt-unregelmaessig-im-idle-ab-wenn-power-supply-idle-control-auf-auto-steht.1958228/).
     - Ich habe diverse Bios Einstellungen, Chipsatztreiber, Windowsversionen probiert, manches lief besser, manches schlechter.
     - Da ich das System im Alltag beruflich verwende, reicht mir leider ein "zu 95 % stabil" nicht.
-2. Mein Bruder faengt zeitnah eine IT-Ausbildung an und hat aktuell nur ein uraltes System und kein Geld, daher bekommt er gratis meinen alten Rechner - komplett.
+2. Mein Bruder fängt zeitnah eine IT-Ausbildung an und hat aktuell nur ein uraltes System und kein Geld, daher bekommt er gratis meinen alten Rechner - komplett.
 
 > Mir ist bewusst, dass die Auswahl der neuen Komponenten kompletter Overkill ist. Aber irgendwo muss das Geld auch hin - warum nicht fuer das Ding ausgeben, was ich zwischen 4 und 12h am Tag nutze.
 
@@ -42,14 +42,33 @@ Das System ist auch nach 2023 noch mindestens als "mid-class" einzustufen. Daher
 
 Sowie diverse weitere SSDs, die im Laufe der Zeit zusammengekauft wurden.
 
-## Der Zusammenbau Prozess
+## Generelle Tipps
 
-TODO: Tipps was zu beachten ist
+Über die letzten Jahre ist Computer Hardware merklich teurer geworden.
+Insbesondere Grafikkarten, sowie Mainboards haben sich im losen Vergleich zu vor diversen Jahren locker verdoppelt.
+
+Ein aktueller PC der gehobenen Mittelklasse kostet ungefähr 1500Euro.
+Vor wenigen Wochen habe ich mit einer Freundin eben so eine Variante zusammengestellt, gekauft und aufgebaut.
+Hier ist die entsprechende [Einkaufsliste bei Geizhals.de](https://geizhals.de/?cat=WL-3021320).
+Die enthaltenen Komponenten sind natürlich nur ein Vorschlag.
+Es gibt in jeder Kategorie zig Alternativen zur Auswahl.
+
+Persönlich neige ich aktuell ausserdem zu den Intel Prozessoren, erstens aus dem in [der Einleitung](#einleitung) genannten Grund und zweitens haben Intel CPUs (bis auf die 'f' Modelle) eine Grafikeinheit verbaut.
+Dies ermöglicht den Betrieb des Systems auch ohne dedizierte Grafikkarte.
+Besonders praktisch, wenn sich diese mal technisch verabschiedet.
+Leistungsmässig geben sich hier beide Hersteller wenig.
+AMD hat jüngst Prozessoren mit sogenanntem 3D Cache veröffentlicht.
+Für SpielerInnen, die nur Wert auf reine Gaming Performance legen, sind diese Modelle empfehlenswert.
+Das aktuelle Modell, der 7950X 3D ist jedoch ausverkauft und die empfehlenswerte Preis-/Leistungsversion, der 7800X 3D, hat den freien Handel noch nicht erreicht.
+
+## Der Zusammenbau Prozess
 
 ### Mainboard
 
-// todo ssds: aktuell bis zu 7000MB/s. Voellig unnnoetig, foto vom pcie 5 slot, wenn da verbaut,
+// todo ssds: aktuell bis zu 7000MB/s. Völlig unnötig, foto vom pcie 5 slot, wenn da verbaut,
 weniger Bandbreite bei der gpu, aber aktuell auch quasi nicht bemerkbar.
+
+// todo tipp, erst 8pin cpu strom kabel, dann mainboard einsetzen...
 
 ### Netzteil
 
@@ -64,7 +83,7 @@ weniger Bandbreite bei der gpu, aber aktuell auch quasi nicht bemerkbar.
 
 ### Undervolting und PowerLimit
 
-Die aktuelle Nvidia 4090 erkauft sich ihre finalen paar % Leistung durch absurd viel Strom. Ueber die Software MSI Afterburner kann man die maximale Stromaufnahme einfach per Slider deckeln.
+Die aktuelle Nvidia 4090 erkauft sich ihre finalen paar % Leistung durch absurd viel Strom. Über die Software MSI Afterburner kann man die maximale Stromaufnahme einfach per Slider deckeln.
 Mit beispielsweise 85 % des spezifizierten Maximums verliert man nur sehr wenig FPS (durchschnittlich unterer einstelliger Wert).
 
 Bei der CPU ist dies etwas komplizierter.
@@ -84,3 +103,5 @@ Zum aktuellen Zeitpunkt (25.03.2023) habe ich dies noch nicht gemacht.
 | Netzteil         | be quiet!       | Dark Power 13 1000w               |
 | Erste SSD        | Kingston        | KC3000 2TB                        |
 | Weitere SSDs     | Western Digital | 2x  SN770 2TB                     |
+
+[Die entsprechende Geizhals Liste](https://geizhals.de/?cat=WL-3021611)
