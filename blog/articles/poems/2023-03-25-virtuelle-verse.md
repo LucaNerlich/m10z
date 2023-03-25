@@ -6,9 +6,6 @@ tags: [art, poem, tilmobaxter]
 draft: false
 ---
 
-
-!!! @ Til: was hier ueber 'truncate' steht wird in der blog overview noch dargestellt.
-
 <!--truncate-->
 
 ![Blauer Igel am See](https://irgendwasmitkunden.de/DALL·E%20x%20Til%20-%20Hedgehog%20Kind%20Of%20Blue.png)
