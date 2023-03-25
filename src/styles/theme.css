@@ -22,3 +22,7 @@
 .font-red {
     color: red;
 }
+
+div > img {
+    border-radius: 5px;
+}
