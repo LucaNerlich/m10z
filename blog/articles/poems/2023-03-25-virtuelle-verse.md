@@ -6,7 +6,7 @@ tags: [art, poem, tilmobaxter]
 draft: false
 ---
 
-Geprägt durch Heinz Erhardt Kassetten und Videospiel Cardtridges, präsentiert euch Til einmal die Woche die "Virtuellen Verse"
+Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“
 <!--truncate-->
 
 ![Blauer Igel am See](https://irgendwasmitkunden.de/DALL·E%20x%20Til%20-%20Hedgehog%20Kind%20Of%20Blue.png)
