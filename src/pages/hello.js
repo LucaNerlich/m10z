@@ -13,7 +13,7 @@ export default function Hello() {
                     fontSize: '20px',
                 }}>
                 <p>
-                  <b>Was ist M10Z?
+                  **Was ist M10Z?**
 
 M10Z ist ein offener Kanal für Videospielcontent und das Drumherum.
 
@@ -24,24 +24,24 @@ Wir lassen uns überraschen was noch kommt.
 Alles aus Spaß am Medium und dem kreativen Prozess.   
 Unentgeltlich, unabhängig, ungezwungen.
 
-<b>Wer sind wir?
+**Wer sind wir?**
 
 Bisher ein loses Kollektiv, das seine Anfänge im [Forum](https://community.wasted.de "Wasted Forum") von [WASTED.de](http://http://wasted.de "Wasted") genommen hat.
 
-<b>Was macht ihr?
+**Was macht ihr?**
 
 Schaut euch hier auf unserem Blog um und genießt die Inhalte.  
 Wenn euch gefällt was wir machen, schreibt uns eine Email oder kommt zu uns ins [Forum](https://community.wasted.de "Wasted Forum").  
 Wenn ihr meint, das könnt ihr ebenso gut oder besser:  
 Mitmachen ist ausdrücklich erwünscht. Meldet euch.
 
-<b>Wer darf mitmachen?
+**Wer darf mitmachen?**
 
 Jede*r mit Lust an Themen die zu M10Z passen.  
 Du musst keine Erfahrung haben.  
 Dies darf gerne ein Versuch für Dich sein.
 
-<b>M10Z hat keinen Platz für:
+**M10Z hat keinen Platz für:**
 
 Sexismus, Rassismus, Antisemitismus, Homo- und Transphobie, Klassismus, Ableismus  
                 </p>
