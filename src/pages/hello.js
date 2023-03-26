@@ -9,7 +9,7 @@ export default function Hello() {
                     fontSize: '20px',
                     maxWidth: '1200px',
                     margin: '0 auto',
-                    paddingTop: '1em',
+                    padding:' 1em',
                 }}>
                 <h2 style={{color: '#F16012'}}>Was ist M10Z?</h2>
 
