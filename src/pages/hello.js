@@ -32,7 +32,7 @@ export default function Hello() {
                     <h2 style={{color: '#F16012'}}>Was macht ihr?</h2>
 
                     Schaut euch hier auf unserem Blog um und genießt die Inhalte.<br />
-                    Wenn euch gefällt was wir machen, schreibt uns eine <a href='mailto:m10z@posteo.de'>Email</a> oder kommt zu uns ins <a
+                    Wenn euch gefällt was wir machen, schreibt uns eine <a href='mailto:m10z@posteo.de'>E-Mail</a> oder kommt zu uns ins <a
                     href='https://community.wasted.de/'>Forum</a>.<br />
                     Wenn ihr meint, das könnt ihr ebenso gut oder besser:<br />
                     Mitmachen ist ausdrücklich erwünscht. Meldet euch. <br /> <br />
