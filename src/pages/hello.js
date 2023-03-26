@@ -18,7 +18,7 @@ export default function Hello() {
                     M10Z ist ein offener Kanal für Videospielcontent und das Drumherum.<br />
 
                     Wir haben Spaß an kurzen oder langen Texten mit mindestens 10 Zeichen. <br />
-                    Wir produzieren Podcasts in (un-) regelmäßigen Abständen.<br />
+                    Wir produzieren Podcasts in (un-)regelmäßigen Abständen.<br />
                     Wir lassen uns überraschen was noch kommt.<br />
 
                     Alles aus Spaß am Medium und dem kreativen Prozess. <br />
