@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer/themes/github')
+const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -42,7 +42,7 @@ const config = {
                 steps: 4, // the max number of images generated between min and max (inclusive)
                 disableInDev: false,
             },
-        ]
+        ],
     ],
 
     presets: [
@@ -64,14 +64,14 @@ const config = {
                         type: 'all',
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
                         createFeedItems: async (params) => {
-                            const {blogPosts, defaultCreateFeedItems, ...rest} = params;
+                            const {blogPosts, defaultCreateFeedItems, ...rest} = params
                             console.log(params)
                             return defaultCreateFeedItems({
                                 blogPosts: blogPosts.filter((item, index) => index < 10),
                                 ...rest,
-                            });
+                            })
                         },
-                    }
+                    },
                 },
                 pages: {
                     path: 'src/pages',
@@ -100,8 +100,8 @@ const config = {
             image: 'img/M10Z_Orange.png',
             docs: {
                 sidebar: {
-                    hideable: true
-                }
+                    hideable: true,
+                },
             },
             colorMode: {
                 defaultMode: 'dark',
@@ -118,7 +118,7 @@ const config = {
                 items: [
                     {
                         to: 'tags',
-                        label: 'Kategorien'
+                        label: 'Kategorien',
                     },
                     // {
                     //     to: '/tags/podcast',
@@ -126,17 +126,30 @@ const config = {
                     // },
                     {
                         to: '/tags/article',
-                        label: 'Artikel'
+                        label: 'Artikel',
                     },
                     {
                         to: '/content/hello',
-                        label: 'Wer wir sind'
-                    }
+                        label: 'Wer wir sind',
+                    },
                 ],
             },
             footer: {
                 style: 'dark',
                 links: [
+                    {
+                        title: 'Rechtliches',
+                        items: [
+                            {
+                                label: 'Impressum',
+                                href: '/content/imprint',
+                            },
+                            {
+                                label: 'Datenschutz',
+                                href: '/content/privacy',
+                            },
+                        ],
+                    },
                     {
                         title: 'Feeds',
                         items: [
@@ -152,9 +165,9 @@ const config = {
                                 target: '_blank',
                                 download: true,
                                 position: 'left',
-                                label: '📖Artikel Feed'
+                                label: '📖Artikel Feed',
                             },
-                        ]
+                        ],
                     },
                 ],
             },
@@ -163,6 +176,6 @@ const config = {
                 darkTheme: darkCodeTheme,
             },
         }),
-};
+}
 
-module.exports = config;
+module.exports = config
