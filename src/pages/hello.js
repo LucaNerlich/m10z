@@ -11,7 +11,7 @@ export default function Hello() {
                     margin: '0 auto',
                     padding:' 1em',
                 }}>
-                <h2 style={{color: '#F16012'}}>Was ist M10Z?</h2>
+                <h1 style={{color: '#F16012'}}>Was ist M10Z?</h1>
 
                 <p>M10Z ist ein offener Kanal für Videospielcontent und das Drumherum.</p>
 
