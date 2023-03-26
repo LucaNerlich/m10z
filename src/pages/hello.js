@@ -22,12 +22,12 @@ export default function Hello() {
                     Wir lassen uns überraschen was noch kommt.<br />
 
                     Alles aus Spaß am Medium und dem kreativen Prozess.
-                    Unentgeltlich, unabhängig, ungezwungen.
+                    Unentgeltlich, unabhängig, ungezwungen. <br /> <br />
 
                     <h2 style={{color: '#F16012'}}>Wer sind wir?</h2>
 
                     Bisher ein loses Kollektiv, das seine Anfänge im <a href='https://community.wasted.de/'>Forum</a> von <a
-                    href='https://wasted.de/'>WASTED.de</a> genommen hat.
+                    href='https://wasted.de/'>WASTED.de</a> genommen hat. <br /> <br />
 
                     <h2 style={{color: '#F16012'}}>Was macht ihr?</h2>
 
@@ -35,13 +35,13 @@ export default function Hello() {
                     Wenn euch gefällt was wir machen, schreibt uns eine <a href='mailto:m10z@posteo.de'>Email</a> oder kommt zu uns ins <a
                     href='https://community.wasted.de/'>Forum</a>.<br />
                     Wenn ihr meint, das könnt ihr ebenso gut oder besser:<br />
-                    Mitmachen ist ausdrücklich erwünscht. Meldet euch.
+                    Mitmachen ist ausdrücklich erwünscht. Meldet euch. <br /> <br />
 
                     <h2 style={{color: '#F16012'}}>Wer darf mitmachen?</h2>
 
                     Jede*r mit Lust an Themen die zu M10Z passen.<br />
                     Du musst keine Erfahrung haben. <br />
-                    Dies darf gerne ein Versuch für Dich sein. <br />
+                    Dies darf gerne ein Versuch für Dich sein. <br /> <br />
 
                     <h2 style={{color: '#F16012'}}>M10Z hat keinen Platz für:</h2>
 
