@@ -21,7 +21,7 @@ export default function Hello() {
                     Wir produzieren Podcasts in (un-) regelmäßigen Abständen.<br />
                     Wir lassen uns überraschen was noch kommt.<br />
 
-                    Alles aus Spaß am Medium und dem kreativen Prozess.
+                    Alles aus Spaß am Medium und dem kreativen Prozess. <br />
                     Unentgeltlich, unabhängig, ungezwungen. <br /> <br />
 
                     <h2 style={{color: '#F16012'}}>Wer sind wir?</h2>
@@ -45,7 +45,7 @@ export default function Hello() {
 
                     <h2 style={{color: '#F16012'}}>M10Z hat keinen Platz für:</h2>
 
-                    Sexismus, Rassismus, Antisemitismus, Homo- und Transphobie, Klassismus, Ableismus
+                    Sexismus, Rassismus, Antisemitismus, Homo- und Transphobie, Klassismus, Ableismus <br /> <br />
 
                 </p>
             </div>
