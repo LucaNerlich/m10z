@@ -13,7 +13,7 @@ export default function Hello() {
                 }}>
 
                 <h1>Datenschutzerklärung</h1>
-                    
+
                 <h2>1. Datenschutz auf einen Blick</h2>
                 <h3>1.1 Allgemeine Hinweise</h3>
                     <p>
@@ -23,7 +23,7 @@ export default function Hello() {
                     </p>
                 <h3>1.2 Verantwortlicher</h3>
                     <p>
-                        <ul style="list-style-type:none">
+                        <ul>
                             <li>Tilman Breidenbach</li>
                             <li>Bussardweg 13</li>
                             <li>58579 Schalksmühle</li>
@@ -45,7 +45,7 @@ export default function Hello() {
                         Welche Arten von Daten verarbeiten wir?
                         <ul>
                             <li><b>Zugriffsdaten bzw. Meta-/Kommunikationsdaten</b><br/>Wir selbst (bzw. unser Webhosting-Anbieter) erheben Daten zu jedem Zugriff auf den Server (sogenannte Serverlogfiles). Zu den Serverlogfiles können die Adresse und Name der abgerufenen Webseiten und Dateien, Datum und Uhrzeit des Abrufs, übertragene Datenmengen, Meldung über erfolgreichen Abruf, Browsertyp nebst Version, das Betriebssystem des Nutzers, Referrer URL (die zuvor besuchte Seite) und im Regelfall IP-Adressen und der anfragende Provider gehören. Die Serverlogfiles können zum einen zu Zwecken der Sicherheit eingesetzt werden, z.B., um eine Überlastung der Server zu vermeiden (insbesondere im Fall von missbräuchlichen Angriffen, sogenannten DDoS-Attacken) und zum anderen, um die Auslastung der Server und ihre Stabilität sicherzustellen.</li>
-                            <li><b>Kontaktdate</b>n (z.B. E-Mail, Telefonnummern)</li>
+                            <li><b>Kontaktdaten</b>n (z.B. E-Mail, Telefonnummern)</li>
                             <li><b>Inhaltsdaten</b> (insbesondere im Rahmen der Verwaltung und Beantwortung von Anfragen)</li>
                         </ul>
 
@@ -74,7 +74,7 @@ export default function Hello() {
                     <p>
                         Wir setzen folgende Hoster ein:<br/>
                         <i>Webhosting:</i>
-                        <ul style="list-style-type:none">
+                        <ul>
                             <li>Vercel Inc.</li>
                             <li>440 N Barranca Ave #4133</li>
                             <li>Covina, CA 91723</li>
@@ -83,7 +83,7 @@ export default function Hello() {
                          <br/>
 
                          <i>E-Mail-Provider (für Kontaktanfragen):</i>
-                         <ul style="list-style-type:none">
+                         <ul>
                             <li>Posteo e.K. </li>
                             <li>Methfesselstr. 38 </li>
                             <li>10965 Berlin</li>
@@ -120,7 +120,7 @@ export default function Hello() {
                         <br/>
                         <b>Widerspruchsrecht gegen die Datenerhebung in besonderen Fällen sowie gegen Direktwerbung (Art. 21 DSGVO)</b><br/>
                         <br/>
-                        WENN DIE DATENVERARBEITUNG AUF GRUNDLAGE VON ART. 6 ABS. 1 LIT. E ODER F DSGVO ERFOLGT, HABEN SIE JEDERZEIT DAS RECHT, AUS GRÜNDEN, DIE SICH AUS IHRER BESONDEREN SITUATION ERGEBEN, GEGEN DIE VERARBEITUNG IHRER PERSONENBEZOGENEN DATEN WIDERSPRUCH EINZULEGEN. DIE JEWEILIGE RECHTSGRUNDLAGE, AUF DENEN EINE VERARBEITUNG BERUHT, ENTNEHMEN SIE DIESER DATENSCHUTZERKLÄRUNG. WENN SIE WIDERSPRUCH EINLEGEN, WERDEN WIR IHRE BETROFFENEN PERSONENBEZOGENEN DATEN NICHT MEHR VERARBEITEN, ES SEI DENN, WIR KÖNNEN ZWINGENDE SCHUTZWÜRDIGE GRÜNDE FÜR DIE VERARBEITUNG NACHWEISEN, DIE IHRE INTERESSEN, RECHTE UND FREIHEITEN ÜBERWIEGEN ODER DIE VERARBEITUNG DIENT DER GELTENDMACHUNG, AUSÜBUNG ODER VERTEIDIGUNG VON RECHTSANSPRÜCHEN (WIDERSPRUCH NACH ART. 21 ABS. 1 DSGVO). 
+                        WENN DIE DATENVERARBEITUNG AUF GRUNDLAGE VON ART. 6 ABS. 1 LIT. E ODER F DSGVO ERFOLGT, HABEN SIE JEDERZEIT DAS RECHT, AUS GRÜNDEN, DIE SICH AUS IHRER BESONDEREN SITUATION ERGEBEN, GEGEN DIE VERARBEITUNG IHRER PERSONENBEZOGENEN DATEN WIDERSPRUCH EINZULEGEN. DIE JEWEILIGE RECHTSGRUNDLAGE, AUF DENEN EINE VERARBEITUNG BERUHT, ENTNEHMEN SIE DIESER DATENSCHUTZERKLÄRUNG. WENN SIE WIDERSPRUCH EINLEGEN, WERDEN WIR IHRE BETROFFENEN PERSONENBEZOGENEN DATEN NICHT MEHR VERARBEITEN, ES SEI DENN, WIR KÖNNEN ZWINGENDE SCHUTZWÜRDIGE GRÜNDE FÜR DIE VERARBEITUNG NACHWEISEN, DIE IHRE INTERESSEN, RECHTE UND FREIHEITEN ÜBERWIEGEN ODER DIE VERARBEITUNG DIENT DER GELTENDMACHUNG, AUSÜBUNG ODER VERTEIDIGUNG VON RECHTSANSPRÜCHEN (WIDERSPRUCH NACH ART. 21 ABS. 1 DSGVO).
                     </p>
                 <h3>3.5 Beschwerderecht bei der zuständigen Aufsichtsbehörde</h3>
                     <p>

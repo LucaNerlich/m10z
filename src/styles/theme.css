@@ -22,3 +22,7 @@
 .font-red {
     color: red;
 }
+
+ul {
+    list-style-type: none;
+}
