@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer/themes/github')
+const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -42,7 +42,7 @@ const config = {
                 steps: 4, // the max number of images generated between min and max (inclusive)
                 disableInDev: false,
             },
-        ]
+        ],
     ],
 
     presets: [
@@ -60,6 +60,18 @@ const config = {
                     blogSidebarTitle: 'Jüngste Beiträge',
                     blogSidebarCount: 10,
                     editUrl: 'https://github.com/LucaNerlich/m10z',
+                    feedOptions: {
+                        type: 'all',
+                        copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
+                        createFeedItems: async (params) => {
+                            const {blogPosts, defaultCreateFeedItems, ...rest} = params
+                            console.log(params)
+                            return defaultCreateFeedItems({
+                                blogPosts: blogPosts.filter((item, index) => index < 10),
+                                ...rest,
+                            })
+                        },
+                    },
                 },
                 pages: {
                     path: 'src/pages',
@@ -88,8 +100,8 @@ const config = {
             image: 'img/M10Z_Orange.png',
             docs: {
                 sidebar: {
-                    hideable: true
-                }
+                    hideable: true,
+                },
             },
             colorMode: {
                 defaultMode: 'dark',
@@ -106,7 +118,7 @@ const config = {
                 items: [
                     {
                         to: 'tags',
-                        label: 'Kategorien'
+                        label: 'Kategorien',
                     },
                     // {
                     //     to: '/tags/podcast',
@@ -114,12 +126,12 @@ const config = {
                     // },
                     {
                         to: '/tags/article',
-                        label: 'Artikel'
+                        label: 'Artikel',
                     },
                     {
                         to: '/content/hello',
-                        label: 'Wer sind wir'
-                    }
+                        label: 'Wer sind wir',
+                    },
                 ],
             },
             footer: {
@@ -138,6 +150,25 @@ const config = {
                             },
                         ],
                     },
+                    {
+                        title: 'Feeds',
+                        items: [
+                            {
+                                href: '/audiofeed.xml',
+                                target: '_blank',
+                                download: true,
+                                position: 'left',
+                                label: '🔊Audio Feed',
+                            },
+                            {
+                                href: '/rss.xml',
+                                target: '_blank',
+                                download: true,
+                                position: 'left',
+                                label: '📖Artikel Feed',
+                            },
+                        ],
+                    },
                 ],
             },
             prism: {
@@ -145,6 +176,6 @@ const config = {
                 darkTheme: darkCodeTheme,
             },
         }),
-};
+}
 
-module.exports = config;
+module.exports = config
