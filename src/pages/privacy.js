@@ -243,37 +243,7 @@ export default function Hello() {
                     Ihres Anliegens). Zwingende gesetzliche Bestimmungen – insbesondere gesetzliche Aufbewahrungsfristen – bleiben unberührt.
                 </p>
 
-                <h2>5. Musik und Podcasts</h2>
-                <p>
-                    Wir nutzen Hosting- und Analyse-Angebote von Dienstanbietern, um unsere Audio-Inhalte zum Anhören bzw. zum Download anzubieten und
-                    statistische Informationen zum Abruf der Audio-Inhalte zu erhalten.
-                </p>
-                <h3>5.1 Verarbeitete Datenarten</h3>
-                <p>
-                    Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten), Meta-/Kommunikationsdaten (z.B.
-                    Geräte-Informationen, IP-Adressen). </p>
-                <h3>5.2 Betroffene Personen</h3>
-                <p>
-                    Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten).
-                </p>
-                <h3>5.3 Zwecke der Verarbeitung</h3>
-                <p>
-                    Reichweitenmessung (z.B. Zugriffsstatistiken, Erkennung wiederkehrender Besucher), Konversionsmessung (Messung der Effektivität
-                    von Marketingmaßnahmen), Profile mit nutzerbezogenen Informationen (Erstellen von Nutzerprofilen).
-                </p>
-                <h3>5.4 Eingesetzte Dienste und Diensteanbieter</h3>
-                <p>
-                    <ul>
-                        <li><b>Podigee</b>: Podigee – Musik- und Podcasthosting; Dienstanbieter: Podigee GmbH, Schlesische Straße 20, 10997 Berlin,
-                            Deutschland; Website: https://www.podigee.com/de; Datenschutzerklärung: https://www.podigee.com/de/about/privacy/.
-                        </li>
-                        <li><b>LetsCast.fm</b>: Produktgenuss GmbH, Vereinsstraße 51, 20357 Hamburg, Websiste: https://letscast.fm,
-                            Datenschutzerklärung: https://letscast.fm/privacy
-                        </li>
-                    </ul>
-                </p>
-
-                <h2>6. Forum</h2>
+                <h2>5. Forum</h2>
                 <p>
                     Auf unserer Website befindet sich ein externer Link zum Forum der WASTED Community (https://community.wasted.de/). Dieses Forum
                     ist nicht Teil des Angebots von M10Z und dementsprechend tragen wir auch nicht die datenschutzrechtliche Verantwortung für die im
@@ -281,8 +251,8 @@ export default function Hello() {
                     empfehlen wir Ihnen, die Datenschutzerklärung auf www.wasted.de/datenschutz/ zu Rate zu ziehen.
                 </p>
 
-                <h2>7. Sicherheitsmaßnahmen</h2>
-                <h3>7.1 Allgemeine Sicherheitsmaßnahmen</h3>
+                <h2>6. Sicherheitsmaßnahmen</h2>
+                <h3>6.1 Allgemeine Sicherheitsmaßnahmen</h3>
                 <p>
                     Wir treffen nach Maßgabe der gesetzlichen Vorgaben unter Berücksichtigung des Stands der Technik, der Implementierungskosten und
                     der Art, des Umfangs, der Umstände und der Zwecke der Verarbeitung sowie der unterschiedlichen Eintrittswahrscheinlichkeiten und
@@ -295,7 +265,7 @@ export default function Hello() {
                     Hardware, Software sowie Verfahren entsprechend dem Prinzip des Datenschutzes, durch Technikgestaltung und durch
                     datenschutzfreundliche Voreinstellungen.
                 </p>
-                <h3>7.2 SSL- bzw. TLS-Verschlüsselung</h3>
+                <h3>6.2 SSL- bzw. TLS-Verschlüsselung</h3>
                 <p>
                     Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, wie zum Beispiel Bestellungen oder
                     Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen
@@ -306,7 +276,7 @@ export default function Hello() {
                     werden.
                 </p>
 
-                <h2>8. Änderung und Aktualisierung der Datenschutzerklärung</h2>
+                <h2>7. Änderung und Aktualisierung der Datenschutzerklärung</h2>
                 <p>
                     Wir bitten Sie, sich regelmäßig über den Inhalt unserer Datenschutzerklärung zu informieren. Wir passen die Datenschutzerklärung
                     an, sobald die Änderungen der von uns durchgeführten Datenverarbeitungen dies erforderlich machen. Wir informieren Sie, sobald
