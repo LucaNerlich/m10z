@@ -51,6 +51,8 @@ AMD hat jüngst Prozessoren mit sogenanntem 3D Cache veröffentlicht.
 Für SpielerInnen, die nur Wert auf reine Gaming Performance legen, sind diese Modelle empfehlenswert.
 Das aktuelle Modell, der 7950X 3D ist jedoch ausverkauft und die empfehlenswerte Preis-/Leistungsversion, der 7800X 3D, hat den freien Handel noch nicht erreicht.
 
+Und um die Einleitung abzuschliessen: Solltet ihr Fragen haben oder Hilfe suchen - kontaktiert mich immer gerne!
+
 ## Der Zusammenbau Prozess
 
 Los gehts!
@@ -74,14 +76,59 @@ Ich verfolge tendenziell die nachstehende Reihenfolge beim Zusammenbau:
 11. Audio Frontheader Kabel anschliessen
 12. USB2, USB3, USBC, Sata Kabel anschliessen
 13. Gehäuse- und CPU Kühlerlüfter an Hub oder am Mainboard anschliessen
-14. Bios updaten
-15. XMP Profil aktivieren
-16. Bei Bedarf Lüfterkurven reduzieren
-17. Betriebssystem installieren
+14. Bios
+    - Updaten
+    - XMP Profil aktivieren
+    - Bei Bedarf Lüfterkurven reduzieren
+15. Betriebssystem installieren
 
 ### Mainboard
 
-// todo ssds: aktuell bis zu 7000MB/s. Völlig unnötig, foto vom pcie 5 slot, wenn da verbaut,
+Starten wir mit dem Kernbauteil des gesamten Systems: Dem Mainboard oder auch selten Motherboard genannt.
+Zentral werden hier alle Einzelteile verknüpft und in Teilen mit Strom versorgt.
+Da ich einen Prozessor der aktuellen Intel Generation (13.) verbaue, benötige ich ein Mainboard mit einem entsprechend passenden Chipsatz.
+Diese sind in Preiskategorien und Ausstattung gestaffelt, "High-End" heissen Z790 und etwas abgespeckt H790.
+
+<Image img={require('./02-mb.jpg')} />
+
+> So kommt es gut verpackt an.
+
+Im ersten Schritt platzieren wir es, um nichts auf der oder durch die Unterseite zu verkratzen auf seinem eigenen Karton.
+
+Anschliessend entfernen wir sämtliche Schutzfolien.
+
+<Image img={require('./24-mb.jpg')} />
+
+> Immer ein angenehmes Gefühl!
+
+<Image img={require('./25-mb.jpg')} />
+
+> Selbst auf dem kleinen Audio Chip ist etwas geklebt.
+
+Beim Inspizieren stolper ich ueber ein kurioses Feature. So noch nicht gesehen.
+
+<Image img={require('./26-mb.jpg')} />
+
+> Per Knopfdruck laesst sich die Grafikkarte im obersten PCIe Slot loesen. Eigentlich ganz angenehm - kommt man hier doch oft nur sehr bescheiden an.
+
+Nun bietet es sich an die modernen SSDs einzubauen. Von "frueher" kennt man noch die grossen, schwere und teils lauten 3,5 Zoll HDDs (klassische Festplatten).
+Zwischenzeitlich wurden diese von 2,5 Zoll SSDs abgelöst. Diese haben sich jetzt erneut verkleinert und werden in M.2 Slots verbaut. Damit entfallen sämtliche Kabel. Genial.
+
+<Image img={require('./37-ssd.jpg')} />
+
+> So sehen M.2 SSDs aus.
+
+Um an die entsprechenden Slots zu kommen, muessen die Kuehlabdeckungen auf dem Mainboard geloest werden.
+
+<Image img={require('./39-mb.jpg')} />
+
+> Ja nicht mit dem Schraubendreher abrutschen ;-)
+
+
+
+
+
+// todo ssds: aktuell bis zu 7000 MB/s. Völlig unnötig, foto vom pcie 5 slot, wenn da verbaut,
 weniger Bandbreite bei der gpu, aber aktuell auch quasi nicht bemerkbar.
 
 // todo tipp, erst 8pin cpu strom kabel, dann mainboard einsetzen...
