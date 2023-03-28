@@ -141,18 +141,22 @@ Es verbirgt sich ein ca 1,5 cm breiter M.2 Slot und eine Befestigungsschraube.
 
 #### Arbeitsspeicher und CPU
 
+<Image img={require('./33-cpu.jpg')} />
+
+> Der Prozessor kommt edel verpackt.
+
 Prozessoren sind einfach verbaut, man muss jedoch aufpassen, diese nicht fallen zu lassen.
 Hebel seitlich rausdrücken, metallische Klappe aufdecken, CPU einsetzen (Aufdruck in Leserichtung zu sich selbst) und mit dem Hebel die Metallklappe wieder festklemmen.
 
 <Image img={require('./35-mb.jpg')} />
 
-Arbeitsspeicher ist einfach verbaut, im Vorfeld sollte nur der richtige gekauft werden ;-)
+Arbeitsspeicher mit Gefühl reingeklickt, im Vorfeld sollte nur der richtige gekauft werden ;-)
 
 <Image img={require('./38-mb.jpg')} />
 
 > Steckt und sitzt fest. Bei nur zwei verwendeten Slots, nimmt man in der Regel Nummer 2 und 4, ausgehen aus der Richtung des Prozessors.
 
-Ist der Prozessor verbaut, folgt einer der oftmals kleinteillisten Arbeitsschritte: die Montage des Prozessorkühlers.
+Ist der Prozessor und der RAM verbaut, folgt einer der oftmals kleinteillisten Arbeitsschritte: die Montage des Prozessorkühlers.
 
 <Image img={require('./44-cooler.jpg')} />
 
@@ -225,11 +229,57 @@ Es ist essenziell, dass alle benötigten verwendet werden. Andernfalls kann es z
 
 #### Netzteil
 
+Das Netzteil versorgt alles mit Strom und sichert die Hardware gegen zu starke Schwankungen im Netz ab.
+
+<Image img={require('./59-psu.jpg')} />
+
+> Schick verpackt.
+
+<Image img={require('./56-psu.jpg')} />
+
+> In diesem Gehauese wird es oben eingeschoben und viermal verschraubt.
+
+<Image img={require('./60-psu.jpg')} />
+
 #### Verkabelungen
+
+Von der Verkabelung habe ich leider keine Fotos, da zwei Haende hier kaum reichen.
+
+Die folgenden Dinge muessen aber verbunden werden:
+
+1. Breiter 24 Pin Connector auf dem Mainboard
+2. CPU Stromaufnahme auf dem Mainboard
+3. Wenn vorhanden, Strom ueber Sata Kabel zu HDDs oder 2,5 Zoll SSDs.
+4. PCIe Karten, wie zum Beispiel Grafikkarten
+5. Gehäuse haben in der Regel ein sogenanntes Frontpanel
+    - USB Buchsen (USB2, USB3 oder USB-C)
+    - Audio Header
+    - An-Aus Schalter
+    - Reset Schalter
+    - Etwaige Status LEDs
+
+<Image img={require('./16-case.jpg')} />
+
+> Das Frontpanel
+
+Die vorhandenen Gehaeuseluefter muessen angeschlossen werden. Je nach Gehäuse und Anzahl kann dies direkt ueber das Mainboard oder ueber eine Verteilerplatine erfolgen.
+
+<Image img={require('./57-cabel.jpg')} />
+
+> Bei mehreren Lueftern bietet sich ein Hub an, da somit alle gleichzeitig angesteuert werden koennen.
 
 ## Software
 
-- [Mainboard Treiber](https://rog.asus.com/de/motherboards/rog-strix/rog-strix-z790-e-gaming-wifi-model)
+Nun koennen wir Monitor, Maus und Tastatur anschliessen. Es folgt der spannendste Schritt im ganzen Bau: das erste Anschalten.
+
+<Image img={require('./61-boot.jpg')} />
+
+> Erfolg! Wir sehen das Bios, sowie in diesem Ausschnitt unsere beiden Arbeitsspeicherriegel.
+
+
+Weitere Links
+
+- [Asus Z790 Strix Mainboard Treiber](https://rog.asus.com/de/motherboards/rog-strix/rog-strix-z790-e-gaming-wifi-model)
 - [Windows 11 Media Creation Tool](https://www.microsoft.com/de-de/software-download/windows11)
 - [MSI Afterburner](https://www.msi.com/Landing/afterburner/graphics-cards)
 - [Kaufberatung: Der ideale Gaming-PC](https://www.computerbase.de/forum/threads/der-ideale-gaming-pc-spiele-pc-selbst-zusammenstellen.215394/)
