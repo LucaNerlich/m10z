@@ -19,10 +19,12 @@ Anfang des Jahres war die Welt noch in Ordnung. Nicht die ganze große Welt, die
 Ich rede von der Welt, in der die Zukunft Pink erschien, weil Pink die tonangebende Farbe im Logo jener Seite war, die uns um sich versammelte.
 Von außen betrachtet war es auf der Hauptseite, mit ihren wunderbaren Texten, Podcasts und Briefen, etwas ruhiger geworden. Aber das Wasted-Herz
 schlug weiterhin kräftig im [Forum](https://community.wasted.de).
+
 Um dem Ganzen eine eigene Art Liebesbrief zu bescheren, nahmen ein paar von uns einen Community-Podcast auf und gingen naiv davon aus, dass
 „Mindestens 10 Zeichen“ diese Website nun auf Monate begleiten würde. Nach der vollkommen nachvollziehbaren, aber nicht minder erschütternden
 Nachricht [von einem Aus des Projekts WASTED](https://community.wasted.de/t/goodbye-wasted/2220) kam sofort Angst auf, die Nutzer*innen der Seite
 könnten sich bald in alle Winde zerstreuen.
+
 Denn seien wir ehrlich, eine Community, die sich nicht auf neuen Input beziehen kann, wird es schwer haben lebhaft und aktiv zu bestehen. Sie dämmert
 erst vor sich hin und schon bald rollen die ersten Tumbleweeds durch verwaiste Threads. Klar können wir uns anderen Projekten zuwenden und haben das
 schon getan. Wer sein nicht mehr gebrauchtes Patreon Geld für WASTED gut anlegen will, kann dies zum Beispiel sehr gut bei Superlevel und OKCool
