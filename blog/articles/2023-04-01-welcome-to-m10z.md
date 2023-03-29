@@ -68,7 +68,7 @@ nach der Charme des Ganzen.
 
 ## Und nun?
 
-Nun schaut euch doch in der nächsten Zeit öfter hier um, beteiligt euch an Threads zu den Artikeln im Wasted Forum oder beteiligt euch mit Inhalten an
+Nun schaut euch doch in der nächsten Zeit öfter hier um, beteiligt euch an Threads zu den Artikeln im WASTED-Forum oder beteiligt euch mit Inhalten an
 M10Z.
 
 Und erzählt gerne den Menschen da draußen von uns.
