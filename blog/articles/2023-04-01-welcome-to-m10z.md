@@ -6,8 +6,8 @@ tags: [ article,tilmobaxter ]
 draft: false
 ---
 
-Willkommen auf unserem Blog, der Website, dem Portal..ach wir wissen es doch auch nicht so genau. Wir sind auf jeden Fall M10Z und freuen uns das ihr
-hier seid. Vermutlich wisst ihr nicht genau was oder wer wir sind, noch weniger als wir selbst. Die kurze Version findet
+Willkommen auf unserem Blog, der Website, dem Portal..ach wir wissen es doch auch nicht so genau. Wir sind auf jeden Fall M10Z und freuen uns, dass ihr
+hier seid. Vermutlich wisst ihr nicht genau was oder wer wir sind. Die kurze Version findet
 ihr [hier](https://m10z.de/content/hello), die ausführlichere
 in den folgenden Zeilen.
 
