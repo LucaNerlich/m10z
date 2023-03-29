@@ -15,9 +15,9 @@ in den folgenden Zeilen.
 
 ## Quo Ivisti Wasted
 
-Anfang des Jahres war die Welt noch in Ordnung. Nicht die ganze große Welt, die da draußen…mit ihren Krisen, Problemen und dem ganzen Rest.
+Anfang des Jahres war die Welt noch in Ordnung. Nicht die ganze große Welt, die da draußen …mit ihren Krisen, Problemen und dem ganzen Rest.
 Ich rede von der Welt, in der die Zukunft Pink erschien, weil Pink die tonangebende Farbe im Logo jener Seite war, die uns um sich versammelte.
-Von Außen betrachtet war es auf der Hauptseite, mit ihren wunderbaren Texten, Podcasts und Briefen, etwas ruhiger geworden. Aber das Wasted-Herz
+Von Außen betrachtet war es auf der Hauptseite, mit ihren wunderbaren Texten, Podcasts und Briefen, etwas ruhiger geworden. Aber das WASTED-Herz
 schlug weiterhin kräftig im [Forum](https://community.wasted.de).
 
 Um dem Ganzen eine eigene Art Liebesbrief zu bescheren, nahmen ein paar von uns einen Community-Podcast auf und gingen naiv davon aus, dass
@@ -27,22 +27,22 @@ könnten sich bald in alle Winde zerstreuen.
 
 Denn seien wir ehrlich, eine Community, die sich nicht auf neuen Input beziehen kann, wird es schwer haben lebhaft und aktiv zu bestehen. Sie dämmert
 erst vor sich hin und schon bald rollen die ersten Tumbleweeds durch verwaiste Threads. Klar können wir uns anderen Projekten zuwenden und haben das
-schon getan. Wer sein nicht mehr gebrauchtes Patreon Geld für WASTED gut anlegen will, kann dies zum Beispiel sehr gut bei Superlevel und OKCool
-machen, dort trefft ihr einige bekannte Gesichter wieder. Aber wir wollen etwas in dem der Spirit unserer Community weiterlebt. Also haben sich ein
-paar Menschen zusammengeschlossen um unter dem Banner M10Z die Welt zu er...erstmal etwas auszuprobieren.
+schon getan. Wer sein nicht mehr gebrauchtes WASTED-Patreon Geld gut anlegen will, kann dies zum Beispiel sehr gut bei Superlevel und OKCool
+machen, dort trefft ihr einige bekannte Gesichter wieder. Aber wir wollen etwas erschaffen, in dem der Spirit unserer Community weiterlebt. 
+Also haben sich ein paar Menschen zusammengeschlossen um unter dem Banner M10Z die Welt zu er ...erstmal etwas auszuprobieren.
 
 ## Quo Vadis M10Z
 
 Jetzt ist der Bereich Videospiele oft Zeuge geworden, wie schlimm Neuausrichtungen nach hinten losgehen können (ja [Bomberman: Act Zero](https://en.wikipedia.org/wiki/Bomberman:_Act_Zero), Du bist
 gemeint). Es war es uns also wichtig einen anderen Ansatz zu finden. Dem Ganzen eine eigene Farbe zu geben (Orange wie es scheint, why not) und vor
 allem als Gemeinschaft. Was ihr jetzt vor Euch seht, ist noch nicht ganz das Ergebnis, aber der Weg zum Ziel. Ein offener Kanal, wie ihr es vielleicht
-vom Bürgerfunk kennt, mit dem Schwerpunkt Videospiele und alles Drumherum. Ein Portal für unsere und Eure Texte, Podcasts, Streams etc. Whatever
+vom Bürgerfunk kennt, mit dem Schwerpunkt Videospiele und allem Drumherum. Ein Portal für unsere und Eure Texte, Podcasts, Streams etc. Whatever
 floats your Jackdaw, wie die Assassinen sagen.
 
 Wenn ich von „unseren“ Inhalten spreche, meine ich den schon bestehenden, jetzt unter neuer Flagge / Farbe weitergeführten Community Podcast
-„Mindestens 10 Zeichen“, „Fundbüro“ der Forenmitglieder `Yollum` & `Lipardus` befasst sich mit achtlos zurückgelassenen Spielen und unser liebster
+„Mindestens 10 Zeichen“. Das Format „Fundbüro“ der Forenmitglieder `Yollum` & `Lipardus` befasst sich mit achtlos zurückgelassenen Spielen und unser liebster
 Forenbarde Simon wird seinen Podcast „Once We Were Gamers“ wiederbeleben. `Luca`, der auch für die rasend schnelle und schicke Website verantwortlich
-ist, gibt einen ersten Einblick in Diablo 5 und nimmt Euch mit in den Zusammenbau seines neuen PCs und meine Wenigkeit `tilmo` hat großen Spaß an kurzweiligen
+ist, gibt einen ersten Einblick in Diablo 4 und nimmt Euch mit in den Zusammenbau seines neuen PCs und meine Wenigkeit hat großen Spaß an kurzweiligen
 Gedichten, die Euch erstmal alle 6-7 Tage das Wochenende versüßen sollen. Dazu könnt ihr unsere Portale bei [Twitch](https://www.twitch.tv/m10z_tv) und [Youtube](https://www.youtube.com/channel/UC9urZCkQ5yaj6k9QONOQzDA) im Blick behalten, dort
 wird es Inhalte von wechselnden M10Z-Mitreiter*innen geben, die Euch wie z.B. `EchtvonSchlecht` aus dem Forum bekannt sind.
 
@@ -59,10 +59,10 @@ Livestream...bitte melde Dich.
 
 Das Ganze soll so niederschwellig wie möglich sein, probiere Dich aus.
 
-So das wirkt auf den ersten Blick jetzt sehr ausschweifend und wirft die Frage auf, wie diese ganzen Felder regelmäßig bespielt werden sollen. Und das
+Auf den ersten Blick wirkt das Alles jetzt sehr ausschweifend und wirft die Frage auf, wie diese ganzen Felder regelmäßig bespielt werden sollen. Und das
 ist der Kern des Ganzen. M10Z soll eine Spielwiese für uns und für Euch sein, auf der ihr Euch kreativ austoben könnt und dürft, aber niemals müsst.
-Wir haben nicht vor dies, auf welche Art auch immer, mit Geld und damit mit Erwartungen zu Verknüpfen. Sollte euch das Privatleben für einen Monat
-einen Strich durch die Planung machen oder die Muse nicht küssen wollen, dann ist das halt so.
+Wir haben nicht vor dies, auf welche Art auch immer, mit Geld und damit mit Erwartungen zu verknüpfen. Sollte euch das Privatleben für einen Monat
+einen Strich durch die Planung machen oder die Muse nicht küssen wollen, kein Problem.
 Uns ist bewusst, dass es so zu objektiven Qualitätsschwankungen kommen kann, aber das fängt das Gesamtgefüge auf und ist meiner persönlichen Ansicht
 nach der Charme des Ganzen.
 
@@ -72,9 +72,9 @@ Nun schaut euch doch in der nächsten Zeit öfter hier um, beteiligt euch an Thr
 M10Z.
 
 Und erzählt gerne den Menschen da draußen von uns.
-Auch niederschwellige Community Projekte mögen Aufmerksamkeit ;-)
+Auch niederschwellige Community Projekte mögen Zuwendung.
 
-Danke für die Aufmerksamkeit und lasst von euch hören
+Danke für die Aufmerksamkeit und lasst von euch hören,
 
 
-Til & und die versammelte M10Z Mannschaft
+Euer Til & und die versammelte M10Z Mannschaft
