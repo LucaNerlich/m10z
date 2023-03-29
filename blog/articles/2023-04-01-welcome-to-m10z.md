@@ -41,8 +41,8 @@ floats your Jackdaw, wie die Assassinen sagen.
 
 Wenn ich von „unseren“ Inhalten spreche, meine ich den schon bestehenden, jetzt unter neuer Flagge / Farbe weitergeführten Community Podcast
 „Mindestens 10 Zeichen“, „Fundbüro“ der Forenmitglieder `Yollum` & `Lipardus` befasst sich mit achtlos zurückgelassenen Spielen und unser liebster
-Forenbarde Simon wird seinen Podcast „Once We Were Gamers“ wiederbeleben. Luca, der auch für die rasend schnelle und schicke Website verantwortlich
-ist, gibt einen ersten Einblick in Diablo 5 und nimmt Euch mit in den Zusammenbau seines neuen PCs und meine Wenigkeit hat großen Spaß an kurzweiligen
+Forenbarde Simon wird seinen Podcast „Once We Were Gamers“ wiederbeleben. `Luca`, der auch für die rasend schnelle und schicke Website verantwortlich
+ist, gibt einen ersten Einblick in Diablo 5 und nimmt Euch mit in den Zusammenbau seines neuen PCs und meine Wenigkeit `tilmo` hat großen Spaß an kurzweiligen
 Gedichten, die Euch erstmal alle 6-7 Tage das Wochenende versüßen sollen. Dazu könnt ihr unsere Portale bei [Twitch](https://www.twitch.tv/m10z_tv) und [Youtube](https://www.youtube.com/channel/UC9urZCkQ5yaj6k9QONOQzDA) im Blick behalten, dort
 wird es Inhalte von wechselnden M10Z-Mitreiter*innen geben, die Euch wie z.B. `EchtvonSchlecht` aus dem Forum bekannt sind.
 
