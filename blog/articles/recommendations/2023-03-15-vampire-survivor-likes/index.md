@@ -10,7 +10,7 @@ draft: false
 
 <!--truncate-->
 
-All links below link are 'external'  and link to the official steam shop <store.steampowered.com>.
+All links below link are 'external'  and link to the official steam shop https://store.steampowered.com.
 
 ## Vampire Survivors — The 'OG'
 
