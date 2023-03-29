@@ -6,7 +6,7 @@
         <link>https://m10z.de</link>
         <description>Mindestens 10 Zeichen - Wir stellen die Weichen</description>
         <language>de-DE</language>
-        <atom:link href="http://m10z.kkuez.de:2222/audiofeed.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
 
         <image>
             <url>https://github.com/LucaNerlich/m10z/blob/main/static/img/M10Z_Orange.png?raw=true</url>
