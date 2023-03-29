@@ -13,6 +13,9 @@ in den folgenden Zeilen.
 
 <!--truncate-->
 
+ ![M10ZliebtWasted Bild vom Autor](https://irgendwasmitkunden.de/M10ZliebtWasted.JPG)
+ > Zwei Herzen schlagen, ach, in unserer Brust
+
 ## Quo Ivisti Wasted
 
 Anfang des Jahres war die Welt noch in Ordnung. Nicht die ganze große Welt, die da draußen …mit ihren Krisen, Problemen und dem ganzen Rest.
