@@ -42,7 +42,7 @@ Wenn ich von „unseren“ Inhalten spreche, meine ich den schon bestehenden, je
 Forenbarde Simon wird seinen Podcast „Once We Were Gamers“ wiederbeleben. Luca, der auch für die rasend schnelle und schicke Website verantwortlich
 ist, gibt einen ersten Einblick in Diablo 5 und nimmt Euch mit in den Zusammenbau seines neuen PCs und meine Wenigkeit hat großen Spaß an kurzweiligen
 Gedichten, die euch erstmal alle 6-7 Tage das Wochenende versüßen sollen. Dazu könnt ihr unsere Portale bei [Twitch](https://www.twitch.tv/m10z_tv) und [Youtube](https://www.youtube.com/channel/UC9urZCkQ5yaj6k9QONOQzDA) im Blick behalten, dort
-wird es Inhalte von wechselnden M10Z-Mistreiter*innen geben, die Euch wie z.B. EchtvonSchlecht aus dem Forum bekannt sind.
+wird es Inhalte von wechselnden M10Z-Mitreiter*innen geben, die Euch wie z.B. EchtvonSchlecht aus dem Forum bekannt sind.
 
 Du vor dem Bildschirm bist auf jeden Fall dazu aufgerufen Dich zu beteiligen. Wenn Dir seit langem ein Text über die neoliberalen Auswüchse Super
 Marios (Geld sammeln, alles Kleinere zertrampeln...kein Witz hat mir mal eine Mutter vorgeworfen, deren Sohn das kaufen wollte) auf dem Herzen liegt
