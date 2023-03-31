@@ -10,7 +10,7 @@ tilmobaxter:
   name: Til Breidenbach
   title: (he / him) // immer co-host M10Z Podcast // manchmal Autor M10Z Texte
   image_url: https://irgendwasmitkunden.de/128494604.jpeg
-  email: m10z@posteo.de 
+  email: m10z@posteo.de
 yollum:
   name: Jan
   url: https://www.youtube.com/c/@yollum
@@ -24,3 +24,6 @@ georg:
   name: Georg
   title: Ein Dings.
   image_url: https://m10z.picnotes.de/avatars/Echt_von_Schlecht_CLXV.png
+lipardus:
+  name: Lipardus
+
