@@ -39,8 +39,8 @@ export default function Hello() {
                     Schaut euch hier auf unserem Blog um und genießt die Inhalte.
                 </p>
                 <p>
-                    Wenn euch gefällt was wir machen, schreibt uns eine <a href='mailto:m10z@posteo.de'>E-Mail</a> oder kommt zu uns ins <a
-                    href='https://community.wasted.de/'>Forum</a>.
+                    Wenn euch gefällt was wir machen, schreibt uns eine <a href='mailto:m10z@posteo.de'>E-Mail</a> oder schaut im <a
+                    href='https://community.wasted.de/'>WASTED-Forum</a> vorbei.
                 </p>
                 <p>
                     Wenn ihr meint, das könnt ihr ebenso gut oder besser:<br />
