@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 
     <channel>
         <title>M10Z Podcasts</title>
@@ -9,15 +9,22 @@
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
 
         <image>
-            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Orange.png</url>
+            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</url>
             <title>Mindestens 10 Zeichen</title>
             <link>https://m10z.de</link>
         </image>
+        <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
 
         <item>
             <title>Mindestens 10 Zeichen #3 (Wasted)</title>
             <pubDate>Fri, 01 Apr 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash3</guid>
+            <image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen</title>
+                <link>https://m10z.de</link>
+            </image>
+            <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</itunes:image>
             <description>Liebe Gemeinde,
                 Zum dritten und letzten Mal treffen wir uns unter dem Dach von Wasted, um die großen Themen dieser Welt zu besprechen.
                 Das wichtigste wird diesmal natürlich sein, dass Wasted den Abgang macht. Darüber reden wir ausführlich um nehmen uns Zeit, um dem einen gebührenden Platz in unseren Herzen einzuräumen.
@@ -42,6 +49,13 @@
             <title>Mindestens 10 Zeichen #2 (Wasted)</title>
             <pubDate>Sun, 12 Mar 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash</guid>
+            <image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen</title>
+                <link>https://m10z.de</link>
+            </image>
+            <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</itunes:image>
+
             <description>Liebe Gemeinde!
                 Hier ist sie also, die erste offizielle Folge von "Mindestens 10 Zeichen - Ein Community-Podcast"!
                 Nach eurem unfassbaren Feedback auf den Piloten geben sich Til (Moderation, Talk, Schnitt), Simon (Produktion) und Marcel (Talk, Organisation) wieder Mühe, um euch ein paar unterhaltsame Momente zusammenzustellen.
@@ -64,6 +78,13 @@
             <title>Mindestens 10 Zeichen #1 (Wasted)</title>
             <pubDate>Wed, 25 Jan 2023 17:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash2</guid>
+            <image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen</title>
+                <link>https://m10z.de</link>
+            </image>
+            <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</itunes:image>
+
             <description>"Liebe Community,
                 Es ist soweit! Mit einem tollen Team, motivierten Leuten und einem Haufen kreativer Köpfe haben wir die erste Folge des ersten Community-Podcasts ÜBERHAUPT auf die Beine gestellt (Zumindest hab ich sonst noch von keinem gehört!)
                 Wir haben auf euch gehört und einen bunten Mix aus Struktur, Freiem Gerede, lustigen und schweren Themen, über die Community itself und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
