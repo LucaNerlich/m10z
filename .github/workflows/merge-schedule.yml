@@ -8,7 +8,7 @@ on:
       - synchronize
   schedule:
     # https://crontab.guru -> at 09:00
-    - cron: '0 8 * * *'
+    - cron: '0 * * * *'
 
 jobs:
   merge_schedule:
