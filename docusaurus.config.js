@@ -161,6 +161,11 @@ const config = {
                                 label: '🔊Audio Feed',
                             },
                             {
+                                href: 'ignorethis',
+                                textonly: true,
+                                label: 'https://m10z.de/audiofeed.xml',
+                            },
+                            {
                                 href: '/rss.xml',
                                 target: '_blank',
                                 download: true,
