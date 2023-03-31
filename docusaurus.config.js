@@ -65,7 +65,6 @@ const config = {
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
                         createFeedItems: async (params) => {
                             const {blogPosts, defaultCreateFeedItems, ...rest} = params
-                            console.log(params)
                             return defaultCreateFeedItems({
                                 blogPosts: blogPosts.filter((item, index) => index < 10),
                                 ...rest,
