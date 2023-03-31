@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 
     <channel>
         <title>Mindestens 10 Zeichen</title>
         <link>https://m10z.de</link>
         <description>Mindestens 10 Zeichen - Wir stellen die Weichen</description>
         <language>de-DE</language>
+        <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
 
         <image>
-            <url>https://m10z.de/img/M10Z_Orange.svg</url>
+            <url>https://github.com/LucaNerlich/m10z/blob/main/static/img/M10Z_Orange.png?raw=true</url>
             <title>Mindestens 10 Zeichen</title>
             <link>https://m10z.de</link>
         </image>
 
-
         <item>
-            <title>Ein neuer Podcast Title</title>
-            <pubDate>Sun, 12 March 2023 17:00:00 +0000</pubDate>
+            <title>Mindestens 10 Zeichen #2 (Wasted)</title>
+            <pubDate>Sun, 12 Mar 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash</guid>
-            <description>Das ist eine Beschreibung</description>
-            <link>Link zum vollständigen Eintrag</link>
-            <author>Autor des Artikels, E-Mail-Adresse</author>
-
-            <enclosure url="http://m10z.kkuez.de:3333/kkuez-Marcel-HuntShowdown.mp3"
-                       length="9999999"
+            <description>Liebe Gemeinde!
+                Hier ist sie also, die erste offizielle Folge von "Mindestens 10 Zeichen - Ein Community-Podcast"!
+                Nach eurem unfassbaren Feedback auf den Piloten geben sich Til (Moderation, Talk, Schnitt), Simon (Produktion) und Marcel (Talk, Organisation) wieder Mühe, um euch ein paar unterhaltsame Momente zusammenzustellen.
+                Dieses Mal geht es um ChatBots in Foren, Spieledemos und ob der Vorname "Christian" zu Phantasterei verpflichtet. Aus der Community haben wir diesmal den lieben Lipardus geladen, der uns in Sachen Spieledemos updatet.
+                Für die nächste Folge suchen wir neben Musik(-er*innen): Euch und euer Thema!
+                Gerade geht ein Fußpilz-Indie durch die Forendecke? - Geil!
+                Religion ist in eurem Lieblingsspiel ein Thema und ihr grübelt über die Vermittlung an die Sprösslinge? - Spannend, lasst uns teilhaben!
+                Die ganze Gamestar-Redaktion geht wegen C. Schiffers letzter Liste in den Generalstreik? - Lasst Feiern!
+                Viel Spaß beim Hören und bleibt gesund,
+                Til, Simon und Marcel
+            </description>
+            <author>
+                M10Z-Podcast Team
+            </author>
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20002.mp3"
+                       length="97000000"
+                       type="audio/mpeg"/>
+        </item>
+        <item>
+            <title>Mindestens 10 Zeichen #1 (Wasted)</title>
+            <pubDate>Wed, 25 Jan 2023 17:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash2</guid>
+            <description>"Liebe Community,
+                Es ist soweit! Mit einem tollen Team, motivierten Leuten und einem Haufen kreativer Köpfe haben wir die erste Folge des ersten Community-Podcasts ÜBERHAUPT auf die Beine gestellt (Zumindest hab ich sonst noch von keinem gehört!)
+                Wir haben auf euch gehört und einen bunten Mix aus Struktur, Freiem Gerede, lustigen und schweren Themen, über die Community itself und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
+                Viel Vergnügen!
+            </description>
+            <author>
+                M10Z-Podcast Team
+            </author>
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20001.mp3"
+                       length="87000000"
                        type="audio/mpeg"/>
         </item>
     </channel>
