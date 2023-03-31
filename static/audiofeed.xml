@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 
     <channel>
-        <title>Mindestens 10 Zeichen</title>
+        <title>M10Z Podcasts</title>
         <link>https://m10z.de</link>
         <description>Mindestens 10 Zeichen - Wir stellen die Weichen</description>
         <language>de-DE</language>
@@ -31,7 +31,7 @@
                 Marcel, Simon und Til
             </description>
             <author>
-                M10Z-Podcast Team
+                M10Z
             </author>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20003.mp3"
                        length="106954752"
@@ -54,7 +54,7 @@
                 Til, Simon und Marcel
             </description>
             <author>
-                M10Z-Podcast Team
+                M10Z
             </author>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20002.mp3"
                        length="101711872"
@@ -70,7 +70,7 @@
                 Viel Vergnügen!
             </description>
             <author>
-                M10Z-Podcast Team
+                M10Z
             </author>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20001.mp3"
                        length="91226112"
