@@ -9,7 +9,7 @@
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
 
         <image>
-            <url>https://github.com/LucaNerlich/m10z/blob/main/static/img/M10Z_Orange.png?raw=true</url>
+            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Orange.png</url>
             <title>Mindestens 10 Zeichen</title>
             <link>https://m10z.de</link>
         </image>
