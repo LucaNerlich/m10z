@@ -18,6 +18,28 @@
         <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
 
         <item>
+            <title>Fundbüro #01 - Bilbo im Kreuzfeuer</title>
+            <pubDate>Fri, 01 Apr 2023 11:00:01 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash3</guid>
+            <image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen</title>
+                <link>https://m10z.de</link>
+            </image>
+            <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</itunes:image>
+            <description>Herzlich willkommen im Fundbüro.
+                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgard (Lipardus) und Jan (yollum) haben ein paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
+                In der heutigen Folge sind sie auf Lizenzspiele gestoßen, mit Protagonisten, die unterschiedlicher nicht sein könnten. Auf der einen Seite ein abenteuerlustiger Hobbit, der sich auf die weite Reise zum Einsamen Berg begibt. Auf der anderen Seite ein ballernder Geheimagent, dessen Nummer 007 uns schon seit vielen Jahren begleitet.
+            </description>
+            <author>
+                M10Z
+            </author>
+            <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero%20-%20001.mp3"
+                       length="53477376"
+                       type="audio/mpeg"/>
+        </item>
+
+        <item>
             <title>Mindestens 10 Zeichen #3 (Wasted)</title>
             <pubDate>Fri, 01 Apr 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash3</guid>
