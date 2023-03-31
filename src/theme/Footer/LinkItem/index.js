@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Link from '@docusaurus/Link'
 import useBaseUrl from '@docusaurus/useBaseUrl'
 import isInternalUrl from '@docusaurus/isInternalUrl'
@@ -8,12 +8,18 @@ export default function FooterLinkItem({item}) {
     const {to, href, label, prependBaseUrlToHref, clipboard, ...props} = item
     const toUrl = useBaseUrl(to)
     const normalizedHref = useBaseUrl(href, {forcePrependBaseUrl: true})
+
+    const [showCheckmark, setShowCheckmark] = useState(false)
     return (
         <>
             {clipboard ?
-                <div style={{cursor: 'pointer'}} onClick={() => {
+                <div style={{
+                    cursor: 'pointer',
+                    display: 'inline-block',
+                }} onClick={() => {
                     navigator.clipboard.writeText(href)
-                }}>{label}</div>
+                    setShowCheckmark(true)
+                }}>{label} <span style={showCheckmark ? {} : {display: 'none'}}>✅</span></div>
                 :
                 <Link
                     className='footer__link-item'
