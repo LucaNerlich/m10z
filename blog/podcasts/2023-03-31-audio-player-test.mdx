@@ -6,14 +6,34 @@ tags: [podcast, tech, lucan]
 draft: false
 ---
 
-import AudioPlayer from 'react-modern-audio-player';
+import useIsBrowser from '@docusaurus/useIsBrowser';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
-<AudioPlayer playList={[
-    {
-        name: 'name',
-        writer: 'writer',
-        img: 'https://github.com/LucaNerlich/m10z/blob/main/static/img/M10Z_Orange.png',
-        src: 'https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20002.mp3',
-        id: 1,
-    },
-]} />
+(async () => {
+// Dynamically imported module (runtime)
+const { AudioPlayer} = await import('react-modern-audio-player');
+})();
+
+export const AudioPlayerComponent = () => {
+    const isBrowser = useIsBrowser();
+    return <div>
+        {isBrowser ?
+            <BrowserOnly><AudioPlayer playList={[
+                {
+                    name: 'name',
+                    writer: 'writer',
+                    img: 'https://github.com/LucaNerlich/m10z/blob/main/static/img/M10Z_Orange.png',
+                    src: 'https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20002.mp3',
+                    id: 1,
+                },
+            ]} /></BrowserOnly>
+            : <div>server-side</div>
+        }
+    </div>
+}
+
+
+<h1>Hier unsere neuste Podcastfolge</h1>
+<BrowserOnly>
+<AudioPlayerComponent />
+</BrowserOnly>
