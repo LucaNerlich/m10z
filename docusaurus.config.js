@@ -161,11 +161,21 @@ const config = {
                                 label: '🔊Audio-Feed',
                             },
                             {
+                                href: 'https://m10z.de/audiofeed.xml',
+                                clipboard: true,
+                                label: '📎Copy Audio-Feed',
+                            },
+                            {
                                 href: '/rss.xml',
                                 target: '_blank',
                                 download: true,
                                 position: 'left',
                                 label: '📖Artikel-Feed',
+                            },
+                            {
+                                href: 'https://m10z.de/rss.xml',
+                                clipboard: true,
+                                label: '📎Copy Artikel-Feed',
                             },
                         ],
                     },
