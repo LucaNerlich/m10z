@@ -61,7 +61,7 @@ const config = {
                     blogSidebarCount: 10,
                     editUrl: 'https://github.com/LucaNerlich/m10z',
                     feedOptions: {
-                        type: 'all',
+                        type: 'rss',
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
                         createFeedItems: async (params) => {
                             const {blogPosts, defaultCreateFeedItems, ...rest} = params
