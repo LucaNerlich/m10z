@@ -5,13 +5,15 @@ import isInternalUrl from '@docusaurus/isInternalUrl'
 import IconExternalLink from '@theme/Icon/ExternalLink'
 
 export default function FooterLinkItem({item}) {
-    const {to, href, label, prependBaseUrlToHref, textonly, ...props} = item
+    const {to, href, label, prependBaseUrlToHref, clipboard, ...props} = item
     const toUrl = useBaseUrl(to)
     const normalizedHref = useBaseUrl(href, {forcePrependBaseUrl: true})
     return (
         <>
-            {textonly ?
-                <div>{label}</div>
+            {clipboard ?
+                <div style={{cursor: 'pointer'}} onClick={() => {
+                    navigator.clipboard.writeText(href)
+                }}>{label}</div>
                 :
                 <Link
                     className='footer__link-item'
