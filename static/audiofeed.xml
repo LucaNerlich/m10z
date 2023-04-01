@@ -8,7 +8,10 @@
         <language>de-DE</language>
         <itunes:category text="Leisure"> <itunes:category text="Games" /></itunes:category>
         <itunes:explicit>False</itunes:explicit>
-        <itunes:email>m10z@posteo.de</itunes:email>
+        <itunes:owner>
+            <itunes:name>M10Z</itunes:name>
+            <itunes:email>10z@posteo.de</itunes:email>
+        </itunes:owner>
         <itunes:author>M10Z</itunes:author>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
 
