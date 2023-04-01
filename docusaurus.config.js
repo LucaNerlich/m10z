@@ -130,6 +130,10 @@ const config = {
                         to: '/content/hello',
                         label: 'Wer wir sind',
                     },
+                    {
+                        href: 'https://community.wasted.de/c/m10z/11',
+                        label: 'Forum',
+                    },
                 ],
             },
             footer: {
@@ -174,6 +178,19 @@ const config = {
                                 href: 'https://m10z.de/rss.xml',
                                 clipboard: true,
                                 label: '📎Copy Artikel-Feed',
+                            },
+                        ],
+                    },
+                    {
+                        title: 'Bewegtbilder',
+                        items: [
+                            {
+                                label: 'Twitch',
+                                href: 'https://www.twitch.tv/m10z_tv',
+                            },
+                            {
+                                label: 'Youtube',
+                                href: 'https://www.youtube.com/@M10Z_TV',
                             },
                         ],
                     },
