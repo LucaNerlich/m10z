@@ -59,13 +59,11 @@ const config = {
                     showReadingTime: true,
                     blogSidebarTitle: 'Jüngste Beiträge',
                     blogSidebarCount: 10,
-                    editUrl: 'https://github.com/LucaNerlich/m10z',
                     feedOptions: {
-                        type: 'all',
+                        type: 'rss',
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
                         createFeedItems: async (params) => {
                             const {blogPosts, defaultCreateFeedItems, ...rest} = params
-                            console.log(params)
                             return defaultCreateFeedItems({
                                 blogPosts: blogPosts.filter((item, index) => index < 10),
                                 ...rest,
@@ -120,10 +118,10 @@ const config = {
                         to: 'tags',
                         label: 'Kategorien',
                     },
-                    // {
-                    //     to: '/tags/podcast',
-                    //     label: 'Podcasts'
-                    // },
+                    {
+                        to: '/tags/podcast',
+                        label: 'Podcasts'
+                    },
                     {
                         to: '/tags/article',
                         label: 'Artikel',
@@ -131,6 +129,10 @@ const config = {
                     {
                         to: '/content/hello',
                         label: 'Wer wir sind',
+                    },
+                    {
+                        href: 'https://community.wasted.de/c/m10z/11',
+                        label: 'Forum',
                     },
                 ],
             },
@@ -158,14 +160,37 @@ const config = {
                                 target: '_blank',
                                 download: true,
                                 position: 'left',
-                                label: '🔊Audio Feed',
+                                label: '🔊Audio-Feed',
+                            },
+                            {
+                                href: 'https://m10z.de/audiofeed.xml',
+                                clipboard: true,
+                                label: '📎Copy Audio-Feed',
                             },
                             {
                                 href: '/rss.xml',
                                 target: '_blank',
                                 download: true,
                                 position: 'left',
-                                label: '📖Artikel Feed',
+                                label: '📖Artikel-Feed',
+                            },
+                            {
+                                href: 'https://m10z.de/rss.xml',
+                                clipboard: true,
+                                label: '📎Copy Artikel-Feed',
+                            },
+                        ],
+                    },
+                    {
+                        title: 'Bewegtbilder',
+                        items: [
+                            {
+                                label: 'Twitch',
+                                href: 'https://www.twitch.tv/m10z_tv',
+                            },
+                            {
+                                label: 'Youtube',
+                                href: 'https://www.youtube.com/@M10Z_TV',
                             },
                         ],
                     },

@@ -1,7 +1,7 @@
 lucan:
-  name: Luca Nerlich
+  name: Luca
   title: (he / him)
-  url: https://lucanerlich.com
+  url: https://m10z.de/tags/lucan
   image_url: https://share.lucanerlich.com/s/JwPJDgkXwyR6fi9/download/YOmJzoE.jpg
 kkuez:
   name: Marcel
@@ -10,4 +10,26 @@ tilmobaxter:
   name: Til Breidenbach
   title: (he / him) // immer co-host M10Z Podcast // manchmal Autor M10Z Texte
   image_url: https://irgendwasmitkunden.de/128494604.jpeg
-  email: m10z@posteo.de 
+  email: m10z@posteo.de
+yollum:
+  name: Jan
+  url: https://www.youtube.com/c/@yollum
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/yollum/64/282_2.png
+adrian:
+  name: Adrian
+  title: (he / him) // Der ist irgendwie da, macht aber nicht viel.
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/adrian/120/95_2.png
+  email: adrian@picnotes.de
+georg:
+  name: Georg
+  title: Ein Dings.
+  image_url: https://m10z.picnotes.de/avatars/Echt_von_Schlecht_CLXV.png
+lipardus:
+  name: Edgar
+  url: https://m10z.de/tags/lipardus
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/lipardus/120/6224_2.png
+vfbfan:
+  name: Thomas
+  title: Mag Fußball gar nicht so sehr, fährt lieber mit seinem Fahrrad
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/vfbfan/120/7097_2.png
+  email: drop0815@posteo.de
