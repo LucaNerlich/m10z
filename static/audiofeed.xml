@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 
+    <!--  https://www.gbmb.org/mb-to-bytes  -->
+    
     <channel>
         <title>M10Z Podcasts</title>
         <link>https://m10z.de</link>
@@ -21,7 +23,28 @@
             <link>https://m10z.de</link>
         </image>
         <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
-
+        
+        <item>
+            <title>Once we were Gamers #01 -Lilith unter Kritik (Diablo 4 Beta Preview)</title>
+            <pubDate>Sun, 01 Apr 2023 09:30:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash5</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+                <title>Once we were Gamers #01 -Lilith unter Kritik (Diablo 4 Beta Preview)</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+                Simon und Luca haben die erste Folge des neuen Talk-Formats 'Once we were Gamer' aufgenommen. Viel Spass!
+            </description>
+            <author>
+                M10Z
+            </author>
+            <itunes:duration>3022</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3"
+                       length="49492787"
+                       type="audio/mpeg"/>
+        </item>
+        
         <item>
             <title>Fundbüro #01 - Bilbo im Kreuzfeuer</title>
             <pubDate>Fri, 01 Apr 2023 11:00:01 +0000</pubDate>
