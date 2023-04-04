@@ -62,7 +62,7 @@
                 M10Z
             </author>
             <itunes:duration>2254</itunes:duration>
-            <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero%20-%20001.mp3"
+            <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3"
                        length="53477376"
                        type="audio/mpeg"/>
         </item>
@@ -92,7 +92,7 @@
                 M10Z
             </author>
             <itunes:duration>6716</itunes:duration>
-            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20003.mp3"
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_003.mp3"
                        length="106954752"
                        type="audio/mpeg"/>
         </item>
@@ -122,7 +122,7 @@
                 M10Z
             </author>
             <itunes:duration>6338</itunes:duration>
-            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20002.mp3"
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_002.mp3"
                        length="101711872"
                        type="audio/mpeg"/>
         </item>
@@ -145,7 +145,7 @@
                 M10Z
             </author>
             <itunes:duration>5622</itunes:duration>
-            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z%20-%20Episode%20001.mp3"
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_001.mp3"
                        length="91226112"
                        type="audio/mpeg"/>
         </item>
