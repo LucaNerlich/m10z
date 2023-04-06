@@ -1,36 +1,45 @@
 lucan:
   name: Luca
-  title: (he / him)
-  url: https://m10z.de/tags/lucan
-  email: luca.nerlich@gmail.com
+  url: /tags/lucan
   image_url: https://m10z.picnotes.de/avatars/luca.jpg
 kkuez:
   name: Marcel
+  url: /tags/kkuez
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/kkuez/64/3415_2.png
 tilmobaxter:
   name: Til Breidenbach
+  url: /tags/tilmobaxter
   title: (he / him) // immer co-host M10Z Podcast // manchmal Autor M10Z Texte
   image_url: https://irgendwasmitkunden.de/128494604.jpeg
   email: m10z@posteo.de
 yollum:
   name: Jan
-  url: https://www.youtube.com/c/@yollum
+  url: /tags/yollum
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/yollum/64/282_2.png
 adrian:
   name: Adrian
+  url: /tags/adrian
   title: (he / him) // Der ist irgendwie da, macht aber nicht viel.
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/adrian/120/95_2.png
   email: adrian@picnotes.de
 georg:
   name: Georg
+  url: /tags/georg
   title: Ein Dings.
   image_url: https://m10z.picnotes.de/avatars/Echt_von_Schlecht_CLXV.png
 lipardus:
   name: Edgar
-  url: https://m10z.de/tags/lipardus
+  url: /tags/lipardus
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/lipardus/120/6224_2.png
 vfbfan:
   name: Thomas
+  url: /tags/vfbfan
   title: Mag Fußball gar nicht so sehr, fährt lieber mit seinem Fahrrad
   image_url: https://m10z.picnotes.de/avatars/VfBFan.png
   email: drop0815@posteo.de
+simon:
+  name: Simon-Philipp Vogel
+  url: /tags/simon
+  title: Musiker, Podcast Host Once we were Gamers
+  email: chaops85@gmail.com
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/simon/240/6459_2.png
