@@ -3,6 +3,7 @@ slug: virtuelle-verse-2
 title: 'Virtuelle Verse - Lyrik und Games #02'
 authors: [tilmobaxter]
 tags: [poem, tilmobaxter]
+image: https://irgendwasmitkunden.de/DALL-E-x-Til-Pokemon-trifft-Lametta.png
 draft: false
 ---
 
