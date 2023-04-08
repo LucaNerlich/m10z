@@ -6,11 +6,6 @@ tags: [poem, tilmobaxter]
 draft: false
 ---
 
-<head>
-    <meta property="og:image" content="https://irgendwasmitkunden.de/DALL-E-x-Til-Pokemon-trifft-Lametta.png" />
-    <meta property="twitter:image" content="https://irgendwasmitkunden.de/DALL-E-x-Til-Pokemon-trifft-Lametta.png" />
-</head>
-
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“
 <!--truncate-->
 

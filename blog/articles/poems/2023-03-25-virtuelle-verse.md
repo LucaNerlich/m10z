@@ -6,11 +6,6 @@ tags: [poem, tilmobaxter]
 draft: false
 ---
 
-<head>
-    <meta property="og:image" content="/static/img/OWWG_Logo_3000x3000.jpg" />
-    <meta property="twitter:image" content="/static/img/OWWG_Logo_3000x3000.jpg" />
-</head>
-
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“
 <!--truncate-->
 
