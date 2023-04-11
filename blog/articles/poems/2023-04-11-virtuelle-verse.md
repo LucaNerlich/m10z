@@ -25,7 +25,7 @@ unter uns lauert die Gefahr. <br/>
 Noch nie ward ich gesehen, <br/>
 gleichwohl bin ich immer da. <br/>
 
-Niemand scheint’s zu stören, <br/> 
+Niemand scheint es zu stören, <br/> 
 wenn man klampfend um die Häuser schleicht. <br/>
 Ich kann eh nur drei Akkorde <br/> 
 doch für Tristam hat’s gereicht <br/>
