@@ -1,0 +1,351 @@
+---
+slug: pc-upgrade-2023-luca-edition
+title: Luca's 2023 PC-Upgrade
+authors: [lucan]
+tags: [artikel, tech, lucan]
+draft: false
+image: /img/tech/terabyte.jpg
+---
+
+import Image from '@theme/IdealImage';
+
+Im März 2023 habe ich meinen Desktoprechner geupgraded. Hier begleite ich den Prozess als kurzweilige Fotostory.
+
+<Image img={require('./63-terabyte.jpg')} />
+
+> Terabyte unterstützt!
+
+<!--truncate-->
+
+## Einleitung
+
+Mein altes System:
+
+| Typ              | Marke           | Produkt                       |
+|------------------|-----------------|-------------------------------|
+| Gehäuse          | Fractal Design  | Define 6                      |
+| Mainboard        | Asus            | X470-F Gaming                 |
+| Arbeitsspeicher  | G.Skill         | 2 × 16GB Flare X CL14 3200MHz |
+| Grafikkarte      | EVGA            | XC2 Ultra 2080                |
+| Prozessor        | AMD             | 5800X                         |
+| Prozessorkühler  | NZXT            | Kraken X73                    |
+| Netzteil         | Seasonic        | Prime 650W                    |
+| Erste SSD        | Western Digital | SN770 2TB                     |
+
+Sowie diverse weitere SSDs, die im Laufe der Zeit zusammengekauft wurden.
+
+[Extern: Die entsprechende Geizhals-Liste](https://geizhals.de/wishlists/3093013)
+
+<Image img={require('./sd.png')} />
+
+> an arragement of desktop computer hardware parts on a table, digital photo - Stable Diffusion
+
+Wobei, so ganz alt ist es gar nicht. Ich habe im Laufe der Zeit den Prozessor von einem 2700X auf einen 5800X geupgraded, SSDs hinzugefügt, sowie die Grafikkarte nach einem Defekt der vorherigen Zotac 2080 Ti gegen eine EVGA 2080 getauscht.
+Das System ist auch nach 2023 noch mindestens als „mid-class“ einzustufen. Daher steht natürlich das „warum ein Upgrade?“ im Raum. Dazu zwei Punkte:
+
+1. Ich hatte mit der Kombination des Asus X470 F Gaming und beiden AMD Ryzen (2700X, 5800X) über nahezu die komplette Nutzungsdauer Stabilitätsprobleme.
+    - Leider ein bekanntes Ryzen-Problem. Hier 15 Seiten im [Computerbase-Forum](https://www.computerbase.de/forum/threads/pc-stuerzt-unregelmaessig-im-idle-ab-wenn-power-supply-idle-control-auf-auto-steht.1958228/).
+    - Ich habe diverse BIOS-Einstellungen, Chipsatztreiber, Windowsversionen ausprobiert; manches lief besser, manches schlechter.
+    - Da ich das System im Alltag beruflich nutze, reicht mir ein „zu 95 % stabil“ leider nicht.
+2. Mein Bruder fängt zeitnah eine IT-Ausbildung an und hat aktuell nur ein uraltes System und kein Geld, daher bekommt er gratis meinen alten Rechner – komplett.
+
+> Mir ist bewusst, dass die Auswahl der neuen Komponenten kompletter Overkill ist. Aber irgendwo muss das Geld auch hin – warum nicht für das Ding ausgeben, was ich zwischen vier und zwölf Stunden am Tag nutze.
+
+## Generelle Tipps
+
+Über die letzten Jahre ist Computerhardware merklich teurer geworden.
+Insbesondere Grafikkarten sowie Mainboards haben sich im losen Vergleich zu diversen vorherigen Jahren locker verdoppelt.
+
+Ein aktueller PC der gehobenen Mittelklasse kostet ungefähr 1.500 Euro.
+Vor wenigen Wochen habe ich mit einer Freundin so eine Variante zusammengestellt, gekauft und aufgebaut.
+Hier ist die entsprechende [Einkaufsliste bei Geizhals.de](https://geizhals.de/?cat=WL-3021320).
+Die enthaltenen Komponenten sind natürlich nur ein Vorschlag.
+In jeder Kategorie gibt es vielfältige Alternativen zur Auswahl.
+Das Computerbase-Forum aktualisiert seit Jahren fortlaufend einen sehr hilfreichen Thread: [Kaufberatung: Der ideale Gaming-PC](https://www.computerbase.de/forum/threads/der-ideale-gaming-pc-spiele-pc-selbst-zusammenstellen.215394/).
+Hier finden sich Zusammenstellungen von 500 Euro bis 1.500 Euro.
+Will man dann das letzte bisschen Leistung herausholen, erhöht sich die Gesamtsumme leicht auf das Doppelte.
+
+Persönlich neige ich aktuell zu den Intel-Prozessoren, erstens aus dem in [der Einleitung](#einleitung) genannten Grund und zweitens haben alle Intel-CPUs (bis auf die 'f'-Modelle) eine Grafikeinheit verbaut.
+Dies ermöglicht den Betrieb des Systems auch ohne dedizierte Grafikkarte.
+Besonders praktisch, wenn sich diese einmal mit einem Defekt verabschieden würde.
+Leistungsmäßig ergeben sich hier zwischen den beiden Hersteller wenig Unterschiede.
+AMD hat jüngst Prozessoren mit sogenanntem 3D-Cache veröffentlicht.
+Für SpielerInnen, die nur Wert auf reine Gamingperformance legen, sind diese Modelle empfehlenswert.
+Das aktuelle Modell, der 7950X3D ist jedoch ausverkauft und die empfehlenswerte Preis-/Leistungsversion, der 7800X3D, hat den freien Handel noch nicht erreicht.
+
+Und um die Einleitung abzuschließen: Solltet ihr Fragen haben oder Hilfe suchen – kontaktiert mich immer gerne!
+
+## Der Zusammenbau-Prozess
+
+Los gehts!
+
+Ich verfolge tendenziell die nachstehende Reihenfolge beim Zusammenbau:
+
+1. M2 SSDs verschrauben
+2. CPU in Sockel einsetzen
+3. Arbeitsspeicher reindrücken
+    - Bei zwei Modulen und vier Slots nimmt man für gewöhnlich aus Sicht der CPU Slot 2 und 4
+4. Montage des CPU-Kühlers vorbereiten
+5. Wärmeleitpaste auf der CPU verteilen
+6. CPU-Kühler an der CPU-Halterung festschrauben
+7. Netzteil im Gehäuse verschrauben
+    - wenn es ein (voll-)modulares Netzteil ist, die benötigten Kabel heraussuchen und den Rest wieder verstauen
+8. Die CPU-Stromkabel (4, 8 oder 16 Pins – 1 oder 2 Kabel) am Mainboard (meist oben links) anschliessen.
+    - Sobald das Mainboard verbaut ist, kommt man hier nur noch sehr bescheiden ran
+9. Das Mainboard auf den Abstandshaltern ins Gehäuse schrauben
+    - Wenn vorhanden, die IO-Blende vorher verbauen
+10. 24-Pin-Stromkabel zum Mainboard führen und anschließen
+11. Audio-Frontheader-Kabel anschließen
+12. USB2-, USB3-, USBC-, SATA-Kabel anschließen
+13. Gehäuse- und CPU-Lüfter an den Hub oder am Mainboard anschließen
+14. BIOS
+    - Updaten
+    - XMP-Profil aktivieren
+    - Bei Bedarf Lüfterkurven anpassen
+15. Betriebssystem installieren
+
+### Mainboard
+
+Starten wir mit dem Kernbauteil des gesamten Systems: Dem Mainboard oder auch selten Motherboard genannt.
+Hier werden zentral alle Einzelteile verknüpft und in Teilen mit Strom versorgt.
+Da ich einen Prozessor der aktuellen Intel Generation (13th) verbaue, benötige ich ein Mainboard mit einem entsprechend passenden Chipsatz.
+Diese sind in Preiskategorien und Ausstattung gestaffelt, „High-End“ heißen Z790, die etwas abgespeckten sind mit H790 oder B760 bezeichnet.
+
+<Image img={require('./02-mb.jpg')} />
+
+> So kommt es gut verpackt an.
+
+Im ersten Schritt platzieren wir das Board, um nichts auf der oder durch die Unterseite zu verkratzen, auf seinem eigenen Karton.
+
+Anschließend entfernen wir sämtliche Schutzfolien.
+
+<Image img={require('./24-mb.jpg')} />
+
+> Immer ein angenehmes Gefühl!
+
+<Image img={require('./25-mb.jpg')} />
+
+> Selbst auf dem kleinen Audio Chip ist etwas aufgeklebt.
+
+Beim Inspizieren stolpere ich über ein kurioses Feature. So noch nicht gesehen.
+
+<Image img={require('./26-mb.jpg')} />
+
+> Per Knopfdruck lässt sich die Grafikkarte im obersten PCIe-Slot lösen. Eigentlich ganz angenehm – kommt man hier doch oft nur sehr bescheiden ran.
+
+Nun bietet es sich an, die modernen SSDs einzubauen. Von „früher“ kennt man noch die großen, schweren und teils lauten 3,5-Zoll-HDDs (klassische Festplatten).
+Zwischenzeitlich wurden diese von 2,5-Zoll-SSDs abgelöst. Diese haben sich jetzt erneut verkleinert und werden in M.2-Slots verbaut. Damit entfallen sämtliche Kabel. Genial!
+
+<Image img={require('./37-ssd.jpg')} />
+
+> So sehen M.2-SSDs aus.
+
+Um an die entsprechenden Slots zu kommen, müssen die Kühlabdeckungen auf dem Mainboard gelöst werden.
+
+<Image img={require('./39-mb.jpg')} />
+
+> Auf keinen Fall mit dem Schraubendreher abrutschen. ;-)
+
+Hat man die notwendigen Schrauben gelöst, kann man die Abdeckung hochheben.
+Darunter verbirgt sich ein ca 1,5 cm breiter M.2-Slot und eine Befestigungsschraube.
+
+<Image img={require('./40-ssd.jpg')} />
+
+> Nicht vergessen, die blaue Schutzfolie abzuziehen!
+
+<Image img={require('./41-ssd.jpg')} />
+
+> Steckt und sitzt locker.
+
+<Image img={require('./42-ssd.jpg')} />
+
+> 180-Grad-Drehung der Arretierung und fertig. Schnell, einfach, ideal.
+
+#### Arbeitsspeicher und CPU
+
+<Image img={require('./33-cpu.jpg')} />
+
+> Der Prozessor kommt edel verpackt.
+
+Prozessoren sind einfach verbaut, man muss jedoch aufpassen, sie nicht fallen zu lassen.
+Hebel seitlich rausdrücken, metallische Klappe hochklappen, CPU einsetzen (Die Ausrichtung des jeweiligen Dreiecks von CPU und Halterung müssen übereinstimmen) und mit dem Hebel die Metallklappe wieder festklemmen.
+
+<Image img={require('./35-mb.jpg')} />
+
+Arbeitsspeicher mit Gefühl reingeklickt, im Vorfeld sollte nur der richtige gekauft werden. ;-)
+
+<Image img={require('./38-mb.jpg')} />
+
+> Steckt und sitzt fest. Bei nur zwei verwendeten Slots, nimmt man in der Regel Nummer 2 und 4, ausgehend von der Richtung des Prozessors.
+
+Ist der Prozessor und RAM verbaut, folgt einer der oftmals kleinteiligsten Arbeitsschritte: die Montage des Prozessorkühlers.
+
+<Image img={require('./44-cooler.jpg')} />
+
+> Die einzelnen Teile des Kühlers.
+
+<Image img={require('./45-cooler.jpg')} />
+
+> Nicht vergessen, auch hier muss eine Schutzfolie abgezogen werden.
+
+Nun genau die beigelegten Komponenten anschauen. Je nach Prozessorhersteller, Intel oder AMD, sowie deren verschiedenen Sockel unterscheiden sich die Montageschritte leicht.
+
+<Image img={require('./46-cooler.jpg')} />
+
+> Wir suchen alles was mit '1700' (Der für uns passende Prozessorsockel) gelabelt ist.
+
+Da der Kühler von oben mit der Rückseite des Mainboards verschraubt wird, kleben wir die Halterung von unten gegen das Mainboard.
+
+<Image img={require('./47-cooler.jpg')} />
+
+<Image img={require('./48-cooler.jpg')} />
+
+> Die vier Schrauben passen exakt.
+
+<Image img={require('./49-cooler.jpg')} />
+
+> Die vier Abstandshalter sind montiert.
+
+<Image img={require('./50-cooler.jpg')} />
+
+> Die beiden Kühlermontagerails sind montiert.
+
+<Image img={require('./5-cooler.jpg')} />
+
+> Wärmeleitpaste aufgetragen und verteilt. Nicht zu viel, nicht zu wenig!
+
+Anschließend den schweren Kühlturm platzieren.
+
+<Image img={require('./51-cooler.jpg')} />
+
+> Bis zum Anschlag festschrauben, aber dran denken 'nach fest kommt ab'!
+
+Da eine rein passive Kühlung nur in den seltensten Fällen ausreicht, montieren wir aktive Lüfter. Mein Kühlermodell kommt mit zweien im Lieferumfang.
+
+<Image img={require('./52-cooler.jpg')} />
+
+> Mit simplen Metallschellen werden diese einfach an den Kühlturm geklemmt.
+
+<Image img={require('./53-cooler.jpg')} />
+
+> Millimeterarbeit, der Arbeitsspeicher passt gerade so darunter.
+
+### Gehäuse
+
+Im folgenden Schritt bauen wir nun alles im Gehäuse zusammen.
+
+<Image img={require('./27-desk.jpg')} />
+
+> Vorher Platz schaffen, dann Seitenteile entfernen und auf die Seite legen.
+
+<Image img={require('./54-case.jpg')} />
+
+> Noch sind nur die Gehäuselüfter verbaut. Platz ist ausreichend vorhanden.
+
+Je nach Mainboardgröße (ATX, microATX, iATX, etc.) gibt es unterschiedliche Verschraubungspunkte – die so genannten Abstandshalter.
+Es ist essenziell, dass alle benötigten verwendet werden. Andernfalls kann es zu Kurzschlüssen kommen, die mitunter eure Hardware zerstören können.
+
+<Image img={require('./55-case.jpg')} />
+
+> Das Mainboard ist eingesetzt und verschraubt.
+
+#### Netzteil
+
+Das Netzteil versorgt alles mit Strom und sichert die Hardware gegen zu starke Schwankungen im Netz ab.
+
+<Image img={require('./59-psu.jpg')} />
+
+> Schick verpackt.
+
+<Image img={require('./56-psu.jpg')} />
+
+> In diesem Gehäuse wird es oben eingeschoben und viermal verschraubt.
+
+<Image img={require('./60-psu.jpg')} />
+
+#### Verkabelungen
+
+Von der Verkabelung habe ich leider keine Fotos, da zwei Hände hier kaum ausreichen.
+
+Die folgenden Dinge müssen jedoch verbunden werden:
+
+1. Breiter 24-Pin-Connector auf dem Mainboard
+2. CPU-Stromaufnahme auf dem Mainboard
+3. Wenn vorhanden, Strom über SATA-Kabel zu HDDs oder 2,5-Zoll-SSDs
+4. PCIe-Karten, wie zum Beispiel Grafikkarten
+5. Gehäuse haben in der Regel ein sogenanntes Frontpanel
+    - USB-Buchsen (USB2, USB3 oder USB-C)
+    - Audio-Header
+    - Ein/Aus-Schalter
+    - Reset-Schalter
+    - Etwaige Status-LEDs
+
+<Image img={require('./16-case.jpg')} />
+
+> Das Frontpanel
+
+Die vorhandenen Gehäuselüfter müssen separat angeschlossen werden. Je nach Gehäuse und Anzahl kann dies direkt über das Mainboard oder über eine Verteilerplatine erfolgen.
+
+<Image img={require('./57-cabel.jpg')} />
+
+> Bei mehreren Lüftern bietet sich ein Hub an, da somit alle gleichzeitig angesteuert werden können.
+
+## Software
+
+Nun können wir Monitor, Maus und Tastatur anschließen. Es folgt der spannendste Schritt des ganzen Projekts: das erste Einschalten.
+
+<Image img={require('./61-boot.jpg')} />
+
+> Erfolg! Wir sehen das BIOS, sowie in diesem Ausschnitt unsere beiden Arbeitsspeicherriegel.
+
+Weitere Links
+
+- [Asus Z790 Strix Mainboard-Treiber](https://rog.asus.com/de/motherboards/rog-strix/rog-strix-z790-e-gaming-wifi-model)
+- [Windows 11 Media Creation Tool](https://www.microsoft.com/de-de/software-download/windows11)
+- [MSI Afterburner](https://www.msi.com/Landing/afterburner/graphics-cards)
+- [Kaufberatung: Der ideale Gaming-PC](https://www.computerbase.de/forum/threads/der-ideale-gaming-pc-spiele-pc-selbst-zusammenstellen.215394/)
+
+Da alles so weit funktioniert, baue ich anschließend meine Grafikkarte ein.
+
+Vorsichtig in den obersten PCIe-Slot einsetzen und auf der linken Seite mit dem Gehäuse verschrauben.
+Bei aktuellen Grafikkarten kann es sinnvoll sein, wenn beiliegend, eine Stütze unterhalb der Grafikkarte anzubringen. Damit wird rechtsseitig das Gewicht etwas am Gehäuse abgestützt.
+
+<Image img={require('./07-gpu.jpg')} />
+
+> Leider habe ich nur ein 'vorher'-Bild.
+
+
+<Image img={require('./ff.jpg')} />
+
+> Daher muss die KI das regeln. a computer graphics card inside a computer case - Adobe Firefly
+
+### Undervolting und PowerLimit
+
+Die aktuelle Nvidia 4090 erkauft sich ihre finalen paar % Leistung durch absurd viel Strom. Über die Software MSI Afterburner kann man die maximale Stromaufnahme einfach per Slider deckeln.
+Mit beispielsweise 85 % des spezifizierten Maximums verliert man nur sehr wenig FPS (durchschnittlich ein unterer einstelliger Wert).
+
+Bei der CPU ist dies etwas komplizierter.
+Mit dezentem Undervolting lassen sich jedoch auch hier die Zügel anlegen.
+Zum aktuellen Zeitpunkt (25.03.2023) habe ich dies noch nicht gemacht.
+
+[Extern: Hier ein Tutorial bei computerbase.de (2019)](https://www.computerbase.de/forum/threads/anleitung-zum-undervolting-von-aktuellen-intel-nvidia-notebooks.1869825/)
+
+## Das neue System
+
+| Typ              | Marke           | Produkt                           |
+|------------------|-----------------|-----------------------------------|
+| Gehäuse          | Fractal Design  | Torrent                           |
+| Mainboard        | Asus            | Z790-E Gaming WIFI                |
+| Arbeitsspeicher  | G.Skill         | 2 × 32GB Ripjaws S5 CL32  6000MHz |
+| Grafikkarte      | Palit           | Gamerock 4090 OC                  |
+| Prozessor        | Intel           | 13900K                            |
+| Prozessorkühler  | Thermaltake     | Peerless Assassin SE              |
+| Netzteil         | be quiet!       | Dark Power 13 1000W               |
+| Erste SSD        | Kingston        | KC3000 2TB                        |
+| Weitere SSDs     | Western Digital | 2× SN770 2TB                      |
+
+[Extern: Die entsprechende Geizhals-Liste](https://geizhals.de/wishlists/3021611)
+
+
+- [Extern: Time Spy Extreme Benchmark - 3dmark.com](https://www.3dmark.com/spy/37132379)
+- [Extern: Port Royal Benchmark - 3dmark.com](https://www.3dmark.com/pr/2248705)

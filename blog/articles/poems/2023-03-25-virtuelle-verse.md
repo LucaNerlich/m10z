@@ -2,7 +2,8 @@
 slug: virtuelle-verse-1
 title: 'Virtuelle Verse - Lyrik und Games #01'
 authors: [tilmobaxter]
-tags: [art, poem, tilmobaxter]
+tags: [lyrik, tilmobaxter]
+image: https://irgendwasmitkunden.de/DALL·E%20x%20Til%20-%20Hedgehog%20Kind%20Of%20Blue.png
 draft: false
 ---
 
