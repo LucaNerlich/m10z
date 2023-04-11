@@ -8,6 +8,8 @@ image: /img/tech/ai-image-gen.jpg
 ---
 
 import Image from '@theme/IdealImage';
+import { ReactCompareSlider} from 'react-compare-slider';
+
 
 Wir schauen uns die Ergebnisse von vier grossen `Text-zu-Bild` künstlichen Intelligenz Tools an.
 Verwendet wurden `Adobe Firefly`, `Dall-E`, `Microsoft Bing` und `Stable Diffusion`.
@@ -24,6 +26,13 @@ Alle folgenden Bilder basieren auf demselben Input-String:
 
 
 ## Adobe Firefly
+
+<Image img={require('./images/firefly/firefly1.jpg')} />
+
+<ReactCompareSlider
+    itemOne={<Image img={require('./images/firefly/firefly1.jpg')} />}
+    itemTwo={<Image img={require('./images/firefly/firefly2.jpg')} />}
+/>
 
 ## Dall-E
 
