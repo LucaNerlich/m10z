@@ -1,5 +1,5 @@
 ---
-slug: virtuelle-verse-1
+slug: virtuelle-verse-3
 title: 'Virtuelle Verse - Lyrik und Games #03'
 authors: [tilmobaxter]
 tags: [lyrik, tilmobaxter]
