@@ -123,7 +123,7 @@ const config = {
                         label: 'Podcasts'
                     },
                     {
-                        to: '/tags/article',
+                        to: '/tags/artikel',
                         label: 'Artikel',
                     },
                     {
