@@ -7,7 +7,7 @@ image: https://irgendwasmitkunden.de/DiffusionBee-x-Til-Hoellenbarde.jpg
 draft: false
 ---
 
-Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“
+Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
 ![Hoellenbarde](https://irgendwasmitkunden.de/DiffusionBee-x-Til-Hoellenbarde.jpg)
@@ -27,5 +27,5 @@ gleichwohl bin ich immer da. <br/>
 
 Niemand scheint es zu stören, <br/> 
 wenn man klampfend um die Häuser schleicht. <br/>
-Ich kann eh nur drei Akkorde <br/> 
-doch für Tristam hat’s gereicht <br/>
+Ich kann eh nur drei Akkorde, <br/> 
+doch für Tristram hat’s gereicht. <br/>
