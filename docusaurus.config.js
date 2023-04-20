@@ -120,7 +120,7 @@ const config = {
                     },
                     {
                         to: '/tags/podcast',
-                        label: 'Podcasts'
+                        label: 'Podcasts',
                     },
                     {
                         to: '/tags/artikel',
@@ -189,7 +189,7 @@ const config = {
                                 href: 'https://www.twitch.tv/m10z_tv',
                             },
                             {
-                                label: 'Youtube',
+                                label: 'YouTube',
                                 href: 'https://www.youtube.com/@M10Z_TV',
                             },
                         ],
