@@ -182,8 +182,12 @@ const config = {
                         ],
                     },
                     {
-                        title: 'Bewegtbilder',
+                        title: 'Community',
                         items: [
+                            {
+                              label: 'AutorInnen',
+                              href: '/content/authors'
+                            },
                             {
                                 label: 'Twitch',
                                 href: 'https://www.twitch.tv/m10z_tv',
