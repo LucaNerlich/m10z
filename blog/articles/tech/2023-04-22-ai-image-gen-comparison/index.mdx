@@ -1,6 +1,6 @@
 ---
 slug: ki-image-gen-comparison
-title: KI Bildgenerierung - ein Vergleich
+title: KI-Bildgenerierung – ein Vergleich
 authors: [lucan]
 tags: [artikel, tech, lucan]
 draft: false
@@ -10,7 +10,7 @@ image: /img/tech/ai-image-gen.jpg
 import Image from '@theme/IdealImage';
 import {ReactCompareSlider} from 'react-compare-slider';
 
-Wir schauen uns die Ergebnisse von vier großen `Text-zu-Bild` Programmen, basierend auf künstlicher Intelligenz, an.
+Wir schauen uns die Ergebnisse von vier großen `Text-zu-Bild`-Programmen, basierend auf künstlicher Intelligenz, an.
 Verwendet wurden `Adobe Firefly`, `Dall-E`, `Microsoft Bing` und `Stable Diffusion`.
 
 <Image img={require('/static/img/tech/ai-image-gen.jpg')} />
@@ -23,21 +23,21 @@ Alle folgenden Bilder basieren auf demselben Input-String:
 
 > `A dark hallway lit by neon lights. There is some small debris on the floor as well as an overweight cat.`
 
-Gedankengang hierbei:
+Mein Gedankengang hierbei:
 
 - Ein Flur verschafft eine Perspektive und Fluchtpunkt
-- `Neon` Lichter sorgen für eine komplexe Lichtstimmung
+- `Neon`-Lichter sorgen für eine komplexe Lichtstimmung
 - Kleineres Geraffel auf dem Boden bricht ansonsten uniforme Flächen auf
 - Eine Katze schadet nie
-    - Das Adjektiv `overweight` wurde hinzugefügt, um einen weiteren Vergleichspunkt zu haben. Eine Katze können viele darstellen, aber durch die Konkretisierung muss das KI-Model eine weitere Ebene verstehen und umsetzen.
+    - Das Adjektiv `overweight` wurde hinzugefügt, um einen weiteren Vergleichspunkt zu haben. Eine Katze können viele darstellen, aber durch die Konkretisierung muss das KI-Modell eine weitere Ebene verstehen und umsetzen.
 
 ## Was ist Bildgenerierung und wie funktioniert es?
 
-Ein Algorithmus (Ein Computerprogramm) wird anhand einer Datenbasis trainiert – dem Algorithmus werden Informationen gefüttert.
-Aus dieser Datenbasis, hier Millionen Bilder, werden Merkmale und Strukturen extrahiert und somit ‚verstanden‘.
-Wenn diese Schritte in ausreichender Menge durchgeführt wurden, ist es dem Algorithmus möglich, mit eben diesen extrahierten Verbindungen Neues zu kreieren.
+Ein Algorithmus (Computerprogramm) wird anhand einer Datenbasis trainiert – dem Algorithmus werden Informationen gefüttert.
+Aus dieser Datenbasis, hier Millionen von Bildern, werden Merkmale und Strukturen extrahiert und somit ‚verstanden‘.
+Wenn diese Schritte in ausreichender Menge durchgeführt wurden, ist es dem Algorithmus möglich, mit diesen extrahierten Verbindungen neues zu kreieren.
 
-Die Ergebnisse folgen den gelernten Eigenschaften, aber sind stets etwas noch nie dagewesenes.
+Die Ergebnisse folgen den erlernten Eigenschaften, aber sind stets etwas noch nie dagewesenes.
 
 Angenommen, eine Person hat in ihrem Leben viele Pferde und Kühe gesehen, aber noch nie ein Schaf.
 Wenn ‚du‘ dieser Person jetzt ein Schaf beschreibst, kann diese versuchen, es auf Basis ihrer Lebenserfahrung zu malen und die Optik eines Schafs entsprechend ihres Wissens abzuleiten.
@@ -46,8 +46,8 @@ Die auf künstlicher Intelligenz basierenden Tools der jüngsten Vergangenheit f
 
 ## Adobe Firefly
 
-[Firefly](https://firefly.adobe.com/) ist eine Suite von KI Tools, entwickelt von Adobe und in 2023 veröffentlicht.
-Der `Text-zu-Bild` Algorithmus basiert auf der Fotodatenbank von [Adobe Stock](https://stock.adobe.com/).
+[Firefly](https://firefly.adobe.com/) ist eine Suite von KI-Tools, entwickelt von Adobe und 2023 veröffentlicht.
+Der `Text-zu-Bild`-Algorithmus basiert auf der Fotodatenbank von [Adobe Stock](https://stock.adobe.com/).
 
 <Image img={require('./images/firefly/firefly1.jpg')} />
 
@@ -128,7 +128,7 @@ Auf Reddit befindet sich ein [detaillierter Thread](https://www.reddit.com/r/Sta
 
 Es ist nicht möglich die gleichen Settings wie im 'T2I GUI'-Tool unter Windows zu verwenden.
 Außerdem kann man in Diffusion Bee den Sampler nicht auswählen.
-In beiden Tools habe ich das Standard-Model verwendet.
+In beiden Tools habe ich das Standardmodell verwendet.
 
 > 50 Steps, 512px x 512px, prompt guidance 8, default model, M1 Max
 
