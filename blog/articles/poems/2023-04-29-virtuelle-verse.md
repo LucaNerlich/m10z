@@ -15,7 +15,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 # You can't be gaming on a moving train
 
-Steameck spielen im Eurostar, <br/>
+Steamdeck spielen im Eurostar, <br/>
 Zeitvertreib mit der Gefahr, <br/>
 gestört zu werden, wenn's nicht passt. <br/>
 Der Schaffner bedient jeden Gast. <br/>
