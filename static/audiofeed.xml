@@ -9,7 +9,7 @@
         <description>Die Podcasts von M10Z, dem offenen Kanal für Videospiele und das Drumherum</description>
         <language>de-DE</language>
         <itunes:category text="Leisure"> <itunes:category text="Games" /></itunes:category>
-        <itunes:explicit>no</itunes:explicit>
+        <itunes:explicit>False</itunes:explicit>
         <itunes:owner>
             <itunes:name>M10Z</itunes:name>
             <itunes:email>m10z@posteo.de</itunes:email>
