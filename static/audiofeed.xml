@@ -24,6 +24,24 @@
             <link>https://m10z.de</link>
         </image>
         
+        <item>
+            <title>Once we were Gamers #2 - Nostalgie in Videospielen</title>
+            <pubDate>Wen, 03 May 2023 04:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash6</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
+                <title>Once we were Gamers #2 - Nostalgie in Videospielen</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+                In der zweiten Folge von „Once we were Gamers“ ist Georg (aka Brainbug aus dem WASTED Forum) bei Simon zu Gast. Die beiden packen das Thema „Nostalgie in Videospielen“ an. Dabei schwelgen Sie natürlich in Erinnerungen, bewerten aber auch die Bedeutung von Nostalgie in aktuellen Spieleproduktion und fragen sich, wie die ersten Videospielerfahrungen, die man macht, die zukünftigen beeinflussen. Ob Nostalgie die entscheidende Zutat für ein erfolgreiches Spiel ist oder völlig überwertet wird, hört ihr im Podcast
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>2844</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_2_Nostalgie.mp3"
+                       length="48024781"
+                       type="audio/mpeg"/>
+        </item>
         
         <item>
             <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview)</title>
@@ -41,7 +59,7 @@
 
                 Wir wünschen euch viel Spaß.
             </description>
-            <dc:creator>M10Z</dc:creator>
+            <author>m10z@posteo.de</author>
             <itunes:duration>3022</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3"
                        length="49492787"
@@ -61,7 +79,7 @@
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgard (Lipardus) und Jan (yollum) haben ein paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
                 In der heutigen Folge sind sie auf Lizenzspiele gestoßen, mit Protagonisten, die unterschiedlicher nicht sein könnten. Auf der einen Seite ein abenteuerlustiger Hobbit, der sich auf die weite Reise zum Einsamen Berg begibt. Auf der anderen Seite ein ballernder Geheimagent, dessen Nummer 007 uns schon seit vielen Jahren begleitet.
             </description>
-            <dc:creator>M10Z</dc:creator>
+            <author>m10z@posteo.de</author>
             <itunes:duration>2254</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3"
                        length="53477376"
@@ -89,7 +107,7 @@
                 Liebe Grüße,
                 Marcel, Simon und Til
             </description>
-            <dc:creator>M10Z</dc:creator>
+            <author>m10z@posteo.de</author>
             <itunes:duration>6716</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_003.mp3"
                        length="106954752"
@@ -117,7 +135,7 @@
                 Viel Spaß beim Hören und bleibt gesund,
                 Til, Simon und Marcel
             </description>
-           <dc:creator>M10Z</dc:creator>
+           <author>m10z@posteo.de</author>
             <itunes:duration>6338</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_002.mp3"
                        length="101711872"
@@ -138,7 +156,7 @@
                 Wir haben auf euch gehört und einen bunten Mix aus Struktur, Freiem Gerede, lustigen und schweren Themen, über die Community itself und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
                 Viel Vergnügen!
             </description>
-           <dc:creator>M10Z</dc:creator>
+           <author>m10z@posteo.de</author>
             <itunes:duration>5622</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_001.mp3"
                        length="91226112"
