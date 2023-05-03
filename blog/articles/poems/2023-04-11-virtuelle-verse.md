@@ -1,6 +1,6 @@
 ---
 slug: virtuelle-verse-3
-title: 'Virtuelle Verse - Lyrik und Games #03'
+title: 'Virtuelle Verse – Lyrik und Games #03'
 authors: [tilmobaxter]
 tags: [lyrik, tilmobaxter]
 image: https://irgendwasmitkunden.de/DiffusionBee-x-Til-Hoellenbarde.jpg

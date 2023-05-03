@@ -1,6 +1,6 @@
 ---
 slug: virtuelle-verse-4
-title: 'Virtuelle Verse - Lyrik und Games #04'
+title: 'Virtuelle Verse – Lyrik und Games #04'
 authors: [tilmobaxter]
 tags: [lyrik, tilmobaxter]
 image: https://irgendwasmitkunden.de/Diffusion%20Bee%20x%20Til%20-%20Cruisin.jpg

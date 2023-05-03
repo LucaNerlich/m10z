@@ -1,6 +1,6 @@
 ---
 slug: virtuelle-verse-5
-title: 'Virtuelle Verse - Lyrik und Games #05'
+title: 'Virtuelle Verse – Lyrik und Games #05'
 authors: [tilmobaxter]
 tags: [lyrik, tilmobaxter]
 image: https://irgendwasmitkunden.de/Dorfromantik-im-Schnellzug.jpg
@@ -29,4 +29,4 @@ Ihm ist es einerlei, er fragt: noch etwas zu trinken? <br/>
 Dabei wollt ich nur ungestört in Videospielen versinken. <br/>
 
 (Klar er sagt "Care for a drink?" ist ja im Auslandszug passiert, <br/>
-ich hab's nur zur Verständigung mal eben neu synchronisiert) <br/>
+ich hab's nur zur Verständigung mal eben neu synchronisiert.) <br/>
