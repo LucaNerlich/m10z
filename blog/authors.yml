@@ -5,11 +5,12 @@ lucan:
 kkuez:
   name: Marcel
   url: /tags/kkuez
+  title: (he / him) // M10Z-MitHost
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/kkuez/64/3415_2.png
 tilmobaxter:
   name: Til Breidenbach
   url: /tags/tilmobaxter
-  title: (he / him) // immer co-host M10Z Podcast // manchmal Autor M10Z Texte
+  title: (he / him) // immer co-host M10Z Podcast, manchmal Autor M10Z Texte
   image_url: https://irgendwasmitkunden.de/128494604.jpeg
   email: m10z@posteo.de
 yollum:
@@ -22,11 +23,9 @@ adrian:
   title: (he / him) // Der ist irgendwie da, macht aber nicht viel.
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/adrian/120/95_2.png
   email: adrian@picnotes.de
-georg:
+brainbug:
   name: Georg
-  url: /tags/georg
-  title: Ein Dings.
-  image_url: https://m10z.picnotes.de/avatars/Echt_von_Schlecht_CLXV.png
+  url: /tags/brainbug
 lipardus:
   name: Edgar
   url: /tags/lipardus
@@ -48,3 +47,7 @@ echtschlecht-clxv:
   url: /tags/echtschlecht-clxv
   title: Bandenknutscher, Reifenquietscher und Spongebob-Fan
   image_url: https://cdn.discordapp.com/attachments/1096361650707243090/1096380471052607618/Echt_von_Schlecht_CLXV.png
+kafour:
+  name: KaFour
+  url: /tags/kafour
+  image_url: https://m10z.picnotes.de/avatars/KaFour_m10z.png
