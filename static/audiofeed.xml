@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
 
     <!--  https://www.gbmb.org/mb-to-bytes  -->
     
@@ -15,14 +15,62 @@
             <itunes:email>m10z@posteo.de</itunes:email>
         </itunes:owner>
         <itunes:author>M10Z</itunes:author>
+        <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
 
         <image>
             <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</url>
-            <title>Mindestens 10 Zeichen</title>
+            <title>M10Z Podcasts</title>
             <link>https://m10z.de</link>
         </image>
-        <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
+
+                <item>
+            <title>Mindestens 10 Zeichen #4</title>
+            <pubDate>Sat, 06 May 2023 01:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash7</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen #4 (m10z)</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>Liebe Gemeinde, auch ohne Wasted geben Marcel, Simon und Til wieder ihr bestes um euch 1,5h mit Futter aus der Community zu unterhalten.
+Mit dem fantastischen Roland aka Rossyrg sprechen wir diesmal darüber, was die perfekte Melange zwischen Open World und linearem Level-Design ist und wo wir es heute wie damals am ehesten kriegen.
+Was hat Grafik mit einer Spielebewertung zu tun? Sind Bewerter nur Fans und deshalb biased? Bei welchem Arzt ist Til am liebsten? ...jenen und weiteren Fragen gehen wir auf den Grund! 
+Darüber hinaus gibt es eine neue Kategorie, nachdem wir "Quo Ivisti Wasted?" ja absägen mussten. Was genau, das müsst ihr selbst hören. Wie immer sind wir sehr gespannt auf euer Feedback:
+- Hat euch der Zug/Schnitt gefallen?
+- Was sagt ihr zu der neuen Kategorie?
+- Und sonst, wie gehts euch? Was machen die Kinder?
+Und natürlich suchen wir auch wie immer EUCH UND EUER THEMA! Seid nicht schüchtern, mehr als ein bisschen vor uns hin reden können wir auch nicht. Genießt die Sonne und bleibt gesund,
+Til, Simon und Marcel
+PS: 
+Die Folge haben wir vor etwas weniger als zwei Wochen schon aufgenommen, daher sind Inhalte die seitdem erschienen sind jetzt nicht drin.
+Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>5670</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_004.mp3"
+                       length="159278699"
+                       type="audio/mpeg"/>
+        </item>
+        
+        <item>
+            <title>Once we were Gamers #02 - Nostalgie in Videospielen</title>
+            <pubDate>Wed, 03 May 2023 04:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash6</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
+                <title>Once we were Gamers #2 - Nostalgie in Videospielen</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+                In der zweiten Folge von „Once we were Gamers“ ist Georg (aka Brainbug aus dem WASTED Forum) bei Simon zu Gast. Die beiden packen das Thema „Nostalgie in Videospielen“ an. Dabei schwelgen Sie natürlich in Erinnerungen, bewerten aber auch die Bedeutung von Nostalgie in aktuellen Spieleproduktion und fragen sich, wie die ersten Videospielerfahrungen, die man macht, die zukünftigen beeinflussen. Ob Nostalgie die entscheidende Zutat für ein erfolgreiches Spiel ist oder völlig überwertet wird, hört ihr im Podcast
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>2844</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_2_Nostalgie.mp3"
+                       length="48024781"
+                       type="audio/mpeg"/>
+        </item>
         
         <item>
             <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview)</title>
@@ -40,9 +88,7 @@
 
                 Wir wünschen euch viel Spaß.
             </description>
-            <author>
-                M10Z
-            </author>
+            <author>m10z@posteo.de</author>
             <itunes:duration>3022</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3"
                        length="49492787"
@@ -51,7 +97,7 @@
         
         <item>
             <title>Fundbüro #01 - Bilbo im Kreuzfeuer</title>
-            <pubDate>Fri, 01 Apr 2023 11:00:01 +0000</pubDate>
+            <pubDate>Sat, 01 Apr 2023 11:00:01 +0000</pubDate>
             <guid isPermaLink="false">zQbjR5syaajxtC9S3bHy</guid>
             <itunes:image>
                 <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
@@ -62,9 +108,7 @@
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgard (Lipardus) und Jan (yollum) haben ein paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
                 In der heutigen Folge sind sie auf Lizenzspiele gestoßen, mit Protagonisten, die unterschiedlicher nicht sein könnten. Auf der einen Seite ein abenteuerlustiger Hobbit, der sich auf die weite Reise zum Einsamen Berg begibt. Auf der anderen Seite ein ballernder Geheimagent, dessen Nummer 007 uns schon seit vielen Jahren begleitet.
             </description>
-            <author>
-                M10Z
-            </author>
+            <author>m10z@posteo.de</author>
             <itunes:duration>2254</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3"
                        length="53477376"
@@ -73,7 +117,7 @@
 
         <item>
             <title>Mindestens 10 Zeichen #3 (Wasted)</title>
-            <pubDate>Fri, 01 Apr 2023 11:00:00 +0000</pubDate>
+            <pubDate>Sat, 01 Apr 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">zQbjR5syaajxtC9S3bHz</guid>
             <itunes:image>
                 <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
@@ -92,9 +136,7 @@
                 Liebe Grüße,
                 Marcel, Simon und Til
             </description>
-            <author>
-                M10Z
-            </author>
+            <author>m10z@posteo.de</author>
             <itunes:duration>6716</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_003.mp3"
                        length="106954752"
@@ -122,9 +164,7 @@
                 Viel Spaß beim Hören und bleibt gesund,
                 Til, Simon und Marcel
             </description>
-            <author>
-                M10Z
-            </author>
+           <author>m10z@posteo.de</author>
             <itunes:duration>6338</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_002.mp3"
                        length="101711872"
@@ -145,9 +185,7 @@
                 Wir haben auf euch gehört und einen bunten Mix aus Struktur, Freiem Gerede, lustigen und schweren Themen, über die Community itself und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
                 Viel Vergnügen!
             </description>
-            <author>
-                M10Z
-            </author>
+           <author>m10z@posteo.de</author>
             <itunes:duration>5622</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_001.mp3"
                        length="91226112"
