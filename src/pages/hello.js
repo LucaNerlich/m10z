@@ -3,13 +3,12 @@ import Layout from '@theme/Layout'
 
 export default function Hello() {
     return (
-        <Layout title='Hello' description='Hello React Page'>
+        <Layout title='Hello' description='Wer wir sind'>
             <div
                 style={{
-                    fontSize: '20px',
                     maxWidth: '1200px',
                     margin: '0 auto',
-                    padding:' 1em',
+                    paddingBlockStart:' 1em',
                 }}>
                 <h1 style={{color: '#F16012'}}>Was ist M10Z?</h1>
 
