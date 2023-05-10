@@ -1,5 +1,11 @@
 .author {
-    color: red;
     display: flex;
     flex-direction: column;
+
+    h2 {
+        color: seashell;
+    }
+}
+
+.headline {
 }

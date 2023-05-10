@@ -10,9 +10,12 @@ interface AuthorProps {
 export default function Author(props: AuthorProps): JSX.Element {
     return (
         <div className={styles.author}>
-            <h4>{props.author.name}</h4>
+            <h2 className={styles.headline}>{props.author.name}</h2>
             <img src={props.author.image_url} alt={props.author.name} width='200px' />
-            <a href={props.author.url}>Alle Posts {'-->'}</a>
+            {props.author?.title &&
+                <em>{props.author?.title}</em>
+            }
+            <a href={props.author.url}>Alle Posts</a>
         </div>
     )
 }
