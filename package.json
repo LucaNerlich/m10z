@@ -6,11 +6,12 @@
         "docusaurus": "docusaurus",
         "dev": "docusaurus start",
         "start": "docusaurus start",
-        "build": "docusaurus build",
+        "build": "npm run test && docusaurus build",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
         "clear": "docusaurus clear",
         "serve": "docusaurus serve",
+        "test": "node ./generateAuthorsJson.js",
         "write-translations": "docusaurus write-translations",
         "write-heading-ids": "docusaurus write-heading-ids",
         "typecheck": "tsc"
