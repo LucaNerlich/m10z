@@ -1,0 +1,15 @@
+$image-width: 200px;
+
+.author {
+    display: flex;
+    flex-direction: column;
+    width: $image-width;
+
+    .headline {
+        color: #F16012;
+    }
+
+    .image {
+        width: $image-width;
+    }
+}

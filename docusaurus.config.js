@@ -182,7 +182,7 @@ const config = {
                         ],
                     },
                     {
-                        title: 'Bewegtbilder',
+                        title: 'Community',
                         items: [
                             {
                                 label: 'Twitch',
