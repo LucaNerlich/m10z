@@ -1,16 +1,21 @@
-import React from 'react'
+import React, {ReactElement} from 'react'
 import Layout from '@theme/Layout'
-import authors from '/blog/authors.json'
-import {Author} from '../types/author'
+import authorsFile from '/blog/authors.json'
+import {AuthorType} from '../types/authorType'
+import Author from '../components/Author'
 
 export default function Hello() {
+    const parsedAuthors: AuthorType[] = []
 
-    for (const author in authors) {
-        const parsedAuthor = JSON.parse(JSON.stringify(authors[author])) as Author
-        if (parsedAuthor.name) {
-            console.log(parsedAuthor.name)
-        }
+    // works, because docusaurus is serverside only
+    for (const author in authorsFile) {
+        parsedAuthors.push(JSON.parse(JSON.stringify(authorsFile[author])) as AuthorType)
     }
+
+    // sort alphabetically and push Author components to array
+    const authors: ReactElement[] = parsedAuthors
+        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .map((author, index) => <Author key={index} author={author} />)
 
     return (
         <Layout title='Hello' description='Wer wir sind'>
@@ -70,6 +75,7 @@ export default function Hello() {
                 <p>Sexismus, Rassismus, Antisemitismus, Homo- und Transphobie, Klassismus, Ableismus.</p>
 
                 <h1 style={{color: '#F16012'}}>Unsere Autor:Innen</h1>
+                {authors}
             </div>
         </Layout>
     )
