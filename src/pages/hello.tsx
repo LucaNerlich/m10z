@@ -1,8 +1,10 @@
 import React, {ReactElement} from 'react'
 import Layout from '@theme/Layout'
+// @ts-ignore
 import authorsFile from '/blog/authors.json'
 import {AuthorType} from '../types/authorType'
 import Author from '../components/Author'
+// @ts-ignore
 import styles from './hello.module.scss'
 
 export default function Hello() {

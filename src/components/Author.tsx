@@ -1,5 +1,6 @@
 import React from 'react'
 import {AuthorType} from '../types/authorType'
+// @ts-ignore
 import styles from './Author.module.scss'
 
 interface AuthorProps {
@@ -7,8 +8,6 @@ interface AuthorProps {
 }
 
 export default function Author(props: AuthorProps): JSX.Element {
-    console.log(props.author)
-
     return (
         <div className={styles.author}>
             <h4>{props.author.name}</h4>
