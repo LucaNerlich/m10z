@@ -1,0 +1,15 @@
+.hello {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-block-start: 1rem;
+
+    h1, h2 {
+        color: #F16012;
+    }
+}
+
+.authors {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
