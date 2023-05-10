@@ -1,14 +1,24 @@
 import React from 'react'
 import Layout from '@theme/Layout'
+import authors from '/blog/authors.json'
+import {Author} from '../types/author'
 
 export default function Hello() {
+
+    for (const author in authors) {
+        const parsedAuthor = JSON.parse(JSON.stringify(authors[author])) as Author
+        if (parsedAuthor.name) {
+            console.log(parsedAuthor.name)
+        }
+    }
+
     return (
         <Layout title='Hello' description='Wer wir sind'>
             <div
                 style={{
                     maxWidth: '1200px',
                     margin: '0 auto',
-                    paddingBlockStart:' 1em',
+                    paddingBlockStart: ' 1em',
                 }}>
                 <h1 style={{color: '#F16012'}}>Was ist M10Z?</h1>
 
@@ -58,6 +68,8 @@ export default function Hello() {
 
                 <h2 style={{color: '#F16012'}}>M10Z hat keinen Platz für:</h2>
                 <p>Sexismus, Rassismus, Antisemitismus, Homo- und Transphobie, Klassismus, Ableismus.</p>
+
+                <h1 style={{color: '#F16012'}}>Unsere Autor:Innen</h1>
             </div>
         </Layout>
     )

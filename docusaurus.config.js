@@ -185,10 +185,6 @@ const config = {
                         title: 'Community',
                         items: [
                             {
-                              label: 'AutorInnen',
-                              href: '/content/authors'
-                            },
-                            {
                                 label: 'Twitch',
                                 href: 'https://www.twitch.tv/m10z_tv',
                             },
