@@ -10,7 +10,7 @@ draft: false
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
-![Enhanced Plumber](https://irgendwasmitkunden.de/DiffusionBee-x-Til-WastelandWanderer.png)
+![WastelandWanderer](https://irgendwasmitkunden.de/DiffusionBee-x-Til-WastelandWanderer.png)
 > Diffusion Bee x Til: Wasteland Wanderer
 
 # Der Weg ist das Spiel
