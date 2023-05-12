@@ -1,53 +1,59 @@
 lucan:
+  description:
+  image_url: https://m10z.picnotes.de/avatars/luca.jpg
   name: Luca
   url: /tags/lucan
-  image_url: https://m10z.picnotes.de/avatars/luca.jpg
 kkuez:
+  description: (he / him) // M10Z-MitHost
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/kkuez/64/3415_2.png
   name: Marcel
   url: /tags/kkuez
-  title: (he / him) // M10Z-MitHost
-  image_url: https://community.wasted.de/user_avatar/community.wasted.de/kkuez/64/3415_2.png
 tilmobaxter:
+  description: (he / him) // immer co-host M10Z Podcast, manchmal Autor M10Z Texte
+  email: m10z@posteo.de
+  image_url: https://irgendwasmitkunden.de/128494604.jpeg
   name: Til
   url: /tags/tilmobaxter
-  title: (he / him) // immer co-host M10Z Podcast, manchmal Autor M10Z Texte
-  image_url: https://irgendwasmitkunden.de/128494604.jpeg
-  email: m10z@posteo.de
 yollum:
+  description:
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/yollum/64/282_2.png
   name: Jan
   url: /tags/yollum
-  image_url: https://community.wasted.de/user_avatar/community.wasted.de/yollum/64/282_2.png
 adrian:
+  description: (he / him) // Der ist irgendwie da, macht aber nicht viel.
+  email: adrian@picnotes.de
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/adrian/120/95_2.png
   name: Adrian
   url: /tags/adrian
-  title: (he / him) // Der ist irgendwie da, macht aber nicht viel.
-  image_url: https://community.wasted.de/user_avatar/community.wasted.de/adrian/120/95_2.png
-  email: adrian@picnotes.de
 brainbug:
+  description: Mein Bild ist ein Platzhalter
+  image_url: https://images.unsplash.com/photo-1611262588019-db6cc2032da3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1548&q=80
   name: Georg
   url: /tags/brainbug
 lipardus:
+  description:
+  image_url: https://community.wasted.de/user_avatar/community.wasted.de/lipardus/120/6224_2.png
   name: Edgar
   url: /tags/lipardus
-  image_url: https://community.wasted.de/user_avatar/community.wasted.de/lipardus/120/6224_2.png
 vfbfan:
+  description: Mag Fußball gar nicht so sehr, fährt lieber mit seinem Fahrrad
+  email: drop0815@posteo.de
+  image_url: https://m10z.picnotes.de/avatars/VfBFan.png
   name: Thomas
   url: /tags/vfbfan
-  title: Mag Fußball gar nicht so sehr, fährt lieber mit seinem Fahrrad
-  image_url: https://m10z.picnotes.de/avatars/VfBFan.png
-  email: drop0815@posteo.de
 simon:
-  name: Simon
-  url: /tags/simon
-  title: Musiker, Podcast Host Once we were Gamers
+  description: Musiker, Podcast Host Once we were Gamers
   email: chaops85@gmail.com
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/simon/240/6459_2.png
+  name: Simon
+  url: /tags/simon
 echtschlecht-clxv:
+  description: Bandenknutscher, Reifenquietscher und Spongebob-Fan
+  image_url: https://cdn.discordapp.com/attachments/1096361650707243090/1096380471052607618/Echt_von_Schlecht_CLXV.png
   name: Georg
   url: /tags/echtschlecht-clxv
-  title: Bandenknutscher, Reifenquietscher und Spongebob-Fan
-  image_url: https://cdn.discordapp.com/attachments/1096361650707243090/1096380471052607618/Echt_von_Schlecht_CLXV.png
 kafour:
+  description:
+  image_url: https://m10z.picnotes.de/avatars/KaFour_m10z.png
   name: KaFour
   url: /tags/kafour
-  image_url: https://m10z.picnotes.de/avatars/KaFour_m10z.png

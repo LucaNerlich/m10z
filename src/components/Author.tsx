@@ -18,8 +18,8 @@ export default function Author(props: AuthorProps): JSX.Element {
                 <em>{props.author.id}</em>
                 <hr />
                 <a className={styles.link} href={props.author.url}>Alle Posts 🔗</a>
-                {props.author?.title &&
-                    <em>{props.author?.title}</em>
+                {props.author?.description &&
+                    <em>{props.author?.description}</em>
                 }
             </div>
         </div>
