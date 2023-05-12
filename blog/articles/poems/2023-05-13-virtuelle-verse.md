@@ -15,8 +15,6 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 # Der Weg ist das Spiel
 
-Der Weg ist das Spiel
-
 Ich halte die Schnellreise, ganz unumwunden,<br/>
 für überbewertet und kann nur bekunden:<br/>
 zu Fuß durchquert<br/>
