@@ -1,11 +1,24 @@
+@import "../constants";
 $image-width: 200px;
+
+.responsiveWidth {
+    width: $image-width;
+    @media only screen and (max-width: $breakpoint-medium) {
+        width: $image-width * 1.2;
+    }
+
+    @media only screen and (max-width: $breakpoint-small) {
+        width: $image-width * 1.5;
+    }
+}
 
 .author {
     display: flex;
     flex-direction: column;
-    width: $image-width;
     transition: 0.3s;
     border-radius: 2px;
+
+    @extend .responsiveWidth;
 
     .wrapper {
         padding: 20px;
@@ -16,6 +29,10 @@ $image-width: 200px;
 
         .image {
             width: $image-width;
+
+            @media only screen and (max-width: $breakpoint-small) {
+                width: $image-width * 1.5;
+            }
         }
 
         .link {
