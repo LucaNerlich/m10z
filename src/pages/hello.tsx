@@ -19,9 +19,6 @@ export default function Hello() {
 
     const authors = parsedAuthors
         .sort((a, b) => a.id > b.id ? 1 : -1)
-        .map((author, index) => {
-            return author
-        })
         .map((author, index) => <Author key={index} author={author} />)
 
     return (
