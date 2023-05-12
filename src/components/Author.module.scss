@@ -4,7 +4,6 @@ $image-width: 200px;
     display: flex;
     flex-direction: column;
     width: $image-width;
-    box-shadow: 0 4px 8px 0 rgba(162, 124, 124, 0.2);
     transition: 0.3s;
     border-radius: 2px;
 
@@ -23,4 +22,12 @@ $image-width: 200px;
             display: block;
         }
     }
+}
+
+html[data-theme="dark"] .author {
+    box-shadow: 0 4px 8px 0 rgba(138, 132, 132, 0.2);
+}
+
+html[data-theme="light"] .author {
+    box-shadow: 0 4px 8px 0 rgba(162, 124, 124, 0.2);
 }
