@@ -13,7 +13,7 @@ export default function Author(props: AuthorProps): JSX.Element {
             <div className={styles.wrapper}>
                 <h2 className={styles.headline}>{props.author.name}</h2>
                 {props.author.image_url &&
-                    <img className={styles.image} src={props.author.image_url} alt={props.author.name} />
+                    <img className={styles.image} src={props.author.image_url} alt={props.author.id} />
                 }
                 <em>{props.author.id}</em>
                 <hr />

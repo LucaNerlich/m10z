@@ -1,4 +1,4 @@
-import React, {ReactElement} from 'react'
+import React, {ReactElement, useEffect, useState} from 'react'
 import Layout from '@theme/Layout'
 // @ts-ignore
 import authorsFile from '/blog/authors.json'
@@ -17,9 +17,11 @@ export default function Hello() {
         parsedAuthors.push(parsedAuthor)
     }
 
-    // sort alphabetically and push Author components to array
-    const authors: ReactElement[] = parsedAuthors
-        .sort((a, b) => a.name > b.name ? 1 : -1)
+    const authors = parsedAuthors
+        .sort((a, b) => a.id > b.id ? 1 : -1)
+        .map((author, index) => {
+            return author
+        })
         .map((author, index) => <Author key={index} author={author} />)
 
     return (
