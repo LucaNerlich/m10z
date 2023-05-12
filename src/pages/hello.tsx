@@ -20,7 +20,7 @@ export default function Hello() {
     // sort alphabetically and push Author components to array
     const authors: ReactElement[] = parsedAuthors
         .sort((a, b) => a.name > b.name ? 1 : -1)
-        .map((author, index) => <Author key={index} author={author} />)
+        .map((author, index) => <Author key={Math.random()} author={author} />)
 
     return (
         <Layout title='Hello' description='Wer wir sind'>
