@@ -31,7 +31,7 @@ Meist sehr beschwerlich<br/>
 Und mit der Zeit<br/>
 Ward es auch gefährlich<br/>
 Doch erzähl ich bei ner Nuka in Bars die Geschichten<br/>
-Kann ich mehr als Schnellreiseverfechter berichten.<br/>
+Kann ich mehr als Schnellreiseverfechter berichten<br/>
 
 So manch unvergessene Quest, die mir sonst verborgen bliebe<br/>
 Entdeckte ich am Wegesrand, da ich ne ruhige Kugel schiebe<br/>
