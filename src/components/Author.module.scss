@@ -4,12 +4,23 @@ $image-width: 200px;
     display: flex;
     flex-direction: column;
     width: $image-width;
+    box-shadow: 0 4px 8px 0 rgba(162, 124, 124, 0.2);
+    transition: 0.3s;
+    border-radius: 2px;
 
-    .headline {
-        color: #F16012;
-    }
+    .wrapper {
+        padding: 20px;
 
-    .image {
-        width: $image-width;
+        .headline {
+            color: #F16012;
+        }
+
+        .image {
+            width: $image-width;
+        }
+
+        .link {
+            display: block;
+        }
     }
 }
