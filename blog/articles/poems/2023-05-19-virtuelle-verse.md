@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![BigFuckingChest](https://irgendwasmitkunden.de/DiffusionBee-x-Til-BFC-Big%20Fucking%20Chest.png)
-> Diffusion Bee x Til: BFC - a big fucking chest
+> Diffusion Bee x Til: BFC - big fucking chest
 
 # Looten, leveln und Limericks
 
