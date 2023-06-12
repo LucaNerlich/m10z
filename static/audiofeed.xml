@@ -25,6 +25,31 @@
         </image>
         
         <item>
+            <title>M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen</title>
+            <pubDate>Wed, 14 Jun 2023 05:00:01 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash9</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10ZSpezial_Logo3000x3000.jpg</url>
+                <title>FM10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>Liebe Community,
+
+Kunstmuseen sind für mich ein besonderer Ort. Auf der einen Seite liebe ich es durch Ausstellungen mit gut kuratierten Bildern, Installationen oder anderen Kulturgütern zu schlendern und dabei Altbekanntes sowie Neues zu entdecken. Auf der anderen Seite verbinde ich mit dem Museum einen Teil meiner Jugend, da ich im Zuge meines FSJ ein Jahr in der Museumskommunikation am Zentrum für Kunst und Medien (kurz ZKM) in Karlsruhe gearbeitet habe. Wesentlicher Teil des ZKMs ist seit gut 25 Jahren auch immer eine (Dauer-)Ausstellung mit und über Computerspiele gewesen. Vor allem die aktuelle Iteration zkm_gameplay.the next level hat dazu beigetragen meinen Horizont über das Blockbuster-Genre hinaus zu erweitern und meine Auffassung gestärkt, dass dieses Medium als Kunstform einen Ausstellungswert besitzt.
+
+Grund genug in einer M10Z-Spezialfolge einmal etwas ausführlicher über das Thema Computerspiele und Museum zu sprechen. Um meine limitierte Perspektive als Beobachter durch tatsächliche Expertise zu erweitern, habe ich mir mit Jérôme Nguyen (ehem. ZKM; Volontär und Kurator für die Gameplay) und Laura Schmidt (aktuell ZKM u. zuständig für die Gameplay) fachkundige Verstärkung hinzugezogen. In diesem einstündigen Podcast sprechen wir unter Anderem darüber, was ein künstlerisches Spiel überhaupt ausmacht, unter welchen Kriterien ein Computerspiel ausgestellt werden kann oder warum kommerzielle Spiele wie Fortnite sich zwischen Kunstplattform und Kommerz bewegen. Des Weiteren erfahrt ihr etwas über die verschiedenen technischen und kuratorischen Herausforderungen, die sich beim Ausstellen von Computerspielen ergeben und wie weit der Museumsbetrieb und die Gameindustrie hier manchmal auseinandergehen.
+
+Wenn euch diese Spezialfolge gefallen hat, ihr Kritik bzw. Feedback habt oder generell eure Erfahrungen zu einem der diskutierten Themenfelder loswerden wollt, würde ich mich freuen, wenn ihr hier im Forum einen Kommentar dalasst.
+
+Bis dahin, euer Edgar aka. Lipardus</description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>3293</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/Spezial/M10ZSpezial_001.mp3"
+                       length="138412032"
+                       type="audio/mpeg"/>
+        </item>
+        
+        <item>
             <title>Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott</title>
             <pubDate>Wed, 10 May 2023 05:00:01 +0000</pubDate>
             <guid isPermaLink="false">ein-hash8</guid>
