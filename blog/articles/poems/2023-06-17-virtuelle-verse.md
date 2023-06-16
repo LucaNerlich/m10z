@@ -22,4 +22,4 @@ Würd ich es machen, wenn sie mich ließen? <br/>
 
 
 <br/><br/>
-<i/>Dieser Vierzeiler ist inspiriert durch einen [Tweet](https://twitter.com/rainersigl/status/1668719256937046019?s=20) des geschätzen Rainer Sigl<i/>
+(Dieser Vierzeiler ist inspiriert durch einen [Tweet](https://twitter.com/rainersigl/status/1668719256937046019?s=20) des geschätzen Rainer Sigl)
