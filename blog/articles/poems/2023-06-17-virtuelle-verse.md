@@ -18,7 +18,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 Kann ich das Weltall ruhig genießen? <br/>
 Darf ich staunen? Muss ich schießen? <br/>
 Quests ohne Gewalt abschließen? <br/>
-Würd ich es machen, wenn sie mich ließen <br/>
+Würd ich es machen, wenn sie mich ließen? <br/>
 
 
 <i/>(Dieser Vierzeiler ist inspiriert durch einen [Tweet](https://twitter.com/rainersigl/status/1668719256937046019?s=20) des geschätzen Herrn Sigl)
