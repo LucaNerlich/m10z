@@ -12,7 +12,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 ![InsideOutKids](https://irgendwasmitkunden.de/InsideOut.png)  
 
-> Dall-E x Til : Draußen wie drinnen
+> Diffusion Bee x Til : Draußen wie drinnen
 
 # Kein Spiegelbild
 
