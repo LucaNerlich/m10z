@@ -15,17 +15,17 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 # Mariofant
 
-## E - Ein
-## L - lustiger
-## E - Einfall
-## F - führt
-## A - Altmeister
-## N - Nintendo
-## T - treffsicher
-## E - entlang 
-## N - neumodischer 
-## M - Memekultur.
-## A - Aber:
-## R - Rüsseltiere
-## I - immer
-## O - obercool!
+E - Ein
+L - lustiger
+E - Einfall
+F - führt
+A - Altmeister
+N - Nintendo
+T - treffsicher
+E - entlang 
+N - neumodischer 
+M - Memekultur.
+A - Aber:
+R - Rüsseltiere
+I - immer
+O - obercool!
