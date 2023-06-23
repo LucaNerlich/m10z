@@ -27,6 +27,6 @@ Manchmal auch 'nen Ball zu schießen
 Oder Freundschaften zu schließen  
 
 Heute kannst Du draußen spielen  
-Und weiter auf das Bildschirm schielen  
+Und weiter auf den Bildschirm schielen  
 Du zahlst fürs Handheld einfach mehr  
 Dann hat dein Screen auch Anti-Glare  
