@@ -10,7 +10,7 @@ draft: false
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
-![KnochenKutsche](https://irgendwasmitkunden.de/MarioFant.png)
+![Mariofant](https://irgendwasmitkunden.de/MarioFant.png)
 > Diffusion Bee x Til: Love is in the air
 
 # Mariofant
