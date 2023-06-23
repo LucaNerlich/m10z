@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![Konsolenkrieger](https://irgendwasmitkunden.de/GreenVSBlue.png)
-> Dall-E x Til : Konsolenkrieger Sparring
+> Diffusion Bee x Til : Konsolenkrieger Sparring
 
 # 3. Sieger
 
