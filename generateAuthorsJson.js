@@ -8,6 +8,8 @@ function run(){
     const yamlData = yaml.load(data);
     const jsonData = JSON.stringify(yamlData);
     fs.writeFileSync('./blog/authors.json', jsonData, 'utf8');
+
+    console.log("Successfully converted authors.yml to authors.json");
 }
 
 run();
