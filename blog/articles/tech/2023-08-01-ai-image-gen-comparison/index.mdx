@@ -7,8 +7,9 @@ draft: false
 image: /img/tech/ai-image-gen.jpg
 ---
 
-import Image from '@theme/IdealImage';
-import {ReactCompareSlider} from 'react-compare-slider';
+
+import Image from '@theme/IdealImage'
+import {ReactCompareSlider} from 'react-compare-slider'
 
 Wir schauen uns die Ergebnisse von vier großen `Text-zu-Bild`-Programmen, basierend auf künstlicher Intelligenz, an.
 Verwendet wurden `Adobe Firefly`, `Dall-E`, `Microsoft Bing` und `Stable Diffusion`.
@@ -29,7 +30,7 @@ Mein Gedankengang hierbei:
 - `Neon`-Lichter sorgen für eine komplexe Lichtstimmung
 - Kleineres Geraffel auf dem Boden bricht ansonsten uniforme Flächen auf
 - Eine Katze schadet nie
-    - Das Adjektiv `overweight` wurde hinzugefügt, um einen weiteren Vergleichspunkt zu haben. Eine Katze können viele darstellen, aber durch die Konkretisierung muss das KI-Modell eine weitere Ebene verstehen und umsetzen.
+  - Das Adjektiv `overweight` wurde hinzugefügt, um einen weiteren Vergleichspunkt zu haben. Eine Katze können viele darstellen, aber durch die Konkretisierung muss das KI-Modell eine weitere Ebene verstehen und umsetzen.
 
 ## Was ist Bildgenerierung und wie funktioniert es?
 
@@ -52,6 +53,18 @@ Vergleicht man verschiedene Varianten desselben Services untereinander, untersch
     itemOne={<Image img={require('./images/firefly/firefly1.jpg')} />}
     itemTwo={<Image img={require('./images/firefly/firefly2.jpg')} />}
 />
+
+> Firefly x Firefly
+
+Ein Vergleich zwischen Photoshops "Generative Fill" Variante zeigt hingegen bereits klare Unterschiede im Vergleich zur Adobe Firefly Version.
+Spannend, da theoretisch im Hintergrund ähnliche Modelle, bzw Services verwendet werden. Photoshop erzeugt in klar realistischeres Bild mit deutlich weniger "comic" Einschlägen.
+
+<ReactCompareSlider
+    itemOne={<Image img={require('./images/photoshop/1.png')} />}
+    itemTwo={<Image img={require('./images/firefly/firefly1.jpg')} />}
+/>
+
+> PS Generative Fill x Firefly
 
 ## Adobe Firefly
 
@@ -101,6 +114,16 @@ Seit Mitte 2023 kann Photoshop auf Adobe Firefly zugreifen und Teile oder komple
     <Image img={require('./images/bing/bing4.jpg')} />
 </details>
 
+Ein Vergleich zwischen Microsoft Bing und Dall-E zeigt die unterschiedlichen Herangehensweisen in Bezug auf eine realistische Darstellung.
+Dall-E's Ergebnisse sind eher kühl, wohingegen Microsoft Bing Dramatik und eine film-esque Beleuchtung der Szene aufbaut.
+
+<ReactCompareSlider
+    itemOne={ <Image img={require('./images/bing/bing1.jpg')} />}
+    itemTwo={<Image img={require('./images/dall-e/dalle3.png')} />}
+/>
+
+> Microsoft Bing x Dall-E
+
 ## Stable Diffusion
 
 Stable Diffusion ist Open Source und wurde im Jahr 2022 veröffentlicht.
@@ -147,7 +170,7 @@ In beiden Tools habe ich das Standardmodell verwendet.
 > 50 Steps, 512px x 512px, prompt guidance 8, default model, M1 Max
 
 <details>
-    <summary>Alle 'SD - DPM++ 2 Ancestral'-Bilder</summary>
+    <summary>Alle 'Diffusion Bee'-Bilder</summary>
     <br />
     <Image img={require('./images/stable-diffusion/diffusion-bee/db1.png')} />
     <Image img={require('./images/stable-diffusion/diffusion-bee/db2.png')} />
@@ -155,7 +178,27 @@ In beiden Tools habe ich das Standardmodell verwendet.
     <Image img={require('./images/stable-diffusion/diffusion-bee/db4.png')} />
 </details>
 
+Auch Diffusion Bee als UI-Helper-Tool fuer Stable Diffusion ermoeglicht es mir nicht, huebschere Ergebnisse zu erzeugen.
+
+<ReactCompareSlider
+    itemOne={<Image img={require('./images/stable-diffusion/dpm/sd5.png')} />}
+    itemTwo={<Image img={require('./images/stable-diffusion/diffusion-bee/db2.png')} />}
+/>
+
+> Stable Diffusion x Diffusion Bee
+
 ## Midjourney
 
 Midjourney hat aktuell leider keine freie Verfügbarkeit. Es muss zwingend ein Abo abgeschlossen werden.
 
+## Fazit
+
+In fast allen Ergebnissen ist die Katze prominent und zentral zu sehen. Stable Diffusion ist hier die einzige Ausnahme.
+Ebenso ist der "lit by neon lights" Einschlag klar umgesetzt worden. Einige Varianten erscheinen etwas comic artiger, Andere versuchen sich in einer realistischen Richtung.
+
+Festzuhalten ist, dass Stable Diffusion klar am "schwersten" zu bedienen ist, bzw auf massiv weniger Trainingsdaten basiert als die "grossen" Modelle.
+Auch das hübsche UI Tool 'Diffusion Bee' hilft hier kaum weiter. Das Herumprobieren mit Stable Diffusion auf dem lokalen Rechner ist kurzweilig, zumindest jedoch meine Ergebnisse sind weit abgeschlagen und so kaum weiter verwertbar.
+
+Microsoft Bing tut sich am schwersten mit der Katze und erzeugt in allen Varianten eine weniger prominent sichtbare und klar weniger ausgeprägte Katze. Jedoch ist diese in jedem Ergebnis immerhin zentraler Bildbestandteil.
+
+Dall-E erzeugt die Katze ähnlich Microsoft Bing, jedoch ist die restliche Bildkomposition und Stil merklich realistischer.
