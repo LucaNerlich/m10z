@@ -1,0 +1,204 @@
+---
+slug: ki-image-gen-comparison
+title: KI-Bildgenerierung – ein Vergleich
+authors: [lucan]
+tags: [artikel, tech, lucan]
+draft: false
+image: /img/tech/ai-image-gen.jpg
+---
+
+
+import Image from '@theme/IdealImage'
+import {ReactCompareSlider} from 'react-compare-slider'
+
+Wir schauen uns die Ergebnisse von fünf großen `Text-zu-Bild`-Programmen, basierend auf künstlicher Intelligenz, an.
+Verwendet wurden `Adobe Firefly`, `Photoshop Generative-Fill`, `Dall-E`, `Microsoft Bing` und `Stable Diffusion`.
+
+<Image img={require('/static/img/tech/ai-image-gen.jpg')} />
+
+> the text "AI Image Generation" floating in the sky
+
+<!--truncate-->
+
+Alle folgenden Bilder basieren auf demselben Input-String:
+
+> `A dark hallway lit by neon lights. There is some small debris on the floor as well as an overweight cat.`
+
+Mein Gedankengang hierbei:
+
+- Ein Flur verschafft eine Perspektive und Fluchtpunkt
+- `Neon`-Lichter sorgen für eine komplexe Lichtstimmung
+- Kleineres Geraffel auf dem Boden bricht ansonsten uniforme Flächen auf
+- Eine Katze schadet nie
+  - Das Adjektiv `overweight` wurde hinzugefügt, um einen weiteren Vergleichspunkt zu haben. Eine Katze können viele darstellen, aber durch die Konkretisierung muss das KI-Modell eine weitere Ebene verstehen und umsetzen.
+
+## Was ist Bildgenerierung und wie funktioniert es?
+
+Ein Algorithmus (Computerprogramm) wird anhand einer Datenbasis trainiert – dem Algorithmus werden Informationen gefüttert.
+Aus dieser Datenbasis, hier Millionen von Bildern, werden Merkmale und Strukturen extrahiert und somit ‚verstanden‘.
+Wenn diese Schritte in ausreichender Menge durchgeführt wurden, ist es dem Algorithmus möglich, mit diesen extrahierten Verbindungen neues zu kreieren.
+
+Die Ergebnisse folgen den erlernten Eigenschaften, aber sind stets etwas noch nie dagewesenes.
+
+Angenommen, eine Person hat in ihrem Leben viele Pferde und Kühe gesehen, aber noch nie ein Schaf.
+Wenn ‚du‘ dieser Person jetzt ein Schaf beschreibst, kann diese versuchen, es auf Basis ihrer Lebenserfahrung zu malen und die Optik eines Schafs entsprechend ihres Wissens abzuleiten.
+
+Die auf künstlicher Intelligenz basierenden Tools der jüngsten Vergangenheit funktionieren genauso – wenn man die Erklärung sehr weit herunterbricht.
+
+## Vergleiche
+
+Vergleicht man verschiedene Varianten desselben Services untereinander, unterschieden sich die Ergebnisse zwar, jedoch sind die Ähnlichkeiten kaum zu uebersehen.
+
+<ReactCompareSlider
+    itemOne={<Image img={require('./images/firefly/firefly1.jpg')} />}
+    itemTwo={<Image img={require('./images/firefly/firefly2.jpg')} />}
+/>
+
+> Firefly x Firefly
+
+Ein Vergleich zwischen Photoshops "Generative Fill" Variante zeigt hingegen bereits klare Unterschiede im Vergleich zur Adobe Firefly Version.
+Spannend, da theoretisch im Hintergrund ähnliche Modelle, bzw Services verwendet werden. Photoshop erzeugt in klar realistischeres Bild mit deutlich weniger "comic" Einschlägen.
+
+<ReactCompareSlider
+    itemOne={<Image img={require('./images/photoshop/1.png')} />}
+    itemTwo={<Image img={require('./images/firefly/firefly1.jpg')} />}
+/>
+
+> PS Generative Fill x Firefly
+
+## Adobe Firefly
+
+[Firefly](https://firefly.adobe.com/) ist eine Suite von KI-Tools, entwickelt von Adobe und 2023 veröffentlicht.
+Der `Text-zu-Bild`-Algorithmus basiert auf der Fotodatenbank von [Adobe Stock](https://stock.adobe.com/).
+
+<details>
+    <summary>Alle 'Adobe Firefly'-Bilder</summary>
+    <br />
+    <Image img={require('./images/firefly/firefly1.jpg')} />
+    <Image img={require('./images/firefly/firefly2.jpg')} />
+    <Image img={require('./images/firefly/firefly3.jpg')} />
+    <Image img={require('./images/firefly/firefly4.jpg')} />
+</details>
+
+## Photoshop Generative-Fill
+
+Seit Mitte 2023 kann Photoshop auf Adobe Firefly zugreifen und Teile oder komplette Bilder auf Wunsch generieren oder "auffüllen".
+
+<details>
+    <summary>Alle 'Photoshop Generative-Fill'-Bilder</summary>
+    <br />
+    <Image img={require('./images/photoshop/1.png')} />
+    <Image img={require('./images/photoshop/2.png')} />
+    <Image img={require('./images/photoshop/3.png')} />
+</details>
+
+## Dall-E
+
+<details>
+    <summary>Alle 'Dall-E'-Bilder</summary>
+    <br />
+    <Image img={require('./images/dall-e/dalle1.png')} />
+    <Image img={require('./images/dall-e/dalle2.png')} />
+    <Image img={require('./images/dall-e/dalle3.png')} />
+    <Image img={require('./images/dall-e/dalle4.png')} />
+</details>
+
+## Microsoft Bing
+
+<details>
+    <summary>Alle 'Microsoft Bing'-Bilder</summary>
+    <br />
+    <Image img={require('./images/bing/bing1.jpg')} />
+    <Image img={require('./images/bing/bing2.jpg')} />
+    <Image img={require('./images/bing/bing3.jpg')} />
+    <Image img={require('./images/bing/bing4.jpg')} />
+</details>
+
+Ein Vergleich zwischen Microsoft Bing und Dall-E zeigt die unterschiedlichen Herangehensweisen in Bezug auf eine realistische Darstellung.
+Dall-E's Ergebnisse sind eher kühl, wohingegen Microsoft Bing Dramatik und eine film-esque Beleuchtung der Szene aufbaut.
+
+<ReactCompareSlider
+    itemOne={ <Image img={require('./images/bing/bing1.jpg')} />}
+    itemTwo={<Image img={require('./images/dall-e/dalle3.png')} />}
+/>
+
+> Microsoft Bing x Dall-E
+
+## Stable Diffusion
+
+Stable Diffusion ist Open Source und wurde im Jahr 2022 veröffentlicht.
+Die Ergebnisse sind oft eher abstrakt, bzw. erreichen sie rein subjektiv betrachtet nicht die Qualität der anderen Tools.
+Dafür kann es mit moderater Hardwareanforderung ohne Limitierungen auf privater Technik lokal ausgeführt werden.
+Hier bietet sich das '[T2I GUI](https://nmkd.itch.io/t2i-gui)'-Tool an.
+
+Auf Reddit befindet sich ein [detaillierter Thread](https://www.reddit.com/r/StableDiffusion/comments/x41n87/how_to_get_images_that_dont_suck_a) mit vielen Erklärungen und Nutzungshinweisen zu Stable Diffusion.
+
+### Euler Ancestral
+
+> 100 Steps, 704px x 704px, high-resolution fix, prompt guidance 9, default model, t2i-gui
+
+<details>
+    <summary>Alle 'SD - Euler Ancestral'-Bilder</summary>
+    <br />
+    <Image img={require('./images/stable-diffusion/euler/sd1.png')} />
+    <Image img={require('./images/stable-diffusion/euler/sd2.png')} />
+    <Image img={require('./images/stable-diffusion/euler/sd3.png')} />
+    <Image img={require('./images/stable-diffusion/euler/sd4.png')} />
+    <Image img={require('./images/stable-diffusion/euler/sd5.png')} />
+</details>
+
+### DPM++ 2 Ancestral
+
+> 100 Steps, 704px x 704px, high-resolution fix, prompt guidance 9, default model, t2i-gui
+
+<details>
+    <summary>Alle 'SD - DPM++ 2 Ancestral'-Bilder</summary>
+    <br />
+    <Image img={require('./images/stable-diffusion/dpm/sd1.png')} />
+    <Image img={require('./images/stable-diffusion/dpm/sd2.png')} />
+    <Image img={require('./images/stable-diffusion/dpm/sd3.png')} />
+    <Image img={require('./images/stable-diffusion/dpm/sd4.png')} />
+    <Image img={require('./images/stable-diffusion/dpm/sd5.png')} />
+</details>
+
+### Diffusion Bee
+
+Es ist nicht möglich die gleichen Settings wie im 'T2I GUI'-Tool unter Windows zu verwenden.
+Außerdem kann man in Diffusion Bee den Sampler nicht auswählen.
+In beiden Tools habe ich das Standardmodell verwendet.
+
+> 50 Steps, 512px x 512px, prompt guidance 8, default model, M1 Max
+
+<details>
+    <summary>Alle 'Diffusion Bee'-Bilder</summary>
+    <br />
+    <Image img={require('./images/stable-diffusion/diffusion-bee/db1.png')} />
+    <Image img={require('./images/stable-diffusion/diffusion-bee/db2.png')} />
+    <Image img={require('./images/stable-diffusion/diffusion-bee/db3.png')} />
+    <Image img={require('./images/stable-diffusion/diffusion-bee/db4.png')} />
+</details>
+
+Auch Diffusion Bee als UI-Helper-Tool fuer Stable Diffusion ermoeglicht es mir nicht, huebschere Ergebnisse zu erzeugen.
+
+<ReactCompareSlider
+    itemOne={<Image img={require('./images/stable-diffusion/dpm/sd5.png')} />}
+    itemTwo={<Image img={require('./images/stable-diffusion/diffusion-bee/db2.png')} />}
+/>
+
+> Stable Diffusion x Diffusion Bee
+
+## Midjourney
+
+Midjourney hat aktuell leider keine freie Verfügbarkeit. Es muss zwingend ein Abo abgeschlossen werden.
+
+## Fazit
+
+In fast allen Ergebnissen ist die Katze prominent und zentral zu sehen. Stable Diffusion ist hier die einzige Ausnahme.
+Ebenso ist der "lit by neon lights" Einschlag klar umgesetzt worden. Einige Varianten erscheinen etwas comic artiger, Andere versuchen sich in einer realistischen Richtung.
+
+Festzuhalten ist, dass Stable Diffusion klar am "schwersten" zu bedienen ist, bzw auf massiv weniger Trainingsdaten basiert als die "grossen" Modelle.
+Auch das hübsche UI Tool 'Diffusion Bee' hilft hier kaum weiter. Das Herumprobieren mit Stable Diffusion auf dem lokalen Rechner ist kurzweilig, zumindest jedoch meine Ergebnisse sind weit abgeschlagen und so kaum weiter verwertbar.
+
+Microsoft Bing tut sich am schwersten mit der Katze und erzeugt in allen Varianten eine weniger prominent sichtbare und klar weniger ausgeprägte Katze. Jedoch ist diese in jedem Ergebnis immerhin zentraler Bildbestandteil.
+
+Dall-E erzeugt die Katze ähnlich Microsoft Bing, jedoch ist die restliche Bildkomposition und Stil merklich realistischer.
