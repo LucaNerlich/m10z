@@ -29,7 +29,7 @@ const config = {
     // to replace "en" with "zh-Hans".
     i18n: {
         defaultLocale: 'de',
-        locales: ['en', 'de'],
+        locales: ['de'],
     },
 
     plugins: [
@@ -182,7 +182,7 @@ const config = {
                         ],
                     },
                     {
-                        title: 'Bewegtbilder',
+                        title: 'Community',
                         items: [
                             {
                                 label: 'Twitch',

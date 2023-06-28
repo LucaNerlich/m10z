@@ -1,0 +1,27 @@
+@import "../constants";
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-block-start: 1rem;
+}
+
+.hello {
+    margin: 0 1rem;
+}
+
+.headline {
+    color: #F16012;
+}
+
+.authors {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2rem;
+
+    @media only screen and (max-width: $breakpoint-medium) {
+        justify-content: center;
+    }
+
+}
