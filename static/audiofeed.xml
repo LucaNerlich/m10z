@@ -23,6 +23,37 @@
             <title>M10Z Podcasts</title>
             <link>https://m10z.de</link>
         </image>
+
+          <item>
+            <title>Mindestens 10 Zeichen #5</title>
+            <pubDate>Sat, 06 May 2023 01:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash10</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen #5 (m10z)</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>Hallo zusammen, hier ist die Nr. 5 vom Mindestens 10 Zeichen Podcast, aber so eine richtige ganze Folge ist es nicht geworden. Manchmal macht das drumherum und das Leben einem einen Strich durch die Rechnung, daher konnten wir nicht alle Blöcke (Meme, Communitygeplauder…) wie gewohnt aufnehmen. Und bis aufs erste wird das auch so bleiben, sobald es was Neues gibt und wir wieder gewohnt für euch im Team aufnehmen können erfahrt ihr es natürlich hier.
+
+Bis dahin aber erstmal viel Spaß mit dieser verkürzten Folge und da haben wir:
+
+- ein cooles Thema mit (Land-) Karten in Videospielen
+- ein paar coole Gäste mit Jan und Georg, besser bekannt als yollum und Echti
+- lustig unterschiedliche Mikroeinstellungen und Pegel
+- einen Pitch für ein echt cooles Buch (bitte nicht klauen)
+- wie immer einen musikalischen Abschluss
+
+Und irgendwie haben wir es auch geschafft eine Abstimmung aus der Sache rauszukristallisieren.
+
+Macht es gut und bis bald,
+Til & Marcel
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>3271</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_005.mp3"
+                       length="55259955"
+                       type="audio/mpeg"/>
+        </item>
         
         <item>
             <title>M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen</title>
