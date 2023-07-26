@@ -1,7 +1,7 @@
 ---
 slug: vampire-survivors-likes
 title: Vampire Survivors Likes
-authors: [lucan]
+authors: [luca]
 tags: [artikel, empfehlung]
 draft: true
 ---
