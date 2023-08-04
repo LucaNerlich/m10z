@@ -3,7 +3,7 @@ slug: virtuelle-verse-19
 title: 'Virtuelle Verse – Lyrik und Games #19'
 authors: [tilmobaxter]
 tags: [lyrik, tilmobaxter]
-image: https://irgendwasmitkunden.de/DALL·E%20x%20Til%20-%20Hedgehog%20Kind%20Of%20Blue.png
+image: https://irgendwasmitkunden.de/OpenWorldSurveifel.png
 draft: false
 ---
 
