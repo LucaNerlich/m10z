@@ -23,6 +23,33 @@
             <title>M10Z Podcasts</title>
             <link>https://m10z.de</link>
         </image>
+         <item>
+            <title>Mindestens 10 Zeichen #6</title>
+            <pubDate>Tue, 08 Aug 2023 01:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash13</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen #6 (m10z)</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>Da sind wir wieder, mit der ersten richtigen Folge nach einer kleinen Pause. 
+Marcel meldet sich direkt aus seinem Reha-Zimmer von der MS Gaming, während Til aus seinem Podcastschaltzentrum…ähm…Schlafzimmer aufzeichnet.
+Gemeinsam finden wir wieder einige Themen aus der Community, entdecken nebenbei, welches das innovativste Nintendo Spiel aller Zeiten war und werfen, trotz Sommerloch, einen Blick in die Pixelpresse. 
+Keine Mindestens 10 Zeichen Folge ohne Gast, aber da sich das Wort Gast langsam abgenudelt hat, begrüßen wir heute endlich mal eine Gästin. 
+Gina spricht über ihr Lieblingsgenre: Open World Survival Games. 
+Wir quatschen über Gespieltes, Gewünschtes und was sonst noch so in unsere Köpfe kam.
+
+Habt ihr in diesem Text bisher das Wort Meme vermisst? Ich auch. Keine Sorge natürlich gibt es wieder eine Abstimmung zum besten Meme aller bisherigen Zeiten im Forum.
+
+Eure M10Z-Podcast Crew:
+Til, Marcel und Simon
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>6180</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_006.mp3"
+                       length="103809024"
+                       type="audio/mpeg"/>
+        </item>
 <item>
             <title>Once we were Gamers #03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst</title>
             <pubDate>Sat, 22 Jul 2023 04:00:00 +0000</pubDate>
