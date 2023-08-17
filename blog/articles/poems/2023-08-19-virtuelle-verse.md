@@ -1,6 +1,6 @@
 ---
 slug: virtuelle-verse-Simon
-title: 'Virtuelle Verse – Lyrik und Games featuring Simon'
+title: 'Virtuelle Verse – Lyrik und Games mit Simon'
 authors: [simon]
 tags: [lyrik, simon]
 image: https://irgendwasmitkunden.de/EinHerzausDorn.png
