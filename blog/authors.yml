@@ -51,3 +51,8 @@ kafour:
   image_url: https://m10z.picnotes.de/avatars/KaFour_m10z.png
   name: KaFour
   url: /tags/kafour
+giny:
+  description:
+  image_url: https://community.wasted.de/letter_avatar_proxy/v4/letter/g/34f0e0/144.png
+  name: Gina
+  url: /tags/giny
