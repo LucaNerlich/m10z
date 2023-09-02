@@ -17,11 +17,11 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 Überleben die Vampire  
 Gemeinsam auf der Couch  
-Neuer Level, neues Glück  
-Hörst du schreie, sind es ihre  
+Hörst du Schreie, sind es ihre  
 Wellen an Monstern schreien: Autsch!  
-Schlagen das Böse jetzt zurück  
 
+Neuer Level, neues Glück  
+Schlagen das Böse jetzt zurück  
 Mixen Waffen    
 Sammeln Loot    
 Zu viert ist's gleich viermal so gut!  
