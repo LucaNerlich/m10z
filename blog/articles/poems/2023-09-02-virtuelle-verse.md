@@ -11,18 +11,18 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![TheFangFour](https://irgendwasmitkunden.de/Survifour.png)
-> Diffusion Bee x Til: Nur noch eine Runde
+> Diffusion Bee x Til: Nur noch eine Runde Edward
 
 # Fangzahn Survifour
 
-Überleben die Vampire 
-Gemeinsam auf der Couch    
-Neuer Level, neues Glück    
+Überleben die Vampire  
+Gemeinsam auf der Couch  
+Neuer Level, neues Glück  
 Hörst du schreie, sind es ihre  
-Wellen an Monstern schreien: Autsch!
-Den wir schlagen sie zurück
+Wellen an Monstern schreien: Autsch!  
+Schlagen das Böse jetzt zurück  
 
-Mixen Waffen  
-Sammeln Loot  
-Zu viert ist's gleich viermal so gut  
+Mixen Waffen    
+Sammeln Loot    
+Zu viert ist's gleich viermal so gut!  
   
