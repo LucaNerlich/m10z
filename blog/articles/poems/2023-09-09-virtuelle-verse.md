@@ -18,7 +18,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 Zweimal oben    
 Zweimal unten  
 Zweimal links/rechts  
-A, B und Start  
+B, A und Start  
 
 Wenn ich an diese Tasten denke  
 ist das Spiel mir wohl zu hart  
