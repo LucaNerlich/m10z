@@ -1,25 +1,28 @@
 ---
-slug: virtuelle-verse-23
-title: 'Virtuelle Verse – Lyrik und Games #23'
+slug: virtuelle-verse-22
+title: 'Virtuelle Verse – Lyrik und Games #22'
 authors: [tilmobaxter]
 tags: [lyrik, tilmobaxter]
-image: https://irgendwasmitkunden.de/ButtonBaby.png
+image: https://irgendwasmitkunden.de/Survifour.png
 draft: false
 ---
 
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
-![WorhsipTheCode](https://irgendwasmitkunden.de/ButtonBaby.png)
-> Diffusion Bee x Til: Pushing The Button
+![TheFangFour](https://irgendwasmitkunden.de/Survifour.png)
+> Diffusion Bee x Til: Nur noch eine Runde Edward
 
-# Cheatday
+# Fangzahn Survifour
 
-Zweimal oben    
-Zweimal unten  
-Zweimal links/rechts  
-A, B und Start  
+Überleben die Vampire  
+Gemeinsam auf der Couch  
+Hörst du Schreie, sind es ihre  
+Wellen an Monstern schreien: Autsch!  
 
-Wenn ich an diese Tasten denke  
-ist das Spiel mir wohl zu hart  
+Neuer Level, neues Glück  
+Schlagen das Böse jetzt zurück  
+Mixen Waffen    
+Sammeln Loot    
+Zu viert ist's gleich viermal so gut!  
   
