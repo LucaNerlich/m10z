@@ -18,6 +18,25 @@
         <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
 
+<item>
+            <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
+            <pubDate>Sun, 10 Sep 2023 04:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash14</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
+                <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+               In der vierten Episode von "Once we were Gamers"  taucht Simon in die in die Tiefen der Genres der Rogue-Likes und Rogue-Lites ein. Dabei spricht er mit Jan und Adrian nicht nur über die Berliner Interpretation des Genres, sondern die drei formen Ihre persönliche Definition des Rogue-Like. Außerdem gibt es viele Empfehlungen und einen besonderen Ausblick auf eine anstehende Sonderfolge. 
+Wir wünschen wie immer: Viel Vergnügen.</description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>3304</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_4_RogueLikeLite.mp3"
+                       length="55469670"
+                       type="audio/mpeg"/>
+        </item>
+        
         <image>
             <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</url>
             <title>M10Z Podcasts</title>
