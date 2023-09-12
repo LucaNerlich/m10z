@@ -51,7 +51,7 @@ const config = {
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 theme: {
-                    customCss: require.resolve('./src/styles/theme.css'),
+                    customCss: require.resolve('./src/styles/theme.scss'),
                 },
                 docs: false,
                 blog: {

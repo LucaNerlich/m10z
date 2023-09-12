@@ -15,6 +15,10 @@
 [data-theme='dark'] {
     --ifm-color-primary: #ef702c;
     --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+    img {
+        filter: brightness(.8) contrast(1.2);
+    }
 }
 
 /* Custom Additions */
