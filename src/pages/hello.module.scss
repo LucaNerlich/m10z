@@ -19,9 +19,9 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 2rem;
+    margin-bottom: 2rem;
 
     @media only screen and (max-width: $breakpoint-medium) {
         justify-content: center;
     }
-
 }
