@@ -10,7 +10,7 @@ draft: false
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
-![WorhsipTheCode](https://irgendwasmitkunden.de/Doktorspiele.png)
+![Iamthedoctor](https://irgendwasmitkunden.de/Doktorspiele.png)
 > Diffusion Bee x Til: Diagnose: Highscore
 
 # Doktorspiele
