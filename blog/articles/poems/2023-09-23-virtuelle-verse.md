@@ -17,7 +17,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 Einst war es seiner Zeit vorraus  
 Dann kam lange nichts mehr  
-Jetzt sieht es fast genauso aus  
+Jetzt sieht es fast wie früher aus  
 Es herrscht nur mehr Verkehr  
 
 Die Songs von früher noch im Ohr  
