@@ -21,7 +21,7 @@ Jetzt sieht es fast genauso aus
 Es herrscht nur mehr Verkehr  
 
 Die Songs von früher noch im Ohr  
-Beim rammen keine Scheu  
+Beim Rammen keine Scheu  
 Fahr'n 99 Gleiter vor  
 Trennt sich vom Weizen gleich die Spreu
 
