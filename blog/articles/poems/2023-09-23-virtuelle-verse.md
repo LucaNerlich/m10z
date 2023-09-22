@@ -16,7 +16,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 # Life in the rechargelane
 
 Einst war es seiner Zeit vorraus  
-Dann kam lange nichts mehr  
+Dann kam lang nichts mehr  
 Jetzt sieht es fast wie früher aus  
 Es herrscht nur mehr Verkehr  
 
@@ -27,5 +27,5 @@ Trennt sich vom Weizen gleich die Spreu
 
 Die ursprüngliche Grundidee  
 Ist heute aktuell wie nie  
-Elektroautos, Ladespuren?
+Elektroautos, Ladespuren?  
 Ach: E-Mobility  
