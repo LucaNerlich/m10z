@@ -10,7 +10,7 @@ draft: false
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
-![Fortkid](https://irgendwasmitkunden.de/Fortkid.png)
+![Fortkid](https://irgendwasmitkunden.de/FortKid.png)
 > Diffusion Bee x Til: The kids are alright, are they?
 
 # Auftragsarbeit
