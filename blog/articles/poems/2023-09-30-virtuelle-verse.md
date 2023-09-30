@@ -16,15 +16,15 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 # Auftragsarbeit
 
 Ich seh eure Blicke  
-es tut mir sofort Leid  
+Es tut mir sofort Leid  
 Die heutigen Zeilen  
-handeln von Fortnite  
+Handeln von Fortnite  
 Weil ich nen Sohn hab  
-der das sehr liebt    
+Der das sehr liebt    
 Und ohne dies Verslein  
-nie mehr Ruhe gibt  
+Nie mehr Ruhe gibt  
 
 Gesagt getan  
-jetzt kommt nichts mehr  
+Jetzt kommt nichts mehr  
 Ein Gedicht wie das Spiel:  
 Eher inhaltsleer  
