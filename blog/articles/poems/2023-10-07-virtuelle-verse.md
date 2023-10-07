@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![ZombieSpiel](https://irgendwasmitkunden.de/RetroEvil.png)
-> Diffusion Bee x Til: Wenn das Spiel mit spielen Pause macht vom Spiel wenn das pausiert ist
+> Diffusion Bee x Til: Wenn das Spiel mit spielen Pause macht vom Spiel
 
 # RetroEvil vs RemakeEvil
 
