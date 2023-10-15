@@ -17,6 +17,41 @@
         <itunes:author>M10Z</itunes:author>
         <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
+<item>
+            <title>Mindestens 10 Zeichen #7</title>
+            <pubDate>Sun, 15 Oct 2023 01:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash14</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen #7 (m10z)</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>Hallo an ALLE da draussen!
+  
+Meine Güte, Mit dieser Folge sind wir maximal frustresistent geworden, haben gelernt wie uns die Technik dazwischen funken kann, Dinge auch gegen persönliche Wiederstände und Erkrankungen durchzieht und sind doppelt so überzeugt von uns und euch und allem was wir tun!
+  
+Also her damit, raus damit, Folge fertig und die nächste kann kommen.
+Diesmal haben wir als Thema unseren geliebten Podcastkollegen 'Lipardus' welcher mit uns über kompetitive Spiele spricht, 
+drehen eine große Runde über die aktuellen Schreiber der Pixelpresse und kommen im CommunityGeplauder von Hölzchen auf Stöckchen.  
+  
+Bei der Pixelpresse sind wir noch nicht so hundertprozentig sicher, wie wir hier weiter verfahren.  
+Weitermachen? Eintauschen? Was denkt ihr?  
+Wir sind uns leider hier gefühlt zu oft einer Meinung und uns stets zu sagen, dass wir unsere Lieblingsautoren geil finden, bringt uns gefühlt nicht so den Mehrwert.
+  
+Als Abschlußstück haben wir gewohnt die feinste Kost für unsere Ohren.  
+Diesmal mit ausgesuchtem Postpunk der sympathisch Sympathischsten Ernte 77!  
+
+Wir lieben euch, ihr uns hoffentlich auch und freuen wir uns zusammen auf alle kommenden Folgen, ab jetzt kennen wir uns aus.  
+  
+Marcel, Til und Simon
+
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>7320</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_007.mp3"
+                       length="123522252"
+                       type="audio/mpeg"/>
+        </item>
 
 <item>
             <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
