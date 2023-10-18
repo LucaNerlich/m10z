@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
-
+    
     <!--  https://www.gbmb.org/mb-to-bytes  -->
     
     <channel>
@@ -8,7 +8,9 @@
         <link>https://m10z.de</link>
         <description>Die Podcasts von M10Z, dem offenen Kanal für Videospiele und das Drumherum</description>
         <language>de-DE</language>
-        <itunes:category text="Leisure"> <itunes:category text="Games" /></itunes:category>
+        <itunes:category text="Leisure">
+            <itunes:category text="Games"/>
+        </itunes:category>
         <itunes:explicit>False</itunes:explicit>
         <itunes:owner>
             <itunes:name>M10Z</itunes:name>
@@ -16,8 +18,30 @@
         </itunes:owner>
         <itunes:author>M10Z</itunes:author>
         <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
-        <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml" />
-<item>
+        <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
+        
+        <item>
+            <title>Fundbüro #04 - TODO</title>
+            <pubDate>Sun, 18 Oct 2023 00:30:01 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash16</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+                <title>Fundbüro #04 - TODO</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+                
+                Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
+                https://community.wasted.de/ vorbei!
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>TODO</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3"
+                       length="TODO"
+                       type="audio/mpeg"/>
+        </item>
+        
+        <item>
             <title>Mindestens 10 Zeichen #7</title>
             <pubDate>Sun, 15 Oct 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash15</guid>
@@ -27,24 +51,26 @@
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>Hallo an ALLE da draussen!
-  
-Meine Güte, Mit dieser Folge sind wir maximal frustresistent geworden, haben gelernt wie uns die Technik dazwischen funken kann, Dinge auch gegen persönliche Wiederstände und Erkrankungen durchzieht und sind doppelt so überzeugt von uns und euch und allem was wir tun!
-  
-Also her damit, raus damit, Folge fertig und die nächste kann kommen.
-Diesmal haben wir als Thema unseren geliebten Podcastkollegen 'Lipardus' welcher mit uns über kompetitive Spiele spricht, 
-drehen eine große Runde über die aktuellen Schreiber der Pixelpresse und kommen im CommunityGeplauder von Hölzchen auf Stöckchen.  
-  
-Bei der Pixelpresse sind wir noch nicht so hundertprozentig sicher, wie wir hier weiter verfahren.  
-Weitermachen? Eintauschen? Was denkt ihr?  
-Wir sind uns leider hier gefühlt zu oft einer Meinung und uns stets zu sagen, dass wir unsere Lieblingsautoren geil finden, bringt uns gefühlt nicht so den Mehrwert.
-  
-Als Abschlußstück haben wir gewohnt die feinste Kost für unsere Ohren.  
-Diesmal mit ausgesuchtem Postpunk der sympathisch Sympathischsten Ernte 77!  
-
-Wir lieben euch, ihr uns hoffentlich auch und freuen wir uns zusammen auf alle kommenden Folgen, ab jetzt kennen wir uns aus.  
-  
-Marcel, Til und Simon
-
+                
+                Meine Güte, Mit dieser Folge sind wir maximal frustresistent geworden, haben gelernt wie uns die Technik dazwischen funken kann, Dinge
+                auch gegen persönliche Wiederstände und Erkrankungen durchzieht und sind doppelt so überzeugt von uns und euch und allem was wir tun!
+                
+                Also her damit, raus damit, Folge fertig und die nächste kann kommen.
+                Diesmal haben wir als Thema unseren geliebten Podcastkollegen 'Lipardus' welcher mit uns über kompetitive Spiele spricht,
+                drehen eine große Runde über die aktuellen Schreiber der Pixelpresse und kommen im CommunityGeplauder von Hölzchen auf Stöckchen.
+                
+                Bei der Pixelpresse sind wir noch nicht so hundertprozentig sicher, wie wir hier weiter verfahren.
+                Weitermachen? Eintauschen? Was denkt ihr?
+                Wir sind uns leider hier gefühlt zu oft einer Meinung und uns stets zu sagen, dass wir unsere Lieblingsautoren geil finden, bringt uns
+                gefühlt nicht so den Mehrwert.
+                
+                Als Abschlußstück haben wir gewohnt die feinste Kost für unsere Ohren.
+                Diesmal mit ausgesuchtem Postpunk der sympathisch Sympathischsten Ernte 77!
+                
+                Wir lieben euch, ihr uns hoffentlich auch und freuen wir uns zusammen auf alle kommenden Folgen, ab jetzt kennen wir uns aus.
+                
+                Marcel, Til und Simon
+            
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>7320</itunes:duration>
@@ -52,8 +78,8 @@ Marcel, Til und Simon
                        length="123522252"
                        type="audio/mpeg"/>
         </item>
-
-<item>
+        
+        <item>
             <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
             <pubDate>Sun, 10 Sep 2023 04:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash14</guid>
@@ -63,8 +89,11 @@ Marcel, Til und Simon
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>
-               In der vierten Episode von "Once we were Gamers"  taucht Simon in die in die Tiefen der Genres der Rogue-Likes und Rogue-Lites ein. Dabei spricht er mit Jan und Adrian nicht nur über die Berliner Interpretation des Genres, sondern die drei formen Ihre persönliche Definition des Rogue-Like. Außerdem gibt es viele Empfehlungen und einen besonderen Ausblick auf eine anstehende Sonderfolge. 
-Wir wünschen wie immer: Viel Vergnügen.</description>
+                In der vierten Episode von "Once we were Gamers" taucht Simon in die in die Tiefen der Genres der Rogue-Likes und Rogue-Lites ein.
+                Dabei spricht er mit Jan und Adrian nicht nur über die Berliner Interpretation des Genres, sondern die drei formen Ihre persönliche
+                Definition des Rogue-Like. Außerdem gibt es viele Empfehlungen und einen besonderen Ausblick auf eine anstehende Sonderfolge.
+                Wir wünschen wie immer: Viel Vergnügen.
+            </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>3304</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_4_RogueLikeLite.mp3"
@@ -77,7 +106,7 @@ Wir wünschen wie immer: Viel Vergnügen.</description>
             <title>M10Z Podcasts</title>
             <link>https://m10z.de</link>
         </image>
-         <item>
+        <item>
             <title>Mindestens 10 Zeichen #6</title>
             <pubDate>Tue, 08 Aug 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash13</guid>
@@ -86,17 +115,21 @@ Wir wünschen wie immer: Viel Vergnügen.</description>
                 <title>Mindestens 10 Zeichen #6 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
-            <description>Da sind wir wieder, mit der ersten richtigen Folge nach einer kleinen Pause. 
-Marcel meldet sich direkt aus seinem Reha-Zimmer von der MS Gaming, während Til aus seinem Podcastschaltzentrum…ähm…Schlafzimmer aufzeichnet.
-Gemeinsam finden wir wieder einige Themen aus der Community, entdecken nebenbei, welches das innovativste Nintendo Spiel aller Zeiten war und werfen, trotz Sommerloch, einen Blick in die Pixelpresse. 
-Keine Mindestens 10 Zeichen Folge ohne Gast, aber da sich das Wort Gast langsam abgenudelt hat, begrüßen wir heute endlich mal eine Gästin. 
-Gina spricht über ihr Lieblingsgenre: Open World Survival Games. 
-Wir quatschen über Gespieltes, Gewünschtes und was sonst noch so in unsere Köpfe kam.
-
-Habt ihr in diesem Text bisher das Wort Meme vermisst? Ich auch. Keine Sorge natürlich gibt es wieder eine Abstimmung zum besten Meme aller bisherigen Zeiten im Forum.
-
-Eure M10Z-Podcast Crew:
-Til, Marcel und Simon
+            <description>Da sind wir wieder, mit der ersten richtigen Folge nach einer kleinen Pause.
+                Marcel meldet sich direkt aus seinem Reha-Zimmer von der MS Gaming, während Til aus seinem Podcastschaltzentrum…ähm…Schlafzimmer
+                aufzeichnet.
+                Gemeinsam finden wir wieder einige Themen aus der Community, entdecken nebenbei, welches das innovativste Nintendo Spiel aller Zeiten
+                war und werfen, trotz Sommerloch, einen Blick in die Pixelpresse.
+                Keine Mindestens 10 Zeichen Folge ohne Gast, aber da sich das Wort Gast langsam abgenudelt hat, begrüßen wir heute endlich mal eine
+                Gästin.
+                Gina spricht über ihr Lieblingsgenre: Open World Survival Games.
+                Wir quatschen über Gespieltes, Gewünschtes und was sonst noch so in unsere Köpfe kam.
+                
+                Habt ihr in diesem Text bisher das Wort Meme vermisst? Ich auch. Keine Sorge natürlich gibt es wieder eine Abstimmung zum besten Meme
+                aller bisherigen Zeiten im Forum.
+                
+                Eure M10Z-Podcast Crew:
+                Til, Marcel und Simon
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>6180</itunes:duration>
@@ -104,7 +137,7 @@ Til, Marcel und Simon
                        length="103809024"
                        type="audio/mpeg"/>
         </item>
-<item>
+        <item>
             <title>Once we were Gamers #03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst</title>
             <pubDate>Sat, 22 Jul 2023 04:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash12</guid>
@@ -114,17 +147,20 @@ Til, Marcel und Simon
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>
-               In der dritten Episode von „Once we were Gamers“ habe ich gleich doppelte Unterstützung bei einem Thema, dass alle Eltern betrifft, die auch nach dem Zuwachs in der Familie noch gerne Computerspiele spielen: Wie verändert der Nachwuchs unsere Spielerfahrung.  
-'Johannes' und 'Til' haben einiges beizutragen und zwischen Singleplayer RPG´s, Studienzeiten und Computer LAN stellen wir fest: Es ist überall ein bisschen anders. 
-Wir wünschen euch Viel Spaß.</description>
+                In der dritten Episode von „Once we were Gamers“ habe ich gleich doppelte Unterstützung bei einem Thema, dass alle Eltern betrifft,
+                die auch nach dem Zuwachs in der Familie noch gerne Computerspiele spielen: Wie verändert der Nachwuchs unsere Spielerfahrung.
+                'Johannes' und 'Til' haben einiges beizutragen und zwischen Singleplayer RPG´s, Studienzeiten und Computer LAN stellen wir fest: Es
+                ist überall ein bisschen anders.
+                Wir wünschen euch Viel Spaß.
+            </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>3608</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_3_KinderKrisenKonsolen.mp3"
                        length="61551411"
                        type="audio/mpeg"/>
         </item>
-
-<item>
+        
+        <item>
             <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon</title>
             <pubDate>Sun, 09 Jul 2023 00:30:01 +0000</pubDate>
             <guid isPermaLink="false">ein-hash11</guid>
@@ -134,10 +170,17 @@ Wir wünschen euch Viel Spaß.</description>
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>Herzlich willkommen im Fundbüro.
-                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
-                In der dritten Folge öffnen wir im Fundbüro eine etwas triste und in die Jahre gekommene Box, auf die jemand mit unleserlicher Schrift "ACHTUNG Tycoon" geschrieben hat. Unter ein paar alten Aktienscheinen kommt zunächst ein Börsenspiel mit dem verheißungsvollen Titel Wall Street Tycoon aus dem Jahr 1999 zu Vorschein. Darunter liegt ein ganzer Block reißerischer Reden, die aber nicht von unserem zweiten Fundstück Political Tycoon aus dem Jahr 2001 ablenken können. Was wird uns hier wohl nur erwarten? Trash oder doch verlorengegangener Schatz? Ihr erfahrt es in unserer neuen Folge vom Fundbüro.
-
-Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf https://community.wasted.de/ vorbei!
+                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein
+                paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
+                bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
+                In der dritten Folge öffnen wir im Fundbüro eine etwas triste und in die Jahre gekommene Box, auf die jemand mit unleserlicher Schrift
+                "ACHTUNG Tycoon" geschrieben hat. Unter ein paar alten Aktienscheinen kommt zunächst ein Börsenspiel mit dem verheißungsvollen Titel
+                Wall Street Tycoon aus dem Jahr 1999 zu Vorschein. Darunter liegt ein ganzer Block reißerischer Reden, die aber nicht von unserem
+                zweiten Fundstück Political Tycoon aus dem Jahr 2001 ablenken können. Was wird uns hier wohl nur erwarten? Trash oder doch
+                verlorengegangener Schatz? Ihr erfahrt es in unserer neuen Folge vom Fundbüro.
+                
+                Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
+                https://community.wasted.de/ vorbei!
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>2174</itunes:duration>
@@ -145,8 +188,8 @@ Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt
                        length="91645542"
                        type="audio/mpeg"/>
         </item>
-
-          <item>
+        
+        <item>
             <title>Mindestens 10 Zeichen #5</title>
             <pubDate>Sat, 01 Jul 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash10</guid>
@@ -155,20 +198,23 @@ Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt
                 <title>Mindestens 10 Zeichen #5 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
-            <description>Hallo zusammen, hier ist die Nr. 5 vom Mindestens 10 Zeichen Podcast, aber so eine richtige ganze Folge ist es nicht geworden. Manchmal macht das drumherum und das Leben einem einen Strich durch die Rechnung, daher konnten wir nicht alle Blöcke (Meme, Communitygeplauder…) wie gewohnt aufnehmen. Und vorerst wird das auch so bleiben, sobald es was Neues gibt und wir wieder gewohnt für euch im Team aufnehmen können erfahrt ihr es natürlich hier.
-
-Bis dahin aber erstmal viel Spaß mit dieser verkürzten Folge und da haben wir:
-
-- ein cooles Thema mit (Land-) Karten in Videospielen
-- ein paar coole Gäste mit Jan und Georg, besser bekannt als yollum und Echti
-- lustig unterschiedliche Mikroeinstellungen und Pegel
-- einen Pitch für ein echt cooles Buch (bitte nicht klauen)
-- wie immer einen musikalischen Abschluss
-
-Und irgendwie haben wir es auch geschafft eine Abstimmung aus der Sache rauszukristallisieren.
-
-Macht es gut und bis bald,
-Til, Marcel und Simon
+            <description>Hallo zusammen, hier ist die Nr. 5 vom Mindestens 10 Zeichen Podcast, aber so eine richtige ganze Folge ist es nicht
+                geworden. Manchmal macht das drumherum und das Leben einem einen Strich durch die Rechnung, daher konnten wir nicht alle Blöcke (Meme,
+                Communitygeplauder…) wie gewohnt aufnehmen. Und vorerst wird das auch so bleiben, sobald es was Neues gibt und wir wieder gewohnt für
+                euch im Team aufnehmen können erfahrt ihr es natürlich hier.
+                
+                Bis dahin aber erstmal viel Spaß mit dieser verkürzten Folge und da haben wir:
+                
+                - ein cooles Thema mit (Land-) Karten in Videospielen
+                - ein paar coole Gäste mit Jan und Georg, besser bekannt als yollum und Echti
+                - lustig unterschiedliche Mikroeinstellungen und Pegel
+                - einen Pitch für ein echt cooles Buch (bitte nicht klauen)
+                - wie immer einen musikalischen Abschluss
+                
+                Und irgendwie haben wir es auch geschafft eine Abstimmung aus der Sache rauszukristallisieren.
+                
+                Macht es gut und bis bald,
+                Til, Marcel und Simon
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>3271</itunes:duration>
@@ -187,14 +233,28 @@ Til, Marcel und Simon
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>Liebe Community,
-
-Kunstmuseen sind für mich ein besonderer Ort. Auf der einen Seite liebe ich es durch Ausstellungen mit gut kuratierten Bildern, Installationen oder anderen Kulturgütern zu schlendern und dabei Altbekanntes sowie Neues zu entdecken. Auf der anderen Seite verbinde ich mit dem Museum einen Teil meiner Jugend, da ich im Zuge meines FSJ ein Jahr in der Museumskommunikation am Zentrum für Kunst und Medien (kurz ZKM) in Karlsruhe gearbeitet habe. Wesentlicher Teil des ZKMs ist seit gut 25 Jahren auch immer eine (Dauer-)Ausstellung mit und über Computerspiele gewesen. Vor allem die aktuelle Iteration zkm_gameplay.the next level hat dazu beigetragen meinen Horizont über das Blockbuster-Genre hinaus zu erweitern und meine Auffassung gestärkt, dass dieses Medium als Kunstform einen Ausstellungswert besitzt.
-
-Grund genug in einer M10Z-Spezialfolge einmal etwas ausführlicher über das Thema Computerspiele und Museum zu sprechen. Um meine limitierte Perspektive als Beobachter durch tatsächliche Expertise zu erweitern, habe ich mir mit Jérôme Nguyen (ehem. ZKM; Volontär und Kurator für die Gameplay) und Laura Schmidt (aktuell ZKM u. zuständig für die Gameplay) fachkundige Verstärkung hinzugezogen. In diesem einstündigen Podcast sprechen wir unter Anderem darüber, was ein künstlerisches Spiel überhaupt ausmacht, unter welchen Kriterien ein Computerspiel ausgestellt werden kann oder warum kommerzielle Spiele wie Fortnite sich zwischen Kunstplattform und Kommerz bewegen. Des Weiteren erfahrt ihr etwas über die verschiedenen technischen und kuratorischen Herausforderungen, die sich beim Ausstellen von Computerspielen ergeben und wie weit der Museumsbetrieb und die Gameindustrie hier manchmal auseinandergehen.
-
-Wenn euch diese Spezialfolge gefallen hat, ihr Kritik bzw. Feedback habt oder generell eure Erfahrungen zu einem der diskutierten Themenfelder loswerden wollt, würde ich mich freuen, wenn ihr hier im Forum einen Kommentar dalasst.
-
-Bis dahin, euer Edgar aka. Lipardus</description>
+                
+                Kunstmuseen sind für mich ein besonderer Ort. Auf der einen Seite liebe ich es durch Ausstellungen mit gut kuratierten Bildern,
+                Installationen oder anderen Kulturgütern zu schlendern und dabei Altbekanntes sowie Neues zu entdecken. Auf der anderen Seite verbinde
+                ich mit dem Museum einen Teil meiner Jugend, da ich im Zuge meines FSJ ein Jahr in der Museumskommunikation am Zentrum für Kunst und
+                Medien (kurz ZKM) in Karlsruhe gearbeitet habe. Wesentlicher Teil des ZKMs ist seit gut 25 Jahren auch immer eine (Dauer-)Ausstellung
+                mit und über Computerspiele gewesen. Vor allem die aktuelle Iteration zkm_gameplay.the next level hat dazu beigetragen meinen Horizont
+                über das Blockbuster-Genre hinaus zu erweitern und meine Auffassung gestärkt, dass dieses Medium als Kunstform einen Ausstellungswert
+                besitzt.
+                
+                Grund genug in einer M10Z-Spezialfolge einmal etwas ausführlicher über das Thema Computerspiele und Museum zu sprechen. Um meine
+                limitierte Perspektive als Beobachter durch tatsächliche Expertise zu erweitern, habe ich mir mit Jérôme Nguyen (ehem. ZKM; Volontär
+                und Kurator für die Gameplay) und Laura Schmidt (aktuell ZKM u. zuständig für die Gameplay) fachkundige Verstärkung hinzugezogen. In
+                diesem einstündigen Podcast sprechen wir unter Anderem darüber, was ein künstlerisches Spiel überhaupt ausmacht, unter welchen
+                Kriterien ein Computerspiel ausgestellt werden kann oder warum kommerzielle Spiele wie Fortnite sich zwischen Kunstplattform und
+                Kommerz bewegen. Des Weiteren erfahrt ihr etwas über die verschiedenen technischen und kuratorischen Herausforderungen, die sich beim
+                Ausstellen von Computerspielen ergeben und wie weit der Museumsbetrieb und die Gameindustrie hier manchmal auseinandergehen.
+                
+                Wenn euch diese Spezialfolge gefallen hat, ihr Kritik bzw. Feedback habt oder generell eure Erfahrungen zu einem der diskutierten
+                Themenfelder loswerden wollt, würde ich mich freuen, wenn ihr hier im Forum einen Kommentar dalasst.
+                
+                Bis dahin, euer Edgar aka. Lipardus
+            </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>3293</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/Spezial/M10ZSpezial_001.mp3"
@@ -212,8 +272,13 @@ Bis dahin, euer Edgar aka. Lipardus</description>
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>Herzlich willkommen im Fundbüro.
-                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
-                In der zweiten Folge wurden im Fundbüro zwei alte Kisten mit Lego abgegeben. In der ersten befinden sich ein eingestaubter Bionicle, der angeblich die Elemente unserer Welt kontrollieren können soll. In der anderen Kiste wurden mehrere Rennautos geparkt, von denen nur eines Champion des Legolandes werden kann. Außer ihrer Klötzchenherkunft haben Lego Racers (1999) und Bionicle (2003) aber wenig gemein.
+                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein
+                paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
+                bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
+                In der zweiten Folge wurden im Fundbüro zwei alte Kisten mit Lego abgegeben. In der ersten befinden sich ein eingestaubter Bionicle,
+                der angeblich die Elemente unserer Welt kontrollieren können soll. In der anderen Kiste wurden mehrere Rennautos geparkt, von denen
+                nur eines Champion des Legolandes werden kann. Außer ihrer Klötzchenherkunft haben Lego Racers (1999) und Bionicle (2003) aber wenig
+                gemein.
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>2957</itunes:duration>
@@ -221,8 +286,8 @@ Bis dahin, euer Edgar aka. Lipardus</description>
                        length="124046548"
                        type="audio/mpeg"/>
         </item>
-
-                <item>
+        
+        <item>
             <title>Mindestens 10 Zeichen #4</title>
             <pubDate>Sat, 06 May 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash7</guid>
@@ -231,18 +296,24 @@ Bis dahin, euer Edgar aka. Lipardus</description>
                 <title>Mindestens 10 Zeichen #4 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
-            <description>Liebe Gemeinde, auch ohne Wasted geben Marcel, Simon und Til wieder ihr bestes um euch 1,5h mit Futter aus der Community zu unterhalten.
-Mit dem fantastischen Roland aka Rossyrg sprechen wir diesmal darüber, was die perfekte Melange zwischen Open World und linearem Level-Design ist und wo wir es heute wie damals am ehesten kriegen.
-Was hat Grafik mit einer Spielebewertung zu tun? Sind Bewerter nur Fans und deshalb biased? Bei welchem Arzt ist Til am liebsten? ...jenen und weiteren Fragen gehen wir auf den Grund! 
-Darüber hinaus gibt es eine neue Kategorie, nachdem wir "Quo Ivisti Wasted?" ja absägen mussten. Was genau, das müsst ihr selbst hören. Wie immer sind wir sehr gespannt auf euer Feedback:
-- Hat euch der Zug/Schnitt gefallen?
-- Was sagt ihr zu der neuen Kategorie?
-- Und sonst, wie gehts euch? Was machen die Kinder?
-Und natürlich suchen wir auch wie immer EUCH UND EUER THEMA! Seid nicht schüchtern, mehr als ein bisschen vor uns hin reden können wir auch nicht. Genießt die Sonne und bleibt gesund,
-Til, Simon und Marcel
-PS: 
-Die Folge haben wir vor etwas weniger als zwei Wochen schon aufgenommen, daher sind Inhalte die seitdem erschienen sind jetzt nicht drin.
-Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
+            <description>Liebe Gemeinde, auch ohne Wasted geben Marcel, Simon und Til wieder ihr bestes um euch 1,5h mit Futter aus der Community zu
+                unterhalten.
+                Mit dem fantastischen Roland aka Rossyrg sprechen wir diesmal darüber, was die perfekte Melange zwischen Open World und linearem
+                Level-Design ist und wo wir es heute wie damals am ehesten kriegen.
+                Was hat Grafik mit einer Spielebewertung zu tun? Sind Bewerter nur Fans und deshalb biased? Bei welchem Arzt ist Til am liebsten?
+                ...jenen und weiteren Fragen gehen wir auf den Grund!
+                Darüber hinaus gibt es eine neue Kategorie, nachdem wir "Quo Ivisti Wasted?" ja absägen mussten. Was genau, das müsst ihr selbst
+                hören. Wie immer sind wir sehr gespannt auf euer Feedback:
+                - Hat euch der Zug/Schnitt gefallen?
+                - Was sagt ihr zu der neuen Kategorie?
+                - Und sonst, wie gehts euch? Was machen die Kinder?
+                Und natürlich suchen wir auch wie immer EUCH UND EUER THEMA! Seid nicht schüchtern, mehr als ein bisschen vor uns hin reden können wir
+                auch nicht. Genießt die Sonne und bleibt gesund,
+                Til, Simon und Marcel
+                PS:
+                Die Folge haben wir vor etwas weniger als zwei Wochen schon aufgenommen, daher sind Inhalte die seitdem erschienen sind jetzt nicht
+                drin.
+                Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>5670</itunes:duration>
@@ -261,7 +332,10 @@ Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>
-                In der zweiten Folge von „Once we were Gamers“ ist Georg (aka Brainbug aus dem WASTED Forum) bei Simon zu Gast. Die beiden packen das Thema „Nostalgie in Videospielen“ an. Dabei schwelgen Sie natürlich in Erinnerungen, bewerten aber auch die Bedeutung von Nostalgie in aktuellen Spieleproduktion und fragen sich, wie die ersten Videospielerfahrungen, die man macht, die zukünftigen beeinflussen. Ob Nostalgie die entscheidende Zutat für ein erfolgreiches Spiel ist oder völlig überwertet wird, hört ihr im Podcast
+                In der zweiten Folge von „Once we were Gamers“ ist Georg (aka Brainbug aus dem WASTED Forum) bei Simon zu Gast. Die beiden packen das
+                Thema „Nostalgie in Videospielen“ an. Dabei schwelgen Sie natürlich in Erinnerungen, bewerten aber auch die Bedeutung von Nostalgie in
+                aktuellen Spieleproduktion und fragen sich, wie die ersten Videospielerfahrungen, die man macht, die zukünftigen beeinflussen. Ob
+                Nostalgie die entscheidende Zutat für ein erfolgreiches Spiel ist oder völlig überwertet wird, hört ihr im Podcast
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>2844</itunes:duration>
@@ -280,10 +354,14 @@ Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>
-                Bei „Once we were Gamers“ wirft @Simon einen Blick auf das, was in der Gamingwelt gerade so interessant ist, oder auf das, was er gerade interessant findet. Zur Pilotfolge werden gleich die großen Brocken angegriffen und mit @Luca bespricht er die Diablo 4 Beta, die Eindrücke aus Sanktuario und ob Blizzard der große Wurf gelingen wird.
-
-                Wie immer bei „Once we were Gamers“ geht es darum, den Blick für die Spieler zu schärfen, die zwar immer noch gerne zocken, aber schon lange nicht mehr die Zeit haben, hunderte Stunden in den Games zu vergraben. Ob und wie Diablo 4 auch diesen Spielern durch die Beta Hoffnung macht, erfahrt ihr im Podcast.
-
+                Bei „Once we were Gamers“ wirft @Simon einen Blick auf das, was in der Gamingwelt gerade so interessant ist, oder auf das, was er
+                gerade interessant findet. Zur Pilotfolge werden gleich die großen Brocken angegriffen und mit @Luca bespricht er die Diablo 4 Beta,
+                die Eindrücke aus Sanktuario und ob Blizzard der große Wurf gelingen wird.
+                
+                Wie immer bei „Once we were Gamers“ geht es darum, den Blick für die Spieler zu schärfen, die zwar immer noch gerne zocken, aber schon
+                lange nicht mehr die Zeit haben, hunderte Stunden in den Games zu vergraben. Ob und wie Diablo 4 auch diesen Spielern durch die Beta
+                Hoffnung macht, erfahrt ihr im Podcast.
+                
                 Wir wünschen euch viel Spaß.
             </description>
             <author>m10z@posteo.de</author>
@@ -303,8 +381,12 @@ Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>Herzlich willkommen im Fundbüro.
-                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
-                In der heutigen Folge sind sie auf Lizenzspiele gestoßen, mit Protagonisten, die unterschiedlicher nicht sein könnten. Auf der einen Seite ein abenteuerlustiger Hobbit, der sich auf die weite Reise zum Einsamen Berg begibt. Auf der anderen Seite ein ballernder Geheimagent, dessen Nummer 007 uns schon seit vielen Jahren begleitet.
+                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein
+                paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
+                bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
+                In der heutigen Folge sind sie auf Lizenzspiele gestoßen, mit Protagonisten, die unterschiedlicher nicht sein könnten. Auf der einen
+                Seite ein abenteuerlustiger Hobbit, der sich auf die weite Reise zum Einsamen Berg begibt. Auf der anderen Seite ein ballernder
+                Geheimagent, dessen Nummer 007 uns schon seit vielen Jahren begleitet.
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>2254</itunes:duration>
@@ -312,7 +394,7 @@ Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
                        length="53477376"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #3 (Wasted)</title>
             <pubDate>Sat, 01 Apr 2023 11:00:00 +0000</pubDate>
@@ -324,12 +406,15 @@ Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
             </itunes:image>
             <description>Liebe Gemeinde,
                 Zum dritten und letzten Mal treffen wir uns unter dem Dach von Wasted, um die großen Themen dieser Welt zu besprechen.
-                Das wichtigste wird diesmal natürlich sein, dass Wasted den Abgang macht. Darüber reden wir ausführlich um nehmen uns Zeit, um dem einen gebührenden Platz in unseren Herzen einzuräumen.
-                Allerdings sollte dieses Thema den Podcast nicht beherrschen und so haben wir versucht trotzdem eine saftige Folge mit Geplauder aus der Community, einem Meme und einem tollen Thema samt noch tollerem Gast aufs Pakett zu kriegen.
+                Das wichtigste wird diesmal natürlich sein, dass Wasted den Abgang macht. Darüber reden wir ausführlich um nehmen uns Zeit, um dem
+                einen gebührenden Platz in unseren Herzen einzuräumen.
+                Allerdings sollte dieses Thema den Podcast nicht beherrschen und so haben wir versucht trotzdem eine saftige Folge mit Geplauder aus
+                der Community, einem Meme und einem tollen Thema samt noch tollerem Gast aufs Pakett zu kriegen.
                 Diesmal besprechen wir nichts geringeres als "Was ist wichtiger, Story oder Gameplay?"!
                 Und ohne zuviel zu sagen, es lohnt sich!
                 Unser Simon brachte dieses Thema mit und wollte es noch unbedingt loswerden.
-                Ausserdem sind wir insgesamt auch ein bisschen gebauchpinselt, dass wir wohl die letzte Folge im Wasted-Podcast-Feed sein werden. Und trotzdem geht es weiter mit uns, mit euch in dem neuen Projekt, dass wir ebenfalls kurz anreissen.
+                Ausserdem sind wir insgesamt auch ein bisschen gebauchpinselt, dass wir wohl die letzte Folge im Wasted-Podcast-Feed sein werden. Und
+                trotzdem geht es weiter mit uns, mit euch in dem neuen Projekt, dass wir ebenfalls kurz anreissen.
                 Ihr seht also, mal wieder ein Kessel buntes. Wir haben Bock, und ihr??
                 Liebe Grüße,
                 Marcel, Simon und Til
@@ -340,7 +425,7 @@ Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
                        length="106954752"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #2 (Wasted)</title>
             <pubDate>Sun, 12 Mar 2023 11:00:00 +0000</pubDate>
@@ -350,19 +435,22 @@ Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
                 <title>Mindestens 10 Zeichen #2 (Wasted)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
-
+            
             <description>Liebe Gemeinde!
                 Hier ist sie also, die erste offizielle Folge von "Mindestens 10 Zeichen - Ein Community-Podcast"!
-                Nach eurem unfassbaren Feedback auf den Piloten geben sich Til (Moderation, Talk, Schnitt), Simon (Produktion) und Marcel (Talk, Organisation) wieder Mühe, um euch ein paar unterhaltsame Momente zusammenzustellen.
-                Dieses Mal geht es um ChatBots in Foren, Spieledemos und ob der Vorname "Christian" zu Phantasterei verpflichtet. Aus der Community haben wir diesmal den lieben Lipardus geladen, der uns in Sachen Spieledemos updatet.
+                Nach eurem unfassbaren Feedback auf den Piloten geben sich Til (Moderation, Talk, Schnitt), Simon (Produktion) und Marcel (Talk,
+                Organisation) wieder Mühe, um euch ein paar unterhaltsame Momente zusammenzustellen.
+                Dieses Mal geht es um ChatBots in Foren, Spieledemos und ob der Vorname "Christian" zu Phantasterei verpflichtet. Aus der Community
+                haben wir diesmal den lieben Lipardus geladen, der uns in Sachen Spieledemos updatet.
                 Für die nächste Folge suchen wir neben Musik(-er*innen): Euch und euer Thema!
                 Gerade geht ein Fußpilz-Indie durch die Forendecke? - Geil!
-                Religion ist in eurem Lieblingsspiel ein Thema und ihr grübelt über die Vermittlung an die Sprösslinge? - Spannend, lasst uns teilhaben!
+                Religion ist in eurem Lieblingsspiel ein Thema und ihr grübelt über die Vermittlung an die Sprösslinge? - Spannend, lasst uns
+                teilhaben!
                 Die ganze Gamestar-Redaktion geht wegen C. Schiffers letzter Liste in den Generalstreik? - Lasst Feiern!
                 Viel Spaß beim Hören und bleibt gesund,
                 Til, Simon und Marcel
             </description>
-           <author>m10z@posteo.de</author>
+            <author>m10z@posteo.de</author>
             <itunes:duration>6338</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_002.mp3"
                        length="101711872"
@@ -377,13 +465,15 @@ Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
                 <title>Mindestens 10 Zeichen #1 (Wasted)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
-
+            
             <description>"Liebe Community,
-                Es ist soweit! Mit einem tollen Team, motivierten Leuten und einem Haufen kreativer Köpfe haben wir die erste Folge des ersten Community-Podcasts ÜBERHAUPT auf die Beine gestellt (Zumindest hab ich sonst noch von keinem gehört!)
-                Wir haben auf euch gehört und einen bunten Mix aus Struktur, Freiem Gerede, lustigen und schweren Themen, über die Community itself und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
+                Es ist soweit! Mit einem tollen Team, motivierten Leuten und einem Haufen kreativer Köpfe haben wir die erste Folge des ersten
+                Community-Podcasts ÜBERHAUPT auf die Beine gestellt (Zumindest hab ich sonst noch von keinem gehört!)
+                Wir haben auf euch gehört und einen bunten Mix aus Struktur, Freiem Gerede, lustigen und schweren Themen, über die Community itself
+                und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
                 Viel Vergnügen!
             </description>
-           <author>m10z@posteo.de</author>
+            <author>m10z@posteo.de</author>
             <itunes:duration>5622</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_001.mp3"
                        length="91226112"
