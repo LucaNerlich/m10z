@@ -26,18 +26,31 @@
             <guid isPermaLink="false">ein-hash16</guid>
             <itunes:image>
                 <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
-                <title>Fundbüro #04 - TODO</title>
+                <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>
+                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar
+                der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
+                bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
+                
+                Nach über vier Monaten Sommerpause wurde im Fündbüro eine übergroße Kiste mit einer fetten Triggerwarnung "Achtung! Sexistischer
+                Inhalte" abgelifert.
+                Zu allem Übel rieselt aus den Ritzen auch noch Sand in rauen Mengen. Nach dem Öffnen des Deckels kommen mehrere bunte Bälle, ein paar
+                rostige Golfschläger und nach Schweiß miefende Sportklamotten zum Vorschein, passend zu den "Sportspielen" Outlaw Golf 2 (2004) und
+                Outlaw Volleyball (2003).
+                Das wars aber noch nicht. Unter einem doppelten Boden finden wir mehrere fremdartige Gerätschaften, die nicht aus dieser Galaxie zu
+                sein scheinen. Am Ende stellt sich heraus, es handel sich um den legendären Antrieb von Anakin Skywalker, natürlich aus Star Wars:
+                Episode I – Racer (1999).
+                Viel Spaß mit der neuen Folge!
                 
                 Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
                 https://community.wasted.de/ vorbei!
             </description>
             <author>m10z@posteo.de</author>
-            <itunes:duration>TODO</itunes:duration>
+            <itunes:duration>00:46:16</itunes:duration>
             <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3"
-                       length="TODO"
+                       length="113246208"
                        type="audio/mpeg"/>
         </item>
         
