@@ -58,7 +58,7 @@ const config = {
                     routeBasePath: '/',
                     showReadingTime: true,
                     blogSidebarTitle: 'Jüngste Beiträge',
-                    blogSidebarCount: 10,
+                    blogSidebarCount: 20,
                     feedOptions: {
                         type: 'rss',
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
