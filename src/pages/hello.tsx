@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect, useState} from 'react'
+import React from 'react'
 import Layout from '@theme/Layout'
 // @ts-ignore
 import authorsFile from '/blog/authors.json'

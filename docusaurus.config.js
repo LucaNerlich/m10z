@@ -131,6 +131,10 @@ const config = {
                         label: 'Wer wir sind',
                     },
                     {
+                        to: '/content/unsere-formate',
+                        label: 'Unsere Formate',
+                    },
+                    {
                         href: 'https://community.wasted.de/c/m10z/11',
                         label: 'Forum',
                     },
