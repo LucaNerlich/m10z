@@ -55,10 +55,12 @@ const config = {
                 },
                 docs: false,
                 blog: {
+                    archiveBasePath: 'null',
                     routeBasePath: '/',
                     showReadingTime: true,
                     blogSidebarTitle: 'Jüngste Beiträge',
                     blogSidebarCount: 20,
+                    postsPerPage: 'ALL',
                     feedOptions: {
                         type: 'rss',
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
