@@ -9,11 +9,12 @@ export default function Formate() {
         <Layout title='Unsere Formate' description='Welche Formate wir im Programm haben'>
             <div className={styles.wrapper}>
                 <h1 className={styles.headline}>Unsere Formate</h1>
-                <SingleFormat title='Virtuelle Verse' link='/tags/lyrik' />
+                <SingleFormat title='Fundbüro' link='/tags/fundbuero' />
+                <SingleFormat title='Ginas Gedankensuppe' link='/tags/gedankensuppe' />
+                <SingleFormat title='Metaebene' link='/tags/metaebene' />
                 <SingleFormat title='Mindestens 10 Zeichen' link='/tags/m-10-z' />
                 <SingleFormat title='Once we were Gamers' link='/tags/owwg' />
-                <SingleFormat title='Fundbüro' link='/tags/fundbuero' />
-                <SingleFormat title='Metaebene' link='/tags/metaebene' />
+                <SingleFormat title='Virtuelle Verse' link='/tags/lyrik' />
             </div>
         </Layout>
     )
