@@ -6,6 +6,7 @@ import Link from '@docusaurus/Link'
 interface SingleFormatProps {
     title: string,
     link: string,
+    imagePath?: string,
     children?: any
 }
 
@@ -13,9 +14,14 @@ export default function SingleFormat(props: SingleFormatProps): React.ReactEleme
     return (
         <div className={styles.wrapper}>
             <h2>{props.title ?? 'I am a SingleFormat'}</h2>
+            {props.imagePath &&
+                <img src={props.imagePath} alt={props.title} />
+            }
             {props.children}
             {props.link &&
-                <Link to={props.link}>Alle Posts dieser Kategorie</Link>
+                <Link to={props.link}>
+                    <p>Alle Posts dieser Kategorie</p>
+                </Link>
             }
         </div>
     )
