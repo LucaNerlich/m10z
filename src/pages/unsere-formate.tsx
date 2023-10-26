@@ -15,8 +15,7 @@ export default function Formate() {
                 <SingleFormat title='Mindestens 10 Zeichen' link='/tags/m-10-z' imagePath='/img/formate/m10z.jpg'>
                     <p>
                         "Mindestens 10 Zeichen" ist unser M10Z Podcast der Podcasts, der in dem es um alles geht:
-                    </p>
-                    <p>
+                        <br />
                         Spiele, das (Wasted-)Forum, uns und euch...
                     </p>
                     <p>
@@ -33,8 +32,8 @@ export default function Formate() {
                         Macht euch bereit und kommt mit uns, wir haben Bock!
                     </p>
                     <p>
-                        Beteiligte: <br/>
-                        Marcel (kkuez), Til (tilmobaxter), Simon (simon)
+                        Beteiligte: <br />
+                        <em>Marcel (kkuez), Til (tilmobaxter), Simon (simon)</em>
                     </p>
                 </SingleFormat>
                 <SingleFormat title='Once we were Gamers' link='/tags/owwg' />
