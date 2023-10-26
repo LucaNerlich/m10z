@@ -43,6 +43,34 @@ const config = {
                 disableInDev: false,
             },
         ],
+        [
+            '@docusaurus/plugin-pwa',
+            {
+                debug: true,
+                offlineModeActivationStrategies: [
+                    'appInstalled',
+                    'standalone',
+                    'queryString',
+                ],
+                pwaHead: [
+                    {
+                        tagName: 'link',
+                        rel: 'icon',
+                        href: '/img/M10Z_Orange.png',
+                    },
+                    {
+                        tagName: 'link',
+                        rel: 'manifest',
+                        href: '/manifest.json',
+                    },
+                    {
+                        tagName: 'meta',
+                        name: 'theme-color',
+                        content: '#F16012',
+                    },
+                ],
+            },
+        ],
     ],
 
     presets: [

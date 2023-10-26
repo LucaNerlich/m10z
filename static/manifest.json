@@ -1,0 +1,27 @@
+{
+    "name": "M10Z",
+    "short_name": "M10Z",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#fff",
+    "description": "Mindestens 10 Zeichen",
+    "icons": [
+        {
+            "src": "/img/M10Z_Orange_Favicon-01.svg",
+            "sizes": "144x144",
+            "type": "image/svg",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/img/M10Z_Orange.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "/img/M10Z_Orange.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#F16012"
+}
