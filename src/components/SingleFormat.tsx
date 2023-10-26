@@ -17,7 +17,9 @@ export default function SingleFormat(props: SingleFormatProps): React.ReactEleme
             {props.imagePath &&
                 <img src={props.imagePath} alt={props.title} />
             }
-            {props.children}
+            <div className={styles.content}>
+                {props.children}
+            </div>
             {props.link &&
                 <Link to={props.link}>
                     <p>Alle Posts dieser Kategorie</p>
