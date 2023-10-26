@@ -4,14 +4,39 @@ import styles from './unsere-formate.module.scss'
 import Layout from '@theme/Layout'
 import SingleFormat from '../components/SingleFormat'
 
+function Beteiligte(props) {
+    return <p>
+        Beteiligte: <br />
+        <em>{props.text}</em>
+    </p>
+}
+
 export default function Formate() {
     return (
         <Layout title='Unsere Formate' description='Welche Formate wir im Programm haben'>
             <div className={styles.wrapper}>
                 <h1 className={styles.headline}>Unsere Formate</h1>
-                <SingleFormat title='Fundbüro' link='/tags/fundbuero' />
-                <SingleFormat title='Ginas Gedankensuppe' link='/tags/gedankensuppe' />
-                <SingleFormat title='Metaebene' link='/tags/metaebene' />
+                <SingleFormat title='Fundbüro' link='/tags/fundbuero'>
+                    <p>
+                        In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind.
+                    </p>
+                    <Beteiligte text='Jan & Edgar' />
+                </SingleFormat>
+
+                <SingleFormat title='Ginas Gedankensuppe' link='/tags/gedankensuppe'>
+                    <p>
+                        Gina schreibt vielfältige Texte zu virtuellen Themen.
+                    </p>
+                    <Beteiligte text='Gina' />
+                </SingleFormat>
+
+                <SingleFormat title='Metaebene' link='/tags/metaebene'>
+                    <p>
+                        Eine Kleine Kolumne zu grossen Themen.
+                    </p>
+                    <Beteiligte text='KaFour' />
+                </SingleFormat>
+
                 <SingleFormat title='Mindestens 10 Zeichen' link='/tags/m-10-z' imagePath='/img/formate/m10z.jpg'>
                     <p>
                         "Mindestens 10 Zeichen" ist unser M10Z Podcast der Podcasts, der in dem es um alles geht:
@@ -31,13 +56,21 @@ export default function Formate() {
                     <p>
                         Macht euch bereit und kommt mit uns, wir haben Bock!
                     </p>
-                    <p>
-                        Beteiligte: <br />
-                        <em>Marcel (kkuez), Til (tilmobaxter), Simon (simon)</em>
-                    </p>
+                    <Beteiligte text='Marcel (kkuez), Til (tilmobaxter), Simon (simon)' />
                 </SingleFormat>
-                <SingleFormat title='Once we were Gamers' link='/tags/owwg' />
-                <SingleFormat title='Virtuelle Verse' link='/tags/lyrik' />
+                <SingleFormat title='Once we were Gamers' link='/tags/owwg'>
+                    <p>
+                        Bei „Once we were Gamers“ wirft Simon einen Blick auf das, was in der Gamingwelt gerade so interessant ist, oder auf das, was
+                        er gerade interessant findet.
+                    </p>
+                    <Beteiligte text='Simon' />
+                </SingleFormat>
+                <SingleFormat title='Virtuelle Verse' link='/tags/lyrik'>
+                    <p>
+                        Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
+                    </p>
+                    <Beteiligte text='Til' />
+                </SingleFormat>
             </div>
         </Layout>
     )
