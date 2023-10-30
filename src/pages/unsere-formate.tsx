@@ -25,9 +25,16 @@ export default function Formate() {
 
                 <SingleFormat title='Ginas Gedankensuppe' link='/tags/gedankensuppe'>
                     <p>
-                        Gina schreibt vielfältige Texte zu virtuellen Themen.
+                        Platz für Kreativität und ein tolles Miteinander.
                     </p>
-                    <Beteiligte text='Gina' />
+                    <p>
+                        Hier erscheinen regelmäßig neue Artikel über spannende Themen.
+                    </p>
+                    <p>
+                        Ich betreibe für euch Recherche, überlege mir was euch und mich interessieren könnte, schreibe das alles voller Leidenschaft
+                        auf und habe dabei super viel Spaß.
+                    </p>
+                    <Beteiligte text='Gina alias GinyFreeBird' />
                 </SingleFormat>
 
                 <SingleFormat title='Metaebene' link='/tags/metaebene'>
