@@ -62,7 +62,7 @@ export default function Formate() {
                     <p>
                         Entstanden als Metaprojekt zu WASTED erzählen euch Marcel (kkuez) und Til (tilmobaxter) möglichst jeden Monat aufs neue, was
                         die Community bewegt und natürlich welches Meme jetzt wirklich das beste aller Zeiten ist.
-                        Ausserdem haben wir in jeder Folge "Das Thema": Wnderbare Menschen sind zu Besuch mit spannenden Themen, denen wir uns
+                        Ausserdem haben wir in jeder Folge "Das Thema": Wunderbare Menschen sind zu Besuch mit spannenden Themen, denen wir uns
                         gemeinsam widmen und euch näherbringen wollen.
                     </p>
                     <p>
