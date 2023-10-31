@@ -23,7 +23,7 @@ export default function Formate() {
                     <Beteiligte text='Jan & Edgar' />
                 </SingleFormat>
 
-                <SingleFormat title='Ginas Gedankensuppe' link='/tags/gedankensuppe'>
+                <SingleFormat title='Ginas Gedankensuppe' link='/tags/gedankensuppe' imagePath='/img/articles/GinasGedankensuppe.jpg'>
                     <p>
                         Platz für Kreativität und ein tolles Miteinander.
                     </p>
