@@ -57,7 +57,7 @@ export default function Formate() {
                         gemeinsam widmen und euch näherbringen wollen.
                     </p>
                     <p>
-                        Produziert wird "Mindestens 10 Zeichen" von Philipp Simon Vogel, der neben seinen Musikprojekten jedes Mal neu versucht ein
+                        Produziert wird "Mindestens 10 Zeichen" von Simon-Philipp Vogel, der neben seinen Musikprojekten jedes Mal neu versucht ein
                         paar Minuten frei zu kriegen, um das Ding rund abzuliefern.
                     </p>
                     <p>
