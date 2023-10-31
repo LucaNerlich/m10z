@@ -43,6 +43,34 @@ const config = {
                 disableInDev: false,
             },
         ],
+        [
+            '@docusaurus/plugin-pwa',
+            {
+                debug: true,
+                offlineModeActivationStrategies: [
+                    'appInstalled',
+                    'standalone',
+                    'queryString',
+                ],
+                pwaHead: [
+                    {
+                        tagName: 'link',
+                        rel: 'icon',
+                        href: '/img/M10Z_Orange.png',
+                    },
+                    {
+                        tagName: 'link',
+                        rel: 'manifest',
+                        href: '/manifest.json',
+                    },
+                    {
+                        tagName: 'meta',
+                        name: 'theme-color',
+                        content: '#F16012',
+                    },
+                ],
+            },
+        ],
     ],
 
     presets: [
@@ -55,10 +83,12 @@ const config = {
                 },
                 docs: false,
                 blog: {
+                    archiveBasePath: 'null',
                     routeBasePath: '/',
                     showReadingTime: true,
                     blogSidebarTitle: 'Jüngste Beiträge',
-                    blogSidebarCount: 10,
+                    blogSidebarCount: 20,
+                    postsPerPage: 'ALL',
                     feedOptions: {
                         type: 'rss',
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
@@ -129,6 +159,10 @@ const config = {
                     {
                         to: '/content/hello',
                         label: 'Wer wir sind',
+                    },
+                    {
+                        to: '/content/unsere-formate',
+                        label: 'Unsere Formate',
                     },
                     {
                         href: 'https://community.wasted.de/c/m10z/11',
