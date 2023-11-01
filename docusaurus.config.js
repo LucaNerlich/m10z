@@ -87,6 +87,7 @@ const config = {
                     // postsPerPage: 'ALL',
                     feedOptions: {
                         type: 'rss',
+                        limit: false,
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
                         createFeedItems: async (params) => {
                             const {blogPosts, defaultCreateFeedItems, ...rest} = params
