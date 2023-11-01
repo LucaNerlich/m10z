@@ -1,9 +1,5 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-
-const lightCodeTheme = require('prism-react-renderer/themes/github')
-const darkCodeTheme = require('prism-react-renderer/themes/dracula')
-
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'Mindestens 10 Zeichen',
@@ -88,9 +84,10 @@ const config = {
                     showReadingTime: true,
                     blogSidebarTitle: 'Jüngste Beiträge',
                     blogSidebarCount: 20,
-                    // postsPerPage: 'ALL',
+                    postsPerPage: 10,
                     feedOptions: {
                         type: 'rss',
+                        limit: false,
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
                         createFeedItems: async (params) => {
                             const {blogPosts, defaultCreateFeedItems, ...rest} = params
@@ -229,10 +226,6 @@ const config = {
                         ],
                     },
                 ],
-            },
-            prism: {
-                theme: lightCodeTheme,
-                darkTheme: darkCodeTheme,
             },
         }),
 }
