@@ -70,16 +70,32 @@ Das Projekt besteht aus zwei Bestandteilen:
 2. Eine simple Webseite die mit den Ergebnissen des Scripts HTML Tabellen aufbaut
     - NextJS, SCSS, Hosting bei [Vercel](https://vercel.com)
 
-Im folgenden erlaeutere ich den Prozess. Dieser besteht im wesentlichen aus diesen Schritten:
+Im Folgenden erläutere ich den Prozess. Dieser besteht im Wesentlichen aus diesen Schritten:
 
 1. RSS Feed `.xml` Datei beziehen
 2. Diese Datei analysieren
 3. Mit dem Ergebnis etwas machen - hier in neue Dateien schreiben
 4. Diese Ergebnisdateien innerhalb der Webseite verwenden und die Daten entsprechend darstellen
 
+Das komplette Script sprengt den Rahmen dieses Posts, daher folgend die relevanten Ausschnitte.
+
 ### RSS Feed Laden
 
-todo
+Wir laden die Konfigurationsdatei, sowie einer Liste von Dateinamen (die konkreten `.xml` Dateien eines Podcasts) und reichen diese weiter.
+Dessen Ergebnis (Title / Jahr kategorisierte Items, nicht zuordbare Items, *Alles* zur Kontrolle), die *fertige* Analyse reichen wir dann zum Speichern weiter.
+
+```python
+def create_content(content_path, content_files):
+    with open(base_path + content_path + '/config.yaml', 'r', encoding='utf8') as file:
+        content_config_data = yaml.safe_load(file)
+
+    title_count_dict, unmapped_titles, full_dict = parse_and_count_titles(
+        [base_path + content_path + '/' + str(file) for file in content_files],
+        content_config_data['title-classifier']
+    )
+
+    save_dataframes(content_path, title_count_dict, unmapped_titles, full_dict)
+```
 
 ### RSS Feed Parsen
 
@@ -87,7 +103,40 @@ todo
 
 ### Ergebnisdateien erstellen
 
-todo
+Wir erstellen `pandas` DataFrames aus den Python Dictionaries zur einfacheren, weiteren Verarbeitung.
+
+```python
+def save_dataframes(output_base, title_count_dict, unmapped_titles, full_dict):
+    # Prepare fs directories
+    output_path = make_directories(base_path, output_base, next_public_path)
+
+    dict_dfs = {
+        'output': prepare_dataframe(title_count_dict),
+        'unclassified': pd.DataFrame(unmapped_titles, columns=['Unclassified']),
+        'full': prepare_dataframe(full_dict)
+    }
+
+    for file_type, df in dict_dfs.items():
+        # Does some preparation and then calls 'write_files'
+        dataframes_to_files(df, output_path, next_public_path, output_base, file_type)
+```
+
+Wir erstellen die Ergebnisse in drei verschiedenen Dateiformaten und schreiben die Dateien ins lokale Dateisystem.
+
+```python
+def write_files(df, output_path, file_type):
+    file_methods = {
+        'csv': df.to_csv,
+        'xlsx': df.to_excel,
+        'json': df.to_json,
+    }
+    for file_ext, method in file_methods.items():
+        file_path = os.path.join(output_path + dist_path, file_type + '.' + file_ext)
+        if file_ext == 'json':
+            method(file_path, orient='index', indent=4, double_precision=0)
+        else:
+            method(file_path, index=True)
+```
 
 ## Audio Transkription
 
