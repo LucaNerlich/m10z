@@ -8,8 +8,9 @@ draft: false
 image: /img/tech/sundayprojects/rssanalyzer.jpg
 ---
 
-[//]: # (Image Preset in Adobe Exress)
-[//]: # (https://new.express.adobe.com/id/urn:aaid:sc:EU:eead633a-e9c5-4e72-829b-33fb8bb0e5a2?category=search)
+[//]  # (Image Preset in Adobe Exress)
+[//]  # (https://new.express.adobe.com/id/urn:aaid:sc:EU:eead633a-e9c5-4e72-829b-33fb8bb0e5a2?category=search)
+
 
 
 import Image from '@theme/IdealImage'
@@ -27,7 +28,34 @@ Zum Anschauen hier entlang: [https://rss-analyzer.vercel.app](https://rss-analyz
 
 ## Idee
 
-TODO
+Da Podcast RSS Feeds Daten bereits relativ gut strukturiert, jeder Cast in eigenem `<item>` Block etc., anbieten, habe ich mich gefragt, wie man moeglichst einfach eine flotte Auswertung dieser hinbekommen kann.
+Einfach zu analysieren sind der Titel, sowie das Datum der Veroeffentlichung.
+
+Folgend ein Beispiel `<item>` einer Folge Fundbuero. Die nicht relevanten Informationen habe ich per `[...]` gekuerzt.
+
+```xml
+<item>
+    <title>Fundbüro #04 - [...]</title>
+    <pubDate>Thu, 19 Oct 2023 10:00:00 +0000</pubDate>
+    <guid isPermaLink="false">[...]</guid>
+    <itunes:image>
+        [...]
+    </itunes:image>
+    <description>
+        [...]
+    </description>
+    <author>[...]</author>
+    <itunes:duration>00:46:16</itunes:duration>
+    <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3"
+                        length="113246208"
+                        type="audio/mpeg"/>
+</item>
+```
+Die einzelnen Elemente sind ueberwiegend selbsterklaerend. Zwei will ich trotzdem kurz erlaeutern:
+
+- `guid` entspricht der einzigartigen ID dieses Items.
+- `enclosure` beschreibt konkrete die Dateireferenz dieses Items, hier die entsprechende `.mp3` Datei. `length` ist hier die Dateigroesse in Byte.
+
 
 ## Umsetzung
 
