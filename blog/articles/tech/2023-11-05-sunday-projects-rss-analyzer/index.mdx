@@ -24,4 +24,47 @@ import Image from '@theme/IdealImage'
 
 ### Audio Transkription
 
+todo einleitung
+
+Da die Transkription per KI aus Effizienzgruenden auf den CUDA Cores einer Nvidia Grafikkarte laufen sollte, ist es wichtig, `Torch` sauber installiert zu haben.
+Mit den folgenden drei Zeilen wird dies sichergestellt:
+
+```bash
+pip uninstall torch
+pip cache purge
+pip install torch -f https://download.pytorch.org/whl/torch_stable.html
+```
+
+Erfolg laesst sich leicht per Taskmanager ueberpruefen.
+
+1. Transkriptionsscript starten
+2. Im Taskmanager die GPU Auslastung beobachten
+
+#### Fortschrittsanzeige
+
+Auf einer aktuellen Nvidia RTX 4090 GPU dauert die Transkription von 1h `.mp3` Material grob zwischen ~8 und ~12 Minuten.
+Um den jeweils aktuellen Fortschritt zu ueberpruefen, moechten wir diesen idealerweise auf der Kommandozeile ausgegeben haben.
+Dazu muessen die Standardprogressbar des Whisper Moduls ueberschreiben.
+
+```python
+class _CustomProgressBar(tqdm.tqdm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._current = self.n
+
+    def update(self, n):
+        super().update(n)
+        self._current += n
+
+        # Handle progress here
+        print("Progress: " + str(self._current) + "/" + str(self.total))
+```
+
+Diese koennen wir dann direkt am Modul registrieren
+
+```python
+transcribe_module = sys.modules['whisper.transcribe']
+transcribe_module.tqdm.tqdm = _CustomProgressBar
+```
+
 > todo
