@@ -84,7 +84,7 @@ const config = {
                     showReadingTime: true,
                     blogSidebarTitle: 'Jüngste Beiträge',
                     blogSidebarCount: 20,
-                    // postsPerPage: 'ALL',
+                    postsPerPage: 10,
                     feedOptions: {
                         type: 'rss',
                         limit: false,
