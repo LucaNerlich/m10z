@@ -97,9 +97,32 @@ def create_content(content_path, content_files):
     save_dataframes(content_path, title_count_dict, unmapped_titles, full_dict)
 ```
 
+Aktuell muessen die RSS Feed `.xml` Dateien lokal im Dateisystem liegen, dies koennte aber sehr einfach automatisiert, bzw innerhalb des Scripts erst aus dem Internet runtergeladen werden.
+
 ### RSS Feed Parsen
 
-todo
+Das eigentliche parsen ist zu viel und zu komplex, um es hier sinnvoll darzustellen, dahier hier der Einstieg.
+Wir laden jeden `.xml` Feed Datei ein und suchen alle `<item>` Objekte. Jedes `<item>` entspricht einem einzelnen Podcast.
+Per `item.find('title').text` koennen wir uns dann die gewünschten Daten greifen – hier `title`.
+
+```python
+for file in files:
+        xml_root = get_xml_root(file)
+        for item in xml_root.iter('item'):
+            title = item.find('title').text
+
+            pub_date = item.find('pubDate')
+       # [...]
+```
+
+Im weiteren Verlauf wird dann ein [Dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) aufgebaut, in dem wir unsere Podcasts pro Title und Jahr katalogisieren.
+Titel werden ueber die intial geladene Konfigurationsdatei kategorisiert. Hier muessen im Vorfeld alle vorhandenen Podcastformate eingetragen werden.
+Die Podcastitems, die hier nicht zugeordnet werden koennen, werden seperat in eine extra Ergebnisdatei geschrieben - um anhand dieser die Konfiguration ueberarbeiten zu koennen.
+
+Zusätzlich lassen sich auch selbstverständlich nicht alle Podcasts einem jeweiligen Format zuordnen - manche sind entsprechende One-Shots oder Spezialfolgen.
+Sehr häufig finden sich jedoch auch Tippfehler in den relevanten Metadaten, diese koennen ebenfalls ueber die Konfiguration abgefangen werden.
+
+Gerade letzteres wuerde sich ueber ein *fuzzy search / mapping*, zumindest in vielen Faellen, loesen lassen, ist jedoch die Komplexität und den Mehraufwand in diesem Projekt nicht wert.
 
 ### Ergebnisdateien erstellen
 
