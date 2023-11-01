@@ -10,7 +10,7 @@ image: /img/tech/sundayprojects/rssanalyzer.jpg
 
 import Image from '@theme/IdealImage'
 
-'Sunday Projects' sind die kleinen, technischen Projekte und Spielerereien mit denen ich in unregelmaessigen Abstaenden meine Zeit verbringe.
+'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmaessigen Abständen meine Zeit verbringe.
 
 Den Auftakt auf diesem Blog macht ein kleines Script, das RSS `.xml` Feed Dateien einliest und die Items, hier *nur* Podcasts, kategorisiert.
 Anschliessend wird das Ergebnis, aufgeschlüsselt pro Jahr, in einer Tabelle dargestellt.
@@ -23,10 +23,10 @@ Zum Anschauen hier entlang: [https://rss-analyzer.vercel.app](https://rss-analyz
 
 ## Idee
 
-Da Podcast RSS Feeds Daten bereits relativ gut strukturiert, jeder Cast in eigenem `<item>` Block etc., anbieten, habe ich mich gefragt, wie man moeglichst einfach eine flotte Auswertung dieser hinbekommen kann.
-Einfach zu analysieren sind der Titel, sowie das Datum der Veroeffentlichung.
+Da Podcast RSS Feeds Daten bereits relativ gut strukturiert, jeder Cast in eigenem `<item>` Block etc., anbieten, habe ich mich gefragt, wie man möglichst unkompliziert eine flotte Auswertung dieser hinbekommen kann.
+Einfach zu analysieren, sind der Titel, sowie das Datum der Veröffentlichung.
 
-Folgend ein Beispiel `<item>` einer Folge Fundbuero. Die nicht relevanten Informationen habe ich per `[...]` gekuerzt.
+Folgend ein Beispiel `<item>` einer Folge [Fundbüro](https://m10z.de/tags/fundbuero). Die nicht relevanten Informationen habe ich per `[...]` gekürzt.
 
 ```xml
 <item>
@@ -46,11 +46,19 @@ Folgend ein Beispiel `<item>` einer Folge Fundbuero. Die nicht relevanten Inform
                         type="audio/mpeg"/>
 </item>
 ```
-Die einzelnen Elemente sind ueberwiegend selbsterklaerend. Zwei will ich trotzdem kurz erlaeutern:
+Die einzelnen Elemente sind überwiegend selbsterklärend. Zwei will ich dennoch kurz erläutern:
 
 - `guid` entspricht der einzigartigen ID dieses Items.
 - `enclosure` beschreibt konkrete die Dateireferenz dieses Items, hier die entsprechende `.mp3` Datei. `length` ist hier die Dateigroesse in Byte.
 
+Gehen wir nun davon aus, dass jeder Podcast einer Kategorie zugeordnet werden kann (Fundbüro, M10Z etc), koennen wir einfach den kompletten Feed einlesen und alle einzelnen Folgen auf Basis ihres Titels zaehlen, kategorisieren und in Monate und Jahre unterteilen.
+Gesammelt und als Tabelle (Screenshot von *The Pod* da diese eine interessante Datenbasis besitzen) dargestellt, laesst sich so eine simple Jahresuebersicht pro RSS Feed erstellen.
+
+<Image img={require('./tabelle.png')} />
+
+Kein wirklich noetiger Mehrwert, aber eine interessante und kurzweilige Statistik - ich mag sowas.
+
+Zusätzlich konnte ich dafuer mal wieder mein Python Wissen auskramen, viel war da eh nie vorhanden - aber ich mag es durchaus und zu *Lernprojekten* sage ich selten nein.
 
 ## Umsetzung
 
@@ -60,7 +68,7 @@ TODO
 
 todo einleitung
 
-Da die Transkription per KI aus Effizienzgruenden auf den CUDA Cores einer Nvidia Grafikkarte laufen sollte, ist es wichtig, `Torch` sauber installiert zu haben.
+Da die Transkription per KI aus Effizienzgründen auf den CUDA Cores einer Nvidia Grafikkarte laufen sollte, ist es wichtig, `Torch` sauber installiert zu haben.
 Mit den folgenden drei Zeilen wird dies sichergestellt:
 
 ```bash
@@ -76,9 +84,9 @@ Erfolg laesst sich leicht per Taskmanager ueberpruefen.
 
 ### Fortschrittsanzeige
 
-Auf einer aktuellen Nvidia RTX 4090 GPU dauert die Transkription von 60 Minuten `.mp3` Material ungefaehr zwischen ~8 und ~12 Minuten.
+Auf einer aktuellen Nvidia RTX 4090 GPU dauert die Transkription von 60 Minuten `.mp3` Material ungefähr zwischen ~8 und ~12 Minuten.
 Um den jeweils aktuellen Fortschritt zu ueberpruefen, moechten wir diesen idealerweise auf der Kommandozeile ausgegeben haben.
-Dazu muessen die Standardprogressbar des Whisper Moduls ueberschreiben.
+Dazu muessen die Standard-progressbar des Whisper Moduls überschreiben.
 
 ```python
 class _CustomProgressBar(tqdm.tqdm):
