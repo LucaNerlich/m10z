@@ -12,7 +12,7 @@ import Image from '@theme/IdealImage'
 
 'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmaessigen Abständen meine Zeit verbringe.
 
-Den Auftakt auf diesem Blog macht ein kleines Script, das RSS `.xml` Feed Dateien einliest und die Items, hier *nur* Podcasts, kategorisiert.
+Den Auftakt auf diesem Blog macht ein kleines Script, das RSS `.xml` Feed Dateien (wie zum Beispiel [unseren](https://m10z.de/audiofeed.xml) einliest und die Items, hier *nur* Podcasts, kategorisiert.
 Anschliessend wird das Ergebnis, aufgeschlüsselt pro Jahr, in einer Tabelle dargestellt.
 
 Zum Anschauen hier entlang: [https://rss-analyzer.vercel.app](https://rss-analyzer.vercel.app).
@@ -106,6 +106,34 @@ Erfolg laesst sich leicht per Taskmanager ueberpruefen.
 
 1. Transkriptionsscript starten
 2. Im Taskmanager die GPU Auslastung beobachten
+
+### Transkription
+
+Das eigentliche Transkriptionsscript ist sehr kurz. `Whisper` hat quasi die komplette Komplexitaet gekapselt und stellt sie ueber eine einfache API zur Verfuegung.
+
+```python
+import os
+import sys
+import time
+
+import tqdm
+import whisper
+
+# Load the Model
+model = whisper.load_model("large-v2")
+
+# Transcribe the .mp3 file
+result = model.transcribe('./someAudioFile.mp3', language="German",
+                          fp16=False, verbose=None)
+
+# Write the result to a .txt file
+with open('./temp/' + file_name + '.txt', 'w', encoding='utf-8') as f:
+    f.write(result["text"])
+```
+
+Nach einiger Zeit ist die Transkription fertig und kann aus der `.txt` Datei ausgelesen werden.
+Die gesamte Audiodatei wird einfach direkt Wort fuer Wort niedergeschrieben.
+Stand heute ist es mit öffentlichen Mitteln noch nicht möglich, SprecherInnen zuzuordnen.
 
 ### Fortschrittsanzeige
 
