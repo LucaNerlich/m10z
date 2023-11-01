@@ -62,7 +62,32 @@ Zusätzlich konnte ich dafuer mal wieder mein Python Wissen auskramen, viel war 
 
 ## Umsetzung
 
-TODO
+Das Projekt besteht aus zwei Bestandteilen:
+
+1. Ein Script zum parsen und katalogisieren von RSS Feeds
+    - Python 3.10, xml, yaml
+    - Transkription per [Whisper](https://openai.com/research/whisper) auf einer RTX 4090
+2. Eine simple Webseite die mit den Ergebnissen des Scripts HTML Tabellen aufbaut
+    - NextJS, SCSS, Hosting bei [Vercel](https://vercel.com)
+
+Im folgenden erlaeutere ich den Prozess. Dieser besteht im wesentlichen aus diesen Schritten:
+
+1. RSS Feed `.xml` Datei beziehen
+2. Diese Datei analysieren
+3. Mit dem Ergebnis etwas machen - hier in neue Dateien schreiben
+4. Diese Ergebnisdateien innerhalb der Webseite verwenden und die Daten entsprechend darstellen
+
+### RSS Feed Laden
+
+todo
+
+### RSS Feed Parsen
+
+todo
+
+### Ergebnisdateien erstellen
+
+todo
 
 ## Audio Transkription
 
