@@ -15,11 +15,23 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 # Das Hauptmenü
 
-Du willst die Zeit mit Games verbringen    
-Ich hoff das Zeilen meinem Kopf entspringen  
-Doch was Du auch startest, nichts macht Spaß   
-Und mir gefiel nicht was ich las   
+Die meisten Menschen kennen dich  
+Nur flüchtig bis oberflächlich  
+Und unumwunden geb ich zu  
+Das gilt meistens auch für mich  
   
-Beim zocken gilt, wie beim Gedicht:  
-An manchen Tagen klappt es nicht  
+Start  
+Continue  
+Options  
+Credits  
+  
+Das war es auf den ersten Blick  
+Oft auch auf zweiten Klick  
+Dem Startbildschirm mehr Tiefe geben  
+Ist ein übersehener Trick  
+  
+Denn schon an dieser ersten Pforte  
+Dem Tor an unbekannte Orte  
+Wäre Platz für Immersion  
+Statt nur funktionaler Worte  
 
