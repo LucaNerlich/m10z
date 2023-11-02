@@ -1,0 +1,269 @@
+---
+slug: sunday-projects-rss-analyzer
+title: 'Sunday-Projects - RSS Analyzer'
+date: 2023-11-05T16:00
+authors: [luca]
+tags: [artikel, tech, sunday-projects, luca]
+draft: true
+image: /img/tech/sundayprojects/rssanalyzer.jpg
+---
+
+import Image from '@theme/IdealImage'
+
+'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmaessigen Abständen meine Zeit verbringe.
+
+Den Auftakt auf diesem Blog macht ein kleines Script, das RSS `.xml` Feed Dateien (wie zum Beispiel [unseren](https://m10z.de/audiofeed.xml) einliest und die Items, hier *nur* Podcasts, kategorisiert.
+Anschliessend wird das Ergebnis, aufgeschlüsselt pro Jahr, in einer Tabelle dargestellt.
+
+Zum Anschauen hier entlang: [https://rss-analyzer.vercel.app](https://rss-analyzer.vercel.app).
+
+<Image img={require('/static/img/tech/sundayprojects/rssanalyzer.jpg')} />
+
+<!--truncate-->
+
+## Idee
+
+Da Podcast RSS Feeds Daten bereits relativ gut strukturiert, jeder Cast in eigenem `<item>` Block etc., anbieten, habe ich mich gefragt, wie man möglichst unkompliziert eine flotte Auswertung dieser hinbekommen kann.
+Einfach zu analysieren, sind der Titel, sowie das Datum der Veröffentlichung.
+
+Folgend ein Beispiel `<item>` einer Folge [Fundbüro](https://m10z.de/tags/fundbuero). Die nicht relevanten Informationen habe ich per `[...]` gekürzt.
+
+```xml
+<item>
+    <title>Fundbüro #04 - [...]</title>
+    <pubDate>Thu, 19 Oct 2023 10:00:00 +0000</pubDate>
+    <guid isPermaLink="false">[...]</guid>
+    <itunes:image>
+        [...]
+    </itunes:image>
+    <description>
+        [...]
+    </description>
+    <author>[...]</author>
+    <itunes:duration>00:46:16</itunes:duration>
+    <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3"
+                        length="113246208"
+                        type="audio/mpeg"/>
+</item>
+```
+Die einzelnen Elemente sind überwiegend selbsterklärend. Zwei will ich dennoch kurz erläutern:
+
+- `guid` entspricht der einzigartigen ID dieses Items.
+- `enclosure` beschreibt konkrete die Dateireferenz dieses Items, hier die entsprechende `.mp3` Datei. `length` ist hier die Dateigroesse in Byte.
+
+Gehen wir nun davon aus, dass jeder Podcast einer Kategorie zugeordnet werden kann (Fundbüro, M10Z etc), koennen wir einfach den kompletten Feed einlesen und alle einzelnen Folgen auf Basis ihres Titels zaehlen, kategorisieren und in Monate und Jahre unterteilen.
+Gesammelt und als Tabelle (Screenshot von *The Pod* da diese eine interessante Datenbasis besitzen) dargestellt, laesst sich so eine simple Jahresuebersicht pro RSS Feed erstellen.
+
+<Image img={require('./tabelle.png')} />
+
+Kein wirklich noetiger Mehrwert, aber eine interessante und kurzweilige Statistik - ich mag sowas.
+
+Zusätzlich konnte ich dafuer mal wieder mein Python Wissen auskramen, viel war da eh nie vorhanden - aber ich mag es durchaus und zu *Lernprojekten* sage ich selten nein.
+
+## Umsetzung
+
+Das Projekt besteht aus zwei Bestandteilen:
+
+1. Ein Script zum parsen und katalogisieren von RSS Feeds
+    - Python 3.10, xml, yaml
+    - Transkription per [Whisper](https://openai.com/research/whisper) auf einer RTX 4090
+2. Eine simple Webseite die mit den Ergebnissen des Scripts HTML Tabellen aufbaut
+    - NextJS, SCSS, Hosting bei [Vercel](https://vercel.com)
+
+Im Folgenden erläutere ich den Prozess. Dieser besteht im Wesentlichen aus diesen Schritten:
+
+1. RSS Feed `.xml` Datei beziehen
+2. Diese Datei analysieren
+3. Mit dem Ergebnis etwas machen - hier in neue Dateien schreiben
+4. Diese Ergebnisdateien innerhalb der Webseite verwenden und die Daten entsprechend darstellen
+
+Das komplette Script sprengt den Rahmen dieses Posts, daher folgend die relevanten Ausschnitte.
+
+### RSS Feed Laden
+
+Wir laden die Konfigurationsdatei, sowie einer Liste von Dateinamen (die konkreten `.xml` Dateien eines Podcasts) und reichen diese weiter.
+Dessen Ergebnis (Title / Jahr kategorisierte Items, nicht zuordbare Items, *Alles* zur Kontrolle), die *fertige* Analyse reichen wir dann zum Speichern weiter.
+
+```python
+def create_content(content_path, content_files):
+    with open(base_path + content_path + '/config.yaml', 'r', encoding='utf8') as file:
+        content_config_data = yaml.safe_load(file)
+
+    title_count_dict, unmapped_titles, full_dict = parse_and_count_titles(
+        [base_path + content_path + '/' + str(file) for file in content_files],
+        content_config_data['title-classifier']
+    )
+
+    save_dataframes(content_path, title_count_dict, unmapped_titles, full_dict)
+```
+
+Aktuell muessen die RSS Feed `.xml` Dateien lokal im Dateisystem liegen, dies koennte aber sehr einfach automatisiert, bzw innerhalb des Scripts erst aus dem Internet runtergeladen werden.
+
+### RSS Feed Parsen
+
+Das eigentliche parsen ist zu viel und zu komplex, um es hier sinnvoll darzustellen, dahier hier der Einstieg.
+Wir laden jeden `.xml` Feed Datei ein und suchen alle `<item>` Objekte. Jedes `<item>` entspricht einem einzelnen Podcast.
+Per `item.find('title').text` koennen wir uns dann die gewünschten Daten greifen – hier `title`.
+
+```python
+for file in files:
+        xml_root = get_xml_root(file)
+        for item in xml_root.iter('item'):
+            title = item.find('title').text
+
+            pub_date = item.find('pubDate')
+       # [...]
+```
+
+Im weiteren Verlauf wird dann ein [Dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) aufgebaut, in dem wir unsere Podcasts pro Title und Jahr katalogisieren.
+Titel werden ueber die intial geladene Konfigurationsdatei kategorisiert. Hier muessen im Vorfeld alle vorhandenen Podcastformate eingetragen werden.
+Die Podcastitems, die hier nicht zugeordnet werden koennen, werden seperat in eine extra Ergebnisdatei geschrieben - um anhand dieser die Konfiguration ueberarbeiten zu koennen.
+
+Zusätzlich lassen sich auch selbstverständlich nicht alle Podcasts einem jeweiligen Format zuordnen - manche sind entsprechende One-Shots oder Spezialfolgen.
+Sehr häufig finden sich jedoch auch Tippfehler in den relevanten Metadaten, diese koennen ebenfalls ueber die Konfiguration abgefangen werden.
+
+Gerade letzteres wuerde sich ueber ein *fuzzy search / mapping*, zumindest in vielen Faellen, loesen lassen, ist jedoch die Komplexität und den Mehraufwand in diesem Projekt nicht wert.
+
+### Ergebnisdateien erstellen
+
+Wir erstellen `pandas` DataFrames aus den Python Dictionaries zur einfacheren, weiteren Verarbeitung.
+
+```python
+def save_dataframes(output_base, title_count_dict, unmapped_titles, full_dict):
+    # Prepare fs directories
+    output_path = make_directories(base_path, output_base, next_public_path)
+
+    dict_dfs = {
+        'output': prepare_dataframe(title_count_dict),
+        'unclassified': pd.DataFrame(unmapped_titles, columns=['Unclassified']),
+        'full': prepare_dataframe(full_dict)
+    }
+
+    for file_type, df in dict_dfs.items():
+        # Does some preparation and then calls 'write_files'
+        dataframes_to_files(df, output_path, next_public_path, output_base, file_type)
+```
+
+Wir erstellen die Ergebnisse in drei verschiedenen Dateiformaten und schreiben die Dateien ins lokale Dateisystem.
+
+```python
+def write_files(df, output_path, file_type):
+    file_methods = {
+        'csv': df.to_csv,
+        'xlsx': df.to_excel,
+        'json': df.to_json,
+    }
+    for file_ext, method in file_methods.items():
+        file_path = os.path.join(output_path + dist_path, file_type + '.' + file_ext)
+        if file_ext == 'json':
+            method(file_path, orient='index', indent=4, double_precision=0)
+        else:
+            method(file_path, index=True)
+```
+
+## Audio Transkription
+
+Als Addon habe ich zusätzlich ein kleines Script erstellt, welches automatisiert `.mp3` Dateien transkribieren kann.
+Theoretisch liesse sich das ganze recht einfach automatisiert auf sämtliche Podcastdateien innerhalb eines Feeds anwenden.
+Ich habe fuer die Transkriptionen jedoch aktuell noch keinen Anwendungsfall, daher ist dies deaktiviert – der Prozess braucht signifikant Strom und ist nicht zu unterschätzen.
+
+Das ganze
+
+Da die Transkription per KI aus Effizienzgründen auf den CUDA Cores einer Nvidia Grafikkarte laufen sollte, ist es wichtig, `Torch` sauber installiert zu haben.
+Mit den folgenden drei Zeilen wird dies sichergestellt:
+
+```bash
+pip uninstall torch
+pip cache purge
+pip install torch -f https://download.pytorch.org/whl/torch_stable.html
+```
+
+Erfolg laesst sich leicht per Taskmanager ueberpruefen.
+
+1. Transkriptionsscript starten
+2. Im Taskmanager die GPU Auslastung beobachten
+
+### Whisper Script
+
+Das eigentliche Transkriptionsscript ist sehr kurz. `Whisper` hat quasi die komplette Komplexitaet gekapselt und stellt sie ueber eine einfache API zur Verfuegung.
+
+```python
+import os
+import sys
+import time
+
+import tqdm
+import whisper
+
+# Load the Model
+model = whisper.load_model("large-v2")
+
+# Transcribe the .mp3 file
+result = model.transcribe('./someAudioFile.mp3', language="German",
+                          fp16=False, verbose=None)
+
+# Write the result to a .txt file
+with open('./temp/' + file_name + '.txt', 'w', encoding='utf-8') as f:
+    f.write(result["text"])
+```
+
+Nach einiger Zeit ist die Transkription fertig und kann aus der `.txt` Datei ausgelesen werden.
+Die gesamte Audiodatei wird einfach direkt Wort fuer Wort niedergeschrieben.
+Stand heute ist es mit öffentlichen Mitteln noch nicht möglich, SprecherInnen zuzuordnen.
+
+### Fortschrittsanzeige
+
+Auf einer aktuellen Nvidia RTX 4090 GPU dauert die Transkription von 60 Minuten `.mp3` Material ungefähr zwischen ~8 und ~12 Minuten.
+Um den jeweils aktuellen Fortschritt zu ueberpruefen, moechten wir diesen idealerweise auf der Kommandozeile ausgegeben haben.
+Dazu muessen die Standard-progressbar des Whisper Moduls überschreiben.
+
+```python
+class _CustomProgressBar(tqdm.tqdm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._current = self.n
+
+    def update(self, n):
+        super().update(n)
+        self._current += n
+
+        # Handle progress here
+        print("Progress: " + str(self._current) + "/" + str(self.total))
+```
+
+Diese koennen wir dann direkt am Modul registrieren
+
+```python
+transcribe_module = sys.modules['whisper.transcribe']
+transcribe_module.tqdm.tqdm = _CustomProgressBar
+```
+
+Der Fortschritt, der jeweils aktuellen Datei, wird dann in der Kommandozeile ausgegeben. Zum Beispiel so
+> Progress: 300300/368261.
+
+[Quelle: aadnk](https://github.com/openai/whisper/discussions/850#discussioncomment-5443424)
+
+### Beispiel 'En Rogue #1'
+
+Im Folgenden habe ich die Transkription fuer die Folge [En Rogue #1](https://m10z.de/en-rogue-1) durchgeführt.
+Hier die ersten paar Abschnitte:
+
+> Herzlich willkommen zu en Rogue, dem unregelmäßigen Podcast zu Rogue-Lite-Likes und was noch so alles dazu gehört. Ich bin Jan und spreche zusammen mit dem Simon. Hallo Welt da draußen. Und dem Adrian.
+Hallo. Das heißt, wenn ihr das Spiel noch nicht gespielt habt, Podcast ausschalten, Spiel spielen, Podcast wieder einschalten. Wenn ihr schon gespielt habt, dranbleiben.
+Wenn ihr keinen Bock habt, es zu spielen, dranbleiben.
+Vielleicht solltest du noch so einen Warnton einbauen.
+Dieser Podcast wird gespoilert. Okay, ich glaube, jetzt hat jeder Zeit, aufzumachen. Dazu, ich habe das Spiel relativ zügig nach Erscheinen durchgespielt.
+Oder letztes Jahr? Ich bin mir gar nicht mehr sicher. Ich glaube, letztes Jahr. Und Simon und Adrian habe ich ein bisschen dazu genötigt oder sie auf den Geschmack gebracht, das zu spielen. Das heißt, da sind die Spielerfahrungen etwas frischer.
+Und ich glaube, wir haben hier auch sehr diverse Wahrnehmungen von dem Spiel, was auch schon mal sehr gut ist. Also ich habe das Spiel sehr, sehr gerne gespielt und war für mich noch im letzten Jahr eins der besten Spiele, die ich in dem Jahr gespielt habe. Wie war denn so eure Erfahrung mit dem Spiel? Ich bringe jetzt mal vor.
+Also im Großen und Ganzen fand ich es ein hervorragendes Spiel. Das Spiel hat nun, dazu werden wir aber kommen, an einem bestimmten Punkt etwas gemacht, was ich immer noch übel nehme. Und das ist aber auch immer ein gutes Zeichen für ein Spiel, weil es wird mir so auch für ewig in Erinnerung bleiben.
+Aber halt eben mit diesem kleinen Haken, dass ich es dem Spiel massiv übel nehme, was es da gemacht hat. Und ich es deswegen auch, wenn ich jetzt danach gefragt werden würde, nicht uneingeschränkt empfehlen würde. Wie ist es bei dir, Adrian? [...]
+
+Das komplette Ergebnis als `.txt` Datei kann [hier](/files/enrogue.txt "download") heruntergeladen werden.
+
+---
+
+Ich danke euch fuers Lesen!
+
+Das nächste *Sunday Project* wird mein physischer Button der die Windows HDR Einstellung an- und ausschaltet. Seid gespannt ;-)
+
+Bis bald. Luca

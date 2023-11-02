@@ -227,6 +227,9 @@ const config = {
                     },
                 ],
             },
+            prism: {
+                additionalLanguages: ['groovy', 'java', 'rust', 'python'],
+            },
         }),
 }
 
