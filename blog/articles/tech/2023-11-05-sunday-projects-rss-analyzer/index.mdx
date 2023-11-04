@@ -4,7 +4,7 @@ title: 'Sunday-Projects - RSS Analyzer'
 date: 2023-11-05T16:00
 authors: [luca]
 tags: [artikel, tech, sunday-projects, luca]
-draft: true
+draft: false
 image: /img/tech/sundayprojects/rssanalyzer.jpg
 ---
 
@@ -166,8 +166,6 @@ def write_files(df, output_path, file_type):
 Als Addon habe ich zusätzlich ein kleines Script erstellt, welches automatisiert `.mp3` Dateien transkribieren kann.
 Theoretisch liesse sich das ganze recht einfach automatisiert auf sämtliche Podcastdateien innerhalb eines Feeds anwenden.
 Ich habe fuer die Transkriptionen jedoch aktuell noch keinen Anwendungsfall, daher ist dies deaktiviert – der Prozess braucht signifikant Strom und ist nicht zu unterschätzen.
-
-Das ganze
 
 Da die Transkription per KI aus Effizienzgründen auf den CUDA Cores einer Nvidia Grafikkarte laufen sollte, ist es wichtig, `Torch` sauber installiert zu haben.
 Mit den folgenden drei Zeilen wird dies sichergestellt:
