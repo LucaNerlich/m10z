@@ -10,10 +10,10 @@ image: /img/tech/sundayprojects/rssanalyzer.jpg
 
 import Image from '@theme/IdealImage'
 
-'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmaessigen Abständen meine Zeit verbringe.
+'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
 
-Den Auftakt auf diesem Blog macht ein kleines Script, das RSS `.xml` Feed Dateien (wie zum Beispiel [unseren](https://m10z.de/audiofeed.xml) einliest und die Items, hier *nur* Podcasts, kategorisiert.
-Anschliessend wird das Ergebnis, aufgeschlüsselt pro Jahr, in einer Tabelle dargestellt.
+Den Auftakt auf diesem Blog macht ein kleines Skript, das die `.xml`-Datei eines RSS-Feeds (wie zum Beispiel [unseren](https://m10z.de/audiofeed.xml)) einliest und die Items, hier *nur* Podcasts, kategorisiert.
+Anschließend wird das Ergebnis, aufgeschlüsselt pro Jahr, in einer Tabelle dargestellt.
 
 Zum Anschauen hier entlang: [https://rss-analyzer.vercel.app](https://rss-analyzer.vercel.app).
 
@@ -23,10 +23,10 @@ Zum Anschauen hier entlang: [https://rss-analyzer.vercel.app](https://rss-analyz
 
 ## Idee
 
-Da Podcast RSS Feeds Daten bereits relativ gut strukturiert, jeder Cast in eigenem `<item>` Block etc., anbieten, habe ich mich gefragt, wie man möglichst unkompliziert eine flotte Auswertung dieser hinbekommen kann.
+Da Podcast-RSS-Feeds Daten bereits relativ gut strukturiert anbieten, jeder Cast in eigenem `<item>` Block etc., habe ich mich gefragt, wie man möglichst unkompliziert eine flotte Auswertung dieser hinbekommen kann.
 Einfach zu analysieren, sind der Titel, sowie das Datum der Veröffentlichung.
 
-Folgend ein Beispiel `<item>` einer Folge [Fundbüro](https://m10z.de/tags/fundbuero). Die nicht relevanten Informationen habe ich per `[...]` gekürzt.
+Folgend ein `<item>`-Beispiel einer Folge des [Fundbüros](https://m10z.de/tags/fundbuero). Die nicht relevanten Informationen habe ich per `[...]` gekürzt.
 
 ```xml
 <item>
@@ -49,14 +49,14 @@ Folgend ein Beispiel `<item>` einer Folge [Fundbüro](https://m10z.de/tags/fundb
 Die einzelnen Elemente sind überwiegend selbsterklärend. Zwei will ich dennoch kurz erläutern:
 
 - `guid` entspricht der einzigartigen ID dieses Items.
-- `enclosure` beschreibt konkrete die Dateireferenz dieses Items, hier die entsprechende `.mp3` Datei. `length` ist hier die Dateigroesse in Byte.
+- `enclosure` beschreibt konkret die Dateireferenz dieses Items, hier die entsprechende `.mp3`-Datei. `length` ist die Dateigröße in Byte.
 
-Gehen wir nun davon aus, dass jeder Podcast einer Kategorie zugeordnet werden kann (Fundbüro, M10Z etc), koennen wir einfach den kompletten Feed einlesen und alle einzelnen Folgen auf Basis ihres Titels zaehlen, kategorisieren und in Monate und Jahre unterteilen.
-Gesammelt und als Tabelle (Screenshot von *The Pod* da diese eine interessante Datenbasis besitzen) dargestellt, laesst sich so eine simple Jahresuebersicht pro RSS Feed erstellen.
+Gehen wir nun davon aus, dass jeder Podcast einer Kategorie zugeordnet werden kann (Fundbüro, M10Z etc.), können wir einfach den kompletten Feed einlesen und alle einzelnen Folgen auf Basis ihres Titels zählen, kategorisieren und in Monate und Jahre unterteilen.
+Gesammelt und als Tabelle (Screenshot von *The Pod*, da diese eine interessante Datenbasis besitzen) dargestellt, lässt sich so eine simple Jahresübersicht pro RSS-Feed erstellen.
 
 <Image img={require('./tabelle.png')} />
 
-Kein wirklich noetiger Mehrwert, aber eine interessante und kurzweilige Statistik - ich mag sowas.
+Kein wirklich nötiger Mehrwert, aber eine interessante und kurzweilige Statistik – ich mag sowas.
 
 Zusätzlich konnte ich dafuer mal wieder mein Python Wissen auskramen, viel war da eh nie vorhanden - aber ich mag es durchaus und zu *Lernprojekten* sage ich selten nein.
 
@@ -64,25 +64,25 @@ Zusätzlich konnte ich dafuer mal wieder mein Python Wissen auskramen, viel war 
 
 Das Projekt besteht aus zwei Bestandteilen:
 
-1. Ein Script zum parsen und katalogisieren von RSS Feeds
+1. Ein Skript zum Parsen und Katalogisieren von RSS-Feeds
     - Python 3.10, xml, yaml
     - Transkription per [Whisper](https://openai.com/research/whisper) auf einer RTX 4090
-2. Eine simple Webseite die mit den Ergebnissen des Scripts HTML Tabellen aufbaut
+2. Eine simple Webseite, die mit den Ergebnissen des Skripts HTML-Tabellen aufbaut
     - NextJS, SCSS, Hosting bei [Vercel](https://vercel.com)
 
-Im Folgenden erläutere ich den Prozess. Dieser besteht im Wesentlichen aus diesen Schritten:
+Im Folgenden erläutere ich den Prozess. Dieser besteht im Wesentlichen aus folgenden Schritten:
 
-1. RSS Feed `.xml` Datei beziehen
+1. RSS-Feed-Datei (`.xml`) beziehen
 2. Diese Datei analysieren
-3. Mit dem Ergebnis etwas machen - hier in neue Dateien schreiben
+3. Mit dem Ergebnis etwas machen – hier in neue Dateien schreiben
 4. Diese Ergebnisdateien innerhalb der Webseite verwenden und die Daten entsprechend darstellen
 
-Das komplette Script sprengt den Rahmen dieses Posts, daher folgend die relevanten Ausschnitte.
+Das komplette Skript sprengt den Rahmen dieses Posts, daher nachfolgend die relevanten Ausschnitte.
 
-### RSS Feed Laden
+### RSS-Feed laden
 
-Wir laden die Konfigurationsdatei, sowie einer Liste von Dateinamen (die konkreten `.xml` Dateien eines Podcasts) und reichen diese weiter.
-Dessen Ergebnis (Title / Jahr kategorisierte Items, nicht zuordbare Items, *Alles* zur Kontrolle), die *fertige* Analyse reichen wir dann zum Speichern weiter.
+Wir laden die Konfigurationsdatei, sowie eine Liste von Dateinamen (die konkreten `.xml`-Dateien eines Podcasts) und reichen diese weiter.
+Dessen Ergebnis (Title / Jahr kategorisierte Items, nicht zuordenbare Items, *Alles* zur Kontrolle), die *fertige* Analyse, reichen wir dann zum Speichern weiter.
 
 ```python
 def create_content(content_path, content_files):
@@ -97,13 +97,13 @@ def create_content(content_path, content_files):
     save_dataframes(content_path, title_count_dict, unmapped_titles, full_dict)
 ```
 
-Aktuell muessen die RSS Feed `.xml` Dateien lokal im Dateisystem liegen, dies koennte aber sehr einfach automatisiert, bzw innerhalb des Scripts erst aus dem Internet runtergeladen werden.
+Aktuell müssen die `.xml`-Dateien des RSS-Feeds lokal im Dateisystem liegen, dies könnte aber sehr einfach automatisiert, bzw. innerhalb des Skripts erst aus dem Internet heruntergeladen werden.
 
-### RSS Feed Parsen
+### RSS-Feed parsen
 
-Das eigentliche parsen ist zu viel und zu komplex, um es hier sinnvoll darzustellen, dahier hier der Einstieg.
-Wir laden jeden `.xml` Feed Datei ein und suchen alle `<item>` Objekte. Jedes `<item>` entspricht einem einzelnen Podcast.
-Per `item.find('title').text` koennen wir uns dann die gewünschten Daten greifen – hier `title`.
+Das eigentliche Parsen ist zu viel und zu komplex, um es hier sinnvoll darzustellen, daher hier der Einstieg.
+Wir laden jede `.xml`-Feed-Datei ein und suchen alle `<item>`-Objekte. Jedes `<item>` entspricht einem einzelnen Podcast.
+Per `item.find('title').text` können wir dann die gewünschten Daten abgreifen – hier `title`.
 
 ```python
 for file in files:
@@ -115,18 +115,18 @@ for file in files:
        # [...]
 ```
 
-Im weiteren Verlauf wird dann ein [Dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) aufgebaut, in dem wir unsere Podcasts pro Title und Jahr katalogisieren.
-Titel werden ueber die intial geladene Konfigurationsdatei kategorisiert. Hier muessen im Vorfeld alle vorhandenen Podcastformate eingetragen werden.
-Die Podcastitems, die hier nicht zugeordnet werden koennen, werden seperat in eine extra Ergebnisdatei geschrieben - um anhand dieser die Konfiguration ueberarbeiten zu koennen.
+Im weiteren Verlauf wird dann ein [Dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) aufgebaut, in dem wir unsere Podcasts pro Titel und Jahr katalogisieren.
+Titel werden über die initial geladene Konfigurationsdatei kategorisiert. Hier müssen im Vorfeld alle vorhandenen Podcastformate eingetragen werden.
+Die Podcastitems, die hier nicht zugeordnet werden können, werden separat in eine extra Ergebnisdatei geschrieben – um anhand dieser die Konfiguration überarbeiten zu können.
 
-Zusätzlich lassen sich auch selbstverständlich nicht alle Podcasts einem jeweiligen Format zuordnen - manche sind entsprechende One-Shots oder Spezialfolgen.
-Sehr häufig finden sich jedoch auch Tippfehler in den relevanten Metadaten, diese koennen ebenfalls ueber die Konfiguration abgefangen werden.
+Zusätzlich lassen sich auch selbstverständlich nicht alle Podcasts einem jeweiligen Format zuordnen – manche sind entsprechende One-Shots oder Spezialfolgen.
+Sehr häufig finden sich jedoch auch Tippfehler in den relevanten Metadaten, diese können ebenfalls über die Konfiguration abgefangen werden.
 
-Gerade letzteres wuerde sich ueber ein *fuzzy search / mapping*, zumindest in vielen Faellen, loesen lassen, ist jedoch die Komplexität und den Mehraufwand in diesem Projekt nicht wert.
+Gerade letzteres würde sich über *fuzzy search / mapping*, zumindest in vielen Fällen, lösen lassen. Das ist jedoch die Komplexität und den Mehraufwand in diesem Projekt nicht wert.
 
 ### Ergebnisdateien erstellen
 
-Wir erstellen `pandas` DataFrames aus den Python Dictionaries zur einfacheren, weiteren Verarbeitung.
+Wir erstellen `pandas`-DataFrames aus den Python-Dictionaries zur einfacheren, weiteren Verarbeitung.
 
 ```python
 def save_dataframes(output_base, title_count_dict, unmapped_titles, full_dict):
@@ -161,13 +161,13 @@ def write_files(df, output_path, file_type):
             method(file_path, index=True)
 ```
 
-## Audio Transkription
+## Audiotranskription
 
-Als Addon habe ich zusätzlich ein kleines Script erstellt, welches automatisiert `.mp3` Dateien transkribieren kann.
-Theoretisch liesse sich das ganze recht einfach automatisiert auf sämtliche Podcastdateien innerhalb eines Feeds anwenden.
-Ich habe fuer die Transkriptionen jedoch aktuell noch keinen Anwendungsfall, daher ist dies deaktiviert – der Prozess braucht signifikant Strom und ist nicht zu unterschätzen.
+Als Addon habe ich zusätzlich ein kleines Skript erstellt, welches automatisiert `.mp3`-Dateien transkribieren kann.
+Theoretisch ließe sich das ganze recht einfach automatisiert auf sämtliche Podcastdateien innerhalb eines Feeds anwenden.
+Ich habe für die Transkriptionen jedoch aktuell noch keinen Anwendungsfall, daher ist dies deaktiviert – der Prozess braucht signifikant Strom und ist nicht zu unterschätzen.
 
-Da die Transkription per KI aus Effizienzgründen auf den CUDA Cores einer Nvidia Grafikkarte laufen sollte, ist es wichtig, `Torch` sauber installiert zu haben.
+Da die Transkription per KI aus Effizienzgründen auf den CUDA-Cores einer Nvidia-Grafikkarte laufen sollte, ist es wichtig `Torch` sauber installiert zu haben.
 Mit den folgenden drei Zeilen wird dies sichergestellt:
 
 ```bash
@@ -176,14 +176,14 @@ pip cache purge
 pip install torch -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
-Erfolg laesst sich leicht per Taskmanager ueberpruefen.
+Der Erfolg lässt sich leicht per Taskmanager überprüfen.
 
-1. Transkriptionsscript starten
-2. Im Taskmanager die GPU Auslastung beobachten
+1. Transkriptionsskript starten
+2. Im Taskmanager die GPU-Auslastung beobachten
 
 ### Whisper Script
 
-Das eigentliche Transkriptionsscript ist sehr kurz. `Whisper` hat quasi die komplette Komplexitaet gekapselt und stellt sie ueber eine einfache API zur Verfuegung.
+Das eigentliche Transkriptionsskript ist sehr kurz. `Whisper` hat quasi die komplette Komplexität gekapselt und stellt sie über eine einfache API zur Verfügung.
 
 ```python
 import os
@@ -205,15 +205,15 @@ with open('./temp/' + file_name + '.txt', 'w', encoding='utf-8') as f:
     f.write(result["text"])
 ```
 
-Nach einiger Zeit ist die Transkription fertig und kann aus der `.txt` Datei ausgelesen werden.
-Die gesamte Audiodatei wird einfach direkt Wort fuer Wort niedergeschrieben.
+Nach einiger Zeit ist die Transkription fertig und kann aus der `.txt`-Datei ausgelesen werden.
+Die gesamte Audiodatei wird einfach direkt Wort für Wort niedergeschrieben.
 Stand heute ist es mit öffentlichen Mitteln noch nicht möglich, SprecherInnen zuzuordnen.
 
 ### Fortschrittsanzeige
 
-Auf einer aktuellen Nvidia RTX 4090 GPU dauert die Transkription von 60 Minuten `.mp3` Material ungefähr zwischen ~8 und ~12 Minuten.
-Um den jeweils aktuellen Fortschritt zu ueberpruefen, moechten wir diesen idealerweise auf der Kommandozeile ausgegeben haben.
-Dazu muessen die Standard-progressbar des Whisper Moduls überschreiben.
+Auf einer aktuellen Nvidia RTX 4090 GPU dauert die Transkription von 60 Minuten `.mp3`-Material ungefähr zwischen 8 und 12 Minuten.
+Um den jeweils aktuellen Fortschritt zu überprüfen, möchten wir diesen idealerweise auf der Kommandozeile ausgeben.
+Dazu muss die Standard-Progressbar des Whisper-Moduls überschrieben werden.
 
 ```python
 class _CustomProgressBar(tqdm.tqdm):
@@ -229,21 +229,21 @@ class _CustomProgressBar(tqdm.tqdm):
         print("Progress: " + str(self._current) + "/" + str(self.total))
 ```
 
-Diese koennen wir dann direkt am Modul registrieren
+Diese können wir dann direkt am Modul registrieren
 
 ```python
 transcribe_module = sys.modules['whisper.transcribe']
 transcribe_module.tqdm.tqdm = _CustomProgressBar
 ```
 
-Der Fortschritt, der jeweils aktuellen Datei, wird dann in der Kommandozeile ausgegeben. Zum Beispiel so
+Der Fortschritt der jeweils aktuellen Datei wird dann in der Kommandozeile ausgegeben. Zum Beispiel so:
 > Progress: 300300/368261.
 
 [Quelle: aadnk](https://github.com/openai/whisper/discussions/850#discussioncomment-5443424)
 
 ### Beispiel 'En Rogue #1'
 
-Im Folgenden habe ich die Transkription fuer die Folge [En Rogue #1](https://m10z.de/en-rogue-1) durchgeführt.
+Im Folgenden habe ich die Transkription für die Folge [En Rogue #1](https://m10z.de/en-rogue-1) durchgeführt.
 Hier die ersten paar Abschnitte:
 
 > Herzlich willkommen zu en Rogue, dem unregelmäßigen Podcast zu Rogue-Lite-Likes und was noch so alles dazu gehört. Ich bin Jan und spreche zusammen mit dem Simon. Hallo Welt da draußen. Und dem Adrian.
@@ -256,12 +256,12 @@ Und ich glaube, wir haben hier auch sehr diverse Wahrnehmungen von dem Spiel, wa
 Also im Großen und Ganzen fand ich es ein hervorragendes Spiel. Das Spiel hat nun, dazu werden wir aber kommen, an einem bestimmten Punkt etwas gemacht, was ich immer noch übel nehme. Und das ist aber auch immer ein gutes Zeichen für ein Spiel, weil es wird mir so auch für ewig in Erinnerung bleiben.
 Aber halt eben mit diesem kleinen Haken, dass ich es dem Spiel massiv übel nehme, was es da gemacht hat. Und ich es deswegen auch, wenn ich jetzt danach gefragt werden würde, nicht uneingeschränkt empfehlen würde. Wie ist es bei dir, Adrian? [...]
 
-Das komplette Ergebnis als `.txt` Datei kann [hier](/files/enrogue.txt "download") heruntergeladen werden.
+Das komplette Ergebnis als `.txt`-Datei kann [hier](/files/enrogue.txt "download") heruntergeladen werden.
 
 ---
 
-Ich danke euch fuers Lesen!
+Ich danke euch fürs Lesen!
 
-Das nächste *Sunday Project* wird mein physischer Button der die Windows HDR Einstellung an- und ausschaltet. Seid gespannt ;-)
+Das nächste *Sunday-Project* wird mein physischer Button der die Windows-HDR-Einstellung an- und ausschaltet. Seid gespannt ;-)
 
 Bis bald. Luca
