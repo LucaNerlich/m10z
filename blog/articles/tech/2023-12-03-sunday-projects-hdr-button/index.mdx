@@ -8,9 +8,10 @@ draft: false
 image: /img/tech/sundayprojects/hdr.jpg
 ---
 
+import ReactPlayer from 'react-player'
 import Image from '@theme/IdealImage'
 
-'Sunday Projects' sind die kleinen, technischen Projekte und Spielerereien mit denen ich in unregelmaessigen Abstaenden meine Zeit verbringe.
+'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
 
 An diesem Sonntag zeige ich euch einen kleinen, physischen Button den ich nutze, um die HDR Einstellung meines Windows 11 an- und auszuschalten.
 
@@ -18,22 +19,41 @@ An diesem Sonntag zeige ich euch einen kleinen, physischen Button den ich nutze,
 
 <!--truncate-->
 
+## Idee
+
 Seit ich meinen Desktopmonitor mit einem modernen OLED Screen ausgetauscht habe, bin ich, um alle Vorteile geniessen zu koennen, leider gezwungen HDR in Windows semi-regelmaessig aktivieren und deaktivieren zu muessen.
 
 Klar, das geht recht einfach ueber die Tastenkombination `WIN + ALT + B`. Aber waere es nicht viel cooler, wenn es dafuer einen dedizierten Button geben wuerde? Und waere es nicht noch cooler, wenn sich dieser auch noch angenehm druecken lassen wuerde - inklusive sattem Geräusch?
 
+<ReactPlayer
+    width="100%"
+    height="500px"
+    controls
+    url='https://share.lucanerlich.com/s/ieoKoHSfHfewswg/download/hdrbutton.mp4'
+/>
+
+## Umsetzung
+
 Wie praktisch, dass ich noch einen [Puck](https://www.espruino.com/Puck.js) hier rumliegen habe!
 
-<Image img={require('./1.jpg')} />
+<Image img={require('./3.jpg')} />
 
 Ich wollte damit eigentlich immer ein *sophisticated* Projekt umsetzen, aber man kennts ja - keine Zeit und die Doku ist scheisse :S
+
+<Image img={require('./2.jpg')} />
 
 Das Ding kostet knappe 30 Euro (ja, fuer dieses Sonntagsprojekt und dessen Usecase komplett bescheuert). Wird als kleine, runde Platine inkl CR2032 Batterie, Gehaeuse und Silikonhuelle geliefert.
 
 Batterie rein, Platine in Gehaeuse, Silikonhuelle drueber, fertig!
 
-<Image img={require('./2.jpg')} />
-<Image img={require('./3.jpg')} />
+<Image img={require('./1.jpg')} />
+
+### Sourcecode
+
+Nachfolgend der Code den ich auf den Puck geladen habe. Da ich keine Ahnung von Hardware, bzw Bluetoothgeraete Programmierung habe, musste ich mir das meiste dieses kurzen Scriptes zusammen-googlen, sowie ueber das Espruino Forum erfragen.
+
+Der Puck kann bequem ueber die [Browser IDE](https://www.espruino.com/ide) bespielt werden.
+Am einfachsten nutzt man dafuer Chrome und verbindet den Puck direkt ueber Bluetooth mit Chrome.
 
 ```javascript
 // http://www.espruino.com/BLE+Keyboard
@@ -53,3 +73,13 @@ function btnPressed() {
 }
 setWatch(btnPressed, BTN, { edge: "rising", repeat: true, debounce: 50 });
 ```
+
+Nach erfolgreicher Verbindung laesst sich der Code einfach per Klick auf `Save to Flash` in den Speicher des Puck laden. Darauf hin wieder die Verbindung zu Chrome trennen und regulaer den Puck ueber Bluetooth mit Windows 11 verbinden - diese Verbindung wird bei jedem Systemstart erneut hergestellt.
+
+Per Druck auf den Puck - der in sich quasi ein Button ist - schaltet Windows nun HDR an und beim erneuten Druck wieder aus.
+
+Cool, praktisch, haptisch angenehm und selbstverständlich komplett unnötig 😉
+
+Ich danke euch fürs Lesen!
+
+Bis bald. Luca
