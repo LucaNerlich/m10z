@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![Hoellenbarde](https://irgendwasmitkunden.de/DiffusionBee-x-Til-Hoellenbarde.jpg)
 > DiffusionBee x Til : Diabolical Tunes
 
-# Höllenbarde
+## Höllenbarde
 
 Sie sind auf der Durchreise, <br/>
 bepackt mit Schild und Schwert. <br/>

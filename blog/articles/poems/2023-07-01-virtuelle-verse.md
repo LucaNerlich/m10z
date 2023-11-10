@@ -14,7 +14,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 > Diffusion Bee x Til : Draußen wie drinnen
 
-# Kein Spiegelbild
+## Kein Spiegelbild
 
 „Geht doch endlich draußen spielen“  
 Sagten sie schon zu ganz vielen  

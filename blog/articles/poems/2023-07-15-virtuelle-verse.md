@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![NagerimPC](https://irgendwasmitkunden.de/RatsofDoom.png)
 > Diffusion Bee x Til : Testratte 002 Bilschirmnager
 
-# Verdammte Ratte
+## Verdammte Ratte
 
 Was sollen wir Menschen sonst auch tun  
 Als uns zu fragen "Can it run Doom?"  

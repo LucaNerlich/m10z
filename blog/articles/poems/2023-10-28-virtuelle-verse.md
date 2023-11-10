@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![OutOfIdeas](https://irgendwasmitkunden.de/Leer.png)
 >  x Til: nix
 
-# Bitte gehen sie weiter
+## Bitte gehen sie weiter
 
 Du willst die Zeit mit Games verbringen    
 Ich hoff das Zeilen meinem Kopf entspringen  

@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![VirenViking](https://irgendwasmitkunden.de/VirenViking.png)
 > Diffusion Bee x Til : Wehleidiger Wikinger
 
-# Heroischer Husten
+## Heroischer Husten
 
 Gibt es digitale Welten, in denen Krieger sich erkälten?  
 Wann fängt beim fellbehangenen Mann denn mal der Hals zu kratzen an?  

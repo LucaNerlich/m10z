@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![Dorfromantik im Schnellzug](https://irgendwasmitkunden.de/Dorfromantik-im-Schnellzug.jpg)
 > Foto: Til Breidenbach
 
-# You can't be gaming on a moving train
+## You can't be gaming on a moving train
 
 Steamdeck spielen im Eurostar, <br/>
 Zeitvertreib mit der Gefahr, <br/>

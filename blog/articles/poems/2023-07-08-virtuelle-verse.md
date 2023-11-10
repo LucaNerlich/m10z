@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![Konsolenkrieger](https://irgendwasmitkunden.de/GreenVSBlue.png)
 > Diffusion Bee x Til : Konsolenkrieger Sparring
 
-# 3. Sieger
+## 3. Sieger
 
 "Warte bis ich dich besieg,  
 im ewigen Konsolenkrieg"  

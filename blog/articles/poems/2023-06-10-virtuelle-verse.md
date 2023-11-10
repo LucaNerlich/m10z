@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![KnochenKutsche](https://irgendwasmitkunden.de/KnochenKutsche.png)
 > Diffusion Bee x Til: Mit der Knochenkutsche in den Abgrund
 
-# Das Licht am Ende des dunklen Kerkers ist kaputt
+## Das Licht am Ende des dunklen Kerkers ist kaputt
 
 Man sieht sie in der Kutsche rutschen <br/>
 Platz machen für die nächsten Krieger <br/>

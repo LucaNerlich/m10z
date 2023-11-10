@@ -14,7 +14,7 @@ Doch diesen Samstag ist es anders, den Simon hat beim Zocken die Muse geküsst u
 ![Stachelherz](https://irgendwasmitkunden.de/EinHerzausDorn.png)
 > Diffusion Bee x Til : Ein Herz aus Dorn
 
-# Dornige Chancen
+## Dornige Chancen
 
 Ich jage das Herz nun schon seit Stunden  
 Hab den Wächter, den Champ und die Zeit überwunden  

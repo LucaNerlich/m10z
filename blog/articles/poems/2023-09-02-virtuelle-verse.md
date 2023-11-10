@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![TheFangFour](https://irgendwasmitkunden.de/Survifour.png)
 > Diffusion Bee x Til: Nur noch eine Runde Edward
 
-# Fangzahn Survifour
+## Fangzahn Survifour
 
 Überleben die Vampire  
 Gemeinsam auf der Couch  

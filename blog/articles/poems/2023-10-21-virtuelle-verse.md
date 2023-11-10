@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![ItsybitsySpinner](https://irgendwasmitkunden.de/Spinnenheld.png)
 > Diffusion Bee x Til: Wartet bis die von einem Mensch gebissen wird
 
-# Systemfrust
+## Systemfrust
 
 Schwungvoll durch die Gassen schwingen  
 Ein Fausttanz mit der Unterwelt  

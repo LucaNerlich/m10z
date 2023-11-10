@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![WastelandWanderer](https://irgendwasmitkunden.de/DiffusionBee-x-Til-WastelandWanderer.png)
 > Diffusion Bee x Til: Wasteland Wanderer
 
-# Der Weg ist das Spiel
+## Der Weg ist das Spiel
 
 Ich halte die Schnellreise, ganz unumwunden<br/>
 Für überbewertet und kann nur bekunden:<br/>

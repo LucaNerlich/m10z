@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![ZombieSpiel](https://irgendwasmitkunden.de/RetroEvil.png)
 > Diffusion Bee x Til: Wenn das Spiel mit spielen Pause macht vom Spiel
 
-# RetroEvil vs RemakeEvil
+## RetroEvil vs RemakeEvil
 
 Als der Hund durchs Fenster kam  
 Dir der Atem stockte  
