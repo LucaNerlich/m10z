@@ -1,6 +1,6 @@
 ---
 slug: sunday-projects-transcription
-title: 'Sunday-Projects – Transcription von Videodateien'
+title: 'Sunday-Projects – Transkription von Videodateien'
 date: 2023-11-20T16:00
 authors: [adrian]
 tags: [artikel, tech, sunday-projects, adrian]
@@ -12,22 +12,21 @@ import Image from '@theme/IdealImage'
 
 'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
 
-Als Reaktion auf Lucas erstlingswerk für die "Sunday Proejcts" habe ich es direkt als Lösungsansatz wiederzuverwenden die mich immer wieder auf der Arbeit wurmt: Die Verarbeitung von großen Informationsmengen und das Organisieren von Wissen.
+Als Reaktion auf Lucas Erstlingswerk für die „Sunday Projects“ habe ich sein Projekt direkt als Lösungsansatz wiederverwendet, um Folgendes, welches mich immer wieder auf der Arbeit wurmt, zu erledigen: das Verarbeiten von großen Informationsmengen und das Organisieren von Wissen.
 
 <Image img={require('/static/img/tech/sundayprojects/rssanalyzer.jpg')} />
 
 <!--truncate-->
 
 ## Das Problem
-Ich bin ein Datenmessie.
-Ich verbringe einen beachtlichen Anteil meiner Zeit darin für meine Arbeit Informationen zu suchen, zu organisieren, verteilen und entsprechend viel lese ich.
-Es macht so einen beachtlichen Anteil aus, dass ich mir beim Schreiben dieser paar Zeilen gefragt habe wieso ich nicht eine Karriere als Bibliothekar angestrebt habe.
-Das geht so weit, dass ich letztens von einem ehemaligen Kollegen angeschrieben wurde um wiederum seinen Kollegen bei Wien Energie für ein Projekt einen Crashkurs zu einem spezifischen Thema gegeben habe (inkl. Folder mit Quellen).
+Ich bin ein Datenmessie und wende deshalb einen beachtlichen Anteil meiner Zeit dafür auf, die entsprechenden Informationen für meine Arbeit zu suchen, zu organisieren und zu verteilen. Und dementsprechend viel lese ich.
+Es macht so einen beachtlichen Anteil aus, dass ich mich beim Schreiben dieser paar Zeilen gefragt habe, weshalb ich keine Karriere als Bibliothekar angestrebt habe.
+Das geht so weit, dass ich letztens von einem ehemaligen Kollegen angeschrieben wurde, um seinen Kollegen bei Wien Energie für ein Projekt einen Crashkurs zu einem spezifischen Thema zu (inkl. Folder mit Quellen).
 Und ja, ich war überrascht, dass ein Energieversorger keine interne Expertise zum Thema Energiespeicher hatte.
-Aber zurück zur Problemstellung: Auf meinem Arbeitsnotebook horte ich 65GB an Publikationen, Büchern, Videos, e-Mails und Aufzeichnungen. Insgesamt handelt es sich um 28.585 Dateien, organisiert in 2834 Ordnern (es ist etwas ungenau, weil 183 Ordner wurden durch [Zotero](https://www.zotero.org) angelegt um die dort gespeicherten Publikationen zu verwalten). Während nun die meisten PDFs eigentlich ganz einfach zu durchsuchen sind, wird es aber mit den ca. 660 Videodateien Problematisch, weil keines von diesen Untertitel haben.
+Aber zurück zur Problemstellung: Auf meinem Arbeitsnotebook horte ich 65 GB an Publikationen, Büchern, Videos, E-Mails und Aufzeichnungen. Insgesamt handelt es sich um 28.585 Dateien, organisiert in 2834 Ordnern (es ist etwas ungenau, weil 183 Ordner durch [Zotero](https://www.zotero.org) angelegt wurden, um die dort gespeicherten Publikationen zu verwalten). Während nun die meisten PDFs eigentlich ganz einfach zu durchsuchen sind, wird es aber mit den ca. 660 Videodateien problematisch, weil keine einzige davon Untertitel hat.
 
 ## Die Lösung?
-Dank Lucas Post, konnte ich mich eigentlich recht großzugüg beim Code bedienen und es entsprechend für meine Zwecke wiederverwenden (den code habe ich einfach schnell mittels ChatGPT kommentieren lassen). Im Endeffekt gehe ich durch meinen Literaturordner, suche nach Videodateien und schicke es durch Whisper. Aus irgendeinem Grund, funktionierte es anfangs nicht direkt Videodateien zu verwenden, weswegen ich erstmal MP3s extrahiert habe um anschließend  es durch whisper zu schicken. Anschließend funktioniert es aber wieder direkt per Video, also vermute ich dass da eine Datei ist die Probleme machte. Aus Faulheit habe ich aber auch keine Fallback-Lösungen eingebaut (z.B. erst Video, dann Audio), weil ich nicht vorhabe das Skript jeden Tag unbeaufsichtigt auszuführen (oder vielleicht doch irgendwann?).
+Dank Lucas Post konnte ich mich recht großzügig beim Code bedienen und ihn entsprechend für meine Zwecke wiederverwenden (den Code habe ich einfach mittels ChatGPT kommentieren lassen). Im Endeffekt gehe ich durch meinen Literaturordner, suche nach Videodateien und schicke diese durch Whisper. Aus irgendeinem Grund war es anfangs nicht möglich, direkt die Videodateien zu verwenden, weshalb ich erstmal MP3s extrahiert habe, um anschließend alles durch Whisper zu schicken. Danach funktionierte es wieder direkt per Video, also vermute ich, dass da eine Datei das Problem verursacht hat. Aus Faulheit habe ich aber auch keine Fallback-Lösungen eingebaut (z. B. zuerst Video, dann Audio), da ich nicht beabsichtige, das Skript jeden Tag unbeaufsichtigt ausführen zu lassen (oder vielleicht doch irgendwann?).
 
 ```python
 import os
@@ -79,23 +78,23 @@ def transcribe_videos(folder_path):
 transcribe_videos(folder_path)
 ```
 
-Aus Mangel an Rechenresourcen habe ich im Gegensatz zu Luca das Base- anstatt dem Large-Modell von OpenAI verwendet. Das sah in den ersten Ergebnissen auch eigentlich alles ganz okay aus. Hier ein Ausschnitt (insgesamt 118290 Zeichen):
+Aus Mangel an Rechenressourcen habe ich im Gegensatz zu Luca das Base- anstatt das Large-Modell von OpenAI verwendet. Das sah in den ersten Ergebnissen auch alles ganz okay aus. Hier ein Ausschnitt (insgesamt 118.290 Zeichen):
 
 ```
- So let's look at a typical silicon carbide or any vertical device for that matter. There is a thick layer, a drift layer that holds the high voltage. And if you want to make a device of a specific voltage, then the thickness is inversely proportional to the critical electric field. So if the critical electric field is 10 times higher, then the thickness of your device is 10 times smaller. If you look at the device resistance, the equation right below, it's inversely proportional to the third power now of the critical electric field. So if your critical electric field is 10 times higher, then the resistance of that layer will be 1000 times lower. ....
+ So let's look at a typical silicon carbide or any vertical device for that matter. There is a thick layer, a drift layer that holds the high voltage. And if you want to make a device of a specific voltage, then the thickness is inversely proportional to the critical electric field. So if the critical electric field is 10 times higher, then the thickness of your device is 10 times smaller. If you look at the device resistance, the equation right below, it's inversely proportional to the third power now of the critical electric field. So if your critical electric field is 10 times higher, then the resistance of that layer will be 1000 times lower. …
  ```
 
 ## Zusatzaufgabe: Erstmal Platz schaffen
-Das funktionierte alles auch soweit echt super, bis ich auf ein kleines Detail gestoßen bin: Ich habe die Daten im OneDrive gespeichert und während also das Skript durchlief und brav die Videodateien beim Zugriff runtergeladen hat wurde allmählich mein freier Speicherplatz immer geringer, bis ich bei 0 Byte gelandet bin. Blöd. Aber dank FFmpeg und FFprobe ist das auch gar kein Problem (danke ChatGPT, dass meinen code refactored hat). FFmpeg ist eine Bibliothek zum konvertieren von Videodateien und erlaubt eigentlich alles mögliche. Extrahieren von Audio-Dateien, konvertieren, filter usw. FFprobe ist bestandteil und erlaubt es herauszufinden welchen Codec die Videodateien verwenden. Was ich also tue ist somit folgendes:
+Das funktionierte alles soweit auch echt super, bis ich auf ein kleines Detail gestoßen bin: Ich habe die Daten in OneDrive gespeichert und während also das Skript durchlief und brav die Videodateien beim Zugriff heruntergeladen hat, wurde allmählich mein freier Speicherplatz immer geringer, bis ich bei 0 Byte gelandet bin. Blöd. Aber dank FFmpeg und FFprobe ist das auch gar kein Problem (danke ChatGPT, das meinen Code refactored hat). FFmpeg ist eine Bibliothek zum Konvertieren von Videodateien und erlaubt alles Mögliche. Extrahieren von Audio-Dateien, Konvertieren, Filter usw. FFprobe ist davon Bestandteil und ermöglicht es herauszufinden, welchen Codec die Videodateien verwenden. Was ich also tue, ist somit Folgendes:
 
 1. Hey, erstell mir mal eine Liste aller Videodateien.
-2. Geh durch alle Videodateien und prüfe ob sie h.265 verwenden.
+2. Gehe durch alle Videodateien und prüfe, ob sie h.265 verwenden.
 3. Jetzt wäre es irgendwie Leiwand, wenn du sie mit der CPU* alle umwandelst.
 4. Lösch auch den alten Müll einfach.
 5. Voila, Videos sind nur noch ein Bruchteil so groß (teilweise 1/10).
 6. Leiwand.
 
-* CPU, weil NVenc meiner Erfahrung nach sowohl in Videoqualität wie auch Komprimierung bei weitem schlechter ist.
+* CPU, da NVenc meiner Erfahrung nach sowohl bei der Videoqualität als auch beim Komprimieren deutlich schlechter ist.
 
 ```python
 import os
@@ -170,7 +169,7 @@ search_and_convert_videos(folder_path)
 ```
 
 ## Ausblick
-Was soll eigentlich der ganze Terz wenn doch der Text immer noch nicht richtig leserlich ist? Nunja, es gibt noch ein anderes Projekt an dem ich nebenbei etwas arbeite: Mein eigener Chatbot mithilfe von [PrivateGPT](https://github.com/imartinez/privateGPT) um es als Suchmaschine zu verwenden. Das läuft auch soweit, wenn auch noch sehr langsam und ich bin gerade dabei es auf eine neuere Version zu aktualisieren. Danach kann ich mir dann Gedanken darüber machen wie ich es für die Kollegen zugänglich machen kann ;-)
+Was soll eigentlich der ganze Terz, wenn der Text immer noch nicht richtig leserlich ist? Nun ja, es gibt noch ein anderes Projekt, an dem ich nebenbei etwas arbeite: Mein eigener Chatbot mithilfe von [PrivateGPT](https://github.com/imartinez/privateGPT), um es als Suchmaschine zu verwenden. Das läuft auch soweit, wenn auch noch sehr langsam, und ich bin gerade dabei, es auf eine neuere Version zu aktualisieren. Danach kann ich mir dann Gedanken darüber machen, wie ich es für die Kollegen zugänglich machen kann. ;-)
 
 
 ---
