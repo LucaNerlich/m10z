@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![Grafikblender](https://irgendwasmitkunden.de/Grafikblender.png)
->  Diffusion Bee x Til: 
+>  Diffusion Bee x Til 
 
 ## Pixelperfektion  
 
