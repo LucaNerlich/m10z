@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![HerbstBox](https://irgendwasmitkunden.de/HerbstBox.png)
 > Diffusion Bee x Til: autumn on the couch, why does it seem so inviting
 
-# Goldene Wälder, digitale Welten
+## Goldene Wälder, digitale Welten
 
 Draußen dunkel, stürmisch, grau  
 Nur ein Bildschirm spendet Licht  

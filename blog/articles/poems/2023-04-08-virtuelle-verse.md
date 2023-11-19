@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![Pokemon trifft mehr Lametta](https://irgendwasmitkunden.de/DALL-E-x-Til-Pokemon-trifft-Lametta.png)
 > Dall-E x Til : Pokemon trifft mehr Lametta
 
-# Verkannte Kunst in Kanto
+## Verkannte Kunst in Kanto
 
 Glumanda tobt, auch Shiggy schwimmt,<br/>
 bedröppelt weg und ist verstimmt.<br/>

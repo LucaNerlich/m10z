@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![Iamthedoctor](https://irgendwasmitkunden.de/Doktorspiele.png)
 > Diffusion Bee x Til: Diagnose: Highscore
 
-# Doktorspiele
+## Doktorspiele
 
 Beim Doktor nicht sehr gern gesehen      
 Das ist wohl hinlänglich bekannt    

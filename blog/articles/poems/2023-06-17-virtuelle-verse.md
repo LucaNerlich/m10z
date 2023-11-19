@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![Gunfield](https://irgendwasmitkunden.de/Gunfield.png)
 > Diffusion Bee x Til: Starfield, Gunfield
 
-# Starfield Dilemma
+## Starfield Dilemma
 
 Kann ich das Weltall ruhig genießen?  
 Darf ich staunen? Muss ich schießen?  

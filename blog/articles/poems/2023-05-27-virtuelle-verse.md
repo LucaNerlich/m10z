@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![so viel Spiel so wenig Zeit](https://irgendwasmitkunden.de/DiffusionBee-x-Til-library.png)
 > Diffusion Bee x Til: kenne meine echte Bibliothek nicht besser als diese KI Version....
 
-# Darf’s noch etwas mehr sein?
+## Darf’s noch etwas mehr sein?
 
 Steam Library und Gamepass Abo<br/>
 Meine Spiele stapeln sich<br/>

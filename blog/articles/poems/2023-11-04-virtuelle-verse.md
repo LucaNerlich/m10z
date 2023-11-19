@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![OutOfIdeas](https://irgendwasmitkunden.de/TitleScreens.png)
 >  Foto von Til: diverse Spielemenüs
 
-# Das Hauptmenü
+## Das Hauptmenü
 
 Die meisten Menschen kennen dich  
 Nur flüchtig bis oberflächlich  

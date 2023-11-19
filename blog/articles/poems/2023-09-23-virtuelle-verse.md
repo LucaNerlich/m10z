@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![ZeroFGiven](https://irgendwasmitkunden.de/Batteriebrauser.png)
 > Diffusion Bee x Til: Reichweite ausreizen
 
-# Life in the rechargelane
+## Life in the rechargelane
 
 Einst war es seiner Zeit vorraus  
 Dann kam lang nichts mehr  

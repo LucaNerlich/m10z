@@ -128,6 +128,10 @@ const config = {
                     hideable: true,
                 },
             },
+            tableOfContents: {
+                minHeadingLevel: 2,
+                maxHeadingLevel: 6,
+            },
             colorMode: {
                 defaultMode: 'dark',
                 disableSwitch: false,

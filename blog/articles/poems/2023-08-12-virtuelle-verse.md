@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![SuperBoomioBros](https://irgendwasmitkunden.de/SuperBoomioBros.png)
 > Diffusion Bee x Til : "Bei Pong war der Gameplay Loop geiler"
 
-# Videogames killed the videostar
+## Videogames killed the videostar
 
 Als Telespiel ein neues Wort war  
 Und den Menschen damals noch unklar  

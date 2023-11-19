@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![Game im Game](https://irgendwasmitkunden.de/Minetris.png)
 > Diffusion x Til : Klotzspiel zum Quadrat
 
-# Minetris
+## Minetris
 
 Jede Generation hat ihr Klötzchenspiel  
 Im Vergleich zu Minecraft, passiert in Tetris nicht viel  

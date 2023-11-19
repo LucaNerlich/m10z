@@ -13,7 +13,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![They see me cruisin](https://irgendwasmitkunden.de/Diffusion%20Bee%20x%20Til%20-%20Cruisin.jpg)
 > DiffusionBee x Til : Fungus Go-kartius
 
-# Motor Mushroom
+## Motor Mushroom
 
 Ein Pilz steht auf der Autobahn, <br/>
 hat sich wohl total vertan, <br/>
