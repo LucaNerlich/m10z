@@ -21,6 +21,39 @@
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
 
         <item>
+            <title>Mindestens 10 Zeichen #9 - Eselkacke!</title>
+            <pubDate>Sat, 25 Nov 2023 11:59:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash19</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen #9 (m10z)</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+                Willkommen und Hallo zur Nr. 9 unseres Lieblingspodcasts!
+
+                Heute besprechen Marcel und Til für euch was es Geiles in Gallien gibt, warum es das OLED SteamDeck nicht braucht und mit der wunderbar geerdeten Lokaljournalistin @Lea Irion haben sie die weite Welt des ernsthaften Gamingjournalismus zu Gast.
+                Aber anders als vermutet treibt Lea noch viel mehr um als Plüschpenisse.
+                Hört mit uns ihre Meinung über Eselkacke, Ok Cool und die letzten Tage von Wasted!
+                Das Gespräch mit ihr war so wohlig und wunderbar, dass wir uns einfach nur noch einmal bedanken wollen, Lea, du bist der Hammer! :slight_smile:
+
+                Musik gibt es diese Folge von unserem geliebten Produzentengott an den Reglern:
+                Simon hat ein neues Realease, lasst es uns hören!
+
+                Wie immer freuen wir uns über euer Feedback.
+
+                Viel Spaß beim hören,
+                Marcel, Simon und Til
+
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>6540</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_009.mp3"
+                       length="108802388"
+                       type="audio/mpeg"/>
+        </item>
+
+        <item>
             <title>Fundbüro #05 - Gallien den Galliern</title>
             <pubDate>Sun, 19 Nov 2023 10:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash19</guid>
@@ -34,7 +67,7 @@
                 der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
 
-                Passend zum kürzlich veröffentlichten Comicband Asterix – Die weisse Iris haben wir uns im Fundbüro einer kriegerischen Auseinandersetzung zwischen der unbeugsamen Dorfgemeinschaft und dem römischen Imperium gewidmet.
+                Passend zum kürzlich veröffentlichten Comicband Asterix – Die weisMindestens 10 Zeichen #8se Iris haben wir uns im Fundbüro einer kriegerischen Auseinandersetzung zwischen der unbeugsamen Dorfgemeinschaft und dem römischen Imperium gewidmet.
 
                 Aus einer uralten, fast schon morschen Holzkiste kommt eine noch verschlossen Amphore zum Vorschein. Ihren rundlichen Bauch schmücken verschiedene Kampfdarstellungen über denen die Aufschrift „PROELIUM PRO GALLIA“ angebracht wurde.
 
@@ -115,7 +148,7 @@ Til, Marcel und Simon
         <item>
             <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
             <pubDate>Thu, 19 Oct 2023 10:00:00 +0000</pubDate>
-            <guid isPermaLink="false">ein-hash16</guid>
+            <guid isPermaLink="false">ein-hash16</guid>https://m10z.de/m10z-9
             <itunes:image>
                 <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
                 <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
