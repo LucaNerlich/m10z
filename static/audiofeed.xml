@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
-
+    
     <!--  https://www.gbmb.org/mb-to-bytes  -->
-
+    
     <channel>
         <title>M10Z Podcasts</title>
         <link>https://m10z.de</link>
@@ -19,11 +19,11 @@
         <itunes:author>M10Z</itunes:author>
         <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #9 - Eselkacke!</title>
             <pubDate>Sat, 25 Nov 2023 11:59:00 +0000</pubDate>
-            <guid isPermaLink="false">ein-hash19</guid>
+            <guid isPermaLink="false">ein-hash20</guid>
             <itunes:image>
                 <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
                 <title>Mindestens 10 Zeichen #9 (m10z)</title>
@@ -31,20 +31,21 @@
             </itunes:image>
             <description>
                 Willkommen und Hallo zur Nr. 9 unseres Lieblingspodcasts!
-
-                Heute besprechen Marcel und Til für euch was es Geiles in Gallien gibt, warum es das OLED SteamDeck nicht braucht und mit der wunderbar geerdeten Lokaljournalistin @Lea Irion haben sie die weite Welt des ernsthaften Gamingjournalismus zu Gast.
+                
+                Heute besprechen Marcel und Til für euch was es Geiles in Gallien gibt, warum es das OLED SteamDeck nicht braucht und mit der
+                wunderbar geerdeten Lokaljournalistin @Lea Irion haben sie die weite Welt des ernsthaften Gamingjournalismus zu Gast.
                 Aber anders als vermutet treibt Lea noch viel mehr um als Plüschpenisse.
                 Hört mit uns ihre Meinung über Eselkacke, Ok Cool und die letzten Tage von Wasted!
-                Das Gespräch mit ihr war so wohlig und wunderbar, dass wir uns einfach nur noch einmal bedanken wollen, Lea, du bist der Hammer! :slight_smile:
-
+                Das Gespräch mit ihr war so wohlig und wunderbar, dass wir uns einfach nur noch einmal bedanken wollen, Lea, du bist der Hammer!
+                
                 Musik gibt es diese Folge von unserem geliebten Produzentengott an den Reglern:
-                Simon hat ein neues Realease, lasst es uns hören!
-
+                Simon hat ein neues Release, lasst es uns hören!
+                
                 Wie immer freuen wir uns über euer Feedback.
-
+                
                 Viel Spaß beim hören,
                 Marcel, Simon und Til
-
+            
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>6540</itunes:duration>
@@ -52,7 +53,7 @@
                        length="108802388"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Fundbüro #05 - Gallien den Galliern</title>
             <pubDate>Sun, 19 Nov 2023 10:00:00 +0000</pubDate>
@@ -66,18 +67,22 @@
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar
                 der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
-
-                Passend zum kürzlich veröffentlichten Comicband Asterix – Die weisMindestens 10 Zeichen #8se Iris haben wir uns im Fundbüro einer kriegerischen Auseinandersetzung zwischen der unbeugsamen Dorfgemeinschaft und dem römischen Imperium gewidmet.
-
-                Aus einer uralten, fast schon morschen Holzkiste kommt eine noch verschlossen Amphore zum Vorschein. Ihren rundlichen Bauch schmücken verschiedene Kampfdarstellungen über denen die Aufschrift „PROELIUM PRO GALLIA“ angebracht wurde.
-
-                Handelt es sich hier etwa um einen gut gereiften Wein oder doch nur noch Essig, den keiner mehr anrühren möchte? Inwieweit Asterix: The Gallic War aus dem Jahr 1999 eine zu Unrecht vergessene Perle ist, erfahrt ihr in unserer neuen Folge des Fundbüros.
-
+                
+                Passend zum kürzlich veröffentlichten Comicband Asterix – Die weisMindestens 10 Zeichen #8se Iris haben wir uns im Fundbüro einer
+                kriegerischen Auseinandersetzung zwischen der unbeugsamen Dorfgemeinschaft und dem römischen Imperium gewidmet.
+                
+                Aus einer uralten, fast schon morschen Holzkiste kommt eine noch verschlossen Amphore zum Vorschein. Ihren rundlichen Bauch schmücken
+                verschiedene Kampfdarstellungen über denen die Aufschrift „PROELIUM PRO GALLIA“ angebracht wurde.
+                
+                Handelt es sich hier etwa um einen gut gereiften Wein oder doch nur noch Essig, den keiner mehr anrühren möchte? Inwieweit Asterix:
+                The Gallic War aus dem Jahr 1999 eine zu Unrecht vergessene Perle ist, erfahrt ihr in unserer neuen Folge des Fundbüros.
+                
                 Ps: Schreibt uns gerne, wie ihr unser neues Intro fandet.
-
+                
                 Viel Spaß mit der neuen Folge!
-
-                Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf https://community.wasted.de vorbei!
+                
+                Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
+                https://community.wasted.de vorbei!
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>00:21:51</itunes:duration>
@@ -85,7 +90,7 @@
                        length="54525952"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #8 - Der rästelhafte Gast</title>
             <pubDate>Fri, 03 Nov 2023 01:00:00 +0000</pubDate>
@@ -96,25 +101,30 @@
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>Liebe Freund:innen, geehrte M10Z Community, ihr da draußen.
-
-Nachdem sich Marcel und Til endlich mal in echt getroffen haben, ist jetzt die 8. Folge so schnell aufgenommen, geschnitten und gemischt worden wie bisher keine davor.
-Das soll mitnichten bedeuten es sei ein Schnellschuss, wir waren einfach im Flow.
-Und so erwarten euch wieder große und kleine Eindrücke aus der Community und euren Beiträgen, die Suche nach dem besten Meme aller bisherigen Zeiten und ein Thema, das es in sich hat:
-
-Zu Gast ist heute Henning aka mr_horizon aka Amian_3rd, den ihr aus diesem...jenem...ach eigentlich allen bekannten Videospielforen kennt die es gibt.
-Dort macht er nämlich seit 10 Jahren das Videospiel Bilderrätsel und irgendwie hat ihn bisher keiner mal dazu befragt.
-Also haben wir das gemacht.
-Im Gespräch erfahrt ihr was ein einsamer Winter so alles lostreten kann, welches Forum das coolste, beste, schlauste war und was nach dem letzten Rätsel #100 eigentlich passiert.
-Unsere bitte wäre, das ihr alle Bei den Rästeln #99 und #100 nochmal alles gebt um der langen Reise vom Videospiel Bilderrätsel noch einen krönenden Abschluss zu verpassen.
-
-Musik gibt es diese Folge von der Plaumski Beat Commotion.
-Endlich mal kein Krach werden manche sagen.
-
-Wie immer freuen wir uns über euer Feedback.
-
-Viel Spaß beim hören!
-Til, Marcel und Simon
-
+                
+                Nachdem sich Marcel und Til endlich mal in echt getroffen haben, ist jetzt die 8. Folge so schnell aufgenommen, geschnitten und
+                gemischt worden wie bisher keine davor.
+                Das soll mitnichten bedeuten es sei ein Schnellschuss, wir waren einfach im Flow.
+                Und so erwarten euch wieder große und kleine Eindrücke aus der Community und euren Beiträgen, die Suche nach dem besten Meme aller
+                bisherigen Zeiten und ein Thema, das es in sich hat:
+                
+                Zu Gast ist heute Henning aka mr_horizon aka Amian_3rd, den ihr aus diesem...jenem...ach eigentlich allen bekannten Videospielforen
+                kennt die es gibt.
+                Dort macht er nämlich seit 10 Jahren das Videospiel Bilderrätsel und irgendwie hat ihn bisher keiner mal dazu befragt.
+                Also haben wir das gemacht.
+                Im Gespräch erfahrt ihr was ein einsamer Winter so alles lostreten kann, welches Forum das coolste, beste, schlauste war und was nach
+                dem letzten Rätsel #100 eigentlich passiert.
+                Unsere bitte wäre, das ihr alle Bei den Rästeln #99 und #100 nochmal alles gebt um der langen Reise vom Videospiel Bilderrätsel noch
+                einen krönenden Abschluss zu verpassen.
+                
+                Musik gibt es diese Folge von der Plaumski Beat Commotion.
+                Endlich mal kein Krach werden manche sagen.
+                
+                Wie immer freuen wir uns über euer Feedback.
+                
+                Viel Spaß beim hören!
+                Til, Marcel und Simon
+            
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>6540</itunes:duration>
@@ -122,7 +132,7 @@ Til, Marcel und Simon
                        length="110624768"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>En Rogue #01</title>
             <pubDate>Tue, 31 Oct 2023 13:30:00 +0000</pubDate>
@@ -135,7 +145,7 @@ Til, Marcel und Simon
             <description>
                 In En Rogue begeben sich Jan, Simon und Adrian in den ewigen Kreislauf des Sterbens und Wiederauferstehens. In jeder Folge wird ein
                 Spiel aus dem weiten Feld der Rogue Lites/ Likes besprochen.
-
+                
                 Den Anfang macht das mehrfach preisgekrönte Spiel Inscryption. Ist es wirklich so herausragend oder doch eher Schein statt Sein?
             </description>
             <author>m10z@posteo.de</author>
@@ -144,11 +154,11 @@ Til, Marcel und Simon
                        length="59768832"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
             <pubDate>Thu, 19 Oct 2023 10:00:00 +0000</pubDate>
-            <guid isPermaLink="false">ein-hash16</guid>https://m10z.de/m10z-9
+            <guid isPermaLink="false">ein-hash16</guid>
             <itunes:image>
                 <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
                 <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
@@ -158,7 +168,7 @@ Til, Marcel und Simon
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar
                 der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
-
+                
                 Nach über vier Monaten Sommerpause wurde im Fündbüro eine übergroße Kiste mit einer fetten Triggerwarnung "Achtung! Sexistischer
                 Inhalte" abgelifert.
                 Zu allem Übel rieselt aus den Ritzen auch noch Sand in rauen Mengen. Nach dem Öffnen des Deckels kommen mehrere bunte Bälle, ein paar
@@ -168,7 +178,7 @@ Til, Marcel und Simon
                 sein scheinen. Am Ende stellt sich heraus, es handel sich um den legendären Antrieb von Anakin Skywalker, natürlich aus Star Wars:
                 Episode I – Racer (1999).
                 Viel Spaß mit der neuen Folge!
-
+                
                 Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
                 https://community.wasted.de/ vorbei!
             </description>
@@ -178,7 +188,7 @@ Til, Marcel und Simon
                        length="113246208"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #7</title>
             <pubDate>Sun, 15 Oct 2023 01:00:00 +0000</pubDate>
@@ -189,26 +199,26 @@ Til, Marcel und Simon
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>Hallo an ALLE da draussen!
-
+                
                 Meine Güte, Mit dieser Folge sind wir maximal frustresistent geworden, haben gelernt wie uns die Technik dazwischen funken kann, Dinge
                 auch gegen persönliche Wiederstände und Erkrankungen durchzieht und sind doppelt so überzeugt von uns und euch und allem was wir tun!
-
+                
                 Also her damit, raus damit, Folge fertig und die nächste kann kommen.
                 Diesmal haben wir als Thema unseren geliebten Podcastkollegen 'Lipardus' welcher mit uns über kompetitive Spiele spricht,
                 drehen eine große Runde über die aktuellen Schreiber der Pixelpresse und kommen im CommunityGeplauder von Hölzchen auf Stöckchen.
-
+                
                 Bei der Pixelpresse sind wir noch nicht so hundertprozentig sicher, wie wir hier weiter verfahren.
                 Weitermachen? Eintauschen? Was denkt ihr?
                 Wir sind uns leider hier gefühlt zu oft einer Meinung und uns stets zu sagen, dass wir unsere Lieblingsautoren geil finden, bringt uns
                 gefühlt nicht so den Mehrwert.
-
+                
                 Als Abschlußstück haben wir gewohnt die feinste Kost für unsere Ohren.
                 Diesmal mit ausgesuchtem Postpunk der sympathisch Sympathischsten Ernte 77!
-
+                
                 Wir lieben euch, ihr uns hoffentlich auch und freuen wir uns zusammen auf alle kommenden Folgen, ab jetzt kennen wir uns aus.
-
+                
                 Marcel, Til und Simon
-
+            
             </description>
             <author>m10z@posteo.de</author>
             <itunes:duration>7320</itunes:duration>
@@ -216,7 +226,7 @@ Til, Marcel und Simon
                        length="123522252"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
             <pubDate>Sun, 10 Sep 2023 04:00:00 +0000</pubDate>
@@ -238,7 +248,7 @@ Til, Marcel und Simon
                        length="55469670"
                        type="audio/mpeg"/>
         </item>
-
+        
         <image>
             <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</url>
             <title>M10Z Podcasts</title>
@@ -262,10 +272,10 @@ Til, Marcel und Simon
                 Gästin.
                 Gina spricht über ihr Lieblingsgenre: Open World Survival Games.
                 Wir quatschen über Gespieltes, Gewünschtes und was sonst noch so in unsere Köpfe kam.
-
+                
                 Habt ihr in diesem Text bisher das Wort Meme vermisst? Ich auch. Keine Sorge natürlich gibt es wieder eine Abstimmung zum besten Meme
                 aller bisherigen Zeiten im Forum.
-
+                
                 Eure M10Z-Podcast Crew:
                 Til, Marcel und Simon
             </description>
@@ -297,7 +307,7 @@ Til, Marcel und Simon
                        length="61551411"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon</title>
             <pubDate>Sun, 09 Jul 2023 00:30:01 +0000</pubDate>
@@ -316,7 +326,7 @@ Til, Marcel und Simon
                 Wall Street Tycoon aus dem Jahr 1999 zu Vorschein. Darunter liegt ein ganzer Block reißerischer Reden, die aber nicht von unserem
                 zweiten Fundstück Political Tycoon aus dem Jahr 2001 ablenken können. Was wird uns hier wohl nur erwarten? Trash oder doch
                 verlorengegangener Schatz? Ihr erfahrt es in unserer neuen Folge vom Fundbüro.
-
+                
                 Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
                 https://community.wasted.de/ vorbei!
             </description>
@@ -326,7 +336,7 @@ Til, Marcel und Simon
                        length="91645542"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #5</title>
             <pubDate>Sat, 01 Jul 2023 01:00:00 +0000</pubDate>
@@ -340,17 +350,17 @@ Til, Marcel und Simon
                 geworden. Manchmal macht das drumherum und das Leben einem einen Strich durch die Rechnung, daher konnten wir nicht alle Blöcke (Meme,
                 Communitygeplauder…) wie gewohnt aufnehmen. Und vorerst wird das auch so bleiben, sobald es was Neues gibt und wir wieder gewohnt für
                 euch im Team aufnehmen können erfahrt ihr es natürlich hier.
-
+                
                 Bis dahin aber erstmal viel Spaß mit dieser verkürzten Folge und da haben wir:
-
+                
                 - ein cooles Thema mit (Land-) Karten in Videospielen
                 - ein paar coole Gäste mit Jan und Georg, besser bekannt als yollum und Echti
                 - lustig unterschiedliche Mikroeinstellungen und Pegel
                 - einen Pitch für ein echt cooles Buch (bitte nicht klauen)
                 - wie immer einen musikalischen Abschluss
-
+                
                 Und irgendwie haben wir es auch geschafft eine Abstimmung aus der Sache rauszukristallisieren.
-
+                
                 Macht es gut und bis bald,
                 Til, Marcel und Simon
             </description>
@@ -360,7 +370,7 @@ Til, Marcel und Simon
                        length="55259955"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen</title>
             <pubDate>Wed, 14 Jun 2023 05:00:01 +0000</pubDate>
@@ -371,7 +381,7 @@ Til, Marcel und Simon
                 <link>https://m10z.de</link>
             </itunes:image>
             <description>Liebe Community,
-
+                
                 Kunstmuseen sind für mich ein besonderer Ort. Auf der einen Seite liebe ich es durch Ausstellungen mit gut kuratierten Bildern,
                 Installationen oder anderen Kulturgütern zu schlendern und dabei Altbekanntes sowie Neues zu entdecken. Auf der anderen Seite verbinde
                 ich mit dem Museum einen Teil meiner Jugend, da ich im Zuge meines FSJ ein Jahr in der Museumskommunikation am Zentrum für Kunst und
@@ -379,7 +389,7 @@ Til, Marcel und Simon
                 mit und über Computerspiele gewesen. Vor allem die aktuelle Iteration zkm_gameplay.the next level hat dazu beigetragen meinen Horizont
                 über das Blockbuster-Genre hinaus zu erweitern und meine Auffassung gestärkt, dass dieses Medium als Kunstform einen Ausstellungswert
                 besitzt.
-
+                
                 Grund genug in einer M10Z-Spezialfolge einmal etwas ausführlicher über das Thema Computerspiele und Museum zu sprechen. Um meine
                 limitierte Perspektive als Beobachter durch tatsächliche Expertise zu erweitern, habe ich mir mit Jérôme Nguyen (ehem. ZKM; Volontär
                 und Kurator für die Gameplay) und Laura Schmidt (aktuell ZKM u. zuständig für die Gameplay) fachkundige Verstärkung hinzugezogen. In
@@ -387,10 +397,10 @@ Til, Marcel und Simon
                 Kriterien ein Computerspiel ausgestellt werden kann oder warum kommerzielle Spiele wie Fortnite sich zwischen Kunstplattform und
                 Kommerz bewegen. Des Weiteren erfahrt ihr etwas über die verschiedenen technischen und kuratorischen Herausforderungen, die sich beim
                 Ausstellen von Computerspielen ergeben und wie weit der Museumsbetrieb und die Gameindustrie hier manchmal auseinandergehen.
-
+                
                 Wenn euch diese Spezialfolge gefallen hat, ihr Kritik bzw. Feedback habt oder generell eure Erfahrungen zu einem der diskutierten
                 Themenfelder loswerden wollt, würde ich mich freuen, wenn ihr hier im Forum einen Kommentar dalasst.
-
+                
                 Bis dahin, euer Edgar aka. Lipardus
             </description>
             <author>m10z@posteo.de</author>
@@ -399,7 +409,7 @@ Til, Marcel und Simon
                        length="138412032"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott</title>
             <pubDate>Wed, 10 May 2023 05:00:01 +0000</pubDate>
@@ -424,7 +434,7 @@ Til, Marcel und Simon
                        length="124046548"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #4</title>
             <pubDate>Sat, 06 May 2023 01:00:00 +0000</pubDate>
@@ -459,7 +469,7 @@ Til, Marcel und Simon
                        length="159278699"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Once we were Gamers #02 - Nostalgie in Videospielen</title>
             <pubDate>Wed, 03 May 2023 04:00:00 +0000</pubDate>
@@ -481,7 +491,7 @@ Til, Marcel und Simon
                        length="48024781"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview)</title>
             <pubDate>Sun, 09 Apr 2023 09:30:00 +0000</pubDate>
@@ -495,11 +505,11 @@ Til, Marcel und Simon
                 Bei „Once we were Gamers“ wirft @Simon einen Blick auf das, was in der Gamingwelt gerade so interessant ist, oder auf das, was er
                 gerade interessant findet. Zur Pilotfolge werden gleich die großen Brocken angegriffen und mit @Luca bespricht er die Diablo 4 Beta,
                 die Eindrücke aus Sanktuario und ob Blizzard der große Wurf gelingen wird.
-
+                
                 Wie immer bei „Once we were Gamers“ geht es darum, den Blick für die Spieler zu schärfen, die zwar immer noch gerne zocken, aber schon
                 lange nicht mehr die Zeit haben, hunderte Stunden in den Games zu vergraben. Ob und wie Diablo 4 auch diesen Spielern durch die Beta
                 Hoffnung macht, erfahrt ihr im Podcast.
-
+                
                 Wir wünschen euch viel Spaß.
             </description>
             <author>m10z@posteo.de</author>
@@ -508,7 +518,7 @@ Til, Marcel und Simon
                        length="49492787"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Fundbüro #01 - Bilbo im Kreuzfeuer</title>
             <pubDate>Sat, 01 Apr 2023 11:00:01 +0000</pubDate>
@@ -532,7 +542,7 @@ Til, Marcel und Simon
                        length="53477376"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #3 (Wasted)</title>
             <pubDate>Sat, 01 Apr 2023 11:00:00 +0000</pubDate>
@@ -563,7 +573,7 @@ Til, Marcel und Simon
                        length="106954752"
                        type="audio/mpeg"/>
         </item>
-
+        
         <item>
             <title>Mindestens 10 Zeichen #2 (Wasted)</title>
             <pubDate>Sun, 12 Mar 2023 11:00:00 +0000</pubDate>
@@ -573,7 +583,7 @@ Til, Marcel und Simon
                 <title>Mindestens 10 Zeichen #2 (Wasted)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
-
+            
             <description>Liebe Gemeinde!
                 Hier ist sie also, die erste offizielle Folge von "Mindestens 10 Zeichen - Ein Community-Podcast"!
                 Nach eurem unfassbaren Feedback auf den Piloten geben sich Til (Moderation, Talk, Schnitt), Simon (Produktion) und Marcel (Talk,
@@ -603,7 +613,7 @@ Til, Marcel und Simon
                 <title>Mindestens 10 Zeichen #1 (Wasted)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
-
+            
             <description>"Liebe Community,
                 Es ist soweit! Mit einem tollen Team, motivierten Leuten und einem Haufen kreativer Köpfe haben wir die erste Folge des ersten
                 Community-Podcasts ÜBERHAUPT auf die Beine gestellt (Zumindest hab ich sonst noch von keinem gehört!)
