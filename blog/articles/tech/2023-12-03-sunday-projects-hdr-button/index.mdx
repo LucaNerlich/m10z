@@ -13,7 +13,7 @@ import Image from '@theme/IdealImage'
 
 'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
 
-An diesem Sonntag zeige ich euch einen kleinen, physischen Button den ich nutze, um die HDR Einstellung meines Windows 11 an- und auszuschalten.
+An diesem Sonntag zeige ich euch einen kleinen physischen Button, den ich nutze, um die HDR-Einstellung meines Windows 11 an- und auszuschalten.
 
 <Image img={require('/static/img/tech/sundayprojects/hdr.jpg')} />
 
@@ -21,9 +21,9 @@ An diesem Sonntag zeige ich euch einen kleinen, physischen Button den ich nutze,
 
 ## Idee
 
-Seit ich meinen Desktopmonitor mit einem modernen OLED Screen ausgetauscht habe, bin ich, um alle Vorteile geniessen zu koennen, leider gezwungen HDR in Windows semi-regelmaessig aktivieren und deaktivieren zu muessen.
+Seitdem ich meinen Desktopmonitor mit einem modernen OLED-Screen ausgetauscht habe, bin ich, um alle Vorteile genießen zu können, leider gezwungen HDR in Windows semi-regelmäßig aktivieren und deaktivieren zu müssen.
 
-Klar, das geht recht einfach ueber die Tastenkombination `WIN + ALT + B`. Aber waere es nicht viel cooler, wenn es dafuer einen dedizierten Button geben wuerde? Und waere es nicht noch cooler, wenn sich dieser auch noch angenehm druecken lassen wuerde - inklusive sattem Geräusch?
+Klar, das geht recht einfach über die Tastenkombination `WIN + ALT + B`. Aber wäre es nicht viel cooler, wenn es dafür einen dedizierten Button geben würde? Und wäre es nicht noch cooler, wenn sich dieser auch noch angenehm drücken lassen würde – inklusive sattem Geräusch?
 
 <ReactPlayer
     width="100%"
@@ -34,26 +34,26 @@ Klar, das geht recht einfach ueber die Tastenkombination `WIN + ALT + B`. Aber w
 
 ## Umsetzung
 
-Wie praktisch, dass ich noch einen [Puck](https://www.espruino.com/Puck.js) hier rumliegen habe!
+Wie praktisch, dass ich noch einen [Puck](https://www.espruino.com/Puck.js) hier herumliegen habe!
 
 <Image img={require('./3.jpg')} />
 
-Ich wollte damit eigentlich immer ein *sophisticated* Projekt umsetzen, aber man kennts ja - keine Zeit und die Doku ist scheisse :S
+Ich wollte damit eigentlich immer ein *sophisticated* Projekt umsetzen, aber man kennt’s ja – keine Zeit und die Doku ist scheiße :S
 
 <Image img={require('./2.jpg')} />
 
-Das Ding kostet knappe 30 Euro (ja, fuer dieses Sonntagsprojekt und dessen Usecase komplett bescheuert). Wird als kleine, runde Platine inkl CR2032 Batterie, Gehaeuse und Silikonhuelle geliefert.
+Das Ding kostet knapp 30 Euro (ja, für dieses Sonntagsprojekt und dessen Usecase komplett bescheuert). Wird als kleine runde Platine inkl. CR2032-Batterie, Gehäuse und Silikonhülle geliefert.
 
-Batterie rein, Platine in Gehaeuse, Silikonhuelle drueber, fertig!
+Batterie rein, Platine in’s Gehäuse, Silikonhülle darüber, fertig!
 
 <Image img={require('./1.jpg')} />
 
 ### Sourcecode
 
-Nachfolgend der Code den ich auf den Puck geladen habe. Da ich keine Ahnung von Hardware, bzw Bluetoothgeraete Programmierung habe, musste ich mir das meiste dieses kurzen Scriptes zusammen-googlen, sowie ueber das Espruino Forum erfragen.
+Nachfolgend der Code, den ich auf den Puck geladen habe. Da ich keine Ahnung von Hardware, bzw. Bluetoothgeräte-Programmierung habe, musste ich mir das meiste dieses kurzen Scriptes zusammen-googeln, sowie über das Espruino-Forum erfragen.
 
-Der Puck kann bequem ueber die [Browser IDE](https://www.espruino.com/ide) bespielt werden.
-Am einfachsten nutzt man dafuer Chrome und verbindet den Puck direkt ueber Bluetooth mit Chrome.
+Der Puck kann bequem über die [Browser-IDE](https://www.espruino.com/ide) bespielt werden.
+Am einfachsten ist es, wenn man dafür Chrome nutzt und den Puck direkt über Bluetooth damit verbindet.
 
 ```javascript
 // http://www.espruino.com/BLE+Keyboard
@@ -74,11 +74,11 @@ function btnPressed() {
 setWatch(btnPressed, BTN, { edge: "rising", repeat: true, debounce: 50 });
 ```
 
-Nach erfolgreicher Verbindung laesst sich der Code einfach per Klick auf `Save to Flash` in den Speicher des Puck laden. Darauf hin wieder die Verbindung zu Chrome trennen und regulaer den Puck ueber Bluetooth mit Windows 11 verbinden - diese Verbindung wird bei jedem Systemstart erneut hergestellt.
+Nach erfolgreicher Verbindung lässt sich der Code einfach per Klick auf `Save to Flash` in den Speicher des Pucks laden. Daraufhin die Verbindung zu Chrome trennen und den Puck regulär über Bluetooth mit Windows 11 verbinden – diese Verbindung wird bei jedem Systemstart erneut hergestellt.
 
-Per Druck auf den Puck - der in sich quasi ein Button ist - schaltet Windows nun HDR an und beim erneuten Druck wieder aus.
+Per Druck auf den Puck – der in sich quasi ein Button ist – schaltet Windows nun HDR an und bei einem erneuten Druck wieder aus.
 
-Cool, praktisch, haptisch angenehm und selbstverständlich komplett unnötig 😉
+Cool, praktisch, haptisch angenehm und selbstverständlich komplett unnötig. 😉
 
 Ich danke euch fürs Lesen!
 
