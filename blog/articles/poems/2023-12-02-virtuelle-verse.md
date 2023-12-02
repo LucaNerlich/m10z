@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![selbstreferentiell](https://irgendwasmitkunden.de/M10Z.png)
->  m10z logo von Til 
+>  x Til 
 
 ## M10Z Crew 
 
