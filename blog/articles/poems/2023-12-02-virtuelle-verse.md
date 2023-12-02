@@ -21,7 +21,7 @@ Ein kurzer Flug durchs All
 In der Sim stellen wir die Weichen  
 Rollen um jeden Boss  
 Manchmal müssen wir schleichen  
-Wohin das spiel uns führt, wir tuns für  
+Wohin das Spiel uns führt, wir tuns für  
 Mindestens 10 Zeichen
 
 
