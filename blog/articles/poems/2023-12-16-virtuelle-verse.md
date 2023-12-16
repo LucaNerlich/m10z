@@ -22,8 +22,8 @@ Alles war deutlich kleinerer
 
 Wenn neue Spiele vom Schulhof kamen  
 Mussten alte erstmal weichen  
-Die neuen waren oft die Lahmen  
-Spaß machten nur die Gleichen  
+Die neuen waren oft die lahmen  
+Spaß machten nur die gleichen  
 
 Um so vergeigte Nachmittage, irgendwie zu retten  
 Wurd Doom dann wieder installiert  
