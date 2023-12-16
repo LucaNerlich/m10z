@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![Retrorudel](https://irgendwasmitkunden.de/DoomDisk.png)
->  Diffusion Bee x Til : Disks of Doom
+>  Diffusion Bee x Til : Symbolbild
 
 ## Doomlemma 
 
