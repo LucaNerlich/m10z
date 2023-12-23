@@ -17,7 +17,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 In der Weihnachtsspielothek  
 Wird so mancher Boss gelegt  
-Ob mit Schwert und Schild
+Ob mit Schwert und Schild  
 Oder Healer Build  
 Oder Blei das durch die Lüfte fegt  
 In der Weihnachtsspielothek  
