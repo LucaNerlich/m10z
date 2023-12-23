@@ -19,7 +19,40 @@
         <itunes:author>M10Z</itunes:author>
         <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
-        
+
+        <item>
+            <title>Fundbüro #06 - Weihnachtspezial</title>
+            <pubDate>Sun, 21 Dec 2023 11:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash19</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+                <title>Fundbüro #06 - Weihnachtspezial</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+                In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar
+                der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
+                bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
+                
+                Ist eigentlich schon jemand dieses monotone Brummen in unserem Lagerraum aufgefallen? Dort hinter dem großen Regal?
+                Unter mehreren Schichten Pergamentpapier kommt eine Tiefkühltruhe mit ehemals weißem Deckel zum Vorschein.
+                Nach dem Öffnen zeigt sich auf den ersten Blick nur eine Menge Eis und Schnee, gräbt man jedoch etwas tiefer,
+                lassen sich mehrere Gegenstände aus Leder ertasten. Wer wohl diese Reitausrüstung eingefrostet hat? Besonderes Schmuckstück
+                ist ein Reitsattel auf dem in fetten Lettern "Star Stable - The Winter Riders" (2009) eingraviert wurde. Unter dem ganzen
+                brüchigen Gelumpe findet sich ein längliches Stück Holz. Ein Ski, , auf dem das Logo eines bekannten TV-Senders gedruckt ist.
+                Wer erinnert sich nicht an die legendären Zeiten, als alle bei "RTL Skispringen" (2007) geschaut haben?
+
+                Viel Spaß bei unseren letzten Folge Fundbüro für das Jahr 2023. Habt ihr eines der beiden Spiele selber gespielt? Und was sind eure liebsten Weihnachts- oder Winterspiele. Wir wünschen euch jetzt auf jeden Fall frohe Weihnachten, viel Gesundheit und einen guten Rutsch ins neue Jahr.
+
+                Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf https://community.wasted.de vorbei!
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>00:52:34</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_006_Winterspezial.mp3"
+                       length="126172472"
+                       type="audio/mpeg"/>
+        </item>
+
         <item>
             <title>Mindestens 10 Zeichen #9 - Eselkacke!</title>
             <pubDate>Sat, 25 Nov 2023 11:59:00 +0000</pubDate>
