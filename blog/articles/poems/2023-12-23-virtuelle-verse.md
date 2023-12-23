@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![Retrorudel](https://irgendwasmitkunden.de/XmasController.jpg)
->  Diffusion Bee x Til : Gemütlichkeit im Spieleland
+> Til : Gemütlichkeit im Spieleland
 
 ## Scheiß auf Bäckerei 
 
