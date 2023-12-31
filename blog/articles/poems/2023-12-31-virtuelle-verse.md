@@ -10,7 +10,7 @@ draft: false
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
-![GameOver2023](https://irgendwasmitkunden.de/2024.jpg)
+![GameOver2023](https://irgendwasmitkunden.de/2024.png)
 > Til : Und Tschüß
 
 ## Game Over 2023 
