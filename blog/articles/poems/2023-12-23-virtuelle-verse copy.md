@@ -25,6 +25,6 @@ Die wir vor Bildschirmen verbracht
 Über rechteckige Augen  
 Haben wir früher schon gelacht  
 Auch 2024 warten mannigfaltig Chancen  
-Von digitalem Zeitverteib  
+Für digitalen Zeitverteib  
 Drum geht jetzt raus und feiert wild  
 Bevor ihr wieder drinnen bleibt  
