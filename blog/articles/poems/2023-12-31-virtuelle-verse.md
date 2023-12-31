@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![Retrorudel](https://irgendwasmitkunden.de/2024.jpg)
-> Til : Gemütlichkeit im Spieleland
+> Til : Und Tschüß
 
 ## Game Over 2023 
 
