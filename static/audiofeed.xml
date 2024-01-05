@@ -21,6 +21,40 @@
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
 
         <item>
+            <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!</title>
+            <pubDate>Fri, 05 Jan 2024 09:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash22</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+                <title>Mindestens 10 Zeichen #10 (m10z)</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+                Hallo liebe Leute!
+
+                Wir sind 10 und beinahe ein ganzes Jahr alt, was ein Wahnsinn :tada: :tada: :tada:
+                Was wir alles erlebt haben, zusammen, einzeln egal, Danke für dieses tolle Projekt <3
+                Til fällt diesmal leider aus, aber als Mithost habe ich mir niemand geringeren als unsere Produzenten und Once We Were Gamer-Host @Simon geholt! Zusammen durchwühlen wir das Forum, streiten uns ob Spielewertungen nur im Rückblick zu machen sind und kühren natürlich auch diesmal wieder das beste Meme aller bisherigen Zeiten ;)
+
+                Allerdings:
+                Heute haben wir kein Thema für euch.
+                Es tut uns wirklich leid, und wir haben daraus gelernt. Es war schon alles aufgenommen und produziert, aber mei, was soll man machen. Mehr dazu in unseren Disclaimer.
+                Auf dass es das nächste mal wie gewohnt weitergeht!
+
+                Wir haben euch unendlich lieb, vielen Dank fürs Hören und bitte besucht uns doch mal auf unserem Discord (Vielleicht kommt man ja auch mal für ein Gespräch zusammen ;) ).
+
+                Liebe Grüsse,
+                Marcel, Simon und Til
+
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>3164</itunes:duration>
+            <enclosure url="https://m10z.adrilaida.de/M10Z/M10Z_010.mp3"
+                       length="48300000"
+                       type="audio/mpeg"/>
+        </item>
+
+        <item>
             <title>Fundbüro #06 - Weihnachtspezial</title>
             <pubDate>Sun, 24 Dec 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash21</guid>
