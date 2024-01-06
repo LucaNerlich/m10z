@@ -10,12 +10,12 @@ draft: false
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
-![GameOver2023](https://irgendwasmitkunden.de/Linkkabel.png)
+![GameOver2023](https://irgendwasmitkunden.de/LinkKabel.png)
 > 
 
 ## Unnützes Videospielreimen 
 
-Ein Link-Kabel ist mitnichten  
+Ein Link Kabel ist mitnichten  
 Dafür bei Zelda was zu richten  
 Im Gegensatz zu RGB  
 Tut BFG beim Einsatz weh  
