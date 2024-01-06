@@ -11,7 +11,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![GameOver2023](https://irgendwasmitkunden.de/LinkKabel.png)
-> 
+> Bild von Til: Ihr wisst schon
 
 ## Unnützes Videospielreimen 
 
