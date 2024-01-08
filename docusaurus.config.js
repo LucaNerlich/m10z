@@ -30,6 +30,16 @@ const config = {
 
     plugins: [
         'docusaurus-plugin-sass',
+        ['@easyops-cn/docusaurus-search-local',
+            {
+                hashed: true,
+                language: ['de', 'en'],
+                indexBlog: true,
+                indexDocs: false,
+                blogRouteBasePath: '/',
+                indexPages: true,
+            },
+        ],
         ['@docusaurus/plugin-ideal-image',
             {
                 quality: 80,
