@@ -18,7 +18,7 @@ const config = {
     projectName: 'm10z', // Usually your repo name.
 
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
+    onBrokenMarkdownLinks: 'throw',
 
     // Even if you don't use internalization, you can use this field to set useful
     // metadata like html lang. For example, if your site is Chinese, you may want
@@ -30,6 +30,16 @@ const config = {
 
     plugins: [
         'docusaurus-plugin-sass',
+        ['@easyops-cn/docusaurus-search-local',
+            {
+                hashed: true,
+                language: ['de', 'en'],
+                indexBlog: true,
+                indexDocs: false,
+                blogRouteBasePath: '/',
+                indexPages: true,
+            },
+        ],
         ['@docusaurus/plugin-ideal-image',
             {
                 quality: 80,
@@ -191,7 +201,7 @@ const config = {
                         title: 'Feeds',
                         items: [
                             {
-                                href: '/audiofeed.xml',
+                                href: 'https://m10z.de/audiofeed.xml',
                                 target: '_blank',
                                 download: true,
                                 position: 'left',
@@ -203,7 +213,7 @@ const config = {
                                 label: '📎Copy Audio-Feed',
                             },
                             {
-                                href: '/rss.xml',
+                                href: 'https://m10z.de/rss.xml',
                                 target: '_blank',
                                 download: true,
                                 position: 'left',
