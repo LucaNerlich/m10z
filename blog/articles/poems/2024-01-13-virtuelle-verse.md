@@ -10,8 +10,8 @@ draft: false
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
 <!--truncate-->
 
-![GameOver2023](https://irgendwasmitkunden.de/VideoVinyl.png)
-> Foto von Til: Video Game Music gespielt vom London Philharmonic Orchestra
+![VideoVinyl](https://irgendwasmitkunden.de/VideoVinyl.png)
+> Foto von Til: Greatest Video Game Music gespielt vom London Philharmonic Orchestra
 
 ## Musik liegt in den Bytes 
 
