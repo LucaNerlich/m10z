@@ -21,6 +21,36 @@
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
 
         <item>
+            <title>Das gesprochene Wort - Pilot</title>
+            <pubDate>Fri, 19 Jan 2024 09:00:00 +0000</pubDate>
+            <guid isPermaLink="false">ein-hash22</guid>
+            <itunes:image>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/DasGesprocheneWort3000x3000.jpg</url>
+                <title>Das gesprochene Wort - Pilot</title>
+                <link>https://m10z.de</link>
+            </itunes:image>
+            <description>
+                Liebe Gemeinde,
+
+                Hiermit kommt was neues!
+                Na gut, es findet ein Versuch statt. Marcel nimmt sich vor in dem neuen Format mit dem zauberhaften Namen
+                "Das gesprochene Wort" Texte von euch, Magazinen aber auch allgemein tollen Schreibenden vorzulesen. Das ganze soll
+                gerahmt sein in einer kuscheligen Atmosphäre samt Kaminknistern und sanften Pianoklängen.
+                Bitte gebt ihm doch im Forum Feedback, zu lang, zu kurz? Allgemein gut, aber Gedudel doof?
+                Her damit!
+
+                Entspannt euch, lasst euch fallen, macht die Augen zu und lernt mit ihm neue, tolle Texte kennen.
+                Kommt doch mit?!
+
+            </description>
+            <author>m10z@posteo.de</author>
+            <itunes:duration>1471</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_001.mp3"
+                       length="41681499"
+                       type="audio/mpeg"/>
+        </item>
+
+        <item>
             <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!</title>
             <pubDate>Fri, 05 Jan 2024 09:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash22</guid>
