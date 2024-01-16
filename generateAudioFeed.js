@@ -73,7 +73,7 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
 
         result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
 
-        let builder = new xml2js.Builder();
+        let builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}});
         let xml = builder.buildObject(result);
 
         fs.writeFileSync(basepath + 'test.xml', xml);
