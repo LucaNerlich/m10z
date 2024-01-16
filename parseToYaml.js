@@ -20,7 +20,7 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
             let cleanedItem = {};
             for (let key in item) {
                 if (key === 'itunes:image') {
-                    cleanedItem['image'] = item[key][0]['url'];
+                    cleanedItem['image'] = item[key][0]['url'][0];
                 } else if (key === 'enclosure') {
                     cleanedItem['url'] = item[key][0]['$']['url'];
                 } else if (key === 'guid') {
@@ -34,7 +34,7 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
             return cleanedItem;
         });
 
-        let yamlStr = jsYaml.dump(items);
+        let yamlStr = jsYaml.dump(items, { lineWidth: -1 });
         fs.writeFile(basepath + '.yaml', yamlStr, 'utf8', function(err) {
             if (err) {
                 return console.log('Failed to create YAML file: ' + err);
