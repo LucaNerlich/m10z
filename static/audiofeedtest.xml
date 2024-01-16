@@ -17,16 +17,15 @@
     <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
     <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!</title>
-        <pubDate>Fri, Jan 5, 2024, 8:00 AM +0000</pubDate>
-        <guid isPermaLink="false">-1342836261</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10! (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!</title>
+      <pubDate>Fri, Jan 5, 2024, 8:00 AM +0000</pubDate>
+      <guid isPermaLink="false">-1342836261</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10! (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 Hallo liebe Leute!&#xD;
 &#xD;
                 Wir sind 10 und beinahe ein ganzes Jahr alt, was ein Wahnsinn :tada: :tada: :tada:&#xD;
@@ -44,22 +43,20 @@
                 Marcel, Til und Simon&#xD;
 &#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>3164</itunes:duration>
-        <enclosure url="https://m10z.adrilaida.de/M10Z/M10Z_010.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>3164</itunes:duration>
+      <enclosure url="https://m10z.adrilaida.de/M10Z/M10Z_010.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Fundbüro #06 - Weihnachtspezial</title>
-        <pubDate>Sun, Dec 24, 2023, 10:00 AM +0000</pubDate>
-        <guid isPermaLink="false">1626755732</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
-          <title>Fundbüro #06 - Weihnachtspezial (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Fundbüro #06 - Weihnachtspezial</title>
+      <pubDate>Sun, Dec 24, 2023, 10:00 AM +0000</pubDate>
+      <guid isPermaLink="false">1626755732</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+        <title>Fundbüro #06 - Weihnachtspezial (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar&#xD;
                 der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht&#xD;
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.&#xD;
@@ -76,22 +73,20 @@
 &#xD;
                 Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf https://community.wasted.de vorbei!&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>00:52:34</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_006_Winterspezial.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>00:52:34</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_006_Winterspezial.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #9 - Eselkacke!</title>
-        <pubDate>Sat, Nov 25, 2023, 10:59 AM +0000</pubDate>
-        <guid isPermaLink="false">1217010371</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #9 - Eselkacke! (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Mindestens 10 Zeichen #9 - Eselkacke!</title>
+      <pubDate>Sat, Nov 25, 2023, 10:59 AM +0000</pubDate>
+      <guid isPermaLink="false">1217010371</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #9 - Eselkacke! (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 Willkommen und Hallo zur Nr. 9 unseres Lieblingspodcasts!&#xD;
 &#xD;
                 Heute besprechen Marcel und Til für euch was es Geiles in Gallien gibt, warum es das OLED SteamDeck nicht braucht und mit der&#xD;
@@ -109,22 +104,20 @@
                 Marcel, Simon und Til&#xD;
 &#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>6540</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_009.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>6540</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_009.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Fundbüro #05 - Gallien den Galliern</title>
-        <pubDate>Sun, Nov 19, 2023, 9:00 AM +0000</pubDate>
-        <guid isPermaLink="false">-1423994946</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
-          <title>Fundbüro #05 - Gallien den Galliern (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Fundbüro #05 - Gallien den Galliern</title>
+      <pubDate>Sun, Nov 19, 2023, 9:00 AM +0000</pubDate>
+      <guid isPermaLink="false">-1423994946</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+        <title>Fundbüro #05 - Gallien den Galliern (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar&#xD;
                 der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht&#xD;
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.&#xD;
@@ -145,22 +138,20 @@
                 Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf&#xD;
                 https://community.wasted.de vorbei!&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>00:21:51</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_005_Gallien_im_Krieg.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>00:21:51</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_005_Gallien_im_Krieg.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #8 - Der rästelhafte Gast</title>
-        <pubDate>Fri, Nov 3, 2023, 12:00 AM +0000</pubDate>
-        <guid isPermaLink="false">1216086850</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #8 - Der rästelhafte Gast (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Liebe Freund:innen, geehrte M10Z Community, ihr da draußen.&#xD;
+      <title>Mindestens 10 Zeichen #8 - Der rästelhafte Gast</title>
+      <pubDate>Fri, Nov 3, 2023, 12:00 AM +0000</pubDate>
+      <guid isPermaLink="false">1216086850</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #8 - Der rästelhafte Gast (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Liebe Freund:innen, geehrte M10Z Community, ihr da draußen.&#xD;
 &#xD;
                 Nachdem sich Marcel und Til endlich mal in echt getroffen haben, ist jetzt die 8. Folge so schnell aufgenommen, geschnitten und&#xD;
                 gemischt worden wie bisher keine davor.&#xD;
@@ -186,43 +177,39 @@
                 Til, Marcel und Simon&#xD;
 &#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>6540</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_008.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>6540</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_008.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>En Rogue #01</title>
-        <pubDate>Tue, Oct 31, 2023, 12:30 PM +0000</pubDate>
-        <guid isPermaLink="false">-1563345825</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg</url>
-          <title>En Rogue #01 (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>En Rogue #01</title>
+      <pubDate>Tue, Oct 31, 2023, 12:30 PM +0000</pubDate>
+      <guid isPermaLink="false">-1563345825</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg</url>
+        <title>En Rogue #01 (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 In En Rogue begeben sich Jan, Simon und Adrian in den ewigen Kreislauf des Sterbens und Wiederauferstehens. In jeder Folge wird ein&#xD;
                 Spiel aus dem weiten Feld der Rogue Lites/ Likes besprochen.&#xD;
 &#xD;
                 Den Anfang macht das mehrfach preisgekrönte Spiel Inscryption. Ist es wirklich so herausragend oder doch eher Schein statt Sein?&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>01:01:22</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/EnRogue/EnRogue_001.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>01:01:22</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/EnRogue/EnRogue_001.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
-        <pubDate>Thu, Oct 19, 2023, 8:00 AM +0000</pubDate>
-        <guid isPermaLink="false">-59470636</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
-          <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
+      <pubDate>Thu, Oct 19, 2023, 8:00 AM +0000</pubDate>
+      <guid isPermaLink="false">-59470636</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+        <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar&#xD;
                 der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht&#xD;
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.&#xD;
@@ -240,22 +227,20 @@
                 Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf&#xD;
                 https://community.wasted.de/ vorbei!&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>00:46:16</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>00:46:16</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #7</title>
-        <pubDate>Sat, Oct 14, 2023, 11:00 PM +0000</pubDate>
-        <guid isPermaLink="false">1215163329</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #7 (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Hallo an ALLE da draussen!&#xD;
+      <title>Mindestens 10 Zeichen #7</title>
+      <pubDate>Sat, Oct 14, 2023, 11:00 PM +0000</pubDate>
+      <guid isPermaLink="false">1215163329</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #7 (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Hallo an ALLE da draussen!&#xD;
 &#xD;
                 Meine Güte, Mit dieser Folge sind wir maximal frustresistent geworden, haben gelernt wie uns die Technik dazwischen funken kann, Dinge&#xD;
                 auch gegen persönliche Wiederstände und Erkrankungen durchzieht und sind doppelt so überzeugt von uns und euch und allem was wir tun!&#xD;
@@ -277,43 +262,39 @@
                 Marcel, Til und Simon&#xD;
 &#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>7320</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_007.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>7320</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_007.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
-        <pubDate>Sun, Sep 10, 2023, 2:00 AM +0000</pubDate>
-        <guid isPermaLink="false">-160905922</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
-          <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
+      <pubDate>Sun, Sep 10, 2023, 2:00 AM +0000</pubDate>
+      <guid isPermaLink="false">-160905922</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
+        <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 In der vierten Episode von "Once we were Gamers" taucht Simon in die in die Tiefen der Genres der Rogue-Likes und Rogue-Lites ein.&#xD;
                 Dabei spricht er mit Jan und Adrian nicht nur über die Berliner Interpretation des Genres, sondern die drei formen Ihre persönliche&#xD;
                 Definition des Rogue-Like. Außerdem gibt es viele Empfehlungen und einen besonderen Ausblick auf eine anstehende Sonderfolge.&#xD;
                 Wir wünschen wie immer: Viel Vergnügen.&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>3304</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_4_RogueLikeLite.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>3304</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_4_RogueLikeLite.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #6</title>
-        <pubDate>Mon, Aug 7, 2023, 11:00 PM +0000</pubDate>
-        <guid isPermaLink="false">1214239808</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #6 (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Da sind wir wieder, mit der ersten richtigen Folge nach einer kleinen Pause.&#xD;
+      <title>Mindestens 10 Zeichen #6</title>
+      <pubDate>Mon, Aug 7, 2023, 11:00 PM +0000</pubDate>
+      <guid isPermaLink="false">1214239808</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #6 (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Da sind wir wieder, mit der ersten richtigen Folge nach einer kleinen Pause.&#xD;
                 Marcel meldet sich direkt aus seinem Reha-Zimmer von der MS Gaming, während Til aus seinem Podcastschaltzentrum…ähm…Schlafzimmer&#xD;
                 aufzeichnet.&#xD;
                 Gemeinsam finden wir wieder einige Themen aus der Community, entdecken nebenbei, welches das innovativste Nintendo Spiel aller Zeiten&#xD;
@@ -329,44 +310,40 @@
                 Eure M10Z-Podcast Crew:&#xD;
                 Til, Marcel und Simon&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>6180</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_006.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>6180</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_006.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Once we were Gamers #03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst</title>
-        <pubDate>Sat, Jul 22, 2023, 2:00 AM +0000</pubDate>
-        <guid isPermaLink="false">127916880</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
-          <title>Once we were Gamers #03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Once we were Gamers #03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst</title>
+      <pubDate>Sat, Jul 22, 2023, 2:00 AM +0000</pubDate>
+      <guid isPermaLink="false">127916880</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
+        <title>Once we were Gamers #03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 In der dritten Episode von „Once we were Gamers“ habe ich gleich doppelte Unterstützung bei einem Thema, dass alle Eltern betrifft,&#xD;
                 die auch nach dem Zuwachs in der Familie noch gerne Computerspiele spielen: Wie verändert der Nachwuchs unsere Spielerfahrung.&#xD;
                 'Johannes' und 'Til' haben einiges beizutragen und zwischen Singleplayer RPG´s, Studienzeiten und Computer LAN stellen wir fest: Es&#xD;
                 ist überall ein bisschen anders.&#xD;
                 Wir wünschen euch Viel Spaß.&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>3608</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_3_KinderKrisenKonsolen.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>3608</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_3_KinderKrisenKonsolen.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon</title>
-        <pubDate>Sat, Jul 8, 2023, 10:30 PM +0000</pubDate>
-        <guid isPermaLink="false">-60394157</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
-          <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Herzlich willkommen im Fundbüro.&#xD;
+      <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon</title>
+      <pubDate>Sat, Jul 8, 2023, 10:30 PM +0000</pubDate>
+      <guid isPermaLink="false">-60394157</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+        <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Herzlich willkommen im Fundbüro.&#xD;
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein&#xD;
                 paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht&#xD;
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.&#xD;
@@ -379,22 +356,20 @@
                 Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf&#xD;
                 https://community.wasted.de/ vorbei!&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>2174</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_003.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>2174</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_003.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #5</title>
-        <pubDate>Fri, Jun 30, 2023, 11:00 PM +0000</pubDate>
-        <guid isPermaLink="false">1213316287</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #5 (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Hallo zusammen, hier ist die Nr. 5 vom Mindestens 10 Zeichen Podcast, aber so eine richtige ganze Folge ist es nicht&#xD;
+      <title>Mindestens 10 Zeichen #5</title>
+      <pubDate>Fri, Jun 30, 2023, 11:00 PM +0000</pubDate>
+      <guid isPermaLink="false">1213316287</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #5 (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Hallo zusammen, hier ist die Nr. 5 vom Mindestens 10 Zeichen Podcast, aber so eine richtige ganze Folge ist es nicht&#xD;
                 geworden. Manchmal macht das drumherum und das Leben einem einen Strich durch die Rechnung, daher konnten wir nicht alle Blöcke (Meme,&#xD;
                 Communitygeplauder…) wie gewohnt aufnehmen. Und vorerst wird das auch so bleiben, sobald es was Neues gibt und wir wieder gewohnt für&#xD;
                 euch im Team aufnehmen können erfahrt ihr es natürlich hier.&#xD;
@@ -412,22 +387,20 @@
                 Macht es gut und bis bald,&#xD;
                 Til, Marcel und Simon&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>3271</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_005.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>3271</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_005.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen</title>
-        <pubDate>Wed, Jun 14, 2023, 3:00 AM +0000</pubDate>
-        <guid isPermaLink="false">134488211</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10ZSpezial_Logo3000x3000.jpg</url>
-          <title>M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Liebe Community,&#xD;
+      <title>M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen</title>
+      <pubDate>Wed, Jun 14, 2023, 3:00 AM +0000</pubDate>
+      <guid isPermaLink="false">134488211</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10ZSpezial_Logo3000x3000.jpg</url>
+        <title>M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Liebe Community,&#xD;
 &#xD;
                 Kunstmuseen sind für mich ein besonderer Ort. Auf der einen Seite liebe ich es durch Ausstellungen mit gut kuratierten Bildern,&#xD;
                 Installationen oder anderen Kulturgütern zu schlendern und dabei Altbekanntes sowie Neues zu entdecken. Auf der anderen Seite verbinde&#xD;
@@ -450,22 +423,20 @@
 &#xD;
                 Bis dahin, euer Edgar aka. Lipardus&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>3293</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/Spezial/M10ZSpezial_001.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>3293</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/Spezial/M10ZSpezial_001.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott</title>
-        <pubDate>Wed, May 10, 2023, 3:00 AM +0000</pubDate>
-        <guid isPermaLink="false">-61317678</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
-          <title>Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Herzlich willkommen im Fundbüro.&#xD;
+      <title>Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott</title>
+      <pubDate>Wed, May 10, 2023, 3:00 AM +0000</pubDate>
+      <guid isPermaLink="false">-61317678</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+        <title>Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Herzlich willkommen im Fundbüro.&#xD;
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein&#xD;
                 paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht&#xD;
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.&#xD;
@@ -474,22 +445,20 @@
                 nur eines Champion des Legolandes werden kann. Außer ihrer Klötzchenherkunft haben Lego Racers (1999) und Bionicle (2003) aber wenig&#xD;
                 gemein.&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>2957</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_002.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>2957</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_002.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #4</title>
-        <pubDate>Fri, May 5, 2023, 11:00 PM +0000</pubDate>
-        <guid isPermaLink="false">1212392766</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #4 (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Liebe Gemeinde, auch ohne Wasted geben Marcel, Simon und Til wieder ihr bestes um euch 1,5h mit Futter aus der Community zu&#xD;
+      <title>Mindestens 10 Zeichen #4</title>
+      <pubDate>Fri, May 5, 2023, 11:00 PM +0000</pubDate>
+      <guid isPermaLink="false">1212392766</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #4 (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Liebe Gemeinde, auch ohne Wasted geben Marcel, Simon und Til wieder ihr bestes um euch 1,5h mit Futter aus der Community zu&#xD;
                 unterhalten.&#xD;
                 Mit dem fantastischen Roland aka Rossyrg sprechen wir diesmal darüber, was die perfekte Melange zwischen Open World und linearem&#xD;
                 Level-Design ist und wo wir es heute wie damals am ehesten kriegen.&#xD;
@@ -508,43 +477,39 @@
                 drin.&#xD;
                 Sorry hatten einfach viel um die Ohren und geloben uns zu bessern&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>5670</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_004.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>5670</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_004.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Once we were Gamers #02 - Nostalgie in Videospielen</title>
-        <pubDate>Wed, May 3, 2023, 2:00 AM +0000</pubDate>
-        <guid isPermaLink="false">-1781377037</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
-          <title>Once we were Gamers #02 - Nostalgie in Videospielen (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Once we were Gamers #02 - Nostalgie in Videospielen</title>
+      <pubDate>Wed, May 3, 2023, 2:00 AM +0000</pubDate>
+      <guid isPermaLink="false">-1781377037</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
+        <title>Once we were Gamers #02 - Nostalgie in Videospielen (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 In der zweiten Folge von „Once we were Gamers“ ist Georg (aka Brainbug aus dem WASTED Forum) bei Simon zu Gast. Die beiden packen das&#xD;
                 Thema „Nostalgie in Videospielen“ an. Dabei schwelgen Sie natürlich in Erinnerungen, bewerten aber auch die Bedeutung von Nostalgie in&#xD;
                 aktuellen Spieleproduktion und fragen sich, wie die ersten Videospielerfahrungen, die man macht, die zukünftigen beeinflussen. Ob&#xD;
                 Nostalgie die entscheidende Zutat für ein erfolgreiches Spiel ist oder völlig überwertet wird, hört ihr im Podcast&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>2844</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_2_Nostalgie.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>2844</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_2_Nostalgie.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview)</title>
-        <pubDate>Sun, Apr 9, 2023, 7:30 AM +0000</pubDate>
-        <guid isPermaLink="false">-879359808</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
-          <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview) (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>&#xD;
+      <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview)</title>
+      <pubDate>Sun, Apr 9, 2023, 7:30 AM +0000</pubDate>
+      <guid isPermaLink="false">-879359808</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg</url>
+        <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview) (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>&#xD;
                 Bei „Once we were Gamers“ wirft @Simon einen Blick auf das, was in der Gamingwelt gerade so interessant ist, oder auf das, was er&#xD;
                 gerade interessant findet. Zur Pilotfolge werden gleich die großen Brocken angegriffen und mit @Luca bespricht er die Diablo 4 Beta,&#xD;
                 die Eindrücke aus Sanktuario und ob Blizzard der große Wurf gelingen wird.&#xD;
@@ -555,22 +520,20 @@
 &#xD;
                 Wir wünschen euch viel Spaß.&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>3022</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>3022</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Fundbüro #01 - Bilbo im Kreuzfeuer</title>
-        <pubDate>Sat, Apr 1, 2023, 9:00 AM +0000</pubDate>
-        <guid isPermaLink="false">-62241199</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
-          <title>Fundbüro #01 - Bilbo im Kreuzfeuer (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Herzlich willkommen im Fundbüro.&#xD;
+      <title>Fundbüro #01 - Bilbo im Kreuzfeuer</title>
+      <pubDate>Sat, Apr 1, 2023, 9:00 AM +0000</pubDate>
+      <guid isPermaLink="false">-62241199</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg</url>
+        <title>Fundbüro #01 - Bilbo im Kreuzfeuer (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Herzlich willkommen im Fundbüro.&#xD;
                 In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar (Lipardus) und Jan (yollum) haben ein&#xD;
                 paar der neueren Kisten beiseite geschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht&#xD;
                 bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.&#xD;
@@ -578,22 +541,20 @@
                 Seite ein abenteuerlustiger Hobbit, der sich auf die weite Reise zum Einsamen Berg begibt. Auf der anderen Seite ein ballernder&#xD;
                 Geheimagent, dessen Nummer 007 uns schon seit vielen Jahren begleitet.&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>2254</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>2254</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #3 (Wasted)</title>
-        <pubDate>Sat, Apr 1, 2023, 9:00 AM +0000</pubDate>
-        <guid isPermaLink="false">1211469245</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #3 (Wasted) (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Liebe Gemeinde,&#xD;
+      <title>Mindestens 10 Zeichen #3 (Wasted)</title>
+      <pubDate>Sat, Apr 1, 2023, 9:00 AM +0000</pubDate>
+      <guid isPermaLink="false">1211469245</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #3 (Wasted) (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Liebe Gemeinde,&#xD;
                 Zum dritten und letzten Mal treffen wir uns unter dem Dach von Wasted, um die großen Themen dieser Welt zu besprechen.&#xD;
                 Das wichtigste wird diesmal natürlich sein, dass Wasted den Abgang macht. Darüber reden wir ausführlich um nehmen uns Zeit, um dem&#xD;
                 einen gebührenden Platz in unseren Herzen einzuräumen.&#xD;
@@ -608,22 +569,20 @@
                 Liebe Grüße,&#xD;
                 Marcel, Simon und Til&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>6716</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_003.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>6716</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_003.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #2 (Wasted)</title>
-        <pubDate>Sun, Mar 12, 2023, 10:00 AM +0000</pubDate>
-        <guid isPermaLink="false">1210545724</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #2 (Wasted) (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>Liebe Gemeinde!&#xD;
+      <title>Mindestens 10 Zeichen #2 (Wasted)</title>
+      <pubDate>Sun, Mar 12, 2023, 10:00 AM +0000</pubDate>
+      <guid isPermaLink="false">1210545724</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #2 (Wasted) (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>Liebe Gemeinde!&#xD;
                 Hier ist sie also, die erste offizielle Folge von "Mindestens 10 Zeichen - Ein Community-Podcast"!&#xD;
                 Nach eurem unfassbaren Feedback auf den Piloten geben sich Til (Moderation, Talk, Schnitt), Simon (Produktion) und Marcel (Talk,&#xD;
                 Organisation) wieder Mühe, um euch ein paar unterhaltsame Momente zusammenzustellen.&#xD;
@@ -637,32 +596,29 @@
                 Viel Spaß beim Hören und bleibt gesund,&#xD;
                 Til, Simon und Marcel&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>6338</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_002.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>6338</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_002.mp3" length="48300000" type="audio/mpeg"/>
     </item>
     <item>
-      <item>
-        <title>Mindestens 10 Zeichen #1 (Wasted)</title>
-        <pubDate>Wed, Jan 25, 2023, 4:00 PM +0000</pubDate>
-        <guid isPermaLink="false">1209622203</guid>
-        <itunes:image>
-          <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
-          <title>Mindestens 10 Zeichen #1 (Wasted) (m10z)</title>
-          <link>https://m10z.de</link>
-        </itunes:image>
-        <description>"Liebe Community,&#xD;
+      <title>Mindestens 10 Zeichen #1 (Wasted)</title>
+      <pubDate>Wed, Jan 25, 2023, 4:00 PM +0000</pubDate>
+      <guid isPermaLink="false">1209622203</guid>
+      <itunes:image>
+        <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg</url>
+        <title>Mindestens 10 Zeichen #1 (Wasted) (m10z)</title>
+        <link>https://m10z.de</link>
+      </itunes:image>
+      <description>"Liebe Community,&#xD;
                 Es ist soweit! Mit einem tollen Team, motivierten Leuten und einem Haufen kreativer Köpfe haben wir die erste Folge des ersten&#xD;
                 Community-Podcasts ÜBERHAUPT auf die Beine gestellt (Zumindest hab ich sonst noch von keinem gehört!)&#xD;
                 Wir haben auf euch gehört und einen bunten Mix aus Struktur, Freiem Gerede, lustigen und schweren Themen, über die Community itself&#xD;
                 und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.&#xD;
                 Viel Vergnügen!&#xD;
             </description>
-        <author>m10z@posteo.de</author>
-        <itunes:duration>5622</itunes:duration>
-        <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_001.mp3" length="48300000" type="audio/mpeg"/>
-      </item>
+      <author>m10z@posteo.de</author>
+      <itunes:duration>5622</itunes:duration>
+      <enclosure url="https://m10z.picnotes.de/M10Z/M10Z_001.mp3" length="48300000" type="audio/mpeg"/>
     </item>
   </channel>
 </rss>

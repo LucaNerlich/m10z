@@ -10,7 +10,7 @@ function convertToPubDateFormat(dateString) {
     return date.toLocaleDateString('en-US', options) + ' +0000';
 }
 
-function toHash(input){
+function toHash(input) {
     var hash = 0,
         i, chr;
     if (input.length === 0) return hash;
@@ -24,31 +24,29 @@ function toHash(input){
 
 
 function yamlObjectToXml(yamlObject) {
-    return [{
-        'item': {
-            'title': yamlObject.title,
-            'pubDate': convertToPubDateFormat(yamlObject.date),
-            'guid': {
-                _: toHash(yamlObject.url),
-                $: {isPermaLink: 'false'},
-            },
-            'itunes:image': {
-                'url': yamlObject.image,
-                'title': `${yamlObject.title} (m10z)`,
-                'link': 'https://m10z.de',
-            },
-            'description': yamlObject.description,
-            'author': 'm10z@posteo.de',
-            'itunes:duration': yamlObject.duration,
-            'enclosure': {
-                $: {
-                    url: yamlObject.url,
-                    length: '48300000',
-                    type: 'audio/mpeg',
-                },
+    return {
+        'title': yamlObject.title,
+        'pubDate': convertToPubDateFormat(yamlObject.date),
+        'guid': {
+            _: toHash(yamlObject.url),
+            $: {isPermaLink: 'false'},
+        },
+        'itunes:image': {
+            'url': yamlObject.image,
+            'title': `${yamlObject.title} (m10z)`,
+            'link': 'https://m10z.de',
+        },
+        'description': yamlObject.description,
+        'author': 'm10z@posteo.de',
+        'itunes:duration': yamlObject.duration,
+        'enclosure': {
+            $: {
+                url: yamlObject.url,
+                length: '48300000',
+                type: 'audio/mpeg',
             },
         },
-    }];
+    };
 }
 
 function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
@@ -62,13 +60,8 @@ function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
         // Convert each YAML object to XML compatible JavaScript object
         let convertedItems = yamlObjects.map(yamlObjectToXml);
 
-        // Create 'item' array under 'rss -> channel' if it's not there
-        if (!result.rss.channel[0].item) {
-            result.rss.channel[0].item = [];
-        }
-
-        // Append all items to 'rss -> channel -> item'
-        result.rss.channel[0].item = [...result.rss.channel[0].item, ...convertedItems.flat()];
+        // Append items to 'channel'
+        result.rss.channel[0].item = convertedItems;
 
         // Convert back to XML and write to file
         let builder = new xml2js.Builder();
