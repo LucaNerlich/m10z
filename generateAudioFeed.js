@@ -8,8 +8,8 @@ const {URL} = require('url');
 const basepath = './static/audiofeed';
 
 function convertToPubDateFormat(dateString) {
-    let date = new Date(dateString);
-    let options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC'};
+    const date = new Date(dateString);
+    const options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC'};
     return date.toLocaleDateString('en-GB', options) + ' +0000';
 }
 
@@ -64,7 +64,7 @@ async function yamlObjectToXml(yamlObject) {
 }
 
 async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
-    let data = fs.readFileSync(xmlFilePath);
+    const data = fs.readFileSync(xmlFilePath);
 
     xml2js.parseString(data, async (err, result) => {
         if (err) {
@@ -74,13 +74,13 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
 
         result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
 
-        let builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}});
-        let xml = builder.buildObject(result);
+        const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}});
+        const xml = builder.buildObject(result);
 
         fs.writeFileSync(basepath + 'test.xml', xml);
     });
 }
 
-let yamlData = fs.readFileSync(basepath + '.yaml', 'utf8');
-let yamlObjects = yaml.load(yamlData);
+const yamlData = fs.readFileSync(basepath + '.yaml', 'utf8');
+const yamlObjects = yaml.load(yamlData);
 insertItemsToXMLFile('./templates/rss-channel.xml', yamlObjects).then(r => 'Successfully created audiofeed.xml');
