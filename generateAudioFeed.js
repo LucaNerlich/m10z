@@ -41,7 +41,7 @@ async function yamlObjectToXml(yamlObject) {
         'title': yamlObject.title,
         'pubDate': convertToPubDateFormat(yamlObject.date),
         'guid': {
-            _: toHash(yamlObject.url),
+            _: toHash(yamlObject.url) + "-luca",
             $: {isPermaLink: 'false'},
         },
         'itunes:image': {
