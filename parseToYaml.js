@@ -66,8 +66,3 @@ function convertToDate(pubDateString) {
 }
 
 // Function to convert the date string from the required format to pubDate format
-function convertToPubDateFormat(dateString) {
-    let date = new Date(dateString);
-    let options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC'};
-    return date.toLocaleDateString('en-US', options) + ' +0000';
-}
