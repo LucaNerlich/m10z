@@ -58,7 +58,7 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
 
 function convertToDate(pubDateString) {
     const date = new Date(pubDateString);
-    const year = date.getUTCFullYear();
+    const year = date.getFullYear();
     const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
     const day = ('0' + date.getUTCDate()).slice(-2);
     const hour = ('0' + date.getUTCHours()).slice(-2);
