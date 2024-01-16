@@ -49,7 +49,7 @@ async function yamlObjectToXml(yamlObject) {
                 href: yamlObject.image,
             },
         },
-        'description': yamlObject.description,
+        'description': `<![CDATA[<p>${yamlObject.description}</p>]]>`,
         'author': 'm10z@posteo.de',
         'itunes:duration': yamlObject.seconds,
         'link': 'https://m10z.de',
