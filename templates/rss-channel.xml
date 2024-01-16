@@ -8,13 +8,9 @@
         <itunes:category text="Leisure">
             <itunes:category text="Games"/>
         </itunes:category>
-        <itunes:explicit>False</itunes:explicit>
-        <itunes:owner>
-            <itunes:name>M10Z</itunes:name>
-            <itunes:email>m10z@posteo.de</itunes:email>
-        </itunes:owner>
+        <itunes:explicit>false</itunes:explicit>
         <itunes:author>M10Z</itunes:author>
-        <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</itunes:image>
+        <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg"/>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
     </channel>
 </rss>
