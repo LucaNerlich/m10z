@@ -1,6 +1,7 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 const xml2js = require('xml2js');
+const crypto = require('crypto');
 
 const basepath = './static/audiofeed';
 
@@ -10,16 +11,10 @@ function convertToPubDateFormat(dateString) {
     return date.toLocaleDateString('en-US', options) + ' +0000';
 }
 
-function toHash(input) {
-    var hash = 0,
-        i, chr;
-    if (input.length === 0) return hash;
-    for (i = 0; i < input.length; i++) {
-        chr = input.charCodeAt(i);
-        hash = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
+function toHash(string) {
+    const hash = crypto.createHash('sha256');
+    hash.update(string);
+    return hash.digest('hex');
 }
 
 
@@ -57,13 +52,8 @@ function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
             return;
         }
 
-        // Convert each YAML object to XML compatible JavaScript object
-        let convertedItems = yamlObjects.map(yamlObjectToXml);
+        result.rss.channel[0].item = yamlObjects.map(yamlObjectToXml);
 
-        // Append items to 'channel'
-        result.rss.channel[0].item = convertedItems;
-
-        // Convert back to XML and write to file
         let builder = new xml2js.Builder();
         let xml = builder.buildObject(result);
         fs.writeFileSync(basepath + 'test.xml', xml);
