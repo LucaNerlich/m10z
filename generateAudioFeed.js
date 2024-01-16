@@ -78,7 +78,7 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
         const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}, cdata: true});
         const xml = builder.buildObject(result);
 
-        fs.writeFileSync(basepath + 'test.xml', xml);
+        fs.writeFileSync(basepath + '.xml', xml);
     });
 }
 
