@@ -19,18 +19,25 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
         items = items?.map(item => {
             let cleanedItem = {};
             for (let key in item) {
-                if (key === 'itunes:image') {
-                    cleanedItem['image'] = item[key][0]['url'][0];
-                } else if (key === 'enclosure') {
-                    cleanedItem['url'] = item[key][0]['$']['url'];
-                } else if (key === 'guid') {
-                    cleanedItem[key] = item[key][0]['_'];
-                } else if (key === 'itunes:duration') {
-                    cleanedItem['duration'] = item[key][0];
-                } else if (key === 'pubDate') {
-                    cleanedItem['date'] = convertToDate(item[key])
-                } else {
-                    cleanedItem[key] = item[key][0];
+                switch(key) {
+                    case 'itunes:image':
+                        cleanedItem['image'] = item[key][0]['url'][0];
+                        break;
+                    case 'enclosure':
+                        cleanedItem['url'] = item[key][0]['$']['url'];
+                        break;
+                    case 'guid':
+                    case 'author':
+                        // ignore
+                        break;
+                    case 'itunes:duration':
+                        cleanedItem['duration'] = item[key][0];
+                        break;
+                    case 'pubDate':
+                        cleanedItem['date'] = convertToDate(item[key]);
+                        break;
+                    default:
+                        cleanedItem[key] = item[key][0];
                 }
             }
             return cleanedItem;
