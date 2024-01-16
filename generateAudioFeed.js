@@ -45,13 +45,14 @@ async function yamlObjectToXml(yamlObject) {
             $: {isPermaLink: 'false'},
         },
         'itunes:image': {
-            'url': yamlObject.image,
-            'title': `${yamlObject.title} (m10z)`,
-            'link': 'https://m10z.de',
+            $: {
+                href: yamlObject.image,
+            },
         },
         'description': yamlObject.description,
         'author': 'm10z@posteo.de',
         'itunes:duration': yamlObject.seconds,
+        'link': 'https://m10z.de',
         'enclosure': {
             $: {
                 url: yamlObject.url,
