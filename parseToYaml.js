@@ -36,6 +36,9 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
                     case 'pubDate':
                         cleanedItem['date'] = convertToDate(item[key]);
                         break;
+                    case 'description':
+                        cleanedItem[key] = item[key][0].replace(/(\r\n|\r|\n)/g, '\n');
+                        break;
                     default:
                         cleanedItem[key] = item[key][0];
                 }
