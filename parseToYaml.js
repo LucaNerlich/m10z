@@ -21,7 +21,7 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
             for (let key in item) {
                 switch (key) {
                     case 'itunes:image':
-                        cleanedItem['image'] = item[key][0]['url'][0];
+                        cleanedItem['image'] = item[key][0]['$']['href'];
                         break;
                     case 'enclosure':
                         cleanedItem['url'] = item[key][0]['$']['url'];
@@ -31,7 +31,7 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
                         // ignore
                         break;
                     case 'itunes:duration':
-                        cleanedItem['seconds'] = item[key][0];
+                        cleanedItem['seconds'] = convertToSeconds(item[key][0]);
                         break;
                     case 'pubDate':
                         cleanedItem['date'] = convertToDate(item[key]);
@@ -57,13 +57,27 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
 });
 
 function convertToDate(pubDateString) {
-    let date = new Date(pubDateString);
-    // Convert to required format
-    let year = date.getUTCFullYear();
-    let month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
-    let day = ('0' + date.getUTCDate()).slice(-2);
-    let hour = ('0' + date.getUTCHours()).slice(-2);
-    let minute = ('0' + date.getUTCMinutes()).slice(-2);
+    const date = new Date(pubDateString);
+    const year = date.getUTCFullYear();
+    const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
+    const day = ('0' + date.getUTCDate()).slice(-2);
+    const hour = ('0' + date.getUTCHours()).slice(-2);
+    const minute = ('0' + date.getUTCMinutes()).slice(-2);
 
     return `${year}-${month}-${day}T${hour}:${minute}`;
+}
+
+function convertToSeconds(time) {
+    if (time.includes(':')) {
+        const splitTime = time.split(':');
+        const hours = +splitTime[0];
+        const minutes = +splitTime[1];
+        const seconds = +splitTime[2];
+        return hours * 3600 + minutes * 60 + seconds;
+    } else if (isNaN(time)) { // Is not a number
+        console.error('Invalid input');
+        return 0;
+    } else {
+        return +time;
+    }
 }

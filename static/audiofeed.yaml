@@ -1,5 +1,5 @@
 - title: 'Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!'
-  date: 2024-01-05T09:00
+  date: 2024-01-05T08:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
 
@@ -20,10 +20,11 @@
                     Marcel, Til und Simon
 
                 
-  seconds: '3164'
+  seconds: 3164
+  link: https://m10z.de
   url: https://m10z.adrilaida.de/M10Z/M10Z_010.mp3
 - title: 'Fundbüro #06 - Weihnachtspezial'
-  date: 2023-12-24T11:00
+  date: 2023-12-24T10:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg
   description: |2-
 
@@ -43,10 +44,11 @@
 
                     Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf https://community.wasted.de vorbei!
                 
-  seconds: '00:52:34'
+  seconds: 3154
+  link: https://m10z.de
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_006_Winterspezial.mp3
 - title: 'Mindestens 10 Zeichen #9 - Eselkacke!'
-  date: 2023-11-25T11:59
+  date: 2023-11-25T10:59
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
 
@@ -67,10 +69,11 @@
                     Marcel, Simon und Til
 
                 
-  seconds: '01:53:20'
+  seconds: 6800
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_009.mp3
 - title: 'Fundbüro #05 - Gallien den Galliern'
-  date: 2023-11-19T10:00
+  date: 2023-11-19T09:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg
   description: |2-
 
@@ -94,10 +97,11 @@
                     Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
                     https://community.wasted.de vorbei!
                 
-  seconds: '00:21:51'
+  seconds: 1311
+  link: https://m10z.de
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_005_Gallien_im_Krieg.mp3
 - title: 'Mindestens 10 Zeichen #8 - Der rästelhafte Gast'
-  date: 2023-11-03T01:00
+  date: 2023-11-03T00:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |-
     Liebe Freund:innen, geehrte M10Z Community, ihr da draußen.
@@ -126,10 +130,11 @@
                     Til, Marcel und Simon
 
                 
-  seconds: '6540'
+  seconds: 6540
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_008.mp3
 - title: 'En Rogue #01'
-  date: 2023-10-31T13:30
+  date: 2023-10-31T12:30
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
   description: |2-
 
@@ -138,10 +143,11 @@
 
                     Den Anfang macht das mehrfach preisgekrönte Spiel Inscryption. Ist es wirklich so herausragend oder doch eher Schein statt Sein?
                 
-  seconds: '01:01:22'
+  seconds: 3682
+  link: https://m10z.de
   url: https://m10z.picnotes.de/EnRogue/EnRogue_001.mp3
 - title: 'Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele'
-  date: 2023-10-19T10:00
+  date: 2023-10-19T08:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg
   description: |2-
 
@@ -162,10 +168,11 @@
                     Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
                     https://community.wasted.de/ vorbei!
                 
-  seconds: '00:46:16'
+  seconds: 2776
+  link: https://m10z.de
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3
 - title: 'Mindestens 10 Zeichen #7'
-  date: 2023-10-15T01:00
+  date: 2023-10-14T23:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |-
     Hallo an ALLE da draussen!
@@ -190,10 +197,11 @@
                     Marcel, Til und Simon
 
                 
-  seconds: '7320'
+  seconds: 7320
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_007.mp3
 - title: 'Once we were Gamers #04 - Wer like sagt, muss auch lite sagen'
-  date: 2023-09-10T04:00
+  date: 2023-09-10T02:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
 
@@ -202,10 +210,11 @@
                     Definition des Rogue-Like. Außerdem gibt es viele Empfehlungen und einen besonderen Ausblick auf eine anstehende Sonderfolge.
                     Wir wünschen wie immer: Viel Vergnügen.
                 
-  seconds: '3304'
+  seconds: 3304
+  link: https://m10z.de
   url: https://m10z.picnotes.de/OwwG/OwwG_4_RogueLikeLite.mp3
 - title: 'Mindestens 10 Zeichen #6'
-  date: 2023-08-08T01:00
+  date: 2023-08-07T23:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |-
     Da sind wir wieder, mit der ersten richtigen Folge nach einer kleinen Pause.
@@ -224,10 +233,11 @@
                     Eure M10Z-Podcast Crew:
                     Til, Marcel und Simon
                 
-  seconds: '6180'
+  seconds: 6180
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_006.mp3
 - title: 'Once we were Gamers #03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst'
-  date: 2023-07-22T04:00
+  date: 2023-07-22T02:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
 
@@ -237,10 +247,11 @@
                     ist überall ein bisschen anders.
                     Wir wünschen euch Viel Spaß.
                 
-  seconds: '3608'
+  seconds: 3608
+  link: https://m10z.de
   url: https://m10z.picnotes.de/OwwG/OwwG_3_KinderKrisenKonsolen.mp3
 - title: 'Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon'
-  date: 2023-07-09T00:30
+  date: 2023-07-08T22:30
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg
   description: |-
     Herzlich willkommen im Fundbüro.
@@ -256,10 +267,11 @@
                     Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im Forum auf
                     https://community.wasted.de/ vorbei!
                 
-  seconds: '2174'
+  seconds: 2174
+  link: https://m10z.de
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_003.mp3
 - title: 'Mindestens 10 Zeichen #5'
-  date: 2023-07-01T01:00
+  date: 2023-06-30T23:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |-
     Hallo zusammen, hier ist die Nr. 5 vom Mindestens 10 Zeichen Podcast, aber so eine richtige ganze Folge ist es nicht
@@ -280,10 +292,11 @@
                     Macht es gut und bis bald,
                     Til, Marcel und Simon
                 
-  seconds: '3271'
+  seconds: 3271
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_005.mp3
 - title: M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen
-  date: 2023-06-14T05:00
+  date: 2023-06-14T03:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10ZSpezial_Logo3000x3000.jpg
   description: |-
     Liebe Community,
@@ -309,10 +322,11 @@
 
                     Bis dahin, euer Edgar aka. Lipardus
                 
-  seconds: '3293'
+  seconds: 3293
+  link: https://m10z.de
   url: https://m10z.picnotes.de/Spezial/M10ZSpezial_001.mp3
 - title: 'Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott'
-  date: 2023-05-10T05:00
+  date: 2023-05-10T03:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg
   description: |-
     Herzlich willkommen im Fundbüro.
@@ -324,10 +338,11 @@
                     nur eines Champion des Legolandes werden kann. Außer ihrer Klötzchenherkunft haben Lego Racers (1999) und Bionicle (2003) aber wenig
                     gemein.
                 
-  seconds: '2957'
+  seconds: 2957
+  link: https://m10z.de
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_002.mp3
 - title: 'Mindestens 10 Zeichen #4'
-  date: 2023-05-06T01:00
+  date: 2023-05-05T23:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |-
     Liebe Gemeinde, auch ohne Wasted geben Marcel, Simon und Til wieder ihr bestes um euch 1,5h mit Futter aus der Community zu
@@ -349,10 +364,11 @@
                     drin.
                     Sorry hatten einfach viel um die Ohren und geloben uns zu bessern
                 
-  seconds: '5670'
+  seconds: 5670
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_004.mp3
 - title: 'Once we were Gamers #02 - Nostalgie in Videospielen'
-  date: 2023-05-03T04:00
+  date: 2023-05-03T02:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
 
@@ -361,10 +377,11 @@
                     aktuellen Spieleproduktion und fragen sich, wie die ersten Videospielerfahrungen, die man macht, die zukünftigen beeinflussen. Ob
                     Nostalgie die entscheidende Zutat für ein erfolgreiches Spiel ist oder völlig überwertet wird, hört ihr im Podcast
                 
-  seconds: '2844'
+  seconds: 2844
+  link: https://m10z.de
   url: https://m10z.picnotes.de/OwwG/OwwG_2_Nostalgie.mp3
 - title: 'Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview)'
-  date: 2023-04-09T09:30
+  date: 2023-04-09T07:30
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
 
@@ -378,10 +395,11 @@
 
                     Wir wünschen euch viel Spaß.
                 
-  seconds: '3022'
+  seconds: 3022
+  link: https://m10z.de
   url: https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3
 - title: 'Fundbüro #01 - Bilbo im Kreuzfeuer'
-  date: 2023-04-01T11:00
+  date: 2023-04-01T09:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg
   description: |-
     Herzlich willkommen im Fundbüro.
@@ -392,10 +410,11 @@
                     Seite ein abenteuerlustiger Hobbit, der sich auf die weite Reise zum Einsamen Berg begibt. Auf der anderen Seite ein ballernder
                     Geheimagent, dessen Nummer 007 uns schon seit vielen Jahren begleitet.
                 
-  seconds: '2254'
+  seconds: 2254
+  link: https://m10z.de
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3
 - title: 'Mindestens 10 Zeichen #3 (Wasted)'
-  date: 2023-04-01T11:00
+  date: 2023-04-01T09:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |-
     Liebe Gemeinde,
@@ -413,10 +432,11 @@
                     Liebe Grüße,
                     Marcel, Simon und Til
                 
-  seconds: '6716'
+  seconds: 6716
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_003.mp3
 - title: 'Mindestens 10 Zeichen #2 (Wasted)'
-  date: 2023-03-12T11:00
+  date: 2023-03-12T10:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |-
     Liebe Gemeinde!
@@ -433,10 +453,11 @@
                     Viel Spaß beim Hören und bleibt gesund,
                     Til, Simon und Marcel
                 
-  seconds: '6338'
+  seconds: 6338
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_002.mp3
 - title: 'Mindestens 10 Zeichen #1 (Wasted)'
-  date: 2023-01-25T17:00
+  date: 2023-01-25T16:00
   image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |-
     "Liebe Community,
@@ -446,5 +467,6 @@
                     und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
                     Viel Vergnügen!
                 
-  seconds: '5622'
+  seconds: 5622
+  link: https://m10z.de
   url: https://m10z.picnotes.de/M10Z/M10Z_001.mp3
