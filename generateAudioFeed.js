@@ -81,6 +81,7 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
     });
 }
 
+console.log('Creating audiofeed.xml');
 const yamlData = fs.readFileSync(basepath + '.yaml', 'utf8');
 const yamlObjects = yaml.load(yamlData);
 insertItemsToXMLFile('./templates/rss-channel.xml', yamlObjects)
