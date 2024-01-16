@@ -83,4 +83,6 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
 
 const yamlData = fs.readFileSync(basepath + '.yaml', 'utf8');
 const yamlObjects = yaml.load(yamlData);
-insertItemsToXMLFile('./templates/rss-channel.xml', yamlObjects).then(r => 'Successfully created audiofeed.xml');
+insertItemsToXMLFile('./templates/rss-channel.xml', yamlObjects)
+    .then(success => console.log('Successfully created audiofeed.xml'))
+    .catch(error => console.error('Failed to generate audiofeed.xml', error));
