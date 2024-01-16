@@ -49,7 +49,7 @@ async function yamlObjectToXml(yamlObject) {
                 href: yamlObject.image,
             },
         },
-        'description': `<![CDATA[<p>${yamlObject.description}</p>]]>`,
+        'description': `<p>${yamlObject.description}</p>`,
         'author': 'm10z@posteo.de',
         'itunes:duration': yamlObject.seconds,
         'link': 'https://m10z.de',
@@ -74,7 +74,7 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
 
         result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
 
-        const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}});
+        const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}, cdata: true});
         const xml = builder.buildObject(result);
 
         fs.writeFileSync(basepath + 'test.xml', xml);
