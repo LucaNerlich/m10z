@@ -27,6 +27,8 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
                     cleanedItem[key] = item[key][0]['_'];
                 } else if (key === 'itunes:duration') {
                     cleanedItem['duration'] = item[key][0];
+                } else if (key === 'pubDate') {
+                    cleanedItem['date'] = convertToDate(item[key])
                 } else {
                     cleanedItem[key] = item[key][0];
                 }
@@ -34,7 +36,7 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
             return cleanedItem;
         });
 
-        let yamlStr = jsYaml.dump(items, { lineWidth: -1 });
+        let yamlStr = jsYaml.dump(items, {lineWidth: -1});
         fs.writeFile(basepath + '.yaml', yamlStr, 'utf8', function(err) {
             if (err) {
                 return console.log('Failed to create YAML file: ' + err);
@@ -43,3 +45,22 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
         });
     });
 });
+
+function convertToDate(pubDateString) {
+    let date = new Date(pubDateString);
+    // Convert to required format
+    let year = date.getUTCFullYear();
+    let month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
+    let day = ('0' + date.getUTCDate()).slice(-2);
+    let hour = ('0' + date.getUTCHours()).slice(-2);
+    let minute = ('0' + date.getUTCMinutes()).slice(-2);
+
+    return `${year}-${month}-${day}T${hour}:${minute}`;
+}
+
+// Function to convert the date string from the required format to pubDate format
+function convertToPubDateFormat(dateString) {
+    let date = new Date(dateString);
+    let options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC'};
+    return date.toLocaleDateString('en-US', options) + ' +0000';
+}
