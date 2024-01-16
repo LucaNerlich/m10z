@@ -51,7 +51,7 @@ async function yamlObjectToXml(yamlObject) {
         },
         'description': yamlObject.description,
         'author': 'm10z@posteo.de',
-        'itunes:duration': yamlObject.duration,
+        'itunes:duration': yamlObject.seconds,
         'enclosure': {
             $: {
                 url: yamlObject.url,

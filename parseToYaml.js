@@ -19,7 +19,7 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
         items = items?.map(item => {
             let cleanedItem = {};
             for (let key in item) {
-                switch(key) {
+                switch (key) {
                     case 'itunes:image':
                         cleanedItem['image'] = item[key][0]['url'][0];
                         break;
@@ -31,7 +31,7 @@ fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
                         // ignore
                         break;
                     case 'itunes:duration':
-                        cleanedItem['duration'] = item[key][0];
+                        cleanedItem['seconds'] = item[key][0];
                         break;
                     case 'pubDate':
                         cleanedItem['date'] = convertToDate(item[key]);
@@ -64,5 +64,3 @@ function convertToDate(pubDateString) {
 
     return `${year}-${month}-${day}T${hour}:${minute}`;
 }
-
-// Function to convert the date string from the required format to pubDate format
