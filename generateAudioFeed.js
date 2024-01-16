@@ -29,6 +29,7 @@ async function yamlObjectToXml(yamlObject) {
 
     const getFileSize = new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
+            console.log('status', res.statusCode + ' ' + options.host + options.path);
             resolve(res.headers['content-length']);
         });
         req.on('error', reject);
@@ -41,7 +42,7 @@ async function yamlObjectToXml(yamlObject) {
         'title': yamlObject.title,
         'pubDate': convertToPubDateFormat(yamlObject.date),
         'guid': {
-            _: toHash(yamlObject.url) + "-luca",
+            _: toHash(yamlObject.url),
             $: {isPermaLink: 'false'},
         },
         'itunes:image': {
