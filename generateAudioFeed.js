@@ -2,6 +2,8 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const xml2js = require('xml2js');
 const crypto = require('crypto');
+const https = require('https');
+const {URL} = require('url');
 
 const basepath = './static/audiofeed';
 
@@ -17,8 +19,24 @@ function toHash(string) {
     return hash.digest('hex');
 }
 
+async function yamlObjectToXml(yamlObject) {
+    const url = new URL(yamlObject.url);
+    const options = {
+        method: 'HEAD',
+        host: url.hostname,
+        path: url.pathname,
+    };
 
-function yamlObjectToXml(yamlObject) {
+    const getFileSize = new Promise((resolve, reject) => {
+        const req = https.request(options, (res) => {
+            resolve(res.headers['content-length']);
+        });
+        req.on('error', reject);
+        req.end();
+    });
+
+    const fileSize = await getFileSize;
+
     return {
         'title': yamlObject.title,
         'pubDate': convertToPubDateFormat(yamlObject.date),
@@ -37,29 +55,31 @@ function yamlObjectToXml(yamlObject) {
         'enclosure': {
             $: {
                 url: yamlObject.url,
-                length: '48300000',
+                length: fileSize,
                 type: 'audio/mpeg',
             },
         },
     };
 }
 
-function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
+async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
     let data = fs.readFileSync(xmlFilePath);
-    xml2js.parseString(data, (err, result) => {
+
+    xml2js.parseString(data, async (err, result) => {
         if (err) {
             console.error(err);
             return;
         }
 
-        result.rss.channel[0].item = yamlObjects.map(yamlObjectToXml);
+        result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
 
         let builder = new xml2js.Builder();
         let xml = builder.buildObject(result);
+
         fs.writeFileSync(basepath + 'test.xml', xml);
     });
 }
 
 let yamlData = fs.readFileSync(basepath + '.yaml', 'utf8');
 let yamlObjects = yaml.load(yamlData);
-insertItemsToXMLFile('./templates/rss-channel.xml', yamlObjects);
+insertItemsToXMLFile('./templates/rss-channel.xml', yamlObjects).then(r => 'Successfully created audiofeed.xml');
