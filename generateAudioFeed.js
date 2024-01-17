@@ -9,7 +9,15 @@ const basepath = './static/audiofeed';
 
 function convertToPubDateFormat(dateString) {
     const date = new Date(dateString);
-    const options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin'};
+    const options = {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        timeZone: 'Europe/Berlin',
+    };
     return date.toLocaleDateString('en-GB', options) + ' +MEZ';
 }
 
@@ -53,8 +61,8 @@ async function yamlObjectToXml(yamlObject) {
         'description': yamlObject.description,
         'author': 'm10z@posteo.de',
         'itunes:explicit': 'false',
+        'link': yamlObject.blogpost ?? 'https://m10z.de',
         'itunes:duration': yamlObject.seconds,
-        'link': 'https://m10z.de',
         'enclosure': {
             $: {
                 url: yamlObject.url,
@@ -74,7 +82,7 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
             return;
         }
 
-        result.rss.channel[0]['pubDate'] = convertToPubDateFormat(new Date().toDateString())
+        result.rss.channel[0]['pubDate'] = convertToPubDateFormat(new Date().toDateString());
         result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
 
         const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}, cdata: true});
