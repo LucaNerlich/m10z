@@ -9,8 +9,8 @@ const basepath = './static/audiofeed';
 
 function convertToPubDateFormat(dateString) {
     const date = new Date(dateString);
-    const options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC'};
-    return date.toLocaleDateString('en-GB', options) + ' +0000';
+    const options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin'};
+    return date.toLocaleDateString('en-GB', options) + ' +MEZ';
 }
 
 function toHash(string) {
@@ -47,7 +47,7 @@ async function yamlObjectToXml(yamlObject) {
         },
         'itunes:image': {
             $: {
-                href: yamlObject.image,
+                href: yamlObject.image ?? 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg',
             },
         },
         'description': yamlObject.description,
@@ -73,6 +73,7 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
             return;
         }
 
+        result.rss.channel[0]['pubDate'] = convertToPubDateFormat(new Date().toDateString())
         result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
 
         const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}, cdata: true});
