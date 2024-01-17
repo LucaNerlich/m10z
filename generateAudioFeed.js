@@ -73,6 +73,7 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
             return;
         }
 
+        result.rss.channel[0]['pubDate'] = convertToPubDateFormat(new Date().toDateString())
         result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
 
         const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}, cdata: true});

@@ -14,6 +14,7 @@
         <podcast:guid>E9QfcR8TYeotS5ceJLmn</podcast:guid>
         <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg"/>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
+        <pubDate>Wed, 17 Jan 2024, 00:00 +MEZ</pubDate>
         <item>
             <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!</title>
             <pubDate>Fri, 5 Jan 2024, 09:00 +MEZ</pubDate>
