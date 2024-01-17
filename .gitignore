@@ -21,3 +21,4 @@ yarn-error.log*
 .idea/
 
 blog/authors.json
+/static/audiofeed.xml
