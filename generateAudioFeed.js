@@ -9,8 +9,8 @@ const basepath = './static/audiofeed';
 
 function convertToPubDateFormat(dateString) {
     const date = new Date(dateString);
-    const options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC'};
-    return date.toLocaleDateString('en-GB', options) + ' +0000';
+    const options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin'};
+    return date.toLocaleDateString('en-GB', options) + ' +MEZ';
 }
 
 function toHash(string) {

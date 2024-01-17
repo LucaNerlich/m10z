@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
     <channel>
         <title>M10Z Podcasts</title>
         <link>https://m10z.de</link>
@@ -10,11 +10,13 @@
         </itunes:category>
         <itunes:explicit>false</itunes:explicit>
         <itunes:author>M10Z</itunes:author>
+        <podcast:locked>no</podcast:locked>
+        <podcast:guid>E9QfcR8TYeotS5ceJLmn</podcast:guid>
         <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg"/>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!</title>
-            <pubDate>Fri, 5 Jan 2024, 08:00 +0000</pubDate>
+            <pubDate>Fri, 5 Jan 2024, 09:00 +MEZ</pubDate>
             <guid isPermaLink="false">8d5fe2b6d5d09e881af903bd62656d4150ae40052d4e3a97142a535513a43d39</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>
@@ -45,7 +47,7 @@
         </item>
         <item>
             <title>Fundbüro #06 - Weihnachtspezial</title>
-            <pubDate>Sun, 24 Dec 2023, 10:00 +0000</pubDate>
+            <pubDate>Sun, 24 Dec 2023, 11:00 +MEZ</pubDate>
             <guid isPermaLink="false">190d0b8fb5d23833465da6065cb63174213976993a348043dfb8802bf697ab86</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg"/>
             <description>
@@ -74,7 +76,7 @@
         </item>
         <item>
             <title>Mindestens 10 Zeichen #9 - Eselkacke!</title>
-            <pubDate>Sat, 25 Nov 2023, 10:59 +0000</pubDate>
+            <pubDate>Sat, 25 Nov 2023, 11:59 +MEZ</pubDate>
             <guid isPermaLink="false">c80e7ff96ab8cad4a42a3b663203b1bf520dd6f39bb55d767f9f89fffe9a38e1</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>
@@ -101,7 +103,7 @@
         </item>
         <item>
             <title>Fundbüro #05 - Gallien den Galliern</title>
-            <pubDate>Sun, 19 Nov 2023, 09:00 +0000</pubDate>
+            <pubDate>Sun, 19 Nov 2023, 10:00 +MEZ</pubDate>
             <guid isPermaLink="false">4d8aa48c7d8e57a6370c9cedf5311eedb40ef95d175edaaa857f8e6a33c15efb</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg"/>
             <description>
@@ -131,7 +133,7 @@
         </item>
         <item>
             <title>Mindestens 10 Zeichen #8 - Der rästelhafte Gast</title>
-            <pubDate>Fri, 3 Nov 2023, 00:00 +0000</pubDate>
+            <pubDate>Fri, 3 Nov 2023, 01:00 +MEZ</pubDate>
             <guid isPermaLink="false">672405af0172a347f0b877bd1ca79e3fb541020e6cf4f79fa1e7fa85e90550a2</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>Liebe Freund:innen, geehrte M10Z Community, ihr da draußen.
@@ -166,7 +168,7 @@
         </item>
         <item>
             <title>En Rogue #01</title>
-            <pubDate>Tue, 31 Oct 2023, 12:30 +0000</pubDate>
+            <pubDate>Tue, 31 Oct 2023, 13:30 +MEZ</pubDate>
             <guid isPermaLink="false">3048bee0b1dc7b024526ec6b50348e7b846ff679e1e962705ac43976c8b583e4</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg"/>
             <description>
@@ -181,7 +183,7 @@
         </item>
         <item>
             <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
-            <pubDate>Thu, 19 Oct 2023, 08:00 +0000</pubDate>
+            <pubDate>Thu, 19 Oct 2023, 10:00 +MEZ</pubDate>
             <guid isPermaLink="false">5853e9a0e85707f2ad96b4a4ee7d16028076fdff5a3d560ceec8ac4d525f65db</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg"/>
             <description>
@@ -208,7 +210,7 @@
         </item>
         <item>
             <title>Mindestens 10 Zeichen #7</title>
-            <pubDate>Sat, 14 Oct 2023, 23:00 +0000</pubDate>
+            <pubDate>Sun, 15 Oct 2023, 01:00 +MEZ</pubDate>
             <guid isPermaLink="false">40bae237255ecebe23562b601bf3a417a1069371dffa1c49998eb25c3593f528</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>Hallo an ALLE da draussen!
@@ -238,7 +240,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
-            <pubDate>Sun, 10 Sept 2023, 02:00 +0000</pubDate>
+            <pubDate>Sun, 10 Sept 2023, 04:00 +MEZ</pubDate>
             <guid isPermaLink="false">f8009d19d65f06bd2ab018321b2aba030ea5f132726b217eda48a91149cdaf36</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg"/>
             <description>
@@ -253,7 +255,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Mindestens 10 Zeichen #6</title>
-            <pubDate>Mon, 7 Aug 2023, 23:00 +0000</pubDate>
+            <pubDate>Tue, 8 Aug 2023, 01:00 +MEZ</pubDate>
             <guid isPermaLink="false">281337e31b241449ebbe195503ed0573be7a1c0135122c617a99279166a5539e</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>Da sind wir wieder, mit der ersten richtigen Folge nach einer kleinen Pause.
@@ -278,7 +280,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Once we were Gamers #03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst</title>
-            <pubDate>Sat, 22 Jul 2023, 02:00 +0000</pubDate>
+            <pubDate>Sat, 22 Jul 2023, 04:00 +MEZ</pubDate>
             <guid isPermaLink="false">5559190102b7e2e6536c00da14a1e18039f93d1cecf3609af32c4836b829fc42</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg"/>
             <description>
@@ -294,7 +296,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon</title>
-            <pubDate>Sat, 8 Jul 2023, 22:30 +0000</pubDate>
+            <pubDate>Sun, 9 Jul 2023, 00:30 +MEZ</pubDate>
             <guid isPermaLink="false">9999508951ea1dbdcc208227a2aa9c321ad9fe9feb1439016dc81f63af1016e7</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg"/>
             <description>Herzlich willkommen im Fundbüro.
@@ -316,7 +318,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Mindestens 10 Zeichen #5</title>
-            <pubDate>Fri, 30 Jun 2023, 23:00 +0000</pubDate>
+            <pubDate>Sat, 1 Jul 2023, 01:00 +MEZ</pubDate>
             <guid isPermaLink="false">a53ef704d94db3f66be0a2202db28b29dc590ac675613855503bb937ad13ba42</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>Hallo zusammen, hier ist die Nr. 5 vom Mindestens 10 Zeichen Podcast, aber so eine richtige ganze Folge ist es nicht
@@ -343,7 +345,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen</title>
-            <pubDate>Wed, 14 Jun 2023, 03:00 +0000</pubDate>
+            <pubDate>Wed, 14 Jun 2023, 05:00 +MEZ</pubDate>
             <guid isPermaLink="false">aef8370234eb264c60b303bdeddac44cd364daef0b7ce714c9a8f096a38b9c8d</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10ZSpezial_Logo3000x3000.jpg"/>
             <description>Liebe Community,
@@ -375,7 +377,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott</title>
-            <pubDate>Wed, 10 May 2023, 03:00 +0000</pubDate>
+            <pubDate>Wed, 10 May 2023, 05:00 +MEZ</pubDate>
             <guid isPermaLink="false">b87bc7554209576c16a55d5ec0c4ff8f96eb0940c3ef495ba24759a29b5d8178</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg"/>
             <description>Herzlich willkommen im Fundbüro.
@@ -393,7 +395,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Mindestens 10 Zeichen #4</title>
-            <pubDate>Fri, 5 May 2023, 23:00 +0000</pubDate>
+            <pubDate>Sat, 6 May 2023, 01:00 +MEZ</pubDate>
             <guid isPermaLink="false">01610d2830a834dd50c79dc3c0b1474e85384fe86960a20557e5710a695eeeb7</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>Liebe Gemeinde, auch ohne Wasted geben Marcel, Simon und Til wieder ihr bestes um euch 1,5h mit Futter aus der Community zu
@@ -421,7 +423,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Once we were Gamers #02 - Nostalgie in Videospielen</title>
-            <pubDate>Wed, 3 May 2023, 02:00 +0000</pubDate>
+            <pubDate>Wed, 3 May 2023, 04:00 +MEZ</pubDate>
             <guid isPermaLink="false">00ac51f61514df189fe9c8448abe4e856fadca0fadbf82ada0f3f5326ebab740</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg"/>
             <description>
@@ -436,7 +438,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview)</title>
-            <pubDate>Sun, 9 Apr 2023, 07:30 +0000</pubDate>
+            <pubDate>Sun, 9 Apr 2023, 09:30 +MEZ</pubDate>
             <guid isPermaLink="false">0f76a6954a2596e0efbb12772f3e45e2742e01a4817a2c4d7008dd8f8715c437</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg"/>
             <description>
@@ -456,7 +458,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Fundbüro #01 - Bilbo im Kreuzfeuer</title>
-            <pubDate>Sat, 1 Apr 2023, 09:00 +0000</pubDate>
+            <pubDate>Sat, 1 Apr 2023, 11:00 +MEZ</pubDate>
             <guid isPermaLink="false">57680fa321cb4bda7637b3920852affc005b79c086b060c03fe0178b36d47e8e</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbüro_Logo3000x3000.jpg"/>
             <description>Herzlich willkommen im Fundbüro.
@@ -473,7 +475,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Mindestens 10 Zeichen #3 (Wasted)</title>
-            <pubDate>Sat, 1 Apr 2023, 09:00 +0000</pubDate>
+            <pubDate>Sat, 1 Apr 2023, 11:00 +MEZ</pubDate>
             <guid isPermaLink="false">4743a989247d1b774dc078b0029453507ca0efef04c37a96298e33ef695c3f97</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>Liebe Gemeinde,
@@ -497,7 +499,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Mindestens 10 Zeichen #2 (Wasted)</title>
-            <pubDate>Sun, 12 Mar 2023, 10:00 +0000</pubDate>
+            <pubDate>Sun, 12 Mar 2023, 11:00 +MEZ</pubDate>
             <guid isPermaLink="false">7402fc0f51db196bd0a9a65e6880ee32a9ddde0c3dbad4503e844f9bb386de5b</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>Liebe Gemeinde!
@@ -520,7 +522,7 @@ Marcel, Til und Simon</description>
         </item>
         <item>
             <title>Mindestens 10 Zeichen #1 (Wasted)</title>
-            <pubDate>Wed, 25 Jan 2023, 16:00 +0000</pubDate>
+            <pubDate>Wed, 25 Jan 2023, 17:00 +MEZ</pubDate>
             <guid isPermaLink="false">ee02103faea60d107f9ff6b3f78520bcf8fce960034b0179498d94e92c5b2ea5</guid>
             <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg"/>
             <description>"Liebe Community,
