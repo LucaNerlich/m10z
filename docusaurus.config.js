@@ -100,11 +100,11 @@ const config = {
                         limit: false,
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
                         createFeedItems: async (params) => {
-                            const {blogPosts, defaultCreateFeedItems, ...rest} = params
+                            const {blogPosts, defaultCreateFeedItems, ...rest} = params;
                             return defaultCreateFeedItems({
                                 blogPosts: blogPosts.filter((item, index) => index < 10),
                                 ...rest,
-                            })
+                            });
                         },
                     },
                 },
@@ -230,6 +230,10 @@ const config = {
                         title: 'Community',
                         items: [
                             {
+                                label: 'Linktree',
+                                href: 'https://linktr.ee/m10z',
+                            },
+                            {
                                 label: 'Twitch',
                                 href: 'https://www.twitch.tv/m10z_tv',
                             },
@@ -245,6 +249,6 @@ const config = {
                 additionalLanguages: ['groovy', 'java', 'rust', 'python'],
             },
         }),
-}
+};
 
-module.exports = config
+module.exports = config;
