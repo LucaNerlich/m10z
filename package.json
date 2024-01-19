@@ -33,16 +33,16 @@
         "react-dom": "^18.2.0",
         "react-player": "^2.14.1",
         "remark-math": "^6.0.0",
-        "sass": "^1.69.7",
+        "sass": "^1.70.0",
         "sharp": "0.32.6"
     },
     "devDependencies": {
         "@docusaurus/module-type-aliases": "^3.1.0",
         "@docusaurus/tsconfig": "^3.1.0",
         "@docusaurus/types": "^3.1.0",
-        "@types/react": "^18.2.47",
-        "typescript": "~5.2.2",
+        "@types/react": "^18.2.48",
         "js-yaml": "^4.1.0",
+        "typescript": "~5.2.2",
         "xml2js": "^0.6.2"
     },
     "engines": {
