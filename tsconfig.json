@@ -1,9 +1,17 @@
 {
     // This file is not used in compilation. It is here just for a nice editor experience.
     "extends": "@tsconfig/docusaurus/tsconfig.json",
-    "include": ["blog/authors.json"],
+    "include": [
+        "blog/authors.json"
+    ],
     "compilerOptions": {
         "baseUrl": ".",
         "resolveJsonModule": true,
+        "allowJs": true,
+        "checkJs": false,
+        "jsx": "react",
+        "strict": false,
+        "removeComments": false,
+        "esModuleInterop": true
     }
 }
