@@ -1,6 +1,7 @@
 import React from 'react'
 // @ts-ignore
 import styles from './SingleFormat.module.scss'
+// @ts-ignore
 import Link from '@docusaurus/Link'
 
 interface SingleFormatProps {
@@ -25,6 +26,7 @@ export default function SingleFormat(props: SingleFormatProps): React.ReactEleme
                     <p>Alle Posts dieser Kategorie</p>
                 </Link>
             }
+            <hr/>
         </div>
     )
 }
