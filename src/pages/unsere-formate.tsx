@@ -92,7 +92,6 @@ export default function Formate() {
                         In Open Beta öffnen wir M10Z für eure Gastbeiträge. Kurze Gedankenblitze, lange Kolumnen, Spielkritiken … alles kann, nichts
                         muss.
                     </p>
-                    <Beteiligte text='Til' />
                 </SingleFormat>
             </div>
         </Layout>
