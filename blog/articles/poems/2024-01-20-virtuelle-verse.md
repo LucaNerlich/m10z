@@ -1,5 +1,5 @@
 ---
-slug: virtuelle-verse-41
+slug: virtuelle-verse-42
 title: 'Virtuelle Verse – Lyrik und Games #42'
 authors: [tilmobaxter]
 tags: [lyrik, tilmobaxter]
