@@ -13,21 +13,18 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 ![VideoVinyl](https://irgendwasmitkunden.de/InsertCoins.png)
 > Fotos von Til: Paradies für große und kleine Kinder
 
-## Insert Coins e.V. 
+## [Insert Coins e.V.](https://www.insert-coins.com/)
 
-Ich denke fast ihr wisst es schon  
-Zu einem guten Videospiel  
-Gehört nicht nur das schicke Bild  
-Es braucht auch mitreißenden Ton  
-Musik mit Verve und auch mit Stil  
-Die über das Spiel hinaus gefällt  
+Früher war die Arcadewelt  
+Der größte Feind vom Taschengeld  
+Das ich mich das heute trau  
+Liegt am Insert Coins e.V. 
 
-Bleibt die Frage greift man hier  
-Auf schon erschienenes zurück  
-Oder komponiert für jedes Level  
-Gleich ein persönlicheres Stück  
+Ob Flipper, Arcade, Mario Kart  
+Sorglos drücke ich auf Start  
+Der Eintritt kostet gar nicht viel  
+Dafür gibt es freies Spiel 
 
-Verknüpft mit den Erinnerungen  
-Wurd bei vielen Titeln klar  
-Was als Chiptune schon gelungen  
-Ist mit Orchester wunderbar  
+Seh mich schon viele Wochenden  
+Freudig hier die Zeit verschwenden  
+
