@@ -90,7 +90,7 @@ export default function Formate() {
                 </SingleFormat>
                 <SingleFormat title='Open Beta' link='/tags/openbeta' imagePath='/img/articles/OpenBetaLogo.jpg'>
                     <p>
-                        In Open Beta öffnen wir M10Z für eure Gastbeiträge. Kurze Gedankenblitze, lange Kolumnen, Spielkritiken … alles kann, nichts
+                        In Open Beta öffnen wir M10Z für eure Gastbeiträge. Kurze Gedankenblitze, lange Kolumnen, Spielkritiken, … alles kann, nichts
                         muss.
                     </p>
                 </SingleFormat>
