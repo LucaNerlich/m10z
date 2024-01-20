@@ -1,14 +1,15 @@
-import React from 'react'
+import React from 'react';
 // @ts-ignore
-import styles from './unsere-formate.module.scss'
-import Layout from '@theme/Layout'
-import SingleFormat from '../components/SingleFormat'
+import styles from './unsere-formate.module.scss';
+// @ts-ignore
+import Layout from '@theme/Layout';
+import SingleFormat from '../components/SingleFormat';
 
 function Beteiligte(props) {
     return <p>
         Beteiligte: <br />
         <em>{props.text}</em>
-    </p>
+    </p>;
 }
 
 export default function Formate() {
@@ -87,7 +88,13 @@ export default function Formate() {
                     </p>
                     <Beteiligte text='Til' />
                 </SingleFormat>
+                <SingleFormat title='Open Beta' link='/tags/openbeta' imagePath='/img/articles/OpenBetaLogo.jpg'>
+                    <p>
+                        In Open Beta öffnen wir M10Z für eure Gastbeiträge. Kurze Gedankenblitze, lange Kolumnen, Spielkritiken, … alles kann, nichts
+                        muss.
+                    </p>
+                </SingleFormat>
             </div>
         </Layout>
-    )
+    );
 }
