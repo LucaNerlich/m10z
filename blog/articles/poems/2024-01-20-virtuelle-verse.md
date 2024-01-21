@@ -17,7 +17,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 Früher war die Arcadewelt  
 Der größte Feind vom Taschengeld  
-Das ich mich das heute trau  
+Dass ich mich das heute trau  
 Liegt am [Insert Coins e.V.](https://www.insert-coins.com/) 
 
 Ob Flipper, Arcade, Mario Kart  
