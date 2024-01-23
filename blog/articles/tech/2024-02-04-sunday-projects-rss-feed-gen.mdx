@@ -29,3 +29,72 @@ Damit ein PodCatcher die Datei einbinden und bei Bedarf aktualisieren kann, reic
 Im Projekt 'M10Z' verwenden wir [Docusaurus] (https://docusaurus.io).
 Das ist ein Dokumentations- und Blog-Baukasten.
 Die Dateien im `/static` Verzeichnis werden hier 'durchgereicht', sind also nach dem _build & deployment_ Prozess [öffentlich zugänglich](https://m10z.de/audiofeed.xml).
+
+
+## Aufbau der Feed XML Datei
+
+Aber ich wollte beschreiben, wo die Datei eigentlich her kommt und was in ihr steht.
+Damit der _Feed_ korrekt interpretiert werden kann, muessen gewisse Elemente gesetzt werden.
+Hier gibt es einen "Container" (das `<channel>` Element), sowie die konkreten Podcasts (jedes `<item>` Element) in diesem.
+
+Nachfolgend der Container von M10Z:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:podcast="https://podcastindex.org/namespace/1.0"
+     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+    <channel>
+        <title>M10Z Podcasts</title>
+        <link>https://m10z.de</link>
+        <description>Die Podcasts von M10Z, dem offenen Kanal für Videospiele und das Drumherum</description>
+        <language>de-DE</language>
+        <itunes:category text="Leisure">
+            <itunes:category text="Games"/>
+        </itunes:category>
+        <itunes:explicit>false</itunes:explicit>
+        <itunes:type>episodic</itunes:type>
+        <itunes:author>M10Z</itunes:author>
+        <podcast:locked>no</podcast:locked>
+        <podcast:guid>E9QfcR8TYeotS5ceJLmn</podcast:guid>
+        <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg"/>
+        <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
+    </channel>
+</rss>
+```
+
+Innerhalb des Channel-Containers werden Podcasts nun einzeln als Item-Element hinzugefügt. Nachfolgend ein Beispiel (in Teilen gekürzt):
+
+```xml
+<rss version="2.0">
+    <channel>
+       <!-- [...] -->
+       <item>
+            <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon</title>
+            <pubDate>Sun, 9 Jul 2023, 00:30 +MEZ</pubDate>
+            <guid isPermaLink="false">9999508951ea1dbdcc20 [...]</guid>
+            <itunes:image href="[...]"/>
+            <description>[...]</description>
+            <author>m10z@posteo.de</author>
+            <itunes:explicit>false</itunes:explicit>
+            <link>https://m10z.de</link>
+            <itunes:duration>2174</itunes:duration>
+            <enclosure url="https://m10z.picnotes.de/Fundbuero/Fundbuero_003.mp3" length="87362872" type="audio/mpeg"/>
+        </item>
+        <item>[...]</item>
+        <!-- [...] -->
+    </channel>
+</rss>
+```
+
+Die meisten Zeilen sind selbsterklärend, die anderen beschreibe ich hier kurz:
+
+- `guid` -> Ein einzigartiger Hash der dieses spezifischen Item (diese Episode) identifizieren kann
+- `explicit` -> Ist der Inhalt fuer Nicht-Erwachsene geeignet
+- `duration` -> Die Abspieldauer der referenzierten Datei in Sekunden
+- `enclosure` -> Die konkrete Referenz auf die Audiodatei der Episode. Length entspricht hier der Dateigröße in Bytes, bzw. dem _Request Header_: _Content-Length_.
+
+## Erzeugung der Feed XML Datei
+
+TODO
