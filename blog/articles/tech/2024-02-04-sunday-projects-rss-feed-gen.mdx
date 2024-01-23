@@ -1,0 +1,31 @@
+---
+slug: sunday-projects-rss-feed-gen
+title: 'Sunday-Projects - RSS Feed Generierung'
+date: 2024-02-04
+authors: [luca]
+tags: [artikel, tech, sunday-projects, luca]
+draft: false
+image: /img/tech/sundayprojects/rssgen.jpg
+---
+
+import Image from '@theme/IdealImage'
+
+'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
+
+<Image img={require('/static/img/tech/sundayprojects/rssgen.jpg')} />
+
+<!--truncate-->
+
+In unregelmäßigen  Abstaenden werden Audio-Podcasts von uns ,Mindestens 10 Zeichen, veröffentlicht.
+Damit diese von potentiellen HörerInnen empfangen und abgespielt werden können, müssen sie im (Standard-)Format einer `rss.xml` Datei bereitgestellt werden.
+
+Interessierte können diese Datei, z.B. unsere `https://m10z.de/audiofeed.xml`, in ihre sogenannten PodCatcher (Apps, die die Feeds parsen und die referenzierten `.mp3`-Dateien abspielen) einbinden.
+
+Diese Datei muss nun irgendwo herkommen.
+Die "großen" Anbieter nutzen dafür entweder fertige Softwareangebote im Abonnement oder Content Management Systeme, die dann entweder automatisiert oder nach mehr oder weniger geringem _Customizing_ genau diese XML-Datei ausspucken.
+
+Damit ein PodCatcher die Datei einbinden und bei Bedarf aktualisieren kann, reicht es aus, wenn der Feed / die Datei statisch auf einem WebServer öffentlich verfügbar ist.
+
+Im Projekt 'M10Z' verwenden wir [Docusaurus] (https://docusaurus.io).
+Das ist ein Dokumentations- und Blog-Baukasten.
+Die Dateien im `/static` Verzeichnis werden hier 'durchgereicht', sind also nach dem _build & deployment_ Prozess [öffentlich zugänglich](https://m10z.de/audiofeed.xml).
