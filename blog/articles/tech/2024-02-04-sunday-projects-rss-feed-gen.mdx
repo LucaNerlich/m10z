@@ -252,7 +252,27 @@ const fileSize = await getFileSize;
 
 #### 2.2.2 Return Element zusammensetzen
 
-Hier passiert nun die eigenliche Magie
+Jetzt kommt die eigentliche Magie.
+
+`yamlObject` ist ein Verweis auf die Werte, die für eine einzelne neue Podcast-Episode eingegeben wurden.
+Einige Elemente können direkt der XML Item Struktur zugeordnet werden, z.B. `title`, `url` oder der Link zum Bild.
+
+Das Datum wird mit der bereits bekannten Funktion konvertiert.
+
+Jedes Item braucht einen eindeutig identifizierbaren Hash, dafür nehmen wir den Link zur MP3-Datei (es wird ja keine zwei Podcast-Episoden mit derselben MP3-Datei geben ...) und wandeln diesen in einen Hash um.
+
+```javascript
+function toHash(string) {
+    const hash = crypto.createHash('sha256');
+    hash.update(string);
+    return hash.digest('hex');
+}
+```
+
+Das Bild wird gesetzt. Wenn kein Bild angegeben ist, wird das Standardbild des Podcasts verwendet.
+Zusätzlich schreiben wir die statischen Informationen `author` und `explicit`, die sich nicht von Episode zu Episode unterscheiden.
+
+Die Sekunden werden in das richtige Format konvertiert und schließlich werden die Dateigröße und der Link in das obligatorische Element `enclosure` geschrieben.
 
 ```javascript
 return {
