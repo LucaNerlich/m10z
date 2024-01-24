@@ -97,4 +97,22 @@ Die meisten Zeilen sind selbsterklärend, die anderen beschreibe ich hier kurz:
 
 ## Erzeugung der Feed XML Datei
 
-TODO
+So, jetzt wissen wir, 'wo' wir den Feed bekommen, aber noch nicht 'wie' wir ihn dort wieder finden.
+Wie bereits erwähnt, gibt es diverse Softwarelösungen, die einem die Erstellung der XML-Datei abnehmen, aber aus offensichtlichen Gründen (Finanzen, Komplexität, Ownership) scheiden diese für uns aus.
+Zu unserem Vorteil ist, dass die einzelnen `<item>` Blöcke nicht sehr komplex sind.
+Durch einfaches `Copy and Paste` kann jeder mit entsprechenden Zugriffsrechten neue Elemente hinzufügen.
+Einfach eins über das andere, alle auf der gleichen Ebene.
+Nicht schwierig, aber fehleranfällig und vor allem auf Dauer nervig.
+Vor allem, da sich einige der Item-Sub-Elemente nicht wirklich ändern und einfach mitgeschleift werden.
+
+Idee also:
+
+> Die statischen Elemente aus einer Konfigurationsdatei mit den dynamischen Werten (Titel, Link usw.) aus einer anderen Datei kombinieren und die endgültige XML-Datei automatisch erstellen.
+
+So schwer kann es nicht sein.
+Docusaurus baut sich und seine Inhalte serverseitig statisch im _build_ Prozess auf.
+Das bedeutet, dass anfragende Clients nur bereits 'fertige' und vorhandene Dateien anfordern.
+Wir generieren nicht pro Anfrage neue Ergebnisse.
+
+Diese Tatsache kommt uns zugute und reduziert die Komplexität enorm.
+Wir können also einfach während des _build_ Prozesses ein Skript voranstellen, welches die beiden eben angesprochenen Dateien einliest, kombiniert und den Feed als fertige XML Datei speichert.
