@@ -107,7 +107,7 @@ export default function Formate() {
                         Entspannt euch, lasst euch fallen, macht die Augen zu und lernt mit ihm neue, tolle Texte kennen. Kommt doch mit?!
                     </p>
 
-                    <Beteiligte text='Marcel (kkuez), Til (tilmobaxter), Simon (simon)' />
+                    <Beteiligte text='Marcel (kkuez)' />
                 </SingleFormat>
             </div>
         </Layout>
