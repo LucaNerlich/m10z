@@ -9,7 +9,15 @@ const basepath = './static/audiofeed';
 
 function convertToPubDateFormat(dateString) {
     const date = new Date(dateString);
-    const options = {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin'};
+    const options = {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        timeZone: 'Europe/Berlin',
+    };
     return date.toLocaleDateString('en-GB', options) + ' +MEZ';
 }
 
@@ -17,6 +25,32 @@ function toHash(string) {
     const hash = crypto.createHash('sha256');
     hash.update(string);
     return hash.digest('hex');
+}
+
+/**
+ * Returns a sum of seconds for the given input time string.
+ * Valid input values:
+ * - 10:00:00 -> hours:minutes:seconds
+ * - 10:00 -> minutes:seconds
+ * - 13000 -> just seconds
+ *
+ * @param {string} time The input time string in one of the valid formats.
+ * @return {number} The total number of seconds.
+ */
+function getSeconds(time) {
+    const timeParts = time.toString().split(':');
+    let seconds = 0;
+    if (timeParts.length === 3) {
+        seconds += parseInt(timeParts[0]) * 3600; // hours to seconds
+        seconds += parseInt(timeParts[1]) * 60; // minutes to seconds
+        seconds += parseInt(timeParts[2]); // seconds
+    } else if (timeParts.length === 2) {
+        seconds += parseInt(timeParts[0]) * 60; // minutes to seconds
+        seconds += parseInt(timeParts[1]); // seconds
+    } else {
+        seconds += parseInt(timeParts[0]); // seconds
+    }
+    return seconds;
 }
 
 async function yamlObjectToXml(yamlObject) {
@@ -52,8 +86,9 @@ async function yamlObjectToXml(yamlObject) {
         },
         'description': yamlObject.description,
         'author': 'm10z@posteo.de',
-        'itunes:duration': yamlObject.seconds,
-        'link': 'https://m10z.de',
+        'itunes:explicit': 'false',
+        'link': yamlObject.blogpost ?? 'https://m10z.de',
+        'itunes:duration': getSeconds(yamlObject.seconds),
         'enclosure': {
             $: {
                 url: yamlObject.url,
@@ -73,7 +108,7 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
             return;
         }
 
-        result.rss.channel[0]['pubDate'] = convertToPubDateFormat(new Date().toDateString())
+        result.rss.channel[0]['pubDate'] = convertToPubDateFormat(new Date().toDateString());
         result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
 
         const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}, cdata: true});
