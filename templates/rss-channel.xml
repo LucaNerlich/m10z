@@ -4,20 +4,25 @@
         <title>M10Z Podcasts</title>
         <link>https://m10z.de</link>
         <description>Die Podcasts von M10Z, dem offenen Kanal für Videospiele und das Drumherum</description>
-        <language>de-DE</language>
-        <itunes:category text="Leisure">
-            <itunes:category text="Games"/>
-        </itunes:category>
-        <itunes:explicit>false</itunes:explicit>
-        <itunes:author>M10Z</itunes:author>
-        <podcast:locked>no</podcast:locked>
+        <ttl>60</ttl>
+        <language>de</language>
+        <copyright>All rights reserved</copyright>
+        <webMaster>m10z@posteo.de</webMaster>
         <author>m10z@posteo.de</author>
+        <itunes:category text="Leisure"/>
         <itunes:owner>
             <itunes:name>M10Z</itunes:name>
             <itunes:email>m10z@posteo.de</itunes:email>
         </itunes:owner>
-        <podcast:guid>E9QfcR8TYeotS5ceJLmn</podcast:guid>
+        <itunes:author>M10Z</itunes:author>
+        <itunes:explicit>false</itunes:explicit>
         <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg"/>
+        <image>
+            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</url>
+            <title>M10Z Podcasts</title>
+            <link>https://m10z.de</link>
+        </image>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
+        <podcast:guid>E9QfcR8TYeotS5ceJLmn</podcast:guid>
     </channel>
 </rss>
