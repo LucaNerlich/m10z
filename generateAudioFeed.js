@@ -75,6 +75,7 @@ async function yamlObjectToXml(yamlObject) {
     return {
         'title': yamlObject.title,
         'pubDate': convertToPubDateFormat(yamlObject.date),
+        'lastBuildDate': convertToPubDateFormat(yamlObject.date),
         'guid': {
             _: toHash(yamlObject.url),
             $: {isPermaLink: 'false'},
