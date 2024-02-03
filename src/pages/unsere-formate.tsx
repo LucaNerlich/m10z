@@ -94,6 +94,12 @@ export default function Formate() {
                         muss.
                     </p>
                 </SingleFormat>
+                <SingleFormat title='Sunday Projects' link='/tags/sunday-projects' imagePath='/img/tech/sundayprojects/rssgen.jpg'>
+                    <p>
+                        'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
+                    </p>
+                    <Beteiligte text='Luca' />
+                </SingleFormat>
             </div>
         </Layout>
     );
