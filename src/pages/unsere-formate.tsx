@@ -94,6 +94,7 @@ export default function Formate() {
                         muss.
                     </p>
                 </SingleFormat>
+
                 <SingleFormat title='Das gesprochene Wort' link='/tags/dgw' imagePath='/img/DasGesprocheneWort3000x3000.jpg'>
                     <p>
                         Liebe Gemeinde,
@@ -108,6 +109,13 @@ export default function Formate() {
                     </p>
 
                     <Beteiligte text='Marcel (kkuez)' />
+                </SingleFormat>
+                <SingleFormat title='Sunday Projects' link='/tags/sunday-projects' imagePath='/img/tech/sundayprojects/rssgen.jpg'>
+                    <p>
+                        'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
+                    </p>
+                    <Beteiligte text='Luca' />
+
                 </SingleFormat>
             </div>
         </Layout>
