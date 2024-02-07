@@ -94,6 +94,29 @@ export default function Formate() {
                         muss.
                     </p>
                 </SingleFormat>
+
+                <SingleFormat title='Das gesprochene Wort' link='/tags/dgw' imagePath='/img/DasGesprocheneWort3000x3000.jpg'>
+                    <p>
+                        Liebe Gemeinde,
+                        <br />
+                        <br />
+                        Hiermit kommt was neues! Na gut, es findet ein Versuch statt. Marcel nimmt sich vor in dem neuen Format mit dem zauberhaften Namen "Das gesprochene Wort" Texte von euch, Magazinen aber auch allgemein tollen Schreibenden vorzulesen. Das ganze soll gerahmt sein in einer kuscheligen Atmosphäre samt Kaminknistern und sanften Pianoklängen.
+                        <br />
+                        <br />
+                        Bitte gebt ihm doch im Forum Feedback, zu lang, zu kurz? Allgemein gut, aber Gedudel doof? Her damit!
+                        <br />
+                        Entspannt euch, lasst euch fallen, macht die Augen zu und lernt mit ihm neue, tolle Texte kennen. Kommt doch mit?!
+                    </p>
+
+                    <Beteiligte text='Marcel (kkuez)' />
+                </SingleFormat>
+                <SingleFormat title='Sunday Projects' link='/tags/sunday-projects' imagePath='/img/tech/sundayprojects/rssgen.jpg'>
+                    <p>
+                        'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
+                    </p>
+                    <Beteiligte text='Luca' />
+
+                </SingleFormat>
             </div>
         </Layout>
     );

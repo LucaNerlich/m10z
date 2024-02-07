@@ -75,6 +75,7 @@ async function yamlObjectToXml(yamlObject) {
     return {
         'title': yamlObject.title,
         'pubDate': convertToPubDateFormat(yamlObject.date),
+        'lastBuildDate': convertToPubDateFormat(yamlObject.date),
         'guid': {
             _: toHash(yamlObject.url),
             $: {isPermaLink: 'false'},
@@ -99,8 +100,8 @@ async function yamlObjectToXml(yamlObject) {
     };
 }
 
-async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
-    const data = fs.readFileSync(xmlFilePath);
+async function generateFeedXML(yamlObjects) {
+    const data = fs.readFileSync('./templates/rss-channel.xml');
 
     xml2js.parseString(data, async (err, result) => {
         if (err) {
@@ -121,6 +122,6 @@ async function insertItemsToXMLFile(xmlFilePath, yamlObjects) {
 console.log('Creating audiofeed.xml');
 const yamlData = fs.readFileSync(basepath + '.yaml', 'utf8');
 const yamlObjects = yaml.load(yamlData);
-insertItemsToXMLFile('./templates/rss-channel.xml', yamlObjects)
+generateFeedXML(yamlObjects)
     .then(success => console.log('Successfully created audiofeed.xml'))
     .catch(error => console.error('Failed to generate audiofeed.xml', error));
