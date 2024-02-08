@@ -19,23 +19,23 @@ import Image from '@theme/IdealImage'
 Die M10Z-RedakteurInnen veröffentlichen Audio-Podcasts.
 Damit diese von potentiellen HörerInnen empfangen und abgespielt werden können, müssen sie im (Standard-)Format einer `rss.xml`-Datei bereitgestellt werden.
 
-Interessierte können diese Datei, z.B. unsere [https://m10z.de/audiofeed.xml](https://m10z.de/audiofeed.xml), in ihre sogenannten [Podcatcher](https://de.wikipedia.org/wiki/Podcast#Empfang) (Apps, die die Feeds parsen und die referenzierten `.mp3`-Dateien abspielen) einbinden.
+Interessierte können diese Datei, z. B. unsere [https://m10z.de/audiofeed.xml](https://m10z.de/audiofeed.xml), in ihre sogenannten [Podcatcher](https://de.wikipedia.org/wiki/Podcast#Empfang) (Apps, die die Feeds parsen und die referenzierten `.mp3`-Dateien abspielen) einbinden.
 
 Diese Datei muss nun irgendwo herkommen.
-Die "großen" Anbieter nutzen dafür entweder fertige Softwareangebote im Abonnement oder Content Management Systeme, die dann entweder automatisiert oder nach mehr oder weniger geringem _Customizing_ genau diese XML-Datei ausspucken.
+Die "großen" Anbieter nutzen dafür entweder fertige Softwareangebote im Abonnement oder Content-Management-Systeme, die dann entweder automatisiert oder nach mehr oder weniger geringem _Customizing_ genau diese XML-Datei ausspucken.
 
-Damit ein PodCatcher die Datei einbinden und bei Bedarf aktualisieren kann, reicht es aus, wenn der Feed / die Datei statisch auf einem WebServer öffentlich verfügbar ist.
+Damit ein Podcatcher die Datei einbinden und bei Bedarf aktualisieren kann, reicht es aus, wenn der Feed / die Datei statisch auf einem Webserver öffentlich verfügbar ist.
 
 Im Projekt 'M10Z' verwenden wir [Docusaurus](https://docusaurus.io).
 Das ist ein Dokumentations- und Blog-Baukasten.
-Die Dateien im `/static` Verzeichnis werden hier 'durchgereicht', sind also nach dem _build & deployment_ Prozess [öffentlich zugänglich](https://m10z.de/audiofeed.xml).
+Die Dateien im `/static`-Verzeichnis werden hier 'durchgereicht', sind also nach dem _build & deployment_ Prozess [öffentlich zugänglich](https://m10z.de/audiofeed.xml).
 
 
 ## Aufbau der Feed XML Datei
 
-Aber ich wollte beschreiben, wo die Datei eigentlich her kommt und was in ihr steht.
-Damit der _Feed_ korrekt interpretiert werden kann, muessen gewisse Elemente gesetzt werden.
-Hier gibt es einen "Container" (das `<channel>` Element), sowie die konkreten Podcasts (jedes `<item>` Element) in diesem.
+Aber ich wollte beschreiben, wo die Datei eigentlich herkommt und was in ihr steht.
+Damit der _Feed_ korrekt interpretiert werden kann, müssen gewisse Elemente gesetzt werden.
+Hier gibt es einen "Container" (das `<channel>`-Element), sowie die konkreten Podcasts (jedes `<item>`-Element) in diesem.
 
 Nachfolgend der Container von M10Z:
 
@@ -90,8 +90,8 @@ Innerhalb des Channel-Containers werden Podcasts nun einzeln als Item-Element hi
 
 Die meisten Zeilen sind selbsterklärend, die anderen beschreibe ich hier kurz:
 
-- `guid` -> Ein einzigartiger Hash der dieses spezifischen Item (diese Episode) identifizieren kann
-- `explicit` -> Ist der Inhalt fuer Nicht-Erwachsene geeignet
+- `guid` -> Ein einzigartiger Hash, der dieses spezifischen Item (diese Episode) identifizieren kann
+- `explicit` -> Ob der Inhalt für Nicht-Erwachsene ungeeignet ist
 - `duration` -> Die Abspieldauer der referenzierten Datei in Sekunden
 - `enclosure` -> Die konkrete Referenz auf die Audiodatei der Episode. Length entspricht hier der Dateigröße in Bytes, bzw. dem _Request Header_: _Content-Length_.
 
@@ -99,18 +99,18 @@ Die meisten Zeilen sind selbsterklärend, die anderen beschreibe ich hier kurz:
 
 So, jetzt wissen wir, 'wo' wir den Feed bekommen, aber noch nicht 'wie' wir ihn dort wieder finden.
 Wie bereits erwähnt, gibt es diverse Softwarelösungen, die einem die Erstellung der XML-Datei abnehmen, aber aus offensichtlichen Gründen (Finanzen, Komplexität, Ownership) scheiden diese für uns aus.
-Zu unserem Vorteil ist, dass die einzelnen `<item>` Blöcke nicht sehr komplex sind.
+Zu unserem Vorteil ist, dass die einzelnen `<item>`-Blöcke nicht sehr komplex sind.
 Durch einfaches `Copy and Paste` kann jeder mit entsprechenden Zugriffsrechten neue Elemente hinzufügen.
 Einfach eins über das andere, alle auf der gleichen Ebene.
 Nicht schwierig, aber fehleranfällig und vor allem auf Dauer nervig.
 Vor allem, da sich einige der Item-Sub-Elemente nicht wirklich ändern und einfach mitgeschleift werden.
 
-Idee also:
+Folgende Idee also:
 
-> Die statischen Elemente aus einer Konfigurationsdatei mit den dynamischen Werten (Titel, Link usw.) aus einer anderen Datei kombinieren und die endgültige XML-Datei automatisch erstellen.
+> Die statischen Elemente aus einer Konfigurationsdatei mit den dynamischen Werten (Titel, Link usw.) aus einer anderen Datei kombinieren und die endgültige XML-Datei automatisch erstellen lassen.
 
 So schwer kann es nicht sein.
-Docusaurus baut sich und seine Inhalte serverseitig statisch im _build_ Prozess auf.
+Docusaurus baut sich und seine Inhalte serverseitig statisch im _build_-Prozess auf.
 Das bedeutet, dass anfragende Clients nur bereits 'fertige' und vorhandene Dateien anfordern.
 Wir generieren nicht pro Anfrage neue Ergebnisse.
 
@@ -134,17 +134,17 @@ Wir brauchen also nur [eine Datei](http://m10z.de/audiofeed.yaml), mit der Redak
 # [...]
 ```
 
-- `Title` ist klar.
+- `title` ist klar.
 - `date` Veröffentlichungsdatum
 - `image` Episodenspezifisches Coverbild
 - `description` Beschreibungstext
 - `seconds` Abspieldauer der referenzierten Datei in Sekunden oder HH:MM:SS (z. B. 01:11:24)
-- `url` Link zur MP3 Datei
+- `url` Link zur MP3-Datei
 
 
-Wir können also einfach während des _build_ Prozesses ein Skript voranstellen, welches die beiden eben angesprochenen Dateien einliest, kombiniert und den Feed als fertige XML Datei speichert.
+Wir können also einfach während des _build_-Prozesses ein Skript voranstellen, welches die beiden eben angesprochenen Dateien einliest, kombiniert und den Feed als fertige XML-Datei speichert.
 
-### 1. Daten laden und Script starten
+### 1. Daten laden und Skript starten
 
 ```javascript
 // Wir laden unsere Datei in der die einzelnen Podcastepisoden angelegt werden
@@ -155,7 +155,7 @@ const yamlObjects = yaml.load(yamlData);
 generateFeedXML(yamlObjects);
 ```
 
-### 2. Channel Element laden und 'items' hinzufügen
+### 2. Channel-Element laden und 'items' hinzufügen
 
 Eigentlich passiert nicht viel.
 Wir setzen das Datum für "Dieser Podcast wurde zuletzt aktualisiert am" auf "jetzt" und wandeln es in das richtige Datumsformat um.
@@ -183,7 +183,7 @@ async function generateFeedXML(yamlObjects) {
 
 ### 2.1 Datumsformat konvertieren
 
-Die [Podcast Spezifikation](https://cyber.harvard.edu/rss/rss.html#ltpubdategtSubelementOfLtitemgt) erwarten das Datum ein einem speziellen Format.
+Die [Podcast-Spezifikation](https://cyber.harvard.edu/rss/rss.html#ltpubdategtSubelementOfLtitemgt) erwartet das Datum in einem speziellen Format.
 Die nachfolgende Funktion wandelt einen (bis zu einem gewissen Grad beliebigen) Datumstext in eben dieses Format um.
 
 ```javascript
@@ -204,12 +204,12 @@ function convertToPubDateFormat(dateString) {
 
 ### 2.2 Items erzeugen
 
-Jetzt kommt der eigentlich spannende Teil, nämlich die Konvertierung der einzelnen Podcast-Elemente in das richtige XML Item Schema.
-Zur Erinnerung: Die Redakteure müsssen nur ein paar Elemente in eine .yaml-Datei schreiben, die dann im Skript mit den (statischen) Werten angereichert und schließlich in den Feed geschrieben werden.
+Jetzt kommt der eigentlich spannende Teil, nämlich die Konvertierung der einzelnen Podcast-Elemente in das richtige XML-Item-Schema.
+Zur Erinnerung: Die Redakteure müsssen nur ein paar Elemente in eine `.yaml`-Datei schreiben, die dann im Skript mit den (statischen) Werten angereichert und schließlich in den Feed geschrieben werden.
 
 Zuerst wird die Funktion gekürzt:
 
-1. die Dateigröße der MP3-Datei bestimmen
+1. Die Dateigröße der MP3-Datei bestimmen
 2. Javascript-Objekt erstellen, das dem XML-Element 'Item' entspricht.
 
 ```javascript
@@ -223,9 +223,9 @@ return {
 
 #### 2.2.1 Dateigröße bestimmen
 
-Wenn man eine Datei von einem Server laedt, kann man auch ueber einen 'HEAD' Request nur gewisse Metadaten abfragen, ohne die komplette Datei herunterladen zu muessen.
+Wenn man eine Datei von einem Server lädt, kann man auch über einen 'HEAD'-Request nur gewisse Metadaten abfragen, ohne die komplette Datei herunterladen zu müssen.
 Dies machen wir uns zu Nutze, um die Dateigröße in Bytes aus dem `content-length` _Request Header_ abzufragen.
-Dies laeuft mit minimaler Latenz, da eben keine komplette Datei hin-und-her geschickt wird.
+Dies läuft mit minimaler Latenz, da eben keine komplette Datei hin-und-her geschickt wird.
 
 ```javascript
 // Aus dem Input Objekt ziehen wir uns die URL (Die Referenz auf die MP3 Datei des spezifischen Podcasts).
@@ -250,16 +250,16 @@ const getFileSize = new Promise((resolve, reject) => {
 const fileSize = await getFileSize;
 ```
 
-#### 2.2.2 Return Element zusammensetzen
+#### 2.2.2 Return-Element zusammensetzen
 
 Jetzt kommt die eigentliche Magie.
 
 `yamlObject` ist ein Verweis auf die Werte, die für eine einzelne neue Podcast-Episode eingegeben wurden.
-Einige Elemente können direkt der XML Item Struktur zugeordnet werden, z.B. `title`, `url` oder der Link zum Bild.
+Einige Elemente können direkt der XML-Item-Struktur zugeordnet werden, z. B. `title`, `url` oder der Link zum Bild.
 
 Das Datum wird mit der bereits bekannten Funktion konvertiert.
 
-Jedes Item braucht einen eindeutig identifizierbaren Hash, dafür nehmen wir den Link zur MP3-Datei (es wird ja keine zwei Podcast-Episoden mit derselben MP3-Datei geben ...) und wandeln diesen in einen Hash um.
+Jedes Item braucht einen eindeutig identifizierbaren Hash, dafür nehmen wir den Link zur MP3-Datei (es wird ja keine zwei Podcast-Episoden mit derselben MP3-Datei geben …) und wandeln diesen in einen Hash um.
 
 ```javascript
 function toHash(string) {
@@ -306,7 +306,7 @@ return {
 
 Der Einfachheit halber können Redakteure die Dauer des Podcasts in zwei verschiedenen Formaten angeben:
 
-> In Sekunden oder HH:MM:SS (z.B. 01:11:24).
+> In Sekunden oder HH:MM:SS (z. B. 01:11:24).
 
 Die Podcast-Spezifikation erwartet jedoch nur eine einzige Zahl, die Laufzeit in Sekunden.
 Daher gibt es ein kleines Skript, das die Langform in die Sekunden umwandelt.
@@ -339,8 +339,7 @@ function getSeconds(time) {
 }
 ```
 
-Danke fuers Lesen.
-
+Danke fürs Lesen.
 
 Meldet euch bei Fragen gerne auf [unserem Discord](https://discord.gg/bYPsrFxxtu).
-Das komplette Script findet sich [in unserem Repository](https://github.com/LucaNerlich/m10z/blob/main/generateAudioFeed.js).
+Das komplette Skript befindet sich [in unserem Repository](https://github.com/LucaNerlich/m10z/blob/main/generateAudioFeed.js).
