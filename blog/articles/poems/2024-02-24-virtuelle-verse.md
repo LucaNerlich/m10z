@@ -24,7 +24,7 @@ Team X 4 Life, weiß jedes Kind
   
 Der irrsinnige Gedanke das  
 Geteilter gleich doppelter Spaß  
-Steht für in nichtmal zur Debatte  
+Steht für ihn nichtmal zur Debatte  
 Auch wenn die Games er niemals hatte  
 Die jetzt Multiplatform sind  
   
