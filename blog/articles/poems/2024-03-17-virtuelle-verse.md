@@ -1,38 +1,38 @@
 ---
-slug: virtuelle-verse-44
-title: 'Virtuelle Verse – Lyrik und Games #44'
+slug: virtuelle-verse-45
+title: 'Virtuelle Verse – Lyrik und Games #45'
 authors: [tilmobaxter]
 tags: [lyrik, tilmobaxter]
-image: https://irgendwasmitkunden.de/Fanbox.png
+image: https://irgendwasmitkunden.de/GucciKatana.jpg
 draft: false
 ---
 
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til hier die „Virtuellen Verse“.
 <!--truncate-->
 
-![CGIScheisse](https://irgendwasmitkunden.de/Fanbox.png)
-> Draw Things x Til: Meister Zocker
+![CGIScheisse](https://irgendwasmitkunden.de/GucciKatana.JPG)
+> Til: Dann mach ich halt meinen eigenen Easymode auf mit Blackjack und N...Katana
 
-## Geteiltes Game?!
+## Ein leichter Ring
 
 
-Der Xbox Fanboy von den Socken  
-Die anderen dürfen jetzt auch zocken  
-Was vorher ihm allein gebührte  
-Ihn zum Konsolenkönig kürte  
-Team X 4 Life, weiß jedes Kind  
-  
-Der irrsinnige Gedanke das  
-Geteilter gleich doppelter Spaß  
-Steht für ihn nichtmal zur Debatte  
-Auch wenn die Games er niemals hatte  
-Die jetzt Multiplatform sind  
-  
-Denn Hardcore Gamer findens lasch  
-In Pentiment und HiFi Rush  
-Doch kommen schnell in kaltes Schwitzen  
-Darf’s auch der Rest der Welt besitzen  
-Wie seltsam ich solch Denken find…    
+Verrlass auf den Meteoritenstab
+Bringt den Mage oft fast ins Grab
+Zu behäbig schwingt er ihn
+Um gegen nahe Feinde zu bestehen
+
+Wenn Sturmwind sich dann auch noch dreht
+Der Rock Sling weit zur Seite geht
+Liegt die Rettung doch so nah
+Ein Griff zum Utchigatana
+
+Selbst wenn meistens Zaubereien 
+Nach viel INT und MIND Stats schreien 
+Vergiss nicht was in DEX zu packen
+Um schnelle Gegner zu zerhacken 
+
+So kriegst auch die Monster tot
+Mit selbstgemachtem Easymode
 
 
 
