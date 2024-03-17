@@ -11,28 +11,28 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 <!--truncate-->
 
 ![CGIScheisse](https://irgendwasmitkunden.de/GucciKatana.JPG)
-> Til: Dann mach ich halt meinen eigenen Easymode auf mit Blackjack und N...Katana
+> Foto von Til: Dann mach ich halt meinen eigenen Easymode auf mit Blackjack und N...Katana
 
 ## Ein leichter Ring
 
 
-Verrlass auf den Meteoritenstab
-Bringt den Mage oft fast ins Grab
-Zu behäbig schwingt er ihn
-Um gegen nahe Feinde zu bestehen
+Verlass auf den Meteoritenstab  
+Bringt den Mage oft fast ins Grab  
+Zu behäbig schwingt er ihn  
+Um gegen nahe Feinde zu bestehen  
 
-Wenn Sturmwind sich dann auch noch dreht
-Der Rock Sling weit zur Seite geht
-Liegt die Rettung doch so nah
-Ein Griff zum Utchigatana
+Wenn Sturmwind sich dann auch noch dreht  
+Der Rock Sling weit zur Seite geht  
+Liegt die Rettung doch so nah  
+Ein Griff zum Utchigatana  
 
-Selbst wenn meistens Zaubereien 
-Nach viel INT und MIND Stats schreien 
-Vergiss nicht was in DEX zu packen
-Um schnelle Gegner zu zerhacken 
+Selbst wenn meistens Zaubereien   
+Nach viel INT und MIND Stats schreien   
+Vergiss nicht was in DEX zu packen  
+Um schnelle Gegner zu zerhacken   
 
-So kriegst auch die Monster tot
-Mit selbstgemachtem Easymode
+So kriegst auch die Monster tot  
+Mit selbst gemachtem Easymode
 
 
 
