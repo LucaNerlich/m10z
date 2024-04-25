@@ -18,7 +18,7 @@ function convertToPubDateFormat(dateString) {
         minute: 'numeric',
         timeZone: 'Europe/Berlin',
     };
-    return date.toLocaleDateString('en-GB', options) + ' +MEZ';
+    return date.toLocaleDateString('en-GB', options) + ' +0000';
 }
 
 function toHash(string) {
