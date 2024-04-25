@@ -183,22 +183,14 @@ async function generateFeedXML(yamlObjects) {
 
 ### 2.1 Datumsformat konvertieren
 
-Die [Podcast-Spezifikation](https://cyber.harvard.edu/rss/rss.html#ltpubdategtSubelementOfLtitemgt) erwartet das Datum in einem speziellen Format.
+Die [Podcast-Spezifikation](https://cyber.harvard.edu/rss/rss.html#ltpubdategtSubelementOfLtitemgt) erwartet das Datum in einem speziellen Format (RFC 2822).
 Die nachfolgende Funktion wandelt einen (bis zu einem gewissen Grad beliebigen) Datumstext in eben dieses Format um.
 
 ```javascript
+// Convert dateString to IETF RFC 2822
 function convertToPubDateFormat(dateString) {
     const date = new Date(dateString);
-    const options = {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZone: 'Europe/Berlin',
-    };
-    return date.toLocaleDateString('en-GB', options) + ' +MEZ';
+    return date.toUTCString();
 }
 ```
 
