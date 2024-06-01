@@ -7,7 +7,7 @@ image: https://irgendwasmitkunden.de/EinHerzausDorn.png
 draft: false
 ---
 
-Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.   
+Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til hier sonst die „Virtuellen Verse“.   
 Doch diesen Samstag ist es anders, den Simon hat beim Zocken die Muse geküsst und das wollen wir Euch nicht vorenthalten:
 <!--truncate-->
 
