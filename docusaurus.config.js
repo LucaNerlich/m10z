@@ -230,6 +230,10 @@ const config = {
                         title: 'Community',
                         items: [
                             {
+                                label: 'Discord',
+                                href: 'https://discord.gg/tSpzEW4kpP',
+                            },
+                            {
                                 label: 'Linktree',
                                 href: 'https://linktr.ee/m10z',
                             },
