@@ -19,11 +19,11 @@
         "typecheck": "tsc"
     },
     "dependencies": {
-        "@docusaurus/core": "^3.2.1",
-        "@docusaurus/plugin-ideal-image": "^3.3.2",
-        "@docusaurus/plugin-pwa": "^3.3.2",
-        "@docusaurus/preset-classic": "^3.3.2",
-        "@easyops-cn/docusaurus-search-local": "^0.40.1",
+        "@docusaurus/core": "^3.4.0",
+        "@docusaurus/plugin-ideal-image": "^3.4.0",
+        "@docusaurus/plugin-pwa": "^3.4.0",
+        "@docusaurus/preset-classic": "^3.4.0",
+        "@easyops-cn/docusaurus-search-local": "^0.44.2",
         "@mdx-js/react": "^3.0.1",
         "clsx": "^2.1.1",
         "docusaurus-plugin-sass": "^0.2.5",
@@ -34,19 +34,19 @@
         "react-player": "^2.16.0",
         "remark-math": "^6.0.0",
         "sass": "^1.77.2",
-        "sharp": "0.32.6"
+        "sharp": "^0.33.4"
     },
     "devDependencies": {
-        "@docusaurus/module-type-aliases": "^3.2.1",
-        "@docusaurus/tsconfig": "^3.3.2",
-        "@docusaurus/types": "^3.2.1",
+        "@docusaurus/module-type-aliases": "^3.4.0",
+        "@docusaurus/tsconfig": "^3.4.0",
+        "@docusaurus/types": "^3.4.0",
         "@types/react": "^18.3.3",
         "js-yaml": "^4.1.0",
-        "typescript": "~5.2.2",
+        "typescript": "~5.5.3",
         "xml2js": "^0.6.2"
     },
     "engines": {
-        "node": ">=18.19.0",
-        "npm": ">=10.2.3"
+        "node": "^20",
+        "npm": "^10"
     }
 }
