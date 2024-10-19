@@ -26,7 +26,7 @@ export default function Formate() {
                     <Beteiligte text='Simon, Adrian, Jan' />
                 </SingleFormat>
 
-                <SingleFormat title='Fundbüro' link='/tags/fundbuero' imagePath='/img/Fundbüro_Logo.png'>
+                <SingleFormat title='Fundbüro' link='/tags/fundbuero' imagePath='/img/Fundbüro_Logo.jpg'>
                     <p>
                         In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind.
                     </p>
