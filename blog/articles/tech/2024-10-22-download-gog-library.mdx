@@ -1,0 +1,38 @@
+---
+slug: download-gog-library
+title: 'Sunday-Projects - Komplettes Backup der GoG Library'
+date: 2024-10-22
+authors: [luca]
+tags: [artikel, tech, sunday-projects, luca]
+draft: false
+image: /img/tech/sundayprojects/gogbackup.png
+---
+
+import Image from '@theme/IdealImage'
+
+'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
+
+<Image img={require('/static/img/tech/sundayprojects/gogbackup.png')} />
+
+<!--truncate-->
+
+Test the script / see which dependencies are missing
+
+```bash
+python3 gogrepoc.py update
+```
+
+possible error:
+
+> ModuleNotFoundError: No module named 'html5lib'
+> ModuleNotFoundError: No module named 'OpenSSL'
+
+```bash
+pip3 install html5lib
+pip3 install pyOpenSSL
+```
+
+Danke fürs Lesen.
+
+Meldet euch bei Fragen gerne auf [unserem Discord](https://discord.gg/bYPsrFxxtu).
+Das komplette Skript befindet sich [in unserem Repository](https://github.com/LucaNerlich/m10z/blob/main/generateAudioFeed.js).
