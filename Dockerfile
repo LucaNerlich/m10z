@@ -11,10 +11,12 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
 # Build the Next.js application
-RUN npm run build
+RUN npm run coolify-build
+RUN npm run generateAuthors
+RUN npm run generateAudioFeed
 
 # Expose port
 EXPOSE $PORT
