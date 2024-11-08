@@ -11,7 +11,7 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
 # Build the Next.js application
 RUN npm run coolify-build
