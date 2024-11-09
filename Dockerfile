@@ -14,9 +14,9 @@ COPY . /app
 RUN npm install
 
 # Build the Next.js application
-RUN npm run coolify-build
 RUN npm run generateAuthors
 RUN npm run generateAudioFeed
+RUN npm run coolify-build
 
 # Expose port
 EXPOSE $PORT
