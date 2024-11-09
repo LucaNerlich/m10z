@@ -1,14 +1,14 @@
-@import "../constants";
+@use "../constants";
 $image-width: 200px;
 
 .responsiveWidth {
     width: $image-width;
 
-    @media only screen and (max-width: $breakpoint-medium) {
+    @media only screen and (max-width: constants.$breakpoint-medium) {
         width: $image-width * 1.2;
     }
 
-    @media only screen and (max-width: $breakpoint-small) {
+    @media only screen and (max-width: constants.$breakpoint-small) {
         width: $image-width * 1.5;
     }
 }
