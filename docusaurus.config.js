@@ -28,6 +28,11 @@ const config = {
         locales: ['de'],
     },
 
+    // adding plausible
+    clientModules: [
+        require.resolve('./plausible.js'),
+    ],
+
     plugins: [
         'docusaurus-plugin-sass',
         ['@easyops-cn/docusaurus-search-local',
