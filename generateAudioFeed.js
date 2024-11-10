@@ -4,8 +4,10 @@ const xml2js = require('xml2js');
 const crypto = require('crypto');
 const https = require('https');
 const {URL} = require('url');
+const path = require('path');
 
 const basepath = './static/audiofeed';
+const cacheFile = path.join(__dirname, 'file-size-cache.json');
 
 // Convert dateString to IETF RFC 2822
 function convertToPubDateFormat(dateString) {
@@ -45,7 +47,53 @@ function getSeconds(time) {
     return seconds;
 }
 
-async function yamlObjectToXml(yamlObject) {
+function readCache() {
+    if (fs.existsSync(cacheFile)) {
+        const cacheContent = fs.readFileSync(cacheFile, 'utf8');
+        return JSON.parse(cacheContent);
+    }
+    return {};
+}
+
+function writeCache(cacheData) {
+    fs.writeFileSync(cacheFile, JSON.stringify(cacheData, null, 2));
+}
+
+function generateHash(options) {
+    return `${options.host}-${options.path}`;
+}
+
+async function getCachedFileSize(options, cache) {
+    const oneDay = 24 * 60 * 60 * 1000; // 1 day
+    const cacheDuration = oneDay * 30;  // 30 days
+    const hash = generateHash(options);
+
+    if (cache[hash] && (Date.now() - cache[hash].timestamp < cacheDuration)) {
+        console.log(`Cache hit for ${hash}`);
+        return cache[hash].size;
+    }
+
+    const fileSize = await new Promise((resolve, reject) => {
+        const req = https.request(options, (res) => {
+            console.log('status', `${res.statusCode} ${options.host}${options.path}`);
+            const size = res.headers['content-length'];
+            if (size) {
+                cache[hash] = {size, timestamp: Date.now()};
+                resolve(size);
+            } else {
+                reject(new Error('Failed to get content-length header'));
+            }
+        });
+
+        req.on('error', reject);
+        req.end();
+    });
+
+    writeCache(cache);
+    return fileSize;
+}
+
+async function yamlObjectToXml(yamlObject, cache) {
     const url = new URL(yamlObject.url);
     const options = {
         method: 'HEAD',
@@ -53,16 +101,8 @@ async function yamlObjectToXml(yamlObject) {
         path: url.pathname,
     };
 
-    const getFileSize = new Promise((resolve, reject) => {
-        const req = https.request(options, (res) => {
-            console.log('status', res.statusCode + ' ' + options.host + options.path);
-            resolve(res.headers['content-length']);
-        });
-        req.on('error', reject);
-        req.end();
-    });
-
-    const fileSize = await getFileSize;
+    const fileSize = await getCachedFileSize(options, cache);
+    console.log(`Processed file size for ${yamlObject.url}: ${fileSize}`);
 
     return {
         'title': yamlObject.title,
@@ -93,6 +133,8 @@ async function yamlObjectToXml(yamlObject) {
 }
 
 async function generateFeedXML(yamlObjects) {
+    const cache = readCache();
+
     const data = fs.readFileSync('./templates/rss-channel.xml');
 
     xml2js.parseString(data, async (err, result) => {
@@ -102,12 +144,21 @@ async function generateFeedXML(yamlObjects) {
         }
 
         result.rss.channel[0]['pubDate'] = convertToPubDateFormat(new Date().toDateString());
-        result.rss.channel[0].item = await Promise.all(yamlObjects.map(yamlObjectToXml));
+        result.rss.channel[0].item = await Promise.all(yamlObjects.map(async (yamlObject, index) => {
+            console.log(`Processing item ${index + 1}/${yamlObjects.length}`);
+            const item = await yamlObjectToXml(yamlObject, cache);
+            console.log(`Successfully processed item ${index + 1}/${yamlObjects.length}`);
+            return item;
+        }));
 
         const builder = new xml2js.Builder({renderOpts: {'pretty': true, 'indent': '    ', 'newline': '\n'}, cdata: true});
         const xml = builder.buildObject(result);
 
         fs.writeFileSync(basepath + '.xml', xml);
+        console.log('RSS feed XML file successfully written.');
+
+        // Terminate process when done
+        process.exit(0);
     });
 }
 
@@ -115,5 +166,8 @@ console.log('Creating audiofeed.xml');
 const yamlData = fs.readFileSync(basepath + '.yaml', 'utf8');
 const yamlObjects = yaml.load(yamlData);
 generateFeedXML(yamlObjects)
-    .then(success => console.log('Successfully created audiofeed.xml'))
-    .catch(error => console.error('Failed to generate audiofeed.xml', error));
+    .then(() => console.log('Successfully created audiofeed.xml'))
+    .catch(error => {
+        console.error('Failed to generate audiofeed.xml', error);
+        process.exit(1);
+    });
