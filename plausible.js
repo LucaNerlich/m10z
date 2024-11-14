@@ -14,7 +14,7 @@ if (ExecutionEnvironment.canUseDOM) {
     }
 
     // Create the script element for the Clarity tracking code
-    const plausibleScript = document.createElement('script')
+
     plausibleScript.src = 'https://plausible-m10z.lucanerlich.com/js/script.file-downloads.outbound-links.js'
     plausibleScript.async = false
     plausibleScript.defer = true
@@ -22,4 +22,13 @@ if (ExecutionEnvironment.canUseDOM) {
 
     // Insert the script into the head of the document
     document.head.appendChild(plausibleScript)
+
+    const umamiScript = document.createElement('script')
+    umamiScript.src = 'https://cloud.umami.is/script.js'
+    umamiScript.async = false
+    umamiScript.defer = true
+    umamiScript.setAttribute('data-website-id', 'd0d4c4ba-3a09-4585-b94b-21e11dc01b2c')
+
+    // Insert the script into the head of the document
+    document.head.appendChild(umamiScript)
 }
