@@ -28,9 +28,14 @@ const config = {
         locales: ['de'],
     },
 
-    // adding plausible
+    // https://docusaurus.io/blog/releases/3.6
+    future: {
+        experimental_faster: true,
+    },
+
+    // adding umami
     clientModules: [
-        require.resolve('./plausible.js'),
+        require.resolve('./umami.js'),
     ],
 
     plugins: [
