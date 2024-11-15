@@ -11,9 +11,8 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
-# Build the Next.js application
 RUN npm run generateAuthors
 RUN npm run generateAudioFeed
 RUN npm run coolify-build
