@@ -1,5 +1,3 @@
-@use "../constants";
-
 .wrapper {
     width: 100%;
     max-width: 1200px;
@@ -22,8 +20,10 @@
     flex-wrap: wrap;
     gap: 2rem;
     margin-bottom: 2rem;
+}
 
-    @media only screen and (max-width: constants.$breakpoint-medium) {
+@media only screen and (max-width: var(--breakpoint-medium)) {
+    .authors {
         justify-content: center;
     }
 }

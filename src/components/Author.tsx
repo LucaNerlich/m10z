@@ -1,7 +1,7 @@
 import React from 'react'
 import {AuthorType} from '../types/authorType'
 // @ts-ignore
-import styles from './Author.module.scss'
+import styles from './Author.module.css'
 
 interface AuthorProps {
     author: AuthorType;

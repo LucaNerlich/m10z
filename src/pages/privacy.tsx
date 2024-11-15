@@ -1,5 +1,6 @@
-import React from 'react'
-import Layout from '@theme/Layout'
+import React from 'react';
+// @ts-ignore
+import Layout from '@theme/Layout';
 
 export default function Hello() {
     return (
@@ -23,16 +24,16 @@ export default function Hello() {
                     Ausführliche Informationen zum Thema Datenschutz entnehmen Sie unserer unter diesem Text aufgeführten Datenschutzerklärung.
                 </p>
                 <h3>1.2 Verantwortlicher</h3>
-                <p>
-                    <ul>
-                        <li>Tilman Breidenbach</li>
-                        <li>Bussardweg 13</li>
-                        <li>58579 Schalksmühle</li>
-                        <li></li>
-                        <li>Telefon: +49 (0) 2355 5046019</li>
-                        <li>E-Mail: m10z(at)posteo(dot)de</li>
-                    </ul>
+                <ul>
+                    <li>Tilman Breidenbach</li>
+                    <li>Bussardweg 13</li>
+                    <li>58579 Schalksmühle</li>
+                    <li></li>
+                    <li>Telefon: +49 (0) 2355 5046019</li>
+                    <li>E-Mail: m10z(at)posteo(dot)de</li>
+                </ul>
 
+                <p>
                     Verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder gemeinsam mit anderen über die Zwecke und
                     Mittel der Verarbeitung von personenbezogenen Daten (z. B. Namen, E-Mail-Adressen o. Ä.) entscheidet.
                 </p>
@@ -47,20 +48,23 @@ export default function Hello() {
                     automatische Datenerhebung findet durch unsere IT-System nur mit Blick auf technische Daten statt (z. B. Internetbrowser,
                     Betriebssystem oder Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt automatisch, sobald Sie diese Website betreten.<br />
                     <br />
-                    Welche Arten von Daten verarbeiten wir?
-                    <ul>
-                        <li><b>Zugriffsdaten bzw. Meta-/Kommunikationsdaten</b><br />Wir selbst (bzw. unser Webhosting-Anbieter) erheben Daten zu
-                            jedem Zugriff auf den Server (sogenannte Serverlogfiles). Zu den Serverlogfiles können die Adresse und Name der
-                            abgerufenen Webseiten und Dateien, Datum und Uhrzeit des Abrufs, übertragene Datenmengen, Meldung über erfolgreichen
-                            Abruf, Browsertyp nebst Version, das Betriebssystem des Nutzers, Referrer URL (die zuvor besuchte Seite) und im Regelfall
-                            IP-Adressen und der anfragende Provider gehören. Die Serverlogfiles können zum einen zu Zwecken der Sicherheit eingesetzt
-                            werden, z.B., um eine Überlastung der Server zu vermeiden (insbesondere im Fall von missbräuchlichen Angriffen,
-                            sogenannten DDoS-Attacken) und zum anderen, um die Auslastung der Server und ihre Stabilität sicherzustellen.
-                        </li>
-                        <li><b>Kontaktdaten</b>n (z.B. E-Mail, Telefonnummern)</li>
-                        <li><b>Inhaltsdaten</b> (insbesondere im Rahmen der Verwaltung und Beantwortung von Anfragen)</li>
-                    </ul>
+                </p>
 
+                <p>Welche Arten von Daten verarbeiten wir?</p>
+                <ul>
+                    <li><b>Zugriffsdaten bzw. Meta-/Kommunikationsdaten</b><br />Wir selbst (bzw. unser Webhosting-Anbieter) erheben Daten zu
+                        jedem Zugriff auf den Server (sogenannte Serverlogfiles). Zu den Serverlogfiles können die Adresse und Name der
+                        abgerufenen Webseiten und Dateien, Datum und Uhrzeit des Abrufs, übertragene Datenmengen, Meldung über erfolgreichen
+                        Abruf, Browsertyp nebst Version, das Betriebssystem des Nutzers, Referrer URL (die zuvor besuchte Seite) und im Regelfall
+                        IP-Adressen und der anfragende Provider gehören. Die Serverlogfiles können zum einen zu Zwecken der Sicherheit eingesetzt
+                        werden, z.B., um eine Überlastung der Server zu vermeiden (insbesondere im Fall von missbräuchlichen Angriffen,
+                        sogenannten DDoS-Attacken) und zum anderen, um die Auslastung der Server und ihre Stabilität sicherzustellen.
+                    </li>
+                    <li><b>Kontaktdaten</b>n (z.B. E-Mail, Telefonnummern)</li>
+                    <li><b>Inhaltsdaten</b> (insbesondere im Rahmen der Verwaltung und Beantwortung von Anfragen)</li>
+                </ul>
+
+                <p>
                     Welche Personen sind von der Datenverarbeitung betroffen?<br />
                     Die verarbeiteten Daten betreffen zum Einen die Nutzer (z. B. Besucher der Website bzw. die Inhaber der jeweiligen
                     Internetanschlüsse), zum Anderen unsere Kommunikationspartner (insbesondere bei Anfragen per E-Mail oder Telefon).<br />
@@ -95,25 +99,13 @@ export default function Hello() {
                     unsere Weisungen in Bezug auf diese Daten befolgen.
                 </p>
                 <h3>2.2 Hoster</h3>
-                <p>
-                    Wir setzen folgende Hoster ein:<br />
-                    <i>Webhosting:</i>
-                    <ul>
-                        <li>Vercel Inc.</li>
-                        <li>440 N Barranca Ave #4133</li>
-                        <li>Covina, CA 91723</li>
-                        <li>www.vercel.com</li>
-                    </ul>
-                    <br />
-
-                    <i>E-Mail-Provider (für Kontaktanfragen):</i>
-                    <ul>
-                        <li>Posteo e.K.</li>
-                        <li>Methfesselstr. 38</li>
-                        <li>10965 Berlin</li>
-                        <li>www.posteo.de</li>
-                    </ul>
-                </p>
+                <i>E-Mail-Provider (für Kontaktanfragen):</i>
+                <ul>
+                    <li>Posteo e.K.</li>
+                    <li>Methfesselstr. 38</li>
+                    <li>10965 Berlin</li>
+                    <li>www.posteo.de</li>
+                </ul>
                 <h3>2.3 Datenverarbeitung in Drittländern</h3>
                 <p>
                     Sofern wir Daten in einem Drittland (d.h., außerhalb der Europäischen Union (EU), des Europäischen Wirtschaftsraums (EWR))
@@ -193,25 +185,27 @@ export default function Hello() {
                 <p>
                     Sie haben das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Hierzu können Sie sich
                     jederzeit an uns wenden. Das Recht auf Einschränkung der Verarbeitung besteht in folgenden Fällen:<br />
-                    <br />
-                    <ul>
-                        <li>Wenn Sie die Richtigkeit Ihrer bei uns gespeicherten personenbezogenen Daten bestreiten, benötigen wir in der Regel Zeit,
-                            um dies zu überprüfen. Für die Dauer der Prüfung haben Sie das Recht, die Einschränkung der Verarbeitung Ihrer
-                            personenbezogenen Daten zu verlangen.
-                        </li>
-                        <li>Wenn die Verarbeitung Ihrer personenbezogenen Daten unrechtmäßig geschah/geschieht, können Sie statt der Löschung die
-                            Einschränkung der Datenverarbeitung verlangen.
-                        </li>
-                        <li>Wenn wir Ihre personenbezogenen Daten nicht mehr benötigen, Sie sie jedoch zur Ausübung, Verteidigung oder Geltendmachung
-                            von Rechtsansprüchen benötigen, haben Sie das Recht, statt der Löschung die Einschränkung der Verarbeitung Ihrer
-                            personenbezogenen Daten zu verlangen.
-                        </li>
-                        <li>Wenn Sie einen Widerspruch nach Art. 21 Abs. 1 DSGVO eingelegt haben, muss eine Abwägung zwischen Ihren und unseren
-                            Interessen vorgenommen werden. Solange noch nicht feststeht, wessen Interessen überwiegen, haben Sie das Recht, die
-                            Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.
-                        </li>
-                    </ul>
+                </p>
+                <br />
+                <ul>
+                    <li>Wenn Sie die Richtigkeit Ihrer bei uns gespeicherten personenbezogenen Daten bestreiten, benötigen wir in der Regel Zeit,
+                        um dies zu überprüfen. Für die Dauer der Prüfung haben Sie das Recht, die Einschränkung der Verarbeitung Ihrer
+                        personenbezogenen Daten zu verlangen.
+                    </li>
+                    <li>Wenn die Verarbeitung Ihrer personenbezogenen Daten unrechtmäßig geschah/geschieht, können Sie statt der Löschung die
+                        Einschränkung der Datenverarbeitung verlangen.
+                    </li>
+                    <li>Wenn wir Ihre personenbezogenen Daten nicht mehr benötigen, Sie sie jedoch zur Ausübung, Verteidigung oder Geltendmachung
+                        von Rechtsansprüchen benötigen, haben Sie das Recht, statt der Löschung die Einschränkung der Verarbeitung Ihrer
+                        personenbezogenen Daten zu verlangen.
+                    </li>
+                    <li>Wenn Sie einen Widerspruch nach Art. 21 Abs. 1 DSGVO eingelegt haben, muss eine Abwägung zwischen Ihren und unseren
+                        Interessen vorgenommen werden. Solange noch nicht feststeht, wessen Interessen überwiegen, haben Sie das Recht, die
+                        Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.
+                    </li>
+                </ul>
 
+                <p>
                     Wenn Sie die Verarbeitung Ihrer personenbezogenen Daten eingeschränkt haben, dürfen diese Daten – von ihrer Speicherung abgesehen
                     – nur mit Ihrer Einwilligung oder zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen oder zum Schutz der Rechte
                     einer anderen natürlichen oder juristischen Person oder aus Gründen eines wichtigen öffentlichen Interesses der Europäischen Union
@@ -289,4 +283,5 @@ export default function Hello() {
             </div>
         </Layout>
     )
+        ;
 }

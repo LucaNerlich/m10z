@@ -1,6 +1,6 @@
 import React from 'react'
 // @ts-ignore
-import styles from './SingleFormat.module.scss'
+import styles from './SingleFormat.module.css'
 // @ts-ignore
 import Link from '@docusaurus/Link'
 

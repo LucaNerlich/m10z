@@ -6,7 +6,7 @@ import authorsFile from '/blog/authors.json'
 import {AuthorType} from '../types/authorType'
 import Author from '../components/Author'
 // @ts-ignore
-import styles from './hello.module.scss'
+import styles from './hello.module.css'
 
 export default function Hello() {
     const parsedAuthors: AuthorType[] = []

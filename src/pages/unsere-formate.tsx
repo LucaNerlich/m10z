@@ -1,6 +1,6 @@
 import React from 'react';
 // @ts-ignore
-import styles from './unsere-formate.module.scss';
+import styles from './unsere-formate.module.css';
 // @ts-ignore
 import Layout from '@theme/Layout';
 import SingleFormat from '../components/SingleFormat';
