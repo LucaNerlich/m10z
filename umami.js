@@ -2,7 +2,7 @@ import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 
 // https://stackoverflow.com/questions/57859350/how-can-i-add-custom-scripts-in-index-htmls-head-part-in-docusaurus-v2
 if (ExecutionEnvironment.canUseDOM) {
-    if (window.location.href.includes('localhost')) {
+    if (window.location.href.includes('localhost') || window.location.href.includes('lucanerlich.com')) {
         console.debug('Skipping umami tracking on localhost');
     } else {
         // Create the script element for the umami tracking code
