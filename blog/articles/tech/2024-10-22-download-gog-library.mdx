@@ -8,6 +8,7 @@ draft: false
 image: /img/tech/sundayprojects/gogbackup.png
 ---
 
+
 import Image from '@theme/IdealImage'
 
 'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
@@ -48,7 +49,7 @@ Dieser Beitrag ist daher eine kurze Anleitung, wie man das Python-Skript **gogre
 8. Die GOG-Bibliothek scannen und initial alle Metadaten herunterladen
     - `python3 gogrepoc.py update`
 9. Kompletten Download starten
-    - `python3 gogrepoc.py download -lang en de`
+ - `python3 gogrepoc.py download . -os windows mac linux -lang en de`
     - Das Skript kopiert erst ganz zum Schluss alle heruntergeladenen Dateien in die dedizierten Spieleordner
 
 
