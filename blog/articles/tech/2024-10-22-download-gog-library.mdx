@@ -49,8 +49,9 @@ Dieser Beitrag ist daher eine kurze Anleitung, wie man das Python-Skript **gogre
 8. Die GOG-Bibliothek scannen und initial alle Metadaten herunterladen
     - `python3 gogrepoc.py update`
 9. Kompletten Download starten
- - `python3 gogrepoc.py download . -os windows mac linux -lang en de`
-    - Das Skript kopiert erst ganz zum Schluss alle heruntergeladenen Dateien in die dedizierten Spieleordner
+ - `python3 gogrepoc.py download ./offline-installer -os windows mac linux -lang en de`
+    - Das Skript kopiert erst ganz zum Schluss alle heruntergeladenen Dateien in die dedizierten Spieleordner unterhalb von `./offline-installer`
+    - `./offline-installer` ist relativ zum Pfad aus dem ihr das Script ausfuehrt
 
 
 Danke fürs Lesen.
