@@ -1,6 +1,9 @@
 # https://sreyaj.dev/deploy-nodejs-applications-on-a-vps-using-coolify-with-dockerfile
 FROM node:20-alpine
 
+# install curl for healthcheck
+RUN apk --no-cache add curl
+
 ARG PORT
 
 ENV PORT=$PORT
@@ -15,6 +18,8 @@ RUN npm install --legacy-peer-deps
 
 RUN npm run generateAuthors
 RUN npm run generateAudioFeed
+
+ENV NODE_ENV=production
 RUN npm run coolify-build
 
 # Expose port
