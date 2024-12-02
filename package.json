@@ -42,7 +42,7 @@
         "@docusaurus/module-type-aliases": "^3.6.2",
         "@docusaurus/tsconfig": "^3.6.3",
         "@docusaurus/types": "^3.6.2",
-        "@types/react": "^18.3.3",
+        "@types/react": "^18.3.12",
         "js-yaml": "^4.1.0",
         "typescript": "~5.5.3",
         "xml2js": "^0.6.2"
