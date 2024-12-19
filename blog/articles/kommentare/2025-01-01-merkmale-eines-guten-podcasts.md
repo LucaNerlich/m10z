@@ -5,7 +5,7 @@ authors: [ luca ]
 tags: [ artikel, kommentar, luca ]
 image: /img/articles/podcastmerkmale.jpg
 date: 2025-01-01T10:00
-draft: true
+draft: false
 ---
 
 Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.stayforever.de/), sowie der [gamespodcast](https://www.gamespodcast.de/)
