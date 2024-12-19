@@ -19,9 +19,14 @@ Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.st
 
 Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podcast erzielt große Hörerschaften. Was macht einen Podcast erfolgreich? Dieser Artikel untersucht die zentralen Merkmale, die Qualität definieren, und zeigt, wie sich diese auf das Wachstum eines Podcasts auswirken. Dabei greifen wir auf bewährte Strategien und aktuelle Erkenntnisse aus der Podcast-Branche zurück.
 
+Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Spielepodcasts betrachtet. Zudem sind kaum auswertbare Daten öffentlich verfügbar. Aussagen über das Wachstum von Projekten beziehen sich daher explizit nur auf mündlich übermittelte Werte in etwaigen Podcasts.
+
 ## Merkmale eines guten Podcasts
 
 ### Klar definierte Zielgruppe
+
+- wer, was warum [^10]
+- avoiding ads
 
 ### Relevanter und gut aufbereiteter Inhalt
 
@@ -52,7 +57,7 @@ Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podca
 
 ### Aufbau von Bindung und Loyalität
 
-- zielgruppen segmentierung [^6]
+- zielgruppen segmentierung [^6] - [siehe hier](#klar-definierte-zielgruppe)
 - user generated content [^7]
   - sf: umfragen
   - tp: call-in format
@@ -66,13 +71,29 @@ Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podca
 
 ### Monetarisierungspotenziale
 
+- Werbung
+  - [Zielgruppe beachten](#klar-definierte-zielgruppe)
+  - product placement
+- Merchandising
+- In-Person Events
+- Upsell Options
+  - limited merch, gated content
+- Donations
+
 ## Erfolgsbeispiele für wachsende Podcasts
+
+### StayForever
+- StayForever
+  - siehe [^11]
+- OKCool
 
 ## Warum stagnierendes Wachstum gefährlich ist
 
 - 1 [^3]
 - 2 [^4]
 - 3 [^5]
+
+- thepod stagnations [^12]
 
 ## Fazit
 
@@ -91,3 +112,6 @@ Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podca
 [^7]: [12 Community Building Strategies To Use In 2024](https://statusbrew.com/insights/community-building-strategies)
 [^8]: [How Insta’s broadcast feature crept into brands’ marketing strategies](https://www.voguebusiness.com/story/consumers/how-instas-broadcast-feature-crept-into-brands-marketing-strategies)
 [^9]: [Identifying and understanding your target customer and market segments](https://learn.marsdd.com/article/identifying-your-target-customer-and-market-segments)
+[^10]: [Unschlagbare Zielgruppe finden für deinen Podcast](https://www.nadinekelm.de/podcast-zielgruppe-definieren)
+[^11]: [Die Weihnachtswoche 2024](https://www.stayforever.de/2024/12/die-weihnachtswoche-2024/)
+[^12]: [Weltherrschaft LV: Weihnachtsherrschaft](https://www.gamespodcast.de/2024/12/12/weltherrschaft-lv-weihnachtsherrschaft/)
