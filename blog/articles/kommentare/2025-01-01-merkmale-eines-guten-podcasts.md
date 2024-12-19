@@ -17,6 +17,8 @@ Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.st
 
 ## Einleitung
 
+Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podcast erzielt große Hörerschaften. Was macht einen Podcast erfolgreich? Dieser Artikel untersucht die zentralen Merkmale, die Qualität definieren, und zeigt, wie sich diese auf das Wachstum eines Podcasts auswirken. Dabei greifen wir auf bewährte Strategien und aktuelle Erkenntnisse aus der Podcast-Branche zurück.
+
 ## Merkmale eines guten Podcasts
 
 ### Klar definierte Zielgruppe
@@ -60,6 +62,7 @@ Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.st
 ### Suchmaschinen und Empfehlungsalgorithmen
 
 - erreichen ausserhalb des rss feed [^8]
+- erreichen ueber 'needs' [^9]
 
 ### Monetarisierungspotenziale
 
@@ -87,3 +90,4 @@ Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.st
 [^6]: [How To Create a Community Building Strategy?](https://www.meltingspot.io/the-guide-to-community-building/how-to-create-a-community-building-strategy)
 [^7]: [12 Community Building Strategies To Use In 2024](https://statusbrew.com/insights/community-building-strategies)
 [^8]: [How Insta’s broadcast feature crept into brands’ marketing strategies](https://www.voguebusiness.com/story/consumers/how-instas-broadcast-feature-crept-into-brands-marketing-strategies)
+[^9]: [Identifying and understanding your target customer and market segments](https://learn.marsdd.com/article/identifying-your-target-customer-and-market-segments)
