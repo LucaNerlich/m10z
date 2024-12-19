@@ -50,9 +50,16 @@ Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.st
 
 ### Aufbau von Bindung und Loyalität
 
+- zielgruppen segmentierung [^6]
+- user generated content [^7]
+  - sf: umfragen
+  - tp: call-in format
+
 ### Mundpropaganda und soziale Netzwerke
 
 ### Suchmaschinen und Empfehlungsalgorithmen
+
+- erreichen ausserhalb des rss feed [^8]
 
 ### Monetarisierungspotenziale
 
@@ -72,10 +79,11 @@ Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.st
 - 1 - [^1]
 - 2 - [^2]
 
-## Quellen
-
 [^1]: [Edison Research – The Infinite Dial 2024](https://www.edisonresearch.com/wp-content/uploads/2024/06/Infinite-Dial-2024-Presentation.pdf)
 [^2]: [U.S. Podcast Advertising Revenue Study - IAB](https://www.iab.com/wp-content/uploads/2024/05/IAB_US_Podcast_Advertising_Revenue_Study_FY2023_May_2024.pdf)
 [^3]: [The Challenges Surrounding Business Stagnation You Need To Know](https://pwkadvisory.net.au/the-challenges-surrounding-business-stagnation-you-need-to-know)
 [^4]: [Competitive Disadvantage](https://www.forbes.com/councils/forbescoachescouncil/2024/10/09/why-businesses-stagnate-a-focus-on-investment-fear-and-team-dynamics)
 [^5]: [Diagnosing 4 common causes of business growth slowdown](https://cognosis.co.uk/thoughts/diagnosing-4-common-causes-of-business-growth-slowdown)
+[^6]: [How To Create a Community Building Strategy?](https://www.meltingspot.io/the-guide-to-community-building/how-to-create-a-community-building-strategy)
+[^7]: [12 Community Building Strategies To Use In 2024](https://statusbrew.com/insights/community-building-strategies)
+[^8]: [How Insta’s broadcast feature crept into brands’ marketing strategies](https://www.voguebusiness.com/story/consumers/how-instas-broadcast-feature-crept-into-brands-marketing-strategies)
