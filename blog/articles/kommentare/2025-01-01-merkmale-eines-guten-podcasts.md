@@ -55,12 +55,21 @@ Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Sp
 
 ## Wie beeinflussen diese Merkmale das Wachstum?
 
-### Aufbau von Bindung und Loyalität
+Nach der Betrachtung und Bewertung einzelner Merkmale soll untersucht werden, wie diese im weiteren Sinne die positive
+Entwicklung des eigenen Produktes und der dazugehörigen Community beeinflussen (können). Dabei ist zu beachten, dass
+kein einzelner Faktor für sich allein genommen Priorität hat oder einen maßgeblichen Einfluss ausübt - ein Podcast ist
+ein kreatives Produkt und lässt sich nicht in jeder Hinsicht auf harte Kennzahlen herunterbrechen.
+
+### Aufbau von Bindung und Loyalität vs parasoziale Beziehung
 
 - zielgruppen segmentierung [^6] - [siehe hier](#klar-definierte-zielgruppe)
 - user generated content [^7]
   - sf: umfragen
   - tp: call-in format
+- parasoziale Beziehung
+    - positiv: [^14]
+    - risiken: [^13]
+    - generell: [^15]
 
 ### Mundpropaganda und soziale Netzwerke
 
@@ -115,3 +124,7 @@ Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Sp
 [^10]: [Unschlagbare Zielgruppe finden für deinen Podcast](https://www.nadinekelm.de/podcast-zielgruppe-definieren)
 [^11]: [Die Weihnachtswoche 2024](https://www.stayforever.de/2024/12/die-weihnachtswoche-2024/)
 [^12]: [Weltherrschaft LV: Weihnachtsherrschaft](https://www.gamespodcast.de/2024/12/12/weltherrschaft-lv-weihnachtsherrschaft/)
+[^13]: [How to Know If Your Friends Are Real](https://www.theatlantic.com/podcasts/archive/2024/05/how-to-know-if-your-friends-are-real/678350/?)
+[^14]: [Authenticity in Fashion and Beauty: Influencer Marketing and the
+Development of Parasocial Relationships on Social Media](https://academicworks.cuny.edu/cgi/viewcontent.cgi?article=1191&context=bb_etds)
+[^15]: [In a Celebrity-Obsessed World, Have We Reached Peak Parasocial?](https://www.vogue.com/article/what-is-a-parasocial-relationship)
