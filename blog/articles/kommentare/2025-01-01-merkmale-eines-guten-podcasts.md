@@ -147,12 +147,6 @@ nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehe
 
 ## Fazit
 
-
-## quellen test - remove me
-
-- 1 - [^1]
-- 2 - [^2]
-
 [^1]: [Edison Research – The Infinite Dial 2024](https://www.edisonresearch.com/wp-content/uploads/2024/06/Infinite-Dial-2024-Presentation.pdf)
 [^2]: [U.S. Podcast Advertising Revenue Study - IAB](https://www.iab.com/wp-content/uploads/2024/05/IAB_US_Podcast_Advertising_Revenue_Study_FY2023_May_2024.pdf)
 [^3]: [The Challenges Surrounding Business Stagnation You Need To Know](https://pwkadvisory.net.au/the-challenges-surrounding-business-stagnation-you-need-to-know)
