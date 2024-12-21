@@ -8,8 +8,10 @@ date: 2025-01-01T10:00
 draft: false
 ---
 
-Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.stayforever.de/), sowie der [gamespodcast](https://www.gamespodcast.de/)
-über ihre Erfolge, ihr jeweiliges Wachstum und das Jahr 2024 aus wirtschaftlicher Sicht gesprochen. Dies möchte ich zum Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
+Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.stayforever.de/), sowie
+der [gamespodcast](https://www.gamespodcast.de/)
+über ihre Erfolge, ihr jeweiliges Wachstum und das Jahr 2024 aus wirtschaftlicher Sicht gesprochen. Dies möchte ich zum
+Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 
 ![intro image](/img/articles/podcastmerkmale.jpg)
 
@@ -17,9 +19,14 @@ Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.st
 
 ## Einleitung
 
-Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podcast erzielt große Hörerschaften. Was macht einen Podcast erfolgreich? Dieser Artikel untersucht die zentralen Merkmale, die Qualität definieren, und zeigt, wie sich diese auf das Wachstum eines Podcasts auswirken. Dabei greifen wir auf bewährte Strategien und aktuelle Erkenntnisse aus der Podcast-Branche zurück.
+Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podcast erzielt große Hörerschaften. Was
+macht einen Podcast erfolgreich? Dieser Artikel untersucht die zentralen Merkmale, die Qualität definieren, und zeigt,
+wie sich diese auf das Wachstum eines Podcasts auswirken. Dabei greifen wir auf bewährte Strategien und aktuelle
+Erkenntnisse aus der Podcast-Branche zurück.
 
-Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Spielepodcasts betrachtet. Zudem sind kaum auswertbare Daten öffentlich verfügbar. Aussagen über das Wachstum von Projekten beziehen sich daher explizit nur auf mündlich übermittelte Werte in etwaigen Podcasts.
+Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Spielepodcasts betrachtet. Zudem sind kaum
+auswertbare Daten öffentlich verfügbar. Aussagen über das Wachstum von Projekten beziehen sich daher explizit nur auf
+mündlich übermittelte Werte in etwaigen Podcasts.
 
 ## Merkmale eines guten Podcasts
 
@@ -40,6 +47,15 @@ Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Sp
 2. *Bread and Butter* Inhalt
 3. Community Integration
 
+Alternativer Ansatz[^16]
+
+1. Lehrend, Bildend, Wissenstransfer
+    - create value, enlighten, do not waste time
+2. Inspirierend
+    - neue Dinge aufzeigen, Innovation praaesentieren, Horizont erweitern
+3. Unterhaltend
+    - Spass, Abwechslung, Humor, Erleichterung des Alltags
+
 ### Hohe Produktionsqualität
 
 - Audioqualitaet
@@ -58,7 +74,6 @@ Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Sp
 - *Call-In* Format
 - Newsletter
 
-
 ## Wie beeinflussen diese Merkmale das Wachstum?
 
 Nach der Betrachtung und Bewertung einzelner Merkmale soll untersucht werden, wie diese im weiteren Sinne die positive
@@ -70,8 +85,8 @@ ein kreatives Produkt und lässt sich nicht in jeder Hinsicht auf harte Kennzahl
 
 - zielgruppen segmentierung [^6] - [siehe hier](#klar-definierte-zielgruppe)
 - user generated content [^7]
-  - sf: umfragen
-  - tp: call-in format
+    - sf: umfragen
+    - tp: call-in format
 - parasoziale Beziehung
     - positiv: [^14]
     - risiken: [^13]
@@ -87,12 +102,12 @@ ein kreatives Produkt und lässt sich nicht in jeder Hinsicht auf harte Kennzahl
 ### Monetarisierungspotenziale
 
 - Werbung
-  - [Zielgruppe beachten](#klar-definierte-zielgruppe)
-  - product placement
+    - [Zielgruppe beachten](#klar-definierte-zielgruppe)
+    - product placement
 - Merchandising
 - In-Person Events
 - Upsell Options
-  - limited merch, gated content
+    - limited merch, gated content
 - Donations
 
 ## Erfolgsbeispiele für wachsende Podcasts
@@ -104,8 +119,9 @@ die gewünschten Daten manuell zu erheben - da ich diese leider nicht habe, bzw.
 nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehen.
 
 ### [StayForever](https://www.stayforever.de)
+
 - StayForever
-  - siehe [^11]
+    - siehe [^11]
 
 [Siehe hier](#die-drei-standbeine-des-inhalts)
 
@@ -163,3 +179,4 @@ nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehe
 [^14]: [Authenticity in Fashion and Beauty: Influencer Marketing and the
 Development of Parasocial Relationships on Social Media](https://academicworks.cuny.edu/cgi/viewcontent.cgi?article=1191&context=bb_etds)
 [^15]: [In a Celebrity-Obsessed World, Have We Reached Peak Parasocial?](https://www.vogue.com/article/what-is-a-parasocial-relationship)
+[^16]: [We Need to Talk About the 3 Pillars of Content: It’s a Game Changer](https://trustyoak.com/blog/we-need-to-talk-about-the-3-pillars-of-content-its-a-game-changer/)
