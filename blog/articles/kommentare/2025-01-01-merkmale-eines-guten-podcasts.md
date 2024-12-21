@@ -30,6 +30,23 @@ mündlich übermittelte Werte in etwaigen Podcasts.
 
 ## Merkmale eines guten Podcasts
 
+### *Content* auf drei Standbeinen
+
+1. Halo / Leuchtturmproduktionen
+2. *Bread and Butter* Inhalt
+3. Community Integration
+
+Alternativer Ansatz[^16]
+
+help, hub, hero [^17]
+
+1. Lehrend, Bildend, Wissenstransfer
+    - create value, enlighten, do not waste time
+2. Inspirierend
+    - neue Dinge aufzeigen, Innovation praaesentieren, Horizont erweitern
+3. Unterhaltend
+    - Spass, Abwechslung, Humor, Erleichterung des Alltags
+
 ### Klar definierte Zielgruppe
 
 - wer, was warum [^10]
@@ -41,24 +58,9 @@ mündlich übermittelte Werte in etwaigen Podcasts.
 - Gezielte Rueckgriffe
 - Zielgruppenorientiert [siehe hier](#klar-definierte-zielgruppe)
 
-### Die drei Standbeine des Inhalts
-
-1. Halo / Leuchtturmproduktionen
-2. *Bread and Butter* Inhalt
-3. Community Integration
-
-Alternativer Ansatz[^16]
-
-1. Lehrend, Bildend, Wissenstransfer
-    - create value, enlighten, do not waste time
-2. Inspirierend
-    - neue Dinge aufzeigen, Innovation praaesentieren, Horizont erweitern
-3. Unterhaltend
-    - Spass, Abwechslung, Humor, Erleichterung des Alltags
-
 ### Hohe Produktionsqualität
 
-- Audioqualitaet
+- Audioqualität
 - Korrektheit der Aussagen
 - Relevanz der Aussagen [siehe hier](#relevanter-und-gut-aufbereiteter-inhalt)
 
@@ -67,6 +69,8 @@ Alternativer Ansatz[^16]
 ### Konsistenz und Regelmäßigkeit
 
 ### Interaktion mit der Hörerschaft
+
+[Siehe auch 'Community Integration'](#content-auf-drei-standbeinen)
 
 - Forum
 - Chat
@@ -155,13 +159,21 @@ nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehe
 
 ## Warum stagnierendes Wachstum gefährlich ist
 
-- 1 [^3]
-- 2 [^4]
-- 3 [^5]
-
+- xx [^3]
+- yy [^4]
+- zz [^5]
 - thepod stagnations [^12]
 
 ## Fazit
+
+Ein erfolgreicher Podcast überzeugt durch eine klare Zielgruppendefinition, hochwertige und strukturierte Inhalte, sowie
+eine authentische Präsentation. Mit konsistenter Qualität und der Bereitschaft, auf das Feedback der Hörerschaft
+einzugehen, kann er nicht nur wachsen, sondern auch eine loyale Community aufbauen.
+
+Wenn du noch Nachfragen hast, oder dich mit anderen Podcast-Enthusiasten austauschen möchtest, schau doch gerne auf
+unserem [Discord-Server](https://discord.gg/tSpzEW4kpP) vorbei!
+
+Luca
 
 [^1]: [Edison Research – The Infinite Dial 2024](https://www.edisonresearch.com/wp-content/uploads/2024/06/Infinite-Dial-2024-Presentation.pdf)
 [^2]: [U.S. Podcast Advertising Revenue Study - IAB](https://www.iab.com/wp-content/uploads/2024/05/IAB_US_Podcast_Advertising_Revenue_Study_FY2023_May_2024.pdf)
@@ -180,3 +192,4 @@ nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehe
 Development of Parasocial Relationships on Social Media](https://academicworks.cuny.edu/cgi/viewcontent.cgi?article=1191&context=bb_etds)
 [^15]: [In a Celebrity-Obsessed World, Have We Reached Peak Parasocial?](https://www.vogue.com/article/what-is-a-parasocial-relationship)
 [^16]: [We Need to Talk About the 3 Pillars of Content: It’s a Game Changer](https://trustyoak.com/blog/we-need-to-talk-about-the-3-pillars-of-content-its-a-game-changer/)
+[^17]: [HIGH 5: So war das damals! 20 Jahre verspielt #5 - Konzept Phase](https://youtu.be/Jgz5gsKle8g?si=XYQYbuGeglj-XYed&t=729)
