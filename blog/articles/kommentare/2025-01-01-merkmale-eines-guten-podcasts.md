@@ -34,6 +34,12 @@ Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Sp
 - Gezielte Rueckgriffe
 - Zielgruppenorientiert [siehe hier](#klar-definierte-zielgruppe)
 
+### Die drei Standbeine des Inhalts
+
+1. Halo / Leuchtturmproduktionen
+2. *Bread and Butter* Inhalt
+3. Community Integration
+
 ### Hohe Produktionsqualität
 
 - Audioqualitaet
@@ -91,10 +97,45 @@ ein kreatives Produkt und lässt sich nicht in jeder Hinsicht auf harte Kennzahl
 
 ## Erfolgsbeispiele für wachsende Podcasts
 
-### StayForever
+Für Projekte, die sich über [Patreon](https://www.patreon.com) (teil-)finanzieren, gibt es den
+Dienst [Graphtreon](https://graphtreon.com) - dieser greift auf die Daten der historischen Entwicklung zu und stellt
+diese ansprechend in Diagrammen dar. Für Steady ist dieser Datenzugriff leider nicht öffentlich. Daher ist es notwendig,
+die gewünschten Daten manuell zu erheben - da ich diese leider nicht habe, bzw. keinen Datensatz kenne, kann ich mich
+nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehen.
+
+### [StayForever](https://www.stayforever.de)
 - StayForever
   - siehe [^11]
-- OKCool
+
+[Siehe hier](#die-drei-standbeine-des-inhalts)
+
+1. Halo / Leuchtturmproduktionen
+    - Physische Goodies, *print* magazin
+    - seltene aber aufwaendige Formate: "Die zweite Reihe", "Ein Spiel und seine Geschichte"
+2. *Bread and Butter* Inhalt
+    - SF, SSF, SFS
+    - merch+ [Retroshirty](https://retroshirty.com)
+3. Community Integration
+    - Quiz, Umfragen, Abstimmungen, Fragen und Antworten Format
+
+### [OKCool](https://okcool.space)
+
+- klar emotionaler und empathischer als Vergleichsprodukte
+- persoehnlicherer Stil, gibt sich offener und geraet mehr ins plaudern -> gibt mehr von sich Preis
+- von Anfang an klar und deutlicher Fokus auf Diversitaet, Frauen "aus der Industrie"
+- starke Konsistenz
+- klarer Plan (von Anfang an verfolgt)
+    - Kernprodukt starten, ausbauen, Freie Journalisten mit ins Boot holen
+    - Leuchtturm Produkte (magazin, email-brief spiel)
+
+[Siehe hier](#die-drei-standbeine-des-inhalts)
+
+1. Halo / Leuchtturmproduktionen
+    - Print Magazin, OKCool History, "harte Themen" (crunch etc)
+2. *Bread and Butter* Inhalt
+    - super konstant OKCool trifft, Spiele Besprechungen, Spiele Vorstellungen / Teaser
+3. Community Integration
+    - Fragen und Antworten Format
 
 ## Warum stagnierendes Wachstum gefährlich ist
 
