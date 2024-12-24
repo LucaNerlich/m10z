@@ -34,3 +34,7 @@ div > img {
     border-radius: 5px;
     margin-bottom: 0 !important;
 }
+
+section.footnotes > ol > li > p {
+    margin: 0;
+}
