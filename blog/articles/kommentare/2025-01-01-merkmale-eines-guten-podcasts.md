@@ -177,6 +177,14 @@ Ein erfolgreicher Podcast überzeugt durch eine klare Zielgruppendefinition, hoc
 eine authentische Präsentation. Mit konsistenter Qualität und der Bereitschaft, auf das Feedback der Hörerschaft
 einzugehen, kann er nicht nur wachsen, sondern auch eine loyale Community aufbauen.
 
+Zusammenfassend die wichtigsten Punkte
+
+1. Es ist elementar, dass der produzierte Inhalt drei Typen von KonsumentInnen anspricht bzw. diesen zuzuordnen ist
+    1. Leuchtturmproduktionen / besondere Inhalte / *Halo*-Content
+    2. Alltägliche Produktionen / *Brot-und-Butter-Content*
+    3. UnterhaltendeProduktionen, sowie in Teilen eine Community Integration
+2. todo
+
 Wenn du noch Nachfragen hast, oder dich mit anderen Podcast-Enthusiasten austauschen möchtest, schau doch gerne auf
 unserem [Discord-Server](https://discord.gg/tSpzEW4kpP) vorbei!
 
