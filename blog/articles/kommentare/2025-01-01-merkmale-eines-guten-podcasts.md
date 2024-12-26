@@ -68,6 +68,9 @@ help, hub, hero [^17]
 
 ### Konsistenz und Regelmäßigkeit
 
+siehe rss-analyzer the pod [^18]
+siehe rss-analyzer stayforever [^19]
+
 ### Interaktion mit der Hörerschaft
 
 [Siehe auch 'Community Integration'](#content-auf-drei-standbeinen)
@@ -114,7 +117,11 @@ ein kreatives Produkt und lässt sich nicht in jeder Hinsicht auf harte Kennzahl
     - limited merch, gated content
 - Donations
 
+rev-study[^2]
+
 ## Erfolgsbeispiele für wachsende Podcasts
+
+podcastgrowth study[^1]
 
 Für Projekte, die sich über [Patreon](https://www.patreon.com) (teil-)finanzieren, gibt es den
 Dienst [Graphtreon](https://graphtreon.com) - dieser greift auf die Daten der historischen Entwicklung zu und stellt
@@ -127,7 +134,7 @@ nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehe
 - StayForever
     - siehe [^11]
 
-[Siehe hier](#die-drei-standbeine-des-inhalts)
+[Siehe hier](#content-auf-drei-standbeinen)
 
 1. Halo / Leuchtturmproduktionen
     - Physische Goodies, *print* magazin
@@ -148,7 +155,7 @@ nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehe
     - Kernprodukt starten, ausbauen, Freie Journalisten mit ins Boot holen
     - Leuchtturm Produkte (magazin, email-brief spiel)
 
-[Siehe hier](#die-drei-standbeine-des-inhalts)
+[Siehe hier](#content-auf-drei-standbeinen)
 
 1. Halo / Leuchtturmproduktionen
     - Print Magazin, OKCool History, "harte Themen" (crunch etc)
@@ -193,3 +200,5 @@ Development of Parasocial Relationships on Social Media](https://academicworks.c
 [^15]: [In a Celebrity-Obsessed World, Have We Reached Peak Parasocial?](https://www.vogue.com/article/what-is-a-parasocial-relationship)
 [^16]: [We Need to Talk About the 3 Pillars of Content: It’s a Game Changer](https://trustyoak.com/blog/we-need-to-talk-about-the-3-pillars-of-content-its-a-game-changer/)
 [^17]: [HIGH 5: So war das damals! 20 Jahre verspielt #5 - Konzept Phase](https://youtu.be/Jgz5gsKle8g?si=XYQYbuGeglj-XYed&t=729)
+[^18]: [rssanalyzer - ThePod](https://rssanalyzer.lucanerlich.com/#thepod)
+[^19]: [rssanalyzer - StayForever](https://rssanalyzer.lucanerlich.com/#stayforever)
