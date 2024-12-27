@@ -145,11 +145,41 @@ sowie passendem Wortwitz und treffenden Anekdoten aus persönlicher Erfahrung.
 
 ### Hohe Produktionsqualität
 
-- Audioqualität
-    - Wie gut ist die Audioqualität? Gibt es Hintergrundgeräusche oder andere Störungen?
-- Korrektheit der Aussagen
-    - Wie genau sind die Aussagen? Gibt es Fehler oder ungenaue Informationen?
-- Relevanz der Aussagen [siehe hier](#relevanter-und-gut-aufbereiteter-inhalt)
+Die Produktionsqualität kann in zwei Bereiche unterteilt werden: Die eigentliche Aufnahmequalität und den Umfang der
+Nachbearbeitung.
+
+Die Aufnahmequalität wird im Wesentlichen durch die Audioausrüstung bestimmt, während die Nachbearbeitung Ideen,
+Kreativität, Zeit und technisches Geschick im Umgang mit der Software erfordert.
+
+Qualität ist eine Kombination aus technischen und subjektiven Faktoren, die die Klarheit, Präzision und Wiedergabetreue
+des Klangs bestimmen. Auf erstere möchte ich hier aus Mangel an Fachkenntnis nicht näher eingehen. Letztere sind im
+Wesentlichen Klangbalance, Klarheit und Detailtreue, Rauschfreiheit und Dynamik.
+
+Die durchschnittliche Aufnahmequalität von Audioinhalten wird im Jahr 2024 *hoch* sein. Das bedeutet, dass man mit einer
+durchschnittlich sauberen Audioproduktion niemanden hinter dem Ofen hervorlocken kann, mit einer auffallend schlechten
+Tonqualität aber durchaus mögliche Zuhörer verliert.
+
+Die Nachbearbeitung umfasst die grundlegende Bearbeitung der ursprünglich aufgenommenen Audiodatei, die im Wesentlichen
+nur das gesprochene Wort enthält.
+Die Audiodatei kann nun in zwei Bereichen bearbeitet werden: Erstens in Bezug auf die technische Qualität und zweitens
+inhaltlich. Im Folgenden werden einige Anregungen und Beispiele für die inhaltliche Bearbeitung am Beispiel von
+StayForever gegeben.
+
+StayForever unterstützt seine Aussagen sehr detailliert durch sogenannte Kapitelbilder. Dabei handelt es sich um in die
+Audiodatei integrierte Bilddateien, die an definierten Stellen eingeblendet werden können. Hier am Beispiel der
+Episode [Gothic (SF 150)](https://www.stayforever.de/2024/12/gothic-sf-150/):
+
+![Kapitelbilder](/img/articles/sf-kapitelbilder.png)
+
+Diese Bilder können unterhaltsam und erklärend sein und damit das Produkt deutlich aufwerten - da man aus dem reinen
+Audio-Produkt ausbricht und ins Visuelle wechselt.
+
+StayForever reichert seine Audiodateien auch mit Musik, Jingles oder Einspielern und Sprechern an, wenn
+es [inhaltlich sinnvoll und passend](#relevanter-und-gut-aufbereiteter-inhalt) ist. Dies ermöglicht detaillierte
+Beispiele, z.B. wenn die Musik eines Spiels besprochen wird, oder im Falle von Einspielern die nachträgliche Korrektur
+von Aussagen.
+
+ThePod nutzt die Möglichkeit der nachträglichen, inhaltlichen Aufwertung im Grunde kaum.
 
 ### Charismatische Moderation und Gäste
 
