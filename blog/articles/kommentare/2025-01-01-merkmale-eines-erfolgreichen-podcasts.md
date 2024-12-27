@@ -98,8 +98,27 @@ ThePod ist ebenfalls sehr stark im (HELP) Bereich – hier überwiegend durch da
 
 ### Klar definierte Zielgruppe
 
-- wer, was warum [^10]
-- avoiding ads
+Zu wissen, wer die eigenen produzierten Inhalte konsumieren soll, ist entscheidend für die Ausrichtung und Zielsetzung
+des eigenen Podcasts. Es nützt niemandem etwas, wenn ein *Outdoor-Survival*-Beitrag produziert, aber an eine primär
+*Wellness-Interessierte* Personengruppe ausgespielt wird. Die Zielgruppe zu kennen, bzw. zu planen und gezielt
+anzusprechen, ermöglicht eine effiziente *Content*-Produktion und ist der Grundpfeiler einer *Content*-Strategie[^10].
+
+StayForever bespricht hauptsächlich Retro-Videospiele. Videospiele -> (leider) überwiegend männlich. Retro ->
+überwiegend 40+. ThePod verfolgt in einem ähnlichen Bereich eine 'Vollsortimenter'-Strategie und behandelt sowohl
+aktuelle als auch ältere Videospiele - aber nicht ausschließlich: Non-Gaming-Inhalte sind ebenso vorhanden wie
+überlappende Medienproduktionen, z.B. Filmbesprechungen.
+
+In beiden Beispielen ist das Grundthema 'Technik'. Da technikaffine Menschen gleichzeitig oft werbeaversiv sind,
+verfolgen beide Projekte einen strikten 'keine Werbung'-Ansatz, um diese Gruppe nicht zu verärgern.
+
+StayForever sammelt Informationen und Stimmungstendenzen seiner Community durch regelmäßige und detaillierte Umfragen.
+Daraus werden Maßnahmen abgeleitet, die vor allem das Produkt und seine Ausrichtung schärfen. Wenn Formate zu sehr von
+den [drei Säulen](#content-auf-drei-standbeinen) abweichen oder eine zu kleine Zielgruppe erreichen, ist es wichtig zu
+überlegen, ob sie weitergeführt werden sollen. **Es ist jedoch wichtig zu betonen, dass eine kleine Untergruppe nicht
+unbedingt 'schlecht' ist. Es ist durchaus eine sinnvolle Strategie oder Option, Inhalte für mehrere dieser Gruppen zu
+produzieren, da bediente Nischen oft treu und kaufkräftig sind[^20][^21].
+
+Abschliessend ein paar Stichpunkte, die Zielgruppen definieren:
 
 - Demografische Daten
     - Alter, Geschlecht, Wohnort usw.
@@ -270,3 +289,5 @@ Development of Parasocial Relationships on Social Media](https://academicworks.c
 [^17]: [HIGH 5: So war das damals! 20 Jahre verspielt #5 - Konzept Phase](https://youtu.be/Jgz5gsKle8g?si=XYQYbuGeglj-XYed&t=729)
 [^18]: [rssanalyzer - ThePod](https://rssanalyzer.lucanerlich.com/#thepod)
 [^19]: [rssanalyzer - StayForever](https://rssanalyzer.lucanerlich.com/#stayforever)
+[^20]: [Wie du mit Nischenmarketing deine Zielgruppe besser erreichst](https://max2-consulting.de/wie-du-mit-nischenmarketing-deine-zielgruppe-besser-erreichst/)
+[^21]: [Nischenmarketing Finden Sie Ihre Nische Ein Leitfaden fuer Unternehmer](https://fastercapital.com/de/inhalt/Nischenmarketing--Finden-Sie-Ihre-Nische--Ein-Leitfaden-fuer-Unternehmer.html)
