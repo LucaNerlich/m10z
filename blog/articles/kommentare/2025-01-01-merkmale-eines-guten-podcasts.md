@@ -9,7 +9,7 @@ draft: false
 ---
 
 Unabhängig voneinander haben kürzlich der [StayForever Podcast](https://www.stayforever.de/), sowie
-der [gamespodcast](https://www.gamespodcast.de/)
+der [ThePod](https://www.gamespodcast.de/)
 über ihre Erfolge, ihr jeweiliges Wachstum und das Jahr 2024 aus wirtschaftlicher Sicht gesprochen. Dies möchte ich zum
 Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 
