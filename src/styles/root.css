@@ -38,3 +38,7 @@ div > img {
 section.footnotes > ol > li > p {
     margin: 0;
 }
+
+.markdown li > p {
+    margin: 0;
+}
