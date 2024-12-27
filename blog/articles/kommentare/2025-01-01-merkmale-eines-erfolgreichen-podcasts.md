@@ -94,6 +94,8 @@ ein Altbier'. In weiteren regelmäßigen Formaten werden andere Aspekte der Spie
 Weise thematisiert. Verschiedene Formate erscheinen konstant ohne nennenswerte Unterbrechungen. (HUB) Content ist somit
 ausreichend vorhanden.
 
+ThePod ist ebenfalls sehr stark im (HELP) Bereich – hier überwiegend durch das Format 'Nachgeforscht'. Das 'Spiele-ABC', sowie das 'Magazin' schlagen in eine ähnliche Kerbe, jedoch klar sanfter im Anspruch.
+
 ### Klar definierte Zielgruppe
 
 - wer, was warum [^10]
