@@ -93,16 +93,27 @@ ausreichend vorhanden.
 - wer, was warum [^10]
 - avoiding ads
 
+- Demografische Daten
+    - Alter, Geschlecht, Wohnort usw.
+- Interessen
+    - Spiele, Musik, Filme oder andere Hobbys
+- Psychographie
+    - Persönlichkeitsmerkmale, Werte und Überzeugungen
+
 ### Relevanter und gut aufbereiteter Inhalt
 
-- Aktualitaet
-- Gezielte Rueckgriffe
+- Aktualität
+    - Wie aktuell ist der Inhalt? Gibt es neueste Entwicklungen oder Updates?
+- Gezielte Rückgriffe
+    - Wie können wir den Hörern helfen, ihre Fragen zu beantworten oder weitere Informationen zu erhalten?
 - Zielgruppenorientiert [siehe hier](#klar-definierte-zielgruppe)
 
 ### Hohe Produktionsqualität
 
 - Audioqualität
+    - Wie gut ist die Audioqualität? Gibt es Hintergrundgeräusche oder andere Störungen?
 - Korrektheit der Aussagen
+    - Wie genau sind die Aussagen? Gibt es Fehler oder ungenaue Informationen?
 - Relevanz der Aussagen [siehe hier](#relevanter-und-gut-aufbereiteter-inhalt)
 
 ### Charismatische Moderation und Gäste
