@@ -1,6 +1,6 @@
 ---
-slug: merkmale-eines-guten-podcasts
-title: 'Merkmale eines guten Podcasts'
+slug: merkmale-eines-erfolgreichen-podcasts
+title: 'Merkmale eines erfolgreichen Podcasts'
 authors: [ luca ]
 tags: [ artikel, kommentar, luca ]
 image: /img/articles/podcastmerkmale.jpg
