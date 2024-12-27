@@ -65,6 +65,8 @@ Folgenden wird anhand von Beispielen gezeigt, wie ThePod und StayForever diesem 
 dass sich einzelne Formate und Episoden nicht zwangsläufig einer Kategorie zuordnen lassen, sondern häufig fließend in
 diese übergehen bzw. sich im Laufe ihres Bestehens entwickeln und anpassen.
 
+#### StayForever
+
 StayForever produziert umfassende Podcasts, die bis auf wenige Ausnahmen edukativ sind. Thematisch werden Retro-Spiele
 sehr ausführlich und journalistisch sorgfältig aufbereitet, analytisch und unterhaltsam präsentiert.
 
@@ -76,6 +78,14 @@ notwendig.
 Aufgelockert durch thematisch abweichende Produktionen ('Format ohne Namen', 'Quiz', 'FAQ') werden weitere Aspekte
 abgedeckt. Das 'Format ohne Namen' entführt den Hörer in lockerer Form in den Alltag der Produzenten. Im Quiz wird der
 Podcast-Alltag durch ein kurzweiliges und unterhaltsames Produkt unterbrochen.
+
+#### ThePod
+
+ThePod zeichnet sich durch eine hohe Konstanz und Experimentierfreudigkeit aus. Seit Bestehen des Podcasts wird jeden
+Sonntag eine Folge des Stammformats 'Auf ein Bier' veröffentlicht. Zusätzlich erscheint monatlich das Retro-Format 'Auf
+ein Altbier'. In weiteren regelmäßigen Formaten werden andere Aspekte der Spielebranche auf unterschiedliche Art und
+Weise thematisiert. Verschiedene Formate erscheinen konstant ohne nennenswerte Unterbrechungen. (HUB) Content ist somit
+ausreichend vorhanden.
 
 ### Klar definierte Zielgruppe
 
