@@ -20,32 +20,62 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 ## Einleitung
 
 Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podcast erzielt große Hörerschaften. Was
-macht einen Podcast erfolgreich? Dieser Artikel untersucht die zentralen Merkmale, die Qualität definieren, und zeigt,
-wie sich diese auf das Wachstum eines Podcasts auswirken. Dabei greifen wir auf bewährte Strategien und aktuelle
+macht einen Podcast erfolgreich? Wann ist ein Podcast *gut*? Dieser Artikel untersucht die zentralen Merkmale, die
+Qualität definieren, und zeigt,
+wie sich diese auf das Wachstum eines Podcasts auswirken (können). Dabei greifen wir auf bewährte Strategien und
+aktuelle
 Erkenntnisse aus der Podcast-Branche zurück.
 
-Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Spielepodcasts betrachtet. Zudem sind kaum
-auswertbare Daten öffentlich verfügbar. Aussagen über das Wachstum von Projekten beziehen sich daher explizit nur auf
-mündlich übermittelte Werte in etwaigen Podcasts.
+Um den Umfang zu begrenzen, wird in diesem Beitrag nur der Raum der deutschen Spielepodcasts betrachtet – und hier
+explizit nur ThePod und StayForever.
+Zudem sind kaum auswertbare Daten öffentlich verfügbar. Aussagen über das Wachstum von Projekten beziehen sich daher
+ausdrücklich nur auf
+mündlich übermittelte Werte in etwaigen Podcasts, sowie auf persönlichen Beobachtungen.
 
 ## Merkmale eines guten Podcasts
 
+Um die Definition eines *guten* Podcasts zu erläutern, werden im Folgenden nicht-technische und technische Merkmale von
+Podcasts bzw. deren *Output*, den Audioprodukten, behandelt.
+
 ### *Content* auf drei Standbeinen
 
-1. Halo / Leuchtturmproduktionen
-2. *Bread and Butter* Inhalt
-3. Community Integration
+Weit verbreiteten Ansätzen zufolge sollte ein kreatives Produkt drei Spezifikations-Säulen abdecken, um eine mindestens
+gleichbleibende und idealerweise wachsende Verbraucherschaft zu erreichen und zu binden.
 
-Alternativer Ansatz[^16]
+Im Wesentlichen gibt es zwei Varianten dieser Säulen, die sich jedoch im Wesentlichen nur in der Beschreibung bzw.
+Definition der Perspektiven unterscheiden.
 
-help, hub, hero [^17]
+Der erste Ansatz[^17] spezifiziert folgende drei Säulen:
 
-1. Lehrend, Bildend, Wissenstransfer
-    - create value, enlighten, do not waste time
+1. Halo / Leuchtturmproduktionen (HERO)
+2. *Bread and Butter* Inhalt (HUB)
+3. Community Integration (HELP)
+
+Ein alternativer Ansatz[^16] beschreibt die Elemente wie folgt:
+
+1. Lehrend, bildend – Wissenstransfer
+    - Erzeuge einen Mehrwert, verschwende keine Zeit
 2. Inspirierend
-    - neue Dinge aufzeigen, Innovation praaesentieren, Horizont erweitern
+    - Zeige neue Perspektiven auf, präsentiere Innovation, erweitere den Horizont
 3. Unterhaltend
-    - Spass, Abwechslung, Humor, Erleichterung des Alltags
+    - Spassig ud humoristisch, abwechslungsreich, Erleichterung des Alltags
+
+Es ist ein integraler Bestandteil des Produkts, in diesem Fall der Podcasts, diese drei Eckpunkte abzubilden. Im
+Folgenden wird anhand von Beispielen gezeigt, wie ThePod und StayForever diesem Schema folgen. Dabei ist zu beachten,
+dass sich einzelne Formate und Episoden nicht zwangsläufig einer Kategorie zuordnen lassen, sondern häufig fließend in
+diese übergehen bzw. sich im Laufe ihres Bestehens entwickeln und anpassen.
+
+StayForever produziert umfassende Podcasts, die bis auf wenige Ausnahmen edukativ sind. Thematisch werden Retro-Spiele
+sehr ausführlich und journalistisch sorgfältig aufbereitet, analytisch und unterhaltsam präsentiert.
+
+Die drei Hauptformate StayForever, StayForever Spielt und StayForever Technik decken vollumfassend zwei Kernakspekte ab,
+HERO und HUB. StayForever spielt hier ihren Qualitätsanspruch deutlich und regelmäßig aus, da sich nahezu alle
+Produktionen auf einem perfektionistisch hohen Anspruchsniveau bewegen – explizite 'HERO'-Inhalte sind im Grunde nicht
+notwendig.
+
+Aufgelockert durch thematisch abweichende Produktionen ('Format ohne Namen', 'Quiz', 'FAQ') werden weitere Aspekte
+abgedeckt. Das 'Format ohne Namen' entführt den Hörer in lockerer Form in den Alltag der Produzenten. Im Quiz wird der
+Podcast-Alltag durch ein kurzweiliges und unterhaltsames Produkt unterbrochen.
 
 ### Klar definierte Zielgruppe
 
