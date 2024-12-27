@@ -40,7 +40,8 @@ Podcasts bzw. deren *Output*, den Audioprodukten, behandelt.
 ### *Content* auf drei Standbeinen
 
 Weit verbreiteten Ansätzen zufolge sollte ein kreatives Produkt drei Spezifikations-Säulen abdecken, um eine mindestens
-gleichbleibende und idealerweise wachsende Verbraucherschaft zu erreichen und zu binden.
+gleichbleibende und idealerweise wachsende Verbraucherschaft zu erreichen und zu binden. Auf diesen Säulen sollte die
+*Content*-Strategie basieren.
 
 Im Wesentlichen gibt es zwei Varianten dieser Säulen, die sich jedoch im Wesentlichen nur in der Beschreibung bzw.
 Definition der Perspektiven unterscheiden.
