@@ -94,7 +94,8 @@ ein Altbier'. In weiteren regelmäßigen Formaten werden andere Aspekte der Spie
 Weise thematisiert. Verschiedene Formate erscheinen konstant ohne nennenswerte Unterbrechungen. (HUB) Content ist somit
 ausreichend vorhanden.
 
-ThePod ist ebenfalls sehr stark im (HELP) Bereich – hier überwiegend durch das Format 'Nachgeforscht'. Das 'Spiele-ABC', sowie das 'Magazin' schlagen in eine ähnliche Kerbe, jedoch klar sanfter im Anspruch.
+ThePod ist ebenfalls sehr stark im (HELP) Bereich – hier überwiegend durch das Format 'Nachgeforscht'. Das 'Spiele-ABC',
+sowie das 'Magazin' schlagen in eine ähnliche Kerbe, jedoch klar sanfter im Anspruch.
 
 ### Klar definierte Zielgruppe
 
@@ -193,8 +194,20 @@ Podcast über die eigenen Grenzen hinaus erweitern bzw. für eine mögliche Comm
 
 ### Konsistenz und Regelmäßigkeit
 
-siehe rss-analyzer the pod [^18]
-siehe rss-analyzer stayforever [^19]
+Die beiden Podcastbeispiele in diesem Artikel bestechen durch ihre außergewöhnlich konsistente Produktion: Nachfolgend
+zwei
+Screenshots der entsprechenden RSS-Feed-Analysen von ThePod[^18] und StayForever[^19].
+
+![sf-konsistenz.png](/img/articles/sf-konsistenz.png)
+
+![tp-konsistenz.png](/img/articles/tp-konsistenz.png)
+
+ThePod schafft das Kunststück, sehr konstant zu sein und gleichzeitig regelmäßig Formate zu starten und zu beenden. Zu
+sehen im [RSS-Analyser](https://rssanalyzer.lucanerlich.com/#thepod) oder hier im Screenshot:
+
+![tp-format-luecken.png](/img/articles/tp-format-luecken.png)
+
+Anfangen und Aufhören ist an sich nichts Schlechtes, denn ohne das Ausprobieren von Neuem geht es nicht voran.
 
 ### Interaktion mit der Hörerschaft
 
