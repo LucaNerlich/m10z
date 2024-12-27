@@ -19,6 +19,12 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 
 ## Einleitung
 
+Es ist schon fast Tradition (zumindest seit zwei Jahren), dass ich in der Weihnachtszeit einen größeren Beitrag für M10Z
+liefere. In den Weihnachtsferien 2023 war es die [Fotostory zu Gothic 1 Classic](/review-gothic-classic). Im Jahr 2024
+ist es dieses Epos *hust* - eine kurze Zusammenfassung meinerseits, was einen erfolgreichen Podcast ausmacht.
+
+---
+
 Podcasts sind heute eines der beliebtesten Medienformate, doch nicht jeder Podcast erzielt große Hörerschaften. Was
 macht einen Podcast erfolgreich? Wann ist ein Podcast *gut*? Dieser Artikel untersucht die zentralen Merkmale, die
 Qualität definieren, und zeigt,
