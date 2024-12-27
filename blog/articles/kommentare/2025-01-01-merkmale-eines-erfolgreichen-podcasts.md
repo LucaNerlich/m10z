@@ -183,6 +183,14 @@ ThePod nutzt die Möglichkeit der nachträglichen, inhaltlichen Aufwertung im Gr
 
 ### Charismatische Moderation und Gäste
 
+Ein offenes, freundliches und angenehmes Auftreten ist grundsätzlich wichtig. Ebenso ist eine klare und deutliche
+Aussprache von Vorteil. Beide Punkte sind jedoch inhärent subjektiv und können daher von mir kaum beurteilt werden. Der
+Tonfall sowie eventuelle Besonderheiten in der Aussprache des Sprechenden müssen von jeder HörerIn selbst beurteilt
+werden.
+
+Das Einladen und Einbinden von Gästen kann festgefahrene Rhythmen auflockern, Sichtweisen Dritter präsentieren und den
+Podcast über die eigenen Grenzen hinaus erweitern bzw. für eine mögliche Community des Gastes öffnen.
+
 ### Konsistenz und Regelmäßigkeit
 
 siehe rss-analyzer the pod [^18]
