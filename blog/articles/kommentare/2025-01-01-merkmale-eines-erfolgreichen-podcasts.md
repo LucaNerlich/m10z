@@ -116,9 +116,9 @@ Daraus werden Maßnahmen abgeleitet, die vor allem das Produkt und seine Ausrich
 den [drei Säulen](#content-auf-drei-standbeinen) abweichen oder eine zu kleine Zielgruppe erreichen, ist es wichtig zu
 überlegen, ob sie weitergeführt werden sollen. **Es ist jedoch wichtig zu betonen, dass eine kleine Untergruppe nicht
 unbedingt 'schlecht' ist. Es ist durchaus eine sinnvolle Strategie oder Option, Inhalte für mehrere dieser Gruppen zu
-produzieren, da bediente Nischen oft treu und kaufkräftig sind[^20][^21].
+produzieren, da bediente Nischen oft treu und kaufkräftig sind[^20] [^21].
 
-Abschliessend ein paar Stichpunkte, die Zielgruppen definieren:
+Abschließend einige Stichworte zur Definition der Zielgruppen:
 
 - Demografische Daten
     - Alter, Geschlecht, Wohnort usw.
@@ -129,11 +129,19 @@ Abschliessend ein paar Stichpunkte, die Zielgruppen definieren:
 
 ### Relevanter und gut aufbereiteter Inhalt
 
-- Aktualität
-    - Wie aktuell ist der Inhalt? Gibt es neueste Entwicklungen oder Updates?
-- Gezielte Rückgriffe
-    - Wie können wir den Hörern helfen, ihre Fragen zu beantworten oder weitere Informationen zu erhalten?
-- Zielgruppenorientiert [siehe hier](#klar-definierte-zielgruppe)
+Der Begriff 'relevant' bezieht sich auf zwei Bereiche. Erstens in Bezug auf die
+anvisierte [Zielgruppe](#klar-definierte-zielgruppe) und zweitens 'chronologisch' - die behandelten Themen müssen dem
+Zeitgeist entsprechen bzw. aktuell sein. StayForever bedient den Zeitgeist -> Retro-Videospiele sind im Trend, da die
+SpielerInnen die Erlebnisse ihrer Jugend aufbereitet erneut erleben können. ThePod bedient vor allem den aktuellen
+Markt. Besprechungen junger Spiele-Neuerscheinungen ('Wertschätzung' und andere Formate) stehen neben einer regelmäßigen
+Zusammenfassung aktuellster Branchen-News ('Magazin').
+
+StayForever deckt zusätzlich aktuelle RetroNews und relevante Entwicklungen in diesem Bereich in ihrem monatlich
+erscheinenden [Newsletter](https://www.stayforever.de/newsletter-anmeldung/) ab.
+
+ThePod greift bewusst in die Vergangenheit zurück und bedient mit dem Format 'Altbier' die
+Retro-Community. [Paul Kautz](https://gamenotover.de/ueber-mich) unterstützt hier regelmäßig mit tatkräftigem Fachwissen
+sowie passendem Wortwitz und treffenden Anekdoten aus persönlicher Erfahrung.
 
 ### Hohe Produktionsqualität
 
