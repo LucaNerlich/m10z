@@ -211,13 +211,26 @@ Anfangen und Aufhören ist an sich nichts Schlechtes, denn ohne das Ausprobieren
 
 ### Interaktion mit der Hörerschaft
 
-[Siehe auch 'Community Integration'](#content-auf-drei-standbeinen)
+Wie bereits im vorigen Abschnitt ['Community Integration'](#content-auf-drei-standbeinen) eingangs erwähnt, lebt ein
+langfristig erfolgreiches Produkt, das nah an der Community ist, von und mit dieser. Die Community konsumiert,
+verbreitet und trägt (monetär). Ein Produkt, das an dieser Community vorbeigeht, hat es schwer - da mitunter die
+Unterstützung ausbleiben
+kann [siehe auch 'Warum stagnierendes Wachstum gefährlich ist'](#warum-stagnierendes-wachstum-gefährlich-ist).
+
+Die folgenden Optionen ermöglichen eine direkte und indirekte Interaktion mit der eigenen Verbraucherschaft:
 
 - Forum
+    - direkte Rückbezüge auf Vorschläge und Diskussionen möglich
 - Chat
-- Live-Event
+    - Feedback und Diskussionen in Echtzeit
+- Live-Events
+    - Aufwändig, teuer aber potentiell enorme Aussenwirkung
+    - Monetäre Optionen (Tickets, Merch)
+    - Präsenz zeigen und der Community ein Gefühl von Erfolg, Größe und Relevanz präsentieren
 - *Call-In* Format
+    - Quiz, 'Fragen und Antworten',
 - Newsletter
+    - Asynchrones Aufarbeiten vergangener Themen
 
 ## Wie beeinflussen diese Merkmale das Wachstum?
 
