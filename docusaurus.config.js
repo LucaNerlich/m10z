@@ -269,7 +269,7 @@ const config = {
                 ],
             },
             prism: {
-                additionalLanguages: ['groovy', 'java', 'rust', 'python'],
+                additionalLanguages: ['groovy', 'java', 'rust', 'python', 'bash', 'rust', 'yaml', 'csv'],
             },
         }),
 }
