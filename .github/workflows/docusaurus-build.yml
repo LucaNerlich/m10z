@@ -21,6 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Docusaurus site
-        run: npm run build
+      - name: Build audio rss feed
+        run: npm run generate
 
+      - name: node_env
+        run: echo "NODE_ENV=production" >> "$GITHUB_ENV"
+
+      - name: Build Docusaurus
+        run: npm run  coolify-build
