@@ -203,7 +203,7 @@ Screenshots der entsprechenden RSS-Feed-Analysen von ThePod[^18] und StayForever
 ![tp-konsistenz.png](/img/articles/tp-konsistenz.png)
 
 ThePod schafft das Kunststück, sehr konstant zu sein und gleichzeitig regelmäßig Formate zu starten und zu beenden. Zu
-sehen im [RSS-Analyser](https://rssanalyzer.lucanerlich.com/#thepod) oder hier im Screenshot:
+sehen im [RSS-Analyser](https://rssanalyzer.org/#thepod) oder hier im Screenshot:
 
 ![tp-format-luecken.png](/img/articles/tp-format-luecken.png)
 
@@ -359,7 +359,7 @@ Development of Parasocial Relationships on Social Media](https://academicworks.c
 [^15]: [In a Celebrity-Obsessed World, Have We Reached Peak Parasocial?](https://www.vogue.com/article/what-is-a-parasocial-relationship)
 [^16]: [We Need to Talk About the 3 Pillars of Content: It’s a Game Changer](https://trustyoak.com/blog/we-need-to-talk-about-the-3-pillars-of-content-its-a-game-changer/)
 [^17]: [HIGH 5: So war das damals! 20 Jahre verspielt #5 - Konzept Phase](https://youtu.be/Jgz5gsKle8g?si=XYQYbuGeglj-XYed&t=729)
-[^18]: [rssanalyzer - ThePod](https://rssanalyzer.lucanerlich.com/#thepod)
-[^19]: [rssanalyzer - StayForever](https://rssanalyzer.lucanerlich.com/#stayforever)
+[^18]: [rssanalyzer - ThePod](https://rssanalyzer.org/#thepod)
+[^19]: [rssanalyzer - StayForever](https://rssanalyzer.org/#stayforever)
 [^20]: [Wie du mit Nischenmarketing deine Zielgruppe besser erreichst](https://max2-consulting.de/wie-du-mit-nischenmarketing-deine-zielgruppe-besser-erreichst/)
 [^21]: [Nischenmarketing Finden Sie Ihre Nische Ein Leitfaden fuer Unternehmer](https://fastercapital.com/de/inhalt/Nischenmarketing--Finden-Sie-Ihre-Nische--Ein-Leitfaden-fuer-Unternehmer.html)
