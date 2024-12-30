@@ -29,6 +29,17 @@
     }
 }
 
+[data-theme='light'] {
+    img {
+        filter: brightness(1.05) contrast(0.95);
+    }
+}
+
+img:hover, img:active {
+    /* Reset image colors on hover */
+    filter: brightness(1) contrast(1);
+}
+
 /* Custom Additions */
 
 .font-red {
