@@ -285,13 +285,13 @@ Dies kann durch verschiedene Methoden erreicht werden, wie z.B:
 - Suchmaschinenoptimierung
     - Durch die optimale Verwendung von Keywords, Texten und Verlinkungen auf der Podcast-Seite erhöht sich die
       Wahrscheinlichkeit, dass der Podcast in Suchmaschinen gefunden wird.
-- Empfehlung durch Influencer
-    - Durch die Zusammenarbeit mit Influencern aus dem gleichen Themenbereich kann erreicht werden, dass diese den
+- Empfehlung durch Influencer / Cross-Over Formate
+    - Durch die Zusammenarbeit mit InfluencerInnen aus dem gleichen oder angrenzenden Themenbereich kann erreicht
+      werden, dass diese den
       Podcast weiterempfehlen und so neue Hörer gewinnen.
 - Social Media Marketing
     - Durch den Aufbau einer starken Präsenz in den sozialen Medien können die Hörer dazu animiert werden, den Podcast
       zu teilen und weiterzuempfehlen[^8].
-- Werbung
 
 ### Monetarisierungspotenziale
 
