@@ -269,10 +269,29 @@ direkt in die Entwicklung und Produktion eingebunden und sitzt somit „mit im B
 
 ### Mundpropaganda und soziale Netzwerke
 
-### Suchmaschinen und Empfehlungsalgorithmen
+Wie im [vorherigen Abschnitt](#aufbau-von-bindung-und-loyalität-vs-parasoziale-beziehung) erläutert, ist der sich
+erweiternde Kundenstamm für viele Projekte der Grundstein für weiteres Wachstum. Durch Mundpropaganda wächst der
+Bekanntheitsgrad, basierend auf [konstanter Produktion](#konsistenz-und-regelmäßigkeit)
+und [Qualität](#hohe-produktionsqualität). EmpfängerInnen über dem (kaum messbaren) Schwellenwert der Zufriedenheit
+sehen sich in der Pflicht, mögliche andere Interessierte[^9] zu informieren und das Produkt weiter zu tragen. Ab einer
+gewissen Größe hat dies durch den Netzwerkeffekt relevante Ausmaße[^23]. Im schlimmsten Fall bis hin zum *Shitstorm*.
 
-- erreichen ausserhalb des rss feed [^8]
-- erreichen ueber 'needs' [^9]
+Dieser organische Wachstumseffekt steht im Gegensatz zur kontrollierten Empfehlung.
+Bei der kontrollierten Weiterempfehlung, dem gerichteten Marketingansatz, wird der passende Kanal für die Zielgruppe
+gewählt und somit die idealste Plattform für die Verbreitung des Podcasts genutzt.
+
+Dies kann durch verschiedene Methoden erreicht werden, wie z.B:
+
+- Suchmaschinenoptimierung
+    - Durch die optimale Verwendung von Keywords, Texten und Verlinkungen auf der Podcast-Seite erhöht sich die
+      Wahrscheinlichkeit, dass der Podcast in Suchmaschinen gefunden wird.
+- Empfehlung durch Influencer
+    - Durch die Zusammenarbeit mit Influencern aus dem gleichen Themenbereich kann erreicht werden, dass diese den
+      Podcast weiterempfehlen und so neue Hörer gewinnen.
+- Social Media Marketing
+    - Durch den Aufbau einer starken Präsenz in den sozialen Medien können die Hörer dazu animiert werden, den Podcast
+      zu teilen und weiterzuempfehlen[^8].
+- Werbung
 
 ### Monetarisierungspotenziale
 
@@ -381,3 +400,4 @@ Development of Parasocial Relationships on Social Media](https://academicworks.c
 [^20]: [Wie du mit Nischenmarketing deine Zielgruppe besser erreichst](https://max2-consulting.de/wie-du-mit-nischenmarketing-deine-zielgruppe-besser-erreichst/)
 [^21]: [Nischenmarketing Finden Sie Ihre Nische Ein Leitfaden fuer Unternehmer](https://fastercapital.com/de/inhalt/Nischenmarketing--Finden-Sie-Ihre-Nische--Ein-Leitfaden-fuer-Unternehmer.html)
 [^22]: [Kulturelle Osmose in der Corporate Governance?](https://www.yumpu.com/de/document/read/7536249/kulturelle-osmose-in-der-corporate-governance)
+[^23]: [Mundpropaganda](https://de.wikipedia.org/wiki/Mundpropaganda)
