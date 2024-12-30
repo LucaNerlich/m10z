@@ -295,16 +295,29 @@ Dies kann durch verschiedene Methoden erreicht werden, wie z.B:
 
 ### Monetarisierungspotenziale
 
-- Werbung
-    - [Zielgruppe beachten](#klar-definierte-zielgruppe)
-    - product placement
-- Merchandising
-- In-Person Events
-- Upsell Options
-    - limited merch, gated content
-- Donations
+Da auch ein Podcast selten von Luft und Liebe lebt, ist eine Monetarisierung unerlässlich. Die folgenden Optionen gehen
+über den Abonnement-Mechanismus hinaus:
 
-rev-study[^2]
+- Werbung
+    - Ein riesiger Markt[^2] mit viel Potential und Herausforderungen
+    - Die [Zielgruppe](#klar-definierte-zielgruppe) muss beachtet werden,
+        - Werbeanzeigen können kurzfristig Geld einspielen, aber auch potentielle Kunden vergraulen, da die Werbung im
+          Widerspruch zu den Kundenbedürfnissen stehen kann.
+    - *Product Placement* artverwandter Produkte
+        - Dies können andere Podcasts oder Produkte der Branche (Technik etc.) sein
+            - Hier ist Vorsicht geboten, um die journalistische Integrität nicht zu untergraben.
+- Merchandising
+    - StayForever ist hier mit [Retroshirty](https://retroshirty.com) stark vertreten
+    - Beispielsweise generiert der Tech-Influencer [levels.io](https://x.com/levelsio) 25k USD Umsatz pro Monat durch
+      den [Verkauf von einfachen Merchandising-Artikeln](https://levelsio.com) – ein Markt, den er nach eigener Aussage
+      stark unterschätzte.
+- In-Person Events
+    - Live Events und Auftritte lassen die Dienstleister nahbar erscheinen und laden zum Dialog
+      ein [siehe hier](#aufbau-von-bindung-und-loyalität-vs-parasoziale-beziehung).
+- *Upsell* Optionen
+    - In der Regel durch ein mehrstufiges Abonnementmodell dargestellt
+- Spenden
+    - Unaufgeforderte und freiwillige Spenden. Einmalig oder durch freiwillige, höher dotierte Abonnementsmodelle.
 
 ## Erfolgsbeispiele für wachsende Podcasts
 
@@ -328,7 +341,7 @@ nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehe
     - seltene aber aufwaendige Formate: "Die zweite Reihe", "Ein Spiel und seine Geschichte"
 2. *Bread and Butter* Inhalt
     - SF, SSF, SFS
-    - merch+ [Retroshirty](https://retroshirty.com)
+   - merch+
 3. Community Integration
     - Quiz, Umfragen, Abstimmungen, Fragen und Antworten Format
 
