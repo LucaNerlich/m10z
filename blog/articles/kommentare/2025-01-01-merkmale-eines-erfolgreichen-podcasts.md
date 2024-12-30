@@ -241,14 +241,31 @@ ein kreatives Produkt und lässt sich nicht in jeder Hinsicht auf harte Kennzahl
 
 ### Aufbau von Bindung und Loyalität vs parasoziale Beziehung
 
-- zielgruppen segmentierung [^6] - [siehe hier](#klar-definierte-zielgruppe)
-- user generated content [^7]
-    - sf: umfragen
-    - tp: call-in format
-- parasoziale Beziehung
-    - positiv: [^14]
-    - risiken: [^13]
-    - generell: [^15]
+Wenn klar ist, welche Personen [der Zielgruppe](#klar-definierte-Zielgruppe) entsprechen[^6], können Inhalte für sie
+geplant, produziert und im Dialog verfeinert werden. Es ist wichtig zu beachten, dass 'Inhalte verbreiten' nicht
+gleichbedeutend mit dem Aufbau einer Community ist. Ersteres ist praktisch ohne Konsumenten möglich, letzteres lebt
+durch sie. Durch Interaktion, Kommunikation und Nähe entsteht eine parasoziale Beziehung: ein einseitiger Effekt der
+Beziehung zwischen Konsument und Produzent[^15]. Der Konsument, hier die Community, befindet sich in einer emotionalen
+Bindung, die von der Gegenseite nicht reflektiert werden kann - da das Medium der Wahl, von Ausnahmen abgesehen,
+ausstrahlt (*broadcast*) - und nicht einsammelt.
+
+Die dauerhafte Auseinandersetzung mit einer oder mehreren Personen führt zu Identifikation, potentieller Nachahmung und
+kultureller Osmose[^22]: Ansichten, Verhaltensweisen und Meinungen werden ganz oder teilweise übernommen. Hier entstand
+auch der Begriff *Influencer*, aus dem Englischen *to influence* - etwas beeinflussen. Als Communitymitglied oder
+Konsument umgebe ich mich, für gewöhnlich, mit Dingen, die mich widerspiegeln und mein Weltbild verstärken oder
+erweitern[^14].
+
+Vorsicht ist jedoch geboten, da sich alle Parteien immer bewusst sein müssen, dass am Ende eine Dienstleistung, ein
+Produkt vermarktet wird. Die Person, die mich *influenced*, ist nicht mein Freund[^13] - auch wenn ich Details aus ihrem
+Leben kenne, manchmal intime Details (die wiederum der ursprüngliche Grund für das Bestehen der (parasozialen) Beziehung
+sind). Der Produzent muss etwaige Anspruchshaltungen umschiffen oder handhaben. *Fans* sind super. *Super Fans* sind es
+nicht unbedingt. Der Grad ist schmal – jedoch erfolgsrelevant,
+da [involvierte Personen als Multiplikator](#mundpropaganda-und-soziale-netzwerke) wirken können.
+
+Möglichkeiten, mit dieser Beziehung umzugehen, sind unter anderem User Generated Content[^7] oder Umfragen und
+Frage-Antwort-Formate. Das Webportal für Videospieljournalismus [Gamersglobal](https://www.gamersglobal.de/user-artikel)
+nutzt diesen Mechanismus sogar als integralen Bestandteil seiner Präsentation und Inhaltsproduktion. Die Community wird
+direkt in die Entwicklung und Produktion eingebunden und sitzt somit „mit im Boot“.
 
 ### Mundpropaganda und soziale Netzwerke
 
@@ -363,3 +380,4 @@ Development of Parasocial Relationships on Social Media](https://academicworks.c
 [^19]: [rssanalyzer - StayForever](https://rssanalyzer.org/#stayforever)
 [^20]: [Wie du mit Nischenmarketing deine Zielgruppe besser erreichst](https://max2-consulting.de/wie-du-mit-nischenmarketing-deine-zielgruppe-besser-erreichst/)
 [^21]: [Nischenmarketing Finden Sie Ihre Nische Ein Leitfaden fuer Unternehmer](https://fastercapital.com/de/inhalt/Nischenmarketing--Finden-Sie-Ihre-Nische--Ein-Leitfaden-fuer-Unternehmer.html)
+[^22]: [Kulturelle Osmose in der Corporate Governance?](https://www.yumpu.com/de/document/read/7536249/kulturelle-osmose-in-der-corporate-governance)
