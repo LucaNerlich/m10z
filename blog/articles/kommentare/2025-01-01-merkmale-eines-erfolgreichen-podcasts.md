@@ -306,7 +306,7 @@ Da auch ein Podcast selten von Luft und Liebe lebt, ist eine Monetarisierung une
     - *Product Placement* artverwandter Produkte
         - Dies können andere Podcasts oder Produkte der Branche (Technik etc.) sein
             - Hier ist Vorsicht geboten, um die journalistische Integrität nicht zu untergraben.
-- Merchandising
+- [Merchandising](https://preview.redd.it/a14etzg7xp811.jpg?auto=webp&s=d5d1e5e2c5268d028e557c9ec877f37b412066f1)
     - StayForever ist hier mit [Retroshirty](https://retroshirty.com) stark vertreten
     - Beispielsweise generiert der Tech-Influencer [levels.io](https://x.com/levelsio) 25k USD Umsatz pro Monat durch
       den [Verkauf von einfachen Merchandising-Artikeln](https://levelsio.com) – ein Markt, den er nach eigener Aussage
@@ -318,6 +318,9 @@ Da auch ein Podcast selten von Luft und Liebe lebt, ist eine Monetarisierung une
     - In der Regel durch ein mehrstufiges Abonnementmodell dargestellt
 - Spenden
     - Unaufgeforderte und freiwillige Spenden. Einmalig oder durch freiwillige, höher dotierte Abonnementsmodelle.
+
+![merchandising-meme.png](/img/articles/merchandising-meme.png)
+> *[Moichendising](https://spaceballs.fandom.com/wiki/Spaceballs:_The%E2%80%A6)*
 
 ## Erfolgsbeispiele für wachsende Podcasts
 
