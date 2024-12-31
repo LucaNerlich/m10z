@@ -332,6 +332,9 @@ diese ansprechend in Diagrammen dar. Für Steady ist dieser Datenzugriff leider 
 die gewünschten Daten manuell zu erheben - da ich diese leider nicht habe, bzw. keinen Datensatz kenne, kann ich mich
 nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehen.
 
+StayForever hat im Januar 2023 folgende Statistik veröffentlicht:
+![podcastabos.png](/img/articles/podcastabos.png)
+
 ### [StayForever](https://www.stayforever.de)
 
 - StayForever
