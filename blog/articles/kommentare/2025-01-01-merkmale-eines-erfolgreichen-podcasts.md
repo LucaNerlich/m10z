@@ -332,8 +332,31 @@ diese ansprechend in Diagrammen dar. Für Steady ist dieser Datenzugriff leider 
 die gewünschten Daten manuell zu erheben - da ich diese leider nicht habe, bzw. keinen Datensatz kenne, kann ich mich
 nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehen.
 
-StayForever hat im Januar 2023 folgende Statistik veröffentlicht:
+StayForever hat folgende Statistiken veröffentlicht:
 ![podcastabos.png](/img/articles/podcastabos.png)
+> SF Insider: Dezember 2024
+
+Sowie jüngst nachfolgend
+![podcastabos.png](/img/articles/podcastabos-25.png)
+> SF Insider: Januar 2025
+
+Ablesen lässt sich klare [Stagnation im Wachstum bei ThePod](#warum-stagnierendes-wachstum-gefährlich-ist). Bei
+entsprechend gleichbleibender Wachstumskurve, wird SF in wenigen Monaten die Krone der Abonenntenzahlen übernommen
+haben.
+
+Viel weiter möchte ich hier aber nicht drauf eingehen, da mir eben jüngst StayForever zuvorgekommen ist, mit einer
+Detailtiefe, die ich mangels Datenlage gar nicht leisten kann – bitte lest selber im sehr empfehlenswerten Newsletter '
+Insider' nach. Zu finden [hier im Archiv]().
+
+TODO TODO LINK ZUM NEWSLETTER NACHTRAGE - https://www.stayforever.de/newsletter-anmeldung/
+
+StayForever selbst führt ihren Rekorderfolg direkt, jedoch nicht ausschließlich, aber mit Schwerpunkt auf ihre
+Aktivitäten außerhalb des Podcasts zurück:
+
+> Dank der erfolgreichen Tour, der gelungenen Premiere der SF-Convention in Karlsruhe und des stabilen Geschäfts mit
+> unserem Merchandise-Shop Retroshirty war 2024 in jeder Hinsicht das beste Jahr in der Geschichte von Stay Forever.
+
+Zwei von Drei sind direkte [Community Interaktionen](#interaktion-mit-der-hörerschaft). Ist das ein Zeichen?
 
 ### [StayForever](https://www.stayforever.de)
 
