@@ -428,10 +428,15 @@ konnte damit einen relevanten Teil seiner AbonnentInnen zum Upsell bewegen.
 
 ## Warum stagnierendes Wachstum gefährlich ist
 
+Einer der auslösenden Gründe für diesen Blogeintrag meinerseits war der Thread im ThePod Forum[^12], der das
+wirtschaftliche Update der Gründer aufgriff und diskutierte. Laut Mitgründer Jochen Gebauer steht das Projekt ThePod
+wirtschaftlich [geradezu unverschämt gesund](https://forum.gamespodcast.de/viewtopic.php?p=311953#p311953) da. Ohne dem
+Projekt den Erfolg, insbesondere den monetären Erfolg, absprechen zu wollen, ist es doch interessant, diese Aussage vor
+dem Hintergrund der offensichtlich schwachen Mitgliederwachstumskurve zu betrachten.
+
 - xx [^3]
 - yy [^4]
 - zz [^5]
-- thepod stagnations [^12]
 
 ## Fazit
 
