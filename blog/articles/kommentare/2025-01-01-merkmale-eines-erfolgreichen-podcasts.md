@@ -37,7 +37,7 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 * [Erfolgsbeispiele für wachsende Podcasts](#erfolgsbeispiele-für-wachsende-podcasts)
     * [OKCool](#okcool)
 * [Warum stagnierendes Wachstum gefährlich ist](#warum-stagnierendes-wachstum-gefährlich-ist)
-* [Wie kann hier nun ausgebrochen werden?](#wie-kann-hier-nun-ausgebrochen-werden)
+    * [Wie kann hier ausgebrochen werden?](#wie-kann-hier-ausgebrochen-werden)
 * [Fazit](#fazit)
 * [Quellen](#footnote-label)
 
@@ -460,7 +460,7 @@ nachzudenken, da sonst der Abstieg droht. Es sei darauf hingewiesen, dass die Wa
 Stagnation (die Zugänge entsprechen quantitativ in etwa den Abgängen) natürlich eine Option ist, wenn auch eine
 riskante.
 
-## Wie kann hier nun ausgebrochen werden?
+### Wie kann hier ausgebrochen werden?
 
 Ausgehend von den obigen Erkenntnissen sollten verschiedene Schritte unternommen werden, um sich weiterzuentwickeln.
 
