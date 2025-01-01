@@ -1,6 +1,6 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-/** @type {import('@docusaurus/types').Config} */
+
 const config = {
     title: 'Mindestens 10 Zeichen',
     tagline: 'M10Z',
@@ -26,6 +26,13 @@ const config = {
     i18n: {
         defaultLocale: 'de',
         locales: ['de'],
+    },
+
+    markdown: {
+        format: 'detect',
+        remarkRehypeOptions: {
+            footnoteLabel: 'Quellen',
+        },
     },
 
     // https://docusaurus.io/blog/releases/3.6
@@ -112,11 +119,11 @@ const config = {
                         limit: false,
                         copyright: `Copyright © ${new Date().getFullYear()} Mindestens Zehn Zeichen`,
                         createFeedItems: async (params) => {
-                            const {blogPosts, defaultCreateFeedItems, ...rest} = params;
+                            const {blogPosts, defaultCreateFeedItems, ...rest} = params
                             return defaultCreateFeedItems({
                                 blogPosts: blogPosts.filter((item, index) => index < 10),
                                 ...rest,
-                            });
+                            })
                         },
                     },
                 },
@@ -262,9 +269,9 @@ const config = {
                 ],
             },
             prism: {
-                additionalLanguages: ['groovy', 'java', 'rust', 'python'],
+                additionalLanguages: ['groovy', 'java', 'rust', 'python', 'bash', 'rust', 'yaml', 'csv'],
             },
         }),
-};
+}
 
-module.exports = config;
+module.exports = config

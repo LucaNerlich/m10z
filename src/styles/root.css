@@ -20,7 +20,12 @@
     --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 
     img {
-        filter: brightness(.9) contrast(1.2);
+        filter: brightness(.975) contrast(1.05);
+    }
+
+    img:hover, img:active {
+        /* Reset image colors on hover */
+        filter: brightness(1) contrast(1);
     }
 }
 
@@ -44,4 +49,12 @@ img:hover, img:active {
 div > img {
     border-radius: 5px;
     margin-bottom: 0 !important;
+}
+
+section.footnotes > ol > li > p {
+    margin: 0;
+}
+
+.markdown li > p {
+    margin: 0;
 }
