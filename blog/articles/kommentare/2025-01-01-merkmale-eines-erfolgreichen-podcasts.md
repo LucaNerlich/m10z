@@ -4,7 +4,7 @@ title: 'Merkmale eines erfolgreichen Podcasts'
 authors: [ luca ]
 tags: [ artikel, kommentar, luca ]
 image: /img/articles/podcastmerkmale.jpg
-date: 2025-01-01T10:00
+date: 2025-01-01T25:00
 draft: false
 ---
 
@@ -19,7 +19,6 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 
 ## Gliederung
 
-<!-- TOC -->
 * [Einleitung](#einleitung)
 * [Merkmale eines guten Podcasts](#merkmale-eines-guten-podcasts)
     * [*Content* auf drei Standbeinen](#content-auf-drei-standbeinen)
@@ -38,9 +37,9 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 * [Erfolgsbeispiele für wachsende Podcasts](#erfolgsbeispiele-für-wachsende-podcasts)
     * [OKCool](#okcool)
 * [Warum stagnierendes Wachstum gefährlich ist](#warum-stagnierendes-wachstum-gefährlich-ist)
+* [Wie kann hier nun ausgebrochen werden?](#wie-kann-hier-nun-ausgebrochen-werden)
 * [Fazit](#fazit)
 * [Quellen](#footnote-label)
-<!-- TOC -->
 
 ## Einleitung
 
@@ -461,19 +460,43 @@ nachzudenken, da sonst der Abstieg droht. Es sei darauf hingewiesen, dass die Wa
 Stagnation (die Zugänge entsprechen quantitativ in etwa den Abgängen) natürlich eine Option ist, wenn auch eine
 riskante.
 
+## Wie kann hier nun ausgebrochen werden?
+
+Ausgehend von den obigen Erkenntnissen sollten verschiedene Schritte unternommen werden, um sich weiterzuentwickeln.
+
+- Geht gedanklich einen Schritt zurück, betrachtet den Markt, die Konkurrenz und euer Produkt noch einmal.
+- Was bietet ihr an?
+- Was will der Kunde?
+- Was wird bereits abgedeckt?
+- Wo könnt ihr qualitativ in eine Lücke stoßen?
+    - Das geht oft Hand in Hand mit Innovation. Reduziere die Risikoaversion, probiere Neues aus, sei Mutig - das
+      beinhaltet auch das Absägen von Dingen die nicht funktionieren.
+- Konzentriere dich auf die Stärken deines Teams.
+    - Wer kann was?
+    - Werden Zeit, Energie und finanzielle Mittel effizient eingesetzt?
+        - Vor allem: Wo können Werkzeuge und organisierte Prozesse
+          in der Qualität des Endproduktes oder in der Herstellung unterstützen?
+- Seid transparent, kommuniziert Entscheidungen und Überlegungen. Involviert die Community, aber obacht vor der lauten
+  Minderheit
+
+*Der Kunde ist König* kommt nicht von irgendwo her.
+
 ## Fazit
 
 Ein erfolgreicher Podcast überzeugt durch eine klare Zielgruppendefinition, hochwertige und strukturierte Inhalte, sowie
 eine authentische Präsentation. Mit konsistenter Qualität und der Bereitschaft, auf das Feedback der Hörerschaft
 einzugehen, kann er nicht nur wachsen, sondern auch eine loyale Community aufbauen.
 
-Zusammenfassend die wichtigsten Punkte
+Zusammenfassend die wichtigsten Punkte:
 
 1. Es ist elementar, dass der produzierte Inhalt drei Typen von KonsumentInnen anspricht bzw. diesen zuzuordnen ist
     1. Leuchtturmproduktionen / besondere Inhalte / *Halo*-Content
     2. Alltägliche Produktionen / *Brot-und-Butter-Content*
     3. UnterhaltendeProduktionen, sowie in Teilen eine Community Integration
-2. todo
+2. Stagnation erkennen
+3. Entsprechend der Marktanalyse Veränderungen erlauben und provozieren
+    - *Challenge the status quo*
+4. Finde deine *Edge*, deine Nische, baue darauf auf, vertraue auf deine Stärken und entwickle dich entsprechend weiter
 
 Wenn du noch Nachfragen hast, oder dich mit anderen Podcast-Enthusiasten austauschen möchtest, schau doch gerne auf
 unserem [Discord-Server](https://discord.gg/tSpzEW4kpP) vorbei!
