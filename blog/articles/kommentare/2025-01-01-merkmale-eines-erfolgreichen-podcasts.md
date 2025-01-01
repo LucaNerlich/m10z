@@ -41,7 +41,7 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
     * [OKCool](#okcool)
 * [Warum stagnierendes Wachstum gefährlich ist](#warum-stagnierendes-wachstum-gefährlich-ist)
 * [Fazit](#fazit)
-
+* [Quellen](#footnote-label)
 <!-- TOC -->
 
 ## Einleitung
