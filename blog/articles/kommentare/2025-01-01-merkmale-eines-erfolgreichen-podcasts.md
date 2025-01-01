@@ -20,7 +20,6 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 ## Gliederung
 
 <!-- TOC -->
-
 * [Einleitung](#einleitung)
 * [Merkmale eines guten Podcasts](#merkmale-eines-guten-podcasts)
     * [*Content* auf drei Standbeinen](#content-auf-drei-standbeinen)
@@ -308,6 +307,11 @@ gewählt und somit die idealste Plattform für die Verbreitung des Podcasts genu
 
 Dies kann durch verschiedene Methoden erreicht werden, wie z.B:
 
+- Bekanntheitsmultiplikator
+    - Am *einfachsten* lässt sich ein Podcast- oder Medienprodukt verbreiten, wenn die eigene Person bereits bekannt
+      ist. Sei es durch frühere Jobs, die Teilnahme an anderen Projekten oder andere öffentliche Anerkennung. Das ist
+      natürlich leichter gesagt als getan, zum Teil *Captain Obvious* und lässt sich auf alle anderen Formen von
+      Produkten und Dienstleistungen übertragen.
 - Suchmaschinenoptimierung
     - Durch die optimale Verwendung von Keywords, Texten und Verlinkungen auf der Podcast-Seite erhöht sich die
       Wahrscheinlichkeit, dass der Podcast in Suchmaschinen gefunden wird.
