@@ -401,27 +401,30 @@ StayForever bedient die drei Hauptkategorien konsequent und in hoher Qualität, 
 
 ### [OKCool](https://okcool.space)
 
-Auch OKCool ist wieder ein Gewinner in Sachen Wachstum und Umsatz (wobei auch ThePod seinen Umsatz deutlich steigern
+Auch OKCool ist erneut ein Gewinner in Sachen Wachstum und Umsatz (wobei auch ThePod seinen Umsatz deutlich steigern
 konnte, da viele UnterstützerInnen zu einem Upgrade der Abonnementstufe bewegt werden konnten).
 
-TODO
-TODO
-TODO
+OKCool setzt von Anfang an klar und deutlich auf Diversität und Frauen "aus der Industrie". Zwei Themen, die so noch
+nicht behandelt wurden - werden die beiden Podcastplatzhirsche (ThePod und StayForever) doch von *alten weißen Männern*
+produziert. Dom kommt viel öfter ins Plaudern und erzählt einen *Schwank aus dem Alltag*. Das muss man nicht mögen, aber
+wenn, dann trifft es einen Nerv beim Publikum. OKCool ist hier spürbar emotionaler und empathischer als die Angebote der
+Vergleichsgruppe. Insgesamt ist es Dom hier also gelungen, zunächst eine Nische zu finden und dann genau darauf
+aufbauend das Angebot für die bestehende Zielgruppe entsprechend zu erweitern. In weiteren Schritten und Formaten hat
+OKCool dann die Zielgruppe erweitert.
 
-- klar emotionaler und empathischer als Vergleichsprodukte
-- persoehnlicherer Stil, gibt sich offener und geraet mehr ins plaudern -> gibt mehr von sich Preis
-- von Anfang an klar und deutlicher Fokus auf Diversitaet, Frauen "aus der Industrie"
-- starke Konsistenz
-- klarer Plan (von Anfang an verfolgt)
-    - Kernprodukt starten, ausbauen, Freie Journalisten mit ins Boot holen
-    - Leuchtturm Produkte (magazin, email-brief spiel)
+Dom verfolgt mit OKCool einen klaren und strukturierten Plan, den er auch frühzeitig kommuniziert hat. Der Kern des
+Podcasts bleibt öffentlich zugänglich, zusätzliche Inhalte werden monetarisiert. Durch weitere freie Journalisten wurde
+die intellektuelle Bandbreite erweitert und deren Community angezapft.
+
+Zuletzt hat Dom erfolgreich den Ansatz des limitierten *Print*-Magazins für AbonnentInnen von StayForever kopiert und
+konnte damit einen relevanten Teil seiner AbonnentInnen zum Upsell bewegen.
 
 1. Halo / Leuchtturmproduktionen
     - Print Magazin, OKCool History, "harte Themen" (crunch etc)
 2. *Bread and Butter* Inhalt
-    - super konstant OKCool trifft, Spiele Besprechungen, Spiele Vorstellungen / Teaser
+    - sehr konstant OKCool, Spiele Besprechungen, Spiele Vorstellungen
 3. Community Integration
-    - Fragen und Antworten Format
+    - Fragen und Antworten Format, E-Mail-Spiel
 
 ## Warum stagnierendes Wachstum gefährlich ist
 
