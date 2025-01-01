@@ -17,6 +17,33 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 
 <!--truncate-->
 
+## Gliederung
+
+<!-- TOC -->
+
+* [Gliederung](#gliederung)
+* [Einleitung](#einleitung)
+* [Merkmale eines guten Podcasts](#merkmale-eines-guten-podcasts)
+    * [*Content* auf drei Standbeinen](#content-auf-drei-standbeinen)
+        * [StayForever](#stayforever)
+        * [ThePod](#thepod)
+    * [Klar definierte Zielgruppe](#klar-definierte-zielgruppe)
+    * [Relevanter und gut aufbereiteter Inhalt](#relevanter-und-gut-aufbereiteter-inhalt)
+    * [Hohe Produktionsqualität](#hohe-produktionsqualität)
+    * [Charismatische Moderation und Gäste](#charismatische-moderation-und-gäste)
+    * [Konsistenz und Regelmäßigkeit](#konsistenz-und-regelmäßigkeit)
+    * [Interaktion mit der Hörerschaft](#interaktion-mit-der-hörerschaft)
+* [Wie beeinflussen diese Merkmale das Wachstum?](#wie-beeinflussen-diese-merkmale-das-wachstum)
+    * [Aufbau von Bindung und Loyalität vs parasoziale Beziehung](#aufbau-von-bindung-und-loyalität-vs-parasoziale-beziehung)
+    * [Mundpropaganda und soziale Netzwerke](#mundpropaganda-und-soziale-netzwerke)
+    * [Monetarisierungspotenziale](#monetarisierungspotenziale)
+* [Erfolgsbeispiele für wachsende Podcasts](#erfolgsbeispiele-für-wachsende-podcasts)
+    * [OKCool](#okcool)
+* [Warum stagnierendes Wachstum gefährlich ist](#warum-stagnierendes-wachstum-gefährlich-ist)
+* [Fazit](#fazit)
+
+<!-- TOC -->
+
 ## Einleitung
 
 Es ist schon fast Tradition (zumindest seit zwei Jahren), dass ich in der Weihnachtszeit einen größeren Beitrag für M10Z
