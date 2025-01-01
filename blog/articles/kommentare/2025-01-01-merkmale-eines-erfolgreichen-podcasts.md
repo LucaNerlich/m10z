@@ -434,9 +434,32 @@ wirtschaftlich [geradezu unverschämt gesund](https://forum.gamespodcast.de/view
 Projekt den Erfolg, insbesondere den monetären Erfolg, absprechen zu wollen, ist es doch interessant, diese Aussage vor
 dem Hintergrund der offensichtlich schwachen Mitgliederwachstumskurve zu betrachten.
 
-- xx [^3]
-- yy [^4]
-- zz [^5]
+Um das stagnierende Wachstum bewerten zu können, muss zunächst versucht werden, die möglichen Ursachen zu ermitteln.
+Grundsätzlich gibt es mehrere Möglichkeiten[^3]:
+
+**Selbstzufriedenheit oder Betriebsblindheit**: Steter Erfolg kann dazu führen, dass das gemacht wird, *was immer schon
+funktioniert hat*. Es wird der bereits etablierten Struktur gefolgt um Aufwand oder Risiko zu vermeiden.
+
+**Keine oder geringe Marktübersicht**: Wird nicht konsequent über den Tellerrand geschaut, kann dies dazu führen, dass
+das eigene Produkt oder die eigene Dienstleistung *von Links überholt* wird, weil marktkritische Entwicklungen übersehen
+wurden[^4]. Im großen Stil zu sehen bei, klassisch, Kodak oder in Deutschland Galeria Kaufhof. Als Erfolgsbeispiel
+könnte der Produktpivot der Buchhandelskette Thalia gelten: in einem zunehmend dominierenden Onlinehandel hat Thalia
+massiv auf Merchandising sowie Nicht-Buch-Produkte umgeschwenkt, um mehr Käufer in die Läden zu locken.
+Im Bereich der Podcasts könnte dies übertragbar sein auf die Auswahl der Themen, deren Vielfalt, sowie der Mitwirkenden
+oder die veränderten Konsumgewohnheiten der Kunden - sei es in technischer Hinsicht oder in der Erwartungshaltung an die
+Qualität, Quantität etc.
+
+Schließlich sind **Technische- und Managementaspekte** zu berücksichtigen. Erstere können von außen diskutiert werden,
+letztere oft erst, *wenn es zu spät ist*. Personelle Schwierigkeiten sind immer eine Herausforderung - und sprengen hier
+den Rahmen. Technische Probleme hingegen spiegeln sich in mangelnder Sorgfalt wider - als Beispiele seien hier der
+eigene Internetauftritt, die Verfügbarkeit des Produkts (Archiv etc.) oder die Produktdatenpflege (Metadaten etc.)
+genannt. Solche Dinge spiegeln oft eine Haltung (Sorgfalt und Präsentation der eigenen Arbeit) der Anbieter wider, die
+nicht jedem Käufer/jeder Käuferin gefällt[^5].
+
+Wenn einer oder mehrere dieser Faktoren den Erfolg bremsen, ist es unerlässlich, über mögliche Veränderungen
+nachzudenken, da sonst der Abstieg droht. Es sei darauf hingewiesen, dass die Wanderung auf dem schmalen Grat der
+Stagnation (die Zugänge entsprechen quantitativ in etwa den Abgängen) natürlich eine Option ist, wenn auch eine
+riskante.
 
 ## Fazit
 
