@@ -4,7 +4,7 @@ title: 'Merkmale eines erfolgreichen Podcasts'
 authors: [ luca ]
 tags: [ artikel, kommentar, luca ]
 image: /img/articles/podcastmerkmale.jpg
-date: 2025-01-01T25:00
+date: 2025-01-01T20:15
 draft: false
 ---
 
