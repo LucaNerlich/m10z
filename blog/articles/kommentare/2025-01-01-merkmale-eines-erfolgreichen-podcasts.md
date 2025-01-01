@@ -346,9 +346,8 @@ haben.
 
 Viel weiter möchte ich hier aber nicht drauf eingehen, da mir eben jüngst StayForever zuvorgekommen ist, mit einer
 Detailtiefe, die ich mangels Datenlage gar nicht leisten kann – bitte lest selber im sehr empfehlenswerten Newsletter '
-Insider' nach. Zu finden [hier im Archiv](https://www.stayforever.de/newsletter-anmeldung/).
-
-TODO TODO LINK ZUM NEWSLETTER NACHTRAGE - https://www.stayforever.de/newsletter-anmeldung/
+Insider' nach. Zu
+finden [hier im Archiv](https://sendy.stayforever.de/w/763S763V2PT763892NTC7uJ91XjZZQ/xj6VRaoSsMIX6gJVGFGSUA/0QdRJu3jj763z8921iaYFgoggA).
 
 StayForever selbst führt ihren Rekorderfolg direkt, jedoch nicht ausschließlich, aber mit Schwerpunkt auf ihre
 Aktivitäten außerhalb des Podcasts zurück:
