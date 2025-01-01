@@ -265,7 +265,7 @@ ein kreatives Produkt und lässt sich nicht in jeder Hinsicht auf harte Kennzahl
 
 ### Aufbau von Bindung und Loyalität vs parasoziale Beziehung
 
-Wenn klar ist, welche Personen [der Zielgruppe](#klar-definierte-Zielgruppe) entsprechen[^6], können Inhalte für sie
+Wenn klar ist, welche Personen [der Zielgruppe](#klar-definierte-zielgruppe) entsprechen[^6], können Inhalte für sie
 geplant, produziert und im Dialog verfeinert werden. Es ist wichtig zu beachten, dass 'Inhalte verbreiten' nicht
 gleichbedeutend mit dem Aufbau einer Community ist. Ersteres ist praktisch ohne Konsumenten möglich, letzteres lebt
 durch sie. Durch Interaktion, Kommunikation und Nähe entsteht eine parasoziale Beziehung: ein einseitiger Effekt der
