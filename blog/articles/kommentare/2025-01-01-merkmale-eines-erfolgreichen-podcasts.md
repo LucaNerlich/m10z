@@ -346,7 +346,7 @@ haben.
 
 Viel weiter möchte ich hier aber nicht drauf eingehen, da mir eben jüngst StayForever zuvorgekommen ist, mit einer
 Detailtiefe, die ich mangels Datenlage gar nicht leisten kann – bitte lest selber im sehr empfehlenswerten Newsletter '
-Insider' nach. Zu finden [hier im Archiv]().
+Insider' nach. Zu finden [hier im Archiv](https://www.stayforever.de/newsletter-anmeldung/).
 
 TODO TODO LINK ZUM NEWSLETTER NACHTRAGE - https://www.stayforever.de/newsletter-anmeldung/
 
