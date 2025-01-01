@@ -405,11 +405,14 @@ konnte, da viele UnterstützerInnen zu einem Upgrade der Abonnementstufe bewegt 
 
 OKCool setzt von Anfang an klar und deutlich auf Diversität und Frauen "aus der Industrie". Zwei Themen, die so noch
 nicht behandelt wurden - werden die beiden Podcastplatzhirsche (ThePod und StayForever) doch von *alten weißen Männern*
-produziert. Dom kommt viel öfter ins Plaudern und erzählt einen *Schwank aus dem Alltag*. Das muss man nicht mögen, aber
+produziert.
+
+[Dom](https://www.instagram.com/dompotatoe) kommt viel öfter ins Plaudern und erzählt einen *Schwank aus dem Alltag*.
+Das muss man nicht mögen, aber
 wenn, dann trifft es einen Nerv beim Publikum. OKCool ist hier spürbar emotionaler und empathischer als die Angebote der
 Vergleichsgruppe. Insgesamt ist es Dom hier also gelungen, zunächst eine Nische zu finden und dann genau darauf
 aufbauend das Angebot für die bestehende Zielgruppe entsprechend zu erweitern. In weiteren Schritten und Formaten hat
-OKCool dann die Zielgruppe erweitert.
+OKCool dann die Zielgruppe ausgebaut.
 
 Dom verfolgt mit OKCool einen klaren und strukturierten Plan, den er auch frühzeitig kommuniziert hat. Der Kern des
 Podcasts bleibt öffentlich zugänglich, zusätzliche Inhalte werden monetarisiert. Durch weitere freie Journalisten wurde
