@@ -436,7 +436,10 @@ wirtschaftlich [geradezu unverschämt gesund](https://forum.gamespodcast.de/view
 Projekt den Erfolg, insbesondere den monetären Erfolg, absprechen zu wollen, ist es doch interessant, diese Aussage vor
 dem Hintergrund der offensichtlich schwachen Mitgliederwachstumskurve zu betrachten.
 
-Um das stagnierende Wachstum bewerten zu können, muss zunächst versucht werden, die möglichen Ursachen zu ermitteln.
+Zu beachten ist: Die Aussage kann sich ebenso auf die Gewinnmarge oder den positiven CashFlow beziehen – der Inhalt
+dieses Beitrags, bzw. die Anmerkungen zu stagnierendem Wachstum, bezieht sich nicht spezifisch auf ThePod.
+
+Um ein stagnierende Wachstum bewerten zu können, muss zunächst versucht werden, die möglichen Ursachen zu ermitteln.
 Grundsätzlich gibt es mehrere Möglichkeiten[^3]:
 
 **Selbstzufriedenheit oder Betriebsblindheit**: Steter Erfolg kann dazu führen, dass das gemacht wird, *was immer schon
