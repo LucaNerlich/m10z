@@ -21,7 +21,6 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 
 <!-- TOC -->
 
-* [Gliederung](#gliederung)
 * [Einleitung](#einleitung)
 * [Merkmale eines guten Podcasts](#merkmale-eines-guten-podcasts)
     * [*Content* auf drei Standbeinen](#content-auf-drei-standbeinen)
@@ -351,7 +350,8 @@ Da auch ein Podcast selten von Luft und Liebe lebt, ist eine Monetarisierung une
 
 ## Erfolgsbeispiele für wachsende Podcasts
 
-podcastgrowth study[^1]
+Podcasts sind auch 2025 weltweit ein stark wachsender Markt[^1]. Auf dem deutschen Markt setzt sich dieser Trend
+projektübergreifend fort - interessant ist jedoch, welche Projekte aus welchen Gründen davon profitieren.
 
 Für Projekte, die sich über [Patreon](https://www.patreon.com) (teil-)finanzieren, gibt es den
 Dienst [Graphtreon](https://graphtreon.com) - dieser greift auf die Daten der historischen Entwicklung zu und stellt
@@ -371,7 +371,7 @@ Ablesen lässt sich klare [Stagnation im Wachstum bei ThePod](#warum-stagnierend
 entsprechend gleichbleibender Wachstumskurve, wird SF in wenigen Monaten die Krone der Abonenntenzahlen übernommen
 haben.
 
-Viel weiter möchte ich hier aber nicht drauf eingehen, da mir eben jüngst StayForever zuvorgekommen ist, mit einer
+Viel weiter möchte ich hier aber nicht drauf eingehen, da mir jüngst StayForever zuvorgekommen ist, mit einer
 Detailtiefe, die ich mangels Datenlage gar nicht leisten kann – bitte lest selber im sehr empfehlenswerten Newsletter '
 Insider' nach. Zu
 finden [hier im Archiv](https://sendy.stayforever.de/w/763S763V2PT763892NTC7uJ91XjZZQ/xj6VRaoSsMIX6gJVGFGSUA/0QdRJu3jj763z8921iaYFgoggA).
