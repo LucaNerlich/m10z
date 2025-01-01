@@ -358,23 +358,25 @@ Aktivitäten außerhalb des Podcasts zurück:
 
 Zwei von Drei sind direkte [Community Interaktionen](#interaktion-mit-der-hörerschaft). Ist das ein Zeichen?
 
-### [StayForever](https://www.stayforever.de)
-
-- StayForever
-    - siehe [^11]
-
-[Siehe hier](#content-auf-drei-standbeinen)
+StayForever bedient die drei Hauptkategorien konsequent und in hoher Qualität, der Zielgruppe passend:
 
 1. Halo / Leuchtturmproduktionen
-    - Physische Goodies, *print* magazin
-    - seltene aber aufwaendige Formate: "Die zweite Reihe", "Ein Spiel und seine Geschichte"
+    - Physische Goodies, Hochwertiges *Print*-Magazin
+    - Seltene, aber aufwendige Formate: "Die zweite Reihe", "Ein Spiel und seine Geschichte"
 2. *Bread and Butter* Inhalt
     - SF, SSF, SFS
-   - merch+
+   - Merchandising
 3. Community Integration
     - Quiz, Umfragen, Abstimmungen, Fragen und Antworten Format
 
 ### [OKCool](https://okcool.space)
+
+Auch OKCool ist wieder ein Gewinner in Sachen Wachstum und Umsatz (wobei auch ThePod seinen Umsatz deutlich steigern
+konnte, da viele UnterstützerInnen zu einem Upgrade der Abonnementstufe bewegt werden konnten).
+
+TODO
+TODO
+TODO
 
 - klar emotionaler und empathischer als Vergleichsprodukte
 - persoehnlicherer Stil, gibt sich offener und geraet mehr ins plaudern -> gibt mehr von sich Preis
@@ -383,8 +385,6 @@ Zwei von Drei sind direkte [Community Interaktionen](#interaktion-mit-der-hörer
 - klarer Plan (von Anfang an verfolgt)
     - Kernprodukt starten, ausbauen, Freie Journalisten mit ins Boot holen
     - Leuchtturm Produkte (magazin, email-brief spiel)
-
-[Siehe hier](#content-auf-drei-standbeinen)
 
 1. Halo / Leuchtturmproduktionen
     - Print Magazin, OKCool History, "harte Themen" (crunch etc)
