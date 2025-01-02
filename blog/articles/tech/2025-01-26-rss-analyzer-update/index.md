@@ -19,13 +19,26 @@ Die Auswertungen sind hier zu finden: [https://rssanalyzer.org](https://rssanaly
 
 <!--truncate-->
 
+Nennenswerte Upgrades:
+
+1. Das Tool hat jetzt eine eigene [Domain](https://rssanalyzer.org)
+2. Das Backend wurde in Java leserlicher und erweiterbarer neu geschrieben
+3. Das Frontend ist jetzt optisch moderner und unterstuetzt mobile Endgeräte
+4. Die Kategorieauswertung wird zusaetzlich in Form eines zweidimensionalen Balkendiagrams praesentiert
+
+![img.png](img.png)
+> Das neue UI
+
+![img_1.png](img_1.png)
+> Die Auflistung aller Episoden pro Kategorie und Jahr. Oeffentliche Episoden sind ebenfalls direkt zur MP3 Datei
+> verlinkt
+
+
+Nachfolgend die zentrale Klasse des Backends
+
 ```java
 public static void main(String[] args) throws IOException {
-        final StopWatch stopWatch = StopWatch.createStarted();
-        logger.info("Starting rss-analyzer");
-
         final Config config = yamlMapper.readValue(new File("src/main/resources/config.yaml"), Config.class);
-        final CacheHandler cacheHandler = new FileSystemCache(config);
 
         try {
             // Iterate over RSS Feeds and compute serializable result record
@@ -38,11 +51,6 @@ public static void main(String[] args) throws IOException {
                     new CSVTransformer(),
                     new YamlTransformer()
             );
-        } finally {
-            cacheHandler.commit();
-            stopWatch.stop();
-            logger.info("Stopping rss-analyzer");
-            logger.info("Elapsed time: " + stopWatch.getDuration().toMillis() + "ms");
         }
     }
 ```
