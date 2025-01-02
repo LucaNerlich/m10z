@@ -11,7 +11,7 @@ image: /img/tech/sundayprojects/rssanalyzer.jpg
 'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine
 Zeit verbringe.
 
-Diesmal mit einem Update des [RSS Analyzer](/sunday-projects-rss-analyzer).
+Diesmal mit einem Update zum Post des [RSS Analyzer](/sunday-projects-rss-analyzer) aus 2023.
 
 Die Auswertungen sind hier zu finden: [https://rssanalyzer.org](https://rssanalyzer.org/mindestens10zeichen).
 
