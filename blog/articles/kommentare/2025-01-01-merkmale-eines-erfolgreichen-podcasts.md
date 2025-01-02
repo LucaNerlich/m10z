@@ -362,6 +362,9 @@ diese ansprechend in Diagrammen dar. Für Steady ist dieser Datenzugriff leider 
 die gewünschten Daten manuell zu erheben - da ich diese leider nicht habe, bzw. keinen Datensatz kenne, kann ich mich
 nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehen.
 
+(Update 2024-01-03: Auch im ThePod Forum wird wieder fleißig über das
+Thema [Wachstum und Produktpflege diskutiert](https://forum.gamespodcast.de/viewtopic.php?p=313249#p313249))
+
 StayForever hat folgende Statistiken veröffentlicht:
 ![podcastabos.png](/img/articles/podcastabos.png)
 > SF Insider: Dezember 2024
