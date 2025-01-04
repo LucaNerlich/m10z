@@ -37,7 +37,7 @@ Anlass nehmen, hier einen kleinen Kommentar zu verfassen.
 * [Erfolgsbeispiele für wachsende Podcasts](#erfolgsbeispiele-für-wachsende-podcasts)
     * [OKCool](#okcool)
 * [Warum stagnierendes Wachstum gefährlich ist](#warum-stagnierendes-wachstum-gefährlich-ist)
-* [Wie kann hier nun ausgebrochen werden?](#wie-kann-hier-nun-ausgebrochen-werden)
+    * [Wie kann hier ausgebrochen werden?](#wie-kann-hier-ausgebrochen-werden)
 * [Fazit](#fazit)
 * [Quellen](#footnote-label)
 
@@ -265,7 +265,7 @@ ein kreatives Produkt und lässt sich nicht in jeder Hinsicht auf harte Kennzahl
 
 ### Aufbau von Bindung und Loyalität vs parasoziale Beziehung
 
-Wenn klar ist, welche Personen [der Zielgruppe](#klar-definierte-Zielgruppe) entsprechen[^6], können Inhalte für sie
+Wenn klar ist, welche Personen [der Zielgruppe](#klar-definierte-zielgruppe) entsprechen[^6], können Inhalte für sie
 geplant, produziert und im Dialog verfeinert werden. Es ist wichtig zu beachten, dass 'Inhalte verbreiten' nicht
 gleichbedeutend mit dem Aufbau einer Community ist. Ersteres ist praktisch ohne Konsumenten möglich, letzteres lebt
 durch sie. Durch Interaktion, Kommunikation und Nähe entsteht eine parasoziale Beziehung: ein einseitiger Effekt der
@@ -362,6 +362,9 @@ diese ansprechend in Diagrammen dar. Für Steady ist dieser Datenzugriff leider 
 die gewünschten Daten manuell zu erheben - da ich diese leider nicht habe, bzw. keinen Datensatz kenne, kann ich mich
 nur auf mündliche Aussagen [^11] [^12] und persönliche Erfahrungswerte beziehen.
 
+(Update 2024-01-03: Auch im ThePod Forum wird wieder fleißig über das
+Thema [Wachstum und Produktpflege diskutiert](https://forum.gamespodcast.de/viewtopic.php?p=313249#p313249))
+
 StayForever hat folgende Statistiken veröffentlicht:
 ![podcastabos.png](/img/articles/podcastabos.png)
 > SF Insider: Dezember 2024
@@ -377,7 +380,7 @@ haben.
 Viel weiter möchte ich hier aber nicht drauf eingehen, da mir jüngst StayForever zuvorgekommen ist, mit einer
 Detailtiefe, die ich mangels Datenlage gar nicht leisten kann – bitte lest selber im sehr empfehlenswerten Newsletter '
 Insider' nach. Zu
-finden [hier im Archiv](https://sendy.stayforever.de/w/763S763V2PT763892NTC7uJ91XjZZQ/xj6VRaoSsMIX6gJVGFGSUA/0QdRJu3jj763z8921iaYFgoggA).
+finden [hier im Archiv](https://sendy.stayforever.de/w/0QdRJu3jj763z8921iaYFgoggA).
 
 StayForever selbst führt ihren Rekorderfolg direkt, jedoch nicht ausschließlich, aber mit Schwerpunkt auf ihre
 Aktivitäten außerhalb des Podcasts zurück:
@@ -405,11 +408,14 @@ konnte, da viele UnterstützerInnen zu einem Upgrade der Abonnementstufe bewegt 
 
 OKCool setzt von Anfang an klar und deutlich auf Diversität und Frauen "aus der Industrie". Zwei Themen, die so noch
 nicht behandelt wurden - werden die beiden Podcastplatzhirsche (ThePod und StayForever) doch von *alten weißen Männern*
-produziert. Dom kommt viel öfter ins Plaudern und erzählt einen *Schwank aus dem Alltag*. Das muss man nicht mögen, aber
+produziert.
+
+[Dom](https://www.instagram.com/dompotatoe) kommt viel öfter ins Plaudern und erzählt einen *Schwank aus dem Alltag*.
+Das muss man nicht mögen, aber
 wenn, dann trifft es einen Nerv beim Publikum. OKCool ist hier spürbar emotionaler und empathischer als die Angebote der
 Vergleichsgruppe. Insgesamt ist es Dom hier also gelungen, zunächst eine Nische zu finden und dann genau darauf
 aufbauend das Angebot für die bestehende Zielgruppe entsprechend zu erweitern. In weiteren Schritten und Formaten hat
-OKCool dann die Zielgruppe erweitert.
+OKCool dann die Zielgruppe ausgebaut.
 
 Dom verfolgt mit OKCool einen klaren und strukturierten Plan, den er auch frühzeitig kommuniziert hat. Der Kern des
 Podcasts bleibt öffentlich zugänglich, zusätzliche Inhalte werden monetarisiert. Durch weitere freie Journalisten wurde
@@ -433,7 +439,10 @@ wirtschaftlich [geradezu unverschämt gesund](https://forum.gamespodcast.de/view
 Projekt den Erfolg, insbesondere den monetären Erfolg, absprechen zu wollen, ist es doch interessant, diese Aussage vor
 dem Hintergrund der offensichtlich schwachen Mitgliederwachstumskurve zu betrachten.
 
-Um das stagnierende Wachstum bewerten zu können, muss zunächst versucht werden, die möglichen Ursachen zu ermitteln.
+Zu beachten ist: Die Aussage kann sich ebenso auf die Gewinnmarge oder den positiven CashFlow beziehen – der Inhalt
+dieses Beitrags, bzw. die Anmerkungen zu stagnierendem Wachstum, bezieht sich nicht spezifisch auf ThePod.
+
+Um ein stagnierende Wachstum bewerten zu können, muss zunächst versucht werden, die möglichen Ursachen zu ermitteln.
 Grundsätzlich gibt es mehrere Möglichkeiten[^3]:
 
 **Selbstzufriedenheit oder Betriebsblindheit**: Steter Erfolg kann dazu führen, dass das gemacht wird, *was immer schon
@@ -460,7 +469,7 @@ nachzudenken, da sonst der Abstieg droht. Es sei darauf hingewiesen, dass die Wa
 Stagnation (die Zugänge entsprechen quantitativ in etwa den Abgängen) natürlich eine Option ist, wenn auch eine
 riskante.
 
-## Wie kann hier nun ausgebrochen werden?
+### Wie kann hier ausgebrochen werden?
 
 Ausgehend von den obigen Erkenntnissen sollten verschiedene Schritte unternommen werden, um sich weiterzuentwickeln.
 
