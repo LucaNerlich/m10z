@@ -29,9 +29,9 @@ Nennenswerte Upgrades:
 ![img.png](img.png)
 > Das neue UI
 
-![img_1.png](img_1.png)
-> Die Auflistung aller Episoden pro Kategorie und Jahr. Oeffentliche Episoden sind ebenfalls direkt zur MP3 Datei
-> verlinkt
+![img_2.png](img_2.png)
+> Die Auflistung aller Episoden pro Kategorie und Jahr. Öffentliche Episoden sind ebenfalls direkt zur MP3 Datei
+> verlinkt. Zusätzlich sind die Dateigröße, sowie die Episodendauer angegeben.
 
 
 Nachfolgend die zentrale Klasse des Backends
