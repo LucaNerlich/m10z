@@ -1,6 +1,6 @@
 ---
-slug: sunday-projects-rss-analyzer-update-1
-title: 'Sunday-Projects – RSS Analyzer Update 1'
+slug: sunday-projects-rss-analyzer-update
+title: 'Sunday-Projects – RSS Analyzer Update'
 date: 2025-01-26T12:00
 authors: [ luca ]
 tags: [ artikel, tech, sunday-projects, luca ]
@@ -26,31 +26,36 @@ Nennenswerte Upgrades:
 3. Das Frontend ist jetzt optisch moderner und unterstuetzt mobile Endgeräte
 4. Die Kategorieauswertung wird zusaetzlich in Form eines zweidimensionalen Balkendiagrams praesentiert
 
+---
 ![img.png](img.png)
 > Das neue UI
-
+---
 ![img_2.png](img_2.png)
 > Die Auflistung aller Episoden pro Kategorie und Jahr. Öffentliche Episoden sind ebenfalls direkt zur MP3 Datei
 > verlinkt. Zusätzlich sind die Dateigröße, sowie die Episodendauer angegeben.
+---
 
-
-Nachfolgend die zentrale Klasse des Backends
-
-```java
+```java title="Main.java"
 public static void main(String[] args) throws IOException {
-        final Config config = yamlMapper.readValue(new File("src/main/resources/config.yaml"), Config.class);
-
-        try {
-            // Iterate over RSS Feeds and compute serializable result record
-            final Result result = computeResult(config, new StaticCategoryMatcher(config));
-
-            // Register Export Transformer
-            new RssExporter(config).export(
-                    result,
-                    new JsonTransformer(),
-                    new CSVTransformer(),
-                    new YamlTransformer()
-            );
-        }
+    // Reads config file
+    final Config config = yamlMapper.readValue(new File("src/main/resources/config.yaml"), Config.  
+    try {
+        // Iterate over RSS Feeds and compute serializable result record
+        final Result result = computeResult(
+            config, 
+            new StaticCategoryMatcher(config)
+    
+        // Register Export Transformer
+        new RssExporter(config).export(
+                result,
+                new JsonTransformer(),
+                new CSVTransformer(),
+                new YamlTransformer()
+        );
     }
+}
 ```
+
+Wenn ihr weitere Idee oder Podcasts habt, die ich aufnehmen kann, meldet euch gerne bei mir oder auf unserem Discord!
+
+Luca
