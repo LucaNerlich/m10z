@@ -8,11 +8,12 @@ draft: false
 image: /img/tech/sundayprojects/ollama_logo.png
 ---
 
+
 import Image from '@theme/IdealImage'
 
 'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
 
-Anscheinend ist es schon Tradition, dass irgendwie ein paar Projekte sich mit AI oder ähnlichem beschäftigen, nachdem ich bereits Transkriptionen gemacht habe und @tilmobaxter seine Bilder mit AI generiert. Nun widme ich mich darum, wie es mir sehr viel Arbeit ersparen und meine Bildersammlung an Qualität gewinnen kann.  
+Anscheinend ist es schon Tradition, dass irgendwie ein paar Projekte sich mit AI oder ähnlichem beschäftigen, nachdem ich bereits Transkriptionen gemacht habe und @tilmobaxter seine Bilder mit AI generiert. Nun widme ich mich darum, wie es mir sehr viel Arbeit ersparen und meine Bildersammlung an Qualität gewinnen kann.
 
 <Image img={require('/static/img/tech/sundayprojects/ollama_logo.png')} />
 
@@ -50,7 +51,7 @@ Für die Schlagwörter: "Provide a minimum of 10 precise keywords separated by c
 Weil mir das gerade beim Schreiben auffällt: Ich habe jetzt alles in Englisch gemacht, aber die Modelle können auch andere Sprachen, insofern könnten die Prompts auch auf Deutsch sein und erhält dann auch deutsche Antworten. Oder Spanisch, oder Französisch …
 
 ## Und wie sieht dein Skript aus?
-Den Code seht ihr am Ende dieses Beitrags. Aber im Prinzip funktioniert der Code folgendermaßen: 
+Den Code seht ihr am Ende dieses Beitrags. Aber im Prinzip funktioniert der Code folgendermaßen:
 
 1. Scan den Pfad zu den Fotos und erstelle eine Liste mit allen jpeg-, jpg- und png-Dateien.
 2. Schleife durch alle Bilder.
@@ -62,7 +63,7 @@ Den Code seht ihr am Ende dieses Beitrags. Aber im Prinzip funktioniert der Code
 4. Schreibe "Yay" wenn das Skript fertig durchgelaufen ist.
 
 ## Kurzer Vergleich der Ergebnisse
-Ich habe ein einfaches Foto von einem Holzsteg am See bei Dämmerung (bläuliches Licht) für den Vergleich verwendet. Der Steg befindet sich dabei im rechten Drittel des Bildausschnitts. Es ist also gar nicht so viel oder ein komplexes Bild und abgesehen vom gegenüberliegenden Ufer mit etwas Nebel gibt es auch nicht viel mehr auf dem Foto. Das Foto zeige ich übrigens absichtlich nicht, damit nur das Ergebnis zählt. Vielleicht lade ich zu einem späteren Zeitpunkt noch welche hoch, die etwas mehr zeigen. 
+Ich habe ein einfaches Foto von einem Holzsteg am See bei Dämmerung (bläuliches Licht) für den Vergleich verwendet. Der Steg befindet sich dabei im rechten Drittel des Bildausschnitts. Es ist also gar nicht so viel oder ein komplexes Bild und abgesehen vom gegenüberliegenden Ufer mit etwas Nebel gibt es auch nicht viel mehr auf dem Foto. Das Foto zeige ich übrigens absichtlich nicht, damit nur das Ergebnis zählt. Vielleicht lade ich zu einem späteren Zeitpunkt noch welche hoch, die etwas mehr zeigen.
 
 | Model             | Anzahl Parameter | Titel                                                                                                                                | Beschreibung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 |-------------------|------------------|--------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -72,7 +73,7 @@ Ich habe ein einfaches Foto von einem Holzsteg am See bei Dämmerung (bläuliche
 | llava-phi3        | 3.8B             | A wooden pier extends into calm water, with two poles on either side of it. The sky is overcast and there are birds in the distance. | This image captures a serene scene at a lake. The main focus is a wooden pier that extends into the calm, light blue water. The pier, appearing sturdy and well-maintained, has two poles on either end, providing support against the gentle waves of the lake. A small railing runs along the side of the pier, ensuring safety for those who venture out onto it. The sky above is a light blue color, suggesting a clear day with good weather. In the distance, you can see mountains rising against the horizon, adding depth and grandeur to the scene. The overall image evokes a sense of tranquility and peacefulness, as if inviting viewers to step onto the pier and enjoy the beauty of nature.                                                                                                                                                                                                                                                                                                                                                                                                |
 
 ## Der Code
-Es müssen eigentlich nur die Konstanten angepasst werden. `OLLAMA_URL` muss nicht angerührt werden, aber wenn man mehrere Modelle parallel laufen lässt, dann ergibt es Sinn zumindest den Port abzuändern, damit es nicht zu Konflikten kommt. 
+Es müssen eigentlich nur die Konstanten angepasst werden. `OLLAMA_URL` muss nicht angerührt werden, aber wenn man mehrere Modelle parallel laufen lässt, dann ergibt es Sinn zumindest den Port abzuändern, damit es nicht zu Konflikten kommt.
 
 ```python
 import base64
@@ -104,7 +105,7 @@ FORCE_REPROCESS = True
 def convert_to_base64(pil_image):
     buffered = BytesIO()
     rgb_im = pil_image.convert('RGB')
-    rgb_im.save(buffered, format="JPEG") 
+    rgb_im.save(buffered, format="JPEG")
     img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
     return img_str
 
@@ -115,7 +116,7 @@ def process_image(image_path, prompt):
     #mymodel = Ollama(model="llava-llama3", base_url=OLLAMA_URL, temperature=0)
     mymodel = Ollama(model="x/llama3.2-vision", base_url=OLLAMA_URL, temperature=0)
     #mymodel = Ollama(model="llava-phi3", base_url=OLLAMA_URL, temperature=0)
-    
+
     try:
         # Read the image
         print(f"Processing image '{image_path}'...")
@@ -134,7 +135,7 @@ def process_image(image_path, prompt):
 
         # Print LLama:v1.6 response
         print(response)
-        
+
         # Check if XMP sidecar file exists
         xmp_path = Path(image_path).with_suffix('.xmp')
         if os.path.exists(xmp_path):
@@ -147,22 +148,22 @@ def process_image(image_path, prompt):
                 tag = "-XMP:Title"
             with exiftool.ExifTool() as et:
                 et.execute(f"{tag}={response}", str(xmp_path))
-                
+
         else:
             print(f"XMP sidecar file not found for {image_path}. Skipping.")
-            
+
     except Exception as e:
         print(f"Error processing image {image_path}: {e}")
 
 def is_image_processed(image_path):
     # Generate the path to the XMP sidecar file
     xmp_path = Path(image_path).with_suffix('.xmp')
-    
+
     # Check if the XMP sidecar file exists
     if not xmp_path.exists():
         print(f"XMP sidecar file '{xmp_path}' not found.")
         return False
-    
+
     # Check if the custom EXIF tag exists in the XMP sidecar file
     with exiftool.ExifToolHelper() as et:
         # Get the tags from the XMP sidecar file
@@ -171,7 +172,7 @@ def is_image_processed(image_path):
 
         # Get the first (and presumably only) file's tag data
         tag_data = tags[0] if tags else {}
-        
+
         # Check if any of the specified fields are empty
         for tag in lst_tags:
             value = tag_data.get(tag)
@@ -189,7 +190,7 @@ if __name__ == "__main__":
     print("Collecting file list...")
     for ext in FILE_EXTENSIONS:
         all_files.extend(glob.glob(SOURCE_DIR + '/**/' + ext, recursive=True))
-        
+
     # Iterate through files with a progress bar
     for filepath in tqdm(all_files, desc="Processing images"):
         # Skip processing if the image is already tagged
@@ -200,7 +201,7 @@ if __name__ == "__main__":
         process_image(filepath, PROMPT_TITLE)
         process_image(filepath, PROMPT_DESCRIPTION)
         process_image(filepath, PROMPT_KEYWORDS)
-    
+
     print("Finished. Yay!")
 ```
 
@@ -208,4 +209,4 @@ if __name__ == "__main__":
 
 Ciao Kakao, Adrian
 
-Meldet euch bei Fragen gerne auf [unserem Discord](https://discord.gg/bYPsrFxxtu).
+Meldet euch bei Fragen gerne auf [unserem Discord](https://discord.gg/cTkb5FMA84).
