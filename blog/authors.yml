@@ -1,8 +1,23 @@
+# social options:
+# twitter:
+# linkedin:
+# github:
+# stackoverflow:
+# threads:
+# bluesky:
+# instagram:
+# twitch:
+# youtube:
+# mastodon:
 luca:
   description: webmaster
   image_url: https://m10z.picnotes.de/avatars/luca.jpg
   name: Luca
   url: /tags/luca
+  socials:
+    bluesky: https://bsky.app/profile/lnhh.bsky.social
+    instagram: https://www.instagram.com/lnhh00
+    github: https://github.com/LucaNerlich
 kkuez:
   description: (he / him) // M10Z-MitHost
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/kkuez/64/3415_2.png
