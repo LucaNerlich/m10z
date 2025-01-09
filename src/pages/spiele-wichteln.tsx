@@ -66,6 +66,19 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         setPairs(pairs);
     }
 
+    function copyToClipboard(ref: React.RefObject<HTMLPreElement | HTMLUListElement>) {
+        if (ref.current) {
+            const textToCopy = ref.current.textContent;
+            if (textToCopy) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    console.info('Inhalte wurden in die Zwischenablage kopiert!');
+                }).catch(err => {
+                    console.error('Fehler beim Kopieren in die Zwischenablage:', err);
+                });
+            }
+        }
+    }
+
     return (
         <Layout title='Spiele-Wichteln' description='Web App zum Auslosen von Wichteln-Paaren'>
             <div className='wrapper'>
@@ -136,7 +149,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                                     [{pair.receiver.name}]({pair.receiver.link})</div>,
                             )}
                         </pre>
-                        <button>In Zwischenablage kopieren</button>
+                        <button onClick={() => copyToClipboard(discourseRef)}>In Zwischenablage kopieren</button>
                     </blockquote>
                 </details>
 
@@ -153,6 +166,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                             )}
                             [/list]
                         </pre>
+                        <button onClick={() => copyToClipboard(phpRef)}>In Zwischenablage kopieren</button>
                     </blockquote>
                 </details>
 
@@ -169,12 +183,13 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                                 </li>,
                             )}
                         </ul>
+                        <button onClick={() => copyToClipboard(textRef)}>In Zwischenablage kopieren</button>
                     </blockquote>
                 </details>
 
                 <hr />
 
-                <button type='button' onClick={() => {
+                <button style={{marginBottom: '1rem'}} type='button' onClick={() => {
                     setParticipants([]);
                     setPairs([]);
                 }}>
