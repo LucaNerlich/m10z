@@ -123,13 +123,21 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 <hr />
 
                 <h2>Kopiervorlagen</h2>
+
+                {/* Markdown / Discourse */}
                 <details>
                     <summary>Discourse</summary>
-                    Something small enough to escape casual notice.
-                    Something small enough to escape casual notice.
-                    Something small enough to escape casual notice.
+                    <blockquote>
+                        <pre>
+                            {pairs.map((pair, index) =>
+                                <div key={index}>* [{pair.sender.name}]({pair.sender.link}) bewichtelt ➡️
+                                    [{pair.receiver.name}]({pair.receiver.link})</div>,
+                            )}
+                        </pre>
+                    </blockquote>
                 </details>
 
+                {/* phpbb */}
                 <details>
                     <summary>phpbb</summary>
                     <blockquote>
@@ -145,6 +153,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                     </blockquote>
                 </details>
 
+                {/* Plain Text / HTML */}
                 <details open>
                     <summary>Text</summary>
                     <blockquote>
