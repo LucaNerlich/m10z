@@ -66,12 +66,15 @@ export default function SpieleWichtelnPage(): React.ReactElement {
     return (
         <Layout title='Spiele-Wichteln' description='Web App zum Auslosen von Wichteln Paaren'>
             <div className='wrapper'>
-                <h1>Spiele-Wichteln Auslosung</h1>
+
+                <h1>Spiele-Wichteln Auslosungs App</h1>
                 <form className='addParticipantForm'>
                     <fieldset>
                         <legend>SpielerIn</legend>
                         <input
+                            type='text'
                             name='name'
+                            required
                             placeholder='Luca'
                             value={newPlayer.name}
 
@@ -82,8 +85,11 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                     <fieldset>
                         <legend>Profil Link (Steam o. Ä.)</legend>
                         <input
+                            type='url'
+                            pattern='https://.*'
+                            required
                             name='link'
-                            placeholder='https://steamcommunity.com/id/e_Lap/'
+                            placeholder='https://steamcommunity.com/id/e_Lap'
                             value={newPlayer.link}
                             onChange={(event) => setNewPlayer({...newPlayer, link: event.target.value})}
                         />
@@ -91,14 +97,15 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                     </fieldset>
 
                     <input type='button' value='SpielerIn hinzufügen'
+                           disabled={!newPlayer.name || !newPlayer.link}
                            onClick={() => {
                                setParticipants([...participants, {name: newPlayer.name, link: newPlayer.link}]);
                                setNewPlayer({name: '', link: ''});
                            }} />
                 </form>
 
+                <h2 style={{marginTop: '1rem'}}>TeilnehmerInnen</h2>
                 <form className='participantsForm' onSubmit={handleSubmit}>
-                    <h2>TeilnehmerInnen</h2>
                     <ul>
 
                         {participants.map((participant, index) => <li key={index}>
@@ -107,6 +114,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                     </ul>
 
                     <input
+                        disabled={participants.length < 2}
                         type='submit'
                         value='Paare auslosen 🎁'
                     />

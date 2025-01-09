@@ -4,10 +4,15 @@
     margin: 0 auto;
 }
 
-form.addParticipantForm {
+form {
     margin-top: 1rem;
-}
-
-form.participantsForm {
-    margin-top: 1rem;
+    
+    input[type="text"], input[type="url"] {
+        width: 25rem;
+    }
+    
+    fieldset {
+        width: fit-content;
+        margin-bottom: 1rem;
+    }
 }
