@@ -8,6 +8,8 @@ draft: false
 image: /img/articles/wichteln.jpg
 ---
 
+Mir war grad danach, also habe ich flott eine Spiele-Wichtel WebApp geschrieben. Hier bitteschön ;-)
+
 ![wichteln.jpg](/img/articles/wichteln.jpg)
 
 <!--truncate-->
