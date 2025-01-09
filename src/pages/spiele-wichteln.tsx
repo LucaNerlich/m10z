@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 // @ts-ignore
 import Layout from '@theme/Layout';
 import './wichteln/spiele-wichteln.css';
@@ -41,6 +41,9 @@ export default function SpieleWichtelnPage(): React.ReactElement {
     ]);
     const [pairs, setPairs] = React.useState<Pair[]>([]);
     const [newPlayer, setNewPlayer] = React.useState<Participant>({name: '', link: ''});
+    const discourseRef = useRef<HTMLPreElement>(null);
+    const phpRef = useRef<HTMLPreElement>(null);
+    const textRef = useRef<HTMLUListElement>(null);
 
 
     function handleSubmit(event) {
@@ -107,7 +110,6 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 <h2 style={{marginTop: '1rem'}}>TeilnehmerInnen</h2>
                 <form className='participantsForm' onSubmit={handleSubmit}>
                     <ul>
-
                         {participants.map((participant, index) => <li key={index}>
                             <a href={participant.link} target='_blank'>{participant.name}</a>
                         </li>)}
@@ -116,7 +118,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                     <input
                         disabled={participants.length < 2}
                         type='submit'
-                        value='Paare auslosen 🎁'
+                        value='Paare auslosen 🪄'
                     />
                 </form>
 
@@ -128,12 +130,13 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 <details>
                     <summary>Discourse</summary>
                     <blockquote>
-                        <pre>
+                        <pre ref={discourseRef}>
                             {pairs.map((pair, index) =>
                                 <div key={index}>* [{pair.sender.name}]({pair.sender.link}) bewichtelt ➡️
                                     [{pair.receiver.name}]({pair.receiver.link})</div>,
                             )}
                         </pre>
+                        <button>In Zwischenablage kopieren</button>
                     </blockquote>
                 </details>
 
@@ -141,7 +144,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 <details>
                     <summary>phpbb</summary>
                     <blockquote>
-                        <pre>
+                        <pre ref={phpRef}>
                             [list]
                             {pairs.map((pair, index) =>
                                 <div key={index}>
@@ -157,7 +160,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 <details open>
                     <summary>Text</summary>
                     <blockquote>
-                        <ul>
+                        <ul ref={textRef}>
                             {pairs.map((pair, index) =>
                                 <li key={index}>
                                     <a href={pair.sender.link} target='_blank'>{pair.sender.name}</a>
