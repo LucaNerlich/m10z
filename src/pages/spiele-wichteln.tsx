@@ -64,7 +64,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
     }
 
     return (
-        <Layout title='Spiele-Wichteln' description='Web App zum Auslosen von Wichteln Paaren'>
+        <Layout title='Spiele-Wichteln' description='Web App zum Auslosen von Wichteln-Paaren'>
             <div className='wrapper'>
 
                 <h1>Spiele-Wichteln Auslosungs App</h1>
