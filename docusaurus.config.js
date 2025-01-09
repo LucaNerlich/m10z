@@ -249,6 +249,10 @@ const config = {
                         title: 'Community',
                         items: [
                             {
+                                label: 'Spiele-Wichteln',
+                                href: '/content/spiele-wichteln',
+                            },
+                            {
                                 label: 'Discord',
                                 href: 'https://discord.gg/tSpzEW4kpP',
                             },
