@@ -38,6 +38,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         {name: 'Player 5', link: 'https://steamcommunity.com/id/player5'},
     ]);
     const [pairs, setPairs] = React.useState<Pair[]>([]);
+    const [newPlayer, setNewPlayer] = React.useState<Participant>({name: '', link: ''});
 
 
     function handleSubmit(event) {
@@ -65,7 +66,24 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 <h1>Spiele-Wichteln Auslosung</h1>
                 <form onSubmit={handleSubmit}>
                     <fieldset>
-
+                        <label>
+                            SpielerInnen Name
+                            <input
+                                name='name'
+                                placeholder='Luca'
+                                onChange={(event) => setNewPlayer({...newPlayer, name: event.target.value})}
+                            />
+                        </label>
+                        <label>
+                            Gaming-Platform Profil Link
+                            <input
+                                name='link'
+                                placeholder='https://steamcommunity.com/id/e_Lap/'
+                                onChange={(event) => setNewPlayer({...newPlayer, link: event.target.value})}
+                            />
+                        </label>
+                        <input type='button' value='SpielerIn hinzufügen'
+                               onClick={() => setParticipants([...participants, {name: newPlayer.name, link: newPlayer.link}])} />
                     </fieldset>
                     <input
                         type='submit'
