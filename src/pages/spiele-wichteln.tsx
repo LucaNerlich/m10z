@@ -32,13 +32,7 @@ function shuffleArray(array: Array<any>) {
 
 export default function SpieleWichtelnPage(): React.ReactElement {
     // set demo participants
-    const [participants, setParticipants] = React.useState<Participant[]>([
-        {name: 'Player 1', link: 'https://steamcommunity.com/id/player1'},
-        {name: 'Player 2', link: 'https://steamcommunity.com/id/player2'},
-        {name: 'Player 3', link: 'https://steamcommunity.com/id/player3'},
-        {name: 'Player 4', link: 'https://steamcommunity.com/id/player4'},
-        {name: 'Player 5', link: 'https://steamcommunity.com/id/player5'},
-    ]);
+    const [participants, setParticipants] = React.useState<Participant[]>([]);
     const [pairs, setPairs] = React.useState<Pair[]>([]);
     const [newPlayer, setNewPlayer] = React.useState<Participant>({name: '', link: ''});
     const discourseRef = useRef<HTMLPreElement>(null);
@@ -68,7 +62,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
 
     function copyToClipboard(ref: React.RefObject<HTMLPreElement | HTMLUListElement>) {
         if (ref.current) {
-            const textToCopy = ref.current.textContent;
+            const textToCopy = ref.current.innerText || ref.current.textContent;
             if (textToCopy) {
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     console.info('Inhalte wurden in die Zwischenablage kopiert!');
@@ -93,7 +87,6 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                             required
                             placeholder='Luca'
                             value={newPlayer.name}
-
                             onChange={(event) => setNewPlayer({...newPlayer, name: event.target.value})}
                         />
 
@@ -140,13 +133,14 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 <h2>Kopiervorlagen</h2>
 
                 {/* Markdown / Discourse */}
-                <details>
+                <details open={pairs.length > 0}>
                     <summary>Discourse</summary>
                     <blockquote>
                         <pre ref={discourseRef}>
                             {pairs.map((pair, index) =>
-                                <div key={index}>* [{pair.sender.name}]({pair.sender.link}) bewichtelt ➡️
-                                    [{pair.receiver.name}]({pair.receiver.link})</div>,
+                                <div key={index}>
+                                    * [{pair.sender.name}]({pair.sender.link}) bewichtelt ➡️ [{pair.receiver.name}]({pair.receiver.link})
+                                </div>,
                             )}
                         </pre>
                         <button onClick={() => copyToClipboard(discourseRef)}>In Zwischenablage kopieren</button>
@@ -171,7 +165,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 </details>
 
                 {/* Plain Text / HTML */}
-                <details open>
+                <details>
                     <summary>Text</summary>
                     <blockquote>
                         <ul ref={textRef}>

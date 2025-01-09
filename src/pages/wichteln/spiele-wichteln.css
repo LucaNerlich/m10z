@@ -15,4 +15,9 @@ form {
         width: fit-content;
         margin-bottom: 1rem;
     }
+    
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
 }
