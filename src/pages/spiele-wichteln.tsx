@@ -130,11 +130,11 @@ export default function SpieleWichtelnPage(): React.ReactElement {
 
                 <hr />
 
-                <h2>Kopiervorlagen</h2>
+                <h2>Ergebnisse & Kopiervorlagen</h2>
 
-                {/* Markdown / Discourse */}
+                {/* Markdown / Discourse / Discord */}
                 <details open={pairs.length > 0}>
-                    <summary>Discourse</summary>
+                    <summary>Discourse / Discord / Markdown</summary>
                     <blockquote>
                         <pre ref={discourseRef}>
                             {pairs.map((pair, index) =>
