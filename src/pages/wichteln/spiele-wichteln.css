@@ -3,3 +3,11 @@
     max-width: 1200px;
     margin: 0 auto;
 }
+
+form.addParticipantForm {
+    margin-top: 1rem;
+}
+
+form.participantsForm {
+    margin-top: 1rem;
+}

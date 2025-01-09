@@ -28,6 +28,8 @@ function shuffleArray(array: Array<any>) {
     }
 }
 
+// todo save to local-storage, read and delete
+
 export default function SpieleWichtelnPage(): React.ReactElement {
     // set demo participants
     const [participants, setParticipants] = React.useState<Participant[]>([
@@ -45,12 +47,13 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         event.preventDefault();
         if (participants && participants.length < 2) return;
 
-        // shuffle participant list
-        shuffleArray(participants);
+        // shuffle cloned participant list
+        const clonedParticipants = [...participants];
+        shuffleArray(clonedParticipants);
 
         // create circular pairing
         const pairs = [];
-        participants.forEach((participant, index) => {
+        clonedParticipants.forEach((participant, index) => {
             // pick the next player from the shuffled array, if the end is reached, pick index 0
             // e.g (4 + 1) % 5` = 0
             pairs.push({sender: participant, receiver: participants[(index + 1) % participants.length]});
@@ -64,32 +67,52 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         <Layout title='Spiele-Wichteln' description='Web App zum Auslosen von Wichteln Paaren'>
             <div className='wrapper'>
                 <h1>Spiele-Wichteln Auslosung</h1>
-                <form onSubmit={handleSubmit}>
+                <form className='addParticipantForm'>
                     <fieldset>
-                        <label>
-                            SpielerInnen Name
-                            <input
-                                name='name'
-                                placeholder='Luca'
-                                onChange={(event) => setNewPlayer({...newPlayer, name: event.target.value})}
-                            />
-                        </label>
-                        <label>
-                            Gaming-Platform Profil Link
-                            <input
-                                name='link'
-                                placeholder='https://steamcommunity.com/id/e_Lap/'
-                                onChange={(event) => setNewPlayer({...newPlayer, link: event.target.value})}
-                            />
-                        </label>
-                        <input type='button' value='SpielerIn hinzufügen'
-                               onClick={() => setParticipants([...participants, {name: newPlayer.name, link: newPlayer.link}])} />
+                        <legend>SpielerIn</legend>
+                        <input
+                            name='name'
+                            placeholder='Luca'
+                            value={newPlayer.name}
+
+                            onChange={(event) => setNewPlayer({...newPlayer, name: event.target.value})}
+                        />
+
                     </fieldset>
+                    <fieldset>
+                        <legend>Profil Link (Steam o. Ä.)</legend>
+                        <input
+                            name='link'
+                            placeholder='https://steamcommunity.com/id/e_Lap/'
+                            value={newPlayer.link}
+                            onChange={(event) => setNewPlayer({...newPlayer, link: event.target.value})}
+                        />
+
+                    </fieldset>
+
+                    <input type='button' value='SpielerIn hinzufügen'
+                           onClick={() => {
+                               setParticipants([...participants, {name: newPlayer.name, link: newPlayer.link}]);
+                               setNewPlayer({name: '', link: ''});
+                           }} />
+                </form>
+
+                <form className='participantsForm' onSubmit={handleSubmit}>
+                    <h2>TeilnehmerInnen</h2>
+                    <ul>
+
+                        {participants.map((participant, index) => <li key={index}>
+                            <a href={participant.link} target='_blank'>{participant.name}</a>
+                        </li>)}
+                    </ul>
+
                     <input
                         type='submit'
-                        value='Paare auslosen'
+                        value='Paare auslosen 🎁'
                     />
                 </form>
+
+                <hr />
 
                 <h2>Kopiervorlage <strong>Discourse</strong></h2>
                 <h2>Kopiervorlage <strong>phpbb</strong></h2>
@@ -101,6 +124,15 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                         <a href={pair.receiver.link} target='_blank'>{pair.receiver.name}</a>
                     </p>,
                 )}
+
+                <hr />
+
+                <button type='button' onClick={() => {
+                    setParticipants([]);
+                    setPairs([]);
+                }}>
+                    Reset ⚠️
+                </button>
             </div>
         </Layout>
     );
