@@ -56,7 +56,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         clonedParticipants.forEach((participant, index) => {
             // pick the next player from the shuffled array, if the end is reached, pick index 0
             // e.g (4 + 1) % 5` = 0
-            pairs.push({sender: participant, receiver: participants[(index + 1) % participants.length]});
+            pairs.push({sender: participant, receiver: clonedParticipants[(index + 1) % clonedParticipants.length]});
         });
 
         // add pairs to result
@@ -122,16 +122,33 @@ export default function SpieleWichtelnPage(): React.ReactElement {
 
                 <hr />
 
-                <h2>Kopiervorlage <strong>Discourse</strong></h2>
-                <h2>Kopiervorlage <strong>phpbb</strong></h2>
-                <h2>Kopiervorlage <strong>Text</strong></h2>
-                {pairs.map((pair, index) =>
-                    <p key={index}>
-                        <a href={pair.sender.link} target='_blank'>{pair.sender.name}</a>
-                        <strong>&nbsp;bewichtelt ➡️&nbsp;</strong>
-                        <a href={pair.receiver.link} target='_blank'>{pair.receiver.name}</a>
-                    </p>,
-                )}
+                <h2>Kopiervorlagen</h2>
+                <details>
+                    <summary>Discourse</summary>
+                    Something small enough to escape casual notice.
+                    Something small enough to escape casual notice.
+                    Something small enough to escape casual notice.
+                </details>
+
+                <details>
+                    <summary>phpbb</summary>
+                    Something small enough to escape casual notice.
+                    Something small enough to escape casual notice.
+                    Something small enough to escape casual notice.
+                </details>
+
+                <details open>
+                    <summary>Text</summary>
+                    <ul>
+                        {pairs.map((pair, index) =>
+                            <li key={index}>
+                                <a href={pair.sender.link} target='_blank'>{pair.sender.name}</a>
+                                <strong>&nbsp;bewichtelt ➡️&nbsp;</strong>
+                                <a href={pair.receiver.link} target='_blank'>{pair.receiver.name}</a>
+                            </li>,
+                        )}
+                    </ul>
+                </details>
 
                 <hr />
 
