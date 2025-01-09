@@ -147,9 +147,9 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                     </blockquote>
                 </details>
 
-                {/* phpbb */}
+                {/* phpBB */}
                 <details>
-                    <summary>phpbb</summary>
+                    <summary>phpBB</summary>
                     <blockquote>
                         <pre ref={phpRef}>
                             [list]
