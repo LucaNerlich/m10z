@@ -13,7 +13,7 @@ interface participant {
 
 interface pair {
     sender: participant;
-    reciever: participant;
+    receiver: participant;
 }
 
 export default function spieleWichteln(props: Readonly<spielewichtelnProps>): React.ReactElement {
@@ -39,7 +39,7 @@ export default function spieleWichteln(props: Readonly<spielewichtelnProps>): Re
                     <p key={index}>
                         <a href={pair.sender.link} target='_blank'>{pair.sender.name}</a>
                         <strong>bewichtelt ➡️</strong>
-                        <a href={pair.reciever.link} target='_blank'>{pair.reciever.name}</a>
+                        <a href={pair.receiver.link} target='_blank'>{pair.receiver.name}</a>
                     </p>,
                 )}
             </div>
