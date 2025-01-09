@@ -2,18 +2,27 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 1rem;
 }
 
 form {
     margin-top: 1rem;
     
     input[type="text"], input[type="url"] {
-        width: 25rem;
+        width: 100%;
+        
+        @media all and (min-width: 768px) {
+            width: 25rem;
+        }
     }
     
     fieldset {
-        width: fit-content;
         margin-bottom: 1rem;
+        width: 100%;
+        
+        @media all and (min-width: 768px) {
+            width: fit-content;
+        }
     }
     
     pre {
