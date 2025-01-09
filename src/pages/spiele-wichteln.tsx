@@ -132,22 +132,32 @@ export default function SpieleWichtelnPage(): React.ReactElement {
 
                 <details>
                     <summary>phpbb</summary>
-                    Something small enough to escape casual notice.
-                    Something small enough to escape casual notice.
-                    Something small enough to escape casual notice.
+                    <blockquote>
+                        <pre>
+                            [list]
+                            {pairs.map((pair, index) =>
+                                <div key={index}>
+                                    [*] [url={pair.sender.link}]{pair.sender.name}[/url] bewichtelt ➡️ [url={pair.receiver.link}]{pair.receiver.name}[/url]
+                                </div>,
+                            )}
+                            [/list]
+                        </pre>
+                    </blockquote>
                 </details>
 
                 <details open>
                     <summary>Text</summary>
-                    <ul>
-                        {pairs.map((pair, index) =>
-                            <li key={index}>
-                                <a href={pair.sender.link} target='_blank'>{pair.sender.name}</a>
-                                <strong>&nbsp;bewichtelt ➡️&nbsp;</strong>
-                                <a href={pair.receiver.link} target='_blank'>{pair.receiver.name}</a>
-                            </li>,
-                        )}
-                    </ul>
+                    <blockquote>
+                        <ul>
+                            {pairs.map((pair, index) =>
+                                <li key={index}>
+                                    <a href={pair.sender.link} target='_blank'>{pair.sender.name}</a>
+                                    <strong>&nbsp;bewichtelt ➡️&nbsp;</strong>
+                                    <a href={pair.receiver.link} target='_blank'>{pair.receiver.name}</a>
+                                </li>,
+                            )}
+                        </ul>
+                    </blockquote>
                 </details>
 
                 <hr />
