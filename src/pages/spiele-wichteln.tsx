@@ -3,38 +3,41 @@ import React from 'react';
 import Layout from '@theme/Layout';
 import './wichteln/spiele-wichteln.css';
 
-interface spielewichtelnProps {
-}
-
-interface participant {
+interface Participant {
     name: string;
     link: string; // main gaming platform, such as steam profile page
 }
 
-interface pair {
-    sender: participant;
-    receiver: participant;
+interface Pair {
+    sender: Participant;
+    receiver: Participant;
 }
 
-function shuffleArray(array) {
-    for (var i = array.length - 1; i >= 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
+/**
+ * Shuffles the elements of an array in place using the Fisher-Yates algorithm.
+ *
+ * @param {Array} array - The array to be shuffled. The array is modified in place.
+ * @return {Array} The shuffled array.
+ */
+function shuffleArray(array: Array<any>) {
+    for (let i = array.length - 1; i >= 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
 }
 
-export default function spieleWichteln(props: Readonly<spielewichtelnProps>): React.ReactElement {
+export default function SpieleWichtelnPage(): React.ReactElement {
     // set demo participants
-    const [participants, setParticipants] = React.useState<participant[]>([
+    const [participants, setParticipants] = React.useState<Participant[]>([
         {name: 'Player 1', link: 'https://steamcommunity.com/id/player1'},
         {name: 'Player 2', link: 'https://steamcommunity.com/id/player2'},
         {name: 'Player 3', link: 'https://steamcommunity.com/id/player3'},
         {name: 'Player 4', link: 'https://steamcommunity.com/id/player4'},
         {name: 'Player 5', link: 'https://steamcommunity.com/id/player5'},
     ]);
-    const [pairs, setPairs] = React.useState<pair[]>([]);
+    const [pairs, setPairs] = React.useState<Pair[]>([]);
 
 
     function handleSubmit(event) {
@@ -61,7 +64,13 @@ export default function spieleWichteln(props: Readonly<spielewichtelnProps>): Re
             <div className='wrapper'>
                 <h1>Spiele-Wichteln Auslosung</h1>
                 <form onSubmit={handleSubmit}>
-                    <button type='submit'>Paare auslosen</button>
+                    <fieldset>
+
+                    </fieldset>
+                    <input
+                        type='submit'
+                        value='Paare auslosen'
+                    />
                 </form>
 
                 <h2>Kopiervorlage <strong>Discourse</strong></h2>
