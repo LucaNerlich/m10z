@@ -16,6 +16,15 @@ interface pair {
     receiver: participant;
 }
 
+function shuffleArray(array) {
+    for (var i = array.length - 1; i >= 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+
 export default function spieleWichteln(props: Readonly<spielewichtelnProps>): React.ReactElement {
     // set demo participants
     const [participants, setParticipants] = React.useState<participant[]>([
@@ -29,17 +38,22 @@ export default function spieleWichteln(props: Readonly<spielewichtelnProps>): Re
 
 
     function handleSubmit(event) {
-        console.log('generate pairs');
         event.preventDefault();
+        if (participants && participants.length < 2) return;
 
-        // set demo pairs
-        setPairs([
-            {sender: participants[0], receiver: participants[1]},
-            {sender: participants[1], receiver: participants[2]},
-            {sender: participants[2], receiver: participants[3]},
-            {sender: participants[3], receiver: participants[4]},
-            {sender: participants[4], receiver: participants[0]},
-        ]);
+        // shuffle participant list
+        shuffleArray(participants);
+
+        // create circular pairing
+        const pairs = [];
+        participants.forEach((participant, index) => {
+            // pick the next player from the shuffled array, if the end is reached, pick index 0
+            // e.g (4 + 1) % 5` = 0
+            pairs.push({sender: participant, receiver: participants[(index + 1) % participants.length]});
+        });
+
+        // add pairs to result
+        setPairs(pairs);
     }
 
     return (
