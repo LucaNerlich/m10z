@@ -98,7 +98,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                             pattern='https://.*'
                             required
                             name='link'
-                            placeholder='https://steamcommunity.com/id/e_Lap'
+                            placeholder='https://steamcommunity.com/id/gabelogannewell'
                             value={newPlayer.link}
                             onChange={(event) => setNewPlayer({...newPlayer, link: event.target.value})}
                         />
