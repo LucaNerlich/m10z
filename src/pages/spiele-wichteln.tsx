@@ -113,19 +113,48 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                            }} />
                 </form>
 
-                <h2 style={{marginTop: '1rem'}}>TeilnehmerInnen</h2>
                 <form className='participantsForm' onSubmit={handleSubmit}>
+                    <fieldset>
+                        <input
+                            disabled={participants.length < 2}
+                            type='submit'
+                            value='Paare auslosen 🪄'
+                        />
+                        <input
+                            style={{marginLeft: '1rem'}}
+                            disabled={participants.length > 0}
+                            type='button'
+                            onClick={() => setParticipants([
+                                {name: 'Fabian', link: 'https://steamcommunity.com/id/Fabian'},
+                                {name: 'Alexander', link: 'https://steamcommunity.com/id/Alexander'},
+                                {name: 'Nils', link: 'https://steamcommunity.com/id/Nils'},
+                                {name: 'Hendrik', link: 'https://steamcommunity.com/id/Hendrik'},
+                                {name: 'Anna', link: 'https://steamcommunity.com/id/Anna'},
+                                {name: 'Theresa', link: 'https://steamcommunity.com/id/Theresa'},
+                                {name: 'Janina', link: 'https://steamcommunity.com/id/Janina'},
+                                {name: 'Lena', link: 'https://steamcommunity.com/id/Lena'},
+                            ])}
+                            value='Demo Modus 🧪'
+                        />
+
+                        <input
+                            style={{marginLeft: '1rem'}}
+                            type='button'
+                            disabled={participants.length === 0}
+                            onClick={() => {
+                                setParticipants([]);
+                                setPairs([]);
+                            }}
+                            value='Reset ⚠️'
+                        />
+                    </fieldset>
+
+                    <h2 style={{marginTop: '1rem'}}>TeilnehmerInnen</h2>
                     <ul>
                         {participants.map((participant, index) => <li key={index}>
                             <a href={participant.link} target='_blank'>{participant.name}</a>
                         </li>)}
                     </ul>
-
-                    <input
-                        disabled={participants.length < 2}
-                        type='submit'
-                        value='Paare auslosen 🪄'
-                    />
                 </form>
 
                 <hr />
@@ -180,15 +209,6 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                         <button onClick={() => copyToClipboard(textRef)}>In Zwischenablage kopieren</button>
                     </blockquote>
                 </details>
-
-                <hr />
-
-                <button style={{marginBottom: '1rem'}} type='button' onClick={() => {
-                    setParticipants([]);
-                    setPairs([]);
-                }}>
-                    Reset ⚠️
-                </button>
             </div>
         </Layout>
     );
