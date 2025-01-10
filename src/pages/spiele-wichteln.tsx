@@ -30,6 +30,14 @@ function shuffleArray(array: Array<any>) {
 
 // todo save to local-storage, read and delete
 
+const randomNames = [
+    'Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Mallory', 'Trent', 'Oscar',
+    'Victor', 'Wendy', 'Xavier', 'Yolanda', 'Zara', 'Adam', 'Beth', 'Caleb',
+    'Diana', 'Edward', 'Fiona', 'George', 'Hannah', 'Ivy', 'Jack', 'Kelly',
+    'Liam', 'Mia', 'Noah', 'Olivia', 'Peter', 'Quinn', 'Riley', 'Sophia',
+    'Thomas', 'Ursula', 'Vincent', 'Willow', 'Xavier', 'Yasmine', 'Zachary',
+];
+
 export default function SpieleWichtelnPage(): React.ReactElement {
     // set demo participants
     const [participants, setParticipants] = React.useState<Participant[]>([]);
@@ -38,6 +46,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
     const discourseRef = useRef<HTMLPreElement>(null);
     const phpRef = useRef<HTMLPreElement>(null);
     const textRef = useRef<HTMLUListElement>(null);
+    shuffleArray(randomNames);
 
 
     function handleSubmit(event) {
@@ -124,16 +133,18 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                             style={{marginLeft: '1rem'}}
                             disabled={participants.length > 0}
                             type='button'
-                            onClick={() => setParticipants([
-                                {name: 'Fabian', link: 'https://steamcommunity.com/id/Fabian'},
-                                {name: 'Alexander', link: 'https://steamcommunity.com/id/Alexander'},
-                                {name: 'Nils', link: 'https://steamcommunity.com/id/Nils'},
-                                {name: 'Hendrik', link: 'https://steamcommunity.com/id/Hendrik'},
-                                {name: 'Anna', link: 'https://steamcommunity.com/id/Anna'},
-                                {name: 'Theresa', link: 'https://steamcommunity.com/id/Theresa'},
-                                {name: 'Janina', link: 'https://steamcommunity.com/id/Janina'},
-                                {name: 'Lena', link: 'https://steamcommunity.com/id/Lena'},
-                            ])}
+                            onClick={() => {
+                                const randomLinks = randomNames
+                                    .slice(0, 7)
+                                    .map(name => `https://steamcommunity.com/id/${name}`);
+                                const randomParticipants = randomNames
+                                    .slice(0, 7)
+                                    .map((name, index) => ({
+                                        name,
+                                        link: randomLinks[index],
+                                    }));
+                                setParticipants(randomParticipants);
+                            }}
                             value='Demo Modus 🧪'
                         />
 
