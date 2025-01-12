@@ -1,7 +1,7 @@
 ---
 slug: sunday-projects-rss-analyzer-update
 title: 'Sunday-Projects – RSS Analyzer Update'
-date: 2025-01-26T12:00
+date: 2025-01-12T11:00
 authors: [ luca ]
 tags: [ artikel, tech, sunday-projects, luca ]
 draft: false
