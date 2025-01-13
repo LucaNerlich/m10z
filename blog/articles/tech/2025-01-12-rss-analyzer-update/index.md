@@ -23,15 +23,15 @@ Nennenswerte Upgrades:
 
 1. Das Tool hat jetzt eine eigene [Domain](https://rssanalyzer.org)
 2. Das Backend wurde in Java leserlicher und erweiterbarer neu geschrieben
-3. Das Frontend ist jetzt optisch moderner und unterstuetzt mobile Endgeräte
-4. Die Kategorieauswertung wird zusaetzlich in Form eines zweidimensionalen Balkendiagrams praesentiert
+3. Das Frontend ist jetzt optisch moderner und unterstützt mobile Endgeräte
+4. Die Kategorieauswertung wird zusätzlich in Form eines zweidimensionalen Balkendiagramms präsentiert
 
 ---
 ![img.png](img.png)
 > Das neue UI
 ---
 ![img_2.png](img_2.png)
-> Die Auflistung aller Episoden pro Kategorie und Jahr. Öffentliche Episoden sind ebenfalls direkt zur MP3 Datei
+> Die Auflistung aller Episoden pro Kategorie und Jahr. Öffentliche Episoden sind ebenfalls direkt zur MP3-Datei
 > verlinkt. Zusätzlich sind die Dateigröße, sowie die Episodendauer angegeben.
 ---
 
