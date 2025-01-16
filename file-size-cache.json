@@ -179,12 +179,16 @@
     "size": "57098688",
     "timestamp": 1734607260004
   },
-    "m10z.picnotes.de-/OwwG/OwwG_Relaunch_02.mp3": {
-        "size": "49778276",
-        "timestamp": 1734788515918
-    },
-    "m10z.picnotes.de-/Spezial/M10Z_Xmas_2024.mp3": {
-        "size": "42618271",
-        "timestamp": 1735209450877
+  "m10z.picnotes.de-/OwwG/OwwG_Relaunch_02.mp3": {
+    "size": "49778276",
+    "timestamp": 1734788515918
+  },
+  "m10z.picnotes.de-/Spezial/M10Z_Xmas_2024.mp3": {
+    "size": "42618271",
+    "timestamp": 1735209450877
+  },
+  "m10z.picnotes.de-/DasTelespielTrio/TelespielTrio_pilot.mp3": {
+    "size": "122872724",
+    "timestamp": 1737037232547
   }
 }
