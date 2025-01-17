@@ -14,7 +14,7 @@ import {ReactCompareSlider} from 'react-compare-slider'
 Wir schauen uns die Ergebnisse von fünf großen `Text-zu-Bild`-Programmen, basierend auf künstlicher Intelligenz, an.
 Verwendet wurden `Adobe Firefly`, `Photoshop Generative-Fill`, `Dall-E`, `Microsoft Bing` und `Stable Diffusion`.
 
-<Image img={require('/static/img/tech/ai-image-gen.jpg')} />
+<Image style={{width: '100%'}} img={require('/static/img/tech/ai-image-gen.jpg')} />
 
 > the text "AI Image Generation" floating in the sky
 
@@ -50,8 +50,8 @@ Die auf künstlicher Intelligenz basierenden Tools der jüngsten Vergangenheit f
 Vergleicht man verschiedene Varianten desselben Services untereinander, unterschieden sich die Ergebnisse zwar, jedoch sind die Ähnlichkeiten kaum zu uebersehen.
 
 <ReactCompareSlider
-    itemOne={<Image img={require('./images/firefly/firefly1.jpg')} />}
-    itemTwo={<Image img={require('./images/firefly/firefly2.jpg')} />}
+    itemOne={<Image style={{width: '100%'}} img={require('./images/firefly/firefly1.jpg')} />}
+    itemTwo={<Image style={{width: '100%'}} img={require('./images/firefly/firefly2.jpg')} />}
 />
 
 > Firefly x Firefly
@@ -59,15 +59,15 @@ Vergleicht man verschiedene Varianten desselben Services untereinander, untersch
 ### Firefly 2
 
 <ReactCompareSlider
-    itemOne={<Image img={require('./images/firefly/firefly1.jpg')} />}
-    itemTwo={<Image img={require('./images/firefly2/firefly2-1.jpg')} />}
+    itemOne={<Image style={{width: '100%'}} img={require('./images/firefly/firefly1.jpg')} />}
+    itemTwo={<Image style={{width: '100%'}} img={require('./images/firefly2/firefly2-1.jpg')} />}
 />
 
 > Firefly 1 x Firefly 2
 
 <ReactCompareSlider
-    itemOne={<Image img={require('./images/firefly/firefly2.jpg')} />}
-    itemTwo={<Image img={require('./images/firefly2/firefly2-2.jpg')} />}
+    itemOne={<Image style={{width: '100%'}} img={require('./images/firefly/firefly2.jpg')} />}
+    itemTwo={<Image style={{width: '100%'}} img={require('./images/firefly2/firefly2-2.jpg')} />}
 />
 
 > Firefly 1 x Firefly 2
@@ -78,8 +78,8 @@ Spannend, da theoretisch im Hintergrund ähnliche Modelle, bzw Services verwende
 ### Photoshop x Firefly 2
 
 <ReactCompareSlider
-    itemOne={<Image img={require('./images/photoshop/1.png')} />}
-    itemTwo={<Image img={require('./images/firefly2/firefly2-1.jpg')} />}
+    itemOne={<Image style={{width: '100%'}} img={require('./images/photoshop/1.png')} />}
+    itemTwo={<Image style={{width: '100%'}} img={require('./images/firefly2/firefly2-1.jpg')} />}
 />
 
 > PS Generative Fill x Firefly 2
@@ -95,10 +95,10 @@ Der `Text-zu-Bild`-Algorithmus basiert auf der Fotodatenbank von [Adobe Stock](h
 <details>
     <summary>Alle 'Adobe Firefly'-Bilder</summary>
     <br />
-    <Image img={require('./images/firefly/firefly1.jpg')} />
-    <Image img={require('./images/firefly/firefly2.jpg')} />
-    <Image img={require('./images/firefly/firefly3.jpg')} />
-    <Image img={require('./images/firefly/firefly4.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/firefly/firefly1.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/firefly/firefly2.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/firefly/firefly3.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/firefly/firefly4.jpg')} />
 </details>
 
 
@@ -109,9 +109,9 @@ Der `Text-zu-Bild`-Algorithmus basiert auf der Fotodatenbank von [Adobe Stock](h
 <details>
     <summary>Alle 'Adobe Firefly 2'-Bilder</summary>
     <br />
-    <Image img={require('./images/firefly2/firefly2-1.jpg')} />
-    <Image img={require('./images/firefly2/firefly2-2.jpg')} />
-    <Image img={require('./images/firefly2/firefly2-3.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/firefly2/firefly2-1.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/firefly2/firefly2-2.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/firefly2/firefly2-3.jpg')} />
 </details>
 
 ## Photoshop Generative-Fill
@@ -121,9 +121,9 @@ Seit Mitte 2023 kann Photoshop auf Adobe Firefly zugreifen und Teile oder komple
 <details>
     <summary>Alle 'Photoshop Generative-Fill'-Bilder</summary>
     <br />
-    <Image img={require('./images/photoshop/1.png')} />
-    <Image img={require('./images/photoshop/2.png')} />
-    <Image img={require('./images/photoshop/3.png')} />
+    <Image style={{width: '100%'}} img={require('./images/photoshop/1.png')} />
+    <Image style={{width: '100%'}} img={require('./images/photoshop/2.png')} />
+    <Image style={{width: '100%'}} img={require('./images/photoshop/3.png')} />
 </details>
 
 ## Dall-E
@@ -131,10 +131,10 @@ Seit Mitte 2023 kann Photoshop auf Adobe Firefly zugreifen und Teile oder komple
 <details>
     <summary>Alle 'Dall-E'-Bilder</summary>
     <br />
-    <Image img={require('./images/dall-e/dalle1.png')} />
-    <Image img={require('./images/dall-e/dalle2.png')} />
-    <Image img={require('./images/dall-e/dalle3.png')} />
-    <Image img={require('./images/dall-e/dalle4.png')} />
+    <Image style={{width: '100%'}} img={require('./images/dall-e/dalle1.png')} />
+    <Image style={{width: '100%'}} img={require('./images/dall-e/dalle2.png')} />
+    <Image style={{width: '100%'}} img={require('./images/dall-e/dalle3.png')} />
+    <Image style={{width: '100%'}} img={require('./images/dall-e/dalle4.png')} />
 </details>
 
 ## Microsoft Bing
@@ -142,18 +142,18 @@ Seit Mitte 2023 kann Photoshop auf Adobe Firefly zugreifen und Teile oder komple
 <details>
     <summary>Alle 'Microsoft Bing'-Bilder</summary>
     <br />
-    <Image img={require('./images/bing/bing1.jpg')} />
-    <Image img={require('./images/bing/bing2.jpg')} />
-    <Image img={require('./images/bing/bing3.jpg')} />
-    <Image img={require('./images/bing/bing4.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/bing/bing1.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/bing/bing2.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/bing/bing3.jpg')} />
+    <Image style={{width: '100%'}} img={require('./images/bing/bing4.jpg')} />
 </details>
 
 Ein Vergleich zwischen Microsoft Bing und Dall-E zeigt die unterschiedlichen Herangehensweisen in Bezug auf eine realistische Darstellung.
 Dall-E's Ergebnisse sind eher kühl, wohingegen Microsoft Bing Dramatik und eine film-esque Beleuchtung der Szene aufbaut.
 
 <ReactCompareSlider
-    itemOne={ <Image img={require('./images/bing/bing1.jpg')} />}
-    itemTwo={<Image img={require('./images/dall-e/dalle3.png')} />}
+    itemOne={ <Image style={{width: '100%'}} img={require('./images/bing/bing1.jpg')} />}
+    itemTwo={<Image style={{width: '100%'}} img={require('./images/dall-e/dalle3.png')} />}
 />
 
 > Microsoft Bing x Dall-E
@@ -174,11 +174,11 @@ Auf Reddit befindet sich ein [detaillierter Thread](https://www.reddit.com/r/Sta
 <details>
     <summary>Alle 'SD - Euler Ancestral'-Bilder</summary>
     <br />
-    <Image img={require('./images/stable-diffusion/euler/sd1.png')} />
-    <Image img={require('./images/stable-diffusion/euler/sd2.png')} />
-    <Image img={require('./images/stable-diffusion/euler/sd3.png')} />
-    <Image img={require('./images/stable-diffusion/euler/sd4.png')} />
-    <Image img={require('./images/stable-diffusion/euler/sd5.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/euler/sd1.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/euler/sd2.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/euler/sd3.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/euler/sd4.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/euler/sd5.png')} />
 </details>
 
 ### DPM++ 2 Ancestral
@@ -188,11 +188,11 @@ Auf Reddit befindet sich ein [detaillierter Thread](https://www.reddit.com/r/Sta
 <details>
     <summary>Alle 'SD - DPM++ 2 Ancestral'-Bilder</summary>
     <br />
-    <Image img={require('./images/stable-diffusion/dpm/sd1.png')} />
-    <Image img={require('./images/stable-diffusion/dpm/sd2.png')} />
-    <Image img={require('./images/stable-diffusion/dpm/sd3.png')} />
-    <Image img={require('./images/stable-diffusion/dpm/sd4.png')} />
-    <Image img={require('./images/stable-diffusion/dpm/sd5.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/dpm/sd1.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/dpm/sd2.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/dpm/sd3.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/dpm/sd4.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/dpm/sd5.png')} />
 </details>
 
 ### Diffusion Bee
@@ -206,17 +206,17 @@ In beiden Tools habe ich das Standardmodell verwendet.
 <details>
     <summary>Alle 'Diffusion Bee'-Bilder</summary>
     <br />
-    <Image img={require('./images/stable-diffusion/diffusion-bee/db1.png')} />
-    <Image img={require('./images/stable-diffusion/diffusion-bee/db2.png')} />
-    <Image img={require('./images/stable-diffusion/diffusion-bee/db3.png')} />
-    <Image img={require('./images/stable-diffusion/diffusion-bee/db4.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/diffusion-bee/db1.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/diffusion-bee/db2.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/diffusion-bee/db3.png')} />
+    <Image style={{width: '100%'}} img={require('./images/stable-diffusion/diffusion-bee/db4.png')} />
 </details>
 
 Auch Diffusion Bee als UI-Helper-Tool fuer Stable Diffusion ermoeglicht es mir nicht, huebschere Ergebnisse zu erzeugen.
 
 <ReactCompareSlider
-    itemOne={<Image img={require('./images/stable-diffusion/dpm/sd5.png')} />}
-    itemTwo={<Image img={require('./images/stable-diffusion/diffusion-bee/db2.png')} />}
+    itemOne={<Image style={{width: '100%'}} img={require('./images/stable-diffusion/dpm/sd5.png')} />}
+    itemTwo={<Image style={{width: '100%'}} img={require('./images/stable-diffusion/diffusion-bee/db2.png')} />}
 />
 
 > Stable Diffusion x Diffusion Bee
