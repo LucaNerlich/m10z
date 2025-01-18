@@ -38,12 +38,11 @@ Die feierliche Auslosung
 ## Ablauf
 
 SpielerIn Links kauft und schickt ein Steam-Gift im Bereich 15–20Euro an SpielerIn Rechts.
-Wir alle spielen dann unser jeweiliges Geschenk und schreiben ein kleines Review. Einsendeschluss hierfür ist Anfang Mai
+Wir alle spielen dann unser jeweiliges Geschenk und schreiben ein kleines Review.
+Einsendeschluss hierfür ist Anfang Mai 2025.
 
-2025.
-
-Ich bereite das dann in kleinen Blog Posts auf – wenn jemand mag, können wir danach auch gerne noch einen kleinen
+Ich bereite das dann in kleinen Blog Posts auf – wenn jemand mag, können wir danach auch gerne noch einen
 Abschlusspodcast aufnehmen :)
 
-Eiersuchende Grüße <br/>
+🐣Eiersuchende Grüße <br/>
 Luca
