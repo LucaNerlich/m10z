@@ -2,8 +2,8 @@
 slug: das-grosse-m10z-spiele-wichteln-2025
 date: 2025-03-30T12:00
 title: 'Das österliche M10Z Spiele-Wichteln 2025'
-authors: [ luca , tilmobaxter, adrian, yollum, simon ]
-tags: [ luca, ankündigung, tilmobaxter, adrian, yollum, simon ]
+authors: [ luca , tilmobaxter, adrian, yollum, simon, vfbfan ]
+tags: [ ankündigung, luca, tilmobaxter, adrian, yollum, simon, vfbfan ]
 draft: false
 ---
 
@@ -34,6 +34,7 @@ Die feierliche Auslosung
 - simon - https://steamcommunity.com/id/chaops85
 - yollum - https://steamcommunity.com/id/yollum
 - luca - https://steamcommunity.com/id/e_Lap
+- vfbfan - https://steamcommunity.com/profiles/76561197971201204/
 
 ## Ablauf
 
