@@ -7,7 +7,7 @@ tags: [ luca, ankündigung, tilmobaxter, adrian, yollum, simon ]
 draft: false
 ---
 
-Willkommen zum grossen M10Z Oster-Spiele-Wichteln 2025!
+Willkommen zum großen M10Z Oster-Spiele-Wichteln 2025!
 
 ![wichteln.jpg](/img/articles/wichteln.jpg)
 
@@ -29,15 +29,17 @@ Die feierliche Auslosung
 
 ### todo teilnehmerinnen
 
-- tilmobaxter - https://steamcommunity.com/id/tilmobaxter/
-- adrian - https://steamcommunity.com/id/DevSibwarra/
-- simon - https://steamcommunity.com/id/chaops85/
-- yollum - https://steamcommunity.com/id/yollum/
+- tilmobaxter - https://steamcommunity.com/id/tilmobaxter
+- adrian - https://steamcommunity.com/id/DevSibwarra
+- simon - https://steamcommunity.com/id/chaops85
+- yollum - https://steamcommunity.com/id/yollum
+- luca - https://steamcommunity.com/id/e_Lap
 
 ## Ablauf
 
 SpielerIn Links kauft und schickt ein Steam-Gift im Bereich 15–20Euro an SpielerIn Rechts.
 Wir alle spielen dann unser jeweiliges Geschenk und schreiben ein kleines Review. Einsendeschluss hierfür ist Anfang Mai
+
 2025.
 
 Ich bereite das dann in kleinen Blog Posts auf – wenn jemand mag, können wir danach auch gerne noch einen kleinen
