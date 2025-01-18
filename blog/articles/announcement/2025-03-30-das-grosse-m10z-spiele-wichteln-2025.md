@@ -2,8 +2,8 @@
 slug: das-grosse-m10z-spiele-wichteln-2025
 date: 2025-03-30T12:00
 title: 'Das österliche M10Z Spiele-Wichteln 2025'
-authors: [ luca , tilmobaxter ]
-tags: [ luca, ankündigung, tilmobaxter ]
+authors: [ luca , tilmobaxter, adrian, yollum, simon ]
+tags: [ luca, ankündigung, tilmobaxter, adrian, yollum, simon ]
 draft: false
 ---
 
