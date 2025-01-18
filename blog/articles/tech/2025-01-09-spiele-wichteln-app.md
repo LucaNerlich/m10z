@@ -8,7 +8,8 @@ draft: false
 image: /img/articles/wichteln.jpg
 ---
 
-Mir war grad danach, also habe ich flott eine Spiele-Wichtel WebApp geschrieben. [Hier bitteschön](/content/spiele-wichteln) ;-)
+Mir war grad danach, also habe ich flott eine Spiele-Wichtel WebApp
+geschrieben. [Hier bitteschön](/content/spiele-wichteln) 😉
 
 ![wichteln.jpg](/img/articles/wichteln.jpg)
 

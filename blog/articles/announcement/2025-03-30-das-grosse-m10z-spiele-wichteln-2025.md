@@ -13,7 +13,7 @@ Willkommen zum grossen M10Z Oster-Spiele-Wichteln 2025!
 
 <!--truncate-->
 
-## Auslosung
+## [Auslosung](/content/spiele-wichteln)
 
 WIP DEMO BELOW
 
