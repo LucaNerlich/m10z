@@ -2,8 +2,8 @@
 slug: das-grosse-m10z-spiele-wichteln-2025
 date: 2025-03-30T12:00
 title: 'Das österliche M10Z Spiele-Wichteln 2025'
-authors: [ luca ]
-tags: [ luca, ankündigung ]
+authors: [ luca , tilmobaxter ]
+tags: [ luca, ankündigung, tilmobaxter ]
 draft: false
 ---
 
@@ -26,6 +26,13 @@ Die feierliche Auslosung
 * [Noah](https://steamcommunity.com/id/Noah) bewichtelt ➡️ [Bob](https://steamcommunity.com/id/Bob)
 * [Bob](https://steamcommunity.com/id/Bob) bewichtelt ➡️ [Xavier](https://steamcommunity.com/id/Xavier)
 * [Xavier](https://steamcommunity.com/id/Xavier) bewichtelt ➡️ [Yasmine](https://steamcommunity.com/id/Yasmine)
+
+### todo teilnehmerinnen
+
+- tilmobaxter - https://steamcommunity.com/id/tilmobaxter/
+- adrian - https://steamcommunity.com/id/DevSibwarra/
+- simon - https://steamcommunity.com/id/chaops85/
+- yollum - https://steamcommunity.com/id/yollum/
 
 ## Ablauf
 
