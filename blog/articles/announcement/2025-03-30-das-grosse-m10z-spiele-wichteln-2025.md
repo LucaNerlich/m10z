@@ -9,7 +9,7 @@ draft: false
 
 Willkommen zum großen M10Z Oster-Spiele-Wichteln 2025!
 
-![wichteln.jpg](/img/articles/wichteln.jpg)
+![oster-wichteln.jpg](/img/articles/oster-wichteln.jpg)
 
 <!--truncate-->
 
@@ -42,7 +42,7 @@ Wir alle spielen dann unser jeweiliges Geschenk und schreiben ein kleines Review
 Einsendeschluss hierfür ist Anfang Mai 2025.
 
 Ich bereite das dann in kleinen Blog Posts auf – wenn jemand mag, können wir danach auch gerne noch einen
-Abschlusspodcast aufnehmen :)
+Abschlusspodcast aufnehmen 🫡
 
 🐣Eiersuchende Grüße <br/>
 Luca
