@@ -34,7 +34,7 @@ Die feierliche Auslosung
 - simon - https://steamcommunity.com/id/chaops85
 - yollum - https://steamcommunity.com/id/yollum
 - luca - https://steamcommunity.com/id/e_Lap
-- vfbfan - https://steamcommunity.com/profiles/76561197971201204/
+- vfbfan - https://steamcommunity.com/id/vfbfan
 
 ## Ablauf
 
