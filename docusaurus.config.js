@@ -31,7 +31,7 @@ const config = {
     markdown: {
         format: 'detect',
         remarkRehypeOptions: {
-            footnoteLabel: 'Quellen',
+            footnoteLabel: 'Quellen / Fußnoten',
         },
     },
 
