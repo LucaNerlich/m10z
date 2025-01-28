@@ -4,7 +4,7 @@ date: 2025-03-30T12:00
 title: 'Das österliche M10Z Spiele-Wichteln 2025'
 authors: [ luca , tilmobaxter, adrian, yollum, simon, vfbfan ]
 tags: [ ankündigung, luca, tilmobaxter, adrian, yollum, simon, vfbfan ]
-draft: false
+draft: true
 ---
 
 Willkommen zum großen M10Z Oster-Spiele-Wichteln 2025!
