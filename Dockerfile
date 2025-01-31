@@ -1,29 +1,35 @@
-# https://sreyaj.dev/deploy-nodejs-applications-on-a-vps-using-coolify-with-dockerfile
+# -------------------------
+# 1) Build stage
+# -------------------------
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+# build the Docusaurus site
+RUN npm run generateAuthors && npm run generateAudioFeed && npm run coolify-build
+
+# -------------------------
+# 2) Production stage
+# -------------------------
 FROM node:20-alpine
 
-# install curl for healthcheck
-RUN apk --no-cache add curl
+WORKDIR /app
+
+# copy only necessary artifacts from build stage
+COPY --from=builder /app /app
+
+RUN npm ci --production && npm cache clean --force
 
 ARG PORT
-
 ENV PORT=$PORT
-
-# https://stackoverflow.com/a/65443098/4034811
-WORKDIR /app
-# starts in repo root
-COPY . /app
-
-# Install dependencies
-RUN npm install --legacy-peer-deps
-
-RUN npm run generateAuthors
-RUN npm run generateAudioFeed
-
 ENV NODE_ENV=production
-RUN npm run coolify-build
 
-# Expose port
 EXPOSE $PORT
 
-# Start the Docusaurus application
 CMD ["npm", "run", "coolify"]
