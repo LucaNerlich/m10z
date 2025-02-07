@@ -12,6 +12,29 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 <!--truncate-->
 
+## VV54: Auf ein Neues
+
+Das Spielejahr, es beginnt ja <br/>
+Im Grunde schon im Januar<br/>
+Doch weiß man bis zum Ende schlicht<br/>
+Nie ob es auch ein gutes war<br/>
+
+Trotz Trailerflut die viel verspricht<br/>
+Von Licht das sich in Pfützen bricht<br/>
+Über realistischstes Haar<br/>
+Zu feinsten Poren im Gesicht<br/>
+
+Jeder Titel stellt sich dar<br/>
+Als wäre nur er wunderbar<br/>
+Ein Kauf und spielen beinahe Pflicht<br/>
+Der neue GOTY Superstar <br/>
+
+Ernüchterung alsbald anbricht<br/>
+Die meisten Spiele eher schlicht<br/>
+Es war uns allen vorher klar<br/>
+Doch lernen wollen wir es nicht<br/>
+
+
 ## VV53: 6. Dezember
 
 Während Kinder<br/>
