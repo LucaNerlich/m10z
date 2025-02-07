@@ -17,7 +17,7 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 Das Spielejahr, es beginnt ja <br/>
 Im Grunde schon im Januar<br/>
 Doch weiß man bis zum Ende schlicht<br/>
-Nie ob es auch ein gutes war<br/>
+Nie ob es auch ein Gutes war<br/>
 
 Trotz Trailerflut die viel verspricht<br/>
 Von Licht das sich in Pfützen bricht<br/>
@@ -26,7 +26,7 @@ Zu feinsten Poren im Gesicht<br/>
 
 Jeder Titel stellt sich dar<br/>
 Als wäre nur er wunderbar<br/>
-Ein Kauf und spielen beinahe Pflicht<br/>
+Kaufen und spielen beinahe Pflicht<br/>
 Der neue GOTY Superstar <br/>
 
 Ernüchterung alsbald anbricht<br/>
