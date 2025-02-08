@@ -35,6 +35,11 @@ Die Umsetzung des Projekts war relativ einfach, da Strapi bereits viele der ben�
 ![feeds](/img/tech/sundayprojects/podcastmanager/feeds.png)
 > Die Feed-Übersicht
 
+---
+
+![episodes](/img/tech/sundayprojects/podcastmanager/episodes.png)
+> Die Episoden-Übersicht
+
 Damit die XML-Datei nicht bei jeder Anfrage neu generiert werden muss, speichert jede Episode bei einem Update ihren eigenen RSS `<item/>` Eintrag. Ein CRON-Job generiert einen geänderten Feed, auf basis aller verknuepften Episoden und deren `<item/>` Feldern neu und speichert das XML-Ergebnis in der Datenbank. Die XML-Datei wird dann bei einer Anfrage einfach aus der Datenbank geladen und zurückgegeben. Bei privaten Feeds wird zusaetzlich noch der anfragende Token mit der Liste der "erlaubten Usern" verglichen.
 
 Hier der Service des *findOne* Endpunktes, der die Feeds aus der Datenbank lädt und die Berechtigungen prüft:
@@ -74,6 +79,9 @@ export default factories.createCoreService('api::feed.feed', ({strapi}) => ({
     },
 }));
 ```
+
+![bruno](/img/tech/sundayprojects/podcastmanager/bruno.png)
+> REST Zugriff auf einen privaten Feed
 
 Hier sind die Lifecycle Hooks, die beim Erstellen und Veraendern von Episoden aufgerufen werden:
 
@@ -245,12 +253,6 @@ function generateFeed(feed) {
 ```
 
 Das komplette [Repository](https://github.com/LucaNerlich/podcast-manager) findet sich hier.
-
-![episodes](/img/tech/sundayprojects/podcastmanager/episodes.png)
-> Die Episoden-Übersicht
----
-![bruno](/img/tech/sundayprojects/podcastmanager/bruno.png)
-> REST Zugriff auf einen privaten Feed
 
 Bei Fragen, meldet euch gerne auf unserem Discord oder direkt im GitHub Repository.
 
