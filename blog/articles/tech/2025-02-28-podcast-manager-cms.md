@@ -14,7 +14,4 @@ Da mich das manuelle Verwalten meiner privaten Archiv-Podcasts nervte, habe ich 
 
 <!--truncate-->
 
-adsasdasda
-adsasdasda
-adsasdasda
-adsasdasda
+Zu meinen Lieblings-Podcast-Formaten gehören die Audio-Lets Plays von [StayForever Spielt](https://www.stayforever.de/alle-premium-formate-steady-patreon/#spielt) und die ("quasi") Hörspiele von [Down to the Detail](https://downtothedetailpodcast.de). Sobald eine Staffel fertig ist, lade ich mir die MP3s herunter, schneide sie mit Audacity zu einem *Supercut* zusammen und stelle mir die Folgen über meinen privaten Podcast RSS Feed zur Verfügung. So kann ich mir die Staffeln bequem und jederzeit immer wieder anhören - nutzen tue ich dies dadurch fast täglich.
