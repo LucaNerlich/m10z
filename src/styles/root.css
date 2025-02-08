@@ -51,6 +51,13 @@ div > img {
     margin-bottom: 0 !important;
 }
 
+p > img {
+    border-radius: 5px;
+    margin-bottom: 0 !important;
+    width: 100%;
+    height: auto;
+}
+
 section.footnotes > ol > li > p {
     margin: 0;
 }
