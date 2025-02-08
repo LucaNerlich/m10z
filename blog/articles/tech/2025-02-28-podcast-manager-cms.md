@@ -26,6 +26,10 @@ Meine Ziele mit diesem Projekt waren die Folgenden:
 
 Aufgrund der Erfahrungen aus anderen Projekten habe ich mich wieder für das [CMS Strapi](https://strapi.io) entschieden. Strapi kann kostenlos selbst gehostet werden, bietet eine REST API und ist durch Plugins erweiterbar. Insbesondere unterstützt die Medienverwaltung von Strapi den Upload von Dateien und Bildern direkt in AWS S3, welches wiederum eine der kostengünstigsten Cloud-Massenspeicherlösungen ist.
 
+Die Umsetzung des Projekts war relativ einfach, da Strapi bereits viele der benötigten Funktionen mitbringt. Ich habe lediglich einige eigene Endpunkte, Lifecycle Hooks und Controller geschrieben, um die Feeds und Episoden zu verwalten. Die Modelle für Feeds und Episoden sind relativ einfach gehalten, da ich keine komplexen Datenstrukturen benötige. Neben den Standardfeldern wie Titel, Beschreibung und Coverbild gibt es noch eine Verbindung zwischen Feed und Episode, sowie zwischen Feed und "erlaubten Usern" für private Feeds.
+
+Damit die XML-Datei nicht bei jeder Anfrage neu generiert werden muss, speichert jede Episode bei einem Update ihren eigenen RSS `<item/>` Eintrag. Ein CRON-Job generiert einen geänderten Feed, auf basis aller verknuepften Episoden und deren `<item/>` Feldern neu und speichert das XML-Ergebnis in der Datenbank. Die XML-Datei wird dann bei einer Anfrage einfach aus der Datenbank geladen und zurückgegeben. Bei privaten Feeds wird zusaetzlich noch der anfragende Token mit der Liste der "erlaubten Usern" verglichen.
+
 ![feeds](/img/tech/sundayprojects/podcastmanager/feeds.png)
 > Die Feed-Übersicht
 
