@@ -1,7 +1,7 @@
 ---
 slug: podcast-manager-strapi-cms
 title: 'Sunday-Projects – Podcast Manager'
-date: 2025-02-28
+date: 2025-02-08
 authors: [luca]
 tags: [artikel, tech, sunday-projects, luca]
 draft: false
