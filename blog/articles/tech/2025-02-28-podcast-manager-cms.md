@@ -25,3 +25,13 @@ Meine Ziele mit diesem Projekt waren die Folgenden:
 5. MP3 Dateien und Cover Images müssen hochladbar sein
 
 Aufgrund der Erfahrungen aus anderen Projekten habe ich mich wieder für das [CMS Strapi](https://strapi.io) entschieden. Strapi kann kostenlos selbst gehostet werden, bietet eine REST API und ist durch Plugins erweiterbar. Insbesondere unterstützt die Medienverwaltung von Strapi den Upload von Dateien und Bildern direkt in AWS S3, welches wiederum eine der kostengünstigsten Cloud-Massenspeicherlösungen ist.
+
+![feeds](/img/tech/sundayprojects/podcastmanager/feeds.png)
+> Die Feed-Übersicht
+
+![episodes](/img/tech/sundayprojects/podcastmanager/episodes.png)
+> Die Episoden-Übersicht
+
+![bruno](/img/tech/sundayprojects/podcastmanager/bruno.png)
+> REST Zugriff auf einen privaten Feed
+
