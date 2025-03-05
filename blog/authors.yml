@@ -19,10 +19,12 @@ luca:
     instagram: https://www.instagram.com/lnhh00
     github: https://github.com/LucaNerlich
 kkuez:
-  description: (he / him) // M10Z-MitHost
+  description: M10Z-Host/Produzent, Proudly writing stuff for videospielgeschichten.de
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/kkuez/64/3415_2.png
   name: Marcel
   url: /tags/kkuez
+  socials:
+    bluesky: https://bsky.app/profile/kkuez.bsky.social
 tilmobaxter:
   description: (he / him) // M10Z im Herzen und Virtuelle Verse im Kopf.
   email: m10z@posteo.de
