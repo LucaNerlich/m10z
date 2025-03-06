@@ -1,26 +1,26 @@
-import React from 'react'
+import React from 'react';
 // @ts-ignore
-import Layout from '@theme/Layout'
+import Layout from '@theme/Layout';
 // @ts-ignore
-import authorsFile from '/blog/authors.json'
-import {AuthorType} from '../types/authorType'
-import Author from '../components/Author'
+import authorsFile from '/blog/authors.json';
+import {AuthorType} from '../types/authorType';
+import Author from '../components/Author';
 // @ts-ignore
-import styles from './hello.module.css'
+import styles from './hello.module.css';
 
 export default function Hello() {
-    const parsedAuthors: AuthorType[] = []
+    const parsedAuthors: AuthorType[] = [];
 
     // works, because docusaurus is serverside only
     for (const author in authorsFile) {
-        const parsedAuthor = JSON.parse(JSON.stringify(authorsFile[author])) as AuthorType
-        parsedAuthor.id = author
-        parsedAuthors.push(parsedAuthor)
+        const parsedAuthor = JSON.parse(JSON.stringify(authorsFile[author])) as AuthorType;
+        parsedAuthor.id = author;
+        parsedAuthors.push(parsedAuthor);
     }
 
     const authors = parsedAuthors
         .sort((a, b) => a.id > b.id ? 1 : -1)
-        .map((author, index) => <Author key={index} author={author} />)
+        .map((author, index) => <Author key={index} author={author} />);
 
     return (
         <Layout title='Hello' description='Wer wir sind'>
@@ -74,11 +74,14 @@ export default function Hello() {
                 <h2 className={styles.headline}>M10Z hat keinen Platz für:</h2>
                 <p>Sexismus, Rassismus, Antisemitismus, Homo- und Transphobie, Klassismus, Ableismus.</p>
 
-                <h2 className={styles.headline}>Unsere Autor:Innen</h2>
+                <a href='/authors'>
+                    <h2 className={styles.headline}>Unsere Autor:Innen</h2>
+                </a>
+
                 <div className={styles.authors}>
                     {authors}
                 </div>
             </div>
         </Layout>
-    )
+    );
 }
