@@ -9,6 +9,7 @@
 # twitch:
 # youtube:
 # mastodon:
+# newsletter:
 luca:
   description: webseitentyp
   image_url: https://m10z.picnotes.de/avatars/luca.jpg
@@ -25,6 +26,7 @@ kkuez:
   url: /tags/kkuez
   socials:
     bluesky: https://bsky.app/profile/kkuez.bsky.social
+    newsletter: https://www.videospielgeschichten.de/author/marcel/
 tilmobaxter:
   description: (he / him) // M10Z im Herzen und Virtuelle Verse im Kopf.
   email: m10z@posteo.de
