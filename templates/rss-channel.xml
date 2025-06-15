@@ -17,9 +17,9 @@
         <itunes:author>M10Z</itunes:author>
         <itunes:explicit>false</itunes:explicit>
         <itunes:type>episodic</itunes:type>
-        <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg"/>
+        <itunes:image href="https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/m10z.jpg"/>
         <image>
-            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg</url>
+            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/m10z.jpg</url>
             <title>M10Z Podcasts</title>
             <link>https://m10z.de</link>
         </image>

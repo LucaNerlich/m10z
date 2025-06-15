@@ -114,7 +114,7 @@ async function yamlObjectToXml(yamlObject, cache) {
         },
         'itunes:image': {
             $: {
-                href: yamlObject.image ?? 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10Z_Logo3000x3000.jpg',
+                href: yamlObject.image ?? 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/m10z.jpg',
             },
         },
         'description': yamlObject.description,
