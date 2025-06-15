@@ -8,7 +8,7 @@ draft: false
 
 Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til hier die „Virtuellen Verse“.
 
-![verse-banner-image](/img/formate/VVBanner.jpg)
+![verse-banner-image](/img/formate/banner/verse.jpg)
 
 <!--truncate-->
 
