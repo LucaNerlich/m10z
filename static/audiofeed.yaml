@@ -1,6 +1,6 @@
 - title: 'Der M10Z Comic Cast'
   date: 2025-06-15T15:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/ComicCast/ComicCast.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/comic-cast.jpg
   description: |2-
                   Liebe Zuhörer:innen,
                   wir von M10Z beschäftigen uns hauptsächlich mit Videospielen und allem, was zu diesem wunderbaren Medium gehört.
@@ -146,7 +146,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_013.mp3
 - title: 'Des GamePasses geheime Perlen #9 – Journey to the Savage Planet'
   date: 2025-02-05T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/GGP_Logo_Banner.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/geheime-perlen.jpg
   description: |2-
                   Liebe Hörende,
   
@@ -180,7 +180,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_012.mp3
 - title: 'Des GamePasses geheime Perlen #8 – Astroneer vs. Mirrors Edge Catalyst'
   date: 2025-01-20T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/GGP_Logo_Banner.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/geheime-perlen.jpg
   description: |2-
                   Liebe Hörende,
   
@@ -252,7 +252,7 @@
   url: https://m10z.picnotes.de/OwwG/OwwG_Relaunch_02.mp3
 - title: 'Des GamePasses Geheime Perlen #7 – Pixel um Pixel, Sprite um Sprite'
   date: 2024-12-08T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/GGP_Logo_Final.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/geheime-perlen.jpg
   description: |2-
                   Heute geht es beim Perlentauchen in eher seichteres Gewässer. Jan tapst bei Merge & Blade in den flachen Tümpeln des Auto-Battler-Genres, mit einer Prise Match 3. Marcel hingegen hat sich ein Sofa in Ufernähe gestellt und im gemütlichen Couch-Coop bei Broforce diverse Actionhelden gesteuert. Warten gefährliche Untiefen? Und wo sind die Pixel alle hin? Das alles wird hier beantwortet und auch Till ist wieder losgepirscht. Vielleicht ist er etwas tiefer gekommen?  
   
@@ -274,7 +274,7 @@
   url: https://m10z.picnotes.de/Quiz/m10z_quiz_4.mp3
 - title: 'Des GamePasses Geheime Perlen #6 – Ein Schalentier auf Rollschuhen'
   date: 2024-11-06T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/GGP_Logo_Final.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/geheime-perlen.jpg
   description: |2-
                   Die Perlentaucher sind wieder unterwegs. Marcel schnallt sich die Rollschuhe um und bekämpft damit Gegner. Taugt die Kombi aus Shooter und Rollschuhen oder sollte es tief auf dem Meeresgrund bleiben? Unterdessen rätselt Jan sich als Detektiv Frosch durch drei mysteriöse Fälle von der Geisterinsel bis zum Wilden Westen. Genießt er es oder sollte sich doch lieber Kommissar Hummer darum kümmern? Und natürlich darf das überraschendste Überraschungsspiel von Til nicht fehlen. Mehr wird auch nicht verraten.
   
@@ -299,7 +299,7 @@
   url: https://m10z.picnotes.de/OwwG/OwwG_Relaunch_01.mp3
 - title: 'Des GamePasses Geheime Perlen #5 – Brüder unter Tage'
   date: 2024-10-19T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/GGP_Logo_Final.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/geheime-perlen.jpg
   description: |2-
                   Moin!
   
@@ -325,7 +325,7 @@
   url: https://m10z.picnotes.de/EnRogue/EnRogue_003.mp3
 - title: 'Des GamePasses Geheime Perlen #4 – Glubschaugen die auf Cricket stehen'
   date: 2024-09-12T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/GGP_Logo_Final.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/geheime-perlen.jpg
   description: |2-
                   Es herbstet sehr und passend dazu servieren wir den offiziellen Soundtrack. 
                   Aufgenommen wurde im Glutsommer, bitte seht es uns nach.
@@ -364,7 +364,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_011.mp3
 - title: 'Des GamePasses Geheime Perlen #3 – Der Detektiv in der Wüste'
   date: 2024-08-12T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/GGP_Logo_Final.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/geheime-perlen.jpg
   description: |2-
                     In dieser Folge darf Jan sich ein Spiel selbst aussuchen, weil Til netterweise bereits in der letzten Folge die Bohrinsel untersucht hat. Stattdessen geht es nicht minder blutig in „The Case of the Golden Idle“ um das Lösen unheimlicher Mordfälle. Marcel erlebt ebenfalls spannende Geschichten in „As Dusk Falls“, wo ungewohnte Grafik auf eine spannende Geschichte trifft. Und natürlich darf auch Tils Ausflug in die bunte Spielekiste voller Überraschungen nicht fehlen.
   
@@ -570,7 +570,7 @@
   url: https://m10z.picnotes.de/gds/GuertelDerSchmerzen23.mp3
 - title: 'Das gesprochene Wort #1 – Hatred. Kane & Lynch Part 2,3,4 (Bistroa)'
   date: 2024-02-04T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/DasGesprocheneWort3000x3000.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/dgw.jpg
   description: |2-
                     Hallo zusammen,
   
@@ -615,7 +615,7 @@
   url: https://m10z.adrilaida.de/M10Z/M10Z_011.mp3
 - title: 'Das gesprochene Wort – Pilot'
   date: 2024-01-24T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/DasGesprocheneWort3000x3000.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/dgw.jpg
   description: |2-
                   Liebe Gemeinde,
 

@@ -95,7 +95,7 @@ export default function Formate() {
                     </p>
                 </SingleFormat>
 
-                <SingleFormat title='Das gesprochene Wort' link='/tags/dgw' imagePath='/img/DasGesprocheneWort3000x3000.jpg'>
+                <SingleFormat title='Das gesprochene Wort' link='/tags/dgw' imagePath='/img/formate/cover/dgw.jpg'>
                     <p>
                         Liebe Gemeinde,
                         <br />
