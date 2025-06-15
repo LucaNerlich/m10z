@@ -18,7 +18,7 @@ export default function Formate() {
             <div className={styles.wrapper}>
                 <h1 className={styles.headline}>Unsere Formate</h1>
 
-                <SingleFormat title='En Rogue' link='/tags/en-rogue' imagePath='/img/enrogue.jpg'>
+                <SingleFormat title='En Rogue' link='/tags/en-rogue' imagePath='/img/cover/enrogue.jpg'>
                     <p>
                         In En Rogue begeben sich Jan, Simon und Adrian in den ewigen Kreislauf des Sterbens und Wiederauferstehens.
                         In jeder Folge wird ein Spiel aus dem weiten Feld der Rogue Lites/ Likes besprochen.

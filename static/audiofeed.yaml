@@ -80,7 +80,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_014.mp3
 - title: 'En Rogue #04 – Der Wald hasst uns'
   date: 2025-04-07T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/enrogue.jpg
   description: |2-
                   Fast pünktlich nach einem halben Jahr tauchen Simon, Adrian und Jan in der neuesten Podcast-Episode von En Rogue tief in den feindlichen Wald des Roguelike-City-Builders „Against the Storm“ ein, nur um festzustellen, dass es fast eine größere Herausforderung ist die Komplexität des Spiels herunterzubrechen, als einen Run zu überleben.
                   Sie stoßen immer wieder an ihre Grenzen der Übersicht über Feindlichkeits- und Wettersysteme, Produktionsketten oder sich darauf zu einigen, wie viele Spezien es überhaupt gibt.
@@ -315,7 +315,7 @@
   url: https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_5.mp3
 - title: 'En Rogue #03 – Von Bösewichten und dunklen Machenschaften'
   date: 2024-09-22T20:30
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/enrogue.jpg
   description: |2-
                   In dieser Folge erfahrt ihr, was dieses Co-op-Roguelite gut macht und warum wieder jemand von uns damit nicht warm wurde.
                   Auch wie man das Spiel am besten erlebt und welche Waffen Meta sind und warum manche nur Schund. 
@@ -522,7 +522,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_007.mp3
 - title: 'En Rogue #02 – Into The Breach oder Panzerschach'
   date: 2024-03-08T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/enrogue.jpg
   description: |2-
                     In dieser Folge von En Rogue widmen sich Jan, Simon und Adrian einem preisgekrönten Klassiker der Roguelike-Spiele das mit einer Story aus der Feder von Chris Avallone brilliert.
                     In der zweiten Folge beschäftigt sich der Squad mit "Into The Breach" und erzählen von ihreren Erfahrungen im Panzerschach und Zeitreisen. Was macht dieses Spiel so besonders und warum hat es eigentlich einen Meta-Score von 90%? Schiebt euren Vek kurz beiseite und indet heraus wie es den Dreien beim Panzerschach so erging!
@@ -767,7 +767,7 @@
   url: https://m10z.picnotes.de/M10Z/M10Z_008.mp3
 - title: 'En Rogue #01'
   date: 2023-10-31T13:30
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/enrogue.jpg
   description: |2-
                     In En Rogue begeben sich Jan, Simon und Adrian in den ewigen Kreislauf des Sterbens und Wiederauferstehens.
                     In jeder Folge wird ein Spiel aus dem weiten Feld der Rogue Lites/ Likes besprochen.
