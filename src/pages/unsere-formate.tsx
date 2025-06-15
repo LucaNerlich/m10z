@@ -54,7 +54,7 @@ export default function Formate() {
                     <Beteiligte text='KaFour' />
                 </SingleFormat>
 
-                <SingleFormat title='Mindestens 10 Zeichen' link='/tags/m-10-z' imagePath='/img/formate/m10z.jpg'>
+                <SingleFormat title='Mindestens 10 Zeichen' link='/tags/m-10-z' imagePath='/img/formate/cover/m10z-podcast.jpg'>
                     <p>
                         "Mindestens 10 Zeichen" ist unser M10Z Podcast der Podcasts, der in dem es um alles geht:
                         <br />
