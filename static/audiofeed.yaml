@@ -1,6 +1,6 @@
 - title: 'Der M10Z Comic Cast'
   date: 2025-06-15T15:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/ComicCast.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/ComicCast/ComicCast.jpg
   description: |2-
                   Liebe Zuhörer:innen,
                   wir von M10Z beschäftigen uns hauptsächlich mit Videospielen und allem, was zu diesem wunderbaren Medium gehört.
@@ -28,7 +28,7 @@
   url: https://m10z.picnotes.de/ComicCast/ComicCast_001.mp3
 - title: 'Once we were Gamers Relaunch #03 – Vatertag, Fifa und viele Fragen'
   date: 2025-06-08T12:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogOWWG.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
                   Manchmal überkommt es einen und man weiß sich nicht mehr zu helfen. Dann nimmt man am besten einfach einen Podcast auf und fragt das kollektive Hirn der Community. So ging es Simon in diesem kurzen Solo-Podcast von Once we were Gamers.
                   Ist Fifa, das eigentlich nur noch EA Sports FC heißt, tatsächlich das identische Spiel, das er zuletzt vor 15 Jahren gespielt hat? Und wenn es so ist: Ist das vielleicht sogar etwas Gutes?
@@ -39,7 +39,7 @@
   url: https://m10z.picnotes.de/OwwG/OwwG_Relaunch_03.mp3
 - title: 'Zocken Ohne Zaster #2 (COLT CANYON FTW)'
   date: 2025-04-11T16:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/img/ZOZ.png
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/ZockenOhneZaster_Logo.jpg
   description: |2-
                   Liebe Hörenden,
   
@@ -64,7 +64,7 @@
   url: https://m10z.picnotes.de/ZockenOhneZaster/ZockenOhneZaster_2.mp3
 - title: 'Fundbüro #14 – Vergessener Cyberpunkhit & kleines Fotoabenteuer'
   date: 2025-04-09T17:30
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                   Liebe Zuhörerinnen und Zuhörer,
   
@@ -80,7 +80,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_014.mp3
 - title: 'En Rogue #04 – Der Wald hasst uns'
   date: 2025-04-07T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogER.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
   description: |2-
                   Fast pünktlich nach einem halben Jahr tauchen Simon, Adrian und Jan in der neuesten Podcast-Episode von En Rogue tief in den feindlichen Wald des Roguelike-City-Builders „Against the Storm“ ein, nur um festzustellen, dass es fast eine größere Herausforderung ist die Komplexität des Spiels herunterzubrechen, als einen Run zu überleben.
                   Sie stoßen immer wieder an ihre Grenzen der Übersicht über Feindlichkeits- und Wettersysteme, Produktionsketten oder sich darauf zu einigen, wie viele Spezien es überhaupt gibt.
@@ -112,7 +112,7 @@
   url: https://m10z.picnotes.de/Spezial/M10Z_Spiele_Verantwortung_Politik_Krisen.mp3
 - title: 'Zocken Ohne Zaster #1 (-PILOT-)'
   date: 2025-03-03T16:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/img/ZOZ.png
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/ZockenOhneZaster_Logo.jpg
   description: |2-
                   Liebe Freunde,
   
@@ -131,7 +131,7 @@
   url: https://m10z.picnotes.de/ZockenOhneZaster/ZockenOhneZaster_1.mp3
 - title: 'Fundbüro #13 – Cowboys, Magie und Weltkriegsverirrung'
   date: 2025-02-18T16:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                   Liebe Zuhörerinnen und Zuhörer,
   
@@ -163,7 +163,7 @@
   url: https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_9.mp3
 - title: 'Fundbüro #12 – Ein Chameleon trifft auf die Mafia'
   date: 2025-01-31T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                   Liebe Zuhörerinnen und Zuhörer,
   
@@ -194,7 +194,7 @@
   url: https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_8.mp3
 - title: 'Das Telespiel-Trio – Harveys neue Augen #Pilot'
   date: 2025-01-15T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/TelespielTrio.png
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/Telespiel-Trio_Logo.png
   description: |2-
                   Liebe Freunde,
 
@@ -238,7 +238,7 @@
   url: https://m10z.picnotes.de/Spezial/M10Z_Xmas_2024.mp3
 - title: 'Once we were Gamers #R2'
   date: 2024-12-21T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogOWWG.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
                   Noch bevor das neue Jahr sich verabschiedet, treffen sich Franziska und Simon noch einmal und sprechen über das Ende. Nicht das Ende von Once we were Gamers, sondern über Enden in Videospielen. Dabei stellen Sie die verheißungsvolle Frage: Braucht ein Videospiel überhaupt ein gutes Ende?
   
@@ -284,7 +284,7 @@
   url: https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_6.mp3
 - title: 'Once we were Gamers Relaunch Folge 1'
   date: 2024-10-31T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogOWWG.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
                   Wir sind wieder da! Ein gutes Jahr hat es gedauert und nun erlebt OwwG seinen Relaunch. Und das hat einen guten Grund! Nicht nur, dass ich eine neue Stimme im Podcast habe; es ist auch eine ganz besondere, die nun immer dabei sein wird! Seid gespannt.
   
@@ -315,7 +315,7 @@
   url: https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_5.mp3
 - title: 'En Rogue #03 – Von Bösewichten und dunklen Machenschaften'
   date: 2024-09-22T20:30
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogER.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
   description: |2-
                   In dieser Folge erfahrt ihr, was dieses Co-op-Roguelite gut macht und warum wieder jemand von uns damit nicht warm wurde.
                   Auch wie man das Spiel am besten erlebt und welche Waffen Meta sind und warum manche nur Schund. 
@@ -345,7 +345,7 @@
   url: https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_4.mp3
 - title: 'Fundbüro #11 – Pannenserie trifft auf handzahmen Drachen'
   date: 2024-08-20T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     Liebe Zuhörerinnen und Zuhörer,
   
@@ -395,7 +395,7 @@
   url: https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_2.mp3
 - title: 'Fundbüro #10 – Energiegewinnung in der Steinzeit – Community-Folge 2'
   date: 2024-07-05T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     Liebe Hörerinnen und Hörer, 
   
@@ -414,7 +414,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_010.mp3
 - title: 'Fundbüro #09 – Wunschkonzert auf der Trauminsel – Community-Folge 1'
   date: 2024-06-14T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     Liebe HörerInnen und Hörer,
   
@@ -463,7 +463,7 @@
   url: https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_Pilot.mp3
 - title: 'Fundbüro #08 – Wie Recht und Gesetz nach Makedonia kam'
   date: 2024-04-25T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar 'Lipardus' und Jan 'yollum' haben ein paar der neueren Kisten beiseitegeschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
   
@@ -502,7 +502,7 @@
   url: https://m10z.picnotes.de/Spezial/teehaus_1.mp3
 - title: 'Fundbüro #07 – 2004: Die letzten Tage der unschlagbaren Helden'
   date: 2024-03-22T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar 'Lipardus' und Jan 'yollum' haben ein paar der neueren Kisten beiseitegeschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht bergen sie immer wieder neue Schätze und Spiele, die besser dort geblieben wären.
   
@@ -522,7 +522,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_007.mp3
 - title: 'En Rogue #02 – Into The Breach oder Panzerschach'
   date: 2024-03-08T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogER.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
   description: |2-
                     In dieser Folge von En Rogue widmen sich Jan, Simon und Adrian einem preisgekrönten Klassiker der Roguelike-Spiele das mit einer Story aus der Feder von Chris Avallone brilliert.
                     In der zweiten Folge beschäftigt sich der Squad mit "Into The Breach" und erzählen von ihreren Erfahrungen im Panzerschach und Zeitreisen. Was macht dieses Spiel so besonders und warum hat es eigentlich einen Meta-Score von 90%? Schiebt euren Vek kurz beiseite und indet heraus wie es den Dreien beim Panzerschach so erging!
@@ -533,7 +533,7 @@
   url: https://m10z.picnotes.de/EnRogue/EnRogue_002.mp3
 - title: 'Mindestens 10 Zeichen #12 – Eine Folge, 5 Menschen: Musik, Musik da wackelt die Klinik!'
   date: 2024-02-27T19:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Hallo Freunde des lockeren Geschwätzes, der Mid-30s und allem anderen in die Richtung,
   
@@ -584,7 +584,7 @@
   url: https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_002.mp3
 - title: 'Mindestens 10 Zeichen #11 – This one goes to eleven'
   date: 2024-01-31T19:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Hallo liebe Leute!
   
@@ -636,7 +636,7 @@
   url: https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_001.mp3
 - title: 'Mindestens 10 Zeichen #10 – Juhu, Jubiläum, wir sind 10!'
   date: 2024-01-05T09:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Hallo liebe Leute!
   
@@ -662,7 +662,7 @@
   url: https://m10z.adrilaida.de/M10Z/M10Z_010.mp3
 - title: 'Fundbüro #06 – Weihnachtspezial'
   date: 2023-12-24T11:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar 'Lipardus' und Jan 'yollum' haben ein paar
                     der neueren Kisten beiseitegeschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
@@ -688,7 +688,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_006_Winterspezial.mp3
 - title: 'Mindestens 10 Zeichen #9 – Eselkacke!'
   date: 2023-11-25T11:59
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Willkommen und Hallo zur Nr. 9 unseres Lieblingspodcasts!
   
@@ -710,7 +710,7 @@
   url: https://m10z.picnotes.de/M10Z/M10Z_009.mp3
 - title: 'Fundbüro #05 – Gallien den Galliern'
   date: 2023-11-19T10:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar
                     der neueren Kisten beiseitegeschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
@@ -737,7 +737,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_005_Gallien_im_Krieg.mp3
 - title: 'Mindestens 10 Zeichen #8 – Der rästelhafte Gast'
   date: 2023-11-03T01:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Liebe Freund:innen, geehrte M10Z-Community, ihr da draußen.
   
@@ -767,7 +767,7 @@
   url: https://m10z.picnotes.de/M10Z/M10Z_008.mp3
 - title: 'En Rogue #01'
   date: 2023-10-31T13:30
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogER.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/enrogue.jpg
   description: |2-
                     In En Rogue begeben sich Jan, Simon und Adrian in den ewigen Kreislauf des Sterbens und Wiederauferstehens.
                     In jeder Folge wird ein Spiel aus dem weiten Feld der Rogue Lites/ Likes besprochen.
@@ -778,7 +778,7 @@
   url: https://m10z.picnotes.de/EnRogue/EnRogue_001.mp3
 - title: 'Fundbüro #04 – Star Wars Episode One in Bestform und die etwas anderen Sportspiele'
   date: 2023-10-19T10:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind. Edgar Lipardus und Jan yollum haben ein paar
                     der neueren Kisten beiseitegeschoben und sich tief in die finsteren Ecken der Spielekultur gewagt. Unter der dicken Staubschicht
@@ -803,7 +803,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3
 - title: 'Mindestens 10 Zeichen #7'
   date: 2023-10-15T01:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Hallo an ALLE da draußen!
   
@@ -830,7 +830,7 @@
   url: https://m10z.picnotes.de/M10Z/M10Z_007.mp3
 - title: 'Once we were Gamers #04 – Wer like sagt, muss auch lite sagen'
   date: 2023-09-10T04:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogOWWG.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
                     In der vierten Episode von „Once we were Gamers“ taucht Simon in die in die Tiefen der Genres der Rogue-Likes und Rogue-Lites ein.
                     Dabei spricht er mit Jan und Adrian nicht nur über die Berliner Interpretation des Genres, sondern die drei formen Ihre persönliche
@@ -842,7 +842,7 @@
   url: https://m10z.picnotes.de/OwwG/OwwG_4_RogueLikeLite.mp3
 - title: 'Mindestens 10 Zeichen #6'
   date: 2023-08-08T01:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Da sind wir wieder, mit der ersten richtigen Folge nach einer kleinen Pause.
   
@@ -862,7 +862,7 @@
   url: https://m10z.picnotes.de/M10Z/M10Z_006.mp3
 - title: 'Once we were Gamers #03 – Kinder, Krisen und Konsolen – Wie der Nachwuchs unser Spielen beeinflusst'
   date: 2023-07-22T04:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogOWWG.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
                     In der dritten Episode von „Once we were Gamers“ habe ich gleich doppelte Unterstützung bei einem Thema, dass alle Eltern betrifft,
                     die auch nach dem Zuwachs in der Familie noch gerne Computerspiele spielen: Wie verändert der Nachwuchs unsere Spielerfahrung.
@@ -874,7 +874,7 @@
   url: https://m10z.picnotes.de/OwwG/OwwG_3_KinderKrisenKonsolen.mp3
 - title: 'Fundbüro #03 – Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon'
   date: 2023-07-09T00:30
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     Herzlich willkommen im Fundbüro.
   
@@ -894,7 +894,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_003.mp3
 - title: 'Mindestens 10 Zeichen #5'
   date: 2023-07-01T01:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Hallo zusammen, hier ist die Nr. 5 vom Podcast "Mindestens 10 Zeichen",
   
@@ -948,7 +948,7 @@
   url: https://m10z.picnotes.de/Spezial/M10ZSpezial_001.mp3
 - title: 'Fundbüro #02 – Mit Lego-Schrott zum Racer-Gott'
   date: 2023-05-10T05:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     Herzlich willkommen im Fundbüro.
   
@@ -965,7 +965,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_002.mp3
 - title: 'Mindestens 10 Zeichen #4'
   date: 2023-05-06T01:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Liebe Gemeinde, auch ohne Wasted geben Marcel, Simon und Til wieder ihr bestes um euch 1,5h mit Futter aus der Community zu
                     unterhalten.
@@ -990,7 +990,7 @@
   url: https://m10z.picnotes.de/M10Z/M10Z_004.mp3
 - title: 'Once we were Gamers #02 – Nostalgie in Videospielen'
   date: 2023-05-03T04:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogOWWG.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
                     In der zweiten Folge von „Once we were Gamers“ ist Georg (aka Brainbug aus dem <a href="https://community.wasted.de">WASTED-Forum</a>) bei Simon zu Gast. Die beiden packen das Thema „Nostalgie in Videospielen“ an.
                     Dabei schwelgen Sie natürlich in Erinnerungen, bewerten aber auch die Bedeutung von Nostalgie in
@@ -1000,7 +1000,7 @@
   url: https://m10z.picnotes.de/OwwG/OwwG_2_Nostalgie.mp3
 - title: 'Once we were Gamers #01 – Lilith unter Kritik (Diablo 4 Beta Preview)'
   date: 2023-04-09T09:30
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogOWWG.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/OWWG_Logo_3000x3000.jpg
   description: |2-
                     Bei „Once we were Gamers“ wirft @Simon einen Blick auf das, was in der Gamingwelt gerade so interessant ist, oder auf das, was er
                     gerade interessant findet. Zur Pilotfolge werden gleich die großen Brocken angegriffen und mit @Luca bespricht er die Diablo 4 Beta,
@@ -1015,7 +1015,7 @@
   url: https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3
 - title: 'Fundbüro #01 – Bilbo im Kreuzfeuer'
   date: 2023-04-01T11:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogFund.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Fundbuero.jpg
   description: |2-
                     Herzlich willkommen im Fundbüro.
   
@@ -1031,7 +1031,7 @@
   url: https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3
 - title: 'Mindestens 10 Zeichen #3 (Wasted)'
   date: 2023-04-01T11:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Liebe Gemeinde!
   
@@ -1053,7 +1053,7 @@
   url: https://m10z.picnotes.de/M10Z/M10Z_003.mp3
 - title: 'Mindestens 10 Zeichen #2 (Wasted)'
   date: 2023-03-12T11:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Liebe Gemeinde!
   
@@ -1073,7 +1073,7 @@
   url: https://m10z.picnotes.de/M10Z/M10Z_002.mp3
 - title: 'Mindestens 10 Zeichen #1 (Wasted)'
   date: 2023-01-25T17:00
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/BannerBlogM10Z.jpg
+  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Mindestens10Zeichen_Remix_Logo3000x3000.jpg
   description: |2-
                     Liebe Community,
   
