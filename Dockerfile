@@ -38,6 +38,8 @@ COPY --from=builder /app/build ./build
 COPY --from=builder /app/static ./static
 COPY --from=builder /app/docusaurus.config.js ./docusaurus.config.js
 COPY --from=builder /app/babel.config.js ./babel.config.js
+COPY --from=builder /app/umami.js ./umami.js
+COPY --from=builder /app/src ./src
 
 ARG PORT
 ENV PORT=$PORT
