@@ -22,6 +22,9 @@ RUN npm run generateAuthors && npm run generateAudioFeed && npm run coolify-buil
 # -------------------------
 FROM node:22-alpine
 
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 # Copy package files
@@ -41,5 +44,9 @@ ENV PORT=$PORT
 ENV NODE_ENV=production
 
 EXPOSE $PORT
+
+# Add healthcheck for Coolify
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:$PORT/ || exit 1
 
 CMD ["npm", "run", "coolify"]
