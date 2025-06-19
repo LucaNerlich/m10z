@@ -14,7 +14,7 @@
             <itunes:email>m10z@posteo.de</itunes:email>
         </itunes:owner>
         <itunes:author>M10Z</itunes:author>
-        <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/m10z.jpg</itunes:image>
+        <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z.jpg</itunes:image>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!</title>
@@ -320,7 +320,7 @@
         </item>
 
         <image>
-            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/cover/m10z.jpg</url>
+            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z.jpg</url>
             <title>M10Z Podcasts</title>
             <link>https://m10z.de</link>
         </image>
