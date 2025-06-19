@@ -5,13 +5,16 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+# Copy package files first for better caching
 COPY package*.json ./
 
-RUN npm install
+# Install all dependencies (including dev dependencies for build)
+RUN npm ci
 
+# Copy source files
 COPY . .
 
-# build the Docusaurus site
+# Generate files and build
 RUN npm run generateAuthors && npm run generateAudioFeed && npm run coolify-build
 
 # -------------------------
@@ -21,10 +24,17 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# copy only necessary artifacts from build stage
-COPY --from=builder /app /app
+# Copy package files
+COPY package*.json ./
 
-RUN npm ci --production && npm cache clean --force
+# Install only production dependencies
+RUN npm ci --production --silent && npm cache clean --force
+
+# Copy built application from builder stage (only the built files)
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/static ./static
+COPY --from=builder /app/docusaurus.config.js ./docusaurus.config.js
+COPY --from=builder /app/babel.config.js ./babel.config.js
 
 ARG PORT
 ENV PORT=$PORT
