@@ -1,8 +1,8 @@
 ---
 slug: Verse-X
 title: 'Virtuelle Verse'
-authors: [ tilmobaxter ]
-tags: [ tilmobaxter,lyrik ]
+authors: [tilmobaxter]
+tags: [tilmobaxter,lyrik]
 draft: false
 ---
 
