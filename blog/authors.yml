@@ -43,7 +43,10 @@ yollum:
   page: true
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/yollum/64/282_2.png
   name: Jan
+  description: Hobby-Podcaster und Let's Player
   url: /tags/yollum
+  socials:
+    youtube: https://www.youtube.com/@yollum
 brainbug:
   page: true
   image_url: https://share.lucanerlich.com/s/rbGNpdooDzZ362f/download/brainbug22.png
@@ -53,6 +56,7 @@ lipardus:
   page: true
   image_url: https://community.wasted.de/user_avatar/community.wasted.de/lipardus/120/6224_2.png
   name: Edgar
+  description: Liebt trashige Getränke, Videospiele aus der Grabbelkiste und Debatten über Politik
   url: /tags/lipardus
 vfbfan:
   page: true
