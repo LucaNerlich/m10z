@@ -36,7 +36,7 @@
         "react-dom": "^19.1.0",
         "react-player": "^3.2.0",
         "remark-math": "^6.0.0",
-        "sharp": "^0.34.2"
+        "sharp": "^0.34.3"
     },
     "devDependencies": {
         "@docusaurus/module-type-aliases": "^3.8.1",
