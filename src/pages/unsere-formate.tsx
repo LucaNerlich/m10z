@@ -25,7 +25,7 @@ function TableOfContents() {
     };
 
     const sections = [
-        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 6 },
+        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 7 },
         { id: 'hauptformat-community', title: 'Hauptformat & Community', count: 2 },
         { id: 'kultur-kreatives', title: 'Kultur & Kreatives', count: 4 },
         { id: 'kolumnen-gastbeitraege', title: 'Kolumnen & Gastbeiträge', count: 4 },
@@ -105,12 +105,20 @@ export default function Formate() {
                             <Beteiligte text='Simon, Marcel, Til' />
                         </SingleFormat>
 
-                        <SingleFormat title='c10z' link='/tags/c-10-z' imagePath='/img/formate/cover/c10z.jpg'>
+                        <SingleFormat title='Circa 10 Zeichen' link='/tags/c-10-z' imagePath='/img/formate/cover/c10z.jpg'>
                             <p>
-                                Eine Serie von Gaming-Reviews und Gedanken zu verschiedenen Spielen, 
+                                Eine Serie von Gaming-Reviews und Gedanken zu verschiedenen Spielen,
                                 die einen tieferen Blick auf die Spielewelt werfen.
                             </p>
-                            <Beteiligte text='c10z Team' />
+                            <Beteiligte text='Luca' />
+                        </SingleFormat>
+
+                        <SingleFormat title='Zocken ohne Zaster' link='/tags/zoz' imagePath='/img/formate/banner/zoz.jpg'>
+                            <p>
+                                Gaming mit kleinem Budget – entdeckt großartige Spiele, die wenig kosten oder sogar kostenlos sind.
+                                Beweise, dass gute Unterhaltung nicht teuer sein muss.
+                            </p>
+                            <Beteiligte text='Marcel, Til' />
                         </SingleFormat>
                     </div>
                 </section>
