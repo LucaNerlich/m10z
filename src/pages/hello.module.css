@@ -101,7 +101,7 @@
 }
 
 .highlightBox {
-    background: var(--ifm-color-primary-lightest);
+    background: #f8f9fa;
     border-left: 4px solid var(--ifm-color-primary);
     border-radius: 4px;
     padding: 1.5rem;
@@ -109,7 +109,7 @@
 }
 
 [data-theme='dark'] .highlightBox {
-    background: var(--ifm-color-primary-darkest);
+    background: #2a2a2a;
 }
 
 .highlightBox p {
@@ -122,20 +122,22 @@
 }
 
 .warningBox {
-    background: var(--ifm-color-warning-lightest);
-    border: 1px solid var(--ifm-color-warning);
-    border-left: 4px solid var(--ifm-color-warning);
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-left: 4px solid #dc3545;
     border-radius: 4px;
     padding: 1rem 1.5rem;
     margin: 2rem 0;
 }
 
 [data-theme='dark'] .warningBox {
-    background: var(--ifm-color-warning-darkest);
+    background: #2a2a2a;
+    border-color: #444;
+    border-left-color: #dc3545;
 }
 
 .warningBox p {
-    color: var(--ifm-color-warning-darkest);
+    color: var(--ifm-color-content);
     font-weight: 500;
     margin: 0;
 }
@@ -194,16 +196,16 @@
 
 .ctaSection {
     text-align: center;
-    background: var(--ifm-color-primary-lightest);
+    background: #f8f9fa;
     border-radius: 12px;
     padding: 2rem;
     margin: 3rem 0;
-    border: 1px solid var(--ifm-color-primary-lighter);
+    border: 1px solid #dee2e6;
 }
 
 [data-theme='dark'] .ctaSection {
-    background: var(--ifm-color-primary-darkest);
-    border-color: var(--ifm-color-primary-dark);
+    background: #2a2a2a;
+    border-color: #444;
 }
 
 .ctaButton {
