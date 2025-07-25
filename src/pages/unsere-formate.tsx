@@ -25,7 +25,7 @@ function TableOfContents() {
     };
 
     const sections = [
-        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 5 },
+        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 6 },
         { id: 'hauptformat-community', title: 'Hauptformat & Community', count: 2 },
         { id: 'kultur-kreatives', title: 'Kultur & Kreatives', count: 4 },
         { id: 'kolumnen-gastbeitraege', title: 'Kolumnen & Gastbeiträge', count: 4 },
@@ -103,6 +103,14 @@ export default function Formate() {
                                 Drei Perspektiven auf die Gaming-Welt – das Telespiel Trio bespricht gemeinsam aktuelle und klassische Videospiele.
                             </p>
                             <Beteiligte text='Simon, Marcel, Til' />
+                        </SingleFormat>
+
+                        <SingleFormat title='c10z' link='/tags/c-10-z' imagePath='/img/formate/cover/c10z.jpg'>
+                            <p>
+                                Eine Serie von Gaming-Reviews und Gedanken zu verschiedenen Spielen, 
+                                die einen tieferen Blick auf die Spielewelt werfen.
+                            </p>
+                            <Beteiligte text='c10z Team' />
                         </SingleFormat>
                     </div>
                 </section>
