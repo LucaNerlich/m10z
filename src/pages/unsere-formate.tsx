@@ -16,6 +16,41 @@ function Beteiligte(props) {
     );
 }
 
+function TableOfContents() {
+    const scrollToSection = (sectionId: string) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    const sections = [
+        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 5 },
+        { id: 'hauptformat-community', title: 'Hauptformat & Community', count: 2 },
+        { id: 'kultur-kreatives', title: 'Kultur & Kreatives', count: 4 },
+        { id: 'kolumnen-gastbeitraege', title: 'Kolumnen & Gastbeiträge', count: 3 },
+        { id: 'archiv', title: 'Archiv', count: 1 }
+    ];
+
+    return (
+        <div className={styles.tocSection}>
+            <h3 className={styles.tocTitle}>📋 Inhaltsverzeichnis</h3>
+            <div className={styles.tocGrid}>
+                {sections.map((section) => (
+                    <div
+                        key={section.id}
+                        className={styles.tocItem}
+                        onClick={() => scrollToSection(section.id)}
+                    >
+                        <span className={styles.tocItemText}>{section.title}</span>
+                        <span className={styles.tocItemCount}>{section.count}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export default function Formate() {
     return (
         <Layout title='Unsere Formate' description='Welche Formate wir im Programm haben'>
@@ -25,7 +60,9 @@ export default function Formate() {
                     Entdecke die vielfältigen Inhalte von M10Z – von Gaming-Podcasts über Literatur bis hin zu technischen Projekten.
                 </p>
 
-                <section className={styles.section}>
+                <TableOfContents />
+
+                <section className={styles.section} id="gaming-podcasts">
                     <h2 className={styles.sectionTitle}>Gaming & Podcasts</h2>
                     <p className={styles.sectionDescription}>
                         Unsere Gaming-Formate decken alles ab – von Retro-Gaming bis zu aktuellen Releases.
@@ -70,7 +107,7 @@ export default function Formate() {
                     </div>
                 </section>
 
-                <section className={styles.section}>
+                <section className={styles.section} id="hauptformat-community">
                     <h2 className={styles.sectionTitle}>Hauptformat & Community</h2>
                     <p className={styles.sectionDescription}>
                         Das Herzstück von M10Z und unsere Community-Formate.
@@ -107,7 +144,7 @@ export default function Formate() {
                     </div>
                 </section>
 
-                <section className={styles.section}>
+                <section className={styles.section} id="kultur-kreatives">
                     <h2 className={styles.sectionTitle}>Kultur & Kreatives</h2>
                     <p className={styles.sectionDescription}>
                         Von Comics über Literatur bis hin zu kreativen Gedanken – hier findet ihr kulturelle Inhalte.
@@ -150,7 +187,7 @@ export default function Formate() {
                     </div>
                 </section>
 
-                <section className={styles.section}>
+                <section className={styles.section} id="kolumnen-gastbeitraege">
                     <h2 className={styles.sectionTitle}>Kolumnen & Gastbeiträge</h2>
                     <p className={styles.sectionDescription}>
                         Persönliche Gedanken und Gastbeiträge aus der Community.
@@ -179,7 +216,7 @@ export default function Formate() {
                     </div>
                 </section>
 
-                <section className={styles.archiveSection}>
+                <section className={styles.archiveSection} id="archiv">
                     <h2 className={styles.sectionTitle}>Archiv</h2>
                     <p className={styles.sectionDescription}>
                         Formate, die nicht mehr aktiv sind, aber deren Inhalte weiterhin verfügbar bleiben.
