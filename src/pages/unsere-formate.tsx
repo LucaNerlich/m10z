@@ -28,7 +28,7 @@ function TableOfContents() {
         { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 5 },
         { id: 'hauptformat-community', title: 'Hauptformat & Community', count: 2 },
         { id: 'kultur-kreatives', title: 'Kultur & Kreatives', count: 4 },
-        { id: 'kolumnen-gastbeitraege', title: 'Kolumnen & Gastbeiträge', count: 3 },
+        { id: 'kolumnen-gastbeitraege', title: 'Kolumnen & Gastbeiträge', count: 4 },
         { id: 'archiv', title: 'Archiv', count: 1 }
     ];
 
@@ -212,6 +212,14 @@ export default function Formate() {
                                 'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
                             </p>
                             <Beteiligte text='Luca' />
+                        </SingleFormat>
+
+                        <SingleFormat title='Brief Bookmarks' link='/tags/brief-bookmarks' imagePath='/img/articles/briefbookmarks/dosdeck.png'>
+                            <p>
+                                'Brief Bookmarks' sind kurze Infohäppchen, die vielleicht den einen oder anderen interessieren könnten.
+                                Adrian teilt interessante Tech-Tools, Websites und Entdeckungen aus dem Netz.
+                            </p>
+                            <Beteiligte text='Adrian' />
                         </SingleFormat>
                     </div>
                 </section>
