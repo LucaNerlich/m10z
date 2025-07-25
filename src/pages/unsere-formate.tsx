@@ -18,7 +18,7 @@ export default function Formate() {
             <div className={styles.wrapper}>
                 <h1 className={styles.headline}>Unsere Formate</h1>
 
-                <SingleFormat title='En Rogue' link='/tags/en-rogue' imagePath='/img/formate/cover/enrogue.jpg'>
+                <SingleFormat title='En Rogue' link='/tags/en-rogue' imagePath='/img/formate/banner/enrogue.jpg'>
                     <p>
                         In En Rogue begeben sich Jan, Simon und Adrian in den ewigen Kreislauf des Sterbens und Wiederauferstehens.
                         In jeder Folge wird ein Spiel aus dem weiten Feld der Rogue Lites/ Likes besprochen.
@@ -26,7 +26,7 @@ export default function Formate() {
                     <Beteiligte text='Simon, Adrian, Jan' />
                 </SingleFormat>
 
-                <SingleFormat title='Fundbüro' link='/tags/fundbuero' imagePath='/img/formate/cover/fundbuero.jpg'>
+                <SingleFormat title='Fundbüro' link='/tags/fundbuero' imagePath='/img/formate/banner/fundbuero.jpg'>
                     <p>
                         In diesem Podcast findest du Spiele, die (beinahe) schon in Vergessenheit geraten sind.
                     </p>
@@ -54,7 +54,7 @@ export default function Formate() {
                     <Beteiligte text='KaFour' />
                 </SingleFormat>
 
-                <SingleFormat title='Mindestens 10 Zeichen' link='/tags/m-10-z' imagePath='/img/formate/cover/m10z-podcast.jpg'>
+                <SingleFormat title='Mindestens 10 Zeichen' link='/tags/m-10-z' imagePath='/img/formate/banner/m10z-podcast.jpg'>
                     <p>
                         "Mindestens 10 Zeichen" ist unser M10Z Podcast der Podcasts, der in dem es um alles geht:
                         <br />
@@ -75,25 +75,73 @@ export default function Formate() {
                     </p>
                     <Beteiligte text='Marcel (kkuez), Til (tilmobaxter), Simon (simon)' />
                 </SingleFormat>
-                <SingleFormat title='Once we were Gamers' link='/tags/owwg'>
+
+                <SingleFormat title='Once we were Gamers' link='/tags/owwg' imagePath='/img/formate/banner/owwg.jpg'>
                     <p>
                         Bei „Once we were Gamers“ wirft Simon einen Blick auf das, was in der Gamingwelt gerade so interessant ist, oder auf das, was
                         er gerade interessant findet.
                     </p>
-                    <Beteiligte text='Simon' />
+                    <Beteiligte text='Simon & Franziska' />
                 </SingleFormat>
-                <SingleFormat title='Virtuelle Verse' link='/tags/lyrik'>
+
+                <SingleFormat title='Virtuelle Verse' link='/tags/lyrik' imagePath='/img/formate/banner/verse.jpg'>
                     <p>
                         Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert euch Til einmal die Woche die „Virtuellen Verse“.
                     </p>
                     <Beteiligte text='Til' />
                 </SingleFormat>
+
                 <SingleFormat title='Open Beta' link='/tags/openbeta' imagePath='/img/articles/OpenBetaLogo.jpg'>
                     <p>
                         In Open Beta öffnen wir M10Z für eure Gastbeiträge. Kurze Gedankenblitze, lange Kolumnen, Spielkritiken, … alles kann, nichts
                         muss.
                     </p>
                 </SingleFormat>
+
+                <SingleFormat title='Pixelplausch' link='/tags/pixelplausch' imagePath='/img/formate/banner/pixelplausch.jpg'>
+                    <p>
+                        TODO
+                    </p>
+                    <Beteiligte text='Jan, Georg & Gäste' />
+
+                </SingleFormat>
+
+                <SingleFormat title='ComicCast' link='/tags/comiccast' imagePath='/img/formate/banner/comiccast.jpg'>
+                    <p>
+                        TODO
+                    </p>
+                    <Beteiligte text='Edgar, Simon, Til' />
+                </SingleFormat>
+
+                <SingleFormat title='Telespiel Trio' link='/tags/telespiel-trio' imagePath='/img/formate/banner/telespiel-trio.jpg'>
+                    <p>
+                        TODO
+                    </p>
+                    <Beteiligte text='Simon, Marcel, Til' />
+                </SingleFormat>
+
+                <SingleFormat title='Fantastische Fakten' link='/tags/fakten' imagePath='/img/formate/banner/fakten.jpg'>
+                    <p>
+                        TODO
+                    </p>
+                    <Beteiligte text='Jan, Simon, Til' />
+                </SingleFormat>
+
+                <SingleFormat title='Quiz' link='/tags/quiz'>
+                    <p>
+                        TODO
+                    </p>
+                    <Beteiligte text='Simon & Gäste' />
+                </SingleFormat>
+
+                <SingleFormat title='Sunday Projects' link='/tags/sunday-projects' imagePath='/img/tech/sundayprojects/rssgen.jpg'>
+                    <p>
+                        'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
+                    </p>
+                    <Beteiligte text='Luca' />
+                </SingleFormat>
+
+                <h2>Archiv</h2>
 
                 <SingleFormat title='Das gesprochene Wort' link='/tags/dgw' imagePath='/img/formate/cover/dgw.jpg'>
                     <p>
@@ -109,13 +157,6 @@ export default function Formate() {
                     </p>
 
                     <Beteiligte text='Marcel (kkuez)' />
-                </SingleFormat>
-                <SingleFormat title='Sunday Projects' link='/tags/sunday-projects' imagePath='/img/tech/sundayprojects/rssgen.jpg'>
-                    <p>
-                        'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
-                    </p>
-                    <Beteiligte text='Luca' />
-
                 </SingleFormat>
             </div>
         </Layout>
