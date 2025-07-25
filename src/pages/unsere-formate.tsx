@@ -106,7 +106,7 @@ export default function Formate() {
 
                 </SingleFormat>
 
-                <SingleFormat title='ComicCast' link='/tags/comiccast' imagePath='/img/formate/banner/comiccast.jpg'>
+                <SingleFormat title='ComicCast' link='/tags/comiccast' imagePath='/img/formate/banner/comic-cast.jpg'>
                     <p>
                         TODO
                     </p>
