@@ -1,11 +1,10 @@
 .wrapper {
-    background: var(--ifm-card-background-color, #fff);
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
     margin-bottom: 2rem;
     transition: all 0.3s ease;
-    border: 1px solid var(--ifm-color-emphasis-200);
+    border: 1px solid grey;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -15,11 +14,6 @@
 .wrapper:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
-}
-
-[data-theme='dark'] .wrapper {
-    background: var(--ifm-background-surface-color);
-    border-color: var(--ifm-color-emphasis-300);
 }
 
 .wrapper h2 {
@@ -60,11 +54,9 @@
 .content p {
     margin-bottom: 0.75rem;
     line-height: 1.6;
-    color: var(--ifm-color-content);
 }
 
 .participants {
-    background: var(--ifm-color-emphasis-100);
     padding: 0.75rem 1rem;
     border-radius: 8px;
     margin-top: auto;
@@ -83,7 +75,6 @@
 
 .participants em {
     font-style: normal;
-    color: var(--ifm-color-content-secondary);
 }
 
 .linkButton {
@@ -103,7 +94,6 @@
 }
 
 .linkButton:hover {
-    background: var(--ifm-color-primary-dark);
     transform: translateY(-1px);
     color: white !important;
 }
@@ -128,11 +118,11 @@
         padding: 1rem;
         margin-bottom: 1.5rem;
     }
-    
+
     .wrapper h2 {
         font-size: 1.3rem;
     }
-    
+
     .wrapper img {
         height: 150px;
     }

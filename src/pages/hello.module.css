@@ -17,7 +17,6 @@
 
 .subtitle {
     text-align: center;
-    color: var(--ifm-color-content-secondary);
     font-size: 1.1rem;
     margin-bottom: 3rem;
     max-width: 600px;
@@ -48,22 +47,15 @@
 }
 
 .compactCard {
-    background: var(--ifm-card-background-color, #fff);
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
-    border: 1px solid var(--ifm-color-emphasis-200);
-}
-
-[data-theme='dark'] .compactCard {
-    background: var(--ifm-background-surface-color);
-    border-color: var(--ifm-color-emphasis-300);
+    border: 1px solid grey;
 }
 
 .compactCard p {
     line-height: 1.6;
     margin-bottom: 1rem;
-    color: var(--ifm-color-content);
 }
 
 .compactCard p:last-child {
@@ -87,7 +79,6 @@
 .textSection p {
     line-height: 1.6;
     margin-bottom: 1rem;
-    color: var(--ifm-color-content);
 }
 
 .textSection a {
@@ -137,24 +128,14 @@
 }
 
 .warningBox p {
-    color: var(--ifm-color-content);
     font-weight: 500;
     margin: 0;
 }
 
-[data-theme='dark'] .warningBox p {
-    color: var(--ifm-color-warning-lightest);
-}
-
 .authorsSection {
-    background: var(--ifm-color-emphasis-100);
     border-radius: 12px;
     padding: 2rem;
     margin-top: 3rem;
-}
-
-[data-theme='dark'] .authorsSection {
-    background: var(--ifm-color-emphasis-200);
 }
 
 .authorsSection .sectionTitle {
@@ -190,10 +171,6 @@
     color: inherit !important;
 }
 
-.authorsLink:hover .sectionTitle {
-    color: var(--ifm-color-primary-dark);
-}
-
 .ctaSection {
     text-align: center;
     background: #f8f9fa;
@@ -223,7 +200,6 @@
 }
 
 .ctaButton:hover {
-    background: var(--ifm-color-primary-dark);
     transform: translateY(-1px);
     color: white !important;
 }
@@ -243,33 +219,33 @@
     .wrapper {
         padding: 1rem;
     }
-    
+
     .headline {
         font-size: 2rem;
     }
-    
+
     .subtitle {
         font-size: 1rem;
         margin-bottom: 2rem;
     }
-    
+
     .sectionTitle {
         font-size: 1.3rem;
     }
-    
+
     .twoColumnSection {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
-    
+
     .compactCard {
         padding: 1rem;
     }
-    
+
     .authorsSection {
         padding: 1.5rem;
     }
-    
+
     .authors {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -280,7 +256,7 @@
     .headline {
         font-size: 1.75rem;
     }
-    
+
     .highlightBox, .compactCard {
         padding: 1rem;
     }

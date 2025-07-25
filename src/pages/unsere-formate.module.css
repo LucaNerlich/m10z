@@ -17,7 +17,6 @@
 
 .subtitle {
     text-align: center;
-    color: var(--ifm-color-content-secondary);
     font-size: 1.1rem;
     margin-bottom: 3rem;
     max-width: 600px;
@@ -54,7 +53,6 @@
 
 .sectionDescription {
     text-align: center;
-    color: var(--ifm-color-content-secondary);
     margin-bottom: 2rem;
     font-size: 1rem;
     line-height: 1.5;
@@ -69,22 +67,13 @@
 }
 
 .archiveSection {
-    background: var(--ifm-color-emphasis-100);
     border-radius: 16px;
     padding: 2rem;
     margin-top: 3rem;
 }
 
-[data-theme='dark'] .archiveSection {
-    background: var(--ifm-color-emphasis-200);
-}
-
 .archiveSection .sectionTitle {
     margin-bottom: 1.5rem;
-}
-
-.archiveSection .sectionTitle::after {
-    background: var(--ifm-color-content-secondary);
 }
 
 .categorySection {
@@ -98,26 +87,15 @@
     margin-bottom: 1.5rem;
     padding-left: 1rem;
     border-left: 4px solid var(--ifm-color-primary);
-    background: var(--ifm-color-emphasis-100);
     padding: 1rem;
     border-radius: 8px;
 }
 
-[data-theme='dark'] .categoryTitle {
-    background: var(--ifm-color-emphasis-200);
-}
-
 .tocSection {
-    background: var(--ifm-color-emphasis-100);
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 3rem;
-    border: 1px solid var(--ifm-color-emphasis-200);
-}
-
-[data-theme='dark'] .tocSection {
-    background: var(--ifm-color-emphasis-200);
-    border-color: var(--ifm-color-emphasis-300);
+    border: 1px solid grey;
 }
 
 .tocTitle {
@@ -139,28 +117,19 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1rem;
-    background: var(--ifm-card-background-color, #fff);
     border-radius: 8px;
     text-decoration: none !important;
-    color: var(--ifm-color-content) !important;
     transition: all 0.2s ease;
-    border: 1px solid var(--ifm-color-emphasis-200);
+    border: 1px solid grey;
     cursor: pointer;
 }
 
 .tocItem:hover {
-    background: var(--ifm-color-primary-lightest);
     border-color: var(--ifm-color-primary);
     transform: translateY(-1px);
-    color: var(--ifm-color-content) !important;
-}
-
-[data-theme='dark'] .tocItem {
-    background: var(--ifm-background-surface-color);
 }
 
 [data-theme='dark'] .tocItem:hover {
-    background: var(--ifm-color-primary-dark);
     color: white !important;
 }
 
@@ -180,44 +149,35 @@
     text-align: center;
 }
 
-.tocItem:hover .tocItemCount {
-    background: var(--ifm-color-primary-dark);
-}
-
-[data-theme='dark'] .tocItem:hover .tocItemCount {
-    background: var(--ifm-color-primary-light);
-    color: var(--ifm-color-primary-darkest);
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .wrapper {
         padding: 1rem;
     }
-    
+
     .headline {
         font-size: 2rem;
     }
-    
+
     .subtitle {
         font-size: 1rem;
         margin-bottom: 2rem;
     }
-    
+
     .formatsGrid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
-    
+
     .sectionTitle {
         font-size: 1.5rem;
     }
-    
+
     .categoryTitle {
         font-size: 1.3rem;
         padding: 0.75rem;
     }
-    
+
     .archiveSection {
         padding: 1.5rem;
     }
@@ -228,11 +188,11 @@
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .headline {
         font-size: 1.75rem;
     }
-    
+
     .categoryTitle {
         font-size: 1.2rem;
     }
