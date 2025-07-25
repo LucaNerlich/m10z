@@ -27,20 +27,144 @@
 }
 
 .section {
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
+}
+
+.twoColumnSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
 }
 
 .sectionTitle {
     color: var(--ifm-color-primary);
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--ifm-color-primary);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.compactCard {
+    background: var(--ifm-card-background-color, #fff);
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] .compactCard {
+    background: var(--ifm-background-surface-color);
+    border-color: var(--ifm-color-emphasis-300);
+}
+
+.compactCard p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: var(--ifm-color-content);
+}
+
+.compactCard p:last-child {
+    margin-bottom: 0;
+}
+
+.compactCard a {
+    color: var(--ifm-color-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.compactCard a:hover {
+    text-decoration: underline;
+}
+
+.textSection {
+    margin-bottom: 2rem;
+}
+
+.textSection p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: var(--ifm-color-content);
+}
+
+.textSection a {
+    color: var(--ifm-color-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.textSection a:hover {
+    text-decoration: underline;
+}
+
+.highlightBox {
+    background: var(--ifm-color-primary-lightest);
+    border-left: 4px solid var(--ifm-color-primary);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+[data-theme='dark'] .highlightBox {
+    background: var(--ifm-color-primary-darkest);
+}
+
+.highlightBox p {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+.highlightBox p:last-child {
+    margin-bottom: 0;
+}
+
+.warningBox {
+    background: var(--ifm-color-warning-lightest);
+    border: 1px solid var(--ifm-color-warning);
+    border-left: 4px solid var(--ifm-color-warning);
+    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+}
+
+[data-theme='dark'] .warningBox {
+    background: var(--ifm-color-warning-darkest);
+}
+
+.warningBox p {
+    color: var(--ifm-color-warning-darkest);
+    font-weight: 500;
+    margin: 0;
+}
+
+[data-theme='dark'] .warningBox p {
+    color: var(--ifm-color-warning-lightest);
+}
+
+.authorsSection {
+    background: var(--ifm-color-emphasis-100);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 3rem;
+}
+
+[data-theme='dark'] .authorsSection {
+    background: var(--ifm-color-emphasis-200);
+}
+
+.authorsSection .sectionTitle {
     text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: none;
     position: relative;
     padding-bottom: 1rem;
 }
 
-.sectionTitle::after {
+.authorsSection .sectionTitle::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -50,79 +174,6 @@
     height: 3px;
     background: var(--ifm-color-primary);
     border-radius: 2px;
-}
-
-.contentCard {
-    background: var(--ifm-card-background-color, #fff);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    margin-bottom: 2rem;
-    border: 1px solid var(--ifm-color-emphasis-200);
-}
-
-[data-theme='dark'] .contentCard {
-    background: var(--ifm-background-surface-color);
-    border-color: var(--ifm-color-emphasis-300);
-}
-
-.contentCard p {
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    color: var(--ifm-color-content);
-}
-
-.contentCard p:last-child {
-    margin-bottom: 0;
-}
-
-.contentCard a {
-    color: var(--ifm-color-primary);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.contentCard a:hover {
-    text-decoration: underline;
-}
-
-.highlightCard {
-    background: linear-gradient(135deg, var(--ifm-color-primary-lightest), var(--ifm-color-primary-lighter));
-    border: 2px solid var(--ifm-color-primary);
-}
-
-[data-theme='dark'] .highlightCard {
-    background: linear-gradient(135deg, var(--ifm-color-primary-darkest), var(--ifm-color-primary-dark));
-}
-
-.warningCard {
-    background: var(--ifm-color-warning-lightest);
-    border: 2px solid var(--ifm-color-warning);
-    border-left: 6px solid var(--ifm-color-warning);
-}
-
-[data-theme='dark'] .warningCard {
-    background: var(--ifm-color-warning-darkest);
-}
-
-.warningCard p {
-    color: var(--ifm-color-warning-darkest);
-    font-weight: 500;
-}
-
-[data-theme='dark'] .warningCard p {
-    color: var(--ifm-color-warning-lightest);
-}
-
-.authorsSection {
-    background: var(--ifm-color-emphasis-100);
-    border-radius: 16px;
-    padding: 2rem;
-    margin-top: 2rem;
-}
-
-[data-theme='dark'] .authorsSection {
-    background: var(--ifm-color-emphasis-200);
 }
 
 .authors {
@@ -201,11 +252,16 @@
     }
     
     .sectionTitle {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
     
-    .contentCard {
-        padding: 1.5rem;
+    .twoColumnSection {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .compactCard {
+        padding: 1rem;
     }
     
     .authorsSection {
@@ -223,7 +279,7 @@
         font-size: 1.75rem;
     }
     
-    .contentCard {
+    .highlightBox, .compactCard {
         padding: 1rem;
     }
 }
