@@ -25,10 +25,10 @@ function TableOfContents() {
     };
 
     const sections = [
-        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 5 },
+        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 8 },
         { id: 'hauptformat-community', title: 'Hauptformat & Community', count: 2 },
         { id: 'kultur-kreatives', title: 'Kultur & Kreatives', count: 4 },
-        { id: 'kolumnen-gastbeitraege', title: 'Kolumnen & Gastbeiträge', count: 3 },
+        { id: 'kolumnen-gastbeitraege', title: 'Kolumnen & Gastbeiträge', count: 4 },
         { id: 'archiv', title: 'Archiv', count: 1 }
     ];
 
@@ -103,6 +103,30 @@ export default function Formate() {
                                 Drei Perspektiven auf die Gaming-Welt – das Telespiel Trio bespricht gemeinsam aktuelle und klassische Videospiele.
                             </p>
                             <Beteiligte text='Simon, Marcel, Til' />
+                        </SingleFormat>
+
+                        <SingleFormat title='Circa 10 Zeichen' link='/tags/c-10-z' imagePath='/img/formate/cover/c10z.jpg'>
+                            <p>
+                                Eine Serie von Gaming-Reviews und Gedanken zu verschiedenen Spielen,
+                                die einen tieferen Blick auf die Spielewelt werfen.
+                            </p>
+                            <Beteiligte text='Luca' />
+                        </SingleFormat>
+
+                        <SingleFormat title='Zocken ohne Zaster' link='/tags/zoz' imagePath='/img/formate/banner/zoz.jpg'>
+                            <p>
+                                Gaming mit kleinem Budget – entdeckt großartige Spiele, die wenig kosten oder sogar kostenlos sind.
+                                Beweise, dass gute Unterhaltung nicht teuer sein muss.
+                            </p>
+                            <Beteiligte text='Marcel, Til' />
+                        </SingleFormat>
+
+                        <SingleFormat title='Des GamePasses geheime Perlen' link='/tags/dgpgp' imagePath='/img/formate/banner/geheime-perlen.jpg'>
+                            <p>
+                                Eine Entdeckungsreise durch den Xbox Game Pass – versteckte Schätze und übersehene Perlen,
+                                die in der riesigen Bibliothek darauf warten, entdeckt zu werden.
+                            </p>
+                            <Beteiligte text='Marcel, Til' />
                         </SingleFormat>
                     </div>
                 </section>
@@ -212,6 +236,14 @@ export default function Formate() {
                                 'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
                             </p>
                             <Beteiligte text='Luca' />
+                        </SingleFormat>
+
+                        <SingleFormat title='Brief Bookmarks' link='/tags/brief-bookmarks' imagePath='/img/articles/briefbookmarks/dosdeck.png'>
+                            <p>
+                                'Brief Bookmarks' sind kurze Infohäppchen, die vielleicht den einen oder anderen interessieren könnten.
+                                Adrian teilt interessante Tech-Tools, Websites und Entdeckungen aus dem Netz.
+                            </p>
+                            <Beteiligte text='Adrian' />
                         </SingleFormat>
                     </div>
                 </section>
