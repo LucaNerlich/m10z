@@ -13,20 +13,21 @@ interface SingleFormatProps {
 
 export default function SingleFormat(props: SingleFormatProps): React.ReactElement {
     return (
-        <div className={styles.wrapper}>
+        <article className={styles.wrapper}>
             <h2>{props.title ?? 'I am a SingleFormat'}</h2>
-            {props.imagePath &&
-                <img src={props.imagePath} alt={props.title} />
-            }
+            {props.imagePath && (
+                <div className={styles.imageContainer}>
+                    <img src={props.imagePath} alt={props.title} />
+                </div>
+            )}
             <div className={styles.content}>
                 {props.children}
             </div>
-            {props.link &&
-                <Link to={props.link}>
-                    <p>Alle Posts dieser Kategorie</p>
+            {props.link && (
+                <Link to={props.link} className={styles.linkButton}>
+                    Alle Posts dieser Kategorie
                 </Link>
-            }
-            <hr/>
-        </div>
+            )}
+        </article>
     )
 }
