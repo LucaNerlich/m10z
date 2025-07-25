@@ -175,8 +175,12 @@ const config = {
                 },
                 items: [
                     {
-                        to: 'tags',
-                        label: 'Kategorien',
+                        to: '/content/unsere-formate',
+                        label: 'Unsere Formate',
+                    },
+                    {
+                        to: '/content/hello',
+                        label: 'Wer wir sind',
                     },
                     {
                         to: '/tags/podcast',
@@ -187,12 +191,8 @@ const config = {
                         label: 'Artikel',
                     },
                     {
-                        to: '/content/hello',
-                        label: 'Wer wir sind',
-                    },
-                    {
-                        to: '/content/unsere-formate',
-                        label: 'Unsere Formate',
+                        to: 'tags',
+                        label: 'Kategorien',
                     },
                     {
                         href: 'https://community.wasted.de/c/m10z/11',
