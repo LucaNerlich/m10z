@@ -25,7 +25,7 @@ function TableOfContents() {
     };
 
     const sections = [
-        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 7 },
+        { id: 'gaming-podcasts', title: 'Gaming & Podcasts', count: 8 },
         { id: 'hauptformat-community', title: 'Hauptformat & Community', count: 2 },
         { id: 'kultur-kreatives', title: 'Kultur & Kreatives', count: 4 },
         { id: 'kolumnen-gastbeitraege', title: 'Kolumnen & Gastbeiträge', count: 4 },
@@ -117,6 +117,14 @@ export default function Formate() {
                             <p>
                                 Gaming mit kleinem Budget – entdeckt großartige Spiele, die wenig kosten oder sogar kostenlos sind.
                                 Beweise, dass gute Unterhaltung nicht teuer sein muss.
+                            </p>
+                            <Beteiligte text='Marcel, Til' />
+                        </SingleFormat>
+
+                        <SingleFormat title='Des GamePasses geheime Perlen' link='/tags/dgpgp' imagePath='/img/formate/banner/geheime-perlen.jpg'>
+                            <p>
+                                Eine Entdeckungsreise durch den Xbox Game Pass – versteckte Schätze und übersehene Perlen,
+                                die in der riesigen Bibliothek darauf warten, entdeckt zu werden.
                             </p>
                             <Beteiligte text='Marcel, Til' />
                         </SingleFormat>
