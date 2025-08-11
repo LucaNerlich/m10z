@@ -6,6 +6,7 @@
 
 @import "theme.css";
 @import "text.css";
+@import "embed.css";
 
 /* You can override the default Infima variables here. */
 :root {
