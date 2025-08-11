@@ -254,7 +254,7 @@ export default function Formate() {
                         Formate, die nicht mehr aktiv sind, aber deren Inhalte weiterhin verfügbar bleiben.
                     </p>
                     <div className={styles.formatsGrid}>
-                        <SingleFormat title='Das gesprochene Wort' link='/tags/dgw' imagePath='/img/formate/cover/dgw.jpg'>
+                        <SingleFormat title='Das gesprochene Wort' link='/tags/das-gesprochene-wort' imagePath='/img/formate/cover/dgw.jpg'>
                             <p>
                                 Liebe Gemeinde,
                                 <br />
