@@ -1,0 +1,19 @@
+[data-theme='dark'] {
+    --ifm-color-primary: #ef702c;
+    --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+    img {
+        filter: brightness(.975) contrast(1.05);
+    }
+
+    img:hover, img:active {
+        /* Reset image colors on hover */
+        filter: brightness(1) contrast(1);
+    }
+}
+
+[data-theme='light'] {
+    img {
+        filter: brightness(1.05) contrast(0.95);
+    }
+}
