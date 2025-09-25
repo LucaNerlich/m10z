@@ -9,3 +9,7 @@ image: /img/tech/omarchy.png
 ---
 
 todo
+
+![omarchy.png](/img/tech/omarchy.png)
+
+<!--truncate-->
