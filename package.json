@@ -34,15 +34,15 @@
         "react": "^19.1.1",
         "react-compare-slider": "^3.1.0",
         "react-dom": "^19.1.1",
-        "react-player": "^3.3.2",
+        "react-player": "^3.3.3",
         "remark-math": "^6.0.0",
-        "sharp": "^0.34.3"
+        "sharp": "^0.34.4"
     },
     "devDependencies": {
         "@docusaurus/module-type-aliases": "^3.8.1",
         "@docusaurus/tsconfig": "^3.8.1",
         "@docusaurus/types": "^3.8.1",
-        "@types/react": "^19.1.12",
+        "@types/react": "^19.1.13",
         "js-yaml": "^4.1.0",
         "typescript": "~5.9.2",
         "xml2js": "^0.6.2"
