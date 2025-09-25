@@ -21,11 +21,11 @@
         "typecheck": "tsc"
     },
     "dependencies": {
-        "@docusaurus/core": "^3.8.1",
-        "@docusaurus/faster": "^3.8.1",
-        "@docusaurus/plugin-ideal-image": "^3.8.1",
-        "@docusaurus/plugin-pwa": "^3.8.1",
-        "@docusaurus/preset-classic": "^3.8.1",
+        "@docusaurus/core": "^3.9.0",
+        "@docusaurus/faster": "^3.9.0",
+        "@docusaurus/plugin-ideal-image": "^3.9.0",
+        "@docusaurus/plugin-pwa": "^3.9.0",
+        "@docusaurus/preset-classic": "^3.9.0",
         "@easyops-cn/docusaurus-search-local": "^0.52.1",
         "@mdx-js/react": "^3.1.1",
         "clsx": "^2.1.1",
@@ -39,9 +39,9 @@
         "sharp": "^0.34.4"
     },
     "devDependencies": {
-        "@docusaurus/module-type-aliases": "^3.8.1",
-        "@docusaurus/tsconfig": "^3.8.1",
-        "@docusaurus/types": "^3.8.1",
+        "@docusaurus/module-type-aliases": "^3.9.0",
+        "@docusaurus/tsconfig": "^3.9.0",
+        "@docusaurus/types": "^3.9.0",
         "@types/react": "^19.1.13",
         "js-yaml": "^4.1.0",
         "typescript": "~5.9.2",
@@ -49,6 +49,17 @@
     },
     "engines": {
         "node": "^22",
-        "npm": "^10"
+        "npm": "^11"
+    },
+    "packageManager": "pnpm@10.16.1",
+    "pnpm": {
+        "supportedArchitectures": {
+            "libc": [
+                "musl"
+            ]
+        },
+        "overrides": {
+            "sharp": "^0.34.4"
+        }
     }
 }
