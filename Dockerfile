@@ -2,6 +2,9 @@
 # 1) Build stage
 # -------------------------
 FROM node:22-alpine AS builder
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 WORKDIR /app
 
@@ -9,18 +12,21 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies (including dev dependencies for build)
-RUN npm ci
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm ci
 
 # Copy source files
 COPY . .
 
 # Generate files and build
-RUN npm run generateAuthors && npm run generateAudioFeed && npm run coolify-build
+RUN pnpm run generateAuthors && pnpm run generateAudioFeed && pnpm run coolify-build
 
 # -------------------------
 # 2) Production stage
 # -------------------------
 FROM node:22-alpine
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 # Install curl for healthcheck
 RUN apk add --no-cache curl
@@ -31,7 +37,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --production --silent && npm cache clean --force
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm ci --production && pnpm cache clean --force
 
 # Copy built application from builder stage (only the built files)
 COPY --from=builder /app/build ./build
@@ -47,4 +53,4 @@ ENV NODE_ENV=production
 
 EXPOSE $PORT
 
-CMD ["npm", "run", "coolify"]
+CMD ["pnpm", "run", "coolify"]
