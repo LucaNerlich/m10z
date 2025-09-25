@@ -37,7 +37,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only production dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm ci --production && pnpm cache clean --force
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm ci && pnpm cache clean --force
 
 # Copy built application from builder stage (only the built files)
 COPY --from=builder /app/build ./build
