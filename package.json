@@ -51,5 +51,15 @@
         "node": "^22",
         "npm": "^11"
     },
-    "packageManager": "pnpm@10.16.1"
+    "packageManager": "pnpm@10.16.1",
+    "pnpm": {
+        "supportedArchitectures": {
+            "libc": [
+                "musl"
+            ]
+        },
+        "overrides": {
+            "sharp": "^0.34.4"
+        }
+    }
 }
