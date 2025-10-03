@@ -1,0 +1,124 @@
+---
+slug: installing-and-configuring-omarchy-linux-os
+title: 'Sunday-Projects – Aufsetzen und konfigurieren von Omarchy OS (Linux)'
+date: 2025-10-03
+authors: [ luca ]
+tags: [ artikel, tech, sunday-projects, luca ]
+draft: false
+image: /img/tech/omarchy.png
+---
+
+Ich habe mein Windows 11 genuked und innerhalb von 15min ein Linux-System installiert.
+Vorkonfiguriert und _ready to go_.
+
+![omarchy.png](/img/tech/omarchy.png)
+
+<!--truncate-->
+
+Omarchy ist eine, auf Arch-Linux basierendes Linux-Distribution, die _out of the box_ vorkonfiguriert ist und viele
+relevante Applikationen bereits bundled.
+
+Die Hauptzielgruppe sind Technik-Interessierte, sowie EntwicklerInnen, Omarchy eigent sich jedoch auch fuer
+Linux-Begeisterte, die mal ueber den Ubuntu-Tellerrand schauen wollen ;-)
+
+Arch muss nicht kompliziert aufgesetzt werden, der [Hyprland](https://hypr.land) Tiling Manager ist
+startklar, [Waybar](https://github.com/Alexays/Waybar) als Statusleiste ist
+schick und [Walker](https://github.com/abenz1267/walker) uebernimmt App-Launcher und UI Shortcut Funktionen.
+
+## Installation
+
+Die Installation erfolgt, wie bekannt, ueber Downloader der `.iso` und dem _brennen_ dieser auf einen USB-Stick, z.B.
+via Balena Etcher. Danach von diesem Booten und der Installation folgen.
+
+Obacht, Omarchy formatiert gewaehlte SSD, eine Zielpartition kann nicht gewaehlt werden.
+
+[Omarchy Homepage](https://omarchy.org)
+
+<div class="youtube-embed">
+    <iframe width="100%" height="450" src="https://www.youtube-nocookie.com/embed/TcHY0AEd2Uw?si=ifsaAzpeSOFx1Frr"
+            title="Omarchy Introduction" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen />
+</div>
+<br/>
+
+Nach der Installation empfehle ich die vorinstallierten, aber nicht benoetigten Apps zu deinstallieren.
+Dies geht sehr zuegig ueber das Walker Menue: Remove -> WebApp, sowie Remove -> Package
+
+## Hyprland als Tiling-Manager
+
+Omarchy setzt auf Hyprland zur Verwaltung der Programmfenster. Hyprland organisiert diese automatisch auf dem Display,
+entsprechend des vorhandenen, freien Platzes.
+Per Tastaturshortcuts koennen die Fenster umhergeschoben, gruppiert und auf den Workspaces (weitere Desktops) verteilt
+werden.
+
+Das Ganze ist optisch schick und funktioniert sehr gut. Die Handhabung der Shortcuts geht nach ~2 Tagen ins Blut ueber.
+
+Das offizielle [Hyprland Tutorial](https://wiki.hypr.land/Getting-Started/Master-Tutorial/) findet sich hier.
+
+Nachfolgend ein launiges und kurzweiliges Video des YouTubers _bog_ ueber
+seine positiven Erfahrungen mit Omarchy - aus Sicht eines Neulings:
+
+<div class="youtube-embed">
+    <iframe width="100%" height="450" src="https://www.youtube-nocookie.com/embed/Urq__zOwQqg?si=02MOkRtXILIxo4e7"
+            title="Omarchy Introduction" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen />
+</div>
+
+## Anpassungen
+
+Generelle Linux-Gaming Empfehlung bei Problemen, gilt als erste Anlaufstellen [protondb](https://www.protondb.com).
+Existieren bekannte Loesungen fuer Spiele, finden sich diese meist hier in den Kommentaren. Beispielsweise die
+Empfehlung die folgenden Launch Optionen fuer _Fellowship_ zu setzen:
+`echo "%command%" | sed 's/fellowship/fellowship-launcher/' | sh`.
+
+Omarchy und Hyprland nutzt Wayland als Display-Server. Die meisten Apps kommen hiermit gut klar, aber einige
+(z.B. Steam) haben Probleme. Folgend ein paar Konfigurationsanpassungen die das Groebste beheben.
+
+
+### Jetbrains
+
+JetBrains IDEs moegen Wayland und Hyprland leider nocht nicht soo gerne, daher folgende Anpassungen:
+
+In der IDE selber:
+
+Help -> Custom VM Options -> Add `-Dawt.toolkit.name.WLToolkit`
+
+Und in der Hyprland Konfiguration `.config/hypr/hyprland.conf`:
+
+```bash title=".config/hypr/hyprland.conf"
+# Hyprland window rules for JetBrains
+
+# Fix all dialogs in Jetbrains products
+windowrulev2 = tag +jb, class:^jetbrains-.+$,floating:1
+windowrulev2 = stayfocused, tag:jb
+windowrulev2 = noinitialfocus, tag:jb
+windowrulev2 = focusonactivate,class:^jetbrains-(?!toolbox)
+
+# center the pops excepting context menu
+windowrulev2 = move 30% 30%,class:^jetbrains-(?!toolbox),title:^(?!win.*),floating:1
+windowrulev2 = size 40% 40%,class:^jetbrains-(?!toolbox),title:^(?!win.*),floating:1
+
+# Fix tooltips (always have a title of `win.<id>`)
+# Fix for sidebar menus being unclickable
+windowrulev2 = noinitialfocus, class:^(.*jetbrains.*)$, title:^(win.*)$
+windowrulev2 = nofocus, class:^(.*jetbrains.*)$, title:^(win.*)$
+# Fix tab dragging (always have a single space character as their title)
+windowrulev2 = noinitialfocus, class:^(.*jetbrains.*)$, title:^\\s$
+windowrulev2 = nofocus, class:^(.*jetbrains.*)$, title:^\\s$
+# Additional fixes for tab dragging
+windowrulev2 = tag +jb, class:^jetbrains-.+$,floating:1
+windowrulev2 = stayfocused, tag:jb
+windowrulev2 = noinitialfocus, tag:jb
+```
+
+### Steam
+
+Manche Spiele kommen mit Hyprland nicht klar, bzgl Windows/Fullscreen, daher sind diese kurzen Config Updates in
+`.config/hypr/hyprland.conf` empfehlenswert:
+
+```bash title=".config/hypr/hyprland.conf"
+windowrule = fullscreen, class:^steam_app_.*
+windowrule = opacity 1, class:^steam_app_.*
+```
