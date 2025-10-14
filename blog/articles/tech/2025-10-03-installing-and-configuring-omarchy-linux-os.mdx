@@ -77,7 +77,7 @@ Omarchy und Hyprland nutzt Wayland als Display-Server. Die meisten Apps kommen h
 (z.B. Steam) haben Probleme. Folgend ein paar Konfigurationsanpassungen die das Groebste beheben.
 
 
-### Jetbrains
+### JetBrains
 
 JetBrains IDEs moegen Wayland und Hyprland leider nocht nicht soo gerne, daher folgende Anpassungen:
 
@@ -88,7 +88,17 @@ Help -> Custom VM Options -> Add `-Dawt.toolkit.name.WLToolkit`
 Und in der Hyprland Konfiguration `.config/hypr/hyprland.conf`:
 
 ```bash title=".config/hypr/hyprland.conf"
-# Hyprland window rules for JetBrains
+[...]
+source = ~/.config/hypr/steam.conf
+source = ~/.config/hypr/jetbrains.conf
+[...]
+```
+
+Folgende Konfigurationen in `~/.config/hypr/jetbrains.conf`:
+
+```bash title=".config/hypr/jetbrains.conf"
+# Disable Transparency
+windowrule = opacity 1, class:jetbrains-.*
 
 # Fix all dialogs in Jetbrains products
 windowrulev2 = tag +jb, class:^jetbrains-.+$,floating:1
@@ -116,9 +126,20 @@ windowrulev2 = noinitialfocus, tag:jb
 ### Steam
 
 Manche Spiele kommen mit Hyprland nicht klar, bzgl Windows/Fullscreen, daher sind diese kurzen Config Updates in
-`.config/hypr/hyprland.conf` empfehlenswert:
+`.config/hypr/steam.conf` empfehlenswert:
 
-```bash title=".config/hypr/hyprland.conf"
+```bash title=".config/hypr/steam.conf"
+# enable fullscreen
 windowrule = fullscreen, class:^steam_app_.*
-windowrule = opacity 1, class:^steam_app_.*
+
+# disable transparency
+windowrule = opacity 1, class:steam_app_.*
+
+# fix tiling
+windowrule = tile, class:steam
+windowrule = center, class:steam, title:Steam
+windowrule = opacity 1 1, class:steam
+windowrule = size 1920 1080, class:steam, title:Steam
+windowrule = size 460 800, class:steam, title: Friendslist
+windowrule = idleinhibit fullscreen, class:steam
 ```
