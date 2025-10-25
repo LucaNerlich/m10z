@@ -364,6 +364,27 @@ Die deutsche Gaming-Podcast-Szene ist außergewöhnlich reich und vielfältig. P
 - **Decode** – Gaming-Analyse und Diskussionen
 - **Controller Poesie** – Kulturelle Gaming-Betrachtungen
 
+### Podcast-Übersicht auf einen Blick
+
+Für einen schnellen Vergleich der wichtigsten deutschen Gaming-Podcasts:
+
+| **Podcast** | **Kurzbeschreibung** | **Format** | **Rhythmus** | **Finanzierung** | **Link** |
+|-------------|---------------------|------------|--------------|------------------|----------|
+| Game Two | Magazinshow, Reviews & Reportagen, Ableger als Audio | Video + Audio | Wöchentlich | Öffentlich-rechtlich + Fan-Support | [YouTube](https://www.youtube.com/c/gametwo) |
+| GameStar Podcast | Redaktioneller Talk, News, Interviews, Tech-Themen | Audio | Wöchentlich | Werbung + Plus-Abo | [GameStar Talk](https://www.gamestar.de/talk/) |
+| Auf ein Bier / The Pod | Meinungsstarker Stammtisch, Tests, Reportagen (5.500+ Supporter) | Audio | Mehrmals/Woche | Crowdfunding (Patreon/Steady) | [gamespodcast.de](https://www.gamespodcast.de/) |
+| Stay Forever | Retro-Analysen, Technik, Pixelkino (4.300+ Patreon) | Audio | Wöchentlich | Crowdfunding (Patreon) | [stayforever.de](https://www.stayforever.de/) |
+| Spieleveteranen | Rückblicke auf alte Magazine + aktuelle Themen (1.600+ Patreon) | Audio | Wöchentlich | Crowdfunding (Patreon) | [spieleveteranen.de](https://www.spieleveteranen.de/) |
+| Hooked FM | News, Eindrücke, Specials, starker YouTube-Fokus | Audio + Video | Wöchentlich | Crowdfunding + Werbung | [YouTube](https://www.youtube.com/@HookedPodcasts) |
+| PC Games Podcast | Magazin-Talk, Previews, Reviews (seit 1992) | Audio | Wöchentlich | Werbung | [pcgames.de](https://www.pcgames.de/) |
+| Plauschangriff | Popkultur & Gaming, Messe-Recaps (RBTV) | Audio | Unregelmäßig | Werbung + Community | [Rocket Beans](https://rocketbeans.tv/) |
+| Insert Moin | Interviews, Reviews, Brunch-Runden (3.500+ Folgen seit 2010) | Audio | Täglich (Premium) | Crowdfunding (Steady) | [insertmoin.de](https://insertmoin.de/) |
+| OK COOL | Interviews & Reportagen über Menschen & Kultur (Hamburg) | Audio | Wöchentlich | Crowdfunding (Steady) | [Spotify](https://open.spotify.com/show/0I3W7waNhFsVD7MT3RfqsQ) |
+| 4Players Podcast | Kritische Magazin-Tradition, Monatsrückblicke | Audio | Wöchentlich | Werbung | [4players.de](https://www.4players.de/) |
+| buffedCast | MMO/Online-Gaming-Spezialist | Audio | Wöchentlich | Werbung | [buffed.de](https://www.buffed.de/) |
+| Games Insider | Branchen-Analysen, Meta-Diskussionen | Audio | Wöchentlich | Crowdfunding (Patreon) | [spielejournalist.de](https://www.spielejournalist.de/) |
+| Behind the Screens | Psychologie & Games, Interviews mit Forschenden | Audio | Zweiwöchentlich | Spenden + Werbung | [behind-the-screens.de](https://behind-the-screens.de/) |
+
 ### Warum Podcasts boomen
 
 Podcasts haben mehrere Vorteile:
@@ -432,6 +453,62 @@ Video-Content hat Print und Text in der Reichweite längst überholt:
 - **Creator-Persönlichkeiten** binden stärker als anonyme Redaktionen
 
 Die Grenze zwischen Journalismus und Entertainment verschwimmt: Ist ein 3-Stunden-Let's Play Kritik oder Unterhaltung? Ist ein HandOfBlood-Video über Gaming-News Journalismus? Die Antwort: Es kommt darauf an – aber die Reichweite und Wirkung sind unbestritten.
+
+### Twitch & Livestream-Journalismus: Interaktivität in Echtzeit
+
+Livestreaming hat sich vom reinen Entertainment hin zu einem journalistischen Werkzeug entwickelt. **Twitch** ist dabei die zentrale Plattform für Gaming-Streams und hat die Art verändert, wie über Spiele berichtet wird.
+
+#### Warum Twitch & Streams wichtig sind
+
+**Live-Formate bieten neue Möglichkeiten:**
+- **Spontane Diskussionen** – Keine Schnitte, keine Nachbearbeitung, pure Authentizität
+- **Q&A mit Entwickler*innen** – Direkte Interviews und Community-Fragen in Echtzeit
+- **Community-Feedback** – Chat-Interaktion ermöglicht sofortige Rückmeldungen
+- **Transparenz** – Redaktionen streamen Previews, Reviews und Behind-the-Scenes
+
+**Interaktivität ist der Schlüssel:**
+- Zuschauer können Fragen stellen und Diskussionen beeinflussen
+- Umfragen und Polls ermöglichen Community-Entscheidungen
+- Direkter Dialog mit Journalist*innen schafft Nähe und Vertrauen
+- Live-Reaktionen auf Gaming-News und Ankündigungen
+
+#### Wichtige Twitch-Kanäle im deutschen Gaming-Journalismus
+
+| **Kanal / Format** | **Beschreibung** | **Link** |
+|-------------------|------------------|----------|
+| **Rocket Beans TV** | Gaming-Talks, Plauschangriff live, Events & Shows | [twitch.tv/rocketbeanstv](https://www.twitch.tv/rocketbeanstv) |
+| **GameStar** | Live-Previews, Community-Talks, Technik-Specials | [twitch.tv/gamestar](https://www.twitch.tv/gamestar) |
+| **GamePro** | Konsolenfokus, Live-Reviews, Community-Streams | [twitch.tv/gameprode](https://www.twitch.tv/gameprode) |
+| **Hooked** | Indie-Fokus, Live-Diskussionen, Gameplay-Streams | [twitch.tv/hookedlive](https://www.twitch.tv/hookedlive) |
+| **OK COOL (Dom Schott)** | Interviews & spontane Talks mit Gästen aus der Szene | [twitch.tv/okcoolpodcast](https://www.twitch.tv/okcoolpodcast) |
+| **Stay Forever Live** | Retro-Specials, Community-Events | [twitch.tv/stayforever](https://www.twitch.tv/stayforever) |
+| **Insert Moin Live** | Brunch-Streams, Interviews, Specials | [twitch.tv/insertmoin](https://www.twitch.tv/insertmoin) |
+
+#### Trends & Besonderheiten
+
+**Cross-Plattform-Strategien**
+Viele Redaktionen nutzen Twitch parallel zu YouTube:
+- **Twitch** für Live-Events mit Chat-Interaktion
+- **YouTube** für archivierte VODs (Video on Demand) und Reichweite
+- **Podcasts** als Audio-Auskopplung der Streams
+
+**Community-Finanzierung über Streams**
+- Subscriber, Bits und Donations auf Twitch
+- Streams sind oft Teil von Crowdfunding-Modellen (Patreon/Steady)
+- Direkte Unterstützung sichert Unabhängigkeit von Werbung
+
+**Event-Integration**
+- **Gamescom**, **E3**, **The Game Awards** werden live begleitet und kommentiert
+- **Indie-Showcases** mit Developer-Interviews
+- **Charity-Streams** wie "Friendly Fire" (PietSmiet) mit Millionen-Spenden
+
+**Die Live-Revolution**
+Streaming verändert Gaming-Journalismus fundamental:
+- Von **vorgefertigten Reviews** zu **Live-Reaktionen**
+- Von **einseitiger Berichterstattung** zu **Dialog mit der Community**
+- Von **Gatekeeping** zu **offenen Diskussionen**
+
+Twitch hat die Barriere zwischen Journalist*innen und Publikum weiter abgebaut. Die Authentizität und Interaktivität von Live-Streams schafft eine neue Form der Nähe – mit allen Vor- und Nachteilen.
 
 ---
 
@@ -630,3 +707,51 @@ Die deutsche Videospieljournalismus-Landschaft ist so vielfältig wie nie – un
 - Bravo Screenfun (jugendorientiert)
 
 Diese Magazine legten den Grundstein für die heutige vielfältige Landschaft.
+
+
+## Quellenverzeichnis
+
+- [Videospielgeschichten Podcast – Von Print zu Pixel](https://videospielgeschichten.letscast.fm/episode/vsg-im-gespraech-von-print-zu-pixel-der-wandel-des-spielejournalismus)
+- https://www.videospielgeschichten.de/
+- [Independence Play Podcast – Nähe zwischen Journalismus und Branche](https://www.podcast.de/episode/628495377/1-der-journalismus-und-die-videospielbranche-eine-fragwuerdige-naehe)
+- [Wikipedia: Computerspielejournalismus](https://de.wikipedia.org/wiki/Computerspielejournalismus)
+- [Springer Fachartikel: Games-Journalismus im Spannungsfeld](https://link.springer.com/chapter/10.1007/978-3-658-42616-3_2)
+- [YouTube: VSG im Gespräch – Von Print zu Pixel](https://www.youtube.com/watch?v=z3q76vWUlM0)
+
+### Podcasts
+- [Game Two YouTube-Kanal](https://www.youtube.com/c/gametwo)
+- [GameStar Podcast Übersicht](https://www.gamestar.de/talk/)
+- [GameStar Podcast auf Apple](https://podcasts.apple.com/gb/podcast/gamestar-podcast/id1207844441)
+- [GameStar Podcast auf Spotify](https://open.spotify.com/show/0FmnleLSiA986Mp6qy2HYQ)
+- [Auf ein Bier / The Pod – Gamespodcast.de](https://www.gamespodcast.de/k/kostenlos/auf-ein-bier/?filter_by=popular)
+- [Stay Forever Webseite](https://www.stayforever.de/)
+- [Stay Forever auf Apple Podcasts](https://podcasts.apple.com/us/podcast/stay-forever-retrogames-technik/id461077931)
+- [Spieleveteranen Webseite](https://www.spieleveteranen.de/)
+- [Spieleveteranen auf Apple Podcasts](https://podcasts.apple.com/de/podcast/spieleveteranen/id317860125)
+- [Hooked FM auf Apple Podcasts](https://podcasts.apple.com/us/podcast/hooked-fm/id951299485)
+- [Hooked FM YouTube-Kanal](https://www.youtube.com/@HookedPodcasts)
+- [PC Games Podcast Themenhub](https://www.pcgames.de/PC-Games-Podcast-Thema-233689/)
+- [PC Games Podcast auf Apple](https://podcasts.apple.com/us/podcast/pc-games-podcast/id270200907)
+- [Plauschangriff – Rocket Beans TV](https://rocketbeans.tv/mediathek/podcast/162/Plauschangriff)
+- [Insert Moin Webseite](https://insertmoin.de/)
+- [Insert Moin auf Apple Podcasts](https://podcasts.apple.com/us/podcast/insert-moin/id408178702)
+- [OK COOL auf Spotify](https://open.spotify.com/show/0I3W7waNhFsVD7MT3RfqsQ)
+- [OK COOL auf Apple Podcasts](https://podcasts.apple.com/us/podcast/ok-cool/id1509985306)
+- [Gamecity Hamburg Interview zu OK COOL](https://gamecity-hamburg.de/news/three-questions-to-dom-schott-creator-of-the-podcast-ok-cool/)
+- [4Players Podcast auf Apple](https://podcasts.apple.com/de/podcast/4players-de-podcast/id314195108)
+- [4Players Podcast auf Spotify](https://open.spotify.com/show/1Iu9x7FTxl89zEKy73ed67)
+- [Games Insider Webseite](https://www.spielejournalist.de/)
+- [Games Insider auf Spotify](https://open.spotify.com/show/13fRMoXEAHMDdDcrvSdlda)
+- [Games Insider Patreon](https://www.patreon.com/gamesinsider/about)
+- [Behind the Screens Webseite](https://behind-the-screens.de/)
+- [Behind the Screens auf Apple Podcasts](https://podcasts.apple.com/us/podcast/behind-the-screens-psychologie-und-games/id1371392843)
+- [Behind the Screens auf Spotify](https://open.spotify.com/show/4DOdEC3TzRcTxtk82G306D)
+
+### Twitch & Livestreams
+- [Rocket Beans TV auf Twitch](https://www.twitch.tv/rocketbeanstv)
+- [GameStar auf Twitch](https://www.twitch.tv/gamestar)
+- [GamePro auf Twitch](https://www.twitch.tv/gameprode)
+- [Hooked auf Twitch](https://www.twitch.tv/hookedlive)
+- [OK COOL auf Twitch](https://www.twitch.tv/okcoolpodcast)
+- [Stay Forever auf Twitch](https://www.twitch.tv/stayforever)
+- [Insert Moin auf Twitch](https://www.twitch.tv/insertmoin)
