@@ -5,14 +5,14 @@ date: 2025-12-27
 authors: [luca]
 tags: [artikel, luca]
 draft: false
-image: /img/formate/cover/c10z.jpg
+image: /img/articles/videogamejournalism.jpg
 ---
 
 ## 1. Was ist „Videospieljournalismus" – und warum jetzt?
 
 Der Begriff **Videospieljournalismus** umfasst weit mehr als nur Spieletests: Reviews, Vorabberichte, Hintergrund-Recherchen, Interviews, Messeberichte, Analysen der Spieleindustrie und zunehmend auch Audio- und Videoformate. Kurz gesagt: Journalismus über ein Medium, das selbst ständig im Wandel ist – vom Heft mit Demo-CD bis zum wöchentlichen Deep-Dive-Podcast.
 
-![c10z.jpg](/img/formate/cover/c10z.jpg)
+![c10z.jpg](/img/articles/videogamejournalism.jpg)
 
 <!--truncate-->
 
@@ -394,8 +394,6 @@ Podcasts haben mehrere Vorteile:
 - **Community-Nähe:** Direkte Finanzierung durch Hörer, ohne Werbedruck
 - **Nischen-Fokus:** Retro, Wissenschaft, Kritik – alles hat sein Publikum
 
-Die Ohren sind die neue Startseite geworden.
-
 ---
 
 ## 6. Video-Shows & Hybride: Zwischen öffentlich-rechtlich und Indie
@@ -471,44 +469,6 @@ Livestreaming hat sich vom reinen Entertainment hin zu einem journalistischen We
 - Umfragen und Polls ermöglichen Community-Entscheidungen
 - Direkter Dialog mit Journalist*innen schafft Nähe und Vertrauen
 - Live-Reaktionen auf Gaming-News und Ankündigungen
-
-#### Wichtige Twitch-Kanäle im deutschen Gaming-Journalismus
-
-| **Kanal / Format** | **Beschreibung** | **Link** |
-|-------------------|------------------|----------|
-| **Rocket Beans TV** | Gaming-Talks, Plauschangriff live, Events & Shows | [twitch.tv/rocketbeanstv](https://www.twitch.tv/rocketbeanstv) |
-| **GameStar** | Live-Previews, Community-Talks, Technik-Specials | [twitch.tv/gamestar](https://www.twitch.tv/gamestar) |
-| **GamePro** | Konsolenfokus, Live-Reviews, Community-Streams | [twitch.tv/gameprode](https://www.twitch.tv/gameprode) |
-| **Hooked** | Indie-Fokus, Live-Diskussionen, Gameplay-Streams | [twitch.tv/hookedlive](https://www.twitch.tv/hookedlive) |
-| **OK COOL (Dom Schott)** | Interviews & spontane Talks mit Gästen aus der Szene | [twitch.tv/okcoolpodcast](https://www.twitch.tv/okcoolpodcast) |
-| **Stay Forever Live** | Retro-Specials, Community-Events | [twitch.tv/stayforever](https://www.twitch.tv/stayforever) |
-| **Insert Moin Live** | Brunch-Streams, Interviews, Specials | [twitch.tv/insertmoin](https://www.twitch.tv/insertmoin) |
-
-#### Trends & Besonderheiten
-
-**Cross-Plattform-Strategien**
-Viele Redaktionen nutzen Twitch parallel zu YouTube:
-- **Twitch** für Live-Events mit Chat-Interaktion
-- **YouTube** für archivierte VODs (Video on Demand) und Reichweite
-- **Podcasts** als Audio-Auskopplung der Streams
-
-**Community-Finanzierung über Streams**
-- Subscriber, Bits und Donations auf Twitch
-- Streams sind oft Teil von Crowdfunding-Modellen (Patreon/Steady)
-- Direkte Unterstützung sichert Unabhängigkeit von Werbung
-
-**Event-Integration**
-- **Gamescom**, **E3**, **The Game Awards** werden live begleitet und kommentiert
-- **Indie-Showcases** mit Developer-Interviews
-- **Charity-Streams** wie "Friendly Fire" (PietSmiet) mit Millionen-Spenden
-
-**Die Live-Revolution**
-Streaming verändert Gaming-Journalismus fundamental:
-- Von **vorgefertigten Reviews** zu **Live-Reaktionen**
-- Von **einseitiger Berichterstattung** zu **Dialog mit der Community**
-- Von **Gatekeeping** zu **offenen Diskussionen**
-
-Twitch hat die Barriere zwischen Journalist*innen und Publikum weiter abgebaut. Die Authentizität und Interaktivität von Live-Streams schafft eine neue Form der Nähe – mit allen Vor- und Nachteilen.
 
 ---
 
@@ -617,7 +577,7 @@ Generalistische Magazine verlieren, Spezialisten gewinnen:
 - **Hardware:** PC Games Hardware
 - **MMOs:** buffed.de
 - **Wissenschaft:** Behind the Screens
-- **Kritik:** Superlevel, Independence Play
+- **Kritik:** Superlevel, Decode, Independence Play
 
 Je spezialisierter, desto treuer die Community.
 
@@ -680,34 +640,6 @@ Wichtig bleibt: **Qualität, Authentizität und journalistische Integrität** �
 Die deutsche Videospieljournalismus-Landschaft ist so vielfältig wie nie – und diese **Vielfalt ist ihre größte Stärke**.
 
 ---
-
-## Weitere Ressourcen
-
-### Wissenschaftliche Quellen
-
-**Wikipedia: Computerspielejournalismus**
-- **Link:** [de.wikipedia.org/wiki/Computerspielejournalismus](https://de.wikipedia.org/wiki/Computerspielejournalismus)
-- Umfassender Überblick über Geschichte und Formen des Videospieljournalismus im deutschsprachigen Raum
-
-**Fachartikel: Games-Journalismus im Spannungsfeld**
-- **Link:** [Springer Link](https://link.springer.com/chapter/10.1007/978-3-658-42616-3_2)
-- "Games-Journalismus im Spannungsfeld zwischen analogen und digitalen Formaten"
-- Wissenschaftliche Analyse der Transformation mit statistischen Daten
-
-### Historische Wurzeln
-
-**Pionier-Magazine der 1980er:**
-- TeleMatch (1982-1985)
-- ASM – Aktueller Software Markt (ab 1986)
-- Power Play (ab 1987)
-
-**Nintendo-Ära der 1990er:**
-- Video Games (1991)
-- Club Nintendo (offizielles Nintendo-Magazin)
-- Bravo Screenfun (jugendorientiert)
-
-Diese Magazine legten den Grundstein für die heutige vielfältige Landschaft.
-
 
 ## Quellenverzeichnis
 
