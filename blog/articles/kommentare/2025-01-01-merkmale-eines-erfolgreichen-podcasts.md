@@ -506,7 +506,7 @@ Zusammenfassend die wichtigsten Punkte:
 4. Finde deine *Edge*, deine Nische, baue darauf auf, vertraue auf deine Stärken und entwickle dich entsprechend weiter.
 
 Wenn du noch Nachfragen hast, oder dich mit anderen Podcast-Enthusiasten austauschen möchtest, schau doch gerne auf
-unserem [Discord-Server](https://discord.gg/tSpzEW4kpP) vorbei!
+unserem [Discord-Server](https://discord.gg/G5ngm7S6wF) vorbei!
 
 Luca
 

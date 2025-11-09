@@ -257,7 +257,7 @@ const config = {
                             },
                             {
                                 label: 'Discord',
-                                href: 'https://discord.gg/tSpzEW4kpP',
+                                href: 'https://discord.gg/G5ngm7S6wF',
                             },
                             {
                                 label: 'Linktree',
