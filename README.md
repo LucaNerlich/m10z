@@ -374,7 +374,7 @@ This project is open source and available under the terms specified in the LICEN
 
 - **Website**: [m10z.de](https://m10z.de)
 - **Community Forum**: [community.wasted.de](https://community.wasted.de/c/m10z/11)
-- **Discord**: [Join our Discord](https://discord.gg/tSpzEW4kpP)
+- **Discord**: [Join our Discord](https://discord.gg/G5ngm7S6wF)
 - **Linktree**: [linktr.ee/m10z](https://linktr.ee/m10z)
 - **Twitch**: [twitch.tv/m10z_tv](https://www.twitch.tv/m10z_tv)
 - **YouTube**: [M10Z_TV](https://www.youtube.com/@M10Z_TV)
