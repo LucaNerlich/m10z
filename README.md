@@ -4,7 +4,7 @@
 
 ![M10Z Logo](./static/img/M10Z_Orange.png)
 
-## 🌟 Features
+## Features
 
 ### 📻 Multi-Format Podcast Platform
 - **10+ unique podcast formats** covering various gaming and tech topics
