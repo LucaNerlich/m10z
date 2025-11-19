@@ -34,7 +34,7 @@
         "react": "^19.2.0",
         "react-compare-slider": "^3.1.0",
         "react-dom": "^19.2.0",
-        "react-player": "^3.3.3",
+        "react-player": "^3.4.0",
         "remark-math": "^6.0.0",
         "sharp": "^0.34.5"
     },
@@ -42,8 +42,8 @@
         "@docusaurus/module-type-aliases": "^3.9.2",
         "@docusaurus/tsconfig": "^3.9.2",
         "@docusaurus/types": "^3.9.2",
-        "@types/react": "^19.2.2",
-        "js-yaml": "^4.1.0",
+        "@types/react": "^19.2.6",
+        "js-yaml": "^4.1.1",
         "typescript": "~5.9.3",
         "xml2js": "^0.6.2"
     },
