@@ -48,10 +48,6 @@ export default function Hello() {
                         <h2 className={styles.sectionTitle}>Über uns</h2>
                         <div className={styles.textSection}>
                             <p>
-                                Bisher ein loses Kollektiv, das seine Anfänge im <a href='https://community.wasted.de/'>Forum</a> von{' '}
-                                <a href='https://wasted.de/'>WASTED.de</a> genommen hat.
-                            </p>
-                            <p>
                                 Wir sind Gaming-Enthusiasten, Content-Creators und Menschen, die Lust auf kreative Projekte haben.
                                 Jeder bringt seine eigenen Interessen und Expertise mit ein.
                             </p>
@@ -83,7 +79,7 @@ export default function Hello() {
                     <a href='/content/unsere-formate' className={styles.ctaButton}>
                         Unsere Formate entdecken
                     </a>
-                    <a href='https://community.wasted.de/c/m10z/11' className={styles.ctaButton}>
+                    <a href='https://forum.m10z.de' className={styles.ctaButton}>
                         Forum besuchen
                     </a>
                 </div>
@@ -98,7 +94,7 @@ export default function Hello() {
                         <p>
                             Wenn euch gefällt was wir machen, schreibt uns eine{' '}
                             <a href='mailto:m10z@posteo.de'>E-Mail</a> oder schaut im{' '}
-                            <a href='https://community.wasted.de/c/m10z/11'>WASTED-Forum</a> vorbei.
+                            <a href='https://forum.m10z.de'>M10Z-Forum</a> vorbei.
                         </p>
                         <p>
                             Wenn ihr meint, das könnt ihr ebenso gut oder besser: Mitmachen ist ausdrücklich erwünscht. Meldet euch.

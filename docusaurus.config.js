@@ -198,7 +198,7 @@ const config = {
                         label: 'Kategorien',
                     },
                     {
-                        href: 'https://community.wasted.de/c/m10z/11',
+                        href: 'https://forum.m10z.de',
                         label: 'Forum',
                     },
                 ],

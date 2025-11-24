@@ -239,7 +239,7 @@ export default function Hello() {
 
                 <h2>5. Forum</h2>
                 <p>
-                    Auf unserer Website befindet sich ein externer Link zum Forum der WASTED Community (https://community.wasted.de/). Dieses Forum
+                    Auf unserer Website befindet sich ein externer Link zum Forum der WASTED Community (https://forum.m10z.de/). Dieses Forum
                     ist nicht Teil des Angebots von M10Z und dementsprechend tragen wir auch nicht die datenschutzrechtliche Verantwortung für die im
                     Rahmen der Nutzung des Forums stattfindende Verarbeitung personenbezogener Daten. Sollten Sie diesbezüglich weitere Fragen haben,
                     empfehlen wir Ihnen, die Datenschutzerklärung auf www.wasted.de/datenschutz/ zu Rate zu ziehen.
