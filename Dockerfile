@@ -8,13 +8,15 @@ RUN corepack enable
 
 WORKDIR /app
 
-# Copy package files first for better caching
-COPY package*.json ./
+# Copy package files and lock file first for better caching
+COPY package.json pnpm-lock.yaml* ./
 
 # Install all dependencies (including dev dependencies for build)
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+# Use pnpm's default store location for better cache efficiency
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
 
-# Copy source files
+# Copy source files (this invalidates cache when source changes)
 COPY . .
 
 # Generate files and build
@@ -34,10 +36,11 @@ RUN apk add --no-cache curl
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml* ./
 
 # Install only production dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile --prod
 
 # Copy built application from builder stage (only the built files)
 COPY --from=builder /app/build ./build
