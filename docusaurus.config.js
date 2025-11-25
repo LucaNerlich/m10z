@@ -194,10 +194,6 @@ const config = {
                         label: 'Artikel',
                     },
                     {
-                        to: 'tags',
-                        label: 'Kategorien',
-                    },
-                    {
                         href: 'https://forum.m10z.de',
                         label: 'Forum',
                     },

@@ -4,6 +4,7 @@
  * work well for content-centric websites.
  */
 
+@import "fonts.css";
 @import "theme.css";
 @import "text.css";
 @import "embed.css";
@@ -11,11 +12,14 @@
 /* You can override the default Infima variables here. */
 :root {
     /* https://gist.github.com/n4bb12/05cb485e2ac83b482ebcadee68e4ffaa */
-    --ifm-color-primary: #f16012;
-    --ifm-code-font-size: 95%;
-    --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-    --breakpoint-small: 390px;
     --breakpoint-medium: 690px;
+    --breakpoint-small: 390px;
+    --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+    --ifm-code-font-size: 95%;
+    --ifm-color-primary: #f16012;
+    --ifm-font-family-base: Poppins, Arial, sans-serif;
+    --ifm-heading-font-family: var(--ifm-font-family-base);
+    --ifm-heading-font-weight: 700;
     --image-width: 200px;
 }
 
