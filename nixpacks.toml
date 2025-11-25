@@ -1,27 +1,30 @@
-# Example Nixpacks Configuration
+# Nixpacks Configuration Derived from Dockerfile Setup
 
-# This is an example configuration file to use Nixpacks as a build system instead of Docker.
-# More options can be added based on your project requirements.
-
-builds = [
-  {
-    # The name of the build
-    name = "example-build"
-
-    # Specify the build context
-    context = "./"
-
-    # Your build commands
-    commands = [
-      "echo 'Building with Nixpacks'",
-      "nixpacks build"
-    ]
-  }
+[phases.install]
+# Enable corepack and install dependencies
+commands = [
+  "corepack enable",
+  "pnpm install"
 ]
 
-# Optionally specify the output path
-artifacts = [
-  {
-    path = "output/"
-  }
+[phases.build]
+# Build the application as per Dockerfile
+commands = [
+  "pnpm run generateAuthors",
+  "pnpm run generateAudioFeed",
+  "pnpm run coolify-build"
 ]
+
+[phases.start]
+# Start the application in production mode
+commands = [
+  "pnpm run coolify"
+]
+
+[env]
+# Specify the environment variables
+NODE_ENV = "production"
+PORT = "3000"
+
+[binaryOverrides]
+pnpm = "package-manager"
