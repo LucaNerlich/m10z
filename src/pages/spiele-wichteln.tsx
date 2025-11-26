@@ -6,6 +6,8 @@ import './wichteln/spiele-wichteln.css';
 interface Participant {
     name: string;
     link: string; // main gaming platform, such as steam profile page
+    link2?: string; // optional second gaming platform
+    notes?: string; // optional notes/hints (e.g., "I only play on Mac", "I don't like genre XYZ")
     id: string; // unique identifier for editing/removing
 }
 
@@ -62,12 +64,12 @@ const randomNames = [
 export default function SpieleWichtelnPage(): React.ReactElement {
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [pairs, setPairs] = useState<Pair[]>([]);
-    const [newPlayer, setNewPlayer] = useState<Participant>({name: '', link: '', id: ''});
+    const [newPlayer, setNewPlayer] = useState<Participant>({name: '', link: '', link2: '', notes: '', id: ''});
     const [editingId, setEditingId] = useState<string | null>(null);
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
     const discourseRef = useRef<HTMLPreElement>(null);
     const phpRef = useRef<HTMLPreElement>(null);
-    const textRef = useRef<HTMLUListElement>(null);
+    const textRef = useRef<HTMLDivElement>(null);
 
     // Load participants from localStorage on mount
     useEffect(() => {
@@ -129,9 +131,35 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         showToast('Paare erfolgreich ausgelost! 🎉');
     };
 
-    const copyToClipboard = async (ref: React.RefObject<HTMLPreElement | HTMLUListElement>, format: string) => {
+    const copyToClipboard = async (ref: React.RefObject<HTMLPreElement | HTMLDivElement>, format: string) => {
         if (ref.current) {
-            const textToCopy = ref.current.innerText || ref.current.textContent;
+            let textToCopy: string;
+            
+            // For text format (div), generate a cleaner plain text version
+            if (format === 'Text' && ref.current instanceof HTMLDivElement) {
+                const lines: string[] = ['🎮 Spiele-Wichteln Paarungen', ''];
+                pairs.forEach((pair, index) => {
+                    lines.push(`${index + 1}. ${pair.sender.name} bewichtelt ${pair.receiver.name}`);
+                    lines.push(`   👤 Sender: ${pair.sender.name} (${pair.sender.link})`);
+                    if (pair.sender.link2) {
+                        lines.push(`      Zweite Plattform: ${pair.sender.link2}`);
+                    }
+                    lines.push(`   🎁 Empfänger: ${pair.receiver.name} (${pair.receiver.link})`);
+                    if (pair.receiver.link2) {
+                        lines.push(`      Zweite Plattform: ${pair.receiver.link2}`);
+                    }
+                    if (pair.receiver.notes) {
+                        lines.push(`   💡 Hinweis: ${pair.receiver.notes}`);
+                    }
+                    if (index < pairs.length - 1) {
+                        lines.push('');
+                    }
+                });
+                textToCopy = lines.join('\n');
+            } else {
+                textToCopy = ref.current.innerText || ref.current.textContent || '';
+            }
+            
             if (textToCopy) {
                 try {
                     await navigator.clipboard.writeText(textToCopy);
@@ -153,10 +181,17 @@ export default function SpieleWichtelnPage(): React.ReactElement {
             showToast('Bitte eine gültige URL eingeben (http:// oder https://)', 'error');
             return;
         }
+        // Validate second link if provided
+        if (newPlayer.link2 && newPlayer.link2.trim() && !validateUrl(newPlayer.link2)) {
+            showToast('Bitte eine gültige URL für die zweite Plattform eingeben', 'error');
+            return;
+        }
 
         const participant: Participant = {
             name: newPlayer.name.trim(),
             link: newPlayer.link.trim(),
+            link2: newPlayer.link2?.trim() || undefined,
+            notes: newPlayer.notes?.trim() || undefined,
             id: editingId || Date.now().toString()
         };
 
@@ -169,7 +204,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
             showToast('TeilnehmerIn hinzugefügt');
         }
 
-        setNewPlayer({name: '', link: '', id: ''});
+        setNewPlayer({name: '', link: '', link2: '', notes: '', id: ''});
         setPairs([]); // Clear pairs when participants change
     };
 
@@ -185,7 +220,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
     };
 
     const cancelEdit = () => {
-        setNewPlayer({name: '', link: '', id: ''});
+        setNewPlayer({name: '', link: '', link2: '', notes: '', id: ''});
         setEditingId(null);
     };
 
@@ -194,11 +229,25 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         const randomLinks = shuffledNames
             .slice(0, 7)
             .map(name => `https://steamcommunity.com/id/${name.toLowerCase()}`);
+        const randomLinks2 = shuffledNames
+            .slice(0, 7)
+            .map(name => `https://www.epicgames.com/store/en-US/profile/${name.toLowerCase()}`);
+        const randomNotes = [
+            'Spiele nur auf Mac',
+            'Keine Horror-Spiele bitte',
+            'Liebe Indie-Games',
+            'Bevorzuge Strategie-Spiele',
+            '',
+            'Nur Multiplayer-Games',
+            ''
+        ];
         const randomParticipants: Participant[] = shuffledNames
             .slice(0, 7)
             .map((name, index) => ({
                 name,
                 link: randomLinks[index],
+                link2: index % 2 === 0 ? randomLinks2[index] : undefined, // Some have second platform
+                notes: randomNotes[index] || undefined,
                 id: `demo-${index}`
             }));
         setParticipants(randomParticipants);
@@ -209,7 +258,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
     const resetAll = () => {
         setParticipants([]);
         setPairs([]);
-        setNewPlayer({name: '', link: '', id: ''});
+        setNewPlayer({name: '', link: '', link2: '', notes: '', id: ''});
         setEditingId(null);
         localStorage.removeItem(STORAGE_KEY);
         showToast('Alle Daten zurückgesetzt');
@@ -260,6 +309,37 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                                 value={newPlayer.link}
                                 onChange={(event) => setNewPlayer({...newPlayer, link: event.target.value})}
                                 aria-label='Profil-Link des Teilnehmers'
+                            />
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Zweite Gaming-Plattform (optional)</legend>
+                        <label htmlFor='participant-link2'>
+                            URL
+                            <input
+                                id='participant-link2'
+                                type='url'
+                                pattern='https?://.*'
+                                name='link2'
+                                placeholder='https://www.epicgames.com/store/en-US/profile/...'
+                                value={newPlayer.link2 || ''}
+                                onChange={(event) => setNewPlayer({...newPlayer, link2: event.target.value})}
+                                aria-label='Zweiter Profil-Link des Teilnehmers (optional)'
+                            />
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Notizen / Hinweise (optional)</legend>
+                        <label htmlFor='participant-notes'>
+                            Hinweise für deine:n Wichtel-Partner:in
+                            <textarea
+                                id='participant-notes'
+                                name='notes'
+                                rows={3}
+                                placeholder='z.B. "Ich spiele nur auf Mac", "Keine Horror-Spiele bitte", "Liebe Indie-Games"'
+                                value={newPlayer.notes || ''}
+                                onChange={(event) => setNewPlayer({...newPlayer, notes: event.target.value})}
+                                aria-label='Notizen und Hinweise (optional)'
                             />
                         </label>
                     </fieldset>
@@ -322,14 +402,35 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                             <ul className='participants-list'>
                                 {participants.map((participant) => (
                                     <li key={participant.id} className='participant-item'>
-                                        <a 
-                                            href={participant.link} 
-                                            target='_blank' 
-                                            rel='noopener noreferrer'
-                                            aria-label={`${participant.name} Profil öffnen`}
-                                        >
-                                            {participant.name}
-                                        </a>
+                                        <div className='participant-info'>
+                                            <div className='participant-name-row'>
+                                                <a 
+                                                    href={participant.link} 
+                                                    target='_blank' 
+                                                    rel='noopener noreferrer'
+                                                    aria-label={`${participant.name} Profil öffnen`}
+                                                >
+                                                    {participant.name}
+                                                </a>
+                                                {participant.link2 && (
+                                                    <a 
+                                                        href={participant.link2} 
+                                                        target='_blank' 
+                                                        rel='noopener noreferrer'
+                                                        className='participant-link2'
+                                                        aria-label={`${participant.name} zweites Profil öffnen`}
+                                                        title='Zweite Plattform'
+                                                    >
+                                                        🔗
+                                                    </a>
+                                                )}
+                                            </div>
+                                            {participant.notes && (
+                                                <div className='participant-notes'>
+                                                    💡 {participant.notes}
+                                                </div>
+                                            )}
+                                        </div>
                                         <div className='participant-actions'>
                                             <button
                                                 type='button'
@@ -368,10 +469,16 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                             <summary>Discourse / Discord / Markdown</summary>
                             <blockquote>
                                 <pre ref={discourseRef} className='output-pre'>
+                                    {`🎮 **Spiele-Wichteln Paarungen**\n\n`}
                                     {pairs.map((pair, index) => (
                                         <React.Fragment key={index}>
-                                            * [{pair.sender.name}]({pair.sender.link}) bewichtelt ➡️ [{pair.receiver.name}]({pair.receiver.link})
-                                            {index < pairs.length - 1 && '\n'}
+                                            {`**${index + 1}. ${pair.sender.name}** bewichtelt **${pair.receiver.name}**\n`}
+                                            {`   👤 Sender: [${pair.sender.name}](${pair.sender.link})`}
+                                            {pair.sender.link2 ? ` | [Zweite Plattform](${pair.sender.link2})` : ''}
+                                            {`\n   🎁 Empfänger: [${pair.receiver.name}](${pair.receiver.link})`}
+                                            {pair.receiver.link2 ? ` | [Zweite Plattform](${pair.receiver.link2})` : ''}
+                                            {pair.receiver.notes ? `\n   💡 Hinweis: _${pair.receiver.notes}_` : ''}
+                                            {index < pairs.length - 1 ? '\n\n' : ''}
                                         </React.Fragment>
                                     ))}
                                 </pre>
@@ -390,14 +497,18 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                             <summary>phpBB</summary>
                             <blockquote>
                                 <pre ref={phpRef} className='output-pre'>
-                                    [list]{'\n'}
+                                    {`[b]🎮 Spiele-Wichteln Paarungen[/b]\n\n`}
                                     {pairs.map((pair, index) => (
                                         <React.Fragment key={index}>
-                                            [*] [url={pair.sender.link}]{pair.sender.name}[/url] bewichtelt ➡️ [url={pair.receiver.link}]{pair.receiver.name}[/url]
-                                            {index < pairs.length - 1 && '\n'}
+                                            {`[b]${index + 1}. ${pair.sender.name}[/b] bewichtelt [b]${pair.receiver.name}[/b]\n`}
+                                            {`   👤 Sender: [url=${pair.sender.link}]${pair.sender.name}[/url]`}
+                                            {pair.sender.link2 ? ` | [url=${pair.sender.link2}]Zweite Plattform[/url]` : ''}
+                                            {`\n   🎁 Empfänger: [url=${pair.receiver.link}]${pair.receiver.name}[/url]`}
+                                            {pair.receiver.link2 ? ` | [url=${pair.receiver.link2}]Zweite Plattform[/url]` : ''}
+                                            {pair.receiver.notes ? `\n   💡 Hinweis: [i]${pair.receiver.notes}[/i]` : ''}
+                                            {index < pairs.length - 1 ? '\n\n' : ''}
                                         </React.Fragment>
                                     ))}
-                                    {'\n'}[/list]
                                 </pre>
                                 <button 
                                     onClick={() => copyToClipboard(phpRef, 'phpBB')}
@@ -413,15 +524,38 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                         <details>
                             <summary>Text</summary>
                             <blockquote>
-                                <ul ref={textRef} className='output-list'>
+                                <div ref={textRef} className='output-text'>
+                                    <h3 style={{marginTop: 0}}>🎮 Spiele-Wichteln Paarungen</h3>
                                     {pairs.map((pair, index) => (
-                                        <li key={index}>
-                                            <a href={pair.sender.link} target='_blank' rel='noopener noreferrer'>{pair.sender.name}</a>
-                                            <strong>&nbsp;bewichtelt ➡️&nbsp;</strong>
-                                            <a href={pair.receiver.link} target='_blank' rel='noopener noreferrer'>{pair.receiver.name}</a>
-                                        </li>
+                                        <div key={index} className='pair-item'>
+                                            <div className='pair-header'>
+                                                <strong>{index + 1}. {pair.sender.name}</strong> bewichtelt <strong>{pair.receiver.name}</strong>
+                                            </div>
+                                            <div className='pair-details'>
+                                                <div className='pair-detail-row'>
+                                                    <span className='pair-label'>👤 Sender:</span>
+                                                    <a href={pair.sender.link} target='_blank' rel='noopener noreferrer'>{pair.sender.name}</a>
+                                                    {pair.sender.link2 && (
+                                                        <> | <a href={pair.sender.link2} target='_blank' rel='noopener noreferrer'>Zweite Plattform</a></>
+                                                    )}
+                                                </div>
+                                                <div className='pair-detail-row'>
+                                                    <span className='pair-label'>🎁 Empfänger:</span>
+                                                    <a href={pair.receiver.link} target='_blank' rel='noopener noreferrer'>{pair.receiver.name}</a>
+                                                    {pair.receiver.link2 && (
+                                                        <> | <a href={pair.receiver.link2} target='_blank' rel='noopener noreferrer'>Zweite Plattform</a></>
+                                                    )}
+                                                </div>
+                                                {pair.receiver.notes && (
+                                                    <div className='pair-detail-row'>
+                                                        <span className='pair-label'>💡 Hinweis:</span>
+                                                        <em>{pair.receiver.notes}</em>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                                 <button 
                                     onClick={() => copyToClipboard(textRef, 'Text')}
                                     className='copy-button'
