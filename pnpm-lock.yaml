@@ -27,8 +27,8 @@ importers:
         specifier: ^3.9.2
         version: 3.9.2(@algolia/client-search@5.44.0)(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(search-insights@2.17.3)(typescript@5.9.3)
       '@easyops-cn/docusaurus-search-local':
-        specifier: ^0.52.1
-        version: 0.52.1(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@docusaurus/theme-common@3.9.2(@docusaurus/plugin-content-docs@3.9.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+        specifier: ^0.52.2
+        version: 0.52.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@docusaurus/theme-common@3.9.2(@docusaurus/plugin-content-docs@3.9.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.7)(react@19.2.0)
@@ -1293,8 +1293,8 @@ packages:
   '@easyops-cn/autocomplete.js@0.38.1':
     resolution: {integrity: sha512-drg76jS6syilOUmVNkyo1c7ZEBPcPuK+aJA7AksM5ZIIbV57DMHCywiCr+uHyv8BE5jUTU98j/H7gVrkHrWW3Q==}
 
-  '@easyops-cn/docusaurus-search-local@0.52.1':
-    resolution: {integrity: sha512-pwfANjTLOQyAPc2Iz93WbG4OQM5C4COCWARbLAs79FIpIS38gHq3PrbDIX8f7oDhGQp1u6f8fr3K3u3+yZXZTA==}
+  '@easyops-cn/docusaurus-search-local@0.52.2':
+    resolution: {integrity: sha512-oEHkHe/OWHFcJxOhicS5UqohDOyPieREH+oNoImL/VcdrPzDxT2LB5Scov6WMOpOyDcSMJ6QCvjj63PEhhU8Nw==}
     engines: {node: '>=12'}
     peerDependencies:
       '@docusaurus/theme-common': ^2 || ^3
@@ -1852,25 +1852,21 @@ packages:
     resolution: {integrity: sha512-Ldpoz2wWnBaL2+XKLIOyCZMkAkd4pk/L24EVgma3SpRtwgenLEr10bQupvwGAK5OLkjayslOTZmRiAv0FH5o/w==}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rspack/binding-linux-arm64-musl@1.6.4':
     resolution: {integrity: sha512-3fLMSDK5yMjKmx7iFbYG3P3A0xNdtmNu09v5P6hzq65tkJ3dflIt3p8DvtOTURtuSgQZV2A1LDd9hpIXdnigqA==}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rspack/binding-linux-x64-gnu@1.6.4':
     resolution: {integrity: sha512-5YzXUKLnaiqND05CDgkKE0WNRtC1ulkVncYs78xPikonzZmgVXa8eRaTPOZC6ZjpLR0eTsg+MSesLUsPUu27hA==}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rspack/binding-linux-x64-musl@1.6.4':
     resolution: {integrity: sha512-KcSFla8a9bXG1mmV5oQ1R5h/dSXfd41/qHOsNuLqho2UCX8CVh4dezUA153dj7p1S4yOhTy6VZZi6C1szweE9A==}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rspack/binding-wasm32-wasi@1.6.4':
     resolution: {integrity: sha512-mfFJbDJkRy5I1iW3m0JlWbc0X8pjVd+GRUz5nhbccwEhSQOc27ao3evf7XPU4aaDxud1B3UEqYiRcRmtm1BrjA==}
@@ -2046,28 +2042,24 @@ packages:
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@swc/core-linux-arm64-musl@1.15.3':
     resolution: {integrity: sha512-j4SJniZ/qaZ5g8op+p1G9K1z22s/EYGg1UXIb3+Cg4nsxEpF5uSIGEE4mHUfA70L0BR9wKT2QF/zv3vkhfpX4g==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@swc/core-linux-x64-gnu@1.15.3':
     resolution: {integrity: sha512-aKttAZnz8YB1VJwPQZtyU8Uk0BfMP63iDMkvjhJzRZVgySmqt/apWSdnoIcZlUoGheBrcqbMC17GGUmur7OT5A==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@swc/core-linux-x64-musl@1.15.3':
     resolution: {integrity: sha512-oe8FctPu1gnUsdtGJRO2rvOUIkkIIaHqsO9xxN0bTR7dFTlPTGi2Fhk1tnvXeyAvCPxLIcwD8phzKg6wLv9yug==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@swc/core-win32-arm64-msvc@1.15.3':
     resolution: {integrity: sha512-L9AjzP2ZQ/Xh58e0lTRMLvEDrcJpR7GwZqAtIeNLcTK7JVE+QineSyHp0kLkO1rttCHyCy0U74kDTj0dRz6raA==}
@@ -2122,28 +2114,24 @@ packages:
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@swc/html-linux-arm64-musl@1.15.3':
     resolution: {integrity: sha512-ZmVYAP2xuzc8RN+jwJR84eMjgoWA0r20YL5Sb+hMo8p4+piOLPif0FjfTbRGy0iwz/lFY7Ml8Fent3I8kXjGig==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@swc/html-linux-x64-gnu@1.15.3':
     resolution: {integrity: sha512-QqHhNedxWps0nzam5aNJ+vHet+EsFYW3FkjdqyUnfpJZdrvVudzfyNd4yxjo/nMeb5RsOb/fZlfp1cx26XB2LQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@swc/html-linux-x64-musl@1.15.3':
     resolution: {integrity: sha512-gwowjNEHMflw3Nu1P4MPpUHCeBbEWW8uwDtMsWARPGb9onBCyzMr7Z3m1jvuRVd/kd44o9VwWfh0AB4j26Y12w==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@swc/html-win32-arm64-msvc@1.15.3':
     resolution: {integrity: sha512-rxxvpXER5KuKSN6bI5zU3RXMu5jpTIgQdWLzBlMVjuhRWRNk14LMaoxKSRxGJ3k/i0qwQWaMA+8oPpcsTVguKw==}
@@ -8605,7 +8593,7 @@ snapshots:
       cssesc: 3.0.0
       immediate: 3.3.0
 
-  '@easyops-cn/docusaurus-search-local@0.52.1(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@docusaurus/theme-common@3.9.2(@docusaurus/plugin-content-docs@3.9.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)':
+  '@easyops-cn/docusaurus-search-local@0.52.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@docusaurus/theme-common@3.9.2(@docusaurus/plugin-content-docs@3.9.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)':
     dependencies:
       '@docusaurus/plugin-content-docs': 3.9.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(debug@4.4.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       '@docusaurus/theme-common': 3.9.2(@docusaurus/plugin-content-docs@3.9.2(@docusaurus/faster@3.9.2(@docusaurus/types@3.9.2(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)))(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.0))(@rspack/core@1.6.4)(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(@swc/core@1.15.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
