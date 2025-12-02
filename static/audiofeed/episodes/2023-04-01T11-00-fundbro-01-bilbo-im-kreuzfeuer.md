@@ -15,4 +15,4 @@ In der heutigen Folge sind sie auf Lizenzspiele gestoßen, mit Protagonisten, di
 Seite ein abenteuerlustiger Hobbit, der sich auf die weite Reise zum Einsamen Berg begibt. Auf der anderen Seite ein ballernder
 Geheimagent, dessen Nummer 007 uns schon seit vielen Jahren begleitet.
 
-<a href="https://youtu.be/GwX1pD-zPVY">Das Video zum Podcast</a>
+[Das Video zum Podcast](https://youtu.be/GwX1pD-zPVY)

@@ -17,6 +17,6 @@ Wall Street Tycoon aus dem Jahr 1999 zu Vorschein. Darunter liegt ein ganzer Blo
 zweiten Fundstück Political Tycoon aus dem Jahr 2001 ablenken können. Was wird uns hier wohl nur erwarten? Trash oder doch
 verlorengegangener Schatz? Ihr erfahrt es in unserer neuen Folge des Fundbüros.
 
-<a href="https://youtu.be/N0TvhGEA4CU">Das Video zum Podcast</a>
+[Das Video zum Podcast](https://youtu.be/N0TvhGEA4CU)
 
-Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im <a href="https://forum.m10z.de">Forum</a> vorbei!
+Wenn ihr mit uns über die in dieser Folge besprochenen Spiele diskutieren wollt, schaut doch mal im [Forum](https://forum.m10z.de) vorbei!

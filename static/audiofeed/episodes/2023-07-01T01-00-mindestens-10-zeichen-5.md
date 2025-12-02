@@ -22,7 +22,7 @@ Bis dahin aber erstmal viel Spaß mit dieser verkürzten Folge und da haben wir:
 - einen Pitch für ein echt cooles Buch (bitte nicht klauen)
 - wie immer einen musikalischen Abschluss
 
-Und irgendwie haben wir es auch geschafft eine <a href="https://forum.m10z.de/t/mindestens-10-zeichen-5/2352">Abstimmung</a> aus der Sache rauszukristallisieren.
+Und irgendwie haben wir es auch geschafft eine [Abstimmung](https://forum.m10z.de/t/mindestens-10-zeichen-5/2352) aus der Sache rauszukristallisieren.
 
 Macht es gut und bis bald.
 

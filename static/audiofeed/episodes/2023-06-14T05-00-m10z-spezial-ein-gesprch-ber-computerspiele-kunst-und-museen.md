@@ -25,6 +25,6 @@ Kommerz bewegen. Des Weiteren erfahrt ihr etwas über die verschiedenen technisc
 Ausstellen von Computerspielen ergeben und wie weit der Museumsbetrieb und die Gameindustrie hier manchmal auseinandergehen.
 
 Wenn euch diese Spezialfolge gefallen hat, ihr Kritik bzw. Feedback habt oder generell eure Erfahrungen zu einem der diskutierten
-Themenfelder loswerden wollt, würde ich mich freuen, wenn ihr hier im <a href="https://forum.m10z.de">Forum</a> einen Kommentar dalasst.
+Themenfelder loswerden wollt, würde ich mich freuen, wenn ihr hier im [Forum](https://forum.m10z.de) einen Kommentar dalasst.
 
 Bis dahin, euer Edgar aka. Lipardus

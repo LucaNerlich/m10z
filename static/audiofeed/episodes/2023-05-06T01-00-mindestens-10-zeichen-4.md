@@ -14,7 +14,7 @@ Level-Design ist und wo wir es heute wie damals am ehesten kriegen.
 Was hat Grafik mit einer Spielebewertung zu tun? Sind Bewerter nur Fans und deshalb biased? Bei welchem Arzt ist Til am liebsten?
 … jenen und weiteren Fragen gehen wir auf den Grund!
 Darüber hinaus gibt es eine neue Kategorie, nachdem wir "Quo Ivisti Wasted?" ja absägen mussten. Was genau, das müsst ihr selbst
-hören. Wie immer sind wir sehr gespannt auf euer <a href="https://forum.m10z.de">Feedback</a>:
+hören. Wie immer sind wir sehr gespannt auf euer [Feedback](https://forum.m10z.de):
 - Hat euch der Zug/Schnitt gefallen?
 - Was sagt ihr zu der neuen Kategorie?
 - Und sonst, wie gehts euch? Was machen die Kinder?

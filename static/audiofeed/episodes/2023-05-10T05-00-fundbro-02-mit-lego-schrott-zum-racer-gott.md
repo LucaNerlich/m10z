@@ -16,4 +16,4 @@ der angeblich die Elemente unserer Welt kontrollieren können soll. In der ander
 nur eines Champion des Legolandes werden kann. Außer ihrer Klötzchenherkunft haben Lego Racers (1999) und Bionicle (2003) aber wenig
 gemein.
 
-<a href="https://youtu.be/qQuOCl2l6Y0">Das Video zum Podcast</a>
+[Das Video zum Podcast](https://youtu.be/qQuOCl2l6Y0)

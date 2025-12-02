@@ -16,7 +16,7 @@ Gina spricht über ihr Lieblingsgenre: Open-World-Survival-Games.
 Wir quatschen über Gespieltes, Gewünschtes und was sonst noch so in unsere Köpfe kam.
 
 Habt ihr in diesem Text bisher das Wort Meme vermisst? Ich auch. Keine Sorge natürlich gibt es wieder eine Abstimmung
-zum besten Meme aller bisherigen Zeiten im <a href="https://forum.m10z.de">Forum</a>.
+zum besten Meme aller bisherigen Zeiten im [Forum](https://forum.m10z.de).
 
 Eure M10Z-Podcast-Crew:
 Til, Marcel und Simon
