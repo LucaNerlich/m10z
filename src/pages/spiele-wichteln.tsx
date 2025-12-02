@@ -334,89 +334,85 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 
                 <form className='addParticipantForm' onSubmit={(e) => { e.preventDefault(); addParticipant(); }}>
                     <fieldset>
-                        <legend>{editingId ? 'TeilnehmerIn bearbeiten' : 'Neue/r SpielerIn'}</legend>
-                        <label htmlFor='participant-name'>
-                            Name
-                            <input
-                                id='participant-name'
-                                type='text'
-                                name='name'
-                                required
-                                placeholder='Luca'
-                                value={newPlayer.name}
-                                onChange={(event) => setNewPlayer({...newPlayer, name: event.target.value})}
-                                aria-label='Name des Teilnehmers'
-                            />
-                        </label>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Profil Link (Steam o. Ä.)</legend>
-                        <label htmlFor='participant-link'>
-                            URL
-                            <input
-                                id='participant-link'
-                                type='url'
-                                pattern='https?://.*'
-                                required
-                                name='link'
-                                placeholder='https://steamcommunity.com/id/gabelogannewell'
-                                value={newPlayer.link}
-                                onChange={(event) => setNewPlayer({...newPlayer, link: event.target.value})}
-                                aria-label='Profil-Link des Teilnehmers'
-                            />
-                        </label>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Zweite Gaming-Plattform (optional)</legend>
-                        <label htmlFor='participant-link2'>
-                            URL
-                            <input
-                                id='participant-link2'
-                                type='url'
-                                pattern='https?://.*'
-                                name='link2'
-                                placeholder='https://www.epicgames.com/store/en-US/profile/...'
-                                value={newPlayer.link2 || ''}
-                                onChange={(event) => setNewPlayer({...newPlayer, link2: event.target.value})}
-                                aria-label='Zweiter Profil-Link des Teilnehmers (optional)'
-                            />
-                        </label>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Notizen / Hinweise (optional)</legend>
-                        <label htmlFor='participant-notes'>
-                            Hinweise für deine:n Wichtel-Partner:in
-                            <textarea
-                                id='participant-notes'
-                                name='notes'
-                                rows={3}
-                                placeholder='z.B. "Ich spiele nur auf Mac", "Keine Horror-Spiele bitte", "Liebe Indie-Games"'
-                                value={newPlayer.notes || ''}
-                                onChange={(event) => setNewPlayer({...newPlayer, notes: event.target.value})}
-                                aria-label='Notizen und Hinweise (optional)'
-                            />
-                        </label>
-                    </fieldset>
+                        <legend>{editingId ? '✏️ TeilnehmerIn bearbeiten' : '➕ Neue/r SpielerIn'}</legend>
+                        <div className='form-grid'>
+                            <label htmlFor='participant-name' className='compact-label'>
+                                Name *
+                                <input
+                                    id='participant-name'
+                                    type='text'
+                                    name='name'
+                                    required
+                                    placeholder='Luca'
+                                    value={newPlayer.name}
+                                    onChange={(event) => setNewPlayer({...newPlayer, name: event.target.value})}
+                                    aria-label='Name des Teilnehmers'
+                                />
+                            </label>
 
-                    <div className='form-actions'>
-                        <button 
-                            type='submit'
-                            disabled={!newPlayer.name.trim() || !newPlayer.link.trim()}
-                            aria-label={editingId ? 'Änderungen speichern' : 'TeilnehmerIn hinzufügen'}
-                        >
-                            {editingId ? '✓ Speichern' : '+ SpielerIn hinzufügen'}
-                        </button>
-                        {editingId && (
-                            <button 
-                                type='button'
-                                onClick={cancelEdit}
-                                className='button-secondary'
-                                aria-label='Bearbeitung abbrechen'
+                            <label htmlFor='participant-link' className='compact-label'>
+                                Profil Link *
+                                <input
+                                    id='participant-link'
+                                    type='url'
+                                    pattern='https?://.*'
+                                    required
+                                    name='link'
+                                    placeholder='https://steamcommunity.com/id/...'
+                                    value={newPlayer.link}
+                                    onChange={(event) => setNewPlayer({...newPlayer, link: event.target.value})}
+                                    aria-label='Profil-Link des Teilnehmers'
+                                />
+                            </label>
+
+                            <label htmlFor='participant-link2' className='compact-label'>
+                                2. Plattform
+                                <input
+                                    id='participant-link2'
+                                    type='url'
+                                    pattern='https?://.*'
+                                    name='link2'
+                                    placeholder='https://...'
+                                    value={newPlayer.link2 || ''}
+                                    onChange={(event) => setNewPlayer({...newPlayer, link2: event.target.value})}
+                                    aria-label='Zweiter Profil-Link des Teilnehmers (optional)'
+                                />
+                            </label>
+
+                            <label htmlFor='participant-notes' className='compact-label notes-label'>
+                                Hinweise
+                                <input
+                                    id='participant-notes'
+                                    type='text'
+                                    name='notes'
+                                    placeholder='z.B. "Nur Mac", "Keine Horror-Spiele"'
+                                    value={newPlayer.notes || ''}
+                                    onChange={(event) => setNewPlayer({...newPlayer, notes: event.target.value})}
+                                    aria-label='Notizen und Hinweise (optional)'
+                                />
+                            </label>
+                        </div>
+
+                        <div className='form-actions'>
+                            <button
+                                type='submit'
+                                disabled={!newPlayer.name.trim() || !newPlayer.link.trim()}
+                                aria-label={editingId ? 'Änderungen speichern' : 'TeilnehmerIn hinzufügen'}
                             >
-                                Abbrechen
+                                {editingId ? '✓ Speichern' : '+ Hinzufügen'}
                             </button>
-                        )}
-                    </div>
+                            {editingId && (
+                                <button
+                                    type='button'
+                                    onClick={cancelEdit}
+                                    className='button-secondary'
+                                    aria-label='Bearbeitung abbrechen'
+                                >
+                                    Abbrechen
+                                </button>
+                            )}
+                        </div>
+                    </fieldset>
                 </form>
 
                 <div className='bulk-import-section'>
