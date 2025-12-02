@@ -67,6 +67,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
     const [newPlayer, setNewPlayer] = useState<Participant>({name: '', link: '', link2: '', notes: '', id: ''});
     const [editingId, setEditingId] = useState<string | null>(null);
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
+    const [bulkImportText, setBulkImportText] = useState<string>('');
     const discourseRef = useRef<HTMLPreElement>(null);
     const phpRef = useRef<HTMLPreElement>(null);
     const textRef = useRef<HTMLDivElement>(null);
@@ -264,6 +265,59 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         showToast('Alle Daten zurückgesetzt');
     };
 
+    const bulkImportParticipants = () => {
+        if (!bulkImportText.trim()) {
+            showToast('Bitte Text zum Importieren eingeben', 'error');
+            return;
+        }
+
+        // Parse markdown links: [Name](URL) with optional list marker
+        const markdownLinkRegex = /^\s*(?:\*|\d+\.|\-)?\s*\[([^\]]+)\]\(([^)]+)\)\s*$/;
+        const lines = bulkImportText.split('\n');
+        const newParticipants: Participant[] = [];
+        const errors: string[] = [];
+
+        lines.forEach((line, index) => {
+            const trimmedLine = line.trim();
+            if (!trimmedLine) return; // Skip empty lines
+
+            const match = trimmedLine.match(markdownLinkRegex);
+            if (match) {
+                const [, name, link] = match;
+                if (name.trim() && link.trim()) {
+                    if (validateUrl(link.trim())) {
+                        newParticipants.push({
+                            name: name.trim(),
+                            link: link.trim(),
+                            id: `bulk-${Date.now()}-${index}`
+                        });
+                    } else {
+                        errors.push(`Zeile ${index + 1}: Ungültige URL`);
+                    }
+                } else {
+                    errors.push(`Zeile ${index + 1}: Name oder URL fehlt`);
+                }
+            } else {
+                errors.push(`Zeile ${index + 1}: Ungültiges Format`);
+            }
+        });
+
+        if (newParticipants.length === 0) {
+            showToast('Keine gültigen Einträge gefunden', 'error');
+            return;
+        }
+
+        setParticipants(prev => [...prev, ...newParticipants]);
+        setPairs([]); // Clear pairs when participants change
+        setBulkImportText('');
+
+        if (errors.length > 0) {
+            showToast(`${newParticipants.length} SpielerInnen importiert, ${errors.length} Fehler`, 'error');
+        } else {
+            showToast(`${newParticipants.length} SpielerInnen erfolgreich importiert`);
+        }
+    };
+
     return (
         <Layout title='Spiele-Wichteln' description='Web App zum Auslosen von Wichteln-Paaren'>
             <div className='wrapper'>
@@ -364,6 +418,31 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                         )}
                     </div>
                 </form>
+
+                <div className='bulk-import-section'>
+                    <fieldset>
+                        <legend>🔽 Mehrere SpielerInnen auf einmal importieren</legend>
+                        <label htmlFor='bulk-import'>
+                            Markdown-Liste einfügen (mit oder ohne * am Anfang)
+                            <textarea
+                                id='bulk-import'
+                                rows={8}
+                                placeholder={'* [Georg](https://steamcommunity.com/profiles/76561198036517709/)\n* [SZ](https://steamcommunity.com/id/calyampudi)\n* [Luca](https://steamcommunity.com/id/e_Lap)'}
+                                value={bulkImportText}
+                                onChange={(e) => setBulkImportText(e.target.value)}
+                                aria-label='Bulk import text area'
+                            />
+                        </label>
+                        <button
+                            type='button'
+                            onClick={bulkImportParticipants}
+                            disabled={!bulkImportText.trim()}
+                            aria-label='SpielerInnen importieren'
+                        >
+                            📥 Importieren
+                        </button>
+                    </fieldset>
+                </div>
 
                 <form className='participantsForm' onSubmit={handleSubmit}>
                     <fieldset>
