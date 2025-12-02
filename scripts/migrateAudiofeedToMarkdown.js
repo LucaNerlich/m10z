@@ -2,8 +2,8 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const path = require('path');
 
-const yamlFilePath = './static/audiofeed.yaml';
-const episodesDir = './static/audiofeed/episodes';
+const yamlFilePath = path.join(__dirname, '..', 'static/audiofeed.yaml');
+const episodesDir = path.join(__dirname, '..', 'static/audiofeed/episodes');
 
 /**
  * Extract slug from blogpost URL

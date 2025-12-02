@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const episodesDir = './static/audiofeed/episodes';
+const episodesDir = path.join(__dirname, '..', 'static/audiofeed/episodes');
 
 /**
  * Convert HTML links to markdown format

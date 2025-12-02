@@ -1,8 +1,9 @@
 const fs = require('fs');
 const xml2js = require('xml2js');
 const jsYaml = require('js-yaml');
+const path = require('path');
 
-const basepath = './static/audiofeed';
+const basepath = path.join(__dirname, '..', 'static/audiofeed');
 
 fs.readFile(basepath + '.xml', 'utf8', function(err, data) {
     if (err) {

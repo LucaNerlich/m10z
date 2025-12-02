@@ -7,9 +7,9 @@ const {URL} = require('url');
 const path = require('path');
 const {markdownToHtml} = require('./markdownToHtml');
 
-const basepath = './static/audiofeed';
-const episodesDir = path.join(__dirname, 'static/audiofeed/episodes');
-const cacheFile = path.join(__dirname, 'file-size-cache.json');
+const basepath = path.join(__dirname, '..', 'static/audiofeed');
+const episodesDir = path.join(__dirname, '..', 'static/audiofeed/episodes');
+const cacheFile = path.join(__dirname, '..', 'file-size-cache.json');
 
 // Convert dateString to IETF RFC 2822
 function convertToPubDateFormat(dateString) {
@@ -168,7 +168,7 @@ function readEpisodes() {
 async function generateFeedXML(episodes) {
     const cache = readCache();
 
-    const data = fs.readFileSync('./templates/rss-channel.xml');
+    const data = fs.readFileSync(path.join(__dirname, '..', 'templates/rss-channel.xml'));
 
     xml2js.parseString(data, async (err, result) => {
         if (err) {
