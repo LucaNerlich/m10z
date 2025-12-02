@@ -87,12 +87,96 @@ function processMarkdownText(text) {
     if (!text) return '';
     
     let processed = text;
+    const lines = processed.split('\n');
+    const result = [];
+    let i = 0;
+    
+    while (i < lines.length) {
+        const line = lines[i];
+        
+        // Check if this line starts an unordered list
+        if (/^[-*+]\s+/.test(line)) {
+            const listItems = [];
+            let foundListItem = false;
+            // Collect consecutive list items (including blank lines between them)
+            // Stop when we hit a non-blank line that's not a list item
+            while (i < lines.length) {
+                if (lines[i].trim() === '') {
+                    // Blank line - continue collecting
+                    i++;
+                } else if (/^[-*+]\s+/.test(lines[i])) {
+                    // List item - collect it
+                    const content = lines[i].replace(/^[-*+]\s+/, '').trim();
+                    listItems.push(`<li>${processInlineMarkdown(content)}</li>`);
+                    foundListItem = true;
+                    i++;
+                } else {
+                    // Non-list line - stop collecting
+                    break;
+                }
+            }
+            // Only create list if we found at least one item
+            if (foundListItem) {
+                result.push(`<ul>${listItems.join('')}</ul>`);
+                continue;
+            }
+        }
+        
+        // Check if this line starts an ordered list
+        if (/^\d+\.\s+/.test(line)) {
+            const listItems = [];
+            let foundListItem = false;
+            // Collect consecutive list items (including blank lines between them)
+            while (i < lines.length) {
+                if (lines[i].trim() === '') {
+                    // Blank line - continue collecting
+                    i++;
+                } else if (/^\d+\.\s+/.test(lines[i])) {
+                    // List item - collect it
+                    const content = lines[i].replace(/^\d+\.\s+/, '').trim();
+                    listItems.push(`<li>${processInlineMarkdown(content)}</li>`);
+                    foundListItem = true;
+                    i++;
+                } else {
+                    // Non-list line - stop collecting
+                    break;
+                }
+            }
+            // Only create list if we found at least one item
+            if (foundListItem) {
+                result.push(`<ol>${listItems.join('')}</ol>`);
+                continue;
+            }
+        }
+        
+        // Regular line - add as-is
+        result.push(line);
+        i++;
+    }
+    
+    processed = result.join('\n');
     
     // Convert double line breaks (paragraph breaks) to <br/><br/>
     processed = processed.replace(/\n\n+/g, '<br/><br/>');
     
     // Convert single line breaks to <br/>
     processed = processed.replace(/\n/g, '<br/>');
+    
+    // Process inline markdown (bold, italic, links) for remaining text
+    processed = processInlineMarkdown(processed);
+    
+    return processed;
+}
+
+/**
+ * Process inline markdown formatting (bold, italic, links)
+ * @param {string} text - Text to process
+ * @return {string} Processed HTML text
+ */
+function processInlineMarkdown(text) {
+    if (!text) return '';
+    
+    let processed = text;
     
     // Convert markdown bold (**text** or __text__) to <strong>
     // Process bold before italic to avoid conflicts
@@ -101,7 +185,6 @@ function processMarkdownText(text) {
     
     // Convert markdown italic (*text* or _text_) to <em>
     // Match single asterisks/underscores that aren't part of bold
-    // Use a simple approach: match *text* or _text_ but not **text** or __text__
     processed = processed.replace(/([^*]|^)\*([^*]+?)\*([^*]|$)/g, '$1<em>$2</em>$3');
     processed = processed.replace(/([^_]|^)_([^_]+?)_([^_]|$)/g, '$1<em>$2</em>$3');
     
