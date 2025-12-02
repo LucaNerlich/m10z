@@ -193,32 +193,41 @@ Full episode content...
 
 #### Adding Episodes to the RSS Feed
 
-To include new episodes in the podcast RSS feed, you must update the `static/audiofeed.yaml` file:
+To include new episodes in the podcast RSS feed, create a new markdown file in the `static/audiofeed/episodes/` directory:
 
-3. **Add episode entry to audiofeed.yaml** at the top of the file (newest episodes first):
-```yaml
-- title: 'Episode Title'
-  date: YYYY-MM-DDTHH:MM
-  image: https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/format-cover.jpg
-  description: |2-
-                Episode description with HTML formatting allowed.
-                
-                Multiple paragraphs and <a href="link">HTML links</a> are supported.
-                Use proper indentation for multi-line descriptions.
-  seconds: 3600  # Duration in seconds OR "01:00:00" format
-  blogpost: https://m10z.de/episode-slug
-  url: https://your-audio-host.com/episode.mp3
+3. **Create a new episode file** with filename format: `YYYY-MM-DDTHH-MM-{slug}.md`
+   - Extract the slug from the blogpost URL (e.g., `https://m10z.de/pixelplausch-9` → `pixelplausch-9`)
+   - Replace `:` in time with `-` for filesystem compatibility (e.g., `2025-11-26T10:00` → `2025-11-26T10-00`)
+   - Example: `2025-11-26T10-00-pixelplausch-9.md`
+
+4. **Use the episode markdown format**:
+```markdown
+---
+title: 'Episode Title'
+date: '2025-11-26T10:00'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/format-cover.jpg'
+seconds: '00:47:19'
+blogpost: 'https://m10z.de/episode-slug'
+url: 'https://your-audio-host.com/episode.mp3'
+---
+
+Episode description with HTML formatting allowed.
+
+Multiple paragraphs and <a href="link">HTML links</a> are supported.
+No whitespace sensitivity issues - just write naturally!
+
+You can use multiple paragraphs, line breaks, and HTML tags freely.
 ```
 
-**Important notes for audiofeed.yaml:**
-- **Order matters**: Add new episodes at the **top** of the file
-- **Date format**: Use ISO format `YYYY-MM-DDTHH:MM` (e.g., `2024-12-24T09:00`)
+**Important notes for episode files:**
+- **Filename format**: `YYYY-MM-DDTHH-MM-{slug}.md` (newest episodes first by date)
+- **Date format**: Use ISO format `YYYY-MM-DDTHH:MM` (e.g., `2025-11-26T10:00`)
 - **Image URLs**: Use the full GitHub raw URL for cover images
-- **Description formatting**: Use `|2-` for multi-line descriptions with proper indentation
-- **Duration format**: Either seconds as number (`3600`) or time format (`"01:00:00"`)
+- **Description**: Write directly in the markdown body - no indentation needed, very forgiving!
+- **Duration format**: Either seconds as number (`3600`) or time format (`"00:47:19"`)
 - **Blogpost URL**: Must match the deployed site URL structure
 
-4. **Regenerate the feed** by running:
+5. **Regenerate the feed** by running:
 ```bash
 npm run generateAudioFeed
 ```

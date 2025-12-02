@@ -1,12 +1,14 @@
 const fs = require('fs');
-const yaml = require('js-yaml');
+const matter = require('gray-matter');
 const xml2js = require('xml2js');
 const crypto = require('crypto');
 const https = require('https');
 const {URL} = require('url');
 const path = require('path');
+const {markdownToHtml} = require('./markdownToHtml');
 
 const basepath = './static/audiofeed';
+const episodesDir = path.join(__dirname, 'static/audiofeed/episodes');
 const cacheFile = path.join(__dirname, 'file-size-cache.json');
 
 // Convert dateString to IETF RFC 2822
@@ -46,6 +48,7 @@ function getSeconds(time) {
     }
     return seconds;
 }
+
 
 function readCache() {
     if (fs.existsSync(cacheFile)) {
@@ -93,8 +96,8 @@ async function getCachedFileSize(options, cache) {
     return fileSize;
 }
 
-async function yamlObjectToXml(yamlObject, cache) {
-    const url = new URL(yamlObject.url);
+async function episodeToXml(episode, cache) {
+    const url = new URL(episode.url);
     const options = {
         method: 'HEAD',
         host: url.hostname,
@@ -102,29 +105,32 @@ async function yamlObjectToXml(yamlObject, cache) {
     };
 
     const fileSize = await getCachedFileSize(options, cache);
-    console.log(`Processed file size for ${yamlObject.url}: ${fileSize}`);
+    console.log(`Processed file size for ${episode.url}: ${fileSize}`);
+
+    // Convert markdown description to HTML for RSS feed
+    const description = episode.description ? markdownToHtml(episode.description) : '';
 
     return {
-        'title': yamlObject.title,
-        'pubDate': convertToPubDateFormat(yamlObject.date),
-        'lastBuildDate': convertToPubDateFormat(yamlObject.date),
+        'title': episode.title,
+        'pubDate': convertToPubDateFormat(episode.date),
+        'lastBuildDate': convertToPubDateFormat(episode.date),
         'guid': {
-            _: toHash(yamlObject.url),
+            _: toHash(episode.url),
             $: {isPermaLink: 'false'},
         },
         'itunes:image': {
             $: {
-                href: yamlObject.image ?? 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z.jpg',
+                href: episode.image ?? 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z.jpg',
             },
         },
-        'description': yamlObject.description,
+        'description': description,
         'author': 'm10z@posteo.de',
         'itunes:explicit': 'false',
-        'link': yamlObject.blogpost ?? 'https://m10z.de',
-        'itunes:duration': getSeconds(yamlObject.seconds),
+        'link': episode.blogpost ?? 'https://m10z.de',
+        'itunes:duration': getSeconds(episode.seconds),
         'enclosure': {
             $: {
-                url: yamlObject.url,
+                url: episode.url,
                 length: fileSize,
                 type: 'audio/mpeg',
             },
@@ -132,7 +138,34 @@ async function yamlObjectToXml(yamlObject, cache) {
     };
 }
 
-async function generateFeedXML(yamlObjects) {
+/**
+ * Read all markdown episode files and parse them
+ * @returns {Array} Array of episode objects
+ */
+function readEpisodes() {
+    if (!fs.existsSync(episodesDir)) {
+        console.error(`Error: Episodes directory not found: ${episodesDir}`);
+        process.exit(1);
+    }
+
+    const files = fs.readdirSync(episodesDir)
+        .filter(file => file.endsWith('.md'))
+        .sort()
+        .reverse(); // Newest first (by filename date)
+
+    return files.map(file => {
+        const filePath = path.join(episodesDir, file);
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        const parsed = matter(fileContent);
+
+        return {
+            ...parsed.data,
+            description: parsed.content.trim(), // Description is in the markdown body
+        };
+    });
+}
+
+async function generateFeedXML(episodes) {
     const cache = readCache();
 
     const data = fs.readFileSync('./templates/rss-channel.xml');
@@ -144,10 +177,10 @@ async function generateFeedXML(yamlObjects) {
         }
 
         result.rss.channel[0]['pubDate'] = convertToPubDateFormat(new Date().toDateString());
-        result.rss.channel[0].item = await Promise.all(yamlObjects.map(async (yamlObject, index) => {
-            console.log(`Processing item ${index + 1}/${yamlObjects.length}`);
-            const item = await yamlObjectToXml(yamlObject, cache);
-            console.log(`Successfully processed item ${index + 1}/${yamlObjects.length}`);
+        result.rss.channel[0].item = await Promise.all(episodes.map(async (episode, index) => {
+            console.log(`Processing item ${index + 1}/${episodes.length}`);
+            const item = await episodeToXml(episode, cache);
+            console.log(`Successfully processed item ${index + 1}/${episodes.length}`);
             return item;
         }));
 
@@ -163,9 +196,9 @@ async function generateFeedXML(yamlObjects) {
 }
 
 console.log('Creating audiofeed.xml');
-const yamlData = fs.readFileSync(basepath + '.yaml', 'utf8');
-const yamlObjects = yaml.load(yamlData);
-generateFeedXML(yamlObjects)
+const episodes = readEpisodes();
+console.log(`Found ${episodes.length} episodes`);
+generateFeedXML(episodes)
     .then(() => console.log('Successfully created audiofeed.xml'))
     .catch(error => {
         console.error('Failed to generate audiofeed.xml', error);
