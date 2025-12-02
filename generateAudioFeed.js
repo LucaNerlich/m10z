@@ -48,6 +48,69 @@ function getSeconds(time) {
     return seconds;
 }
 
+/**
+ * Convert markdown text to HTML for RSS feed description.
+ * Preserves line breaks and converts markdown formatting to HTML.
+ * 
+ * @param {string} markdownText - The markdown text to convert
+ * @return {string} HTML formatted text
+ */
+function markdownToHtml(markdownText) {
+    if (!markdownText) return '';
+    
+    let html = markdownText.trim();
+    
+    // Split by HTML tags to process markdown separately from HTML
+    const parts = html.split(/(<[^>]+>)/);
+    let result = '';
+    
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        // If it's an HTML tag, add it as-is
+        if (part.startsWith('<') && part.endsWith('>')) {
+            result += part;
+        } else {
+            // Process markdown in text parts
+            result += processMarkdownText(part);
+        }
+    }
+    
+    return result;
+}
+
+/**
+ * Process markdown formatting in text (excluding HTML tags)
+ * @param {string} text - Text to process
+ * @return {string} Processed HTML text
+ */
+function processMarkdownText(text) {
+    if (!text) return '';
+    
+    let processed = text;
+    
+    // Convert double line breaks (paragraph breaks) to <br/><br/>
+    processed = processed.replace(/\n\n+/g, '<br/><br/>');
+    
+    // Convert single line breaks to <br/>
+    processed = processed.replace(/\n/g, '<br/>');
+    
+    // Convert markdown bold (**text** or __text__) to <strong>
+    // Process bold before italic to avoid conflicts
+    processed = processed.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    processed = processed.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+    
+    // Convert markdown italic (*text* or _text_) to <em>
+    // Match single asterisks/underscores that aren't part of bold
+    // Use a simple approach: match *text* or _text_ but not **text** or __text__
+    processed = processed.replace(/([^*]|^)\*([^*]+?)\*([^*]|$)/g, '$1<em>$2</em>$3');
+    processed = processed.replace(/([^_]|^)_([^_]+?)_([^_]|$)/g, '$1<em>$2</em>$3');
+    
+    // Convert markdown links [text](url) to HTML links
+    processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+    
+    return processed;
+}
+
 function readCache() {
     if (fs.existsSync(cacheFile)) {
         const cacheContent = fs.readFileSync(cacheFile, 'utf8');
@@ -105,8 +168,8 @@ async function episodeToXml(episode, cache) {
     const fileSize = await getCachedFileSize(options, cache);
     console.log(`Processed file size for ${episode.url}: ${fileSize}`);
 
-    // Trim description to remove any leading/trailing whitespace from YAML migration
-    const description = episode.description ? episode.description.trim() : '';
+    // Convert markdown description to HTML for RSS feed
+    const description = episode.description ? markdownToHtml(episode.description) : '';
 
     return {
         'title': episode.title,
