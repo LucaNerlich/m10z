@@ -132,10 +132,11 @@ export default function SpieleWichtelnPage(): React.ReactElement {
         showToast('Paare erfolgreich ausgelost! 🎉');
     };
 
+    // @ts-ignore
     const copyToClipboard = async (ref: React.RefObject<HTMLPreElement | HTMLDivElement>, format: string) => {
         if (ref.current) {
             let textToCopy: string;
-            
+
             // For text format (div), generate a cleaner plain text version
             if (format === 'Text' && ref.current instanceof HTMLDivElement) {
                 const lines: string[] = ['🎮 Spiele-Wichteln Paarungen', ''];
@@ -160,7 +161,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
             } else {
                 textToCopy = ref.current.innerText || ref.current.textContent || '';
             }
-            
+
             if (textToCopy) {
                 try {
                     await navigator.clipboard.writeText(textToCopy);
@@ -331,7 +332,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                 </div>
 
                 <h1>Spiele-Wichteln Auslosungs App</h1>
-                
+
                 <form className='addParticipantForm' onSubmit={(e) => { e.preventDefault(); addParticipant(); }}>
                     <fieldset>
                         <legend>{editingId ? '✏️ TeilnehmerIn bearbeiten' : '➕ Neue/r SpielerIn'}</legend>
@@ -479,18 +480,18 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                                     <li key={participant.id} className='participant-item'>
                                         <div className='participant-info'>
                                             <div className='participant-name-row'>
-                                                <a 
-                                                    href={participant.link} 
-                                                    target='_blank' 
+                                                <a
+                                                    href={participant.link}
+                                                    target='_blank'
                                                     rel='noopener noreferrer'
                                                     aria-label={`${participant.name} Profil öffnen`}
                                                 >
                                                     {participant.name}
                                                 </a>
                                                 {participant.link2 && (
-                                                    <a 
-                                                        href={participant.link2} 
-                                                        target='_blank' 
+                                                    <a
+                                                        href={participant.link2}
+                                                        target='_blank'
                                                         rel='noopener noreferrer'
                                                         className='participant-link2'
                                                         aria-label={`${participant.name} zweites Profil öffnen`}
@@ -557,7 +558,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                                         </React.Fragment>
                                     ))}
                                 </pre>
-                                <button 
+                                <button
                                     onClick={() => copyToClipboard(discourseRef, 'Discourse/Discord/Markdown')}
                                     className='copy-button'
                                     aria-label='Discourse/Discord/Markdown Format kopieren'
@@ -585,7 +586,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                                         </React.Fragment>
                                     ))}
                                 </pre>
-                                <button 
+                                <button
                                     onClick={() => copyToClipboard(phpRef, 'phpBB')}
                                     className='copy-button'
                                     aria-label='phpBB Format kopieren'
@@ -631,7 +632,7 @@ export default function SpieleWichtelnPage(): React.ReactElement {
                                         </div>
                                     ))}
                                 </div>
-                                <button 
+                                <button
                                     onClick={() => copyToClipboard(textRef, 'Text')}
                                     className='copy-button'
                                     aria-label='Text Format kopieren'
