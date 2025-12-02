@@ -8,6 +8,7 @@ url: 'https://m10z.picnotes.de/Spezial/Spezial-Spiele_Militaer_Krieg.mp3'
 ---
 
 Die Welt steht Kopf – Und wir zocken! Militär und Krieg machen auch vor unserem präferierten Medium nicht halt, und so streiten sich zwei Seiten über Krieg in Spielen, die Wehrpflicht und welche Auftritte diese Themen in Videospielen haben. Gewinnen dazu konnte ich auf der einen Seite Lipardus/Edgar, und auf der anderen BrainBug/Georg, welche eine tiefe Diskussion führen und uns mit ihren Gedanken und Argumenten mitnehmen und erleuchten …
+
 Nicht nur ein Podcast für Casuals, kommt doch mit und erhaltet einige Denkanstöße – und vielleicht überdenkt ihr ja sogar, was euch umtreibt?
 
 Viele Grüße

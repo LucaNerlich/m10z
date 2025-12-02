@@ -3,7 +3,7 @@ title: 'Spezial: Videospiele und Verantwortung – Games, Politik, Krisen (mit C
 date: '2025-03-08T16:00'
 image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/SpezialChristian_NeuesLogoMitChristian.png'
 seconds: 3624
-blogpost: 'https://m10z.de/spezial_spiele-krisen'
+blogpost: spezial_spiele-krisen
 url: 'https://m10z.picnotes.de/Spezial/M10Z_Spiele_Verantwortung_Politik_Krisen.mp3'
 ---
 

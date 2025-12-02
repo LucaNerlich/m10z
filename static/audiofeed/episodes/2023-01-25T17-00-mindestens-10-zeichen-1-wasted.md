@@ -8,9 +8,8 @@ url: 'https://m10z.picnotes.de/M10Z/M10Z_001.mp3'
 
 Liebe Community,
 
-es ist so weit! Mit einem tollen Team, motivierten Leuten und einem Haufen kreativer Köpfe haben wir die erste Folge des ersten
-Community-Podcasts ÜBERHAUPT auf die Beine gestellt (Zumindest habe ich sonst noch von keinem gehört!)
-Wir haben auf euch gehört und einen bunten Mix aus Struktur, Freiem Gerede, lustigen und schweren Themen, über die Community itself
-und über Wasted gemacht, mit einem super Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
+es ist so weit! Mit einem tollen Team, motivierten Leuten und einem Haufen kreativer Köpfe haben wir die erste Folge des ersten Community-Podcasts ÜBERHAUPT auf die Beine gestellt (zumindest habe ich sonst noch von keinem gehört!).
+
+Wir haben auf euch gehört und einen bunten Mix aus Struktur, freiem Gerede, lustigen und schweren Themen, über die Community selbst und über Wasted gemacht, mit einem tollen Gast aus dem legendären Club 27 und einer abschließenden Lauscherunde.
 
 Viel Vergnügen!
