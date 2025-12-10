@@ -115,3 +115,9 @@ franziska:
   image_url: https://m10z.picnotes.de/avatars/DePupi.png
   name: Franziska
   url: /tags/franziska
+faehrmann:
+  page: true
+  description: Meme Profi
+  image_url: https://m10z.picnotes.de/avatars/faehrmann.jpeg
+  name: Faehrmann
+  url: /tags/faehrmann
