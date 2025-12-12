@@ -1,10 +1,10 @@
 ---
 title: 'Gaming-Stories #01 – Der berühmteste gelbe Kreis'
 date: '2025-12-10T10:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/gamingstories.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/gaming-stories.jpg'
 seconds: '00:06:21'
 blogpost: 'https://m10z.de/gaming-stories-1'
-url: 'https://m10z.picnotes.de/xyz.mp3'
+url: 'https://m10z.picnotes.de/GamingStories/GamingStories_001.mp3'
 ---
 
 Nachdem ich zuletzt als Gast bei M10Z gepodcastet hatte, fand ich irgendwie gefallen daran – auch wenn es mich immer noch irritiert, meine eigene Stimme öffentlich zu wissen. Das kleine Imposter-Syndrom eben.
