@@ -3,7 +3,7 @@ slug: wenn-die-reise-endet
 title: 'Wenn die Reise endet, endet das Spiel'
 authors: [ simon ]
 tags: [ artikel, kommentar, simon ]
-image: /img/articles/OpenBetaLogo.jpg
+image: /img/formate/banner/m10z-artikel.png
 date: 2025-12-13T12:00
 draft: false
 ---
