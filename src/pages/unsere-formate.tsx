@@ -128,6 +128,13 @@ export default function Formate() {
                             </p>
                             <Beteiligte text='Marcel, Til' />
                         </SingleFormat>
+                        
+                        <SingleFormat title='Gaming Stories' link='/tags/gaming-stories' imagePath='/img/formate/banner/gaming-stories.jpg'>
+                            <p>
+                                Kurze Geschichten über kuriose Fakten und prägende Ereignisse aus allen Epochen der Gaming-Welt. Keine bahnbrechenden News, keine Sensationen, die noch niemand gehört hat, stattdessen sorgfältig recherchierte und unterhaltsam aufbereitete Anekdoten und Hintergründe für den kleinen Podcast-Snack zwischendurch.
+                            </p>
+                            <Beteiligte text='Martin (aka Fährmann)' />
+                        </SingleFormat>
                     </div>
                 </section>
 
