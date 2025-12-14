@@ -11,15 +11,13 @@ In dieser Auftaktfolge von Gaming Stories reisen wir zurück ins Jahr 1980 und e
 
 Wir graben uns durch Pizza-Mythen, Kanji-Interpretationen und halb vergessene Spielzeuge, die neugierig machen, ob es eine Wahrheit zur der Figur gibt oder alles nur Marketing-Legenden sind.
 
-Schlußendlich finden wir heraus, wie die Figur zu ihrem kultigen Namen kam und was Teenager damit zu tun hatten.
+Schlussendlich finden wir heraus, wie die Figur zu ihrem kultigen Namen kam und was Teenager damit zu tun hatten.
 
 Hier noch einige weiterführende Links:
+- [Mehr zur Geschichte von Pac-Man](https://www.classicgaming.cc/classics/pac-man/history)
+- [Die eingespielten Pac-Man Sounds](https://www.classicgaming.cc/classics/pac-man/sounds)
 
-Mehr zur Geschichte von Pac-Man:
-https://www.classicgaming.cc/classics/pac-man/history
 
-Die eingespielten Pac-Man Sounds:
-https://www.classicgaming.cc/classics/pac-man/sounds
 
 
 Viel Vergnügen mit der Folge!
