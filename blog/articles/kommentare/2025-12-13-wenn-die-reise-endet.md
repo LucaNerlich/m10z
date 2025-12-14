@@ -15,6 +15,8 @@ Gemeinschaftliches. Natürlich habe ich auch Singleplayer-Titel gespielt – und
 es fast schon ein Meme, dass ich *Slay the Spire* für das beste Spiel aller Zeiten halte. Und ja, das tue ich aus
 tiefstem Herzen.
 
+<!--truncate-->
+
 Meine eigentliche Leidenschaft liegt dennoch im kooperativen Gameplay. Und mit dieser Leidenschaft verbinden sich
 bestimmte Vorzüge: das Endlosspiel, das Endgame. Viele der Titel, die ich über Jahre hinweg immer wieder starte,
 besitzen genau das – eine Dauerschleife, einen Gameplay-Loop, den man gemeinsam erforscht, vertieft und manchmal auch
