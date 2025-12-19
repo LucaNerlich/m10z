@@ -35,7 +35,7 @@ Wenn ich mich im Spiegel seh <br/>
 Sieht’s schon recht gruslig aus <br/>
 
 Das einzige, das mehr erschreckt <br/>
-Ist deine rauhe, kūhle Stimme <br/>
+Ist deine rauhe, kühle Stimme <br/>
 Die sich laut übers Töten freut <br/>
 Ziel ich mit Korn und Kimme <br/>
 
