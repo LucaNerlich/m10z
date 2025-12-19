@@ -16,13 +16,13 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 Mit Neugier und auch mit Elan <br/>
 Sprangst Du in den Riftriss <br/>
-Was hast er Dir nur angetan <br/>
+Was hat er Dir nur angetan <br/>
 Als er Dich aus der Welt schmiss <br/>
 
 Zum Glück find ich nen Modulator <br/>
 Und öffne die Anomalie <br/>
 Doch nanu, was find ich da vor <br/>
-Das glauben die Anderen doch nie <br/>
+Das glauben die Crew doch nie <br/>
 
 Du bist noch da, jedoch als Hülle <br/>
 Bist jetzt ein sprechendes Gewand <br/>
@@ -746,9 +746,6 @@ Wie kommt die Gruppe heil hier raus?
 Hadouken erklingt<br/>
 Chun Li unter Kirschblüten<br/>
 Das Turnier fängt an
-
-![FightingStreetArt](https://irgendwasmitkunden.de/DiffusionBee-x-Til-FightingStreetArt.png)
-> Diffusion Bee x Til: Street Fighting Street Art
 
 ## VV09: Darf’s noch etwas mehr sein?
 
