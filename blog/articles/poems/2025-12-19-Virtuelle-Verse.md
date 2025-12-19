@@ -12,6 +12,38 @@ Geprägt durch Heinz Erhardt Kassetten und Videospiel-Cartridges, präsentiert e
 
 <!--truncate-->
 
+## VV55: Ode an Gary
+
+Mit Neugier und auch mit Elan <br/>
+Sprangst Du in den Riftriss <br/>
+Was hast er Dir nur angetan <br/>
+Als er Dich aus der Welt schmiss <br/>
+
+Zum Glück find ich nen Modulator <br/>
+Und öffne die Anomalie <br/>
+Doch nanu, was find ich da vor <br/>
+Das glauben die Anderen doch nie <br/>
+
+Du bist noch da, jedoch als Hülle <br/>
+Bist jetzt ein sprechendes Gewand <br/>
+Das ganz vortrefflich ich ausfülle <br/>
+Reise damit durchs ganze Land <br/>
+
+Deine Haut umhüllt mich fest <br/>
+Sie schützt und teilt auch aus <br/>
+Wenn ich mich im Spiegel seh <br/>
+Sieht’s schon recht gruslig aus <br/>
+
+Das einzige, das mehr erschreckt <br/>
+Ist deine rauhe, kūhle Stimme <br/>
+Die sich laut übers Töten freut <br/>
+Ziel ich mit Korn und Kimme <br/>
+
+Was zu sagen ich versuch <br/>
+(Auch wenn’s ein bisschen eklig ist <br/>
+Das dein Geruch, jetzt mein Geruch) <br/>
+Ich bin froh das du bei mir bist <br/>
+
 ## VV54: Auf ein Neues
 
 Das Spielejahr, es beginnt ja <br/>
