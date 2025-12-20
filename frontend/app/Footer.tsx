@@ -1,6 +1,7 @@
 import styles from './Footer.module.css';
 import Link from 'next/link';
 
+import ThemeToggle from './ThemeToggle';
 import {routes} from '@/src/lib/routes';
 
 const BUILD_YEAR = new Date().getUTCFullYear();
@@ -70,7 +71,10 @@ export default function Footer() {
                     </div>
                 ))}
             </div>
-            <p className={styles.meta}>© {BUILD_YEAR} m10z</p>
+            <div className={styles.metaRow}>
+                <ThemeToggle />
+                <p className={styles.meta}>© {BUILD_YEAR} m10z</p>
+            </div>
         </footer>
     );
 }
