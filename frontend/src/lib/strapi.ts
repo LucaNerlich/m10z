@@ -8,6 +8,19 @@ export interface StrapiSingleResponse<TData> {
   meta: StrapiMeta;
 }
 
+export interface StrapiCollectionResponse<TData> {
+  data: TData[];
+  meta: {
+    pagination?: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+    [key: string]: unknown;
+  };
+}
+
 export interface StrapiLegalDoc {
   id: number;
   documentId: string;
@@ -30,10 +43,11 @@ export interface FetchStrapiOptions {
 }
 
 function getStrapiApiBaseUrl(): URL {
-  const raw = process.env.NEXT_PUBLIC_STRAPI_URL;
+  // Prefer server-only env var; fall back to NEXT_PUBLIC_* for local/dev convenience.
+  const raw = process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL;
   if (!raw) {
     throw new Error(
-      'Missing STRAPI_API_URL. Set it in .env.local (e.g. STRAPI_API_URL=http://localhost:1337).'
+      'Missing STRAPI_URL. Set it (e.g. STRAPI_URL=http://localhost:1337).'
     );
   }
 
@@ -41,7 +55,7 @@ function getStrapiApiBaseUrl(): URL {
     return new URL(raw);
   } catch {
     throw new Error(
-      `Invalid STRAPI_API_URL: "${raw}". Expected a valid absolute URL like "http://localhost:1337".`
+      `Invalid STRAPI_URL: "${raw}". Expected a valid absolute URL like "http://localhost:1337".`
     );
   }
 }
@@ -50,9 +64,11 @@ async function fetchStrapiJson<T>(
   apiPath: string,
   options: FetchStrapiOptions = {}
 ): Promise<T> {
+  'use cache';
   const base = getStrapiApiBaseUrl();
   const url = new URL(apiPath, base);
 
+    console.log('url', url);
   const res = await fetch(url, {
     next: {
       revalidate: options.revalidateSeconds,
@@ -66,6 +82,15 @@ async function fetchStrapiJson<T>(
   }
 
   return (await res.json()) as T;
+}
+
+export function toAbsoluteUrl(maybeAbsoluteOrRelativeUrl: string): string {
+  if (/^https?:\/\//i.test(maybeAbsoluteOrRelativeUrl)) return maybeAbsoluteOrRelativeUrl;
+  const base = getStrapiApiBaseUrl().toString().replace(/\/+$/, '');
+  const path = maybeAbsoluteOrRelativeUrl.startsWith('/')
+    ? maybeAbsoluteOrRelativeUrl
+    : `/${maybeAbsoluteOrRelativeUrl}`;
+  return `${base}${path}`;
 }
 
 function assertIsLegalDoc(data: unknown): asserts data is StrapiLegalDoc {
@@ -90,6 +115,16 @@ export async function fetchStrapiSingle<TData>(
     `/api/${normalized}`,
     options
   );
+}
+
+export async function fetchStrapiCollection<TData>(
+  endpoint: string,
+  query: string = '',
+  options: FetchStrapiOptions = {}
+): Promise<StrapiCollectionResponse<TData>> {
+  const normalized = endpoint.replace(/^\/*/, '');
+  const q = query.startsWith('?') || query.length === 0 ? query : `?${query}`;
+  return await fetchStrapiJson<StrapiCollectionResponse<TData>>(`/api/${normalized}${q}`, options);
 }
 
 export async function getImprint(options: FetchStrapiOptions = {}) {

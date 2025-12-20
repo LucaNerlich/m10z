@@ -1,0 +1,56 @@
+/**
+ * Notify Next.js to invalidate cached RSS feeds.
+ *
+ * Security:
+ * - Uses a shared secret header (do not log it).
+ * - Uses HTTPS URL from env (or local dev).
+ * - Fails open: never blocks Strapi write path if Next is unreachable.
+ */
+
+type InvalidateTarget = 'audiofeed' | 'articlefeed';
+
+function getEnv(name: string): string | undefined {
+    const v = process.env[name];
+    return v && v.length > 0 ? v : undefined;
+}
+
+function getNextBaseUrl(): string {
+    // Prefer explicit URL, fall back for local dev.
+    return (getEnv('NEXT_SITE_URL') ?? 'http://localhost:3000').replace(/\/+$/, '');
+}
+
+function getSecret(): string | undefined {
+    return getEnv('FEED_INVALIDATION_SECRET');
+}
+
+export async function invalidateNext(target: InvalidateTarget): Promise<void> {
+    const base = getNextBaseUrl();
+    const secret = getSecret();
+    if (!secret) {
+        // Misconfiguration should be visible in logs, but don't throw.
+        // eslint-disable-next-line no-console
+        console.warn('Missing FEED_INVALIDATION_SECRET; skipping Next invalidation');
+        return;
+    }
+
+    const url = `${base}/api/${target}/invalidate`;
+
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'x-m10z-invalidation-secret': secret,
+            },
+        });
+
+        if (!res.ok) {
+            // eslint-disable-next-line no-console
+            console.warn(`Next invalidation failed (${target}): ${res.status} ${res.statusText}`);
+        }
+    } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn(`Next invalidation request error (${target})`, err);
+    }
+}
+
+

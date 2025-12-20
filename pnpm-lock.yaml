@@ -72,6 +72,9 @@ importers:
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.7
+      form-data:
+        specifier: ^4.0.4
+        version: 4.0.5
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -12349,7 +12352,7 @@ snapshots:
       postcss-preset-env: 10.5.0(postcss@8.5.6)
       terser-webpack-plugin: 5.3.16(@swc/core@1.15.4(@swc/helpers@0.5.17))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
       tslib: 2.8.1
-      url-loader: 4.1.1(file-loader@6.2.0(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
+      url-loader: 4.1.1(file-loader@6.2.0(webpack@5.104.1(@swc/core@1.15.4(@swc/helpers@0.5.17))))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
       webpack: 5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))
       webpackbar: 6.0.1(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
     optionalDependencies:
@@ -12481,7 +12484,7 @@ snapshots:
       '@slorber/remark-comment': 1.0.0
       escape-html: 1.0.3
       estree-util-value-to-estree: 3.5.0
-      file-loader: 6.2.0(webpack@5.104.1(@swc/core@1.15.4(@swc/helpers@0.5.17)))
+      file-loader: 6.2.0(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
       fs-extra: 11.3.2
       image-size: 2.0.2
       mdast-util-mdx: 3.0.0
@@ -12497,7 +12500,7 @@ snapshots:
       tslib: 2.8.1
       unified: 11.0.5
       unist-util-visit: 5.0.0
-      url-loader: 4.1.1(file-loader@6.2.0(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
+      url-loader: 4.1.1(file-loader@6.2.0(webpack@5.104.1(@swc/core@1.15.4(@swc/helpers@0.5.17))))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
       vfile: 6.0.3
       webpack: 5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))
     transitivePeerDependencies:
@@ -13148,7 +13151,7 @@ snapshots:
       prompts: 2.4.2
       resolve-pathname: 3.0.0
       tslib: 2.8.1
-      url-loader: 4.1.1(file-loader@6.2.0(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
+      url-loader: 4.1.1(file-loader@6.2.0(webpack@5.104.1(@swc/core@1.15.4(@swc/helpers@0.5.17))))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17)))
       utility-types: 3.11.0
       webpack: 5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))
     transitivePeerDependencies:
@@ -18496,6 +18499,7 @@ snapshots:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
       webpack: 5.104.1(@swc/core@1.15.4(@swc/helpers@0.5.17))
+    optional: true
 
   file-saver@2.0.5: {}
 
@@ -23646,6 +23650,7 @@ snapshots:
       webpack: 5.104.1(@swc/core@1.15.4(@swc/helpers@0.5.17))
     optionalDependencies:
       '@swc/core': 1.15.4(@swc/helpers@0.5.17)
+    optional: true
 
   terser-webpack-plugin@5.3.16(esbuild@0.25.12)(webpack@5.104.1(esbuild@0.25.12)):
     dependencies:
@@ -24000,7 +24005,7 @@ snapshots:
 
   url-join@4.0.1: {}
 
-  url-loader@4.1.1(file-loader@6.2.0(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))):
+  url-loader@4.1.1(file-loader@6.2.0(webpack@5.104.1(@swc/core@1.15.4(@swc/helpers@0.5.17))))(webpack@5.103.0(@swc/core@1.15.4(@swc/helpers@0.5.17))):
     dependencies:
       loader-utils: 2.0.4
       mime-types: 2.1.35
@@ -24338,6 +24343,7 @@ snapshots:
       - '@swc/core'
       - esbuild
       - uglify-js
+    optional: true
 
   webpack@5.104.1(esbuild@0.25.12):
     dependencies:
