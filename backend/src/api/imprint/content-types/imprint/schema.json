@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "imprints",
+  "info": {
+    "singularName": "imprint",
+    "pluralName": "imprints",
+    "displayName": "imprint"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Impressum",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    }
+  }
+}

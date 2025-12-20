@@ -42,3 +42,8 @@
     - description
     - mail
     - cover (image)
+
+## Livecycle
+
+On Podcast Episode crud, call frontend endpoint to invalidate feed xml.
+Use secret token via header for this.

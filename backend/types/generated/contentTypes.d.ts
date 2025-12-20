@@ -603,6 +603,37 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     };
 }
 
+export interface ApiImprintImprint extends Struct.SingleTypeSchema {
+    collectionName: 'imprints';
+    info: {
+        displayName: 'imprint';
+        pluralName: 'imprints';
+        singularName: 'imprint';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        content: Schema.Attribute.RichText & Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::imprint.imprint'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        title: Schema.Attribute.String &
+            Schema.Attribute.Required &
+            Schema.Attribute.DefaultTo<'Impressum'>;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
 export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
     collectionName: 'podcasts';
     info: {
@@ -640,6 +671,37 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         publishedAt: Schema.Attribute.DateTime;
         shownotes: Schema.Attribute.RichText;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
+export interface ApiPrivacyPrivacy extends Struct.SingleTypeSchema {
+    collectionName: 'privacies';
+    info: {
+        displayName: 'privacy';
+        pluralName: 'privacies';
+        singularName: 'privacy';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        content: Schema.Attribute.RichText & Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::privacy.privacy'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        title: Schema.Attribute.String &
+            Schema.Attribute.Required &
+            Schema.Attribute.DefaultTo<'Datenschutz'>;
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
@@ -1170,7 +1232,9 @@ declare module '@strapi/strapi' {
             'api::audio-feed.audio-feed': ApiAudioFeedAudioFeed;
             'api::author.author': ApiAuthorAuthor;
             'api::category.category': ApiCategoryCategory;
+            'api::imprint.imprint': ApiImprintImprint;
             'api::podcast.podcast': ApiPodcastPodcast;
+            'api::privacy.privacy': ApiPrivacyPrivacy;
             'plugin::content-releases.release': PluginContentReleasesRelease;
             'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
             'plugin::i18n.locale': PluginI18NLocale;

@@ -348,6 +348,66 @@
       "locale": null
     },
     {
+      "documentId": "gpcbl6rpcym7shsnlm83fev6",
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::imprint.imprint",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "iaxm6l0ynubbo0o498vq5y9r",
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::imprint.imprint",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "f3e5mafctnze81rezybsovtz",
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::imprint.imprint",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "mgqhepdbfop9g4glln1q2q0u",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::imprint.imprint",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "tfgcwjcjezl0urri5l97p86p",
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::imprint.imprint",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
       "documentId": "qipfmoc4589pu1nv7mbdv6xq",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
@@ -420,6 +480,66 @@
           "file",
           "duration",
           "shownotes"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "rf2v4o8hvpdkyp6ozffrkk27",
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::privacy.privacy",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "nt8hj5onnkisphq1eygv83ga",
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::privacy.privacy",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "uere6jt1r6syr515dvvui26v",
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::privacy.privacy",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "q0cjefc5hovv4hjepaim7pkb",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::privacy.privacy",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "gu0ukvcfbok2erf5gjhvuk5k",
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::privacy.privacy",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
         ]
       },
       "conditions": [],

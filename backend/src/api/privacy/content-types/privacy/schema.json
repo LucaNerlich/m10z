@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "privacies",
+  "info": {
+    "singularName": "privacy",
+    "pluralName": "privacies",
+    "displayName": "privacy"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Datenschutz",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    }
+  }
+}
