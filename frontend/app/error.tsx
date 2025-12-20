@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import React from 'react';
 
-import styles from './status.module.css';
+import styles from '../src/styles/components/status.module.css';
 
 export default function Error({
                                   reset,

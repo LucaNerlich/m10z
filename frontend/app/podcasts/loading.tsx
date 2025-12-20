@@ -1,4 +1,4 @@
-import styles from '../loadingPlaceholder.module.css';
+import styles from '../../src/styles/components/loadingPlaceholder.module.css';
 
 export default function PodcastsListLoading() {
     return (

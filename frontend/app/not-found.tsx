@@ -1,7 +1,7 @@
 import {Metadata} from 'next';
 import Link from 'next/link';
 
-import styles from './status.module.css';
+import styles from '../src/styles/components/status.module.css';
 
 export const metadata: Metadata = {
     title: 'Seite nicht gefunden | m10z',

@@ -1,6 +1,6 @@
 import '../src/styles/global.css';
-import Header from '@/app/Header';
-import Footer from '@/app/Footer';
+import Header from '@/src/components/Header';
+import Footer from '@/src/components/Footer';
 import UmamiAnalytics from '@/src/components/UmamiAnalytics';
 
 export default function RootLayout({
