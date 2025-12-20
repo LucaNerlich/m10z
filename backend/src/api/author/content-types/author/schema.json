@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "authors",
+  "info": {
+    "singularName": "author",
+    "pluralName": "authors",
+    "displayName": "Author"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "base": {
+      "type": "component",
+      "component": "collection-type.base-content",
+      "repeatable": false,
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "required": true
+    }
+  }
+}

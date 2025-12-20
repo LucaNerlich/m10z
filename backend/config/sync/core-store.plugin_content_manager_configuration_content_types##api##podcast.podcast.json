@@ -1,0 +1,182 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::podcast.podcast",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "documentId",
+      "defaultSortBy": "documentId",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "base": {
+        "edit": {
+          "label": "base",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "base",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "slug": {
+        "edit": {
+          "label": "slug",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "slug",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "file": {
+        "edit": {
+          "label": "file",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "file",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "duration": {
+        "edit": {
+          "label": "duration",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "duration",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdBy": {
+        "edit": {
+          "label": "createdBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "createdBy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedBy": {
+        "edit": {
+          "label": "updatedBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "updatedBy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ],
+      "edit": [
+        [
+          {
+            "name": "base",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "slug",
+            "size": 6
+          },
+          {
+            "name": "file",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "duration",
+            "size": 4
+          }
+        ]
+      ]
+    },
+    "uid": "api::podcast.podcast"
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

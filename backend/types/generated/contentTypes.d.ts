@@ -445,6 +445,205 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
     };
 }
 
+export interface ApiArticleFeedArticleFeed extends Struct.SingleTypeSchema {
+    collectionName: 'article_feeds';
+    info: {
+        displayName: 'article-feed';
+        pluralName: 'article-feeds';
+        singularName: 'article-feed';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        channel: Schema.Attribute.Component<'single-type.base-feed', false> &
+            Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::article-feed.article-feed'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
+export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
+    collectionName: 'articles';
+    info: {
+        displayName: 'Article';
+        pluralName: 'articles';
+        singularName: 'article';
+    };
+    options: {
+        draftAndPublish: true;
+    };
+    attributes: {
+        base: Schema.Attribute.Component<
+            'collection-type.base-content',
+            false
+        > &
+            Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::article.article'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
+export interface ApiAudioFeedAudioFeed extends Struct.SingleTypeSchema {
+    collectionName: 'audio_feeds';
+    info: {
+        displayName: 'audio-feed';
+        pluralName: 'audio-feeds';
+        singularName: 'audio-feed';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        channel: Schema.Attribute.Component<'single-type.base-feed', false> &
+            Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::audio-feed.audio-feed'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
+export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
+    collectionName: 'authors';
+    info: {
+        displayName: 'Author';
+        pluralName: 'authors';
+        singularName: 'author';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        base: Schema.Attribute.Component<
+            'collection-type.base-content',
+            false
+        > &
+            Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::author.author'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
+export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
+    collectionName: 'categories';
+    info: {
+        displayName: 'Category';
+        pluralName: 'categories';
+        singularName: 'category';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        base: Schema.Attribute.Component<
+            'collection-type.base-content',
+            false
+        > &
+            Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::category.category'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
+export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
+    collectionName: 'podcasts';
+    info: {
+        displayName: 'Podcast';
+        pluralName: 'podcasts';
+        singularName: 'podcast';
+    };
+    options: {
+        draftAndPublish: true;
+    };
+    attributes: {
+        base: Schema.Attribute.Component<
+            'collection-type.base-content',
+            false
+        > &
+            Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        duration: Schema.Attribute.Integer &
+            Schema.Attribute.Required &
+            Schema.Attribute.SetMinMax<
+                {
+                    min: 1;
+                },
+                number
+            >;
+        file: Schema.Attribute.Media<'audios'> & Schema.Attribute.Required;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::podcast.podcast'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
 export interface PluginContentReleasesRelease
     extends Struct.CollectionTypeSchema {
     collectionName: 'strapi_releases';
@@ -964,6 +1163,12 @@ declare module '@strapi/strapi' {
             'admin::transfer-token': AdminTransferToken;
             'admin::transfer-token-permission': AdminTransferTokenPermission;
             'admin::user': AdminUser;
+            'api::article-feed.article-feed': ApiArticleFeedArticleFeed;
+            'api::article.article': ApiArticleArticle;
+            'api::audio-feed.audio-feed': ApiAudioFeedAudioFeed;
+            'api::author.author': ApiAuthorAuthor;
+            'api::category.category': ApiCategoryCategory;
+            'api::podcast.podcast': ApiPodcastPodcast;
             'plugin::content-releases.release': PluginContentReleasesRelease;
             'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
             'plugin::i18n.locale': PluginI18NLocale;

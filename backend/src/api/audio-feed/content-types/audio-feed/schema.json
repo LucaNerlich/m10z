@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "audio_feeds",
+  "info": {
+    "singularName": "audio-feed",
+    "pluralName": "audio-feeds",
+    "displayName": "audio-feed"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "channel": {
+      "type": "component",
+      "component": "single-type.base-feed",
+      "repeatable": false,
+      "required": true
+    }
+  }
+}

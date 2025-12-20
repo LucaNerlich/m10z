@@ -3,19 +3,24 @@
 ## Content Types
 
 - Author
+    - slug
     - BaseContent (Component)
 - Podcast
+    - slug
     - BaseContent (Component)
     - 1 -> n Authors
     - 1 -> n Categories
     - shownotes (rte)
     - file
+    - duration (audio file length in seconds)
 - Article
+    - slug
     - BaseContent (Component)
     - content (TBD, dyn zone?)
     - 1 -> n Authors
     - 1 -> 1 Categories
 - Category
+    - slug
     - BaseContent (Component)
 
 ## Single Type
@@ -29,8 +34,7 @@
 
 - BaseContent
     - title
-    - slug
-    - description
+    - description (teaser-text)
     - cover (image)
     - banner (image)
 - BaseFeed
