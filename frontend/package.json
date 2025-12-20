@@ -15,7 +15,10 @@
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "react-markdown": "^10.1.0",
+        "rehype-external-links": "^3.0.0",
         "remark-breaks": "^4.0.0",
+        "remark-gfm": "^4.0.1",
+        "remark-smartypants": "^3.0.2",
         "xml-formatter": "^3.6.7"
     },
     "devDependencies": {

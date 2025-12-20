@@ -1,5 +1,8 @@
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
+import remarkSmartypants from 'remark-smartypants';
+import rehypeExternalLinks from 'rehype-external-links';
 
 export type MarkdownProps = {
   markdown: string;
@@ -15,7 +18,14 @@ export function Markdown({ markdown, className }: MarkdownProps) {
   return (
     <div className={className}>
       <ReactMarkdown
-        remarkPlugins={[remarkBreaks]}
+        remarkPlugins={[
+          remarkBreaks,
+          remarkGfm,
+          remarkSmartypants,
+        ]}
+        rehypePlugins={[
+          [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
+        ]}
         components={{
           h1: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
         }}
