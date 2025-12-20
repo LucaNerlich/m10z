@@ -485,11 +485,16 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         draftAndPublish: true;
     };
     attributes: {
+        authors: Schema.Attribute.Relation<'manyToMany', 'api::author.author'>;
         base: Schema.Attribute.Component<
             'collection-type.base-content',
             false
         > &
             Schema.Attribute.Required;
+        categories: Schema.Attribute.Relation<
+            'manyToMany',
+            'api::category.category'
+        >;
         content: Schema.Attribute.RichText & Schema.Attribute.Required;
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -548,6 +553,10 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
         draftAndPublish: false;
     };
     attributes: {
+        articles: Schema.Attribute.Relation<
+            'manyToMany',
+            'api::article.article'
+        >;
         base: Schema.Attribute.Component<
             'collection-type.base-content',
             false
@@ -562,6 +571,10 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
             'api::author.author'
         > &
             Schema.Attribute.Private;
+        podcasts: Schema.Attribute.Relation<
+            'manyToMany',
+            'api::podcast.podcast'
+        >;
         publishedAt: Schema.Attribute.DateTime;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;
         updatedAt: Schema.Attribute.DateTime;
@@ -581,6 +594,10 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
         draftAndPublish: false;
     };
     attributes: {
+        articles: Schema.Attribute.Relation<
+            'manyToMany',
+            'api::article.article'
+        >;
         base: Schema.Attribute.Component<
             'collection-type.base-content',
             false
@@ -595,6 +612,10 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
             'api::category.category'
         > &
             Schema.Attribute.Private;
+        podcasts: Schema.Attribute.Relation<
+            'manyToMany',
+            'api::podcast.podcast'
+        >;
         publishedAt: Schema.Attribute.DateTime;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;
         updatedAt: Schema.Attribute.DateTime;
@@ -645,11 +666,16 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         draftAndPublish: true;
     };
     attributes: {
+        authors: Schema.Attribute.Relation<'manyToMany', 'api::author.author'>;
         base: Schema.Attribute.Component<
             'collection-type.base-content',
             false
         > &
             Schema.Attribute.Required;
+        categories: Schema.Attribute.Relation<
+            'manyToMany',
+            'api::category.category'
+        >;
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;

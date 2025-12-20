@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "documentId",
+      "mainField": "slug",
       "defaultSortBy": "updatedAt",
       "defaultSortOrder": "DESC"
     },
@@ -25,7 +25,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "title",
@@ -57,6 +58,36 @@
         },
         "list": {
           "label": "content",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "authors": {
+        "edit": {
+          "label": "authors",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "slug"
+        },
+        "list": {
+          "label": "authors",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "categories": {
+        "edit": {
+          "label": "categories",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "slug"
+        },
+        "list": {
+          "label": "categories",
           "searchable": false,
           "sortable": false
         }
@@ -129,12 +160,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy",
-        "slug"
-      ],
       "edit": [
         [
           {
@@ -153,7 +178,23 @@
             "name": "content",
             "size": 12
           }
+        ],
+        [
+          {
+            "name": "authors",
+            "size": 6
+          },
+          {
+            "name": "categories",
+            "size": 6
+          }
         ]
+      ],
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy",
+        "slug"
       ]
     },
     "uid": "api::article.article"

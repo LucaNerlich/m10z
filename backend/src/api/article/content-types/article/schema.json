@@ -24,6 +24,18 @@
     "content": {
       "type": "richtext",
       "required": true
+    },
+    "authors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::author.author",
+      "inversedBy": "articles"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "articles"
     }
   }
 }

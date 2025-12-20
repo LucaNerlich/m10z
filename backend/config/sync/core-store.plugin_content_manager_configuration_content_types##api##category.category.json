@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "documentId",
+      "mainField": "slug",
       "defaultSortBy": "updatedAt",
       "defaultSortOrder": "DESC"
     },
@@ -25,7 +25,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "title",
@@ -45,6 +46,36 @@
           "label": "slug",
           "searchable": true,
           "sortable": true
+        }
+      },
+      "articles": {
+        "edit": {
+          "label": "articles",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "slug"
+        },
+        "list": {
+          "label": "articles",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "podcasts": {
+        "edit": {
+          "label": "podcasts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "slug"
+        },
+        "list": {
+          "label": "podcasts",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -115,12 +146,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy",
-        "slug"
-      ],
       "edit": [
         [
           {
@@ -132,8 +157,24 @@
           {
             "name": "slug",
             "size": 6
+          },
+          {
+            "name": "articles",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "podcasts",
+            "size": 6
           }
         ]
+      ],
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy",
+        "slug"
       ]
     },
     "uid": "api::category.category"

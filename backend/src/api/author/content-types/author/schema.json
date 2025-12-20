@@ -20,6 +20,18 @@
     "slug": {
       "type": "uid",
       "required": true
+    },
+    "podcasts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::podcast.podcast",
+      "inversedBy": "authors"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "mappedBy": "authors"
     }
   }
 }

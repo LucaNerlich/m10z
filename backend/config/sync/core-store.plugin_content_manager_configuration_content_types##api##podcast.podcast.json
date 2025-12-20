@@ -25,7 +25,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "title",
@@ -85,6 +86,36 @@
         },
         "list": {
           "label": "shownotes",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "authors": {
+        "edit": {
+          "label": "authors",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "slug"
+        },
+        "list": {
+          "label": "authors",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "categories": {
+        "edit": {
+          "label": "categories",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "slug"
+        },
+        "list": {
+          "label": "categories",
           "searchable": false,
           "sortable": false
         }
@@ -157,11 +188,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy"
-      ],
       "edit": [
         [
           {
@@ -190,7 +216,23 @@
             "name": "shownotes",
             "size": 12
           }
+        ],
+        [
+          {
+            "name": "authors",
+            "size": 6
+          },
+          {
+            "name": "categories",
+            "size": 6
+          }
         ]
+      ],
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy",
+        "authors"
       ]
     },
     "uid": "api::podcast.podcast"
