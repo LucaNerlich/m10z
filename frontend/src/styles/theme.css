@@ -1,23 +1,23 @@
 :root {
     /* Light mode tokens derived from the primary hue */
-    --color-background-light: oklch(0.985 0.006 45.092);
-    --color-surface-light: oklch(0.965 0.012 45.092);
-    --color-surface-strong-light: oklch(0.93 0.016 45.092);
-    --color-border-light: oklch(0.88 0.012 45.092);
-    --color-text-light: oklch(0.16 0.03 45.092);
-    --color-text-muted-light: oklch(0.42 0.02 45.092);
+    --color-background-light: oklch(0.99 0.002 250);
+    --color-surface-light: oklch(0.975 0.004 250);
+    --color-surface-strong-light: oklch(0.94 0.006 250);
+    --color-border-light: oklch(0.88 0.008 250);
+    --color-text-light: oklch(0.16 0.03 255);
+    --color-text-muted-light: oklch(0.42 0.015 250);
     --color-link-light: var(--color-primary-strong);
-    --shadow-soft-light: 0 14px 40px -26px rgba(0, 0, 0, 0.25);
+    --shadow-soft-light: 0 14px 40px -26px rgba(0, 10, 30, 0.22);
 
     /* Dark mode tokens derived from the same primary hue */
-    --color-background-dark: oklch(0.15 0.012 45.092);
-    --color-surface-dark: oklch(0.2 0.016 45.092);
-    --color-surface-strong-dark: oklch(0.26 0.018 45.092);
-    --color-border-dark: oklch(0.32 0.018 45.092);
-    --color-text-dark: oklch(0.94 0.012 45.092);
-    --color-text-muted-dark: oklch(0.72 0.014 45.092);
+    --color-background-dark: oklch(0.13 0.03 255);
+    --color-surface-dark: oklch(0.16 0.03 255);
+    --color-surface-strong-dark: oklch(0.2 0.03 255);
+    --color-border-dark: oklch(0.28 0.02 255);
+    --color-text-dark: oklch(0.95 0.01 260);
+    --color-text-muted-dark: oklch(0.75 0.015 260);
     --color-link-dark: var(--color-primary-soft);
-    --shadow-soft-dark: 0 16px 50px -24px rgba(0, 0, 0, 0.55);
+    --shadow-soft-dark: 0 16px 50px -24px rgba(0, 0, 0, 0.6);
 
     /* Default to light mode */
     color-scheme: light;

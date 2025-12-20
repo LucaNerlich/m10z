@@ -12,6 +12,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 18px 28px;
+    justify-items: center;
 }
 
 .sectionTitle {
@@ -40,11 +41,14 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    align-items: stretch;
+    text-align: left;
 }
 
 .meta {
     margin-top: 18px;
     color: var(--color-text-muted);
     font-size: 0.9rem;
+    text-align: center;
 }
 
