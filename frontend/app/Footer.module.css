@@ -52,3 +52,31 @@
     text-align: center;
 }
 
+@media (max-width: 640px) {
+    .footer {
+        padding: 28px 16px 32px;
+    }
+
+    .content {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+        gap: 14px 18px;
+        justify-items: stretch;
+    }
+
+    .section {
+        align-items: flex-start;
+    }
+
+    .sectionTitle {
+        margin-bottom: 6px;
+    }
+
+    .linkList {
+        gap: 6px;
+    }
+
+    .meta {
+        margin-top: 14px;
+    }
+}
+
