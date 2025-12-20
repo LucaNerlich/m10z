@@ -106,7 +106,7 @@ async function getCachedAudioFeed() {
 export async function GET(request: Request) {
     try {
         const {xml, etag, lastModified} = await getCachedAudioFeed();
-        const prettyXml = formatXml(xml, 4);
+        const prettyXml = formatXml(xml);
 
         const headers = buildRssHeaders({ etag, lastModified });
         const maybe304 = maybeReturn304(request, etag, headers);
@@ -121,7 +121,7 @@ export async function GET(request: Request) {
             description: 'Feed temporarily unavailable',
         });
 
-        return new Response(formatXml(fallback, 2), {
+        return new Response(formatXml(fallback), {
             status: 503,
             headers: buildRssHeaders({}),
         });

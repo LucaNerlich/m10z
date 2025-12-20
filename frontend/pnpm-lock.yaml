@@ -32,6 +32,9 @@ importers:
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.2.7)(react@19.2.3)
+      xml-formatter:
+        specifier: ^3.6.7
+        version: 3.6.7
     devDependencies:
       '@types/jsdom':
         specifier: ^27.0.0
@@ -823,9 +826,17 @@ packages:
       utf-8-validate:
         optional: true
 
+  xml-formatter@3.6.7:
+    resolution: {integrity: sha512-IsfFYJQuoDqtUlKhm4EzeoBOb+fQwzQVeyxxAQ0sThn/nFnQmyLPTplqq4yRhaOENH/tAyujD2TBfIYzUKB6hg==}
+    engines: {node: '>= 16'}
+
   xml-name-validator@5.0.0:
     resolution: {integrity: sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg==}
     engines: {node: '>=18'}
+
+  xml-parser-xo@4.1.5:
+    resolution: {integrity: sha512-TxyRxk9sTOUg3glxSIY6f0nfuqRll2OEF8TspLgh5mZkLuBgheCn3zClcDSGJ58TvNmiwyCCuat4UajPud/5Og==}
+    engines: {node: '>= 16'}
 
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
@@ -1724,7 +1735,13 @@ snapshots:
 
   ws@8.18.3: {}
 
+  xml-formatter@3.6.7:
+    dependencies:
+      xml-parser-xo: 4.1.5
+
   xml-name-validator@5.0.0: {}
+
+  xml-parser-xo@4.1.5: {}
 
   xmlchars@2.2.0: {}
 
