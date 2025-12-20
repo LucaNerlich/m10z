@@ -11,13 +11,14 @@ import {
     fetchStrapiJson as fetchStrapiJsonCore,
     formatXml,
     maybeReturn304,
-    normalizeBaseUrl,
 } from '@/src/lib/rss/feedRoute';
 
 const REVALIDATE_SECONDS = 86400; // heavy caching; invalidate explicitly on Strapi lifecycle changes
 
-const SITE_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de');
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL ? normalizeBaseUrl(process.env.NEXT_PUBLIC_STRAPI_URL) : '';
+const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
+    ? process.env.NEXT_PUBLIC_STRAPI_URL.replace(/\/+$/, '')
+    : '';
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
