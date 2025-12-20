@@ -15,6 +15,9 @@ body {
     background-color: var(--color-background);
     color: var(--color-text);
     transition: background-color 180ms ease, color 180ms ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 a {
@@ -34,4 +37,8 @@ a:active {
 
 hr {
     border-color: var(--color-border);
+}
+
+main {
+    flex: 1;
 }

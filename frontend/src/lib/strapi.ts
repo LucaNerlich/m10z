@@ -67,6 +67,7 @@ async function fetchStrapiJson<T>(
   'use cache';
   const base = getStrapiApiBaseUrl();
   const url = new URL(apiPath, base);
+    console.log('url', url);
   const res = await fetch(url, {
     next: {
       revalidate: options.revalidateSeconds,
