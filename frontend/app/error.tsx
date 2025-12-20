@@ -1,28 +1,37 @@
-'use client'
+'use client';
 
-import {Metadata} from 'next'
+import Link from 'next/link';
+import React from 'react';
 
-export const metadata: Metadata = {
-    title: 'Fehler aufgetreten | m10z',
-    description: 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt.',
-    robots: {
-        index: false,
-        follow: false,
-    },
-}
+import styles from './status.module.css';
 
 export default function Error({
-                                  error,
                                   reset,
                               }: {
-    error: Error & {digest?: string}
-    reset: () => void
+    error: Error & {digest?: string};
+    reset: () => void;
 }) {
     return (
-        <>
-            <div>{error.message}</div>
-            <div>{error.digest}</div>
-            <button onClick={reset}>Neu laden</button>
-        </>
-    )
+        <main className={styles.container}>
+            <section className={styles.panel} aria-labelledby="error-title">
+                <div className={styles.badge}>Oops</div>
+                <h1 id="error-title" className={styles.title}>
+                    Da ist etwas schiefgelaufen
+                </h1>
+                <p className={styles.body}>
+                    Entschuldigung, ein unerwarteter Fehler ist aufgetreten. Versuche es bitte noch einmal oder gehe zur
+                    Startseite zurück.
+                </p>
+
+                <div className={styles.actions}>
+                    <button type="button" className={styles.primaryButton} onClick={reset}>
+                        Neu laden
+                    </button>
+                    <Link className={styles.secondaryLink} href="/">
+                        Zur Startseite
+                    </Link>
+                </div>
+            </section>
+        </main>
+    );
 }

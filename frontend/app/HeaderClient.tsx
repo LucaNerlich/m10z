@@ -12,9 +12,9 @@ type HeaderClientProps = {
 };
 
 export default function HeaderClient({
-    primaryLinks,
-    secondaryLinks,
-}: HeaderClientProps): React.ReactElement {
+                                         primaryLinks,
+                                         secondaryLinks,
+                                     }: HeaderClientProps): React.ReactElement {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const pathname = usePathname();
     const menuRef = useRef<HTMLDivElement | null>(null);

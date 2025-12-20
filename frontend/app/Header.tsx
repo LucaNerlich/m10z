@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, {Suspense} from 'react';
 
 import HeaderClient from './HeaderClient';
 import styles from './Header.module.css';
@@ -38,7 +38,15 @@ export default function Header(): React.ReactElement {
                     ))}
                 </nav>
 
-                <HeaderClient primaryLinks={primaryLinks} secondaryLinks={secondaryLinks} />
+                <Suspense
+                    fallback={
+                        <div className={styles.burgerPlaceholder} aria-hidden>
+                            <span />
+                        </div>
+                    }
+                >
+                    <HeaderClient primaryLinks={primaryLinks} secondaryLinks={secondaryLinks} />
+                </Suspense>
             </div>
         </header>
     );

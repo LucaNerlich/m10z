@@ -52,6 +52,17 @@
     transition: border-color 120ms ease, background-color 120ms ease;
 }
 
+.burgerPlaceholder {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .burgerButton:hover {
     border-color: var(--color-primary);
 }
