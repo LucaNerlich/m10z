@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { connection } from 'next/server';
 import { Suspense } from 'react';
 
 import { fetchStrapiCollection } from '@/src/lib/strapi';
@@ -32,9 +31,6 @@ export default async function HomePage() {
 }
 
 async function HomeContent() {
-  // Dynamic access (connection + Strapi). Keep it inside Suspense to avoid blocking-route errors.
-  await connection();
-
   const [articlesRes, podcastsRes] = await Promise.all([
     fetchStrapiCollection<ArticleListItem>(
       'articles',

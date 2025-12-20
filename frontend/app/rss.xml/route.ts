@@ -1,8 +1,19 @@
 import { markdownToHtml } from '@/src/lib/rss/markdownToHtml';
 import { escapeCdata, escapeXml, formatRssDate, sha256Hex } from '@/src/lib/rss/xml';
-import prettify from 'prettify-xml';
+import {
+  buildRssHeaders,
+  fallbackFeedXml,
+  fetchStrapiJson as fetchStrapiJsonCore,
+  formatXml,
+  maybeReturn304,
+  normalizeBaseUrl,
+} from '@/src/lib/rss/feedRoute';
 
 const REVALIDATE_SECONDS = 86400; // heavy caching; explicit invalidation via /api/articlefeed/invalidate
+
+const SITE_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de');
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL ? normalizeBaseUrl(process.env.NEXT_PUBLIC_STRAPI_URL) : '';
+const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
 type StrapiArticle = {
   id: number;
@@ -20,36 +31,15 @@ type StrapiArticleFeedSingle = {
   };
 };
 
-function getRequiredEnv(name: string): string {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing ${name}`);
-  return v;
-}
-
-function getSiteUrl(): string {
-  return (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
-}
-
-function getStrapiBaseUrl(): string {
-  return getRequiredEnv('NEXT_PUBLIC_STRAPI_URL').replace(/\/+$/, '');
-}
-
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
-  const base = getStrapiBaseUrl();
-  const url = new URL(pathWithQuery, base);
-
-  const headers = new Headers();
-  const token = process.env.STRAPI_API_TOKEN;
-  if (token) headers.set('Authorization', `Bearer ${token}`);
-
-    console.log('url', url);
-  const res = await fetch(url, {
-    headers,
-    next: { revalidate: REVALIDATE_SECONDS, tags: ['feed:article', 'strapi:article', 'strapi:article-feed'] },
+  if (!STRAPI_URL) throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
+  return await fetchStrapiJsonCore<T>({
+    strapiBaseUrl: STRAPI_URL,
+    apiPathWithQuery: pathWithQuery,
+    token: STRAPI_TOKEN,
+    revalidateSeconds: REVALIDATE_SECONDS,
+    tags: ['feed:article', 'strapi:article', 'strapi:article-feed'],
   });
-
-  if (!res.ok) throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
-  return (await res.json()) as T;
 }
 
 async function fetchAllArticles(): Promise<StrapiArticle[]> {
@@ -148,9 +138,8 @@ function generateRssXml(args: {
 async function getCachedArticleFeed() {
   'use cache';
   const [feed, articles] = await Promise.all([fetchArticleFeedSingle(), fetchAllArticles()]);
-  const siteUrl = getSiteUrl();
   const { xml, etagSeed, lastModified } = generateRssXml({
-    siteUrl,
+    siteUrl: SITE_URL,
     channel: feed.channel,
     articles,
   });
@@ -159,17 +148,26 @@ async function getCachedArticleFeed() {
 }
 
 export async function GET(request: Request) {
-  const { xml, etag, lastModified } = await getCachedArticleFeed();
-  const prettyXml = prettify(xml, { indent: 2, newline: '\n' });
+  try {
+    const { xml, etag, lastModified } = await getCachedArticleFeed();
+    const prettyXml = formatXml(xml, 2);
 
-  const headers = new Headers();
-  headers.set('Content-Type', 'application/rss+xml; charset=utf-8');
-  headers.set('Cache-Control', 'public, max-age=3600, must-revalidate');
-  headers.set('ETag', etag);
-  if (lastModified) headers.set('Last-Modified', lastModified.toUTCString());
+    const headers = buildRssHeaders({ etag, lastModified });
+    const maybe304 = maybeReturn304(request, etag, headers);
+    if (maybe304) return maybe304;
 
-  const inm = request.headers.get('if-none-match');
-  if (inm && inm === etag) return new Response(null, { status: 304, headers });
+    return new Response(prettyXml, { headers });
+  } catch {
+    const fallback = fallbackFeedXml({
+      title: 'M10Z Artikel',
+      link: SITE_URL,
+      selfLink: `${SITE_URL}/rss.xml`,
+      description: 'Feed temporarily unavailable',
+    });
 
-  return new Response(prettyXml, { headers });
+    return new Response(formatXml(fallback, 2), {
+      status: 503,
+      headers: buildRssHeaders({}),
+    });
+  }
 }

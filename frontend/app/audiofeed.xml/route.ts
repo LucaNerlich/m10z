@@ -5,47 +5,30 @@ import {
     type StrapiPodcast,
 } from '@/src/lib/rss/audiofeed';
 import {sha256Hex} from '@/src/lib/rss/xml';
-import prettify from 'prettify-xml';
+import {
+    buildRssHeaders,
+    fallbackFeedXml,
+    fetchStrapiJson as fetchStrapiJsonCore,
+    formatXml,
+    maybeReturn304,
+    normalizeBaseUrl,
+} from '@/src/lib/rss/feedRoute';
 
 const REVALIDATE_SECONDS = 86400; // heavy caching; invalidate explicitly on Strapi lifecycle changes
 
-function getRequiredEnv(name: string): string {
-    const v = process.env[name];
-    if (!v) throw new Error(`Missing ${name}`);
-    return v;
-}
-
-function getSiteUrl(): string {
-    // Public canonical base for links in the feed.
-    return (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
-}
-
-function getStrapiBaseUrl(): string {
-    // Base used to turn relative Strapi media URLs into absolute enclosure URLs.
-    return getRequiredEnv('NEXT_PUBLIC_STRAPI_URL').replace(/\/+$/, '');
-}
+const SITE_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de');
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL ? normalizeBaseUrl(process.env.NEXT_PUBLIC_STRAPI_URL) : '';
+const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
-    const base = getStrapiBaseUrl();
-    const url = new URL(pathWithQuery, base);
-
-    const headers = new Headers();
-    const token = process.env.STRAPI_API_TOKEN;
-    if (token) headers.set('Authorization', `Bearer ${token}`);
-
-    const res = await fetch(url, {
-        headers,
-        next: {
-            revalidate: REVALIDATE_SECONDS,
-            tags: ['feed:audio', 'strapi:podcast', 'strapi:audio-feed'],
-        },
+    if (!STRAPI_URL) throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
+    return await fetchStrapiJsonCore<T>({
+        strapiBaseUrl: STRAPI_URL,
+        apiPathWithQuery: pathWithQuery,
+        token: STRAPI_TOKEN,
+        revalidateSeconds: REVALIDATE_SECONDS,
+        tags: ['feed:audio', 'strapi:podcast', 'strapi:audio-feed'],
     });
-
-    if (!res.ok) {
-        throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
-    }
-
-    return (await res.json()) as T;
 }
 
 async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
@@ -90,9 +73,8 @@ async function fetchAudioFeedSingle(): Promise<StrapiAudioFeedSingle> {
 }
 
 function getAudioFeedDefaults(): AudioFeedConfig {
-    const siteUrl = getSiteUrl();
     return {
-        siteUrl,
+        siteUrl: SITE_URL,
         ttlSeconds: 60,
         language: 'de',
         copyright: 'All rights reserved',
@@ -111,7 +93,7 @@ async function getCachedAudioFeed() {
     const cfg = getAudioFeedDefaults();
     const {xml, etagSeed, lastModified} = generateAudioFeedXml({
         cfg,
-        strapiUrl: getStrapiBaseUrl(),
+        strapiUrl: STRAPI_URL,
         channel: feed.channel,
         episodes,
     });
@@ -124,39 +106,24 @@ async function getCachedAudioFeed() {
 export async function GET(request: Request) {
     try {
         const {xml, etag, lastModified} = await getCachedAudioFeed();
-        const prettyXml = prettify(xml, {indent: 4, newline: '\n'});
+        const prettyXml = formatXml(xml, 4);
 
-        const headers = new Headers();
-        headers.set('Content-Type', 'application/rss+xml; charset=utf-8');
-        headers.set('Cache-Control', 'public, max-age=3600, must-revalidate');
-        headers.set('ETag', etag);
-        if (lastModified) headers.set('Last-Modified', lastModified.toUTCString());
+        const headers = buildRssHeaders({ etag, lastModified });
+        const maybe304 = maybeReturn304(request, etag, headers);
+        if (maybe304) return maybe304;
 
-        // Conditional GET support
-        const inm = request.headers.get('if-none-match');
-        if (inm && inm === etag) {
-            return new Response(null, {status: 304, headers});
-        }
-
-        return new Response(prettyXml, {headers});
+        return new Response(prettyXml, { headers });
     } catch (err) {
-        // During build or misconfiguration (e.g. STRAPI_URL missing), return a minimal (valid) feed
-        // instead of throwing and breaking the build.
-        const siteUrl = getSiteUrl();
-        const fallbackXml =
-            `<?xml version="1.0" encoding="UTF-8"?>\n` +
-            `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">\n` +
-            `  <channel>\n` +
-            `    <title>M10Z Podcasts</title>\n` +
-            `    <link>${siteUrl}</link>\n` +
-            `    <description>Feed temporarily unavailable</description>\n` +
-            `    <atom:link href="${siteUrl}/audiofeed.xml" rel="self" type="application/rss+xml"/>\n` +
-            `  </channel>\n` +
-            `</rss>\n`;
+        const fallback = fallbackFeedXml({
+            title: 'M10Z Podcasts',
+            link: SITE_URL,
+            selfLink: `${SITE_URL}/audiofeed.xml`,
+            description: 'Feed temporarily unavailable',
+        });
 
-        return new Response(prettify(fallbackXml, {indent: 2, newline: '\n'}), {
+        return new Response(formatXml(fallback, 2), {
             status: 503,
-            headers: {'Content-Type': 'application/rss+xml; charset=utf-8'},
+            headers: buildRssHeaders({}),
         });
     }
 }
