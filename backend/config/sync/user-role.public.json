@@ -6,6 +6,56 @@
   "locale": null,
   "permissions": [
     {
+      "documentId": "dba3ikpx4rotmn9e2xbnazwh",
+      "action": "api::article-feed.article-feed.find",
+      "locale": null
+    },
+    {
+      "documentId": "i88kuhh131wmxzkp5gsi20du",
+      "action": "api::article.article.find",
+      "locale": null
+    },
+    {
+      "documentId": "zm9wpf0fytx5gz425weh08s6",
+      "action": "api::article.article.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "fjyfatmiiosqseigqhspwtzl",
+      "action": "api::audio-feed.audio-feed.find",
+      "locale": null
+    },
+    {
+      "documentId": "pk2nqrgfmjc0xn17u39krbmx",
+      "action": "api::author.author.find",
+      "locale": null
+    },
+    {
+      "documentId": "r2ma09yh3envohf93i7mezvd",
+      "action": "api::author.author.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "c2hbb5yccvdlq3zc1j7xp7in",
+      "action": "api::category.category.find",
+      "locale": null
+    },
+    {
+      "documentId": "gq4e9o5xb9eyfk6at7uk3i0k",
+      "action": "api::category.category.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "a8qcyckizrclr0xqw53lsb55",
+      "action": "api::podcast.podcast.find",
+      "locale": null
+    },
+    {
+      "documentId": "kkjkgfmhp1fky9p8wd0xtjn8",
+      "action": "api::podcast.podcast.findOne",
+      "locale": null
+    },
+    {
       "documentId": "sowwzp3jxznv5h4m18s3g53q",
       "action": "plugin::users-permissions.auth.callback",
       "locale": null

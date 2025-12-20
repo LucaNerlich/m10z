@@ -6,9 +6,9 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "documentId",
-      "defaultSortBy": "documentId",
-      "defaultSortOrder": "ASC"
+      "mainField": "slug",
+      "defaultSortBy": "updatedAt",
+      "defaultSortOrder": "DESC"
     },
     "metadatas": {
       "id": {
@@ -25,10 +25,11 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
-          "label": "base",
+          "label": "title",
           "searchable": false,
           "sortable": false
         }
@@ -73,6 +74,20 @@
           "label": "duration",
           "searchable": true,
           "sortable": true
+        }
+      },
+      "shownotes": {
+        "edit": {
+          "label": "shownotes",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "shownotes",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -143,12 +158,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "createdAt",
-        "updatedAt",
-        "createdBy"
-      ],
       "edit": [
         [
           {
@@ -171,7 +180,18 @@
             "name": "duration",
             "size": 4
           }
+        ],
+        [
+          {
+            "name": "shownotes",
+            "size": 12
+          }
         ]
+      ],
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy"
       ]
     },
     "uid": "api::podcast.podcast"

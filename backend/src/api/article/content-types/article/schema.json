@@ -20,6 +20,10 @@
     "slug": {
       "type": "uid",
       "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
     }
   }
 }

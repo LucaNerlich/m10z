@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "documentId",
-      "defaultSortBy": "documentId",
-      "defaultSortOrder": "ASC"
+      "defaultSortBy": "updatedAt",
+      "defaultSortOrder": "DESC"
     },
     "metadatas": {
       "id": {
@@ -28,9 +28,9 @@
           "editable": true
         },
         "list": {
-          "label": "base",
+          "label": "title",
           "searchable": false,
-          "sortable": false
+          "sortable": true
         }
       },
       "slug": {
@@ -45,6 +45,20 @@
           "label": "slug",
           "searchable": true,
           "sortable": true
+        }
+      },
+      "content": {
+        "edit": {
+          "label": "content",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "content",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -115,12 +129,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "createdAt",
-        "updatedAt",
-        "createdBy"
-      ],
       "edit": [
         [
           {
@@ -133,7 +141,19 @@
             "name": "slug",
             "size": 6
           }
+        ],
+        [
+          {
+            "name": "content",
+            "size": 12
+          }
         ]
+      ],
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy",
+        "slug"
       ]
     },
     "uid": "api::article.article"

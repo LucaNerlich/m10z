@@ -490,6 +490,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
             false
         > &
             Schema.Attribute.Required;
+        content: Schema.Attribute.RichText & Schema.Attribute.Required;
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
@@ -637,6 +638,7 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         > &
             Schema.Attribute.Private;
         publishedAt: Schema.Attribute.DateTime;
+        shownotes: Schema.Attribute.RichText;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
