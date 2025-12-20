@@ -157,15 +157,15 @@
           {
             "name": "slug",
             "size": 6
-          },
-          {
-            "name": "articles",
-            "size": 6
           }
         ],
         [
           {
             "name": "podcasts",
+            "size": 6
+          },
+          {
+            "name": "articles",
             "size": 6
           }
         ]

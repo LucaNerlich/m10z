@@ -25,8 +25,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "title",
@@ -160,6 +159,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy",
+        "slug"
+      ],
       "edit": [
         [
           {
@@ -189,12 +194,6 @@
             "size": 6
           }
         ]
-      ],
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy",
-        "slug"
       ]
     },
     "uid": "api::article.article"
