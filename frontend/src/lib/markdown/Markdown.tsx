@@ -1,8 +1,10 @@
+import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import remarkSmartypants from 'remark-smartypants';
 import rehypeExternalLinks from 'rehype-external-links';
+import { toAbsoluteUrl } from '@/src/lib/strapi';
 
 export type MarkdownProps = {
   markdown: string;
@@ -28,6 +30,21 @@ export function Markdown({ markdown, className }: MarkdownProps) {
         ]}
         components={{
           h1: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
+          img: ({ src, alt = '' }) => {
+            if (!src || typeof src !== 'string') return null;
+            const url = /^https?:\/\//i.test(src) ? src : toAbsoluteUrl(src);
+            // Use sensible defaults; Next/Image needs concrete dimensions.
+            return (
+              <Image
+                src={url}
+                alt={alt}
+                width={1200}
+                height={675}
+                sizes="100vw"
+                style={{ height: 'auto', width: '100%' }}
+              />
+            );
+          },
         }}
       >
         {markdown}
