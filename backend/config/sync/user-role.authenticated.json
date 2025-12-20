@@ -1,0 +1,24 @@
+{
+  "documentId": "m8kzx7gtgruukd1yci6y131p",
+  "name": "Authenticated",
+  "description": "Default role given to authenticated user.",
+  "type": "authenticated",
+  "locale": null,
+  "permissions": [
+    {
+      "documentId": "n96qn4ojo0fq95u41a60ec7f",
+      "action": "plugin::users-permissions.auth.changePassword",
+      "locale": null
+    },
+    {
+      "documentId": "l22hv0xzlmcn8q3qn85r2yec",
+      "action": "plugin::users-permissions.auth.logout",
+      "locale": null
+    },
+    {
+      "documentId": "q5u3i4hmi9clznrfdijhk3jf",
+      "action": "plugin::users-permissions.user.me",
+      "locale": null
+    }
+  ]
+}
