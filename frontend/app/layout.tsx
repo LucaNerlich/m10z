@@ -1,6 +1,7 @@
 import '../src/styles/global.css';
 import Header from '@/app/Header';
 import Footer from '@/app/Footer';
+import UmamiAnalytics from '@/src/components/UmamiAnalytics';
 
 export default function RootLayout({
                                        children,
@@ -13,6 +14,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <UmamiAnalytics />
         </body>
         </html>
     );
