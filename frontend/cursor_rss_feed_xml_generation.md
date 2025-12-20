@@ -1,11 +1,12 @@
 # Rss feed XML generation
+
 _Exported on 12/17/2025 at 17:45:17 GMT+1 from Cursor (2.2.20)_
 
 ---
 
 **User**
 
-@.cursor/plans/strapi_next.js_migration_bf128495.plan.md 
+@.cursor/plans/strapi_next.js_migration_bf128495.plan.md
 
 how do we technically generate the rss feed xml?
 
@@ -13,18 +14,11 @@ how do we technically generate the rss feed xml?
 
 **Cursor**
 
-
 Reviewing the existing RSS feed implementation to understand the format and data structure.
-
-
 
 Checking markdown-to-HTML conversion and episode data structure:
 
-
-
 Checking an episode file to understand the data structure:
-
-
 
 Technical approach for generating the RSS feed XML in Next.js:
 
@@ -33,6 +27,7 @@ Technical approach for generating the RSS feed XML in Next.js:
 ### Current Implementation Analysis
 
 The current system uses:
+
 - `xml2js` to parse a template XML file, modify it, and rebuild XML
 - Custom markdown-to-HTML conversion for episode descriptions
 - File size caching via HTTP HEAD requests
@@ -43,11 +38,13 @@ The current system uses:
 For Next.js, there are two approaches:
 
 **Option 1: Template Literal Approach (Recommended)**
+
 - Build XML using template literals
 - Simpler, no dependencies, better performance
 - Easier to maintain and debug
 
 **Option 2: XML Builder Library**
+
 - Use a library like `xml2js` or `fast-xml-parser`
 - More structured, but adds dependency
 
@@ -230,6 +227,7 @@ export function escapeXml(text: string): string {
 ### Markdown to HTML Conversion
 
 You can either:
+
 1. Port the existing `markdownToHtml.js` to TypeScript
 2. Use a library like `marked` or `remark` (more robust, but adds dependency)
 
@@ -335,6 +333,7 @@ flowchart TD
 ```
 
 This approach:
+
 - Generates XML using template literals (no XML parsing overhead)
 - Maintains compatibility with the current RSS format
 - Leverages Next.js ISR for caching
@@ -609,10 +608,8 @@ how do we "clear" our cache on podcast changes in our backend?
 
 **Cursor**
 
-
-Explaining how to clear the cache when podcast changes occur in Strapi. Reviewing the plan and outlining the cache invalidation mechanism:
-
-
+Explaining how to clear the cache when podcast changes occur in Strapi. Reviewing the plan and outlining the cache
+invalidation mechanism:
 
 Cache invalidation when podcast changes occur in Strapi:
 
@@ -625,6 +622,7 @@ Two mechanisms clear the cache:
 Configure Strapi to send webhooks when episodes are created or updated:
 
 **In Strapi Admin Panel:**
+
 - Settings → Webhooks → Create Webhook
 - Events: `entry.create`, `entry.update` (filtered to `audio-episode` content type)
 - URL: `https://m10z.de/api/revalidate`
@@ -868,6 +866,7 @@ sequenceDiagram
 ### 5. Security Considerations
 
 **Webhook Secret Verification:**
+
 - Always verify the secret before clearing cache
 - Use environment variables for secrets
 - Consider rate limiting the revalidation endpoint
@@ -924,7 +923,8 @@ Cache clearing happens through:
 4. In-memory cache → cleared programmatically
 5. Next request → regenerates fresh RSS feed
 
-This ensures new episodes appear in the RSS feed within seconds of publishing, while maintaining performance through caching.
+This ensures new episodes appear in the RSS feed within seconds of publishing, while maintaining performance through
+caching.
 
 Should I add these implementation details to the plan, or do you want to adjust anything first?
 
