@@ -46,6 +46,11 @@
       "locale": null
     },
     {
+      "documentId": "v1eozvvo15ht3o379lbbjbfd",
+      "action": "api::imprint.imprint.find",
+      "locale": null
+    },
+    {
       "documentId": "a8qcyckizrclr0xqw53lsb55",
       "action": "api::podcast.podcast.find",
       "locale": null
@@ -53,6 +58,11 @@
     {
       "documentId": "kkjkgfmhp1fky9p8wd0xtjn8",
       "action": "api::podcast.podcast.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "ah42cs73rn0dkgcvnsbmvhmp",
+      "action": "api::privacy.privacy.find",
       "locale": null
     },
     {
