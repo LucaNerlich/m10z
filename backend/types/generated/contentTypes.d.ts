@@ -557,14 +557,11 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
             'manyToMany',
             'api::article.article'
         >;
-        base: Schema.Attribute.Component<
-            'collection-type.base-content',
-            false
-        > &
-            Schema.Attribute.Required;
+        avatar: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
+        description: Schema.Attribute.Text;
         locale: Schema.Attribute.String & Schema.Attribute.Private;
         localizations: Schema.Attribute.Relation<
             'oneToMany',
@@ -576,7 +573,8 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
             'api::podcast.podcast'
         >;
         publishedAt: Schema.Attribute.DateTime;
-        slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+        title: Schema.Attribute.String;
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;

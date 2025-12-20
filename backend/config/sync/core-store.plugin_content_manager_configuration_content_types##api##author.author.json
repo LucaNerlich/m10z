@@ -19,21 +19,6 @@
           "sortable": true
         }
       },
-      "base": {
-        "edit": {
-          "label": "base",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "title"
-        },
-        "list": {
-          "label": "title",
-          "searchable": false,
-          "sortable": false
-        }
-      },
       "slug": {
         "edit": {
           "label": "slug",
@@ -74,6 +59,48 @@
         },
         "list": {
           "label": "articles",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "title": {
+        "edit": {
+          "label": "title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "avatar": {
+        "edit": {
+          "label": "avatar",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "avatar",
           "searchable": false,
           "sortable": false
         }
@@ -149,13 +176,21 @@
       "edit": [
         [
           {
-            "name": "base",
-            "size": 12
+            "name": "title",
+            "size": 6
+          },
+          {
+            "name": "slug",
+            "size": 6
           }
         ],
         [
           {
-            "name": "slug",
+            "name": "description",
+            "size": 6
+          },
+          {
+            "name": "avatar",
             "size": 6
           }
         ],
@@ -171,10 +206,10 @@
         ]
       ],
       "list": [
-        "base",
         "slug",
         "updatedAt",
-        "createdBy"
+        "createdBy",
+        "title"
       ]
     },
     "uid": "api::author.author"

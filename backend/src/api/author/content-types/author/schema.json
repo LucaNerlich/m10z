@@ -11,15 +11,24 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "base": {
-      "type": "component",
-      "component": "collection-type.base-content",
-      "repeatable": false,
-      "required": true
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
     },
     "slug": {
       "type": "uid",
+      "targetField": "title",
       "required": true
+    },
+    "avatar": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
     },
     "podcasts": {
       "type": "relation",

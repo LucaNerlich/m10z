@@ -216,17 +216,16 @@
       "locale": null
     },
     {
-      "documentId": "bjktctq50mcmfkyxbj5shal4",
+      "documentId": "pzs1iaih6jtqz08wlhkarfgz",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::author.author",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
+          "title",
+          "description",
           "slug",
+          "avatar",
           "podcasts",
           "articles"
         ]
@@ -253,17 +252,16 @@
       "locale": null
     },
     {
-      "documentId": "etbm33e6yivj67xy3b8flmtg",
+      "documentId": "vzbdqrzunfjjpc2f96ln9719",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::author.author",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
+          "title",
+          "description",
           "slug",
+          "avatar",
           "podcasts",
           "articles"
         ]
@@ -272,17 +270,16 @@
       "locale": null
     },
     {
-      "documentId": "tll4ubie2dx17ithoxj0wqiu",
+      "documentId": "jc1ngr7485g55swrb58vfv4t",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::author.author",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
+          "title",
+          "description",
           "slug",
+          "avatar",
           "podcasts",
           "articles"
         ]
