@@ -30,7 +30,7 @@
         "list": {
           "label": "title",
           "searchable": false,
-          "sortable": true
+          "sortable": false
         }
       },
       "slug": {
@@ -115,6 +115,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "base",
+        "slug",
+        "updatedAt",
+        "createdBy"
+      ],
       "edit": [
         [
           {
@@ -128,12 +134,6 @@
             "size": 6
           }
         ]
-      ],
-      "list": [
-        "base",
-        "slug",
-        "updatedAt",
-        "createdBy"
       ]
     },
     "uid": "api::author.author"
