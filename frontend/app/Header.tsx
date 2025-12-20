@@ -13,7 +13,7 @@ const primaryLinks = [
 
 const secondaryLinks = [
     {label: 'Kategorien', href: routes.categories},
-    {label: 'Team', href: routes.team},
+    {label: 'Team', href: routes.authors},
 ] as const;
 
 export default function Header(): React.ReactElement {

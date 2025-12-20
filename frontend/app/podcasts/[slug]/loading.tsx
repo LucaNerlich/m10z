@@ -1,8 +1,8 @@
 import styles from '../../loadingPlaceholder.module.css';
 
-export default function ArticleDetailLoading() {
+export default function PodcastDetailLoading() {
     return (
-        <main className={styles.container} aria-label="Artikel wird geladen">
+        <main className={styles.container} aria-label="Podcast wird geladen">
             <div className={styles.stack}>
                 <div className={styles.card}>
                     <div className={`${styles.bar} ${styles.short}`} />
