@@ -1,7 +1,7 @@
-export default function Home() {
+export default function HomePage() {
     return (
-        <div>
+        <main>
             <h1>m10z</h1>
-        </div>
+        </main>
     );
 }
