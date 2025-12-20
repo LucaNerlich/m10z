@@ -7,8 +7,8 @@ export interface CollectionTypeBaseContent extends Struct.ComponentSchema {
         icon: 'message';
     };
     attributes: {
-        banner: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
-        cover: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+        banner: Schema.Attribute.Media<'images'>;
+        cover: Schema.Attribute.Media<'images'>;
         description: Schema.Attribute.Text;
         title: Schema.Attribute.String & Schema.Attribute.Required;
     };

@@ -482,7 +482,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         singularName: 'article';
     };
     options: {
-        draftAndPublish: true;
+        draftAndPublish: false;
     };
     attributes: {
         authors: Schema.Attribute.Relation<'manyToMany', 'api::author.author'>;
@@ -661,7 +661,7 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         singularName: 'podcast';
     };
     options: {
-        draftAndPublish: true;
+        draftAndPublish: false;
     };
     attributes: {
         authors: Schema.Attribute.Relation<'manyToMany', 'api::author.author'>;
@@ -692,6 +692,7 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
             'api::podcast.podcast'
         > &
             Schema.Attribute.Private;
+        publishDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
         publishedAt: Schema.Attribute.DateTime;
         shownotes: Schema.Attribute.RichText;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;

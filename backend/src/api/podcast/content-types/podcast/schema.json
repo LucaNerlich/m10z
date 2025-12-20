@@ -7,7 +7,7 @@
     "displayName": "Podcast"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -48,6 +48,10 @@
       "relation": "manyToMany",
       "target": "api::category.category",
       "mappedBy": "podcasts"
+    },
+    "publishDate": {
+      "type": "datetime",
+      "required": true
     }
   }
 }
