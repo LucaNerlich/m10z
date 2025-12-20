@@ -17,6 +17,7 @@ export const routes = {
     podcast: (slug: string) => `/podcasts/${slug}`,
     categories: '/kategorien',
     category: (slug: string) => `/kategorien/${slug}`,
+    team: '/team',
     authors: '/autoren',
     author: (slug: string) => `/autoren/${slug}`,
     audioFeed: '/audiofeed.xml',

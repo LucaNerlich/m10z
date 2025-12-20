@@ -1,12 +1,45 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
-interface HeaderProps {
-}
+import HeaderClient from './HeaderClient';
+import styles from './Header.module.css';
+import {routes} from '@/src/lib/routes';
 
-export default function Header(props: Readonly<HeaderProps>): React.ReactElement {
+const primaryLinks = [
+    {label: 'Artikel', href: routes.articles},
+    {label: 'Podcasts', href: routes.podcasts},
+] as const;
+
+const secondaryLinks = [
+    {label: 'Kategorien', href: routes.categories},
+    {label: 'Team', href: routes.team},
+] as const;
+
+export default function Header(): React.ReactElement {
     return (
-        <>
-            <p>I am a Header</p>
-        </>
+        <header className={styles.header}>
+            <div className={styles.inner}>
+                <Link className={styles.logo} href={routes.home} aria-label="Zur Startseite">
+                    <Image
+                        src="/logo.svg"
+                        alt="m10z"
+                        width={100}
+                        height={38}
+                        priority
+                    />
+                </Link>
+
+                <nav className={styles.centerNav} aria-label="Hauptnavigation">
+                    {primaryLinks.map((link) => (
+                        <Link key={link.href} className={styles.navLink} href={link.href}>
+                            {link.label}
+                        </Link>
+                    ))}
+                </nav>
+
+                <HeaderClient primaryLinks={primaryLinks} secondaryLinks={secondaryLinks} />
+            </div>
+        </header>
     );
 }
