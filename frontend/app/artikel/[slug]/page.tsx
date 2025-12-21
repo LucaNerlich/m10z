@@ -15,13 +15,13 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const published = article.publishDate ?? article.publishedAt ?? null;
 
     return (
-        <main style={{padding: '24px 20px', maxWidth: 960, margin: '0 auto'}}>
-            <p style={{color: 'var(--color-text-muted)', marginBottom: 6}}>
+        <main>
+            <p>
                 {published ? new Date(published).toLocaleDateString('de-DE') : ''}
             </p>
-            <h1 style={{margin: '0 0 12px'}}>{article.base.title}</h1>
+            <h1>{article.base.title}</h1>
             {article.base.description ? (
-                <p style={{marginBottom: 16, color: 'var(--color-text-muted)'}}>{article.base.description}</p>
+                <p>{article.base.description}</p>
             ) : null}
             <Markdown markdown={article.content ?? ''} />
         </main>

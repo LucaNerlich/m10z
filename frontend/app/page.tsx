@@ -21,7 +21,7 @@ type PodcastListItem = {
 
 export default function HomePage() {
     return (
-        <main>
+        <div>
             <h1>m10z</h1>
 
             <Suspense fallback={<p>Lade Artikel…</p>}>
@@ -31,7 +31,7 @@ export default function HomePage() {
             <Suspense fallback={<p>Lade Podcasts…</p>}>
                 <LatestPodcasts />
             </Suspense>
-        </main>
+        </div>
     );
 }
 

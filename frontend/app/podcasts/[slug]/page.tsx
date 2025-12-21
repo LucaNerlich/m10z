@@ -21,17 +21,17 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const audioUrl = mediaUrlToAbsolute({media: fileMedia, strapiUrl: STRAPI_URL});
 
     return (
-        <main style={{padding: '24px 20px', maxWidth: 960, margin: '0 auto'}}>
-            <p style={{color: 'var(--color-text-muted)', marginBottom: 6}}>
+        <main>
+            <p>
                 {published ? new Date(published).toLocaleDateString('de-DE') : ''}
             </p>
-            <h1 style={{margin: '0 0 12px'}}>{episode.base.title}</h1>
+            <h1>{episode.base.title}</h1>
             {episode.base.description ? (
-                <p style={{marginBottom: 16, color: 'var(--color-text-muted)'}}>{episode.base.description}</p>
+                <p>{episode.base.description}</p>
             ) : null}
 
             {audioUrl ? (
-                <div style={{margin: '12px 0 20px'}}>
+                <div>
                     <PodcastPlayer src={audioUrl} />
                 </div>
             ) : null}
