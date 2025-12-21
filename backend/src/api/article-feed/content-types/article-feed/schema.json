@@ -4,7 +4,7 @@
   "info": {
     "singularName": "article-feed",
     "pluralName": "article-feeds",
-    "displayName": "article-feed"
+    "displayName": "Text Feed"
   },
   "options": {
     "draftAndPublish": false

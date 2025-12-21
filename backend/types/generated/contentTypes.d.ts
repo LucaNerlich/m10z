@@ -448,7 +448,7 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
 export interface ApiArticleFeedArticleFeed extends Struct.SingleTypeSchema {
     collectionName: 'article_feeds';
     info: {
-        displayName: 'article-feed';
+        displayName: 'Text Feed';
         pluralName: 'article-feeds';
         singularName: 'article-feed';
     };
@@ -516,7 +516,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
 export interface ApiAudioFeedAudioFeed extends Struct.SingleTypeSchema {
     collectionName: 'audio_feeds';
     info: {
-        displayName: 'audio-feed';
+        displayName: 'Audio Feed';
         pluralName: 'audio-feeds';
         singularName: 'audio-feed';
     };
@@ -625,7 +625,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
 export interface ApiImprintImprint extends Struct.SingleTypeSchema {
     collectionName: 'imprints';
     info: {
-        displayName: 'imprint';
+        displayName: 'Impressum';
         pluralName: 'imprints';
         singularName: 'imprint';
     };
@@ -705,7 +705,7 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
 export interface ApiPrivacyPrivacy extends Struct.SingleTypeSchema {
     collectionName: 'privacies';
     info: {
-        displayName: 'privacy';
+        displayName: 'Datenschutz';
         pluralName: 'privacies';
         singularName: 'privacy';
     };

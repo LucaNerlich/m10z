@@ -4,7 +4,7 @@
   "info": {
     "singularName": "audio-feed",
     "pluralName": "audio-feeds",
-    "displayName": "audio-feed"
+    "displayName": "Audio Feed"
   },
   "options": {
     "draftAndPublish": false
