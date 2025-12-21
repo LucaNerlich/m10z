@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 import {generateArticleFeedXml, type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/rss/articlefeed';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {
@@ -33,13 +35,38 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
     const all: StrapiArticle[] = [];
 
     while (true) {
-        const query =
-            `/api/articles?sort=publishedAt:desc&pagination[pageSize]=${pageSize}&pagination[page]=${page}&populate=*`;
+        const query = qs.stringify(
+            {
+                sort: ['publishDate:desc'],
+                pagination: {pageSize, page},
+                populate: {
+                    base: {
+                        populate: ['cover', 'banner'],
+                        fields: ['title', 'description'],
+                    },
+                    authors: {
+                        populate: ['avatar'],
+                        fields: ['title', 'slug', 'description'],
+                    },
+                    categories: {
+                        populate: {
+                            base: {
+                                populate: ['cover', 'banner'],
+                                fields: ['title', 'description'],
+                            },
+                        },
+                        fields: ['slug'],
+                    },
+                },
+                fields: ['slug', 'content', 'publishDate'],
+            },
+            {encodeValuesOnly: true},
+        );
 
         const res = await fetchStrapiJson<{
             data: unknown[];
             meta?: {pagination?: {page: number; pageCount: number; total: number}};
-        }>(query);
+        }>(`/api/articles?${query}`);
 
         const items = Array.isArray(res.data) ? (res.data as StrapiArticle[]) : [];
         all.push(...items);
@@ -57,7 +84,8 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
 }
 
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
-    const res = await fetchStrapiJson<{data: StrapiArticleFeedSingle}>(`/api/article-feed?populate=*`);
+    const query = qs.stringify({populate: '*'}, {encodeValuesOnly: true});
+    const res = await fetchStrapiJson<{data: StrapiArticleFeedSingle}>(`/api/article-feed?${query}`);
     return res.data;
 }
 
@@ -66,6 +94,7 @@ async function getCachedArticleFeed() {
     const [feed, articles] = await Promise.all([fetchArticleFeedSingle(), fetchAllArticles()]);
     const {xml, etagSeed, lastModified} = generateArticleFeedXml({
         siteUrl: SITE_URL,
+        strapiUrl: STRAPI_URL,
         channel: feed.channel,
         articles,
     });

@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 import {
     type AudioFeedConfig,
     generateAudioFeedXml,
@@ -38,16 +40,41 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     const all: StrapiPodcast[] = [];
 
     while (true) {
-        const query =
-            `/api/podcasts?` +
-            `sort=publishedAt:desc&` +
-            `pagination[pageSize]=${pageSize}&pagination[page]=${page}&` +
-            `populate=*`;
+        const query = qs.stringify(
+            {
+                sort: ['publishDate:desc'],
+                pagination: {pageSize, page},
+                populate: {
+                    base: {
+                        populate: ['cover', 'banner'],
+                        fields: ['title', 'description'],
+                    },
+                    authors: {
+                        populate: ['avatar'],
+                        fields: ['title', 'slug', 'description'],
+                    },
+                    categories: {
+                        populate: {
+                            base: {
+                                populate: ['cover', 'banner'],
+                                fields: ['title', 'description'],
+                            },
+                        },
+                        fields: ['slug'],
+                    },
+                    file: {
+                        populate: '*'
+                    }
+                },
+                fields: ['slug', 'duration', 'shownotes', 'publishDate'],
+            },
+            {encodeValuesOnly: true},
+        );
 
         const res = await fetchStrapiJson<{
             data: unknown[];
             meta?: {pagination?: {page: number; pageCount: number; total: number}};
-        }>(query);
+        }>(`/api/podcasts?${query}`);
 
         const items = Array.isArray(res.data) ? (res.data as StrapiPodcast[]) : [];
         all.push(...items);
@@ -63,13 +90,21 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     }
 
     // Only published episodes should be in the public feed.
-    return all.filter((p) => Boolean(p.publishedAt));
+    return all.filter((p) => Boolean(p.publishDate ?? p.publishedAt));
 }
 
 async function fetchAudioFeedSingle(): Promise<StrapiAudioFeedSingle> {
-    const res = await fetchStrapiJson<{data: StrapiAudioFeedSingle}>(
-        `/api/audio-feed?populate=*`,
+    const query = qs.stringify(
+        {
+            populate: {
+                channel: {
+                    populate: ['image'],
+                },
+            },
+        },
+        {encodeValuesOnly: true},
     );
+    const res = await fetchStrapiJson<{data: StrapiAudioFeedSingle}>(`/api/audio-feed?${query}`);
     return res.data;
 }
 

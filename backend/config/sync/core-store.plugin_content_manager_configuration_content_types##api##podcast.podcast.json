@@ -25,7 +25,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "title",
@@ -64,7 +65,7 @@
       "duration": {
         "edit": {
           "label": "duration",
-          "description": "",
+          "description": "Folgendauer in Sekunden",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -91,7 +92,7 @@
       },
       "authors": {
         "edit": {
-          "label": "authors",
+          "label": "AutorInnen",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -106,8 +107,8 @@
       },
       "categories": {
         "edit": {
-          "label": "categories",
-          "description": "",
+          "label": "Kategorien",
+          "description": "Erste Kategorie bestimmt das verwendete Bild",
           "placeholder": "",
           "visible": true,
           "editable": true,
@@ -201,12 +202,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy",
-        "authors"
-      ],
       "edit": [
         [
           {
@@ -252,6 +247,12 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy",
+        "authors"
       ]
     },
     "uid": "api::podcast.podcast"

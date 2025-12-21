@@ -21,8 +21,8 @@
       },
       "title": {
         "edit": {
-          "label": "title",
-          "description": "",
+          "label": "Titel",
+          "description": "Beschreibung oder Teasertext",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -49,8 +49,8 @@
       },
       "cover": {
         "edit": {
-          "label": "cover",
-          "description": "",
+          "label": "Cover",
+          "description": "1/1 Bild",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -63,8 +63,8 @@
       },
       "banner": {
         "edit": {
-          "label": "banner",
-          "description": "",
+          "label": "Banner",
+          "description": "16/9 Bild",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -85,12 +85,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "description",
-        "cover"
-      ],
       "edit": [
         [
           {
@@ -112,6 +106,12 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "description",
+        "cover"
       ]
     },
     "uid": "collection-type.base-content",

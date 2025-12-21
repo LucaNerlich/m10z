@@ -1,39 +1,27 @@
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
+import {
+    pickCoverMedia,
+    mediaUrlToAbsolute,
+    normalizeStrapiMedia,
+    type StrapiAuthor,
+    type StrapiBaseContent,
+    type StrapiCategoryRef,
+    type StrapiMedia,
+    type StrapiMediaRef,
+} from '@/src/lib/rss/media';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
-
-type StrapiMedia = {
-    url?: string;
-    mime?: string;
-    // Strapi upload size is commonly KB (number), but can vary; we normalize downstream.
-    size?: number;
-    sizeInBytes?: number;
-};
-
-type StrapiMediaRef = {
-    url?: string;
-    mime?: string;
-    size?: number;
-    sizeInBytes?: number;
-    // In Strapi v4: { data: { attributes: { ... } } }, in v5: direct fields.
-    data?: {attributes?: StrapiMedia} | null;
-    attributes?: StrapiMedia;
-};
-
-type StrapiBaseContent = {
-    title: string;
-    description?: string | null;
-    cover?: StrapiMediaRef | null;
-    banner?: StrapiMediaRef | null;
-};
 
 export type StrapiPodcast = {
     id: number;
     slug: string;
+    publishDate?: string | null;
     publishedAt: string | null;
     base: StrapiBaseContent;
+    categories?: StrapiCategoryRef[];
     shownotes?: string | null;
     duration: number;
     file: StrapiMediaRef;
+    authors?: StrapiAuthor[];
 };
 
 export type StrapiAudioFeedSingle = {
@@ -58,26 +46,6 @@ export type AudioFeedConfig = {
     itunesType: 'episodic' | 'serial';
     podcastGuid: string;
 };
-
-export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): StrapiMedia {
-    if (!ref) return {};
-    // v5: fields at root OR v4: attributes or data.attributes
-    const attrs = ref.attributes ?? ref.data?.attributes ?? ref;
-    return {
-        url: attrs.url,
-        mime: attrs.mime,
-        size: attrs.size,
-        sizeInBytes: attrs.sizeInBytes,
-    };
-}
-
-export function toAbsoluteUrl(siteUrl: string, maybeRelativeUrl: string | undefined): string | undefined {
-    if (!maybeRelativeUrl) return undefined;
-    if (/^https?:\/\//i.test(maybeRelativeUrl)) return maybeRelativeUrl;
-    const base = siteUrl.replace(/\/+$/, '');
-    const path = maybeRelativeUrl.startsWith('/') ? maybeRelativeUrl : `/${maybeRelativeUrl}`;
-    return `${base}${path}`;
-}
 
 export function normalizeEnclosureLengthBytes(media: StrapiMedia): number | undefined {
     if (typeof media.sizeInBytes === 'number' && Number.isFinite(media.sizeInBytes)) {
@@ -128,17 +96,18 @@ function renderChannelHeader(
 
 function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, strapiUrl: string): string {
     const fileMedia = normalizeStrapiMedia(episode.file);
-    const baseCoverMedia = normalizeStrapiMedia(episode.base.cover ?? undefined);
+    const coverMedia = pickCoverMedia(episode.base, episode.categories);
 
-    const enclosureUrl = toAbsoluteUrl(strapiUrl, fileMedia.url) ?? '';
+    const enclosureUrl = mediaUrlToAbsolute({media: fileMedia, strapiUrl}) ?? '';
     const lengthBytes = normalizeEnclosureLengthBytes(fileMedia) ?? 0;
 
     const title = escapeXml(episode.base.title);
-    const pub = episode.publishedAt ? new Date(episode.publishedAt) : new Date(0);
+    const pubDateRaw = episode.publishDate ?? episode.publishedAt;
+    const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
     const pubDate = formatRssDate(pub);
 
     const itunesImageHref =
-        toAbsoluteUrl(strapiUrl, baseCoverMedia.url) ??
+        mediaUrlToAbsolute({media: coverMedia, strapiUrl}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
     const md = (episode.shownotes ?? episode.base.description ?? '').toString();
@@ -177,22 +146,25 @@ export function generateAudioFeedXml(args: {
 
     const channelImage = normalizeStrapiMedia(channel.image);
     const channelImageUrl =
-        toAbsoluteUrl(strapiUrl, channelImage.url) ??
+        mediaUrlToAbsolute({media: channelImage, strapiUrl}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
     const now = new Date();
     const header = renderChannelHeader(cfg, channel, channelImageUrl, now);
 
     const sorted = [...episodes].sort((a, b) => {
-        const ad = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-        const bd = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        const adRaw = a.publishDate ?? a.publishedAt;
+        const bdRaw = b.publishDate ?? b.publishedAt;
+        const ad = adRaw ? new Date(adRaw).getTime() : 0;
+        const bd = bdRaw ? new Date(bdRaw).getTime() : 0;
         return bd - ad;
     });
 
     const items = sorted.map((ep) => renderItem(cfg, ep, strapiUrl)).join('');
     const footer = `</channel></rss>`;
 
-    const latestPublishedAt = sorted[0]?.publishedAt ? new Date(sorted[0].publishedAt) : null;
+    const latestDateRaw = sorted[0]?.publishDate ?? sorted[0]?.publishedAt;
+    const latestPublishedAt = latestDateRaw ? new Date(latestDateRaw) : null;
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
 
     return {
