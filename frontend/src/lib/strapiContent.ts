@@ -16,8 +16,8 @@ type FetchOptions = {
 };
 
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
+    'use cache'
     const url = new URL(pathWithQuery, STRAPI_URL);
-    console.log('url', url);
     const res = await fetch(url.toString(), {
         next: {
             revalidate: options.revalidate ?? 3600,

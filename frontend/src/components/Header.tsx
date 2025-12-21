@@ -40,8 +40,12 @@ export default function Header(): React.ReactElement {
 
                 <Suspense
                     fallback={
-                        <div className={styles.burgerPlaceholder} aria-hidden>
-                            <span />
+                        <div className={styles.burgerFallback} aria-hidden>
+                            <span className={styles.burgerLines}>
+                                <span />
+                                <span />
+                                <span />
+                            </span>
                         </div>
                     }
                 >

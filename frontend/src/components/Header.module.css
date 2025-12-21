@@ -15,6 +15,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    min-height: 70px;
 }
 
 .logo {
@@ -52,17 +53,6 @@
     transition: border-color 120ms ease, background-color 120ms ease;
 }
 
-.burgerPlaceholder {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--color-border);
-    background: var(--color-surface-strong);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .burgerButton:hover {
     border-color: var(--color-primary);
 }
@@ -97,6 +87,17 @@
 
 .burgerButtonActive .burgerLines span:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
+}
+
+.burgerFallback {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .menu {

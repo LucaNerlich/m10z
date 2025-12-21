@@ -1,3 +1,4 @@
+'use cache'
 export default async function CategoryDetailPage() {
     return (
         <main>
