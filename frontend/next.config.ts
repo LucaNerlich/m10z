@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
         turbopackFileSystemCacheForDev: true,
     },
     reactCompiler: true,
+    images: {
+        dangerouslyAllowLocalIP: true,
+        remotePatterns: [
+            {protocol: 'http', hostname: 'localhost', port: '1337'},
+            {protocol: 'https', hostname: 'm10z'},
+            {protocol: 'https', hostname: 'api.m10z'},
+        ],
+    },
     async redirects() {
         return [
             // Legacy Docusaurus pages -> Next.js routes

@@ -2,6 +2,7 @@ import qs from 'qs';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
+import {type StrapiAuthor} from '@/src/lib/rss/media';
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/+$/, '');
 
@@ -16,6 +17,7 @@ type FetchOptions = {
 
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
     const url = new URL(pathWithQuery, STRAPI_URL);
+    console.log('url', url);
     const res = await fetch(url.toString(), {
         next: {
             revalidate: options.revalidate ?? 3600,
@@ -29,6 +31,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
 }
 
 export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | null> {
+    'use cache'
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -54,6 +57,7 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
 }
 
 export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | null> {
+    'use cache'
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -84,7 +88,46 @@ type FetchListOptions = {
     tags?: string[];
 };
 
+export type StrapiCategoryWithContent = {
+    id: number;
+    slug: string;
+    base?: {
+        title?: string | null;
+        description?: string | null;
+        cover?: unknown;
+        banner?: unknown;
+    } | null;
+    articles?: Array<{
+        slug: string;
+        publishDate?: string | null;
+        publishedAt?: string | null;
+        base: {title: string};
+    }>;
+    podcasts?: Array<{
+        slug: string;
+        publishDate?: string | null;
+        publishedAt?: string | null;
+        base: {title: string};
+    }>;
+};
+
+export type StrapiAuthorWithContent = StrapiAuthor & {
+    articles?: Array<{
+        slug: string;
+        publishDate?: string | null;
+        publishedAt?: string | null;
+        base: {title: string};
+    }>;
+    podcasts?: Array<{
+        slug: string;
+        publishDate?: string | null;
+        publishedAt?: string | null;
+        base: {title: string};
+    }>;
+};
+
 export async function fetchArticlesList(options: FetchListOptions = {}): Promise<StrapiArticle[]> {
+    'use cache'
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -106,6 +149,7 @@ export async function fetchArticlesList(options: FetchListOptions = {}): Promise
 }
 
 export async function fetchPodcastsList(options: FetchListOptions = {}): Promise<StrapiPodcast[]> {
+    'use cache'
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -123,6 +167,73 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
     const res = await fetchJson<{data: StrapiPodcast[]}>(
         `/api/podcasts?${query}`,
         {tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list']},
+    );
+    return res.data ?? [];
+}
+
+export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthor[]> {
+    'use cache'
+    const limit = options.limit ?? 100;
+    const query = qs.stringify(
+        {
+            sort: ['title:asc'],
+            pagination: {pageSize: limit, page: 1},
+            populate: ['avatar'],
+            fields: ['slug', 'title', 'description'],
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiAuthor[]}>(
+        `/api/authors?${query}`,
+        {tags: options.tags ?? ['strapi:author', 'strapi:author:list']},
+    );
+    return res.data ?? [];
+}
+
+export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithContent | null> {
+    'use cache'
+    const query = qs.stringify(
+        {
+            filters: {slug: {$eq: slug}},
+            populate: {
+                avatar: true,
+                articles: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishDate', 'publishedAt']},
+                podcasts: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishDate', 'publishedAt']},
+            },
+            fields: ['slug', 'title', 'description'],
+            pagination: {pageSize: 1},
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(
+        `/api/authors?${query}`,
+        {tags: ['strapi:author', `strapi:author:${slug}`]},
+    );
+    return res.data?.[0] ?? null;
+}
+
+export async function fetchCategoriesWithContent(options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> {
+    'use cache'
+    const limit = options.limit ?? 100;
+    const query = qs.stringify(
+        {
+            sort: ['base.title:asc'],
+            pagination: {pageSize: limit, page: 1},
+            populate: {
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
+                articles: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishDate', 'publishedAt']},
+                podcasts: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishDate', 'publishedAt']},
+            },
+            fields: ['slug'],
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(
+        `/api/categories?${query}`,
+        {tags: options.tags ?? ['strapi:category', 'strapi:category:list']},
     );
     return res.data ?? [];
 }
