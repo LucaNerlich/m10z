@@ -1,13 +1,21 @@
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
-import {pickBannerMedia, mediaUrlToAbsolute, type StrapiBaseContent, type StrapiCategoryRef} from '@/src/lib/rss/media';
+import {
+    pickBannerMedia,
+    mediaUrlToAbsolute,
+    type StrapiAuthor,
+    type StrapiBaseContent,
+    type StrapiCategoryRef,
+} from '@/src/lib/rss/media';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
 export type StrapiArticle = {
     id: number;
     slug: string;
+    publishDate?: string | null;
     publishedAt: string | null;
     base: StrapiBaseContent;
     categories?: StrapiCategoryRef[];
+    authors?: StrapiAuthor[];
     content: string;
 };
 
@@ -42,15 +50,18 @@ export function generateArticleFeedXml(args: {
         `    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>`;
 
     const sorted = [...articles].sort((a, b) => {
-        const ad = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-        const bd = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        const adRaw = a.publishDate ?? a.publishedAt;
+        const bdRaw = b.publishDate ?? b.publishedAt;
+        const ad = adRaw ? new Date(adRaw).getTime() : 0;
+        const bd = bdRaw ? new Date(bdRaw).getTime() : 0;
         return bd - ad;
     });
 
     const items = sorted
-        .filter((a) => Boolean(a.publishedAt))
+        .filter((a) => Boolean(a.publishDate ?? a.publishedAt))
         .map((a) => {
-            const pub = a.publishedAt ? new Date(a.publishedAt) : new Date(0);
+            const pubRaw = a.publishDate ?? a.publishedAt;
+            const pub = pubRaw ? new Date(pubRaw) : new Date(0);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
             const bannerMedia = pickBannerMedia(a.base, a.categories);
             const bannerUrl = mediaUrlToAbsolute({media: bannerMedia, strapiUrl});
@@ -79,7 +90,8 @@ export function generateArticleFeedXml(args: {
 
     const footer = `</channel></rss>`;
 
-    const latestPublishedAt = sorted[0]?.publishedAt ? new Date(sorted[0].publishedAt) : null;
+    const latestRaw = sorted[0]?.publishDate ?? sorted[0]?.publishedAt;
+    const latestPublishedAt = latestRaw ? new Date(latestRaw) : null;
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
 
     return {xml: `${header}${items}${footer}`, etagSeed, lastModified: latestPublishedAt};

@@ -505,6 +505,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
             'api::article.article'
         > &
             Schema.Attribute.Private;
+        publishDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
         publishedAt: Schema.Attribute.DateTime;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;
         updatedAt: Schema.Attribute.DateTime;

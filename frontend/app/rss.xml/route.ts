@@ -80,7 +80,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
         page++;
     }
 
-    return all.filter((a) => Boolean(a.publishedAt));
+    return all.filter((a) => Boolean((a as StrapiArticle).publishDate ?? (a as StrapiArticle).publishedAt));
 }
 
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
