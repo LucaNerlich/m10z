@@ -1,3 +1,5 @@
+'use cache'
+
 import Link from 'next/link';
 
 import {fetchArticlesList} from '@/src/lib/strapiContent';

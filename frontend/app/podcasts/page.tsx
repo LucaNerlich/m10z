@@ -1,3 +1,5 @@
+'use cache'
+
 import Link from 'next/link';
 
 import {fetchPodcastsList} from '@/src/lib/strapiContent';

@@ -1,3 +1,5 @@
+'use cache'
+
 import Image from 'next/image';
 
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
