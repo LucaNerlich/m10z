@@ -63,8 +63,8 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
                         fields: ['slug'],
                     },
                     file: {
-                        populate: '*'
-                    }
+                        populate: '*',
+                    },
                 },
                 fields: ['slug', 'duration', 'shownotes', 'publishDate'],
             },
@@ -144,11 +144,11 @@ export async function GET(request: Request) {
         const {xml, etag, lastModified} = await getCachedAudioFeed();
         const prettyXml = formatXml(xml);
 
-        const headers = buildRssHeaders({ etag, lastModified });
+        const headers = buildRssHeaders({etag, lastModified});
         const maybe304 = maybeReturn304(request, etag, headers);
         if (maybe304) return maybe304;
 
-        return new Response(prettyXml, { headers });
+        return new Response(prettyXml, {headers});
     } catch (err) {
         const fallback = fallbackFeedXml({
             title: 'M10Z Podcasts',

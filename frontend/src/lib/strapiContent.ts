@@ -79,3 +79,51 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
     return res.data?.[0] ?? null;
 }
 
+type FetchListOptions = {
+    limit?: number;
+    tags?: string[];
+};
+
+export async function fetchArticlesList(options: FetchListOptions = {}): Promise<StrapiArticle[]> {
+    const limit = options.limit ?? 100;
+    const query = qs.stringify(
+        {
+            sort: ['publishDate:desc'],
+            pagination: {pageSize: limit, page: 1},
+            populate: {
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
+            },
+            fields: ['slug', 'content', 'publishDate', 'publishedAt'],
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiArticle[]}>(
+        `/api/articles?${query}`,
+        {tags: options.tags ?? ['strapi:article', 'strapi:article:list']},
+    );
+    return res.data ?? [];
+}
+
+export async function fetchPodcastsList(options: FetchListOptions = {}): Promise<StrapiPodcast[]> {
+    const limit = options.limit ?? 100;
+    const query = qs.stringify(
+        {
+            sort: ['publishDate:desc'],
+            pagination: {pageSize: limit, page: 1},
+            populate: {
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
+                file: {populate: '*'},
+            },
+            fields: ['slug', 'duration', 'shownotes', 'publishDate', 'publishedAt'],
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiPodcast[]}>(
+        `/api/podcasts?${query}`,
+        {tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list']},
+    );
+    return res.data ?? [];
+}
+

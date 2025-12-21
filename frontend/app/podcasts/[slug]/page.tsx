@@ -22,13 +22,9 @@ export default async function PodcastDetailPage({params}: PageProps) {
 
     return (
         <main>
-            <p>
-                {published ? new Date(published).toLocaleDateString('de-DE') : ''}
-            </p>
+            <p>{published ? new Date(published).toLocaleDateString('de-DE') : ''}</p>
             <h1>{episode.base.title}</h1>
-            {episode.base.description ? (
-                <p>{episode.base.description}</p>
-            ) : null}
+            {episode.base.description ? <p>{episode.base.description}</p> : null}
 
             {audioUrl ? (
                 <div>

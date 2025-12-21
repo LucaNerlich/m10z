@@ -16,13 +16,9 @@ export default async function ArticleDetailPage({params}: PageProps) {
 
     return (
         <main>
-            <p>
-                {published ? new Date(published).toLocaleDateString('de-DE') : ''}
-            </p>
+            <p>{published ? new Date(published).toLocaleDateString('de-DE') : ''}</p>
             <h1>{article.base.title}</h1>
-            {article.base.description ? (
-                <p>{article.base.description}</p>
-            ) : null}
+            {article.base.description ? <p>{article.base.description}</p> : null}
             <Markdown markdown={article.content ?? ''} />
         </main>
     );

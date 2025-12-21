@@ -21,7 +21,8 @@ export default function NotFound() {
                     Seite nicht gefunden
                 </h1>
                 <p className={styles.body}>
-                    Wir konnten die angeforderte Seite nicht finden. Vielleicht hilft dir unsere Startseite oder der Blick
+                    Wir konnten die angeforderte Seite nicht finden. Vielleicht hilft dir unsere Startseite oder der
+                    Blick
                     in die Artikel und Podcasts.
                 </p>
 

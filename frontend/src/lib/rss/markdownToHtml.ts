@@ -1,5 +1,5 @@
-import { marked } from 'marked';
-import { JSDOM } from 'jsdom';
+import {marked} from 'marked';
+import {JSDOM} from 'jsdom';
 import createDOMPurify from 'dompurify';
 
 /**
@@ -17,44 +17,44 @@ const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window as any);
 
 const ALLOWED_TAGS = [
-  'a',
-  'p',
-  'br',
-  'ul',
-  'ol',
-  'li',
-  'strong',
-  'em',
-  'code',
-  'pre',
-  'blockquote',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
+    'a',
+    'p',
+    'br',
+    'ul',
+    'ol',
+    'li',
+    'strong',
+    'em',
+    'code',
+    'pre',
+    'blockquote',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
 ];
 
 const ALLOWED_ATTR = ['href', 'title', 'rel', 'target'];
 
 export function markdownToHtml(markdownText: string): string {
-  if (!markdownText) return '';
+    if (!markdownText) return '';
 
-  // Marked output can include HTML; we sanitize after conversion.
-  const rawHtml = marked.parse(markdownText, {
-    gfm: true,
-    breaks: true,
-  }) as string;
+    // Marked output can include HTML; we sanitize after conversion.
+    const rawHtml = marked.parse(markdownText, {
+        gfm: true,
+        breaks: true,
+    }) as string;
 
-  const clean = DOMPurify.sanitize(rawHtml, {
-    ALLOWED_TAGS,
-    ALLOWED_ATTR,
-    // Disallow data: and javascript: URLs; allow http(s) + mailto.
-    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
-  });
+    const clean = DOMPurify.sanitize(rawHtml, {
+        ALLOWED_TAGS,
+        ALLOWED_ATTR,
+        // Disallow data: and javascript: URLs; allow http(s) + mailto.
+        ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
+    });
 
-  return clean;
+    return clean;
 }
 
 

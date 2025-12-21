@@ -1,23 +1,7 @@
 import Link from 'next/link';
 import {Suspense} from 'react';
 
-import {fetchStrapiCollection} from '@/src/lib/strapi';
-
-const REVALIDATE_SECONDS = 3600;
-
-type ArticleListItem = {
-    id: number;
-    slug: string;
-    publishedAt: string | null;
-    base: {title: string};
-};
-
-type PodcastListItem = {
-    id: number;
-    slug: string;
-    publishedAt: string | null;
-    base: {title: string};
-};
+import {fetchArticlesList, fetchPodcastsList} from '@/src/lib/strapiContent';
 
 export default function HomePage() {
     return (
@@ -37,20 +21,15 @@ export default function HomePage() {
 
 async function LatestArticles() {
     'use cache';
-    const res = await fetchStrapiCollection<ArticleListItem>(
-        'articles',
-        'sort=publishedAt:desc&pagination[pageSize]=10&populate=*',
-        {revalidateSeconds: REVALIDATE_SECONDS, tags: ['page:home', 'strapi:article']},
-    );
-
-    const articles = res.data.filter((a) => Boolean(a.publishedAt));
+    const articles = await fetchArticlesList({limit: 10, tags: ['page:home', 'strapi:article']});
+    const filtered = articles.filter((a) => Boolean(a.publishDate ?? a.publishedAt));
 
     return (
         <section>
             <h2>Neueste Artikel</h2>
             <ul>
-                {articles.map((a) => (
-                    <li key={a.id}>
+                {filtered.map((a) => (
+                    <li key={a.slug}>
                         <Link href={`/artikel/${a.slug}`}>{a.base.title}</Link>
                     </li>
                 ))}
@@ -61,20 +40,15 @@ async function LatestArticles() {
 
 async function LatestPodcasts() {
     'use cache';
-    const res = await fetchStrapiCollection<PodcastListItem>(
-        'podcasts',
-        'sort=publishedAt:desc&pagination[pageSize]=10&populate=*',
-        {revalidateSeconds: REVALIDATE_SECONDS, tags: ['page:home', 'strapi:podcast']},
-    );
-
-    const podcasts = res.data.filter((p) => Boolean(p.publishedAt));
+    const podcasts = await fetchPodcastsList({limit: 10, tags: ['page:home', 'strapi:podcast']});
+    const filtered = podcasts.filter((p) => Boolean(p.publishDate ?? p.publishedAt));
 
     return (
         <section>
             <h2>Neueste Podcasts</h2>
             <ul>
-                {podcasts.map((p) => (
-                    <li key={p.id}>
+                {filtered.map((p) => (
+                    <li key={p.slug}>
                         <Link href={`/podcasts/${p.slug}`}>{p.base.title}</Link>
                     </li>
                 ))}

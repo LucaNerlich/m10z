@@ -1,7 +1,7 @@
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {
-    pickBannerMedia,
     mediaUrlToAbsolute,
+    pickBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
     type StrapiCategoryRef,
