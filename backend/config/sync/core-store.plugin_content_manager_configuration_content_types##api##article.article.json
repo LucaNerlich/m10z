@@ -25,8 +25,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "title",
@@ -90,6 +89,20 @@
           "label": "categories",
           "searchable": false,
           "sortable": false
+        }
+      },
+      "publishDate": {
+        "edit": {
+          "label": "publishDate",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "publishDate",
+          "searchable": true,
+          "sortable": true
         }
       },
       "createdAt": {
@@ -160,6 +173,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy",
+        "slug"
+      ],
       "edit": [
         [
           {
@@ -188,13 +207,13 @@
             "name": "categories",
             "size": 6
           }
+        ],
+        [
+          {
+            "name": "publishDate",
+            "size": 6
+          }
         ]
-      ],
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy",
-        "slug"
       ]
     },
     "uid": "api::article.article"

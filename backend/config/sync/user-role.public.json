@@ -66,6 +66,16 @@
       "locale": null
     },
     {
+      "documentId": "nho57yyrwrhsu4qv2mpbwc4w",
+      "action": "plugin::upload.content-api.find",
+      "locale": null
+    },
+    {
+      "documentId": "f8dcr9r59gw904gm1esl5ql5",
+      "action": "plugin::upload.content-api.findOne",
+      "locale": null
+    },
+    {
       "documentId": "sowwzp3jxznv5h4m18s3g53q",
       "action": "plugin::users-permissions.auth.callback",
       "locale": null

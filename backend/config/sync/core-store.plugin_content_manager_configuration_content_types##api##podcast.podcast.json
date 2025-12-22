@@ -25,8 +25,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "title",
@@ -202,6 +201,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "base",
+        "updatedAt",
+        "createdBy",
+        "authors"
+      ],
       "edit": [
         [
           {
@@ -247,12 +252,6 @@
             "size": 6
           }
         ]
-      ],
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy",
-        "authors"
       ]
     },
     "uid": "api::podcast.podcast"

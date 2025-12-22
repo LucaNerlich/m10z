@@ -6,6 +6,76 @@
   "locale": null,
   "permissions": [
     {
+      "documentId": "e3epsf2uxiv7p18g8g1qajhn",
+      "action": "api::article-feed.article-feed.find",
+      "locale": null
+    },
+    {
+      "documentId": "jdwg2bnl0d73zsnql7whc6ie",
+      "action": "api::article.article.find",
+      "locale": null
+    },
+    {
+      "documentId": "l0phvbaqgdqn9f1ukxrsctxj",
+      "action": "api::article.article.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "momj57492awrwk8kggdvxlpo",
+      "action": "api::audio-feed.audio-feed.find",
+      "locale": null
+    },
+    {
+      "documentId": "jxizj83q8y3ij51m77535j20",
+      "action": "api::author.author.find",
+      "locale": null
+    },
+    {
+      "documentId": "dxi02hjvvzl6ovc6rx1wye5j",
+      "action": "api::author.author.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "v5cphkxa8ocps5cjh3f3jsk9",
+      "action": "api::category.category.find",
+      "locale": null
+    },
+    {
+      "documentId": "nge9cw2u8vgho5hm7d8ps7ov",
+      "action": "api::category.category.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "s9r62fepuuqewfzxitaiqtkb",
+      "action": "api::imprint.imprint.find",
+      "locale": null
+    },
+    {
+      "documentId": "girsifdnxnru7ho2xau93hq8",
+      "action": "api::podcast.podcast.find",
+      "locale": null
+    },
+    {
+      "documentId": "lxv3n6i6tq57fvvj7f3q54m3",
+      "action": "api::podcast.podcast.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "j632nxchd3k1q17jtdp2nj1i",
+      "action": "api::privacy.privacy.find",
+      "locale": null
+    },
+    {
+      "documentId": "phy2q008jkzum7q24i5an7j4",
+      "action": "plugin::upload.content-api.find",
+      "locale": null
+    },
+    {
+      "documentId": "rvb48fr4tb4dielg4fbyodoc",
+      "action": "plugin::upload.content-api.findOne",
+      "locale": null
+    },
+    {
       "documentId": "n96qn4ojo0fq95u41a60ec7f",
       "action": "plugin::users-permissions.auth.changePassword",
       "locale": null
