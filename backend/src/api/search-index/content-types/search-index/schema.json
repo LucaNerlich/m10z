@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "search_indices",
+  "info": {
+    "singularName": "search-index",
+    "pluralName": "search-indices",
+    "displayName": "Search Index"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "content": {
+      "type": "json",
+      "required": true
+    },
+    "version": {
+      "type": "biginteger",
+      "required": true,
+      "unique": true,
+      "min": "1"
+    }
+  }
+}

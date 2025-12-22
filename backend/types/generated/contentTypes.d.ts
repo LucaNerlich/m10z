@@ -732,6 +732,43 @@ export interface ApiPrivacyPrivacy extends Struct.SingleTypeSchema {
     };
 }
 
+export interface ApiSearchIndexSearchIndex extends Struct.SingleTypeSchema {
+    collectionName: 'search_indices';
+    info: {
+        displayName: 'Search Index';
+        pluralName: 'search-indices';
+        singularName: 'search-index';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        content: Schema.Attribute.JSON & Schema.Attribute.Required;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::search-index.search-index'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        version: Schema.Attribute.BigInteger &
+            Schema.Attribute.Required &
+            Schema.Attribute.Unique &
+            Schema.Attribute.SetMinMax<
+                {
+                    min: '1';
+                },
+                string
+            >;
+    };
+}
+
 export interface PluginContentReleasesRelease
     extends Struct.CollectionTypeSchema {
     collectionName: 'strapi_releases';
@@ -1259,6 +1296,7 @@ declare module '@strapi/strapi' {
             'api::imprint.imprint': ApiImprintImprint;
             'api::podcast.podcast': ApiPodcastPodcast;
             'api::privacy.privacy': ApiPrivacyPrivacy;
+            'api::search-index.search-index': ApiSearchIndexSearchIndex;
             'plugin::content-releases.release': PluginContentReleasesRelease;
             'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
             'plugin::i18n.locale': PluginI18NLocale;

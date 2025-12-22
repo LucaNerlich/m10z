@@ -1,110 +1,36 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import {fileURLToPath} from 'node:url';
-
-import {loadEnvConfig} from '@next/env';
-import qs from 'qs';
-
-import {type SearchIndexFile, type SearchRecord} from '@/src/lib/search/types';
-
-type StrapiPagination = {
-    page?: number;
-    pageSize?: number;
-    pageCount?: number;
-    total?: number;
-};
-
-type StrapiListResponse<T> = {
-    data: T[];
-    meta?: {
-        pagination?: StrapiPagination;
+type Strapi = {
+    documents: (
+        uid: string,
+    ) => {
+        findMany: (params?: Record<string, unknown>) => Promise<any>;
+        findFirst?: (params?: Record<string, unknown>) => Promise<any>;
+        update: (params: {documentId: string | number; data: Record<string, unknown>}) => Promise<any>;
+        create: (params: {data: Record<string, unknown>}) => Promise<any>;
     };
 };
 
-const projectRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-loadEnvConfig(projectRoot);
+type SearchRecordType = 'article' | 'podcast' | 'author' | 'category';
+
+type SearchRecord = {
+    id: string;
+    type: SearchRecordType;
+    slug: string;
+    title: string;
+    description?: string | null;
+    content?: string | null;
+    href: string;
+    publishedAt?: string | null;
+    tags: string[];
+};
+
+type SearchIndexFile = {
+    version: number;
+    generatedAt: string;
+    total: number;
+    records: SearchRecord[];
+};
 
 const PAGE_SIZE = 100;
-const OUTPUT_FILE = path.join(
-    path.dirname(fileURLToPath(import.meta.url)),
-    '..',
-    'public',
-    'index',
-    'search.json',
-);
-
-function getEnv(name: string): string | undefined {
-    const v = process.env[name];
-    return v && v.length > 0 ? v : undefined;
-}
-
-function getStrapiBaseUrl(): string {
-    const raw = getEnv('STRAPI_API_URL') ?? getEnv('NEXT_PUBLIC_STRAPI_URL');
-    if (!raw) {
-        throw new Error('Missing STRAPI_API_URL or NEXT_PUBLIC_STRAPI_URL');
-    }
-    const url = new URL(raw);
-    return url.toString().replace(/\/+$/, '');
-}
-
-function getAuthHeader(): Record<string, string> | undefined {
-    const token = getEnv('STRAPI_API_TOKEN');
-    if (token) {
-        return {Authorization: `Bearer ${token}`};
-    }
-    return undefined;
-}
-
-/**
- * Strapi sometimes wraps entries in {id, attributes}. This unwraps the common shape
- * while preserving id/documentId when present.
- */
-function unwrapEntry<T extends {id?: unknown; documentId?: unknown; attributes?: Record<string, unknown>}>(entry: T): any {
-    if (!entry) return entry;
-    if (entry.attributes && typeof entry.attributes === 'object') {
-        return {
-            id: (entry as any).id,
-            documentId: (entry as any).documentId,
-            ...entry.attributes,
-        };
-    }
-    return entry;
-}
-
-async function fetchPaginated<T>(apiPath: string, query: Record<string, unknown>, label: string): Promise<T[]> {
-    const baseUrl = getStrapiBaseUrl();
-    const headers = getAuthHeader();
-    const items: T[] = [];
-    let page = 1;
-
-    // Paginate until Strapi reports that all pages are exhausted.
-    while (true) {
-        const queryWithPagination = {
-            ...query,
-            pagination: {page, pageSize: PAGE_SIZE},
-        };
-        const queryString = qs.stringify(queryWithPagination, {encodeValuesOnly: true});
-        const url = new URL(`/api/${apiPath}?${queryString}`, baseUrl);
-
-        const res = await fetch(url.toString(), {headers});
-        if (!res.ok) {
-            throw new Error(`Failed to fetch ${label} page ${page}: ${res.status} ${res.statusText}`);
-        }
-
-        const json = (await res.json()) as StrapiListResponse<T>;
-        if (!Array.isArray(json.data)) {
-            throw new Error(`Unexpected ${label} response shape (missing data array)`);
-        }
-
-        items.push(...json.data);
-
-        const pageCount = json.meta?.pagination?.pageCount ?? 1;
-        if (page >= pageCount) break;
-        page += 1;
-    }
-
-    return items;
-}
 
 function safeText(value: unknown): string | undefined {
     if (typeof value === 'string' && value.trim().length > 0) return value;
@@ -117,6 +43,41 @@ function toPlainText(value: unknown): string | undefined {
     if (text.length === 0) return undefined;
     // Cap to avoid oversized records
     return text.slice(0, 5000);
+}
+
+function unwrapEntry<T extends {attributes?: Record<string, unknown>}>(entry: T): any {
+    if (!entry) return entry;
+    if (entry.attributes && typeof entry.attributes === 'object') {
+        return {...entry.attributes, id: (entry as any).id, documentId: (entry as any).documentId};
+    }
+    return entry;
+}
+
+async function fetchAllDocuments<T>(
+    strapi: Strapi,
+    uid: string,
+    params: Record<string, unknown>,
+): Promise<T[]> {
+    const items: T[] = [];
+    let page = 1;
+
+    while (true) {
+        const res = await strapi.documents(uid).findMany({
+            status: 'published',
+            pagination: {page, pageSize: PAGE_SIZE},
+            ...params,
+        });
+
+        const results: T[] = Array.isArray(res) ? res : res?.results ?? res?.data ?? [];
+        items.push(...results);
+
+        const pagination = res?.pagination ?? res?.meta?.pagination;
+        const pageCount = pagination?.pageCount ?? 1;
+        if (page >= pageCount) break;
+        page += 1;
+    }
+
+    return items;
 }
 
 function normalizeArticle(raw: any): SearchRecord | null {
@@ -217,12 +178,12 @@ function normalizeCategory(raw: any): SearchRecord | null {
     };
 }
 
-async function buildIndex(): Promise<SearchIndexFile> {
+async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
     const [articlesRaw, podcastsRaw, authorsRaw, categoriesRaw] = await Promise.all([
-        fetchPaginated(
-            'articles',
+        fetchAllDocuments(
+            strapi,
+            'api::article.article',
             {
-                status: 'published',
                 populate: {
                     base: {fields: ['title', 'description']},
                     categories: {populate: {base: {fields: ['title']}}, fields: ['slug']},
@@ -230,12 +191,11 @@ async function buildIndex(): Promise<SearchIndexFile> {
                 },
                 fields: ['slug', 'publishedAt', 'content'],
             },
-            'articles',
         ),
-        fetchPaginated(
-            'podcasts',
+        fetchAllDocuments(
+            strapi,
+            'api::podcast.podcast',
             {
-                status: 'published',
                 populate: {
                     base: {fields: ['title', 'description']},
                     categories: {populate: {base: {fields: ['title']}}, fields: ['slug']},
@@ -243,23 +203,21 @@ async function buildIndex(): Promise<SearchIndexFile> {
                 },
                 fields: ['slug', 'publishedAt', 'shownotes'],
             },
-            'podcasts',
         ),
-        fetchPaginated(
-            'authors',
+        fetchAllDocuments(
+            strapi,
+            'api::author.author',
             {
-                populate: ['avatar'],
                 fields: ['slug', 'title', 'description'],
             },
-            'authors',
         ),
-        fetchPaginated(
-            'categories',
+        fetchAllDocuments(
+            strapi,
+            'api::category.category',
             {
                 populate: {base: {fields: ['title', 'description']}},
                 fields: ['slug'],
             },
-            'categories',
         ),
     ]);
 
@@ -271,31 +229,45 @@ async function buildIndex(): Promise<SearchIndexFile> {
     ].filter(Boolean) as SearchRecord[];
 
     return {
-        version: 2,
+        version: 0,
         generatedAt: new Date().toISOString(),
         total: records.length,
         records,
     };
 }
 
-async function writeIndexFile(index: SearchIndexFile) {
-    const dir = path.dirname(OUTPUT_FILE);
-    await fs.mkdir(dir, {recursive: true});
-    const body = JSON.stringify(index, null, 2);
-    await fs.writeFile(OUTPUT_FILE, body, 'utf8');
-    // eslint-disable-next-line no-console
-    console.log(`Wrote ${index.records.length} records to ${OUTPUT_FILE}`);
+async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<SearchIndexFile> {
+    const svc = strapi.documents('api::search-index.search-index');
+    const existing = (await (svc.findFirst ? svc.findFirst() : svc.findMany({pagination: {pageSize: 1}}))) as any;
+    const current = Array.isArray(existing) ? existing[0] : existing?.results?.[0] ?? existing?.data?.[0] ?? existing;
+    const currentVersion = Number(current?.version) || 0;
+    const nextVersion = currentVersion + 1;
+
+    const payload = {...index, version: nextVersion};
+
+    if (current && (current.documentId || current.id)) {
+        await svc.update({
+            documentId: current.documentId ?? current.id,
+            data: {
+                content: payload,
+                version: nextVersion,
+            },
+        });
+        return payload;
+    }
+
+    await svc.create({
+        data: {
+            content: payload,
+            version: nextVersion,
+        },
+    });
+
+    return payload;
 }
 
-async function main() {
-    const index = await buildIndex();
-    await writeIndexFile(index);
+export async function buildAndPersistSearchIndex(strapi: Strapi): Promise<SearchIndexFile> {
+    const index = await buildIndex(strapi);
+    return await saveIndex(strapi, index);
 }
-
-main().catch((err) => {
-    // eslint-disable-next-line no-console
-    console.error('Failed to build search index', err);
-    process.exitCode = 1;
-});
-
 

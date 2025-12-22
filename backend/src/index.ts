@@ -1,13 +1,12 @@
-// import type { Core } from '@strapi/strapi';
-
 import { invalidateNext } from './utils/invalidateNextCache';
+import { buildAndPersistSearchIndex } from './services/searchIndexBuilder';
 
 export default {
     /**
      * Register middleware on the Document Service to invalidate
      * the Next.js frontend after successful mutations.
      */
-    register({ strapi }: { strapi: { documents: { use: Function } } }) {
+    register({ strapi }: { strapi: any }) {
         const publishTargets = new Map<string, 'articlefeed' | 'audiofeed'>([
             ['api::article.article', 'articlefeed'],
             ['api::podcast.podcast', 'audiofeed'],
@@ -18,6 +17,15 @@ export default {
             ['api::audio-feed.audio-feed', 'audiofeed'],
         ]);
 
+        const searchTargets = new Set<string>([
+            'api::article.article',
+            'api::podcast.podcast',
+            'api::author.author',
+            'api::category.category',
+        ]);
+
+        const rebuildActions = new Set<string>(['publish', 'update', 'delete', 'unpublish']);
+
         strapi.documents.use(async (context: { uid: string; action: string }, next: () => Promise<unknown>) => {
             // Run the core operation first; only invalidate on success.
             const result = await next();
@@ -26,6 +34,16 @@ export default {
                 await invalidateNext(publishTargets.get(context.uid)!);
             } else if (context.action === 'update' && updateTargets.has(context.uid)) {
                 await invalidateNext(updateTargets.get(context.uid)!);
+            }
+
+            if (rebuildActions.has(context.action) && searchTargets.has(context.uid)) {
+                try {
+                    await buildAndPersistSearchIndex(strapi);
+                    await invalidateNext('search-index');
+                } catch (err) {
+                    // eslint-disable-next-line no-console
+                    console.warn('Failed to rebuild search index', err);
+                }
             }
 
             return result;
@@ -39,6 +57,14 @@ export default {
      * This gives you an opportunity to set up your data model,
      * run jobs, or perform some special logic.
      */
-    bootstrap(/* { strapi }: { strapi: Core.Strapi } */) {
+    async bootstrap({ strapi }: { strapi: any }) {
+        try {
+            await buildAndPersistSearchIndex(strapi);
+            // eslint-disable-next-line no-console
+            console.log('Search index bootstrap completed');
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn('Search index bootstrap failed (will rebuild on next publish)', err);
+        }
     },
 };

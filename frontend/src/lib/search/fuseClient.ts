@@ -4,7 +4,7 @@ import Fuse from 'fuse.js';
 
 import {type SearchIndexFile, type SearchRecord} from './types';
 
-const INDEX_URL = '/index/search.json';
+const INDEX_URL = '/api/search-index';
 
 type SearchResult = SearchRecord & {score?: number | null};
 

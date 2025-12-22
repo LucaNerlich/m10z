@@ -42,7 +42,7 @@ export interface FetchStrapiOptions {
     tags?: string[];
 }
 
-function getStrapiApiBaseUrl(): URL {
+export function getStrapiApiBaseUrl(): URL {
     // Prefer server-only env var; fall back to NEXT_PUBLIC_* for local/dev convenience.
     const raw = process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL;
     if (!raw) {
