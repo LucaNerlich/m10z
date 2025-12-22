@@ -11,6 +11,29 @@ type StrapiSlugItem = {
 
 type SitemapEntry = {slug: string; lastModified?: string};
 
+function createLanguageAlternates(url: string) {
+    return {
+        languages: {
+            de: url,
+            'x-default': url,
+        },
+    };
+}
+
+function buildDynamicEntries(
+    entries: SitemapEntry[],
+    buildPath: (slug: string) => string,
+): MetadataRoute.Sitemap {
+    return entries.map(({slug, lastModified}) => {
+        const url = absoluteRoute(buildPath(slug));
+        return {
+            url,
+            lastModified,
+            alternates: createLanguageAlternates(url),
+        };
+    });
+}
+
 async function fetchPublishedSlugs(
     endpoint: string,
     tags: string[],
@@ -69,22 +92,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
 
     const dynamicEntries: MetadataRoute.Sitemap = [
-        ...articles.map(({slug, lastModified}) => ({
-            url: absoluteRoute(routes.article(slug)),
-            lastModified,
-        })),
-        ...podcasts.map(({slug, lastModified}) => ({
-            url: absoluteRoute(routes.podcast(slug)),
-            lastModified,
-        })),
-        ...categories.map(({slug, lastModified}) => ({
-            url: absoluteRoute(routes.category(slug)),
-            lastModified,
-        })),
-        ...authors.map(({slug, lastModified}) => ({
-            url: absoluteRoute(routes.author(slug)),
-            lastModified,
-        })),
+        ...buildDynamicEntries(articles, routes.article),
+        ...buildDynamicEntries(podcasts, routes.podcast),
+        ...buildDynamicEntries(categories, routes.category),
+        ...buildDynamicEntries(authors, routes.author),
     ];
 
     return [...staticEntries, ...dynamicEntries];
