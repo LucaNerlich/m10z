@@ -31,6 +31,15 @@ type SearchIndexFile = {
 };
 
 const PAGE_SIZE = 100;
+const DEFAULT_MAX_LEN = 5000;
+
+function getMaxLen(): number {
+    const raw = process.env.SEARCH_INDEX_MAX_LEN;
+    if (!raw) return DEFAULT_MAX_LEN;
+    const n = Number(raw);
+    if (Number.isFinite(n) && n > 0) return Math.min(n, 50_000);
+    return DEFAULT_MAX_LEN;
+}
 
 function safeText(value: unknown): string | undefined {
     if (typeof value === 'string' && value.trim().length > 0) return value;
@@ -42,7 +51,8 @@ function toPlainText(value: unknown): string | undefined {
     const text = value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     if (text.length === 0) return undefined;
     // Cap to avoid oversized records
-    return text.slice(0, 5000);
+    const maxLen = getMaxLen();
+    return text.slice(0, maxLen);
 }
 
 function unwrapEntry<T extends {attributes?: Record<string, unknown>}>(entry: T): any {
