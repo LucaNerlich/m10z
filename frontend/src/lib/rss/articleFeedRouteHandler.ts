@@ -1,6 +1,7 @@
 import qs from 'qs';
 
 import {generateArticleFeedXml, type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/rss/articlefeed';
+import {filterPublished} from '@/src/lib/rss/publishDate';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {
     buildRssHeaders,
@@ -33,6 +34,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
     const pageSize = 100;
     let page = 1;
     const all: StrapiArticle[] = [];
+    const now = Date.now();
 
     while (true) {
         const query = qs.stringify(
@@ -80,7 +82,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
         page++;
     }
 
-    return all.filter((a) => Boolean((a as StrapiArticle).publishDate ?? (a as StrapiArticle).publishedAt));
+    return filterPublished(all, (a) => a.publishDate ?? a.publishedAt, now);
 }
 
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {

@@ -9,6 +9,7 @@ import {
     type StrapiMedia,
     type StrapiMediaRef,
 } from '@/src/lib/rss/media';
+import {filterPublished} from '@/src/lib/rss/publishDate';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
 export type StrapiPodcast = {
@@ -110,12 +111,13 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, strapiUrl: str
         mediaUrlToAbsolute({media: coverMedia, strapiUrl}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
-    const md = (episode.shownotes ?? episode.base.description ?? '').toString();
-    const html = markdownToHtml(md);
-    const cdata = escapeCdata(html);
+    // Prepare and Sanitize Content
+    // const description = escapeCdata(episode.base.description ?? '');
+    const shownotes = (episode.shownotes ?? '').toString();
+    const html = markdownToHtml(shownotes);
+    const cdataShownotes = escapeCdata(html);
 
-    // Preserve existing “link” pattern as much as possible: legacy feed links are top-level `/${slug}`.
-    const link = `${cfg.siteUrl.replace(/\/+$/, '')}/${encodeURIComponent(episode.slug)}`;
+    const link = `${cfg.siteUrl.replace(/\/+$/, '')}/podcast/${encodeURIComponent(episode.slug)}`;
 
     const guid = sha256Hex(enclosureUrl);
 
@@ -126,7 +128,7 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, strapiUrl: str
         `            <lastBuildDate>${pubDate}</lastBuildDate>` +
         `            <guid isPermaLink="false">${guid}</guid>` +
         `            <itunes:image href="${escapeXml(itunesImageHref)}"/>` +
-        `            <description><![CDATA[${cdata}]]></description>` +
+        `            <description><![CDATA[${cdataShownotes}]]></description>` +
         `            <author>${escapeXml(cfg.authorEmail)}</author>` +
         `            <itunes:explicit>${cfg.itunesExplicit}</itunes:explicit>` +
         `            <link>${escapeXml(link)}</link>` +
@@ -144,12 +146,14 @@ export function generateAudioFeedXml(args: {
 }): {xml: string; etagSeed: string; lastModified: Date | null} {
     const {cfg, strapiUrl, channel, episodes} = args;
 
+    const nowTs = Date.now();
+    const published = filterPublished(episodes, (ep) => ep.publishDate ?? ep.publishedAt, nowTs);
     const channelImage = normalizeStrapiMedia(channel.image);
     const channelImageUrl =
         mediaUrlToAbsolute({media: channelImage, strapiUrl}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
-    const sorted = [...episodes].sort((a, b) => {
+    const sorted = [...published].sort((a, b) => {
         const adRaw = a.publishDate ?? a.publishedAt;
         const bdRaw = b.publishDate ?? b.publishedAt;
         const ad = adRaw ? new Date(adRaw).getTime() : 0;

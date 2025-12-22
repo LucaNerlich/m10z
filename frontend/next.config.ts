@@ -16,8 +16,11 @@ const nextConfig: NextConfig = {
         dangerouslyAllowLocalIP: true,
         remotePatterns: [
             {protocol: 'http', hostname: 'localhost', port: '1337'},
-            {protocol: 'https', hostname: 'm10z'},
-            {protocol: 'https', hostname: 'api.m10z'},
+            {protocol: 'https', hostname: 'irgendwasmitkunden.de'},
+            {protocol: 'https', hostname: 'picnotes.de'},
+            {protocol: 'https', hostname: 'lucanerlich.com'},
+            {protocol: 'https', hostname: 'm10z.de'},
+            {protocol: 'https', hostname: 'api.m10z.de'},
         ],
     },
     async redirects() {

@@ -6,6 +6,7 @@ import {
     type StrapiAudioFeedSingle,
     type StrapiPodcast,
 } from '@/src/lib/rss/audiofeed';
+import {filterPublished} from '@/src/lib/rss/publishDate';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {
     buildRssHeaders,
@@ -38,6 +39,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     const pageSize = 100;
     let page = 1;
     const all: StrapiPodcast[] = [];
+    const now = Date.now();
 
     while (true) {
         const query = qs.stringify(
@@ -90,7 +92,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     }
 
     // Only published episodes should be in the public feed.
-    return all.filter((p) => Boolean(p.publishDate ?? p.publishedAt));
+    return filterPublished(all, (p) => p.publishDate ?? p.publishedAt, now);
 }
 
 async function fetchAudioFeedSingle(): Promise<StrapiAudioFeedSingle> {
