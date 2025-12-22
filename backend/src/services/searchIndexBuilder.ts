@@ -46,6 +46,13 @@ function safeText(value: unknown): string | undefined {
     return undefined;
 }
 
+function sanitizeText(value: unknown): string | undefined {
+    const text = safeText(value);
+    if (!text) return undefined;
+    const cleaned = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    return cleaned.length > 0 ? cleaned : undefined;
+}
+
 function toPlainText(value: unknown): string | undefined {
     if (typeof value !== 'string') return undefined;
     const text = value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -93,18 +100,21 @@ async function fetchAllDocuments<T>(
 function normalizeArticle(raw: any): SearchRecord | null {
     const article = unwrapEntry(raw);
     const slug = safeText(article?.slug);
-    const title = safeText(article?.base?.title);
+    const title = sanitizeText(article?.base?.title);
     if (!slug || !title) return null;
 
-    const description = safeText(article?.base?.description) ?? null;
+    const description = sanitizeText(article?.base?.description) ?? null;
     const content = toPlainText(article?.content) ?? null;
     const categories: string[] =
         article?.categories
             ?.map((c: any) => unwrapEntry(c))
-            ?.map((c: any) => safeText(c?.base?.title) ?? safeText(c?.slug))
+            ?.map((c: any) => sanitizeText(c?.base?.title) ?? sanitizeText(c?.slug))
             ?.filter(Boolean) ?? [];
     const authors: string[] =
-        article?.authors?.map((a: any) => unwrapEntry(a)).map((a: any) => safeText(a?.title) ?? safeText(a?.slug)).filter(Boolean) ??
+        article?.authors
+            ?.map((a: any) => unwrapEntry(a))
+            .map((a: any) => sanitizeText(a?.title) ?? sanitizeText(a?.slug))
+            .filter(Boolean) ??
         [];
 
     return {
@@ -123,18 +133,21 @@ function normalizeArticle(raw: any): SearchRecord | null {
 function normalizePodcast(raw: any): SearchRecord | null {
     const podcast = unwrapEntry(raw);
     const slug = safeText(podcast?.slug);
-    const title = safeText(podcast?.base?.title);
+    const title = sanitizeText(podcast?.base?.title);
     if (!slug || !title) return null;
 
-    const description = safeText(podcast?.base?.description) ?? null;
+    const description = sanitizeText(podcast?.base?.description) ?? null;
     const content = toPlainText(podcast?.shownotes) ?? null;
     const categories: string[] =
         podcast?.categories
             ?.map((c: any) => unwrapEntry(c))
-            ?.map((c: any) => safeText(c?.base?.title) ?? safeText(c?.slug))
+            ?.map((c: any) => sanitizeText(c?.base?.title) ?? sanitizeText(c?.slug))
             ?.filter(Boolean) ?? [];
     const authors: string[] =
-        podcast?.authors?.map((a: any) => unwrapEntry(a)).map((a: any) => safeText(a?.title) ?? safeText(a?.slug)).filter(Boolean) ??
+        podcast?.authors
+            ?.map((a: any) => unwrapEntry(a))
+            .map((a: any) => sanitizeText(a?.title) ?? sanitizeText(a?.slug))
+            .filter(Boolean) ??
         [];
 
     return {
@@ -153,10 +166,10 @@ function normalizePodcast(raw: any): SearchRecord | null {
 function normalizeAuthor(raw: any): SearchRecord | null {
     const author = unwrapEntry(raw);
     const slug = safeText(author?.slug);
-    const title = safeText(author?.title);
+    const title = sanitizeText(author?.title);
     if (!slug || !title) return null;
 
-    const description = safeText(author?.description) ?? null;
+    const description = sanitizeText(author?.description) ?? null;
 
     return {
         id: `author:${slug}`,
@@ -165,17 +178,17 @@ function normalizeAuthor(raw: any): SearchRecord | null {
         title,
         description,
         href: `/team/${encodeURIComponent(slug)}`,
-        tags: ['Autor'],
+        tags: ['AutorIn'],
     };
 }
 
 function normalizeCategory(raw: any): SearchRecord | null {
     const category = unwrapEntry(raw);
     const slug = safeText(category?.slug);
-    const title = safeText(category?.base?.title) ?? safeText(category?.title) ?? slug;
+    const title = sanitizeText(category?.base?.title) ?? sanitizeText(category?.title) ?? slug;
     if (!slug || !title) return null;
 
-    const description = safeText(category?.base?.description) ?? null;
+    const description = sanitizeText(category?.base?.description) ?? null;
 
     return {
         id: `category:${slug}`,
