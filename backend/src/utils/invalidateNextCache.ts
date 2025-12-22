@@ -16,7 +16,7 @@ function getEnv(name: string): string | undefined {
 
 function getNextBaseUrl(): string {
     // Prefer explicit URL, fall back for local dev.
-    return (getEnv('NEXT_SITE_URL') ?? 'http://localhost:3000').replace(/\/+$/, '');
+    return (getEnv('FRONTEND_URL') ?? 'http://localhost:3000').replace(/\/+$/, '');
 }
 
 function getSecret(): string | undefined {
