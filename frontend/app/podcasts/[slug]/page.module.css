@@ -1,0 +1,22 @@
+.page {
+    padding: 24px 0;
+}
+
+.meta {
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+}
+
+.title {
+    margin: 0 0 12px;
+}
+
+.description {
+    margin: 0 0 16px;
+    color: var(--color-text-muted);
+}
+
+.player {
+    margin: 12px 0 20px;
+}
+

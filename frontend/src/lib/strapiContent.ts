@@ -15,6 +15,31 @@ type FetchOptions = {
     revalidate?: number;
 };
 
+export type PaginationMeta = {
+    page: number;
+    pageSize: number;
+    pageCount: number;
+    total: number;
+};
+
+export type PaginatedResult<T> = {
+    items: T[];
+    pagination: PaginationMeta;
+    hasNextPage: boolean;
+};
+
+type FetchListOptions = {
+    limit?: number;
+    tags?: string[];
+};
+
+type FetchPageOptions = {
+    page?: number;
+    pageSize?: number;
+    tags?: string[];
+    revalidate?: number;
+};
+
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
     const url = new URL(pathWithQuery, STRAPI_URL);
     const res = await fetch(url.toString(), {
@@ -27,6 +52,44 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
         throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
     }
     return (await res.json()) as T;
+}
+
+function normalizePagination(
+    meta: {pagination?: Partial<PaginationMeta>} | undefined,
+    fallbackPage: number,
+    fallbackPageSize: number,
+): PaginationMeta {
+    const raw = meta?.pagination ?? {};
+    const page = Number.isFinite(raw.page) ? Math.max(1, Math.floor(raw.page as number)) : fallbackPage;
+    const pageSize =
+        Number.isFinite(raw.pageSize) && (raw.pageSize as number) > 0
+            ? Math.min(200, Math.floor(raw.pageSize as number))
+            : fallbackPageSize;
+    const totalRaw = Number.isFinite(raw.total) ? Math.max(0, Math.floor(raw.total as number)) : 0;
+    const pageCountRaw =
+        Number.isFinite(raw.pageCount) && (raw.pageCount as number) > 0
+            ? Math.floor(raw.pageCount as number)
+            : pageSize > 0
+                ? Math.max(1, Math.ceil(totalRaw / pageSize))
+                : 1;
+
+    return {
+        page,
+        pageSize,
+        total: totalRaw,
+        pageCount: pageCountRaw,
+    };
+}
+
+function toPaginatedResult<T>(
+    res: {data?: T[]; meta?: {pagination?: Partial<PaginationMeta>}},
+    requestedPage: number,
+    requestedPageSize: number,
+): PaginatedResult<T> {
+    const pagination = normalizePagination(res.meta, requestedPage, requestedPageSize);
+    const items = res.data ?? [];
+    const hasNextPage = pagination.page < pagination.pageCount;
+    return {items, pagination, hasNextPage};
 }
 
 export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | null> {
@@ -84,11 +147,6 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
     return res.data?.[0] ?? null;
 }
 
-type FetchListOptions = {
-    limit?: number;
-    tags?: string[];
-};
-
 export type StrapiCategoryWithContent = {
     id: number;
     slug: string;
@@ -124,50 +182,25 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
 };
 
 export async function fetchArticlesList(options: FetchListOptions = {}): Promise<StrapiArticle[]> {
-    'use cache'
     const limit = options.limit ?? 100;
-    const query = qs.stringify(
-        {
-            sort: ['publishedAt:desc'],
-            status: 'published',
-            pagination: {pageSize: limit, page: 1},
-            populate: {
-                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
-            },
-            fields: ['slug', 'content', 'publishedAt'],
-        },
-        {encodeValuesOnly: true},
-    );
-
-    const res = await fetchJson<{data: StrapiArticle[]}>(
-        `/api/articles?${query}`,
-        {tags: options.tags ?? ['strapi:article', 'strapi:article:list']},
-    );
-    return res.data ?? [];
+    const paginated = await fetchArticlesPage({
+        page: 1,
+        pageSize: limit,
+        tags: options.tags ?? ['strapi:article', 'strapi:article:list'],
+        revalidate: undefined,
+    });
+    return paginated.items;
 }
 
 export async function fetchPodcastsList(options: FetchListOptions = {}): Promise<StrapiPodcast[]> {
-    'use cache'
     const limit = options.limit ?? 100;
-    const query = qs.stringify(
-        {
-            sort: ['publishedAt:desc'],
-            status: 'published',
-            pagination: {pageSize: limit, page: 1},
-            populate: {
-                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
-                file: {populate: '*'},
-            },
-            fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
-        },
-        {encodeValuesOnly: true},
-    );
-
-    const res = await fetchJson<{data: StrapiPodcast[]}>(
-        `/api/podcasts?${query}`,
-        {tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list']},
-    );
-    return res.data ?? [];
+    const paginated = await fetchPodcastsPage({
+        page: 1,
+        pageSize: limit,
+        tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list'],
+        revalidate: undefined,
+    });
+    return paginated.items;
 }
 
 export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthor[]> {
@@ -235,5 +268,72 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
         {tags: options.tags ?? ['strapi:category', 'strapi:category:list']},
     );
     return res.data ?? [];
+}
+
+export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> {
+    'use cache'
+    const page = Math.max(1, Math.floor(options.page ?? 1));
+    const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
+
+    const query = qs.stringify(
+        {
+            sort: ['publishedAt:desc'],
+            status: 'published',
+            pagination: {pageSize, page},
+            populate: {
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
+                categories: {
+                    populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
+                    fields: ['slug'],
+                },
+            },
+            fields: ['slug', 'content', 'publishedAt'],
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiArticle[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
+        `/api/articles?${query}`,
+        {
+            tags: options.tags ?? ['strapi:article', 'strapi:article:list:page'],
+            revalidate: options.revalidate,
+        },
+    );
+
+    return toPaginatedResult(res, page, pageSize);
+}
+
+export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> {
+    'use cache'
+    const page = Math.max(1, Math.floor(options.page ?? 1));
+    const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
+
+    const query = qs.stringify(
+        {
+            sort: ['publishedAt:desc'],
+            status: 'published',
+            pagination: {pageSize, page},
+            populate: {
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
+                categories: {
+                    populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
+                    fields: ['slug'],
+                },
+                file: {populate: '*'},
+            },
+            fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiPodcast[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
+        `/api/podcasts?${query}`,
+        {
+            tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list:page'],
+            revalidate: options.revalidate,
+        },
+    );
+
+    return toPaginatedResult(res, page, pageSize);
 }
 
