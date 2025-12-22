@@ -18,22 +18,23 @@ const DOMPurify = createDOMPurify(window as any);
 
 const ALLOWED_TAGS = [
     'a',
-    'p',
-    'br',
-    'ul',
-    'ol',
-    'li',
-    'strong',
-    'em',
-    'code',
-    'pre',
     'blockquote',
+    'br',
+    'code',
+    'em',
     'h1',
     'h2',
     'h3',
     'h4',
     'h5',
     'h6',
+    'img',
+    'li',
+    'ol',
+    'p',
+    'pre',
+    'strong',
+    'ul',
 ];
 
 const ALLOWED_ATTR = ['href', 'title', 'rel', 'target'];
@@ -47,14 +48,12 @@ export function markdownToHtml(markdownText: string): string {
         breaks: true,
     }) as string;
 
-    const clean = DOMPurify.sanitize(rawHtml, {
+    return DOMPurify.sanitize(rawHtml, {
         ALLOWED_TAGS,
         ALLOWED_ATTR,
         // Disallow data: and javascript: URLs; allow http(s) + mailto.
         ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
     });
-
-    return clean;
 }
 
 

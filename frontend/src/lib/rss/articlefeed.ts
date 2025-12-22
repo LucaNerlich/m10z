@@ -70,7 +70,7 @@ export function generateArticleFeedXml(args: {
 
             // Prepare and Sanitize Content
             const title = escapeXml(a.base.title);
-            const description = escapeCdata(a.base.description ?? '');
+            const description = a.base.description ?? '';
             const html = markdownToHtml(a.content ?? '');
             const cdataContent = escapeCdata(html);
 
@@ -82,7 +82,7 @@ export function generateArticleFeedXml(args: {
                 `      <link>${escapeXml(link)}</link>` +
                 `      <guid isPermaLink="false">${guid}</guid>` +
                 `      <pubDate>${formatRssDate(pub)}</pubDate>` +
-                `      <description><![CDATA[${description}]]></description>` +
+                `      <description>${description}></description>` +
                 `      <content:encoded><![CDATA[${cdataContent}]]></content:encoded>` +
                 (bannerUrl
                     ? `      <enclosure url="${escapeXml(bannerUrl)}" type="${escapeXml(bannerMedia?.mime ?? 'image/jpeg')}"/>`
