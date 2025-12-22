@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import {Suspense} from 'react';
 
+import {Tag} from '@/src/components/Tag';
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
@@ -187,13 +188,9 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                 </div>
                                 <div className={styles.cardBody}>
                                     <div className={styles.metaRow}>
-                                        <span
-                                            className={`${styles.badge} ${
-                                                item.type === 'article' ? styles.badgeArticle : styles.badgePodcast
-                                            }`}
-                                        >
+                                        <Tag className={styles.metaTag}>
                                             {item.type === 'article' ? 'Artikel' : 'Podcast'}
-                                        </span>
+                                        </Tag>
                                         <time className={styles.date}>{formatDate(item.publishedAt)}</time>
                                     </div>
                                     <h2 className={styles.cardTitle}>

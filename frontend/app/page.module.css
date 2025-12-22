@@ -131,23 +131,9 @@
     flex-wrap: wrap;
 }
 
-.badge {
-    display: inline-flex;
-    align-items: center;
+.metaTag {
     padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
     font-weight: 700;
-}
-
-.badgeArticle {
-    background: var(--color-primary-soft);
-    color: var(--color-on-primary);
-}
-
-.badgePodcast {
-    background: var(--color-surface-strong);
-    color: var(--color-text);
 }
 
 .date {

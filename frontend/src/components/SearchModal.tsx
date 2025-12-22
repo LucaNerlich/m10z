@@ -6,6 +6,7 @@ import {useRouter} from 'next/navigation';
 import {searchIndex} from '@/src/lib/search/fuseClient';
 import {type SearchRecord} from '@/src/lib/search/types';
 
+import {Tag} from './Tag';
 import styles from './SearchModal.module.css';
 
 type SearchModalProps = {
@@ -138,16 +139,16 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                             aria-selected={idx === activeIndex}
                         >
                             <div className={styles.resultHeader}>
-                                <span className={styles.typeBadge}>{TYPE_LABEL[item.type]}</span>
+                                <Tag className={styles.typeBadge}>{TYPE_LABEL[item.type]}</Tag>
                                 <span className={styles.title}>{item.title}</span>
                             </div>
                             {item.description ? <p className={styles.description}>{item.description}</p> : null}
                             {item.tags?.length ? (
                                 <div className={styles.tags}>
                                     {item.tags.map((tag) => (
-                                        <span key={tag} className={styles.tag}>
+                                        <Tag key={tag} className={styles.tag}>
                                             {tag}
-                                        </span>
+                                        </Tag>
                                     ))}
                                 </div>
                             ) : null}

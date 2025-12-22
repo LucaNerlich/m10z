@@ -93,15 +93,9 @@
 }
 
 .typeBadge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: var(--color-surface-strong);
-    color: var(--color-text-subtle);
-    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.4px;
+    font-weight: 700;
 }
 
 .title {
@@ -124,11 +118,7 @@
 }
 
 .tag {
-    background: var(--color-surface-strong);
-    border-radius: 8px;
-    padding: 2px 8px;
-    color: var(--color-text-subtle);
-    font-size: 12px;
+    font-weight: 600;
 }
 
 @media (max-width: 600px) {
