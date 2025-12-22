@@ -4,7 +4,7 @@ export default {
     config: {
         locales: [
             'de',
-            'en'
+            'en',
         ],
     },
     bootstrap(app: StrapiApp) {

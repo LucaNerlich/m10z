@@ -1,31 +1,31 @@
 {
-  "collectionName": "components_single_type_base_feeds",
-  "info": {
-    "displayName": "BaseFeed",
-    "icon": "layer"
-  },
-  "options": {},
-  "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
+    "collectionName": "components_single_type_base_feeds",
+    "info": {
+        "displayName": "BaseFeed",
+        "icon": "layer"
     },
-    "description": {
-      "type": "text",
-      "required": true
+    "options": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text",
+            "required": true
+        },
+        "mail": {
+            "type": "email",
+            "required": true
+        },
+        "image": {
+            "type": "media",
+            "multiple": false,
+            "required": true,
+            "allowedTypes": [
+                "images"
+            ]
+        }
     },
-    "mail": {
-      "type": "email",
-      "required": true
-    },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": true,
-      "allowedTypes": [
-        "images"
-      ]
-    }
-  },
-  "config": {}
+    "config": {}
 }

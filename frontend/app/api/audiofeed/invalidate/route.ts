@@ -1,4 +1,4 @@
-import {revalidatePath, revalidateTag, updateTag} from 'next/cache';
+import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';

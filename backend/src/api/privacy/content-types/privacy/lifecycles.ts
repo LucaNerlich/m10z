@@ -1,8 +1,8 @@
-import { invalidateNext } from '../../../../utils/invalidateNextCache';
+import {invalidateNext} from '../../../../utils/invalidateNextCache';
 
 export default {
-  async afterUpdate(_event: any) {
-    await invalidateNext('legal');
-  },
+    async afterUpdate(_event: any) {
+        await invalidateNext('legal');
+    },
 };
 

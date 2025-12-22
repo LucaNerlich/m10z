@@ -93,7 +93,7 @@ function toPaginatedResult<T>(
 }
 
 export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | null> {
-    'use cache'
+    'use cache';
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -120,7 +120,7 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
 }
 
 export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | null> {
-    'use cache'
+    'use cache';
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -204,7 +204,7 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
 }
 
 export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthor[]> {
-    'use cache'
+    'use cache';
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -224,7 +224,7 @@ export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<
 }
 
 export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithContent | null> {
-    'use cache'
+    'use cache';
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -247,7 +247,7 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
 }
 
 export async function fetchCategoriesWithContent(options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> {
-    'use cache'
+    'use cache';
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -271,7 +271,7 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
 }
 
 export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> {
-    'use cache'
+    'use cache';
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
 
@@ -304,7 +304,7 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
 }
 
 export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> {
-    'use cache'
+    'use cache';
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
 

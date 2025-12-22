@@ -1,21 +1,21 @@
 {
-  "kind": "singleType",
-  "collectionName": "article_feeds",
-  "info": {
-    "singularName": "article-feed",
-    "pluralName": "article-feeds",
-    "displayName": "Text Feed"
-  },
-  "options": {
-    "draftAndPublish": false
-  },
-  "pluginOptions": {},
-  "attributes": {
-    "channel": {
-      "type": "component",
-      "component": "single-type.base-feed",
-      "repeatable": false,
-      "required": true
+    "kind": "singleType",
+    "collectionName": "article_feeds",
+    "info": {
+        "singularName": "article-feed",
+        "pluralName": "article-feeds",
+        "displayName": "Text Feed"
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "channel": {
+            "type": "component",
+            "component": "single-type.base-feed",
+            "repeatable": false,
+            "required": true
+        }
     }
-  }
 }

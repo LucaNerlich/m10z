@@ -1,4 +1,4 @@
-'use cache'
+'use cache';
 
 import Link from 'next/link';
 
