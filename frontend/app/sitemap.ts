@@ -34,6 +34,16 @@ function buildDynamicEntries(
     });
 }
 
+function buildStaticEntries(urls: string[]): MetadataRoute.Sitemap {
+    return urls.map((url) => {
+        const absoluteUrl = absoluteRoute(url);
+        return {
+            url: absoluteUrl,
+            alternates: createLanguageAlternates(absoluteUrl),
+        };
+    });
+}
+
 async function fetchPublishedSlugs(
     endpoint: string,
     tags: string[],
@@ -79,17 +89,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         fetchPublishedSlugs('authors', ['sitemap:authors']),
     ]);
 
-    const staticEntries: MetadataRoute.Sitemap = [
-        {url: absoluteRoute(routes.home)},
-        {url: absoluteRoute(routes.imprint)},
-        {url: absoluteRoute(routes.privacy)},
-        {url: absoluteRoute(routes.articles)},
-        {url: absoluteRoute(routes.podcasts)},
-        {url: absoluteRoute(routes.categories)},
-        {url: absoluteRoute(routes.authors)},
-        {url: absoluteRoute(routes.audioFeed)},
-        {url: absoluteRoute(routes.articleFeed)},
-    ];
+    const staticEntries = buildStaticEntries([
+        routes.home,
+        routes.imprint,
+        routes.privacy,
+        routes.articles,
+        routes.podcasts,
+        routes.categories,
+        routes.authors,
+        routes.audioFeed,
+        routes.articleFeed,
+    ]);
 
     const dynamicEntries: MetadataRoute.Sitemap = [
         ...buildDynamicEntries(articles, routes.article),
