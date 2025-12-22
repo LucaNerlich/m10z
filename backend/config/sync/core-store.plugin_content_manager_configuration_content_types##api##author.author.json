@@ -21,8 +21,8 @@
       },
       "slug": {
         "edit": {
-          "label": "slug",
-          "description": "",
+          "label": "Slug",
+          "description": "URL Identifier",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -35,11 +35,11 @@
       },
       "podcasts": {
         "edit": {
-          "label": "podcasts",
+          "label": "Podcasts",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
+          "editable": false,
           "mainField": "slug"
         },
         "list": {
@@ -50,11 +50,11 @@
       },
       "articles": {
         "edit": {
-          "label": "articles",
+          "label": "Articles",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
+          "editable": false,
           "mainField": "slug"
         },
         "list": {
@@ -65,42 +65,42 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Name",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "title",
+          "label": "Name",
           "searchable": true,
           "sortable": true
         }
       },
       "description": {
         "edit": {
-          "label": "description",
+          "label": "Description",
           "description": "",
-          "placeholder": "",
+          "placeholder": "Liebt trashige Getränke, Videospiele aus der Grabbelkiste und Debatten über Politik",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "description",
+          "label": "Description",
           "searchable": true,
           "sortable": true
         }
       },
       "avatar": {
         "edit": {
-          "label": "avatar",
+          "label": "Avatar Image",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "avatar",
+          "label": "Avatar",
           "searchable": false,
           "sortable": false
         }
@@ -128,7 +128,7 @@
           "editable": true
         },
         "list": {
-          "label": "updatedAt",
+          "label": "Updated At",
           "searchable": true,
           "sortable": true
         }
@@ -206,10 +206,10 @@
         ]
       ],
       "list": [
-        "slug",
+        "title",
         "updatedAt",
-        "createdBy",
-        "title"
+        "avatar",
+        "description"
       ]
     },
     "uid": "api::author.author"

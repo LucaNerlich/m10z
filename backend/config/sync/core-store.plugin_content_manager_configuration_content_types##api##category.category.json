@@ -7,14 +7,14 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "slug",
-      "defaultSortBy": "updatedAt",
-      "defaultSortOrder": "DESC"
+      "defaultSortOrder": "ASC",
+      "defaultSortBy": "slug"
     },
     "metadatas": {
       "id": {
         "edit": {},
         "list": {
-          "label": "id",
+          "label": "Id",
           "searchable": true,
           "sortable": true
         }
@@ -28,32 +28,32 @@
           "editable": true
         },
         "list": {
-          "label": "title",
+          "label": "Title",
           "searchable": false,
-          "sortable": false
+          "sortable": true
         }
       },
       "slug": {
         "edit": {
-          "label": "slug",
-          "description": "",
+          "label": "Slug",
+          "description": "URL Identifier",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "slug",
+          "label": "URL Identifier",
           "searchable": true,
           "sortable": true
         }
       },
       "articles": {
         "edit": {
-          "label": "articles",
+          "label": "Articles",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
+          "editable": false,
           "mainField": "slug"
         },
         "list": {
@@ -64,11 +64,11 @@
       },
       "podcasts": {
         "edit": {
-          "label": "podcasts",
+          "label": "Podcasts",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
+          "editable": false,
           "mainField": "slug"
         },
         "list": {
@@ -145,12 +145,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy",
-        "slug"
-      ],
       "edit": [
         [
           {
@@ -174,6 +168,11 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "slug",
+        "base"
       ]
     },
     "uid": "api::category.category"

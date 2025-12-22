@@ -28,15 +28,15 @@
           "editable": true
         },
         "list": {
-          "label": "title",
+          "label": "Title",
           "searchable": false,
-          "sortable": false
+          "sortable": true
         }
       },
       "slug": {
         "edit": {
-          "label": "slug",
-          "description": "",
+          "label": "Slug",
+          "description": "URL Identifier",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -49,7 +49,7 @@
       },
       "file": {
         "edit": {
-          "label": "file",
+          "label": "Audio File",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -63,9 +63,9 @@
       },
       "duration": {
         "edit": {
-          "label": "duration",
-          "description": "Folgendauer in Sekunden",
-          "placeholder": "",
+          "label": "Duration",
+          "description": "Audiofile duration in Seconds",
+          "placeholder": "2567",
           "visible": true,
           "editable": true
         },
@@ -77,8 +77,8 @@
       },
       "shownotes": {
         "edit": {
-          "label": "shownotes",
-          "description": "",
+          "label": "Shownotes",
+          "description": "Episode Description or Shownotes",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -114,7 +114,7 @@
           "mainField": "slug"
         },
         "list": {
-          "label": "categories",
+          "label": "Categories",
           "searchable": false,
           "sortable": false
         }
@@ -142,7 +142,7 @@
           "editable": true
         },
         "list": {
-          "label": "updatedAt",
+          "label": "Updated At",
           "searchable": true,
           "sortable": true
         }
@@ -187,12 +187,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "createdBy",
-        "authors"
-      ],
       "edit": [
         [
           {
@@ -232,6 +226,11 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "base",
+        "updatedAt",
+        "categories"
       ]
     },
     "uid": "api::podcast.podcast"

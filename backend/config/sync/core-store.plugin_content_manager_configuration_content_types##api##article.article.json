@@ -28,15 +28,15 @@
           "editable": true
         },
         "list": {
-          "label": "title",
+          "label": "Title",
           "searchable": false,
           "sortable": false
         }
       },
       "slug": {
         "edit": {
-          "label": "slug",
-          "description": "",
+          "label": "Slug",
+          "description": "URL Identifier",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -49,8 +49,8 @@
       },
       "content": {
         "edit": {
-          "label": "content",
-          "description": "",
+          "label": "Content",
+          "description": "Blog Content in Markdown",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -63,7 +63,7 @@
       },
       "authors": {
         "edit": {
-          "label": "AutorInnen",
+          "label": "Authors",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -78,15 +78,15 @@
       },
       "categories": {
         "edit": {
-          "label": "Kategorien",
-          "description": "Erste Kategorie bestimmt das verwendete Bild",
+          "label": "Catgories",
+          "description": "First Categories Images will be used",
           "placeholder": "",
           "visible": true,
           "editable": true,
           "mainField": "slug"
         },
         "list": {
-          "label": "categories",
+          "label": "Categories",
           "searchable": false,
           "sortable": false
         }
@@ -162,8 +162,7 @@
       "list": [
         "base",
         "updatedAt",
-        "createdBy",
-        "slug"
+        "categories"
       ],
       "edit": [
         [

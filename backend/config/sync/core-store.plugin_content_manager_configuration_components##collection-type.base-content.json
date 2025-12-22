@@ -35,8 +35,8 @@
       },
       "description": {
         "edit": {
-          "label": "description",
-          "description": "",
+          "label": "Description",
+          "description": "Short Description or Teaser Text",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -50,7 +50,7 @@
       "cover": {
         "edit": {
           "label": "Cover",
-          "description": "1/1 Bild",
+          "description": "1/1 Image (Overwrite First Category)",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -64,7 +64,7 @@
       "banner": {
         "edit": {
           "label": "Banner",
-          "description": "16/9 Bild",
+          "description": "16/9 Image (Overwrite First Category)",
           "placeholder": "",
           "visible": true,
           "editable": true
