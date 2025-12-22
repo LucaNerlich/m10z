@@ -91,20 +91,6 @@
           "sortable": false
         }
       },
-      "publishDate": {
-        "edit": {
-          "label": "publishDate",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "publishDate",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -205,12 +191,6 @@
           },
           {
             "name": "categories",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "publishDate",
             "size": 6
           }
         ]
