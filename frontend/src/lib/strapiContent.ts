@@ -16,7 +16,6 @@ type FetchOptions = {
 };
 
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
-    'use cache'
     const url = new URL(pathWithQuery, STRAPI_URL);
     const res = await fetch(url.toString(), {
         next: {
@@ -35,6 +34,7 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
+            status: 'published',
             populate: {
                 base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
                 authors: {populate: ['avatar'], fields: ['title', 'slug', 'description']},
@@ -43,7 +43,7 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
                     fields: ['slug'],
                 },
             },
-            fields: ['slug', 'content', 'publishDate', 'publishedAt'],
+            fields: ['slug', 'content', 'publishedAt'],
             pagination: {pageSize: 1},
         },
         {encodeValuesOnly: true},
@@ -61,6 +61,7 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
+            status: 'published',
             populate: {
                 base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
                 authors: {populate: ['avatar'], fields: ['title', 'slug', 'description']},
@@ -70,7 +71,7 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
                 },
                 file: {populate: '*'},
             },
-            fields: ['slug', 'duration', 'shownotes', 'publishDate', 'publishedAt'],
+            fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
             pagination: {pageSize: 1},
         },
         {encodeValuesOnly: true},
@@ -99,13 +100,11 @@ export type StrapiCategoryWithContent = {
     } | null;
     articles?: Array<{
         slug: string;
-        publishDate?: string | null;
         publishedAt?: string | null;
         base: {title: string};
     }>;
     podcasts?: Array<{
         slug: string;
-        publishDate?: string | null;
         publishedAt?: string | null;
         base: {title: string};
     }>;
@@ -114,13 +113,11 @@ export type StrapiCategoryWithContent = {
 export type StrapiAuthorWithContent = StrapiAuthor & {
     articles?: Array<{
         slug: string;
-        publishDate?: string | null;
         publishedAt?: string | null;
         base: {title: string};
     }>;
     podcasts?: Array<{
         slug: string;
-        publishDate?: string | null;
         publishedAt?: string | null;
         base: {title: string};
     }>;
@@ -131,12 +128,13 @@ export async function fetchArticlesList(options: FetchListOptions = {}): Promise
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
-            sort: ['publishDate:desc'],
+            sort: ['publishedAt:desc'],
+            status: 'published',
             pagination: {pageSize: limit, page: 1},
             populate: {
                 base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
             },
-            fields: ['slug', 'content', 'publishDate', 'publishedAt'],
+            fields: ['slug', 'content', 'publishedAt'],
         },
         {encodeValuesOnly: true},
     );
@@ -153,13 +151,14 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
-            sort: ['publishDate:desc'],
+            sort: ['publishedAt:desc'],
+            status: 'published',
             pagination: {pageSize: limit, page: 1},
             populate: {
                 base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
                 file: {populate: '*'},
             },
-            fields: ['slug', 'duration', 'shownotes', 'publishDate', 'publishedAt'],
+            fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
         },
         {encodeValuesOnly: true},
     );
@@ -198,8 +197,8 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
             filters: {slug: {$eq: slug}},
             populate: {
                 avatar: true,
-                articles: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishDate', 'publishedAt']},
-                podcasts: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishDate', 'publishedAt']},
+                articles: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishedAt']},
+                podcasts: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishedAt']},
             },
             fields: ['slug', 'title', 'description'],
             pagination: {pageSize: 1},
@@ -223,8 +222,8 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
             pagination: {pageSize: limit, page: 1},
             populate: {
                 base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
-                articles: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishDate', 'publishedAt']},
-                podcasts: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishDate', 'publishedAt']},
+                articles: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishedAt']},
+                podcasts: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishedAt']},
             },
             fields: ['slug'],
         },

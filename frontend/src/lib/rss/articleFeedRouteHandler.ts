@@ -39,7 +39,8 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
     while (true) {
         const query = qs.stringify(
             {
-                sort: ['publishDate:desc'],
+                sort: ['publishedAt:desc'],
+                status: 'published',
                 pagination: {pageSize, page},
                 populate: {
                     base: {
@@ -60,7 +61,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
                         fields: ['slug'],
                     },
                 },
-                fields: ['slug', 'content', 'publishDate'],
+                fields: ['slug', 'content', 'publishedAt'],
             },
             {encodeValuesOnly: true},
         );
@@ -82,7 +83,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
         page++;
     }
 
-    return filterPublished(all, (a) => a.publishDate ?? a.publishedAt, now);
+    return filterPublished(all, (a) => a.publishedAt, now);
 }
 
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {

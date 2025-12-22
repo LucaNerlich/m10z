@@ -22,7 +22,8 @@ async function fetchPublishedSlugs(
     while (true) {
         const query =
             `fields[0]=slug&fields[1]=updatedAt&fields[2]=publishedAt&` +
-            `pagination[pageSize]=${pageSize}&pagination[page]=${page}`;
+            `pagination[pageSize]=${pageSize}&pagination[page]=${page}&` +
+            `status=published`;
 
         const res = await fetchStrapiCollection<StrapiSlugItem>(endpoint, query, {
             revalidateSeconds: 3600,

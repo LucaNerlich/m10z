@@ -12,7 +12,7 @@ export default async function PodcastsPage() {
             <h1>Podcasts</h1>
             <ul>
                 {podcasts.map((podcast) => {
-                    const date = podcast.publishDate ?? podcast.publishedAt ?? null;
+                    const date = podcast.publishedAt ?? null;
                     return (
                         <li key={podcast.slug}>
                             <Link href={`/podcasts/${podcast.slug}`}>

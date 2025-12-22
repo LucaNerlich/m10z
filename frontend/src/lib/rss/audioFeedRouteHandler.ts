@@ -44,7 +44,8 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     while (true) {
         const query = qs.stringify(
             {
-                sort: ['publishDate:desc'],
+                sort: ['publishedAt:desc'],
+                status: 'published',
                 pagination: {pageSize, page},
                 populate: {
                     base: {
@@ -68,7 +69,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
                         populate: '*',
                     },
                 },
-                fields: ['slug', 'duration', 'shownotes', 'publishDate'],
+                fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
             },
             {encodeValuesOnly: true},
         );
@@ -92,7 +93,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     }
 
     // Only published episodes should be in the public feed.
-    return filterPublished(all, (p) => p.publishDate ?? p.publishedAt, now);
+    return filterPublished(all, (p) => p.publishedAt, now);
 }
 
 async function fetchAudioFeedSingle(): Promise<StrapiAudioFeedSingle> {

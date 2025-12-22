@@ -14,7 +14,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const article = await fetchArticleBySlug(slug);
     if (!article) return notFound();
 
-    const published = article.publishDate ?? article.publishedAt ?? null;
+    const published = article.publishedAt ?? null;
 
     return (
         <main>

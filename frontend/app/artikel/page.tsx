@@ -12,7 +12,7 @@ export default async function ArticlePage() {
             <h1>Artikel</h1>
             <ul>
                 {articles.map((article) => {
-                    const date = article.publishDate ?? article.publishedAt ?? null;
+                    const date = article.publishedAt ?? null;
                     return (
                         <li key={article.slug}>
                             <Link href={`/artikel/${article.slug}`}>

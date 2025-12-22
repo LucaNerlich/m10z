@@ -3,6 +3,9 @@ import {Suspense} from 'react';
 
 import {fetchArticlesList, fetchPodcastsList} from '@/src/lib/strapiContent';
 
+const HOME_ARTICLE_TAGS = ['page:home', 'strapi:article'];
+const HOME_PODCAST_TAGS = ['page:home', 'strapi:podcast'];
+
 export default function HomePage() {
     return (
         <div>
@@ -21,14 +24,13 @@ export default function HomePage() {
 
 async function LatestArticles() {
     'use cache';
-    const articles = await fetchArticlesList({limit: 10, tags: ['page:home', 'strapi:article']});
-    const filtered = articles.filter((a) => Boolean(a.publishDate ?? a.publishedAt));
+    const articles = await fetchArticlesList({limit: 10, tags: HOME_ARTICLE_TAGS});
 
     return (
         <section>
             <h2>Neueste Artikel</h2>
             <ul>
-                {filtered.map((a) => (
+                {articles.map((a) => (
                     <li key={a.slug}>
                         <Link href={`/artikel/${a.slug}`}>{a.base.title}</Link>
                     </li>
@@ -40,14 +42,13 @@ async function LatestArticles() {
 
 async function LatestPodcasts() {
     'use cache';
-    const podcasts = await fetchPodcastsList({limit: 10, tags: ['page:home', 'strapi:podcast']});
-    const filtered = podcasts.filter((p) => Boolean(p.publishDate ?? p.publishedAt));
+    const podcasts = await fetchPodcastsList({limit: 10, tags: HOME_PODCAST_TAGS});
 
     return (
         <section>
             <h2>Neueste Podcasts</h2>
             <ul>
-                {filtered.map((p) => (
+                {podcasts.map((p) => (
                     <li key={p.slug}>
                         <Link href={`/podcasts/${p.slug}`}>{p.base.title}</Link>
                     </li>

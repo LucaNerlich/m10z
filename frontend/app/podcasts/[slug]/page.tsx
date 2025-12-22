@@ -18,7 +18,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const episode = await fetchPodcastBySlug(slug);
     if (!episode) return notFound();
 
-    const published = episode.publishDate ?? episode.publishedAt ?? null;
+    const published = episode.publishedAt ?? null;
     const fileMedia = normalizeStrapiMedia(episode.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia, strapiUrl: STRAPI_URL});
 
