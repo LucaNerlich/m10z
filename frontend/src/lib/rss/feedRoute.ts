@@ -26,7 +26,6 @@ export async function fetchStrapiJson<T>({
 
     const headers = new Headers();
     if (token) headers.set('Authorization', `Bearer ${token}`);
-    console.log('url', url);
     const res = await fetch(url, {
         headers,
         next: {

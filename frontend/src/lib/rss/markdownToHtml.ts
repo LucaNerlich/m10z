@@ -37,7 +37,19 @@ const ALLOWED_TAGS = [
     'ul',
 ];
 
-const ALLOWED_ATTR = ['href', 'title', 'rel', 'target'];
+const ALLOWED_ATTR = [
+    'alt',
+    'height',
+    'href',
+    'loading',
+    'rel',
+    'sizes',
+    'src',
+    'srcset',
+    'target',
+    'title',
+    'width',
+];
 
 export function markdownToHtml(markdownText: string): string {
     if (!markdownText) return '';
