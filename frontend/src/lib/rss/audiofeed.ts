@@ -149,9 +149,6 @@ export function generateAudioFeedXml(args: {
         mediaUrlToAbsolute({media: channelImage, strapiUrl}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
-    const now = new Date();
-    const header = renderChannelHeader(cfg, channel, channelImageUrl, now);
-
     const sorted = [...episodes].sort((a, b) => {
         const adRaw = a.publishDate ?? a.publishedAt;
         const bdRaw = b.publishDate ?? b.publishedAt;
@@ -160,11 +157,16 @@ export function generateAudioFeedXml(args: {
         return bd - ad;
     });
 
+    const latestDateRaw = sorted[0]?.publishDate ?? sorted[0]?.publishedAt;
+    const latestPublishedAt = latestDateRaw ? new Date(latestDateRaw) : null;
+    // Use the latest published date for channel pubDate to avoid changing on every request.
+    const channelPubDate = latestPublishedAt ?? new Date(0);
+
+    const header = renderChannelHeader(cfg, channel, channelImageUrl, channelPubDate);
+
     const items = sorted.map((ep) => renderItem(cfg, ep, strapiUrl)).join('');
     const footer = `</channel></rss>`;
 
-    const latestDateRaw = sorted[0]?.publishDate ?? sorted[0]?.publishedAt;
-    const latestPublishedAt = latestDateRaw ? new Date(latestDateRaw) : null;
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
 
     return {
