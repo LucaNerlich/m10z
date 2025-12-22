@@ -43,7 +43,7 @@ export default function HeaderClient({
     }, [pathname]);
 
     return (
-        <div ref={menuRef}>
+        <div style={{display: 'flex'}} ref={menuRef}>
             <button
                 type="button"
                 className={`${styles.burgerButton} ${isMenuOpen ? styles.burgerButtonActive : ''}`}
