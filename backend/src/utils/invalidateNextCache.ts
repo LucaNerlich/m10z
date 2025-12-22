@@ -20,7 +20,7 @@ function getNextBaseUrl(): string {
 }
 
 function getSecret(): string | undefined {
-    return getEnv('FEED_INVALIDATION_SECRET');
+    return getEnv('FEED_INVALIDATION_TOKEN');
 }
 
 export async function invalidateNext(target: InvalidateTarget): Promise<void> {
@@ -29,7 +29,7 @@ export async function invalidateNext(target: InvalidateTarget): Promise<void> {
     if (!secret) {
         // Misconfiguration should be visible in logs, but don't throw.
         // eslint-disable-next-line no-console
-        console.warn('Missing FEED_INVALIDATION_SECRET; skipping Next invalidation');
+        console.warn('Missing FEED_INVALIDATION_TOKEN; skipping Next invalidation');
         return;
     }
 
@@ -47,6 +47,8 @@ export async function invalidateNext(target: InvalidateTarget): Promise<void> {
             // eslint-disable-next-line no-console
             console.warn(`Next invalidation failed (${target}): ${res.status} ${res.statusText}`);
         }
+
+        console.log(`Next invalidation successful (${target})`);
     } catch (err) {
         // eslint-disable-next-line no-console
         console.warn(`Next invalidation request error (${target})`, err);

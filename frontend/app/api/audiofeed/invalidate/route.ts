@@ -11,7 +11,7 @@ function getClientIp(request: Request): string {
 }
 
 export async function POST(request: Request) {
-    const expected = process.env.FEED_INVALIDATION_SECRET ?? null;
+    const expected = process.env.FEED_INVALIDATION_TOKEN ?? null;
     const provided = request.headers.get('x-m10z-invalidation-secret');
 
     if (!verifySecret(provided, expected)) {
@@ -30,7 +30,6 @@ export async function POST(request: Request) {
 
 
     revalidateTag('feed:audio', 'max');
-    updateTag('feed:audio');
     revalidatePath('/audiofeed.xml', 'page');
 
     return Response.json({ok: true, revalidated: ['feed:audio', '/audiofeed.xml']});
