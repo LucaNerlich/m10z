@@ -125,16 +125,37 @@ export async function fetchStrapiCollection<TData>(
     return await fetchStrapiJson<StrapiCollectionResponse<TData>>(`/api/${normalized}${q}`, options);
 }
 
+async function getLegalDocWithFallback(
+    kind: 'imprint' | 'privacy',
+    options: FetchStrapiOptions = {},
+): Promise<StrapiLegalDoc> {
+    const nowIso = new Date().toISOString();
+    const fallback: StrapiLegalDoc = {
+        id: -1,
+        documentId: `fallback-${kind}`,
+        title: kind === 'imprint' ? 'Impressum' : 'Datenschutz',
+        content: 'Dieser Inhalt ist derzeit nicht verfügbar.',
+        createdAt: nowIso,
+        updatedAt: nowIso,
+        publishedAt: null,
+    };
+
+    try {
+        const res = await fetchStrapiSingle<StrapiLegalDoc>(kind, options);
+        assertIsLegalDoc(res.data);
+        return res.data;
+    } catch (err) {
+        console.warn(`[legal-doc] Failed to fetch ${kind}: ${err instanceof Error ? err.message : 'unknown error'}`);
+        return fallback;
+    }
+}
+
 export async function getImprint(options: FetchStrapiOptions = {}) {
-    const res = await fetchStrapiSingle<StrapiLegalDoc>('imprint', options);
-    assertIsLegalDoc(res.data);
-    return res.data;
+    return getLegalDocWithFallback('imprint', options);
 }
 
 export async function getPrivacy(options: FetchStrapiOptions = {}) {
-    const res = await fetchStrapiSingle<StrapiLegalDoc>('privacy', options);
-    assertIsLegalDoc(res.data);
-    return res.data;
+    return getLegalDocWithFallback('privacy', options);
 }
 
 

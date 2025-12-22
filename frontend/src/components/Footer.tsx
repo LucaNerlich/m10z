@@ -16,6 +16,14 @@ const sections: FooterSection[] = [
             {label: 'Artikel', href: routes.articles},
             {label: 'Podcasts', href: routes.podcasts},
             {label: 'Kategorien', href: routes.categories},
+            {label: 'Team', href: routes.authors},
+        ],
+    },
+    {
+        title: 'Social Media',
+        links: [
+            {label: 'Forum', href: routes.forum, external: true},
+            {label: 'Discord', href: routes.discord, external: true},
         ],
     },
     {
@@ -30,13 +38,6 @@ const sections: FooterSection[] = [
         links: [
             {label: 'Impressum', href: routes.imprint},
             {label: 'Datenschutz', href: routes.privacy},
-        ],
-    },
-    {
-        title: 'Social Media',
-        links: [
-            {label: 'Forum', href: routes.forum, external: true},
-            {label: 'Discord', href: routes.discord, external: true},
         ],
     },
 ];
