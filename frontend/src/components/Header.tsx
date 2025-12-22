@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React, {Suspense} from 'react';
 
 import HeaderClient from './HeaderClient';
+import {SearchLauncher} from './SearchLauncher';
 import styles from './Header.module.css';
 import {routes} from '@/src/lib/routes';
 
@@ -38,19 +39,22 @@ export default function Header(): React.ReactElement {
                     ))}
                 </nav>
 
-                <Suspense
-                    fallback={
-                        <div className={styles.burgerFallback} aria-hidden>
-                            <span className={styles.burgerLines}>
-                                <span />
-                                <span />
-                                <span />
-                            </span>
-                        </div>
-                    }
-                >
-                    <HeaderClient primaryLinks={primaryLinks} secondaryLinks={secondaryLinks} />
-                </Suspense>
+                <div className={styles.actions}>
+                    <SearchLauncher />
+                    <Suspense
+                        fallback={
+                            <div className={styles.burgerFallback} aria-hidden>
+                                <span className={styles.burgerLines}>
+                                    <span />
+                                    <span />
+                                    <span />
+                                </span>
+                            </div>
+                        }
+                    >
+                        <HeaderClient primaryLinks={primaryLinks} secondaryLinks={secondaryLinks} />
+                    </Suspense>
+                </div>
             </div>
         </header>
     );
