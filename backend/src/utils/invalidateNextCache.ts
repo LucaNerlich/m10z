@@ -1,5 +1,5 @@
 /**
- * Notify Next.js to invalidate cached RSS feeds.
+ * Notify Next.js to invalidate cached content (feeds, legal pages).
  *
  * Security:
  * - Uses a shared secret header (do not log it).
@@ -7,7 +7,7 @@
  * - Fails open: never blocks Strapi write path if Next is unreachable.
  */
 
-type InvalidateTarget = 'audiofeed' | 'articlefeed';
+type InvalidateTarget = 'audiofeed' | 'articlefeed' | 'legal';
 
 function getEnv(name: string): string | undefined {
     const v = process.env[name];
@@ -20,7 +20,7 @@ function getNextBaseUrl(): string {
 }
 
 function getSecret(): string | undefined {
-    return getEnv('FEED_INVALIDATION_TOKEN');
+    return getEnv('LEGAL_INVALIDATION_TOKEN') ?? getEnv('FEED_INVALIDATION_TOKEN');
 }
 
 export async function invalidateNext(target: InvalidateTarget): Promise<void> {
