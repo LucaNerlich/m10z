@@ -107,9 +107,8 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
     return (
         <div>
             <header className={styles.header}>
-                <p className={styles.kicker}>m10z</p>
-                <h1 className={styles.title}>Aktuelles aus Artikeln & Podcasts</h1>
-                <p className={styles.subtitle}>Frischeste Beiträge zuerst, kompakt auf einen Blick.</p>
+                <h1 className={styles.title}>Mindestens 10 Zeichen</h1>
+                <p className={styles.subtitle}>Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen.</p>
             </header>
             <Suspense fallback={<div className={styles.emptyCard}>Lade Inhalte…</div>}>
                 <FeedContent searchParams={props.searchParams} />

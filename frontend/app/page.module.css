@@ -3,14 +3,7 @@
     flex-direction: column;
     gap: 4px;
     margin-bottom: 24px;
-}
-
-.kicker {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 13px;
-    color: var(--color-text-muted);
-    font-weight: 700;
+    margin-top: 24px;
 }
 
 .title {
