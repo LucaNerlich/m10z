@@ -109,10 +109,9 @@ function renderChannelHeader(
  * @param cfg - Feed configuration (site URL, author/email, iTunes flags, etc.)
  * @param episode - Episode data from Strapi
  * @param episodeFooter - Optional footer content to append to the episode description (Markdown)
- * @param strapiUrl - Base Strapi API URL used to resolve media links
  * @returns An XML string for the episode's <item> element suitable for inclusion in an RSS feed
  */
-function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null, strapiUrl: string): string {
+function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null): string {
     const fileMedia = normalizeStrapiMedia(episode.file);
     const coverMedia = pickCoverMedia(episode.base, episode.categories);
 
@@ -167,7 +166,6 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
  * an ETag seed and the latest published date for Last-Modified usage.
  *
  * @param cfg - Feed configuration used to populate channel and iTunes metadata and defaults
- * @param strapiUrl - Base Strapi URL used to construct per-episode links
  * @param channel - Channel-level data (title, description, image, etc.) for the feed header
  * @param episodeFooter - Optional footer content appended to each episode's description
  * @param episodes - Array of podcast episodes to consider for inclusion in the feed
@@ -178,12 +176,11 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
  */
 export function generateAudioFeedXml(args: {
     cfg: AudioFeedConfig;
-    strapiUrl: string;
     channel: StrapiAudioFeedSingle['channel'];
     episodeFooter: StrapiAudioFeedSingle['episodeFooter'];
     episodes: StrapiPodcast[];
 }): {xml: string; etagSeed: string; lastModified: Date | null} {
-    const {cfg, strapiUrl, channel, episodeFooter, episodes} = args;
+    const {cfg, channel, episodeFooter, episodes} = args;
 
     const nowTs = Date.now();
     const published = filterPublished(episodes, (ep) => getEffectiveDate(ep), nowTs);
@@ -205,7 +202,7 @@ export function generateAudioFeedXml(args: {
 
     const header = renderChannelHeader(cfg, channel, channelImageUrl, channelPubDate);
 
-    const items = sorted.map((ep) => renderItem(cfg, ep, episodeFooter ?? null, strapiUrl)).join('');
+    const items = sorted.map((ep) => renderItem(cfg, ep, episodeFooter ?? null)).join('');
     const footer = `</channel></rss>`;
 
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;

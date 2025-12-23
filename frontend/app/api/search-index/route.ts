@@ -99,11 +99,14 @@ export async function GET(request: Request) {
                 },
             });
         } catch (error) {
-            const status = error instanceof Error && error.message.includes('Failed to fetch') ? 502 : 500;
-            return NextResponse.json(
-                {error: 'Failed to fetch search index', message: error instanceof Error ? error.message : 'Unknown error'},
-                {status},
-            );
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            if (errorMessage.includes('Failed to fetch search index')) {
+                return NextResponse.json({error: 'Failed to fetch search index'}, {status: 502});
+            }
+            if (errorMessage === 'Malformed search index') {
+                return NextResponse.json({error: 'Malformed search index'}, {status: 500});
+            }
+            return NextResponse.json({error: 'Failed to fetch search index'}, {status: 500});
         }
     }
 
