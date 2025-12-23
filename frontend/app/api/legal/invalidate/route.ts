@@ -30,8 +30,8 @@ export async function POST(request: Request) {
     revalidateTag('legal', 'max');
     revalidateTag('imprint', 'max');
     revalidateTag('privacy', 'max');
-    revalidatePath('/impressum', 'page');
-    revalidatePath('/datenschutz', 'page');
+    revalidatePath('/impressum');
+    revalidatePath('/datenschutz');
 
     return Response.json({
         ok: true,

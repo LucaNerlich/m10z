@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {Suspense} from 'react';
 
 import {Tag} from '@/src/components/Tag';
+import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
@@ -63,7 +64,7 @@ function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
         slug: article.slug,
         title: article.base.title,
         description: article.base.description,
-        publishedAt: article.publishedAt,
+        publishedAt: getEffectiveDate(article),
         cover: pickCoverMedia(article.base, article.categories),
         href: `/artikel/${article.slug}`,
     }));
@@ -75,7 +76,7 @@ function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
         slug: podcast.slug,
         title: podcast.base.title,
         description: podcast.base.description,
-        publishedAt: podcast.publishedAt,
+        publishedAt: getEffectiveDate(podcast),
         cover: pickCoverMedia(podcast.base, podcast.categories),
         href: `/podcasts/${podcast.slug}`,
     }));
@@ -83,8 +84,8 @@ function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
 
 function sortFeedByDateDesc(items: FeedItem[]): FeedItem[] {
     return [...items].sort((a, b) => {
-        const ad = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-        const bd = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        const ad = toDateTimestamp(a.publishedAt) ?? 0;
+        const bd = toDateTimestamp(b.publishedAt) ?? 0;
         return bd - ad;
     });
 }

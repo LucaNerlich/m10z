@@ -3,6 +3,7 @@
 import {notFound} from 'next/navigation';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
+import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 import {PodcastPlayer} from './Player';
@@ -18,7 +19,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const episode = await fetchPodcastBySlug(slug);
     if (!episode) return notFound();
 
-    const published = episode.publishedAt ?? null;
+    const published = getEffectiveDate(episode);
     const fileMedia = normalizeStrapiMedia(episode.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia, strapiUrl: STRAPI_URL});
 

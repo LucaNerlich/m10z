@@ -3,6 +3,7 @@
 import {notFound} from 'next/navigation';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
+import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {fetchArticleBySlug} from '@/src/lib/strapiContent';
 
 type PageProps = {
@@ -14,7 +15,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const article = await fetchArticleBySlug(slug);
     if (!article) return notFound();
 
-    const published = article.publishedAt ?? null;
+    const published = getEffectiveDate(article);
 
     return (
         <main>

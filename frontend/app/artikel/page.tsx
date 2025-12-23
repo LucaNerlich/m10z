@@ -2,17 +2,23 @@
 
 import Link from 'next/link';
 
+import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {fetchArticlesList} from '@/src/lib/strapiContent';
 
 export default async function ArticlePage() {
     const articles = await fetchArticlesList();
+    const sorted = [...articles].sort((a, b) => {
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
+        return bd - ad;
+    });
 
     return (
         <section>
             <h1>Artikel</h1>
             <ul>
-                {articles.map((article) => {
-                    const date = article.publishedAt ?? null;
+                {sorted.map((article) => {
+                    const date = getEffectiveDate(article);
                     return (
                         <li key={article.slug}>
                             <Link href={`/artikel/${article.slug}`}>

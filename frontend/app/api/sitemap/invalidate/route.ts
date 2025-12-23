@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`articlefeed:${ip}`, {windowMs: 60_000, max: 30});
+    const rl = checkRateLimit(`sitemap:${ip}`, {windowMs: 60_000, max: 30});
     if (!rl.ok) {
         return new Response('Too Many Requests', {
             status: 429,
@@ -26,8 +26,12 @@ export async function POST(request: Request) {
         });
     }
 
-    revalidateTag('feed:article', 'max');
-    revalidatePath('/rss.xml');
+    revalidateTag('sitemap:articles', 'max');
+    revalidateTag('sitemap:podcasts', 'max');
+    revalidateTag('sitemap:authors', 'max');
+    revalidateTag('sitemap:categories', 'max');
+    revalidatePath('/sitemap.xml');
+    revalidatePath('/sitemap');
 
     return Response.json({ok: true, revalidated: ['feed:article', '/rss.xml']});
 }

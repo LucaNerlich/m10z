@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
 
     revalidateTag('feed:audio', 'max');
-    revalidatePath('/audiofeed.xml', 'page');
+    revalidatePath('/audiofeed.xml');
 
     return Response.json({ok: true, revalidated: ['feed:audio', '/audiofeed.xml']});
 }

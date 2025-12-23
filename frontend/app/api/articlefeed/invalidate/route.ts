@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     }
 
     revalidateTag('feed:article', 'max');
-    revalidatePath('/rss.xml', 'page');
+    revalidatePath('/rss.xml');
 
     return Response.json({ok: true, revalidated: ['feed:article', '/rss.xml']});
 }
