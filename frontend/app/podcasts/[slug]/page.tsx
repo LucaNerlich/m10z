@@ -14,6 +14,16 @@ type PageProps = {
     params: Promise<{slug: string}>;
 };
 
+/**
+ * Render the podcast episode detail page for the route slug.
+ *
+ * Fetches the episode by slug, prepares published date, media URL, and JSON-LD, and returns the page JSX.
+ *
+ * Triggers a 404 response (via `notFound`) if the slug is invalid or no episode is found.
+ *
+ * @param params - A promise resolving to an object with a `slug` string from the route parameters
+ * @returns A React element containing an `application/ld+json` script with episode JSON-LD, the episode metadata (title, date, description), an optional audio player when media is available, and rendered shownotes
+ */
 export default async function PodcastDetailPage({params}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);

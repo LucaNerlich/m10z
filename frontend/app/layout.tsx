@@ -8,6 +8,12 @@ import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
 import React from 'react';
 import Head from 'next/head';
 
+/**
+ * Root layout component that embeds organization and website JSON-LD into the document head and renders the page chrome.
+ *
+ * @param children - The page content to render inside the main content area.
+ * @returns The top-level HTML structure including <head> with JSON-LD scripts, header, main content wrapped by ContentLayout, footer, and analytics.
+ */
 export default function RootLayout({
                                        children,
                                    }: Readonly<{

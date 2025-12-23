@@ -6,6 +6,11 @@ import {fetchAuthorsList} from '@/src/lib/strapiContent';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
 import Link from 'next/link';
 
+/**
+ * Renders the Team page by fetching authors and displaying each as a list item with an optional avatar, title, and description.
+ *
+ * @returns The JSX element for the Team page containing a list of authors; each author links to their team page.
+ */
 export default async function TeamPage() {
     const authors = await fetchAuthorsList();
 

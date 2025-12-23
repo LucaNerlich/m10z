@@ -98,6 +98,20 @@ function renderChannelHeader(
         `        <pubDate>${formatRssDate(pubDate)}</pubDate>`;
 }
 
+/**
+ * Render an RSS <item> entry for a single podcast episode.
+ *
+ * Produces an XML string representing the episode, including title, publication date,
+ * GUID (derived from the episode enclosure URL), iTunes image, CDATA-wrapped description
+ * (shownotes plus optional footer converted from Markdown to HTML), author, explicit flag,
+ * duration, and an enclosure tag with URL, length, and MIME type.
+ *
+ * @param cfg - Feed configuration (site URL, author/email, iTunes flags, etc.)
+ * @param episode - Episode data from Strapi
+ * @param episodeFooter - Optional footer content to append to the episode description (Markdown)
+ * @param strapiUrl - Base Strapi API URL used to resolve media links
+ * @returns An XML string for the episode's <item> element suitable for inclusion in an RSS feed
+ */
 function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null, strapiUrl: string): string {
     const fileMedia = normalizeStrapiMedia(episode.file);
     const coverMedia = pickCoverMedia(episode.base, episode.categories);
@@ -145,6 +159,23 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
     );
 }
 
+/**
+ * Generate the complete RSS/Atom XML for an audio podcast feed and return caching metadata.
+ *
+ * Filters the provided episodes to published ones, orders them by effective publish date (newest first),
+ * renders the channel header and each episode item, and produces the final RSS XML string together with
+ * an ETag seed and the latest published date for Last-Modified usage.
+ *
+ * @param cfg - Feed configuration used to populate channel and iTunes metadata and defaults
+ * @param strapiUrl - Base Strapi URL used to construct per-episode links
+ * @param channel - Channel-level data (title, description, image, etc.) for the feed header
+ * @param episodeFooter - Optional footer content appended to each episode's description
+ * @param episodes - Array of podcast episodes to consider for inclusion in the feed
+ * @returns An object with:
+ *  - `xml`: the complete RSS/Atom feed XML as a string,
+ *  - `etagSeed`: a seed string in the form `"<count>:<ISO date>"` or `"<count>:none"` when no publish date exists,
+ *  - `lastModified`: the Date of the latest published episode or `null` if none
+ */
 export function generateAudioFeedXml(args: {
     cfg: AudioFeedConfig;
     strapiUrl: string;
@@ -185,5 +216,4 @@ export function generateAudioFeedXml(args: {
         lastModified: latestPublishedAt,
     };
 }
-
 

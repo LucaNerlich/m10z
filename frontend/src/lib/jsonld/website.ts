@@ -2,7 +2,9 @@ import {type WebSite} from './types';
 import {routes} from '@/src/lib/routes';
 
 /**
- * Generates WebSite JSON-LD schema with SearchAction for search functionality.
+ * Generates a WebSite JSON-LD object that includes a SearchAction for site search.
+ *
+ * @returns A WebSite JSON-LD object containing `@context`, `@type` "WebSite", `name`, `url` (from routes.siteUrl), and a `potentialAction` describing a `SearchAction` with an `EntryPoint` `urlTemplate` for search queries.
  */
 export function generateWebsiteJsonLd(): WebSite {
     return {
@@ -20,4 +22,3 @@ export function generateWebsiteJsonLd(): WebSite {
         },
     };
 }
-
