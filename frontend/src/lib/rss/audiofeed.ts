@@ -8,7 +8,8 @@ import {
     type StrapiBaseContent,
     type StrapiCategoryRef,
     type StrapiMedia,
-    type StrapiMediaRef, StrapiYoutube,
+    type StrapiMediaRef,
+    StrapiYoutube,
 } from '@/src/lib/rss/media';
 import {filterPublished} from '@/src/lib/rss/publishDate';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
@@ -33,6 +34,7 @@ export type StrapiAudioFeedSingle = {
         mail: string;
         image: StrapiMediaRef;
     };
+    episodeFooter?: string | null;
 };
 
 export type AudioFeedConfig = {
@@ -96,7 +98,7 @@ function renderChannelHeader(
         `        <pubDate>${formatRssDate(pubDate)}</pubDate>`;
 }
 
-function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, strapiUrl: string): string {
+function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null, strapiUrl: string): string {
     const fileMedia = normalizeStrapiMedia(episode.file);
     const coverMedia = pickCoverMedia(episode.base, episode.categories);
 
@@ -115,27 +117,31 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, strapiUrl: str
     // Prepare and Sanitize Content
     // const description = escapeCdata(episode.base.description ?? '');
     const shownotes = (episode.shownotes ?? '').toString();
-    const html = markdownToHtml(shownotes);
-    const cdataShownotes = escapeCdata(html);
+    const footer = episodeFooter ?? '';
+    const htmlShownotes = markdownToHtml(shownotes);
+    const htmlFooter = markdownToHtml(footer);
+    const cdataShownotes = escapeCdata(htmlShownotes);
+    const cdataFooter = escapeCdata(htmlFooter ? '<br/>' + htmlFooter : '');
+    const description = `${cdataShownotes}${cdataFooter}`;
 
     const link = `${cfg.siteUrl.replace(/\/+$/, '')}/podcast/${encodeURIComponent(episode.slug)}`;
 
     const guid = sha256Hex(enclosureUrl);
 
     return (
-        `        <item>` +
-        `            <title>${title}</title>` +
-        `            <pubDate>${pubDate}</pubDate>` +
-        `            <lastBuildDate>${pubDate}</lastBuildDate>` +
-        `            <guid isPermaLink="false">${guid}</guid>` +
-        `            <itunes:image href="${escapeXml(itunesImageHref)}"/>` +
-        `            <description><![CDATA[${cdataShownotes}]]></description>` +
-        `            <author>${escapeXml(cfg.authorEmail)}</author>` +
-        `            <itunes:explicit>${cfg.itunesExplicit}</itunes:explicit>` +
-        `            <link>${escapeXml(link)}</link>` +
-        `            <itunes:duration>${episode.duration}</itunes:duration>` +
-        `            <enclosure url="${escapeXml(enclosureUrl)}" length="${lengthBytes}" type="${escapeXml(fileMedia.mime ?? 'audio/mpeg')}"/>` +
-        `        </item>`
+        `<item>` +
+        `    <title>${title}</title>` +
+        `    <pubDate>${pubDate}</pubDate>` +
+        `    <lastBuildDate>${pubDate}</lastBuildDate>` +
+        `    <guid isPermaLink="false">${guid}</guid>` +
+        `    <itunes:image href="${escapeXml(itunesImageHref)}"/>` +
+        `    <description><![CDATA[${description}]]></description>` +
+        `    <author>${escapeXml(cfg.authorEmail)}</author>` +
+        `    <itunes:explicit>${cfg.itunesExplicit}</itunes:explicit>` +
+        `    <link>${escapeXml(link)}</link>` +
+        `    <itunes:duration>${episode.duration}</itunes:duration>` +
+        `    <enclosure url="${escapeXml(enclosureUrl)}" length="${lengthBytes}" type="${escapeXml(fileMedia.mime ?? 'audio/mpeg')}"/>` +
+        `</item>`
     );
 }
 
@@ -143,9 +149,10 @@ export function generateAudioFeedXml(args: {
     cfg: AudioFeedConfig;
     strapiUrl: string;
     channel: StrapiAudioFeedSingle['channel'];
+    episodeFooter: StrapiAudioFeedSingle['episodeFooter'];
     episodes: StrapiPodcast[];
 }): {xml: string; etagSeed: string; lastModified: Date | null} {
-    const {cfg, strapiUrl, channel, episodes} = args;
+    const {cfg, strapiUrl, channel, episodeFooter, episodes} = args;
 
     const nowTs = Date.now();
     const published = filterPublished(episodes, (ep) => getEffectiveDate(ep), nowTs);
@@ -167,7 +174,7 @@ export function generateAudioFeedXml(args: {
 
     const header = renderChannelHeader(cfg, channel, channelImageUrl, channelPubDate);
 
-    const items = sorted.map((ep) => renderItem(cfg, ep, strapiUrl)).join('');
+    const items = sorted.map((ep) => renderItem(cfg, ep, episodeFooter ?? null, strapiUrl)).join('');
     const footer = `</channel></rss>`;
 
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;

@@ -132,6 +132,7 @@ async function getCachedAudioFeed() {
         cfg,
         strapiUrl: STRAPI_URL,
         channel: feed.channel,
+        episodeFooter: feed.episodeFooter,
         episodes,
     });
 
