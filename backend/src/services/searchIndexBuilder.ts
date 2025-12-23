@@ -1,3 +1,12 @@
+import {JSDOM} from 'jsdom';
+import createDOMPurify from 'dompurify';
+import {marked} from 'marked';
+
+const window = new JSDOM('').window;
+// DOMPurify's TS types expect a WindowLike. JSDOM's window is compatible at runtime.
+// Cast to avoid type mismatch between DOMPurify and JSDOM type definitions.
+const DOMPurify = createDOMPurify(window as any);
+
 type Strapi = {
     documents: (
         uid: string,
@@ -62,8 +71,35 @@ function effectiveDate(raw: any): string | null {
 
 function toPlainText(value: unknown): string | undefined {
     if (typeof value !== 'string') return undefined;
-    const text = value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+    let html: string;
+
+    // Check if content is markdown (contains markdown syntax) or already HTML
+    // Convert markdown to HTML first, then sanitize
+    try {
+        // Try parsing as markdown first (marked.parse handles both markdown and HTML)
+        // If it's already HTML, marked will pass it through mostly unchanged
+        html = marked.parse(value, {
+            gfm: true,
+            breaks: true,
+        }) as string;
+    } catch {
+        // If parsing fails, treat as plain HTML
+        html = value;
+    }
+
+    // Sanitize HTML using DOMPurify to prevent XSS and safely extract text content
+    // Strip all HTML tags and attributes, only keep text content
+    const sanitized = DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: [],
+        ALLOWED_ATTR: [],
+        KEEP_CONTENT: true,
+    });
+
+    // Normalize whitespace and trim
+    const text = sanitized.replace(/\s+/g, ' ').trim();
     if (text.length === 0) return undefined;
+
     // Cap to avoid oversized records
     const maxLen = getMaxLen();
     return text.slice(0, maxLen);
@@ -71,11 +107,11 @@ function toPlainText(value: unknown): string | undefined {
 
 function extractMediaUrl(mediaRef: any, strapiUrl?: string): string | null {
     if (!strapiUrl || !mediaRef) return null;
-    
+
     const media = unwrapEntry(mediaRef);
     const url = media?.url ?? media?.data?.attributes?.url ?? media?.attributes?.url;
     if (!url || typeof url !== 'string' || url.trim().length === 0) return null;
-    
+
     if (/^https?:\/\//i.test(url)) return url;
     const trimmedBase = strapiUrl.replace(/\/+$/, '');
     const path = url.startsWith('/') ? url : `/${url}`;
@@ -108,23 +144,23 @@ function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
 
 function extractAuthorAvatarUrl(raw: any, strapiUrl?: string): string | null {
     if (!strapiUrl) return null;
-    
+
     const avatar = raw?.avatar;
     if (avatar) {
         return extractMediaUrl(avatar, strapiUrl);
     }
-    
+
     return null;
 }
 
 function extractCategoryCoverUrl(raw: any, strapiUrl?: string): string | null {
     if (!strapiUrl) return null;
-    
+
     const baseCover = raw?.base?.cover;
     if (baseCover) {
         return extractMediaUrl(baseCover, strapiUrl);
     }
-    
+
     return null;
 }
 
