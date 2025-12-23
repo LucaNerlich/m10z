@@ -12,7 +12,6 @@ import {PodcastPlayer} from './Player';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -31,23 +30,13 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const description = episode.base.description || undefined;
     const coverMedia = pickCoverMedia(episode.base, episode.categories);
     const coverImage = coverMedia ? formatOpenGraphImage(normalizeStrapiMedia(coverMedia)) : undefined;
-    const fileMedia = normalizeStrapiMedia(episode.file);
-    const audioUrl = mediaUrlToAbsolute({media: fileMedia});
 
     const openGraph: Metadata['openGraph'] = {
-        type: 'music.song',
+        type: 'article',
         title,
         description,
         images: coverImage,
     };
-
-    if (audioUrl) {
-        openGraph.audio = [
-            {
-                url: audioUrl,
-            },
-        ];
-    }
 
     return {
         title,
