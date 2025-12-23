@@ -41,7 +41,7 @@ export function generateArticleFeedXml(args: {
     const published = filterPublished(articles, (a) => getEffectiveDate(a), nowTs);
     const header =
         `<?xml version="1.0" encoding="UTF-8"?>` +
-        `<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom" xmlns:content="https://purl.org/rss/1.0/modules/content/">` +
+        `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">` +
         `  <channel>` +
         `    <title>${escapeXml(channel.title)}</title>` +
         `    <link>${escapeXml(siteUrl)}</link>` +
@@ -68,7 +68,7 @@ export function generateArticleFeedXml(args: {
 
             // Prepare and Sanitize Content
             const title = escapeXml(a.base.title);
-            const description = a.base.description ?? '';
+            const description = escapeXml(a.base.description ?? '');
             const html = markdownToHtml(a.content ?? '');
             const cdataContent = escapeCdata(html);
 
@@ -76,14 +76,14 @@ export function generateArticleFeedXml(args: {
 
             return (
                 `    <item>` +
-                `      <title>${escapeXml(title)}</title>` +
+                `      <title>${title}</title>` +
                 `      <link>${escapeXml(link)}</link>` +
                 `      <guid isPermaLink="false">${guid}</guid>` +
                 `      <pubDate>${formatRssDate(pub)}</pubDate>` +
                 `      <description>${description}></description>` +
                 `      <content:encoded><![CDATA[${cdataContent}]]></content:encoded>` +
                 (bannerUrl
-                    ? `      <enclosure url="${escapeXml(bannerUrl)}" type="${escapeXml(bannerMedia?.mime ?? 'image/jpeg')}"/>`
+                    ? `      <enclosure url="${escapeXml(bannerUrl)}" length="${bannerMedia?.sizeInBytes ?? 0}" type="${escapeXml(bannerMedia?.mime ?? 'image/jpeg')}"/>`
                     : '') +
                 `    </item>`
             );

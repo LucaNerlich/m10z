@@ -71,7 +71,7 @@ function renderChannelHeader(
         `        <title>${escapeXml(channel.title)}</title>` +
         `        <link>${escapeXml(cfg.siteUrl)}</link>` +
         `        <description>${escapeXml(channel.description)}</description>` +
-        `        <ttl>${cfg.ttlSeconds}</ttl>` +
+        `        <ttl>${Math.round(cfg.ttlSeconds / 60)}` +
         `        <language>${escapeXml(cfg.language)}</language>` +
         `        <copyright>${escapeXml(cfg.copyright)}</copyright>` +
         `        <webMaster>${escapeXml(cfg.webMaster)}</webMaster>` +
