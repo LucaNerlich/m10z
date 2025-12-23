@@ -2,5 +2,5 @@ import {buildArticleFeedResponse} from '@/src/lib/rss/articleFeedRouteHandler';
 import {NextResponse} from 'next/server';
 
 export async function GET(request: Request) {
-    return NextResponse.redirect('/sitemap.xml');
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_DOMAIN}/sitemap.xml`);
 }
