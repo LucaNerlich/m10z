@@ -125,21 +125,39 @@ export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): St
     };
 }
 
+/**
+ * Produce an absolute URL for a Strapi media object when possible.
+ *
+ * Accepts a media reference and returns its absolute URL if the media has a URL and it can be resolved.
+ *
+ * @param args - Function arguments
+ * @param args.media - A Strapi media object (or `undefined`). If `media.url` starts with `http://` or `https://`, it is returned unchanged; if `media.url` is a relative path, `NEXT_PUBLIC_STRAPI_URL` is used to build the absolute URL.
+ * @returns The absolute URL string for the media when available, `undefined` otherwise.
+ */
 export function mediaUrlToAbsolute(args: {
     media: StrapiMedia | undefined;
-    strapiUrl?: string;
-    siteUrl?: string;
 }): string | undefined {
-    const {media, strapiUrl, siteUrl} = args;
+    const {media} = args;
     if (!media?.url) return undefined;
-    const base = strapiUrl || siteUrl;
-    if (!base) return undefined;
+
+    // If URL is already absolute, return as-is
     if (/^https?:\/\//i.test(media.url)) return media.url;
-    const trimmedBase = base.replace(/\/+$/, '');
+
+    // Use Strapi URL from environment variable
+    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/+$/, '');
+    if (!strapiUrl) return undefined;
+
     const path = media.url.startsWith('/') ? media.url : `/${media.url}`;
-    return `${trimmedBase}${path}`;
+    return `${strapiUrl}${path}`;
 }
 
+/**
+ * Selects a cover media for content, preferring the base's cover and falling back to the first category's cover or image.
+ *
+ * @param base - Optional base content whose `cover` is checked first
+ * @param categories - Optional list of category references; the first category's `base.cover`, `cover`, or `image` is used as a fallback
+ * @returns The selected `StrapiMedia` (with a valid `url`) if one is found, `undefined` otherwise
+ */
 export function pickCoverMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
     const primary = normalizeStrapiMedia(base?.cover ?? undefined);
     if (primary.url) return primary;
@@ -163,4 +181,3 @@ export function pickBannerMedia(base?: StrapiBaseContent, categories?: StrapiCat
 
     return undefined;
 }
-

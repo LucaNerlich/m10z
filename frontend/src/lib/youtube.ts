@@ -62,7 +62,7 @@ export function isYouTubeWatchUrl(url: string | null | undefined): boolean {
  */
 export function extractYouTubeVideoId(url: string | null | undefined): string | null {
     if (!url || typeof url !== 'string') return null;
-    
+
     const match = url.match(YOUTUBE_URL_REGEX);
     return match?.[1] ?? null;
 }
@@ -79,7 +79,7 @@ export function extractYouTubeVideoId(url: string | null | undefined): string | 
  */
 export function extractYouTubeWatchVideoId(url: string | null | undefined): string | null {
     if (!url || typeof url !== 'string') return null;
-    
+
     const match = url.match(YOUTUBE_WATCH_URL_REGEX);
     return match?.[1] ?? null;
 }
@@ -98,7 +98,7 @@ export function extractYouTubeWatchVideoId(url: string | null | undefined): stri
 export function toYouTubeEmbedUrl(url: string | null | undefined, useNoCookie = false): string | null {
     const videoId = extractYouTubeVideoId(url);
     if (!videoId) return null;
-    
+
     const domain = useNoCookie ? 'www.youtube-nocookie.com' : 'www.youtube.com';
     return `https://${domain}/embed/${videoId}`;
 }

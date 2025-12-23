@@ -130,7 +130,6 @@ async function getCachedAudioFeed() {
     const cfg = getAudioFeedDefaults();
     const {xml, etagSeed, lastModified} = generateAudioFeedXml({
         cfg,
-        strapiUrl: STRAPI_URL,
         channel: feed.channel,
         episodeFooter: feed.episodeFooter,
         episodes,

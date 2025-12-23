@@ -49,6 +49,12 @@ function parsePageParam(searchParams?: Record<string, string | string[] | undefi
     return Math.min(Math.floor(parsed), MAX_PAGE);
 }
 
+/**
+ * Format a date string into a German short-readable date.
+ *
+ * @param raw - An optional date string (e.g., ISO 8601) or any value accepted by the Date constructor
+ * @returns The date formatted as "DD. MMM YYYY" for the "de-DE" locale, or `'—'` if `raw` is missing or invalid
+ */
 function formatDate(raw?: string | null): string {
     if (!raw) return '—';
     const date = new Date(raw);
@@ -56,10 +62,22 @@ function formatDate(raw?: string | null): string {
     return date.toLocaleDateString('de-DE', {year: 'numeric', month: 'short', day: 'numeric'});
 }
 
+/**
+ * Convert a Strapi media object into an absolute URL.
+ *
+ * @param media - The Strapi media object to convert; may be undefined
+ * @returns The absolute URL for the media, or `undefined` if the media is missing or cannot be resolved
+ */
 function toCoverUrl(media?: StrapiMedia): string | undefined {
-    return mediaUrlToAbsolute({media, strapiUrl: STRAPI_URL});
+    return mediaUrlToAbsolute({media});
 }
 
+/**
+ * Convert an array of StrapiArticle records into feed items suitable for rendering on the home feed.
+ *
+ * @param items - Array of articles from Strapi
+ * @returns An array of `FeedItem` objects with `type: 'article'`, `slug`, `title`, `description`, `publishedAt`, `cover`, and `href` set for each article
+ */
 function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
     return items.map((article) => ({
         type: 'article',

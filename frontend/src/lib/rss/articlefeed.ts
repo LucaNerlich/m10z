@@ -5,7 +5,8 @@ import {
     pickBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
-    type StrapiCategoryRef, StrapiYoutube,
+    type StrapiCategoryRef,
+    StrapiYoutube,
 } from '@/src/lib/rss/media';
 import {filterPublished} from '@/src/lib/rss/publishDate';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
@@ -29,6 +30,18 @@ export type StrapiArticleFeedSingle = {
     };
 };
 
+/**
+ * Builds an RSS 2.0 feed XML document from the provided articles and returns feed content plus caching metadata.
+ *
+ * @param args.siteUrl - Base URL of the site (e.g. https://m10z.de) used to construct item links and the self-referencing atom link.
+ * @param args.strapiUrl - Base URL of the Strapi instance (kept for media/URL resolution context).
+ * @param args.channel - Channel metadata (title, description, mail) used for feed header fields.
+ * @param args.articles - Array of articles to include; only articles considered published as of the call time are included and are sorted by effective date (newest first).
+ * @returns An object with:
+ *   - `xml`: the complete RSS 2.0 XML document as a string,
+ *   - `etagSeed`: a seed string (formatted as "<itemCount>:<latestPublishedAt|none>") suitable for computing an ETag,
+ *   - `lastModified`: the Date of the latest published article or `null` if there are no published articles.
+ */
 export function generateArticleFeedXml(args: {
     siteUrl: string; // e.g. https://m10z.de
     strapiUrl: string;
@@ -65,7 +78,7 @@ export function generateArticleFeedXml(args: {
             const pub = pubRaw ? new Date(pubRaw) : new Date(0);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
             const bannerMedia = pickBannerMedia(a.base, a.categories);
-            const bannerUrl = mediaUrlToAbsolute({media: bannerMedia, strapiUrl});
+            const bannerUrl = mediaUrlToAbsolute({media: bannerMedia});
 
             // Prepare and Sanitize Content
             const title = escapeXml(a.base.title);
@@ -101,5 +114,4 @@ export function generateArticleFeedXml(args: {
 
     return {xml: `${header}${items}${footer}`, etagSeed, lastModified: latestPublishedAt};
 }
-
 

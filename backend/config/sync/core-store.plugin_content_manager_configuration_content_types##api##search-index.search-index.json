@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "documentId",
+      "mainField": "version",
       "defaultSortBy": "documentId",
       "defaultSortOrder": "ASC"
     },
@@ -21,7 +21,7 @@
       },
       "content": {
         "edit": {
-          "label": "content",
+          "label": "Index",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -35,9 +35,9 @@
       },
       "version": {
         "edit": {
-          "label": "version",
+          "label": "Version",
           "description": "",
-          "placeholder": "",
+          "placeholder": "1",
           "visible": true,
           "editable": false
         },
@@ -125,7 +125,7 @@
         [
           {
             "name": "version",
-            "size": 4
+            "size": 12
           }
         ]
       ],
