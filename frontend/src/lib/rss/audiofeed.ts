@@ -102,7 +102,7 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
     const fileMedia = normalizeStrapiMedia(episode.file);
     const coverMedia = pickCoverMedia(episode.base, episode.categories);
 
-    const enclosureUrl = mediaUrlToAbsolute({media: fileMedia, strapiUrl}) ?? '';
+    const enclosureUrl = mediaUrlToAbsolute({media: fileMedia}) ?? '';
     const lengthBytes = normalizeEnclosureLengthBytes(fileMedia) ?? 0;
 
     const title = escapeXml(episode.base.title);
@@ -111,7 +111,7 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
     const pubDate = formatRssDate(pub);
 
     const itunesImageHref =
-        mediaUrlToAbsolute({media: coverMedia, strapiUrl}) ??
+        mediaUrlToAbsolute({media: coverMedia}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
     // Prepare and Sanitize Content
@@ -158,7 +158,7 @@ export function generateAudioFeedXml(args: {
     const published = filterPublished(episodes, (ep) => getEffectiveDate(ep), nowTs);
     const channelImage = normalizeStrapiMedia(channel.image);
     const channelImageUrl =
-        mediaUrlToAbsolute({media: channelImage, strapiUrl}) ??
+        mediaUrlToAbsolute({media: channelImage}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
     const sorted = [...published].sort((a, b) => {

@@ -57,7 +57,7 @@ function formatDate(raw?: string | null): string {
 }
 
 function toCoverUrl(media?: StrapiMedia): string | undefined {
-    return mediaUrlToAbsolute({media, strapiUrl: STRAPI_URL});
+    return mediaUrlToAbsolute({media});
 }
 
 function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {

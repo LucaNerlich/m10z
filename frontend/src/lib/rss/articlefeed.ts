@@ -5,7 +5,8 @@ import {
     pickBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
-    type StrapiCategoryRef, StrapiYoutube,
+    type StrapiCategoryRef,
+    StrapiYoutube,
 } from '@/src/lib/rss/media';
 import {filterPublished} from '@/src/lib/rss/publishDate';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
@@ -65,7 +66,7 @@ export function generateArticleFeedXml(args: {
             const pub = pubRaw ? new Date(pubRaw) : new Date(0);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
             const bannerMedia = pickBannerMedia(a.base, a.categories);
-            const bannerUrl = mediaUrlToAbsolute({media: bannerMedia, strapiUrl});
+            const bannerUrl = mediaUrlToAbsolute({media: bannerMedia});
 
             // Prepare and Sanitize Content
             const title = escapeXml(a.base.title);

@@ -19,7 +19,6 @@ export default async function TeamPage() {
                     const preferredUrl = avatar.formats?.small?.url ?? avatar.url;
                     const avatarUrl = mediaUrlToAbsolute({
                         media: {...avatar, url: preferredUrl},
-                        strapiUrl: process.env.NEXT_PUBLIC_STRAPI_URL,
                     });
                     return (
                         <li key={author.slug ?? author.id}>

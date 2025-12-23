@@ -15,12 +15,12 @@ export default async function AuthorPage({params}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
-    
+
     const author = await fetchAuthorBySlug(slug);
     if (!author) return notFound();
 
     const avatar = normalizeStrapiMedia(author.avatar);
-    const avatarUrl = mediaUrlToAbsolute({media: avatar, strapiUrl: process.env.NEXT_PUBLIC_STRAPI_URL});
+    const avatarUrl = mediaUrlToAbsolute({media: avatar});
 
     return (
         <main>

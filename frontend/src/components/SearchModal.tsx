@@ -164,7 +164,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                                                 src={normalizedUrl}
                                                 width={80}
                                                 height={80}
-                                                loading='lazy'
+                                                loading="lazy"
                                                 quality={50}
                                                 alt={item.title || ''}
                                                 className={styles.coverImage}

@@ -127,17 +127,19 @@ export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): St
 
 export function mediaUrlToAbsolute(args: {
     media: StrapiMedia | undefined;
-    strapiUrl?: string;
-    siteUrl?: string;
 }): string | undefined {
-    const {media, strapiUrl, siteUrl} = args;
+    const {media} = args;
     if (!media?.url) return undefined;
-    const base = strapiUrl || siteUrl;
-    if (!base) return undefined;
+
+    // If URL is already absolute, return as-is
     if (/^https?:\/\//i.test(media.url)) return media.url;
-    const trimmedBase = base.replace(/\/+$/, '');
+
+    // Use Strapi URL from environment variable
+    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/+$/, '');
+    if (!strapiUrl) return undefined;
+
     const path = media.url.startsWith('/') ? media.url : `/${media.url}`;
-    return `${trimmedBase}${path}`;
+    return `${strapiUrl}${path}`;
 }
 
 export function pickCoverMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
