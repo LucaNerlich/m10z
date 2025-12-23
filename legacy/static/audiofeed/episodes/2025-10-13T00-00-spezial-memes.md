@@ -1,7 +1,7 @@
 ---
 title: 'Spezial – Lachnummer oder tiefgreifender Kommentar? Ein M10Z-Spezial zum Thema »Memes«'
 date: '2025-10-13T00:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10ZSpezial_Memes.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/M10ZSpezial_Memes.jpg'
 seconds: '00:57:28'
 blogpost: 'https://m10z.de/spezial-memes'
 url: 'https://m10z.picnotes.de/Spezial/M10Z_Memes_Spezial.mp3'

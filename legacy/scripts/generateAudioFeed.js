@@ -120,7 +120,7 @@ async function episodeToXml(episode, cache) {
         },
         'itunes:image': {
             $: {
-                href: episode.image ?? 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z.jpg',
+                href: episode.image ?? 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/m10z.jpg',
             },
         },
         'description': description,

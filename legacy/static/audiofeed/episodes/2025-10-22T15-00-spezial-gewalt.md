@@ -1,7 +1,7 @@
 ---
 title: 'Gewalt und Spiele – Der überflüssigste Podcast der Welt'
 date: '2025-10-22T15:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/Titelbild_M10ZMarcel-Spezial_Quardrat.png'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/Titelbild_M10ZMarcel-Spezial_Quardrat.png'
 seconds: '00:50:16'
 blogpost: 'https://m10z.de/spezial-gewalt'
 url: 'https://m10z.picnotes.de/Spezial/Spezial_Gewalt1.mp3'

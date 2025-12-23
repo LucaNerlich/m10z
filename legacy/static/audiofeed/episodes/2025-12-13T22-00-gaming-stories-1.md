@@ -1,7 +1,7 @@
 ---
 title: 'Gaming Stories #1 – Der berühmteste gelbe Kreis'
 date: '2025-12-12T22:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/gaming-stories.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/gaming-stories.jpg'
 seconds: '00:06:21'
 blogpost: 'https://m10z.de/gaming-stories-podcast-1'
 url: 'https://m10z.picnotes.de/GamingStories/GamingStories_001.mp3'

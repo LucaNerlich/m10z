@@ -1,7 +1,7 @@
 ---
 title: 'Mindestens 10 Zeichen #4'
 date: '2023-05-06T01:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z-podcast.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/m10z-podcast.jpg'
 seconds: 5670
 url: 'https://m10z.picnotes.de/M10Z/M10Z_004.mp3'
 ---

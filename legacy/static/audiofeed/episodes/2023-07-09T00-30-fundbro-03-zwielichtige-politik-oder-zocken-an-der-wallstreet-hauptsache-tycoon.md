@@ -1,7 +1,7 @@
 ---
 title: 'Fundbüro #03 – Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon'
 date: '2023-07-09T00:30'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/fundbuero.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/fundbuero.jpg'
 seconds: 2174
 url: 'https://m10z.picnotes.de/Fundbuero/Fundbuero_003.mp3'
 ---

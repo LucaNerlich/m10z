@@ -1,7 +1,7 @@
 ---
 title: 'Once we were Gamers #02 – Nostalgie in Videospielen'
 date: '2023-05-03T04:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/owwg.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/owwg.jpg'
 seconds: 2844
 url: 'https://m10z.picnotes.de/OwwG/OwwG_2_Nostalgie.mp3'
 ---

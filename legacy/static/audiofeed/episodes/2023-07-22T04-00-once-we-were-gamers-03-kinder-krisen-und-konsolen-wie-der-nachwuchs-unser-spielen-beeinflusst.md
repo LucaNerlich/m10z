@@ -1,7 +1,7 @@
 ---
 title: 'Once we were Gamers #03 – Kinder, Krisen und Konsolen – Wie der Nachwuchs unser Spielen beeinflusst'
 date: '2023-07-22T04:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/owwg.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/owwg.jpg'
 seconds: 3608
 url: 'https://m10z.picnotes.de/OwwG/OwwG_3_KinderKrisenKonsolen.mp3'
 ---

@@ -1,7 +1,7 @@
 ---
 title: 'Fundbüro #01 – Bilbo im Kreuzfeuer'
 date: '2023-04-01T11:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/fundbuero.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/fundbuero.jpg'
 seconds: 2254
 url: 'https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3'
 ---

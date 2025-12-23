@@ -14,14 +14,14 @@
             <itunes:email>m10z@posteo.de</itunes:email>
         </itunes:owner>
         <itunes:author>M10Z</itunes:author>
-        <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z.jpg</itunes:image>
+        <itunes:image>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/m10z.jpg</itunes:image>
         <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title>Mindestens 10 Zeichen #10 - Juhu, Jubiläum, wir sind 10!</title>
             <pubDate>Fri, 05 Jan 2024 09:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash22</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #10 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -59,7 +59,7 @@
             <pubDate>Sun, 24 Dec 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash21</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/fundbuero.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/fundbuero.jpg</url>
                 <title>Fundbüro #06 - Weihnachtspezial</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -95,7 +95,7 @@
             <pubDate>Sat, 25 Nov 2023 11:59:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash20</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #9 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -129,7 +129,7 @@
             <pubDate>Sun, 19 Nov 2023 10:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash19</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/fundbuero.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/fundbuero.jpg</url>
                 <title>Fundbüro #05 - Gallien den Galliern</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -166,7 +166,7 @@
             <pubDate>Fri, 03 Nov 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash18</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #8 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -208,7 +208,7 @@
             <pubDate>Tue, 31 Oct 2023 13:30:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash17</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/enrogue.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/enrogue.jpg</url>
                 <title>En Rogue #01</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -230,7 +230,7 @@
             <pubDate>Thu, 19 Oct 2023 10:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash16</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/fundbuero.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/fundbuero.jpg</url>
                 <title>Fundbüro #04 - Star Wars Episode One in Bestform und die etwas anderen Sportspiele</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -264,7 +264,7 @@
             <pubDate>Sun, 15 Oct 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash15</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #7 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -302,7 +302,7 @@
             <pubDate>Sun, 10 Sep 2023 04:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash14</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/owwg.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/owwg.jpg</url>
                 <title>Once we were Gamers #04 - Wer like sagt, muss auch lite sagen</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -320,7 +320,7 @@
         </item>
 
         <image>
-            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z.jpg</url>
+            <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/m10z.jpg</url>
             <title>M10Z Podcasts</title>
             <link>https://m10z.de</link>
         </image>
@@ -329,7 +329,7 @@
             <pubDate>Tue, 08 Aug 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash13</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #6 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -360,7 +360,7 @@
             <pubDate>Sat, 22 Jul 2023 04:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash12</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/owwg.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/owwg.jpg</url>
                 <title>#03 - Kinder, Krisen und Konsolen - Wie der Nachwuchs unser Spielen beeinflusst</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -383,7 +383,7 @@
             <pubDate>Sun, 09 Jul 2023 00:30:01 +0000</pubDate>
             <guid isPermaLink="false">ein-hash11</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/fundbuero.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/fundbuero.jpg</url>
                 <title>Fundbüro #03 - Zwielichtige Politik oder zocken an der Wallstreet: Hauptsache Tycoon</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -412,7 +412,7 @@
             <pubDate>Sat, 01 Jul 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash10</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #5 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -446,7 +446,7 @@
             <pubDate>Wed, 14 Jun 2023 05:00:01 +0000</pubDate>
             <guid isPermaLink="false">ein-hash9</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10ZSpezial_Logo3000x3000.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/M10ZSpezial_Logo3000x3000.jpg</url>
                 <title>FM10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -485,7 +485,7 @@
             <pubDate>Wed, 10 May 2023 05:00:01 +0000</pubDate>
             <guid isPermaLink="false">ein-hash8</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/fundbuero.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/fundbuero.jpg</url>
                 <title>Fundbüro #02 - Mit Lego-Schrott zum Racer-Gott</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -510,7 +510,7 @@
             <pubDate>Sat, 06 May 2023 01:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash7</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #4 (m10z)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -545,7 +545,7 @@
             <pubDate>Wed, 03 May 2023 04:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash6</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/owwg.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/owwg.jpg</url>
                 <title>Once we were Gamers #2 - Nostalgie in Videospielen</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -567,7 +567,7 @@
             <pubDate>Sun, 09 Apr 2023 09:30:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash5</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/owwg.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/owwg.jpg</url>
                 <title>Once we were Gamers #01 - Lilith unter Kritik (Diablo 4 Beta Preview)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -594,7 +594,7 @@
             <pubDate>Sat, 01 Apr 2023 11:00:01 +0000</pubDate>
             <guid isPermaLink="false">ein-hash4</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/fundbuero.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/fundbuero.jpg</url>
                 <title>Fundbüro #01 - Bilbo im Kreuzfeuer</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -618,7 +618,7 @@
             <pubDate>Sat, 01 Apr 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash3</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #3 (Wasted)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -649,7 +649,7 @@
             <pubDate>Sun, 12 Mar 2023 11:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash2</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #2 (Wasted)</title>
                 <link>https://m10z.de</link>
             </itunes:image>
@@ -679,7 +679,7 @@
             <pubDate>Wed, 25 Jan 2023 17:00:00 +0000</pubDate>
             <guid isPermaLink="false">ein-hash1</guid>
             <itunes:image>
-                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/banner/m10z-podcast.jpg</url>
+                <url>https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/banner/m10z-podcast.jpg</url>
                 <title>Mindestens 10 Zeichen #1 (Wasted)</title>
                 <link>https://m10z.de</link>
             </itunes:image>

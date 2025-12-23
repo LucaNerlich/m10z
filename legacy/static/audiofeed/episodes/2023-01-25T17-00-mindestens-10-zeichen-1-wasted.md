@@ -1,7 +1,7 @@
 ---
 title: 'Mindestens 10 Zeichen #1 (Wasted)'
 date: '2023-01-25T17:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/m10z-podcast.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/m10z-podcast.jpg'
 seconds: 5622
 url: 'https://m10z.picnotes.de/M10Z/M10Z_001.mp3'
 ---

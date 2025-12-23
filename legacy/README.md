@@ -205,7 +205,7 @@ To include new episodes in the podcast RSS feed, create a new markdown file in t
 ---
 title: 'Episode Title'
 date: '2025-11-26T10:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/format-cover.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/format-cover.jpg'
 seconds: '00:47:19'
 blogpost: 'https://m10z.de/episode-slug'
 url: 'https://your-audio-host.com/episode.mp3'

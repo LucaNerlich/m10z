@@ -1,7 +1,7 @@
 ---
 title: 'Once we were Gamers #01 – Lilith unter Kritik (Diablo 4 Beta Preview)'
 date: '2023-04-09T09:30'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/owwg.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/owwg.jpg'
 seconds: 3022
 url: 'https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3'
 ---

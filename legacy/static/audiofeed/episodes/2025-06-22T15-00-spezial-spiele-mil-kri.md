@@ -1,7 +1,7 @@
 ---
 title: 'Spezial: Spiele, Militär und Krieg – Eine Diskussion'
 date: '2025-06-22T15:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/spezial-krieg.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/spezial-krieg.jpg'
 seconds: 4962
 blogpost: 'https://m10z.de/spezial-spiele-mil-kri'
 url: 'https://m10z.picnotes.de/Spezial/Spezial-Spiele_Militaer_Krieg.mp3'

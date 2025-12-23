@@ -1,7 +1,7 @@
 ---
 title: 'Fundbüro #02 – Mit Lego-Schrott zum Racer-Gott'
 date: '2023-05-10T05:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/formate/cover/fundbuero.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/formate/cover/fundbuero.jpg'
 seconds: 2957
 url: 'https://m10z.picnotes.de/Fundbuero/Fundbuero_002.mp3'
 ---

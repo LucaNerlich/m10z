@@ -1,7 +1,7 @@
 ---
 title: 'M10Z Spezial – Ein Gespräch über Computerspiele, Kunst und Museen'
 date: '2023-06-14T05:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/M10ZSpezial_Logo3000x3000.jpg'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/M10ZSpezial_Logo3000x3000.jpg'
 seconds: 3293
 url: 'https://m10z.picnotes.de/Spezial/M10ZSpezial_001.mp3'
 ---

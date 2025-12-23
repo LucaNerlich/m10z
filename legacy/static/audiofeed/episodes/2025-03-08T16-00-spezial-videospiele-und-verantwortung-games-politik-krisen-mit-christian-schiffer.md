@@ -1,7 +1,7 @@
 ---
 title: 'Spezial: Videospiele und Verantwortung – Games, Politik, Krisen (mit Christian Schiffer)'
 date: '2025-03-08T16:00'
-image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/static/img/SpezialChristian_NeuesLogoMitChristian.png'
+image: 'https://raw.githubusercontent.com/LucaNerlich/m10z/main/legacy/static/img/SpezialChristian_NeuesLogoMitChristian.png'
 seconds: 3624
 blogpost: spezial_spiele-krisen
 url: 'https://m10z.picnotes.de/Spezial/M10Z_Spiele_Verantwortung_Politik_Krisen.mp3'
