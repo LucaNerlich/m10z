@@ -8,6 +8,8 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {mediaUrlToAbsolute, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
 import styles from './page.module.css';
+import Image from 'next/image';
+import placeholderCover from '@/public/images/m10z.jpg';
 
 const HOME_ARTICLE_TAGS = ['page:home', 'strapi:article'];
 const HOME_PODCAST_TAGS = ['page:home', 'strapi:podcast'];
@@ -110,7 +112,8 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
         <div>
             <header className={styles.header}>
                 <h1 className={styles.title}>Mindestens 10 Zeichen</h1>
-                <p className={styles.subtitle}>Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen.</p>
+                <p className={styles.subtitle}>Ein offener Kanal für Videospielcontent und das Drumherum –
+                    unentgeltlich, unabhängig, ungezwungen.</p>
             </header>
             <Suspense fallback={<div className={styles.emptyCard}>Lade Inhalte…</div>}>
                 <FeedContent searchParams={props.searchParams} />
@@ -175,17 +178,14 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                         return (
                             <article key={anchor} id={anchor} className={styles.card}>
                                 <div className={styles.media}>
-                                    {coverUrl ? (
-                                        <img
-                                            src={coverUrl}
-                                            alt={item.title}
-                                            loading="lazy"
-                                            decoding="async"
-                                            className={styles.cover}
-                                        />
-                                    ) : (
-                                        <div className={styles.coverPlaceholder} aria-hidden="true" />
-                                    )}
+                                    <Image
+                                        src={coverUrl ?? placeholderCover}
+                                        width={200}
+                                        height={200}
+                                        placeholder={coverUrl ? 'empty' : 'blur'}
+                                        alt={item.title || ''}
+                                        className={styles.cover}
+                                    />
                                 </div>
                                 <div className={styles.cardBody}>
                                     <div className={styles.metaRow}>
