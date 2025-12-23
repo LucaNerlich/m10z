@@ -1,0 +1,105 @@
+import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
+import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import {
+    mediaUrlToAbsolute,
+    pickBannerMedia,
+    type StrapiAuthor,
+    type StrapiBaseContent,
+    type StrapiCategoryRef, StrapiYoutube,
+} from '@/src/lib/rss/media';
+import {filterPublished} from '@/src/lib/rss/publishDate';
+import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
+
+export type StrapiArticle = {
+    id: number;
+    slug: string;
+    publishedAt: string | null;
+    base: StrapiBaseContent;
+    categories?: StrapiCategoryRef[];
+    authors?: StrapiAuthor[];
+    youtube?: StrapiYoutube[];
+    content: string;
+};
+
+export type StrapiArticleFeedSingle = {
+    channel: {
+        title: string;
+        description: string;
+        mail: string;
+    };
+};
+
+export function generateArticleFeedXml(args: {
+    siteUrl: string; // e.g. https://m10z.de
+    strapiUrl: string;
+    channel: StrapiArticleFeedSingle['channel'];
+    articles: StrapiArticle[];
+}): {xml: string; etagSeed: string; lastModified: Date | null} {
+    const {siteUrl, strapiUrl, channel, articles} = args;
+
+    const nowTs = Date.now();
+    const now = new Date(nowTs);
+    const published = filterPublished(articles, (a) => getEffectiveDate(a), nowTs);
+    const header =
+        `<?xml version="1.0" encoding="UTF-8"?>` +
+        `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">` +
+        `  <channel>` +
+        `    <title>${escapeXml(channel.title)}</title>` +
+        `    <link>${escapeXml(siteUrl)}</link>` +
+        `    <description>${escapeXml(channel.description)}</description>` +
+        `    <language>de</language>` +
+        `    <managingEditor>${escapeXml(channel.mail)}</managingEditor>` +
+        `    <webMaster>${escapeXml(channel.mail)}</webMaster>` +
+        `    <lastBuildDate>${formatRssDate(now)}</lastBuildDate>` +
+        `    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>`;
+
+    const sorted = [...published].sort((a, b) => {
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
+        return bd - ad;
+    });
+
+    const items = sorted
+        .map((a) => {
+            const pubRaw = getEffectiveDate(a);
+            const pub = pubRaw ? new Date(pubRaw) : new Date(0);
+            const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
+            const bannerMedia = pickBannerMedia(a.base, a.categories);
+            const bannerUrl = mediaUrlToAbsolute({media: bannerMedia, strapiUrl});
+
+            // Prepare and Sanitize Content
+            const title = escapeXml(a.base.title);
+            const description = escapeXml(a.base.description ?? '');
+            const html = markdownToHtml(a.content ?? '');
+            const cdataContent = escapeCdata(html);
+
+            // todo add youtube urls
+
+            const guid = sha256Hex(link);
+
+            return (
+                `    <item>` +
+                `      <title>${title}</title>` +
+                `      <link>${escapeXml(link)}</link>` +
+                `      <guid isPermaLink="false">${guid}</guid>` +
+                `      <pubDate>${formatRssDate(pub)}</pubDate>` +
+                `      <description>${description}></description>` +
+                `      <content:encoded><![CDATA[${cdataContent}]]></content:encoded>` +
+                (bannerUrl
+                    ? `      <enclosure url="${escapeXml(bannerUrl)}" length="${bannerMedia?.sizeInBytes ?? 0}" type="${escapeXml(bannerMedia?.mime ?? 'image/jpeg')}"/>`
+                    : '') +
+                `    </item>`
+            );
+        })
+        .join('');
+
+    const footer = `</channel></rss>`;
+
+    const latestRaw = getEffectiveDate(sorted[0]);
+    const latestPublishedAt = latestRaw ? new Date(latestRaw) : null;
+    const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
+
+    return {xml: `${header}${items}${footer}`, etagSeed, lastModified: latestPublishedAt};
+}
+
+

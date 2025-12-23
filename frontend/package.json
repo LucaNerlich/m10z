@@ -1,0 +1,42 @@
+{
+    "name": "m10z-frontend",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start"
+    },
+    "dependencies": {
+        "dompurify": "^3.3.1",
+        "fuse.js": "^7.1.0",
+        "jsdom": "^27.3.0",
+        "marked": "^17.0.1",
+        "next": "^16.1.1",
+        "qs": "^6.14.0",
+        "react": "^19.2.3",
+        "react-dom": "^19.2.3",
+        "react-markdown": "^10.1.0",
+        "react-player": "^3.4.0",
+        "rehype-external-links": "^3.0.0",
+        "remark-breaks": "^4.0.0",
+        "remark-gfm": "^4.0.1",
+        "remark-smartypants": "^3.0.2",
+        "xml-formatter": "^3.6.7"
+    },
+    "devDependencies": {
+        "@next/env": "^16.1.1",
+        "@types/jsdom": "^27.0.0",
+        "@types/node": "^22.19.3",
+        "@types/qs": "^6.14.0",
+        "@types/react": "^19.2.7",
+        "@types/react-dom": "^19.2.3",
+        "babel-plugin-react-compiler": "^1.0.0",
+        "typescript": "^5.9.3"
+    },
+    "engines": {
+        "node": "^22",
+        "npm": "^11"
+    },
+    "packageManager": "pnpm@10.15.1"
+}

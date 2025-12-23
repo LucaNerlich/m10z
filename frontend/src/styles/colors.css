@@ -1,0 +1,8 @@
+:root {
+    --color-primary: oklch(0.687 0.175 45.092);
+    --color-primary-strong: oklch(0.62 0.19 45.092);
+    --color-primary-soft: oklch(0.81 0.11 45.092);
+    --color-on-primary: oklch(0.99 0.01 96);
+    --color-secondary: oklch(0.836 0.142 190.267);
+    --color-secondary-strong: oklch(0.722 0.121 190.691);
+}

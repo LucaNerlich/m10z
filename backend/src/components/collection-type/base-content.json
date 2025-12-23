@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_collection_type_base_contents",
+  "info": {
+    "displayName": "BaseContent",
+    "icon": "message"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "banner": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "date": {
+      "type": "datetime"
+    }
+  },
+  "config": {}
+}

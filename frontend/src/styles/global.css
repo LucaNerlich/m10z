@@ -1,0 +1,42 @@
+@import "reset.css";
+@import "variables.css";
+@import "colors.css";
+@import "theme.css";
+@import "typography.css";
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--color-background);
+}
+
+body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    transition: background-color 180ms ease, color 180ms ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color-primary);
+}
+
+a:active {
+    color: var(--color-primary-strong);
+}
+
+hr {
+    border-color: var(--color-border);
+}
+
+main {
+    flex: 1;
+}

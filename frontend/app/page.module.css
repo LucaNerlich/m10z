@@ -1,0 +1,204 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 24px;
+    margin-top: 24px;
+}
+
+.title {
+    font-size: 28px;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.page {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .page {
+        grid-template-columns: 1fr;
+    }
+
+    .toc {
+        position: static;
+    }
+}
+
+.toc {
+    position: sticky;
+    top: 96px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    box-shadow: var(--shadow-soft);
+}
+
+.tocTitle {
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+.tocList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tocEntry {
+    margin: 0;
+}
+
+.tocLink {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: inherit;
+}
+
+.tocLabel {
+    font-weight: 600;
+}
+
+.tocDate {
+    color: var(--color-text-muted);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+}
+
+@media (max-width: 720px) {
+    .card {
+        grid-template-columns: 1fr;
+    }
+}
+
+.media {
+    background: var(--color-surface-strong);
+}
+
+.cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+}
+
+.cardBody {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.metaRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.metaTag {
+    padding: 4px 10px;
+    font-weight: 700;
+}
+
+.date {
+    color: var(--color-text-muted);
+    font-size: 13px;
+}
+
+.cardTitle {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.3;
+}
+
+.cardLink {
+    color: inherit;
+}
+
+.description {
+    margin: 0;
+    color: var(--color-text-muted);
+}
+
+.cardActions {
+    margin-top: auto;
+}
+
+.readMore {
+    font-weight: 700;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.pageInfo {
+    color: var(--color-text-muted);
+}
+
+.pageControls {
+    display: flex;
+    gap: 8px;
+}
+
+.pageButton {
+    padding: 8px 14px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: inherit;
+}
+
+.pageButtonDisabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.empty,
+.emptyCard {
+    color: var(--color-text-muted);
+}
+
+.emptyCard {
+    border: 1px dashed var(--color-border);
+    padding: 16px;
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+

@@ -1,0 +1,212 @@
+---
+slug: ollama-image-tags
+title: 'Sunday-Projects – Bilder taggen mit Ollama'
+date: 2024-11-02
+authors: [adrian]
+tags: [artikel, tech, sunday-projects, adrian]
+draft: false
+image: /img/tech/sundayprojects/ollama_logo.png
+---
+
+
+import Image from '@theme/IdealImage'
+
+'Sunday Projects' sind die kleinen, technischen Projekte und Spielereien mit denen ich in unregelmäßigen Abständen meine Zeit verbringe.
+
+Anscheinend ist es schon Tradition, dass irgendwie ein paar Projekte sich mit AI oder ähnlichem beschäftigen, nachdem ich bereits Transkriptionen gemacht habe und @tilmobaxter seine Bilder mit AI generiert. Nun widme ich mich darum, wie es mir sehr viel Arbeit ersparen und meine Bildersammlung an Qualität gewinnen kann.
+
+<Image style={{width: '100%'}} img={require('/static/img/tech/sundayprojects/ollama_logo.png')} />
+
+<!--truncate-->
+
+## Das Problem
+Auch wenn ich in letzter Zeit nicht mehr viel Zeit dem Fotoschießen widme, hat sich in den letzten Jahren eine kleine Sammlung angestaut, die einfach nur in Ordnern strukturiert ist. Zusätzliche Informationen, die nicht von der Kamera kommen, fehlen. Also was mache ich mit meinen über 70.000 Fotos, die ich von Reisen gemacht habe und auch teilweise noch von meinen Großeltern kommen? Von Hand werde ich eine ganze Weile beschäftigt sein. Dabei wäre es so schön, wenn man die Fotos ein wenig durchsuchen oder per Schlagwörter durchsuchen könnte.
+
+## Also was machen?
+Es gibt z. B. für Lightroom Plugins wie Wordroom, die einem die Schlagwörter liefern, aber die funktionieren meiner Erfahrung nach eher so mittelmäßig oder gar nicht. Dazu sind das dann nur die Schlagwörter und keine Beschreibung oder geben den Bildern keine artsy-fartsy Titel. Zum Glück gab es jetzt in den letzten Jahren viele Fortschritte und neue Anwendungsbereiche für Large Language Models (LLMs), am bekanntesten sind da ChatGPT von OpenAI und LLaMA von Meta. Gerade Meta muss man positiv hervorheben, die ihr LLaMA-Sprachmodell für alle frei verfügbar stellen, inkl. Gewichtungen, und dies somit entsprechend genutzt wird und auch in der Forschung großen Anklang findet für Versuche. Das ermöglicht z. B. auch, dass die Open-Source-Community fleißig wurde und sehr viele Tools entwickelt hat, die es ermöglichen, genannte LLMs lokal zu verwenden. Eines dieser Projekte ist Ollama.
+
+## Was zum Teufel ist Ollama?
+[Ollama](https://ollama.com/) ist nicht nur ein knuddeliges Lama mit Knopfaugen, sondern ermöglicht es mit einfachen Befehlen Sprachmodelle aus dem Repository zu installieren und zu starten. Dabei bietet es auch noch eine einheitliche API, um diese LLMs anzusprechen. Mit [vLLM](https://github.com/vllm-project/vllm), [local.ai](https://localai.io/) oder [llama.cpp](https://github.com/ggerganov/llama.cpp) gibt es auch genügend Alternativen, die Ähnliches bieten, aber ich habe mich für Ollama entschieden, weil ich den Eindruck hatte, dass es am einfachsten zu verwenden ist. Eigentlich habe ich da auch keine Präferenzen und es ist jedem selbst überlassen, ob er nicht sowas mit einem anderen Tool umsetzen will.
+
+### Installation
+Nichts einfacher als das! Einfach auf https://ollama.com gehen und den Schritten folgen. Nach der Installation lässt sich im Terminal mittels `ollama pull <modelname>` ein Modell installieren. Die Modelle und Befehle sind unter https://ollama.com/library einsehbar. Ich habe für mein Projekt folgende LLMs ausprobiert:
+* [llava-phi3](https://ollama.com/library/llava)
+* [llava-llama3](https://ollama.com/library/llava-llama3)
+* [llava:v1.6](https://ollama.com/library/llava-phi3)
+* [llama3.2-vision](https://ollama.com/x/llama3.2-vision)
+
+### Welches Modell?
+Prinzipiell machen alle Modelle ähnliches und haben ein Vision-Modell implementiert. Der Unterschied zwischen den Sprachmodellen ist die Größe des Parameterraums. Das ist insofern wichtig, weil größere Modelle nicht nur umfangreichere Antworten liefern können, sondern auch deutlich mehr Rechenleistung benötigen. Auf meinem Notebook konnte ich problemlos ein Modell mit 7 Milliarden Parametern (7B) ausführen. Na ja, eigentlich gab es ein Problem: Bei Ollama gab es bis vor Kurzem das Problem, dass sich nach ein paar Prompts das Modell aufgehängt hat und nichts mehr weiterging. Das ist mit der Version 0.4 anscheinend gelöst und ich hatte bislang keine Probleme, nach über 200 Bildern. Es gibt durchaus auch qualitative Unterschiede zwischen einem 3B- und 7B-Modell, weil die Antworten dann knapper und einfacher ausfallen. Wegen des Problems habe ich dann erstmal alle Bilder mit llava-phi3 von Microsoft analysieren lassen, was ein recht kleines Modell ist, aber eigentlich ganz passable Antworten liefert.
+
+### Was nun?
+Ganz einfach: Ab in die Shell (in Windows heißt es Terminal) und z. B. das erste Modell mittels `ollama pull llava-phi3` herunterladen. Mit `ollama run llava-phi3` ließe sich dann in der Shell das Modell starten und Eingaben tätigen. Das ist aber für uns vielleicht nicht ganz so praktisch, wenn man in die Shell jedes Foto einzeln reinkopieren müsste. Netterweise bietet Ollama auch direkt eine [Web-API](https://github.com/ollama/ollama/blob/main/docs/api.md) an, die sich recht einfach ansprechen lässt. Aber man kann natürlich auch einfach wie ich das entsprechende Ollama-Python-Package nutzen :).
+
+## Die Prompts
+Ich habe die Prompts relativ einfach gehalten und je nach verwendetem Sprachmodell lohnt es sich, diese auch anzupassen. Während phi3 sehr knappe Antworten liefert und diese auch bei geänderten Prompts sehr ähnlich ausfallen, sieht es bei llama3 komplett anders aus und man bekommt z. B. entweder einen Titel mit 3 Wörtern oder einen aus 3 Sätzen.
+
+Zur Titel-Generierung: "Give the photo a title. Avoid naming locations or people."
+Für eine Beschreibung: "Provide a description of what is on the photo. Avoid repetitive sentences and words."
+Für die Schlagwörter: "Provide a minimum of 10 precise keywords separated by commas."
+
+Weil mir das gerade beim Schreiben auffällt: Ich habe jetzt alles in Englisch gemacht, aber die Modelle können auch andere Sprachen, insofern könnten die Prompts auch auf Deutsch sein und erhält dann auch deutsche Antworten. Oder Spanisch, oder Französisch …
+
+## Und wie sieht dein Skript aus?
+Den Code seht ihr am Ende dieses Beitrags. Aber im Prinzip funktioniert der Code folgendermaßen:
+
+1. Scan den Pfad zu den Fotos und erstelle eine Liste mit allen jpeg-, jpg- und png-Dateien.
+2. Schleife durch alle Bilder.
+2.1 Starte das Sprachmodell.
+2.2 Konvertiere das Bild in Base64.
+2.3 Übergib das Bild mit Prompt dem Sprachmodell.
+2.4 Speichere die Antwort in die Sidecard-File vom Bild.
+3. Wiederhole Schritt 2 mit einem anderen Prompt (Es gibt drei: für Titel, Beschreibung und Schlagwörter).
+4. Schreibe "Yay" wenn das Skript fertig durchgelaufen ist.
+
+## Kurzer Vergleich der Ergebnisse
+Ich habe ein einfaches Foto von einem Holzsteg am See bei Dämmerung (bläuliches Licht) für den Vergleich verwendet. Der Steg befindet sich dabei im rechten Drittel des Bildausschnitts. Es ist also gar nicht so viel oder ein komplexes Bild und abgesehen vom gegenüberliegenden Ufer mit etwas Nebel gibt es auch nicht viel mehr auf dem Foto. Das Foto zeige ich übrigens absichtlich nicht, damit nur das Ergebnis zählt. Vielleicht lade ich zu einem späteren Zeitpunkt noch welche hoch, die etwas mehr zeigen.
+
+| Model             | Anzahl Parameter | Titel                                                                                                                                | Beschreibung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|-------------------|------------------|--------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| llava:v1.6        | 7B               | Serene Solitude: A Lone Pier in Tranquility                                                                                          | The image shows a tranquil scene featuring a wooden dock extending into a body of water, which appears to be a lake or calm sea. The dock has a simple structure with planks laid across it, supported by vertical posts at regular intervals. The water is calm, reflecting the overcast sky above. In the distance, there are low hills or mountains under the grayish-blue sky, suggesting a rural or semi-rural location. There's no visible text or distinctive markings on the dock or in the surrounding area. The overall atmosphere of the image is serene and natural.                                       |
+| llava-llama3      | 8B               | A dock on a body of water.                                                                                                           | The image captures a serene scene at dusk. A wooden pier, weathered by time and elements, extends into the tranquil water. The pier, with its sturdy railing on one side, serves as a silent sentinel overlooking the vast expanse of the sea.  The sky above is a canvas of soft hues, painted in shades of blue that gradually darken as they stretch towards the horizon. The water below mirrors this spectacle, its surface rippling gently under the fading light of the day.  In the distance, the faint outline of mountains can be discerned against the backdrop of the twilight sky. Their presence adds a sense of depth and scale to the scene, reminding us of nature's grandeur. The image is devoid of any text or human activity, offering instead a moment of quiet reflection amidst the beauty of nature. The relative positions of the objects - the pier in the foreground leading our eyes towards the mountains in the background - create a sense of depth and perspective that draws us into this peaceful tableau.                                                                |
+| x/llama3.2-vision | 11B              | "Endless Horizon"                                                                                                                    | This image captures a serene and expansive view of a body of water, with a long wooden dock stretching out into the distance. The dock's weathered wood and simple design blend harmoniously with the surrounding environment, creating a sense of continuity between the natural world and human-made structures.  The stillness of the water is palpable, reflecting the calm atmosphere of the scene. The absence of any boats or other disturbances adds to the tranquility, making it feel like a peaceful escape from the hustle and bustle of everyday life.  As the eye follows the dock out into the distance, it's drawn to the horizon line where the sky meets the water. The subtle gradient of colors in the sky creates a sense of depth and dimensionality, inviting the viewer to explore the vastness of the scene. The overall mood of the image is one of serenity and contemplation, evoking feelings of relaxation and connection with nature. It's as if the viewer has stumbled upon a hidden gem, a secret spot where time stands still and all that matters is the present moment. |
+| llava-phi3        | 3.8B             | A wooden pier extends into calm water, with two poles on either side of it. The sky is overcast and there are birds in the distance. | This image captures a serene scene at a lake. The main focus is a wooden pier that extends into the calm, light blue water. The pier, appearing sturdy and well-maintained, has two poles on either end, providing support against the gentle waves of the lake. A small railing runs along the side of the pier, ensuring safety for those who venture out onto it. The sky above is a light blue color, suggesting a clear day with good weather. In the distance, you can see mountains rising against the horizon, adding depth and grandeur to the scene. The overall image evokes a sense of tranquility and peacefulness, as if inviting viewers to step onto the pier and enjoy the beauty of nature.                                                                                                                                                                                                                                                                                                                                                                                                |
+
+## Der Code
+Es müssen eigentlich nur die Konstanten angepasst werden. `OLLAMA_URL` muss nicht angerührt werden, aber wenn man mehrere Modelle parallel laufen lässt, dann ergibt es Sinn zumindest den Port abzuändern, damit es nicht zu Konflikten kommt.
+
+```python
+import base64
+import glob
+import os
+from io import BytesIO
+from pathlib import Path
+from PIL import Image
+from langchain_community.llms import Ollama
+import exiftool
+import json
+import datetime
+from tqdm import tqdm
+
+# Constants for directories and prompts
+OLLAMA_URL = "http://127.0.0.1:11434"
+SOURCE_DIR = "HIER DEN PFAD ZU DEN BILDERN EINGEBEN"
+TARGET_DIR = "HIER DEN PFAD WO DIE METADATEN LANDEN SOLLEN EINGEBEN"
+
+PROMPT_TITLE = "Give the photo a title. Avoid naming locations or people."
+PROMPT_DESCRIPTION = "Provide a description of what is on the photo. Avoid repetitive sentences and words."
+PROMPT_KEYWORDS = "Provide a minimum of 10 precise keywords separated by commas."
+
+FILE_EXTENSIONS = ['*.jpeg', '*.jpg', '*.png']
+
+FORCE_REPROCESS = True
+
+# Function to convert PIL image to base64 string
+def convert_to_base64(pil_image):
+    buffered = BytesIO()
+    rgb_im = pil_image.convert('RGB')
+    rgb_im.save(buffered, format="JPEG")
+    img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    return img_str
+
+# Function to process image with LLama model
+def process_image(image_path, prompt):
+    # Connect to LLama 1.6
+    #mymodel = Ollama(model="llava:v1.6", base_url=OLLAMA_URL, temperature=0)
+    #mymodel = Ollama(model="llava-llama3", base_url=OLLAMA_URL, temperature=0)
+    mymodel = Ollama(model="x/llama3.2-vision", base_url=OLLAMA_URL, temperature=0)
+    #mymodel = Ollama(model="llava-phi3", base_url=OLLAMA_URL, temperature=0)
+
+    try:
+        # Read the image
+        print(f"Processing image '{image_path}'...")
+        pil_image = Image.open(image_path)
+
+        # Resize the image to a width of 672 pixels
+        base_width = 672
+        wpercent = (base_width / float(pil_image.size[0]))
+        hsize = int((float(pil_image.size[1]) * float(wpercent)))
+        pil_image = pil_image.resize((base_width, hsize), Image.LANCZOS)
+
+        # Convert image to base64 and pass it to the model along with the prompt
+        image_b64 = convert_to_base64(pil_image)
+        llm_with_image_context = mymodel.bind(images=[image_b64])
+        response = llm_with_image_context.invoke(prompt)
+
+        # Print LLama:v1.6 response
+        print(response)
+
+        # Check if XMP sidecar file exists
+        xmp_path = Path(image_path).with_suffix('.xmp')
+        if os.path.exists(xmp_path):
+            # Update XMP metadata based on prompt type
+            if prompt == PROMPT_KEYWORDS:
+                tag = "-XMP:Subject"
+            elif prompt == PROMPT_DESCRIPTION:
+                tag = "-XMP:Description"
+            elif prompt == PROMPT_TITLE:
+                tag = "-XMP:Title"
+            with exiftool.ExifTool() as et:
+                et.execute(f"{tag}={response}", str(xmp_path))
+
+        else:
+            print(f"XMP sidecar file not found for {image_path}. Skipping.")
+
+    except Exception as e:
+        print(f"Error processing image {image_path}: {e}")
+
+def is_image_processed(image_path):
+    # Generate the path to the XMP sidecar file
+    xmp_path = Path(image_path).with_suffix('.xmp')
+
+    # Check if the XMP sidecar file exists
+    if not xmp_path.exists():
+        print(f"XMP sidecar file '{xmp_path}' not found.")
+        return False
+
+    # Check if the custom EXIF tag exists in the XMP sidecar file
+    with exiftool.ExifToolHelper() as et:
+        # Get the tags from the XMP sidecar file
+        lst_tags = ["XMP:Subject", "XMP:Description", "XMP:Title"]
+        tags = et.get_tags([str(xmp_path)], tags=lst_tags)
+
+        # Get the first (and presumably only) file's tag data
+        tag_data = tags[0] if tags else {}
+
+        # Check if any of the specified fields are empty
+        for tag in lst_tags:
+            value = tag_data.get(tag)
+            if not value or not str(value).strip():
+                print(f"The field '{tag}' is empty.")
+                return False  # Return False if any field is empt
+
+        # Return True if all fields have content and not already processed
+        print(f"Already processed: '{image_path}'")
+        return True
+
+if __name__ == "__main__":
+    # Collect all files to be processed
+    all_files = []
+    print("Collecting file list...")
+    for ext in FILE_EXTENSIONS:
+        all_files.extend(glob.glob(SOURCE_DIR + '/**/' + ext, recursive=True))
+
+    # Iterate through files with a progress bar
+    for filepath in tqdm(all_files, desc="Processing images"):
+        # Skip processing if the image is already tagged
+        if not FORCE_REPROCESS:
+            if is_image_processed(filepath):
+                continue
+
+        process_image(filepath, PROMPT_TITLE)
+        process_image(filepath, PROMPT_DESCRIPTION)
+        process_image(filepath, PROMPT_KEYWORDS)
+
+    print("Finished. Yay!")
+```
+
+---
+
+Ciao Kakao, Adrian
+
+Meldet euch bei Fragen gerne auf [unserem Discord](https://discord.gg/cTkb5FMA84).

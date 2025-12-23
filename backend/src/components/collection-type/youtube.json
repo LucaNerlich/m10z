@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_collection_type_youtubes",
+  "info": {
+    "displayName": "Youtube",
+    "icon": "television"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "required": true,
+      "regex": "^https?:\\/\\/www\\.youtube\\.com\\/watch\\?v=([a-zA-Z0-9_-]{11})(?:[?&#].*)?$"
+    }
+  },
+  "config": {}
+}
