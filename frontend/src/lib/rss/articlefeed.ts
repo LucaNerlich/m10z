@@ -5,7 +5,7 @@ import {
     pickBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
-    type StrapiCategoryRef,
+    type StrapiCategoryRef, StrapiYoutube,
 } from '@/src/lib/rss/media';
 import {filterPublished} from '@/src/lib/rss/publishDate';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
@@ -17,6 +17,7 @@ export type StrapiArticle = {
     base: StrapiBaseContent;
     categories?: StrapiCategoryRef[];
     authors?: StrapiAuthor[];
+    youtube?: StrapiYoutube[];
     content: string;
 };
 
@@ -71,6 +72,8 @@ export function generateArticleFeedXml(args: {
             const description = escapeXml(a.base.description ?? '');
             const html = markdownToHtml(a.content ?? '');
             const cdataContent = escapeCdata(html);
+
+            // todo add youtube urls
 
             const guid = sha256Hex(link);
 

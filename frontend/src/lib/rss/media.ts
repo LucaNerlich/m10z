@@ -91,6 +91,12 @@ export type StrapiAuthor = {
     avatar?: StrapiMediaRef | null;
 };
 
+export type StrapiYoutube = {
+    id: number;
+    title?: string | null;
+    url: string;
+}
+
 export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): StrapiMedia {
     if (!ref) return {};
     const attrs = ref.attributes ?? ref.data?.attributes ?? ref;
