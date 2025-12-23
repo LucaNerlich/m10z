@@ -109,13 +109,17 @@ function renderChannelHeader(
  * @param cfg - Feed configuration (site URL, author/email, iTunes flags, etc.)
  * @param episode - Episode data from Strapi
  * @param episodeFooter - Optional footer content to append to the episode description (Markdown)
- * @returns An XML string for the episode's <item> element suitable for inclusion in an RSS feed
+ * @returns An XML string for the episode's <item> element suitable for inclusion in an RSS feed, or `null` if no valid enclosure URL exists
  */
-function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null): string {
+function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null): string | null {
     const fileMedia = normalizeStrapiMedia(episode.file);
     const coverMedia = pickCoverMedia(episode.base, episode.categories);
 
-    const enclosureUrl = mediaUrlToAbsolute({media: fileMedia}) ?? '';
+    const enclosureUrl = mediaUrlToAbsolute({media: fileMedia});
+    if (!enclosureUrl) {
+        console.warn(`[audiofeed] Skipping episode "${episode.base.title}" (slug: ${episode.slug}): no valid enclosure URL`);
+        return null;
+    }
     const lengthBytes = normalizeEnclosureLengthBytes(fileMedia) ?? 0;
 
     const title = escapeXml(episode.base.title);
@@ -202,7 +206,10 @@ export function generateAudioFeedXml(args: {
 
     const header = renderChannelHeader(cfg, channel, channelImageUrl, channelPubDate);
 
-    const items = sorted.map((ep) => renderItem(cfg, ep, episodeFooter ?? null)).join('');
+    const items = sorted
+        .map((ep) => renderItem(cfg, ep, episodeFooter ?? null))
+        .filter((item): item is string => item !== null)
+        .join('');
     const footer = `</channel></rss>`;
 
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
