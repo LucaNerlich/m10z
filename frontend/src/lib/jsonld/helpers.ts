@@ -1,8 +1,10 @@
 import {type ImageObject} from './types';
 
 /**
- * Converts a date string to ISO-8601 format.
- * Returns undefined if the date is invalid or null.
+ * Produce an ISO-8601 timestamp string for the given date input.
+ *
+ * @param date - A date string to convert; may be `null` or `undefined`
+ * @returns The ISO-8601 representation of `date`, or `undefined` if `date` is `null`, `undefined`, empty, or not a valid date
  */
 export function formatIso8601Date(date: string | null | undefined): string | undefined {
     if (!date) return undefined;
@@ -12,8 +14,10 @@ export function formatIso8601Date(date: string | null | undefined): string | und
 }
 
 /**
- * Converts seconds to ISO-8601 duration format (PT#M#S).
- * Example: 3661 seconds → "PT61M1S"
+ * Produce an ISO-8601 duration string representing the given total seconds in `PT#M#S` form.
+ *
+ * @param seconds - Total duration in seconds
+ * @returns An ISO-8601 duration string formatted as `PT{minutes}M{seconds}S`
  */
 export function formatIso8601Duration(seconds: number): string {
     const minutes = Math.floor(seconds / 60);
@@ -22,7 +26,12 @@ export function formatIso8601Duration(seconds: number): string {
 }
 
 /**
- * Constructs an ImageObject schema from URL and optional dimensions.
+ * Create an ImageObject schema for the given image URL and optional dimensions.
+ *
+ * @param url - The image URL
+ * @param width - Width in pixels; included only if a positive number
+ * @param height - Height in pixels; included only if a positive number
+ * @returns The constructed ImageObject containing `@context`, `@type`, `url`, and optional `width`/`height`
  */
 export function buildImageObject(url: string, width?: number, height?: number): ImageObject {
     const image: ImageObject = {
@@ -38,4 +47,3 @@ export function buildImageObject(url: string, width?: number, height?: number): 
     }
     return image;
 }
-

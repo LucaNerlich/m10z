@@ -12,6 +12,12 @@ type PageProps = {
     params: Promise<{slug: string}>;
 };
 
+/**
+ * Renders the article detail page for a validated slug, embedding article JSON-LD and the article content.
+ *
+ * @param params - An object with a `slug` string identifying the article to render
+ * @returns A React element containing a JSON-LD script and the main article view (published date, title, optional description, and rendered markdown content)
+ */
 export default async function ArticleDetailPage({params}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);

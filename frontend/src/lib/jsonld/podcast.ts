@@ -13,7 +13,10 @@ import {
 
 
 /**
- * Converts a StrapiAuthor to a Person schema object.
+ * Build a Schema.org Person object from a StrapiAuthor.
+ *
+ * @param author - The Strapi author record to convert; may include title, slug, and avatar media
+ * @returns A `Person` object with `name`, optional `url` (if `slug` exists), and optional `image` (an `ImageObject` when avatar dimensions are available, otherwise an image URL)
  */
 function authorToPerson(author: StrapiAuthor): Person {
     const name = author.title ?? 'Unknown Author';
@@ -43,7 +46,10 @@ function authorToPerson(author: StrapiAuthor): Person {
 }
 
 /**
- * Converts StrapiMedia to ImageObject or URL string.
+ * Produce a usable image representation from Strapi media when possible.
+ *
+ * @param media - The Strapi media object to convert; may be undefined.
+ * @returns `ImageObject` when the media provides width and height, the absolute URL string when only a URL is available, or `undefined` if no usable URL can be resolved.
  */
 function mediaToImage(media: StrapiMedia | undefined): ImageObject | string | undefined {
     if (!media?.url) return undefined;
@@ -57,7 +63,13 @@ function mediaToImage(media: StrapiMedia | undefined): ImageObject | string | un
 }
 
 /**
- * Generates PodcastEpisode JSON-LD schema from a Strapi podcast.
+ * Create a Schema.org PodcastEpisode JSON-LD object from Strapi podcast data.
+ *
+ * @param podcast - The Strapi podcast record to convert into JSON-LD
+ * @returns A PodcastEpisode JSON-LD object with fields populated from the Strapi podcast:
+ *          name, optional description, datePublished (ISO 8601), duration (ISO 8601),
+ *          optional associatedMedia when an audio file is available, optional image when a cover exists,
+ *          optional author array when authors are provided, partOfSeries, and url
  */
 export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
     const effectiveDate = getEffectiveDate(podcast);
@@ -107,4 +119,3 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
         url: podcastUrl,
     };
 }
-

@@ -3,7 +3,9 @@ import {buildImageObject} from './helpers';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 
 /**
- * Generates Organization JSON-LD schema for the site.
+ * Constructs a schema.org Organization JSON-LD object representing the site.
+ *
+ * @returns An Organization JSON-LD object containing `@context`, `@type`, `name`, `alternateName`, `url`, `logo`, and an optional `sameAs` array of related URLs when available.
  */
 export function generateOrganizationJsonLd(): Organization {
     const logoUrl = absoluteRoute('/logo.svg');
@@ -26,4 +28,3 @@ export function generateOrganizationJsonLd(): Organization {
         sameAs: sameAs.length > 0 ? sameAs : undefined,
     };
 }
-
