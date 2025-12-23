@@ -23,7 +23,7 @@ export default async function CategoriesPage() {
                                 <ul>
                                     {cat.articles.map((a) => (
                                         <li key={a.slug}>
-                                            <Link href={`/artikel/${a.slug}`}>{a.base.title}</Link>
+                                            <Link href={`/artikel/${a.slug}`}>{a.base?.title}</Link>
                                         </li>
                                     ))}
                                 </ul>
@@ -36,7 +36,7 @@ export default async function CategoriesPage() {
                                 <ul>
                                     {cat.podcasts.map((p) => (
                                         <li key={p.slug}>
-                                            <Link href={`/podcasts/${p.slug}`}>{p.base.title}</Link>
+                                            <Link href={`/podcasts/${p.slug}`}>{p.base?.title}</Link>
                                         </li>
                                     ))}
                                 </ul>

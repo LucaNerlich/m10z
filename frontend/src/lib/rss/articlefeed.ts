@@ -83,7 +83,7 @@ export function generateArticleFeedXml(args: {
                 `      <link>${escapeXml(link)}</link>` +
                 `      <guid isPermaLink="false">${guid}</guid>` +
                 `      <pubDate>${formatRssDate(pub)}</pubDate>` +
-                `      <description>${description}></description>` +
+                `      <description>${description}</description>` +
                 `      <content:encoded><![CDATA[${cdataContent}]]></content:encoded>` +
                 (bannerUrl
                     ? `      <enclosure url="${escapeXml(bannerUrl)}" length="${bannerMedia?.sizeInBytes ?? 0}" type="${escapeXml(bannerMedia?.mime ?? 'image/jpeg')}"/>`
