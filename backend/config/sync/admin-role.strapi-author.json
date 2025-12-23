@@ -6,6 +6,244 @@
   "locale": null,
   "permissions": [
     {
+      "documentId": "s8tlwy7ppp6ks07x8p3je942",
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::article.article",
+      "properties": {
+        "fields": [
+          "base.title",
+          "base.description",
+          "base.cover",
+          "base.banner",
+          "base.date",
+          "slug",
+          "content",
+          "authors",
+          "categories",
+          "youtube.title",
+          "youtube.url"
+        ]
+      },
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "sr05b4vyfl4msh2caup08hc9",
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::article.article",
+      "properties": {},
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "ix9le66qsnyqgcl5jbw1pjww",
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::article.article",
+      "properties": {},
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "f0wvi9er77oe73arovwekg1v",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::article.article",
+      "properties": {
+        "fields": [
+          "base.title",
+          "base.description",
+          "base.cover",
+          "base.banner",
+          "base.date",
+          "slug",
+          "content",
+          "authors",
+          "categories",
+          "youtube.title",
+          "youtube.url"
+        ]
+      },
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "hadxsj9brfh86coi0ka3yeiq",
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::article.article",
+      "properties": {
+        "fields": [
+          "base.title",
+          "base.description",
+          "base.cover",
+          "base.banner",
+          "base.date",
+          "slug",
+          "content",
+          "authors",
+          "categories",
+          "youtube.title",
+          "youtube.url"
+        ]
+      },
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "alcl0euo2405u6p1ld20z7v4",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::author.author",
+      "properties": {
+        "fields": [
+          "title",
+          "description",
+          "slug",
+          "avatar",
+          "podcasts",
+          "articles"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "wxk73yuixux3oujeejcotmqg",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {
+        "fields": [
+          "base.title",
+          "base.description",
+          "base.cover",
+          "base.banner",
+          "base.date",
+          "slug",
+          "articles",
+          "podcasts"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "pfqbuxjka2nch3xw7hp7sjhp",
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::podcast.podcast",
+      "properties": {
+        "fields": [
+          "base.title",
+          "base.description",
+          "base.cover",
+          "base.banner",
+          "base.date",
+          "slug",
+          "file",
+          "duration",
+          "shownotes",
+          "authors",
+          "categories",
+          "youtube.title",
+          "youtube.url"
+        ]
+      },
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "v6ensmx7rb5uhdzddvxuuwy8",
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::podcast.podcast",
+      "properties": {},
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "t0n03g01gczyv3hjwbu52zrj",
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::podcast.podcast",
+      "properties": {},
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "abgft1rwqzc65bwtwto7hjze",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::podcast.podcast",
+      "properties": {
+        "fields": [
+          "base.title",
+          "base.description",
+          "base.cover",
+          "base.banner",
+          "base.date",
+          "slug",
+          "file",
+          "duration",
+          "shownotes",
+          "authors",
+          "categories",
+          "youtube.title",
+          "youtube.url"
+        ]
+      },
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
+      "documentId": "i3z87jtj4647b0qcui41x77e",
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::podcast.podcast",
+      "properties": {
+        "fields": [
+          "base.title",
+          "base.description",
+          "base.cover",
+          "base.banner",
+          "base.date",
+          "slug",
+          "file",
+          "duration",
+          "shownotes",
+          "authors",
+          "categories",
+          "youtube.title",
+          "youtube.url"
+        ]
+      },
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "locale": null
+    },
+    {
       "documentId": "fseiyykpw74s27pdw3q1ymld",
       "action": "plugin::upload.assets.copy-link",
       "actionParameters": {},
