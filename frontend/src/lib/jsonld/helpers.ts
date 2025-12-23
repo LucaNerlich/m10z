@@ -21,15 +21,25 @@ export function formatIso8601Date(date: string | null | undefined): string | und
 }
 
 /**
- * Produce an ISO-8601 duration string representing the given total seconds in `PT#M#S` form.
+ * Produce an ISO-8601 duration string representing the given total seconds in `PT#H#M#S` form.
  *
- * @param seconds - Total duration in seconds
- * @returns An ISO-8601 duration string formatted as `PT{minutes}M{seconds}S`
+ * @param seconds - Total duration in seconds (will be rounded down to nearest integer; negative values are treated as 0)
+ * @returns An ISO-8601 duration string formatted as `PT{hours}H{minutes}M{seconds}S` (omits hours/minutes/seconds components if zero)
  */
 export function formatIso8601Duration(seconds: number): string {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `PT${minutes}M${remainingSeconds}S`;
+    if (!Number.isFinite(seconds) || seconds < 0) {
+        return 'PT0S';
+    }
+    const totalSeconds = Math.floor(seconds);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const remainingSeconds = totalSeconds % 60;
+
+    const parts: string[] = ['PT'];
+    if (hours > 0) parts.push(`${hours}H`);
+    if (minutes > 0) parts.push(`${minutes}M`);
+    if (remainingSeconds > 0 || parts.length === 1) parts.push(`${remainingSeconds}S`);
+    return parts.join('');
 }
 
 /**

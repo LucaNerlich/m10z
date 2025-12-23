@@ -116,6 +116,9 @@ export async function GET(request: Request) {
         if (trimmedQuery.length === 0) {
             return NextResponse.json({results: [], total: 0});
         }
+        if (trimmedQuery.length > 200) {
+            return NextResponse.json({error: 'Query too long'}, {status: 400});
+        }
 
         const index = await loadSearchIndex();
         const fuse = buildFuse(index.records);
