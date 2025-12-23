@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import {Suspense} from 'react';
+import {type Metadata} from 'next';
 
 import {Tag} from '@/src/components/Tag';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
@@ -7,9 +8,25 @@ import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {mediaUrlToAbsolute, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
+import {absoluteRoute} from '@/src/lib/routes';
 import styles from './page.module.css';
 import Image from 'next/image';
 import placeholderCover from '@/public/images/m10z.jpg';
+
+export const metadata: Metadata = {
+    description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen. Artikel, Podcasts und mehr zu Gaming, Organisationskultur und HR-Themen.',
+    openGraph: {
+        images: [
+            {
+                url: absoluteRoute('/images/m10z.jpg'),
+                alt: 'Mindestens 10 Zeichen',
+            },
+        ],
+    },
+    alternates: {
+        canonical: absoluteRoute('/'),
+    },
+};
 
 const HOME_ARTICLE_TAGS = ['page:home', 'strapi:article'];
 const HOME_PODCAST_TAGS = ['page:home', 'strapi:podcast'];

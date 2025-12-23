@@ -247,6 +247,29 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
     return res.data?.[0] ?? null;
 }
 
+export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryWithContent | null> {
+    'use cache';
+    const query = qs.stringify(
+        {
+            filters: {slug: {$eq: slug}},
+            populate: {
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description', 'date']},
+                articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+            },
+            fields: ['slug'],
+            pagination: {pageSize: 1},
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(
+        `/api/categories?${query}`,
+        {tags: ['strapi:category', `strapi:category:${slug}`]},
+    );
+    return res.data?.[0] ?? null;
+}
+
 export async function fetchCategoriesWithContent(options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> {
     'use cache';
     const limit = options.limit ?? 100;

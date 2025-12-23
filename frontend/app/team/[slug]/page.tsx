@@ -1,15 +1,53 @@
 'use cache';
 
+import {type Metadata} from 'next';
 import Image from 'next/image';
 import {notFound} from 'next/navigation';
 
 import {fetchAuthorBySlug} from '@/src/lib/strapiContent';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
+import {absoluteRoute} from '@/src/lib/routes';
+import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
+
+export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+    'use cache';
+    const {slug: rawSlug} = await params;
+    const slug = validateSlugSafe(rawSlug);
+    if (!slug) return {};
+
+    const author = await fetchAuthorBySlug(slug);
+    if (!author) return {};
+
+    const title = author.title || 'Autor';
+    const description = author.description || undefined;
+    const avatarMedia = normalizeStrapiMedia(author.avatar);
+    const avatarImage = avatarMedia ? formatOpenGraphImage(avatarMedia) : undefined;
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: absoluteRoute(`/team/${slug}`),
+        },
+        openGraph: {
+            type: 'profile',
+            title,
+            description,
+            images: avatarImage,
+        },
+        twitter: {
+            card: 'summary',
+            title,
+            description,
+            images: avatarImage,
+        },
+    };
+}
 
 /**
  * Render the author page for the given route slug.

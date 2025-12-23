@@ -1,11 +1,58 @@
 'use cache';
 
+import {type Metadata} from 'next';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {notFound} from 'next/navigation';
+import {fetchCategoryBySlug} from '@/src/lib/strapiContent';
+import {absoluteRoute} from '@/src/lib/routes';
+import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {normalizeStrapiMedia} from '@/src/lib/rss/media';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
+
+export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+    'use cache';
+    const {slug: rawSlug} = await params;
+    const slug = validateSlugSafe(rawSlug);
+    if (!slug) return {};
+
+    const category = await fetchCategoryBySlug(slug);
+    if (!category) return {};
+
+    const title = category.base?.title || category.slug || 'Kategorie';
+    const description = category.base?.description || undefined;
+    const coverMedia = category.base?.cover
+        ? normalizeStrapiMedia(category.base.cover)
+        : undefined;
+    const coverImage = coverMedia
+        ? formatOpenGraphImage(coverMedia)
+        : [
+              {
+                  url: absoluteRoute('/images/m10z.jpg'),
+                  alt: 'Mindestens 10 Zeichen',
+              },
+          ];
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: absoluteRoute(`/kategorien/${slug}`),
+        },
+        openGraph: {
+            type: 'website',
+            title,
+            description,
+            images: coverImage,
+        },
+        robots: {
+            index: true,
+            follow: true,
+        },
+    };
+}
 
 /**
  * Renders the category detail page for a validated route slug.

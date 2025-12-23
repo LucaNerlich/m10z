@@ -1,5 +1,6 @@
 'use cache';
 
+import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
@@ -7,10 +8,55 @@ import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {fetchArticleBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
+import {absoluteRoute} from '@/src/lib/routes';
+import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {pickCoverMedia, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
+
+export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+    'use cache';
+    const {slug: rawSlug} = await params;
+    const slug = validateSlugSafe(rawSlug);
+    if (!slug) return {};
+
+    const article = await fetchArticleBySlug(slug);
+    if (!article) return {};
+
+    const title = article.base.title;
+    const description = article.base.description || undefined;
+    const publishedTime = formatIso8601Date(getEffectiveDate(article));
+    const coverMedia = pickCoverMedia(article.base, article.categories);
+    const coverImage = coverMedia ? formatOpenGraphImage(normalizeStrapiMedia(coverMedia)) : undefined;
+    const authors = article.authors?.map((a) => a.title).filter(Boolean) as string[] | undefined;
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: absoluteRoute(`/artikel/${slug}`),
+        },
+        openGraph: {
+            type: 'article',
+            title,
+            description,
+            images: coverImage,
+            publishedTime,
+            modifiedTime: formatIso8601Date(article.publishedAt),
+            authors,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: coverImage,
+        },
+        authors: authors?.map((name) => ({name})),
+    };
+}
 
 /**
  * Renders the article detail page for a validated slug, embedding article JSON-LD and the article content.

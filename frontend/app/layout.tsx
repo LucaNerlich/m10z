@@ -6,7 +6,41 @@ import {ContentLayout} from '@/app/ContentLayout';
 import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
 import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
 import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
+import {type Metadata, type Viewport} from 'next';
+import {absoluteRoute, routes} from '@/src/lib/routes';
 import React from 'react';
+
+export const metadata: Metadata = {
+    title: {
+        template: '%s | Mindestens 10 Zeichen',
+        default: 'Mindestens 10 Zeichen',
+    },
+    description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen.',
+    robots: {
+        index: true,
+        follow: true,
+    },
+    openGraph: {
+        type: 'website',
+        locale: 'de',
+        siteName: 'Mindestens 10 Zeichen',
+        url: routes.siteUrl,
+        title: 'Mindestens 10 Zeichen',
+        description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen.',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Mindestens 10 Zeichen',
+        description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen.',
+    },
+};
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    themeColor: '#ff6b35',
+};
 
 /**
  * Root layout component that embeds organization and website JSON-LD into the document head and renders the page chrome.
