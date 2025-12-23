@@ -86,7 +86,16 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
 }
 
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
-    const query = qs.stringify({populate: '*'}, {encodeValuesOnly: true});
+    const query = qs.stringify(
+        {
+            populate: {
+                channel: {
+                    populate: ['image'],
+                },
+            },
+        },
+        {encodeValuesOnly: true},
+    );
     const res = await fetchStrapiJson<{data: StrapiArticleFeedSingle}>(`/api/article-feed?${query}`);
     return res.data;
 }
