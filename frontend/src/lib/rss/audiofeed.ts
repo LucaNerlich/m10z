@@ -8,7 +8,7 @@ import {
     type StrapiBaseContent,
     type StrapiCategoryRef,
     type StrapiMedia,
-    type StrapiMediaRef,
+    type StrapiMediaRef, StrapiYoutube,
 } from '@/src/lib/rss/media';
 import {filterPublished} from '@/src/lib/rss/publishDate';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
@@ -19,6 +19,7 @@ export type StrapiPodcast = {
     publishedAt: string | null;
     base: StrapiBaseContent;
     categories?: StrapiCategoryRef[];
+    youtube?: StrapiYoutube[];
     shownotes?: string | null;
     duration: number;
     file: StrapiMediaRef;
@@ -71,7 +72,7 @@ function renderChannelHeader(
         `        <title>${escapeXml(channel.title)}</title>` +
         `        <link>${escapeXml(cfg.siteUrl)}</link>` +
         `        <description>${escapeXml(channel.description)}</description>` +
-        `        <ttl>${Math.round(cfg.ttlSeconds / 60)}` +
+        `        <ttl>${Math.round(cfg.ttlSeconds / 60)}</ttl>` +
         `        <language>${escapeXml(cfg.language)}</language>` +
         `        <copyright>${escapeXml(cfg.copyright)}</copyright>` +
         `        <webMaster>${escapeXml(cfg.webMaster)}</webMaster>` +
