@@ -1,21 +1,24 @@
 {
-    "kind": "singleType",
-    "collectionName": "audio_feeds",
-    "info": {
-        "singularName": "audio-feed",
-        "pluralName": "audio-feeds",
-        "displayName": "Audio Feed"
+  "kind": "singleType",
+  "collectionName": "audio_feeds",
+  "info": {
+    "singularName": "audio-feed",
+    "pluralName": "audio-feeds",
+    "displayName": "Audio Feed"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "channel": {
+      "type": "component",
+      "component": "single-type.base-feed",
+      "repeatable": false,
+      "required": true
     },
-    "options": {
-        "draftAndPublish": false
-    },
-    "pluginOptions": {},
-    "attributes": {
-        "channel": {
-            "type": "component",
-            "component": "single-type.base-feed",
-            "repeatable": false,
-            "required": true
-        }
+    "episodeFooter": {
+      "type": "richtext"
     }
+  }
 }

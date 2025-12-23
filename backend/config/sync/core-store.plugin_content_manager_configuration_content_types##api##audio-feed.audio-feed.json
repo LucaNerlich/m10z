@@ -25,10 +25,25 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "channel",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "episodeFooter": {
+        "edit": {
+          "label": "Shownotes Footer",
+          "description": "Will be added to the bottom of each podcast episode.",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "episodeFooter",
           "searchable": false,
           "sortable": false
         }
@@ -101,19 +116,25 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "createdAt",
-        "updatedAt",
-        "channel"
-      ],
       "edit": [
         [
           {
             "name": "channel",
             "size": 12
           }
+        ],
+        [
+          {
+            "name": "episodeFooter",
+            "size": 12
+          }
         ]
+      ],
+      "list": [
+        "id",
+        "createdAt",
+        "updatedAt",
+        "channel"
       ]
     },
     "uid": "api::audio-feed.audio-feed"

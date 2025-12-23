@@ -159,7 +159,7 @@
       "locale": null
     },
     {
-      "documentId": "mjw72cvl4jn4i3wp8az0u7n0",
+      "documentId": "ojtcqnhv671rqqpqq4ql8o74",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::audio-feed.audio-feed",
@@ -168,7 +168,8 @@
           "channel.title",
           "channel.description",
           "channel.mail",
-          "channel.image"
+          "channel.image",
+          "episodeFooter"
         ]
       },
       "conditions": [],
@@ -193,7 +194,7 @@
       "locale": null
     },
     {
-      "documentId": "zkquvyhnwpiqmh2o0f7s872q",
+      "documentId": "msf2slo7mn8h6pa5pdji5839",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::audio-feed.audio-feed",
@@ -202,14 +203,15 @@
           "channel.title",
           "channel.description",
           "channel.mail",
-          "channel.image"
+          "channel.image",
+          "episodeFooter"
         ]
       },
       "conditions": [],
       "locale": null
     },
     {
-      "documentId": "wkbne5of0q1n46jma9g51k9l",
+      "documentId": "ou7rec08fdsqncu38db3zt8w",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::audio-feed.audio-feed",
@@ -218,7 +220,8 @@
           "channel.title",
           "channel.description",
           "channel.mail",
-          "channel.image"
+          "channel.image",
+          "episodeFooter"
         ]
       },
       "conditions": [],
