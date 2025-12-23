@@ -145,11 +145,12 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                             {item.description ? <p className={styles.description}>{item.description}</p> : null}
                             {item.tags?.length ? (
                                 <div className={styles.tags}>
-                                    {item.tags.map((tag) => (
-                                        <Tag key={tag} className={styles.tag}>
-                                            {tag}
-                                        </Tag>
-                                    ))}
+                                    {item.tags.filter(tag => TYPE_LABEL[item.type] !== tag)
+                                        .map((tag) => (
+                                            <Tag key={tag} className={styles.tag}>
+                                                {tag}
+                                            </Tag>
+                                        ))}
                                 </div>
                             ) : null}
                         </button>
