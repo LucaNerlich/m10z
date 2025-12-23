@@ -37,14 +37,14 @@ export default {
                 await invalidateNext(updateTargets.get(context.uid)!);
             }
 
-            // Invalidate Sitemap
-            await invalidateNext('sitemap');
-
             // Rebuild search index
             if (rebuildActions.has(context.action) && searchTargets.has(context.uid)) {
                 try {
                     await buildAndPersistSearchIndex(strapi);
                     await invalidateNext('search-index');
+
+                    // Invalidate Sitemap
+                    await invalidateNext('sitemap');
                 } catch (err) {
                     // eslint-disable-next-line no-console
                     console.warn('Failed to rebuild search index', err);
