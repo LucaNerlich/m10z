@@ -25,8 +25,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "channel",
@@ -116,6 +115,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "createdAt",
+        "updatedAt",
+        "channel"
+      ],
       "edit": [
         [
           {
@@ -129,12 +134,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "createdAt",
-        "updatedAt",
-        "channel"
       ]
     },
     "uid": "api::audio-feed.audio-feed"
