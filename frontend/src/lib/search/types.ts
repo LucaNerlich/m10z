@@ -10,6 +10,7 @@ export type SearchRecord = {
     href: string;
     publishedAt?: string | null;
     tags: string[];
+    coverImageUrl?: string | null;
 };
 
 export type SearchIndexFile = {

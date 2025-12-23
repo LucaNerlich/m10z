@@ -21,6 +21,7 @@ type SearchRecord = {
     href: string;
     publishedAt?: string | null;
     tags: string[];
+    coverImageUrl?: string | null;
 };
 
 type SearchIndexFile = {
@@ -68,6 +69,65 @@ function toPlainText(value: unknown): string | undefined {
     return text.slice(0, maxLen);
 }
 
+function extractMediaUrl(mediaRef: any, strapiUrl?: string): string | null {
+    if (!strapiUrl || !mediaRef) return null;
+    
+    const media = unwrapEntry(mediaRef);
+    const url = media?.url ?? media?.data?.attributes?.url ?? media?.attributes?.url;
+    if (!url || typeof url !== 'string' || url.trim().length === 0) return null;
+    
+    if (/^https?:\/\//i.test(url)) return url;
+    const trimmedBase = strapiUrl.replace(/\/+$/, '');
+    const path = url.startsWith('/') ? url : `/${url}`;
+    return `${trimmedBase}${path}`;
+}
+
+function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
+    if (!strapiUrl) return null;
+
+    // Try to get cover from entity.base.cover first
+    const baseCover = raw?.base?.cover;
+    if (baseCover) {
+        const url = extractMediaUrl(baseCover, strapiUrl);
+        if (url) return url;
+    }
+
+    // Fallback to first category's cover if entity.base.cover is not set
+    const firstCategory = raw?.categories?.[0];
+    if (firstCategory) {
+        const category = unwrapEntry(firstCategory);
+        const categoryCover = category?.base?.cover;
+        if (categoryCover) {
+            const url = extractMediaUrl(categoryCover, strapiUrl);
+            if (url) return url;
+        }
+    }
+
+    return null;
+}
+
+function extractAuthorAvatarUrl(raw: any, strapiUrl?: string): string | null {
+    if (!strapiUrl) return null;
+    
+    const avatar = raw?.avatar;
+    if (avatar) {
+        return extractMediaUrl(avatar, strapiUrl);
+    }
+    
+    return null;
+}
+
+function extractCategoryCoverUrl(raw: any, strapiUrl?: string): string | null {
+    if (!strapiUrl) return null;
+    
+    const baseCover = raw?.base?.cover;
+    if (baseCover) {
+        return extractMediaUrl(baseCover, strapiUrl);
+    }
+    
+    return null;
+}
+
 function unwrapEntry<T extends {attributes?: Record<string, unknown>}>(entry: T): any {
     if (!entry) return entry;
     if (entry.attributes && typeof entry.attributes === 'object') {
@@ -103,7 +163,7 @@ async function fetchAllDocuments<T>(
     return items;
 }
 
-function normalizeArticle(raw: any): SearchRecord | null {
+function normalizeArticle(raw: any, strapiUrl?: string): SearchRecord | null {
     const article = unwrapEntry(raw);
     const slug = safeText(article?.slug);
     const title = sanitizeText(article?.base?.title);
@@ -133,10 +193,11 @@ function normalizeArticle(raw: any): SearchRecord | null {
         href: `/artikel/${encodeURIComponent(slug)}`,
         publishedAt: effectiveDate(article),
         tags: [...new Set<string>(['Artikel', ...categories, ...authors].filter(Boolean))],
+        coverImageUrl: extractCoverImageUrl(article, strapiUrl),
     };
 }
 
-function normalizePodcast(raw: any): SearchRecord | null {
+function normalizePodcast(raw: any, strapiUrl?: string): SearchRecord | null {
     const podcast = unwrapEntry(raw);
     const slug = safeText(podcast?.slug);
     const title = sanitizeText(podcast?.base?.title);
@@ -166,10 +227,11 @@ function normalizePodcast(raw: any): SearchRecord | null {
         href: `/podcasts/${encodeURIComponent(slug)}`,
         publishedAt: effectiveDate(podcast),
         tags: [...new Set<string>(['Podcast', ...categories, ...authors].filter(Boolean))],
+        coverImageUrl: extractCoverImageUrl(podcast, strapiUrl),
     };
 }
 
-function normalizeAuthor(raw: any): SearchRecord | null {
+function normalizeAuthor(raw: any, strapiUrl?: string): SearchRecord | null {
     const author = unwrapEntry(raw);
     const slug = safeText(author?.slug);
     const title = sanitizeText(author?.title);
@@ -185,10 +247,11 @@ function normalizeAuthor(raw: any): SearchRecord | null {
         description,
         href: `/team/${encodeURIComponent(slug)}`,
         tags: ['AutorIn'],
+        coverImageUrl: extractAuthorAvatarUrl(author, strapiUrl),
     };
 }
 
-function normalizeCategory(raw: any): SearchRecord | null {
+function normalizeCategory(raw: any, strapiUrl?: string): SearchRecord | null {
     const category = unwrapEntry(raw);
     const slug = safeText(category?.slug);
     const title = sanitizeText(category?.base?.title) ?? sanitizeText(category?.title) ?? slug;
@@ -204,18 +267,24 @@ function normalizeCategory(raw: any): SearchRecord | null {
         description,
         href: `/kategorien/${encodeURIComponent(slug)}`,
         tags: ['Kategorie'],
+        coverImageUrl: extractCategoryCoverUrl(category, strapiUrl),
     };
 }
 
 async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
+    const strapiUrl = process.env.BASE_DOMAIN;
+
     const [articlesRaw, podcastsRaw, authorsRaw, categoriesRaw] = await Promise.all([
         fetchAllDocuments(
             strapi,
             'api::article.article',
             {
                 populate: {
-                    base: {fields: ['title', 'description', 'date']},
-                    categories: {populate: {base: {fields: ['title']}}, fields: ['slug']},
+                    base: {populate: ['cover'], fields: ['title', 'description', 'date']},
+                    categories: {
+                        populate: {base: {populate: ['cover'], fields: ['title']}},
+                        fields: ['slug'],
+                    },
                     authors: {fields: ['title', 'slug']},
                 },
                 fields: ['slug', 'publishedAt', 'content'],
@@ -226,8 +295,11 @@ async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
             'api::podcast.podcast',
             {
                 populate: {
-                    base: {fields: ['title', 'description', 'date']},
-                    categories: {populate: {base: {fields: ['title']}}, fields: ['slug']},
+                    base: {populate: ['cover'], fields: ['title', 'description', 'date']},
+                    categories: {
+                        populate: {base: {populate: ['cover'], fields: ['title']}},
+                        fields: ['slug'],
+                    },
                     authors: {fields: ['title', 'slug']},
                 },
                 fields: ['slug', 'publishedAt', 'shownotes'],
@@ -237,6 +309,7 @@ async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
             strapi,
             'api::author.author',
             {
+                populate: ['avatar'],
                 fields: ['slug', 'title', 'description'],
             },
         ),
@@ -244,17 +317,17 @@ async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
             strapi,
             'api::category.category',
             {
-                populate: {base: {fields: ['title', 'description']}},
+                populate: {base: {populate: ['cover'], fields: ['title', 'description']}},
                 fields: ['slug'],
             },
         ),
     ]);
 
     const records: SearchRecord[] = [
-        ...articlesRaw.map(normalizeArticle),
-        ...podcastsRaw.map(normalizePodcast),
-        ...authorsRaw.map(normalizeAuthor),
-        ...categoriesRaw.map(normalizeCategory),
+        ...articlesRaw.map((raw) => normalizeArticle(raw, strapiUrl)),
+        ...podcastsRaw.map((raw) => normalizePodcast(raw, strapiUrl)),
+        ...authorsRaw.map((raw) => normalizeAuthor(raw, strapiUrl)),
+        ...categoriesRaw.map((raw) => normalizeCategory(raw, strapiUrl)),
     ].filter(Boolean) as SearchRecord[];
 
     return {

@@ -2,6 +2,7 @@
 
 import {type KeyboardEvent, type MouseEvent, useEffect, useMemo, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
+import Image from 'next/image';
 
 import {searchIndex} from '@/src/lib/search/fuseClient';
 import {type SearchRecord} from '@/src/lib/search/types';
@@ -21,6 +22,22 @@ const TYPE_LABEL: Record<SearchRecord['type'], string> = {
     author: 'Autor',
     category: 'Kategorie',
 };
+
+function normalizeImageUrl(url: string | null | undefined): string | null {
+    if (!url || typeof url !== 'string') return null;
+
+    // If URL already has a protocol, return as-is
+    if (/^https?:\/\//i.test(url)) return url;
+
+    // If URL starts with localhost or 127.0.0.1 without protocol, prepend http://
+    // This handles cases like "localhost:1337/path" or "127.0.0.1:1337/path"
+    if (/^localhost(?::\d+)?/i.test(url) || /^127\.0\.0\.1(?::\d+)?/i.test(url)) {
+        return `http://${url}`;
+    }
+
+    // Otherwise return as-is (might be a relative URL that Next.js Image can handle)
+    return url;
+}
 
 export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const [query, setQuery] = useState('');
@@ -138,21 +155,41 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                             role="option"
                             aria-selected={idx === activeIndex}
                         >
-                            <div className={styles.resultHeader}>
-                                <Tag className={styles.typeBadge}>{TYPE_LABEL[item.type]}</Tag>
-                                <span className={styles.title}>{item.title}</span>
-                            </div>
-                            {item.description ? <p className={styles.description}>{item.description}</p> : null}
-                            {item.tags?.length ? (
-                                <div className={styles.tags}>
-                                    {item.tags.filter(tag => TYPE_LABEL[item.type] !== tag)
-                                        .map((tag) => (
-                                            <Tag key={tag} className={styles.tag}>
-                                                {tag}
-                                            </Tag>
-                                        ))}
+                            <div className={styles.resultContent}>
+                                {item.coverImageUrl ? (() => {
+                                    const normalizedUrl = normalizeImageUrl(item.coverImageUrl);
+                                    return normalizedUrl ? (
+                                        <div className={styles.resultImage}>
+                                            <Image
+                                                src={normalizedUrl}
+                                                width={80}
+                                                height={80}
+                                                loading='lazy'
+                                                quality={50}
+                                                alt={item.title || ''}
+                                                className={styles.coverImage}
+                                            />
+                                        </div>
+                                    ) : null;
+                                })() : null}
+                                <div className={styles.resultText}>
+                                    <div className={styles.resultHeader}>
+                                        <Tag className={styles.typeBadge}>{TYPE_LABEL[item.type]}</Tag>
+                                        <span className={styles.title}>{item.title}</span>
+                                    </div>
+                                    {item.description ? <p className={styles.description}>{item.description}</p> : null}
+                                    {item.tags?.length ? (
+                                        <div className={styles.tags}>
+                                            {item.tags.filter(tag => TYPE_LABEL[item.type] !== tag)
+                                                .map((tag) => (
+                                                    <Tag key={tag} className={styles.tag}>
+                                                        {tag}
+                                                    </Tag>
+                                                ))}
+                                        </div>
+                                    ) : null}
                                 </div>
-                            ) : null}
+                            </div>
                         </button>
                     ))}
                 </div>
