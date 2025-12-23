@@ -510,6 +510,13 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
+        youtube: Schema.Attribute.Component<'collection-type.youtube', true> &
+            Schema.Attribute.SetMinMax<
+                {
+                    min: 1;
+                },
+                number
+            >;
     };
 }
 
@@ -698,6 +705,13 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
+        youtube: Schema.Attribute.Component<'collection-type.youtube', true> &
+            Schema.Attribute.SetMinMax<
+                {
+                    min: 1;
+                },
+                number
+            >;
     };
 }
 

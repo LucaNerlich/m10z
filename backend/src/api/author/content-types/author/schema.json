@@ -1,46 +1,46 @@
 {
-    "kind": "collectionType",
-    "collectionName": "authors",
-    "info": {
-        "singularName": "author",
-        "pluralName": "authors",
-        "displayName": "Author"
+  "kind": "collectionType",
+  "collectionName": "authors",
+  "info": {
+    "singularName": "author",
+    "pluralName": "authors",
+    "displayName": "Author"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
     },
-    "options": {
-        "draftAndPublish": false
+    "description": {
+      "type": "text"
     },
-    "pluginOptions": {},
-    "attributes": {
-        "title": {
-            "type": "string"
-        },
-        "description": {
-            "type": "text"
-        },
-        "slug": {
-            "type": "uid",
-            "targetField": "title",
-            "required": true
-        },
-        "avatar": {
-            "type": "media",
-            "multiple": false,
-            "required": true,
-            "allowedTypes": [
-                "images"
-            ]
-        },
-        "podcasts": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::podcast.podcast",
-            "inversedBy": "authors"
-        },
-        "articles": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::article.article",
-            "mappedBy": "authors"
-        }
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "avatar": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "podcasts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::podcast.podcast",
+      "inversedBy": "authors"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "mappedBy": "authors"
     }
+  }
 }

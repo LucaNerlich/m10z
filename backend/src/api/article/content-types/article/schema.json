@@ -1,41 +1,47 @@
 {
-    "kind": "collectionType",
-    "collectionName": "articles",
-    "info": {
-        "singularName": "article",
-        "pluralName": "articles",
-        "displayName": "Article"
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Article"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "base": {
+      "type": "component",
+      "component": "collection-type.base-content",
+      "repeatable": false,
+      "required": true
     },
-    "options": {
-        "draftAndPublish": true
+    "slug": {
+      "type": "uid",
+      "required": true
     },
-    "pluginOptions": {},
-    "attributes": {
-        "base": {
-            "type": "component",
-            "component": "collection-type.base-content",
-            "repeatable": false,
-            "required": true
-        },
-        "slug": {
-            "type": "uid",
-            "required": true
-        },
-        "content": {
-            "type": "richtext",
-            "required": true
-        },
-        "authors": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::author.author",
-            "inversedBy": "articles"
-        },
-        "categories": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::category.category",
-            "inversedBy": "articles"
-        }
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "authors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::author.author",
+      "inversedBy": "articles"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "articles"
+    },
+    "youtube": {
+      "type": "component",
+      "component": "collection-type.youtube",
+      "repeatable": true,
+      "min": 1
     }
+  }
 }

@@ -21,7 +21,7 @@
       },
       "base": {
         "edit": {
-          "label": "base",
+          "label": "Base",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -87,6 +87,20 @@
         },
         "list": {
           "label": "Categories",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "youtube": {
+        "edit": {
+          "label": "YouTube Videos",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "youtube",
           "searchable": false,
           "sortable": false
         }
@@ -162,7 +176,8 @@
       "list": [
         "base",
         "updatedAt",
-        "categories"
+        "categories",
+        "youtube"
       ],
       "edit": [
         [
@@ -191,6 +206,12 @@
           {
             "name": "categories",
             "size": 6
+          }
+        ],
+        [
+          {
+            "name": "youtube",
+            "size": 12
           }
         ]
       ]

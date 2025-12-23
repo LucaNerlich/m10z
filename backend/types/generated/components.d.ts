@@ -15,6 +15,18 @@ export interface CollectionTypeBaseContent extends Struct.ComponentSchema {
     };
 }
 
+export interface CollectionTypeYoutube extends Struct.ComponentSchema {
+    collectionName: 'components_collection_type_youtubes';
+    info: {
+        displayName: 'Youtube';
+        icon: 'television';
+    };
+    attributes: {
+        title: Schema.Attribute.String;
+        url: Schema.Attribute.String & Schema.Attribute.Required;
+    };
+}
+
 export interface SingleTypeBaseFeed extends Struct.ComponentSchema {
     collectionName: 'components_single_type_base_feeds';
     info: {
@@ -33,6 +45,7 @@ declare module '@strapi/strapi' {
     export module Public {
         export interface ComponentSchemas {
             'collection-type.base-content': CollectionTypeBaseContent;
+            'collection-type.youtube': CollectionTypeYoutube;
             'single-type.base-feed': SingleTypeBaseFeed;
         }
     }
