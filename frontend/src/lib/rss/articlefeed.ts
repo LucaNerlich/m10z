@@ -2,10 +2,12 @@ import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {
     mediaUrlToAbsolute,
+    normalizeStrapiMedia,
     pickBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
     type StrapiCategoryRef,
+    type StrapiMediaRef,
     StrapiYoutube,
 } from '@/src/lib/rss/media';
 import {filterPublished} from '@/src/lib/rss/publishDate';
@@ -27,6 +29,7 @@ export type StrapiArticleFeedSingle = {
         title: string;
         description: string;
         mail: string;
+        image: StrapiMediaRef;
     };
 };
 
@@ -53,6 +56,10 @@ export function generateArticleFeedXml(args: {
     const nowTs = Date.now();
     const now = new Date(nowTs);
     const published = filterPublished(articles, (a) => getEffectiveDate(a), nowTs);
+    const channelImage = normalizeStrapiMedia(channel.image);
+    const channelImageUrl =
+        mediaUrlToAbsolute({media: channelImage}) ??
+        `${siteUrl}/images/m10z.jpg`;
     const header =
         `<?xml version="1.0" encoding="UTF-8"?>` +
         `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">` +
@@ -64,7 +71,12 @@ export function generateArticleFeedXml(args: {
         `    <managingEditor>${escapeXml(channel.mail)}</managingEditor>` +
         `    <webMaster>${escapeXml(channel.mail)}</webMaster>` +
         `    <lastBuildDate>${formatRssDate(now)}</lastBuildDate>` +
-        `    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>`;
+        `    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>` +
+        `    <image>` +
+        `      <url>${escapeXml(channelImageUrl)}</url>` +
+        `      <title>${escapeXml(channel.title)}</title>` +
+        `      <link>${escapeXml(siteUrl)}</link>` +
+        `    </image>`;
 
     const sorted = [...published].sort((a, b) => {
         const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
