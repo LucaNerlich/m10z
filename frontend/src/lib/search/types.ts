@@ -14,7 +14,7 @@ export type SearchRecord = {
 };
 
 export type SearchIndexFile = {
-    version: 1 | 2;
+    version: number;
     generatedAt: string;
     total: number;
     records: SearchRecord[];
