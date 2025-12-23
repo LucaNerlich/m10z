@@ -1,4 +1,5 @@
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
+import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {
     mediaUrlToAbsolute,
     pickBannerMedia,
@@ -37,7 +38,7 @@ export function generateArticleFeedXml(args: {
 
     const nowTs = Date.now();
     const now = new Date(nowTs);
-    const published = filterPublished(articles, (a) => a.publishedAt, nowTs);
+    const published = filterPublished(articles, (a) => getEffectiveDate(a), nowTs);
     const header =
         `<?xml version="1.0" encoding="UTF-8"?>` +
         `<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom" xmlns:content="https://purl.org/rss/1.0/modules/content/">` +
@@ -52,16 +53,14 @@ export function generateArticleFeedXml(args: {
         `    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>`;
 
     const sorted = [...published].sort((a, b) => {
-        const adRaw = a.publishedAt;
-        const bdRaw = b.publishedAt;
-        const ad = adRaw ? new Date(adRaw).getTime() : 0;
-        const bd = bdRaw ? new Date(bdRaw).getTime() : 0;
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
         return bd - ad;
     });
 
     const items = sorted
         .map((a) => {
-            const pubRaw = a.publishedAt;
+            const pubRaw = getEffectiveDate(a);
             const pub = pubRaw ? new Date(pubRaw) : new Date(0);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
             const bannerMedia = pickBannerMedia(a.base, a.categories);
@@ -93,7 +92,7 @@ export function generateArticleFeedXml(args: {
 
     const footer = `</channel></rss>`;
 
-    const latestRaw = sorted[0]?.publishedAt;
+    const latestRaw = getEffectiveDate(sorted[0]);
     const latestPublishedAt = latestRaw ? new Date(latestRaw) : null;
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
 

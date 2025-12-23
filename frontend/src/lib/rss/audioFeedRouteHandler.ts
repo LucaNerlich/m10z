@@ -1,5 +1,6 @@
 import qs from 'qs';
 
+import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {
     type AudioFeedConfig,
     generateAudioFeedXml,
@@ -39,8 +40,6 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     const pageSize = 100;
     let page = 1;
     const all: StrapiPodcast[] = [];
-    const now = Date.now();
-
     while (true) {
         const query = qs.stringify(
             {
@@ -50,7 +49,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
                 populate: {
                     base: {
                         populate: ['cover', 'banner'],
-                        fields: ['title', 'description'],
+                        fields: ['title', 'description', 'date'],
                     },
                     authors: {
                         populate: ['avatar'],
@@ -93,7 +92,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     }
 
     // Only published episodes should be in the public feed.
-    return filterPublished(all, (p) => p.publishedAt, now);
+    return filterPublished(all, (p) => getEffectiveDate(p));
 }
 
 async function fetchAudioFeedSingle(): Promise<StrapiAudioFeedSingle> {

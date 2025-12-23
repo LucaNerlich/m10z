@@ -64,6 +64,7 @@ export type StrapiMediaRef = {
 export type StrapiBaseContent = {
     title: string;
     description?: string | null;
+    date?: string | null;
     cover?: StrapiMediaRef | null;
     banner?: StrapiMediaRef | null;
 };

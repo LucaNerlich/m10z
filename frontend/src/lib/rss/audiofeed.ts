@@ -1,3 +1,4 @@
+import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {
     mediaUrlToAbsolute,
@@ -102,7 +103,7 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, strapiUrl: str
     const lengthBytes = normalizeEnclosureLengthBytes(fileMedia) ?? 0;
 
     const title = escapeXml(episode.base.title);
-    const pubDateRaw = episode.publishedAt;
+    const pubDateRaw = getEffectiveDate(episode);
     const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
     const pubDate = formatRssDate(pub);
 
@@ -146,21 +147,19 @@ export function generateAudioFeedXml(args: {
     const {cfg, strapiUrl, channel, episodes} = args;
 
     const nowTs = Date.now();
-    const published = filterPublished(episodes, (ep) => ep.publishedAt, nowTs);
+    const published = filterPublished(episodes, (ep) => getEffectiveDate(ep), nowTs);
     const channelImage = normalizeStrapiMedia(channel.image);
     const channelImageUrl =
         mediaUrlToAbsolute({media: channelImage, strapiUrl}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
     const sorted = [...published].sort((a, b) => {
-        const adRaw = a.publishedAt;
-        const bdRaw = b.publishedAt;
-        const ad = adRaw ? new Date(adRaw).getTime() : 0;
-        const bd = bdRaw ? new Date(bdRaw).getTime() : 0;
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
         return bd - ad;
     });
 
-    const latestDateRaw = sorted[0]?.publishedAt;
+    const latestDateRaw = getEffectiveDate(sorted[0]);
     const latestPublishedAt = latestDateRaw ? new Date(latestDateRaw) : null;
     // Use the latest published date for channel pubDate to avoid changing on every request.
     const channelPubDate = latestPublishedAt ?? new Date(0);

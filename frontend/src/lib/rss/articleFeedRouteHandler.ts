@@ -1,5 +1,6 @@
 import qs from 'qs';
 
+import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {generateArticleFeedXml, type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/rss/articlefeed';
 import {filterPublished} from '@/src/lib/rss/publishDate';
 import {sha256Hex} from '@/src/lib/rss/xml';
@@ -34,8 +35,6 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
     const pageSize = 100;
     let page = 1;
     const all: StrapiArticle[] = [];
-    const now = Date.now();
-
     while (true) {
         const query = qs.stringify(
             {
@@ -45,7 +44,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
                 populate: {
                     base: {
                         populate: ['cover', 'banner'],
-                        fields: ['title', 'description'],
+                        fields: ['title', 'description', 'date'],
                     },
                     authors: {
                         populate: ['avatar'],
@@ -83,7 +82,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
         page++;
     }
 
-    return filterPublished(all, (a) => a.publishedAt, now);
+    return filterPublished(all, (a) => getEffectiveDate(a));
 }
 
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {

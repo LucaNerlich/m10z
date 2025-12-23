@@ -99,7 +99,7 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
             filters: {slug: {$eq: slug}},
             status: 'published',
             populate: {
-                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description', 'date']},
                 authors: {populate: ['avatar'], fields: ['title', 'slug', 'description']},
                 categories: {
                     populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
@@ -126,7 +126,7 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
             filters: {slug: {$eq: slug}},
             status: 'published',
             populate: {
-                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description', 'date']},
                 authors: {populate: ['avatar'], fields: ['title', 'slug', 'description']},
                 categories: {
                     populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
@@ -159,12 +159,12 @@ export type StrapiCategoryWithContent = {
     articles?: Array<{
         slug: string;
         publishedAt?: string | null;
-        base: {title: string};
+        base: {title: string; date?: string | null};
     }>;
     podcasts?: Array<{
         slug: string;
         publishedAt?: string | null;
-        base: {title: string};
+        base: {title: string; date?: string | null};
     }>;
 };
 
@@ -172,12 +172,12 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
     articles?: Array<{
         slug: string;
         publishedAt?: string | null;
-        base: {title: string};
+        base: {title: string; date?: string | null};
     }>;
     podcasts?: Array<{
         slug: string;
         publishedAt?: string | null;
-        base: {title: string};
+        base: {title: string; date?: string | null};
     }>;
 };
 
@@ -230,8 +230,8 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
             filters: {slug: {$eq: slug}},
             populate: {
                 avatar: true,
-                articles: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishedAt']},
-                podcasts: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishedAt']},
+                articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
             },
             fields: ['slug', 'title', 'description'],
             pagination: {pageSize: 1},
@@ -254,9 +254,9 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
             sort: ['base.title:asc'],
             pagination: {pageSize: limit, page: 1},
             populate: {
-                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
-                articles: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishedAt']},
-                podcasts: {populate: {base: {fields: ['title']}}, fields: ['slug', 'publishedAt']},
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description', 'date']},
+                articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
             },
             fields: ['slug'],
         },
@@ -281,7 +281,7 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
             status: 'published',
             pagination: {pageSize, page},
             populate: {
-                base: {populate: ['cover', 'banner'], fields: ['title', 'description']},
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description', 'date']},
                 categories: {
                     populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
                     fields: ['slug'],

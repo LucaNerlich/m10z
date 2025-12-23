@@ -1,14 +1,18 @@
+import {toDateTimestamp} from '@/src/lib/effectiveDate';
+
 export function isPastPublishDate(raw: string | null | undefined, nowTs = Date.now()): boolean {
-    if (!raw) return false;
-    const ts = new Date(raw).getTime();
-    return Number.isFinite(ts) && ts <= nowTs;
+    const ts = toDateTimestamp(raw);
+    return ts !== null && ts <= nowTs;
 }
 
 export function filterPublished<T>(
     items: T[],
     getDate: (item: T) => string | null | undefined,
-    nowTs = Date.now(),
+    _nowTs = Date.now(),
 ): T[] {
-    return items.filter((item) => isPastPublishDate(getDate(item), nowTs));
+    return items.filter((item) => {
+        const ts = toDateTimestamp(getDate(item));
+        return ts === null || Number.isFinite(ts);
+    });
 }
 
