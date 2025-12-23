@@ -5,6 +5,7 @@ import UmamiAnalytics from '@/src/components/UmamiAnalytics';
 import {ContentLayout} from '@/app/ContentLayout';
 import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
 import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
+import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import React from 'react';
 
 /**
@@ -22,7 +23,10 @@ export default function RootLayout({
     const websiteJsonLd = generateWebsiteJsonLd();
 
     return (
-        <html lang="de">
+        <html
+            lang="de"
+            className={`${poppins.variable} ${argon.variable} ${krypton.variable} ${neon.variable} ${radon.variable} ${xenon.variable}`}
+        >
         <body>
         <Header />
         <main>

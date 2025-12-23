@@ -567,6 +567,20 @@
       "locale": null
     },
     {
+      "documentId": "h13dwwf7x9omijyn6hfi5o07",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::search-index.search-index",
+      "properties": {
+        "fields": [
+          "content",
+          "version"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
       "documentId": "qfkx7ccmn9f042ad06ffdqwd",
       "action": "plugin::upload.assets.copy-link",
       "actionParameters": {},

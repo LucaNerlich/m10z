@@ -1,6 +1,7 @@
 import styles from './Footer.module.css';
 import Link from 'next/link';
 
+import FontPicker from './FontPicker';
 import ThemeToggle from './ThemeToggle';
 import {routes} from '@/src/lib/routes';
 
@@ -73,6 +74,7 @@ export default function Footer() {
                 ))}
             </div>
             <div className={styles.metaRow}>
+                <FontPicker />
                 <ThemeToggle />
                 <p className={styles.meta}>© {BUILD_YEAR} m10z</p>
             </div>

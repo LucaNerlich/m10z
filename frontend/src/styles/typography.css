@@ -1,5 +1,13 @@
 :root {
-    --font-family: Poppins, Arial, sans-serif;
+    /* Font family stacks with fallbacks */
+    --font-poppins-family: var(--font-poppins), Arial, sans-serif;
+    --font-argon-family: var(--font-argon), 'Courier New', monospace;
+    --font-krypton-family: var(--font-krypton), 'Courier New', monospace;
+    --font-neon-family: var(--font-neon), 'Courier New', monospace;
+    --font-radon-family: var(--font-radon), 'Courier New', monospace;
+    --font-xenon-family: var(--font-xenon), 'Courier New', monospace;
+    /* Active font selection */
+    --font-family: var(--font-poppins-family); /* Default */
 }
 
 html {
@@ -11,22 +19,4 @@ body {
     font-size: 16px;
     hyphens: auto;
     line-height: 1.6;
-}
-
-@font-face {
-    font-display: swap;
-    font-family: "Poppins";
-    font-stretch: normal;
-    font-style: normal;
-    font-weight: 400;
-    src: url("../../public/fonts/Poppins-Regular.woff2") format("woff2");
-}
-
-@font-face {
-    font-display: swap;
-    font-family: "Poppins";
-    font-stretch: normal;
-    font-style: normal;
-    font-weight: 700;
-    src: url("../../public/fonts/Poppins-Bold.woff2") format("woff2");
 }
