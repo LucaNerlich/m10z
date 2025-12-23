@@ -1,72 +1,10 @@
 import {type BlogPosting, type ImageObject, type Person} from './types';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {buildImageObject, formatIso8601Date} from './helpers';
+import {authorToPerson, formatIso8601Date, imagesEqual, mediaToImage} from './helpers';
 import {generateOrganizationJsonLd} from './organization';
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {
-    mediaUrlToAbsolute,
-    normalizeStrapiMedia,
-    pickBannerMedia,
-    pickCoverMedia,
-    type StrapiAuthor,
-    type StrapiMedia,
-} from '@/src/lib/rss/media';
-
-
-/**
- * Create a schema.org Person object from a Strapi author record.
- *
- * The returned Person includes a name (falls back to "Unknown Author"), a URL when the author has a slug,
- * and an image when the author has an avatar. If the avatar contains width and height, the image is an ImageObject;
- * otherwise the image is the avatar's absolute URL.
- *
- * @param author - The Strapi author record to convert
- * @returns A Person object suitable for JSON-LD embedding
- */
-function authorToPerson(author: StrapiAuthor): Person {
-    const name = author.title ?? 'Unknown Author';
-    const person: Person = {
-        '@context': 'https://schema.org',
-        '@type': 'Person',
-        name,
-    };
-
-    if (author.slug) {
-        person.url = absoluteRoute(routes.author(author.slug));
-    }
-
-    if (author.avatar) {
-        const avatarMedia = normalizeStrapiMedia(author.avatar);
-        const avatarUrl = mediaUrlToAbsolute({media: avatarMedia});
-        if (avatarUrl) {
-            if (avatarMedia.width && avatarMedia.height) {
-                person.image = buildImageObject(avatarUrl, avatarMedia.width, avatarMedia.height);
-            } else {
-                person.image = avatarUrl;
-            }
-        }
-    }
-
-    return person;
-}
-
-/**
- * Convert a Strapi media entry into an ImageObject or an absolute image URL.
- *
- * @param media - The Strapi media record to convert
- * @returns An ImageObject when `width` and `height` are present, the absolute image URL string when only a URL is available, or `undefined` if no usable URL exists
- */
-function mediaToImage(media: StrapiMedia | undefined): ImageObject | string | undefined {
-    if (!media?.url) return undefined;
-    const url = mediaUrlToAbsolute({media});
-    if (!url) return undefined;
-
-    if (media.width && media.height) {
-        return buildImageObject(url, media.width, media.height);
-    }
-    return url;
-}
+import {pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
 
 /**
  * Builds a Schema.org BlogPosting JSON-LD object for the provided Strapi article.
@@ -88,7 +26,7 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
     const coverImage = mediaToImage(coverMedia);
     if (coverImage) images.push(coverImage);
     const bannerImage = mediaToImage(bannerMedia);
-    if (bannerImage && bannerImage !== coverImage) images.push(bannerImage);
+    if (bannerImage && !imagesEqual(bannerImage, coverImage)) images.push(bannerImage);
 
     const authors: Person[] | undefined = article.authors?.length
         ? article.authors.map((author) => authorToPerson(author))

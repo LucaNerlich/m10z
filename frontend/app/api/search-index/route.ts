@@ -91,30 +91,20 @@ export async function GET(request: Request) {
 
     // If no query parameter, return the full index (existing behavior)
     if (!query) {
-        const base = getStrapiApiBaseUrl();
-        const url = new URL('/api/search-index', base);
-
-        const res = await fetch(url, {
-            headers: getAuthHeader(),
-            next: {revalidate: 3600, tags: ['search-index']},
-        });
-
-        if (!res.ok) {
-            return NextResponse.json({error: 'Failed to fetch search index'}, {status: 502});
+        try {
+            const content = await loadSearchIndex();
+            return NextResponse.json(content, {
+                headers: {
+                    'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+                },
+            });
+        } catch (error) {
+            const status = error instanceof Error && error.message.includes('Failed to fetch') ? 502 : 500;
+            return NextResponse.json(
+                {error: 'Failed to fetch search index', message: error instanceof Error ? error.message : 'Unknown error'},
+                {status},
+            );
         }
-
-        const json = await res.json();
-        const content = unwrapSearchIndex(json);
-
-        if (!content || typeof content !== 'object') {
-            return NextResponse.json({error: 'Malformed search index'}, {status: 500});
-        }
-
-        return NextResponse.json(content, {
-            headers: {
-                'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
-            },
-        });
     }
 
     // Perform search with query parameter

@@ -6,7 +6,6 @@ import {ContentLayout} from '@/app/ContentLayout';
 import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
 import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
 import React from 'react';
-import Head from 'next/head';
 
 /**
  * Root layout component that embeds organization and website JSON-LD into the document head and renders the page chrome.
@@ -24,16 +23,6 @@ export default function RootLayout({
 
     return (
         <html lang="de">
-        <Head>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: JSON.stringify(orgJsonLd)}}
-            />
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: JSON.stringify(websiteJsonLd)}}
-            />
-        </Head>
         <body>
         <Header />
         <main>
@@ -41,6 +30,14 @@ export default function RootLayout({
         </main>
         <Footer />
         <UmamiAnalytics />
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{__html: JSON.stringify(orgJsonLd)}}
+        />
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{__html: JSON.stringify(websiteJsonLd)}}
+        />
         </body>
         </html>
     );
