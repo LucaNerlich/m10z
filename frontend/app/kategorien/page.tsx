@@ -10,6 +10,7 @@ export default async function CategoriesPage() {
     return (
         <section>
             <h1>Kategorien</h1>
+            <h2>TODO</h2>
             <ul>
                 {categories.map((cat) => (
                     <li key={cat.slug ?? cat.id}>

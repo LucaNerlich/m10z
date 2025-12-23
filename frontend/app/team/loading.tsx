@@ -2,7 +2,7 @@ import styles from '../../src/styles/components/loadingPlaceholder.module.css';
 
 export default function TeamListLoading() {
     return (
-        <main className={styles.container} aria-label="Team werden geladen">
+        <main className={styles.container} aria-label="Team wird geladen">
             <div className={styles.stack}>
                 {[1, 2, 3].map((key) => (
                     <div key={key} className={styles.card}>

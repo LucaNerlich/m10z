@@ -15,8 +15,7 @@ async function loadIndex(): Promise<SearchIndexFile> {
     if (!res.ok) {
         throw new Error(`Failed to load search index: ${res.status} ${res.statusText}`);
     }
-    const json = (await res.json()) as SearchIndexFile;
-    return json;
+    return (await res.json()) as SearchIndexFile;
 }
 
 function buildFuse(records: SearchRecord[]): Fuse<SearchRecord> {

@@ -5,13 +5,17 @@ import {notFound} from 'next/navigation';
 
 import {fetchAuthorBySlug} from '@/src/lib/strapiContent';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
 
 export default async function AuthorPage({params}: PageProps) {
-    const {slug} = await params;
+    const {slug: rawSlug} = await params;
+    const slug = validateSlugSafe(rawSlug);
+    if (!slug) return notFound();
+    
     const author = await fetchAuthorBySlug(slug);
     if (!author) return notFound();
 
@@ -20,6 +24,7 @@ export default async function AuthorPage({params}: PageProps) {
 
     return (
         <main>
+            <h2>TODO</h2>
             {avatarUrl ? <Image src={avatarUrl} alt={author.title ?? 'Avatar'} width={96} height={96} /> : null}
             <h1>{author.title}</h1>
             {author.description ? <p>{author.description}</p> : null}

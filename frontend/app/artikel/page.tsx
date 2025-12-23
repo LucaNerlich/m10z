@@ -16,6 +16,7 @@ export default async function ArticlePage() {
     return (
         <section>
             <h1>Artikel</h1>
+            <h2>TODO</h2>
             <ul>
                 {sorted.map((article) => {
                     const date = getEffectiveDate(article);

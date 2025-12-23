@@ -12,6 +12,7 @@ export default async function TeamPage() {
     return (
         <section>
             <h1>Team</h1>
+            <h2>TODO</h2>
             <ul>
                 {authors.map((author) => {
                     const avatar = normalizeStrapiMedia(author.avatar);
