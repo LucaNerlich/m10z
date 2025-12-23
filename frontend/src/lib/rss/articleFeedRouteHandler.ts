@@ -1,8 +1,6 @@
 import qs from 'qs';
 
-import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {generateArticleFeedXml, type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/rss/articlefeed';
-import {filterPublished} from '@/src/lib/rss/publishDate';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {
     buildRssHeaders,
@@ -82,7 +80,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
         page++;
     }
 
-    return filterPublished(all, (a) => getEffectiveDate(a));
+    return all;
 }
 
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {

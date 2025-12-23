@@ -11,7 +11,6 @@ import {
     type StrapiMediaRef,
     StrapiYoutube,
 } from '@/src/lib/rss/media';
-import {filterPublished} from '@/src/lib/rss/publishDate';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
 export type StrapiPodcast = {
@@ -186,14 +185,12 @@ export function generateAudioFeedXml(args: {
 }): {xml: string; etagSeed: string; lastModified: Date | null} {
     const {cfg, channel, episodeFooter, episodes} = args;
 
-    const nowTs = Date.now();
-    const published = filterPublished(episodes, (ep) => getEffectiveDate(ep), nowTs);
     const channelImage = normalizeStrapiMedia(channel.image);
     const channelImageUrl =
         mediaUrlToAbsolute({media: channelImage}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
-    const sorted = [...published].sort((a, b) => {
+    const sorted = [...episodes].sort((a, b) => {
         const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
         const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
         return bd - ad;

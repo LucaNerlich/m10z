@@ -10,7 +10,6 @@ import {
     type StrapiMediaRef,
     StrapiYoutube,
 } from '@/src/lib/rss/media';
-import {filterPublished} from '@/src/lib/rss/publishDate';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
 export type StrapiArticle = {
@@ -53,9 +52,7 @@ export function generateArticleFeedXml(args: {
 }): {xml: string; etagSeed: string; lastModified: Date | null} {
     const {siteUrl, strapiUrl, channel, articles} = args;
 
-    const nowTs = Date.now();
-    const now = new Date(nowTs);
-    const published = filterPublished(articles, (a) => getEffectiveDate(a), nowTs);
+    const now = new Date();
     const channelImage = normalizeStrapiMedia(channel.image);
     const channelImageUrl =
         mediaUrlToAbsolute({media: channelImage}) ??
@@ -78,7 +75,7 @@ export function generateArticleFeedXml(args: {
         `      <link>${escapeXml(siteUrl)}</link>` +
         `    </image>`;
 
-    const sorted = [...published].sort((a, b) => {
+    const sorted = [...articles].sort((a, b) => {
         const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
         const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
         return bd - ad;

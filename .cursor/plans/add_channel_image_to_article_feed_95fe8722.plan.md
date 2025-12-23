@@ -34,12 +34,15 @@ Extend the article feed to fetch and render channel-level images from Strapi, fo
 
 - Replace `populate: '*'` with explicit population structure:
   ```typescript
-    populate: {
-        channel: {
-            populate: ['image'],
-        },
-    }
+      populate: {
+          channel: {
+              populate: ['image'],
+          },
+      }
   ```
+
+
+
 
 - This matches the pattern used in `audioFeedRouteHandler.ts` lines 99-108
 
@@ -90,4 +93,3 @@ Extend the article feed to fetch and render channel-level images from Strapi, fo
 
 - Verify RSS feed validates against RSS 2.0 spec
 - Test with channel image configured in Strapi
-- Test fallback behavior when channel image is missing

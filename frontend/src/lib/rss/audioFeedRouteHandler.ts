@@ -1,13 +1,11 @@
 import qs from 'qs';
 
-import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {
     type AudioFeedConfig,
     generateAudioFeedXml,
     type StrapiAudioFeedSingle,
     type StrapiPodcast,
 } from '@/src/lib/rss/audiofeed';
-import {filterPublished} from '@/src/lib/rss/publishDate';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {
     buildRssHeaders,
@@ -91,8 +89,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
         page++;
     }
 
-    // Only published episodes should be in the public feed.
-    return filterPublished(all, (p) => getEffectiveDate(p));
+    return all;
 }
 
 async function fetchAudioFeedSingle(): Promise<StrapiAudioFeedSingle> {
