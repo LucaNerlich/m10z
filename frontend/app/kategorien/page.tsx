@@ -1,8 +1,18 @@
 'use cache';
 
+import {type Metadata} from 'next';
 import Link from 'next/link';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
+import {absoluteRoute} from '@/src/lib/routes';
+
+export const metadata: Metadata = {
+    title: 'Kategorien',
+    description: 'Durchsuchen Sie unsere Inhalte nach Kategorien. Finden Sie Artikel und Podcasts zu verschiedenen Themen.',
+    alternates: {
+        canonical: absoluteRoute('/kategorien'),
+    },
+};
 
 export default async function CategoriesPage() {
     const categories = await fetchCategoriesWithContent();

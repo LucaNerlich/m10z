@@ -1,18 +1,58 @@
 'use cache';
 
+import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, normalizeStrapiMedia, pickCoverMedia} from '@/src/lib/rss/media';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {PodcastPlayer} from './Player';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
+import {absoluteRoute} from '@/src/lib/routes';
+import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
+
+export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+    'use cache';
+    const {slug: rawSlug} = await params;
+    const slug = validateSlugSafe(rawSlug);
+    if (!slug) return {};
+
+    const episode = await fetchPodcastBySlug(slug);
+    if (!episode) return {};
+
+    const title = episode.base.title;
+    const description = episode.base.description || undefined;
+    const coverMedia = pickCoverMedia(episode.base, episode.categories);
+    const coverImage = coverMedia ? formatOpenGraphImage(normalizeStrapiMedia(coverMedia)) : undefined;
+
+    const openGraph: Metadata['openGraph'] = {
+        type: 'article',
+        title,
+        description,
+        images: coverImage,
+    };
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: absoluteRoute(`/podcasts/${slug}`),
+        },
+        openGraph,
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: coverImage,
+        },
+    };
+}
 
 /**
  * Render the podcast episode detail page for the route slug.

@@ -1,9 +1,19 @@
 'use cache';
 
+import {type Metadata} from 'next';
 import Link from 'next/link';
 
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {fetchPodcastsList} from '@/src/lib/strapiContent';
+import {absoluteRoute} from '@/src/lib/routes';
+
+export const metadata: Metadata = {
+    title: 'Podcasts',
+    description: 'Alle Podcast-Episoden von Mindestens 10 Zeichen. Hören Sie unsere Diskussionen zu Gaming, Organisationskultur und mehr.',
+    alternates: {
+        canonical: absoluteRoute('/podcasts'),
+    },
+};
 
 export default async function PodcastsPage() {
     const podcasts = await fetchPodcastsList();
