@@ -75,6 +75,20 @@
           "sortable": false
         }
       },
+      "date": {
+        "edit": {
+          "label": "Date",
+          "description": "Overwrite Publish Timestamp",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "date",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "documentId": {
         "edit": {},
         "list": {
@@ -104,6 +118,12 @@
           {
             "name": "banner",
             "size": 6
+          }
+        ],
+        [
+          {
+            "name": "date",
+            "size": 12
           }
         ]
       ],

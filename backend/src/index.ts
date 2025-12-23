@@ -30,12 +30,17 @@ export default {
             // Run the core operation first; only invalidate on success.
             const result = await next();
 
+            //Invalidate Content
             if (context.action === 'publish' && publishTargets.has(context.uid)) {
                 await invalidateNext(publishTargets.get(context.uid)!);
             } else if (context.action === 'update' && updateTargets.has(context.uid)) {
                 await invalidateNext(updateTargets.get(context.uid)!);
             }
 
+            // Invalidate Sitemap
+            await invalidateNext('sitemap');
+
+            // Rebuild search index
             if (rebuildActions.has(context.action) && searchTargets.has(context.uid)) {
                 try {
                     await buildAndPersistSearchIndex(strapi);

@@ -72,7 +72,7 @@
       "locale": null
     },
     {
-      "documentId": "fd6d4kzhd0vfhyyo29073i0q",
+      "documentId": "gew6bwwhmi14gxiopw86xupd",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::article.article",
@@ -82,6 +82,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "content",
           "authors",
@@ -110,7 +111,7 @@
       "locale": null
     },
     {
-      "documentId": "kh9weda5h3rfhj6k59ehri0l",
+      "documentId": "xjflsf4btyu7uwhocr83yeab",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::article.article",
@@ -120,6 +121,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "content",
           "authors",
@@ -130,7 +132,7 @@
       "locale": null
     },
     {
-      "documentId": "avpejhl8wokmcj04venop8u7",
+      "documentId": "q4gdagc9h4m6w5g5x50qyo2b",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::article.article",
@@ -140,6 +142,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "content",
           "authors",
@@ -288,7 +291,7 @@
       "locale": null
     },
     {
-      "documentId": "pj37ipp8l0gxhqk6be07gt5u",
+      "documentId": "ol6qu2txem1prb9dsn4e0gh1",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::category.category",
@@ -298,6 +301,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "articles",
           "podcasts"
@@ -325,7 +329,7 @@
       "locale": null
     },
     {
-      "documentId": "c0dh2kb4umxkmhullng1f93o",
+      "documentId": "ckz1quy2m37wi1agoz9lacjz",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::category.category",
@@ -335,6 +339,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "articles",
           "podcasts"
@@ -344,7 +349,7 @@
       "locale": null
     },
     {
-      "documentId": "de88jumbzpgx07h6rq6m216o",
+      "documentId": "v4qqb1lgcz183p7rt5pb1ecj",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::category.category",
@@ -354,6 +359,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "articles",
           "podcasts"
@@ -423,7 +429,7 @@
       "locale": null
     },
     {
-      "documentId": "n32xjnkf5155pzi56hvuscnz",
+      "documentId": "y9zy3jcqzcvkqdzffent0oe7",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
@@ -433,6 +439,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "file",
           "duration",
@@ -463,7 +470,7 @@
       "locale": null
     },
     {
-      "documentId": "bv5rnhfj8gamnqyjjsftuknu",
+      "documentId": "ct0v9265sv43i4xfbx74y3k1",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
@@ -473,6 +480,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "file",
           "duration",
@@ -485,7 +493,7 @@
       "locale": null
     },
     {
-      "documentId": "obeqn1bv5k657yyo45vlp8ah",
+      "documentId": "dq3639g4g4ou47uuiavnbnh9",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
@@ -495,6 +503,7 @@
           "base.description",
           "base.cover",
           "base.banner",
+          "base.date",
           "slug",
           "file",
           "duration",

@@ -53,6 +53,12 @@ function sanitizeText(value: unknown): string | undefined {
     return cleaned.length > 0 ? cleaned : undefined;
 }
 
+function effectiveDate(raw: any): string | null {
+    const override = safeText(raw?.base?.date);
+    if (override) return override;
+    return safeText(raw?.publishedAt) ?? null;
+}
+
 function toPlainText(value: unknown): string | undefined {
     if (typeof value !== 'string') return undefined;
     const text = value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -125,7 +131,7 @@ function normalizeArticle(raw: any): SearchRecord | null {
         description,
         content,
         href: `/artikel/${encodeURIComponent(slug)}`,
-        publishedAt: safeText(article?.publishedAt) ?? null,
+        publishedAt: effectiveDate(article),
         tags: [...new Set<string>(['Artikel', ...categories, ...authors].filter(Boolean))],
     };
 }
@@ -158,7 +164,7 @@ function normalizePodcast(raw: any): SearchRecord | null {
         description,
         content,
         href: `/podcasts/${encodeURIComponent(slug)}`,
-        publishedAt: safeText(podcast?.publishedAt) ?? null,
+        publishedAt: effectiveDate(podcast),
         tags: [...new Set<string>(['Podcast', ...categories, ...authors].filter(Boolean))],
     };
 }
@@ -208,7 +214,7 @@ async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
             'api::article.article',
             {
                 populate: {
-                    base: {fields: ['title', 'description']},
+                    base: {fields: ['title', 'description', 'date']},
                     categories: {populate: {base: {fields: ['title']}}, fields: ['slug']},
                     authors: {fields: ['title', 'slug']},
                 },
@@ -220,7 +226,7 @@ async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
             'api::podcast.podcast',
             {
                 populate: {
-                    base: {fields: ['title', 'description']},
+                    base: {fields: ['title', 'description', 'date']},
                     categories: {populate: {base: {fields: ['title']}}, fields: ['slug']},
                     authors: {fields: ['title', 'slug']},
                 },

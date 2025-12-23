@@ -30,7 +30,7 @@
         "list": {
           "label": "Title",
           "searchable": false,
-          "sortable": true
+          "sortable": false
         }
       },
       "slug": {
@@ -187,6 +187,11 @@
       }
     },
     "layouts": {
+      "list": [
+        "base",
+        "updatedAt",
+        "categories"
+      ],
       "edit": [
         [
           {
@@ -226,11 +231,6 @@
             "size": 6
           }
         ]
-      ],
-      "list": [
-        "base",
-        "updatedAt",
-        "categories"
       ]
     },
     "uid": "api::podcast.podcast"

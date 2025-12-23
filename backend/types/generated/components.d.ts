@@ -9,6 +9,7 @@ export interface CollectionTypeBaseContent extends Struct.ComponentSchema {
     attributes: {
         banner: Schema.Attribute.Media<'images'>;
         cover: Schema.Attribute.Media<'images'>;
+        date: Schema.Attribute.DateTime;
         description: Schema.Attribute.Text;
         title: Schema.Attribute.String & Schema.Attribute.Required;
     };
