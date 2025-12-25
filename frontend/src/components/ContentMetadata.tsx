@@ -39,10 +39,10 @@ export function ContentMetadata({
                     </time>
                 ) : null}
                 {readingTime ? (
-                    <span className={styles.readingTime}>{readingTime}</span>
+                    <span className={styles.readingTime}>📖&nbsp;{readingTime}</span>
                 ) : null}
                 {duration ? (
-                    <time className={styles.duration}>{formatDuration(duration)}</time>
+                    <time className={styles.duration}>🎶&nbsp;{formatDuration(duration)}</time>
                 ) : null}
             </div>
             {authors && authors.length > 0 ? <ContentAuthors authors={authors} /> : null}
