@@ -99,6 +99,93 @@ After the migration completes:
    - Check for any failed files
    - Re-run the script for failed files if needed (after fixing issues)
 
+## Server Configuration (Coolify/Traefik)
+
+If you're using Coolify with Traefik and experiencing 504 Gateway Timeout errors with large files, you need to configure Traefik timeouts.
+
+### Option 1: Configure Traefik EntryPoint Timeouts in Coolify (Recommended)
+
+In Coolify, you need to configure Traefik at the proxy/entrypoint level:
+
+1. **Go to your Server Settings** → **Proxy Settings** (or Traefik configuration)
+2. **Add these command arguments** to increase timeouts:
+
+```yaml
+command:
+  - "--entrypoints.web.transport.respondingTimeouts.readTimeout=10m"
+  - "--entrypoints.web.transport.respondingTimeouts.writeTimeout=10m"
+  - "--entrypoints.web.transport.respondingTimeouts.idleTimeout=5m"
+  - "--entrypoints.websecure.transport.respondingTimeouts.readTimeout=10m"
+  - "--entrypoints.websecure.transport.respondingTimeouts.writeTimeout=10m"
+  - "--entrypoints.websecure.transport.respondingTimeouts.idleTimeout=5m"
+```
+
+**Or if using HTTPS entrypoint:**
+```yaml
+command:
+  - "--entrypoints.https.transport.respondingTimeouts.readTimeout=10m"
+  - "--entrypoints.https.transport.respondingTimeouts.writeTimeout=10m"
+  - "--entrypoints.https.transport.respondingTimeouts.idleTimeout=5m"
+```
+
+**Note:** 
+- `readTimeout`: Time Traefik waits for response from backend (10 minutes)
+- `writeTimeout`: Time Traefik waits to write request to backend (10 minutes)  
+- `idleTimeout`: Time to keep connection alive (5 minutes)
+
+After adding these, restart Traefik in Coolify.
+
+### Option 2: Traefik Dynamic Configuration File
+
+If you have access to Traefik's configuration directory, create or edit `traefik.yml` or add to your dynamic configuration:
+
+```yaml
+http:
+  middlewares:
+    strapi-timeout:
+      forwardAuth:
+        address: ""
+      # Or use buffering middleware
+      buffering:
+        maxRequestBodyBytes: 5368709120  # 5GB
+        maxResponseBodyBytes: 5368709120
+        memRequestBodyBytes: 104857600  # 100MB
+        memResponseBodyBytes: 104857600
+        retryExpression: "IsNetworkError() && Attempts() < 3"
+```
+
+### Option 3: Traefik IngressRoute (Kubernetes) or Docker Labels
+
+For Docker Compose or Kubernetes, add these labels to your Strapi service:
+
+```yaml
+labels:
+  - "traefik.http.middlewares.strapi-timeout.forwardauth.address="
+  - "traefik.http.middlewares.strapi-timeout.forwardauth.forwardauth.responseForward=true"
+  - "traefik.http.routers.strapi.middlewares=strapi-timeout"
+```
+
+### Option 4: Coolify Environment Variables
+
+In Coolify, you can also set these as environment variables on your Strapi service:
+- `TRAEFIK_TIMEOUT_READ=600s`
+- `TRAEFIK_TIMEOUT_WRITE=600s`
+
+### Recommended Timeout Values
+
+For large file uploads (50-100MB+), set:
+- **Read timeout**: 600 seconds (10 minutes)
+- **Write timeout**: 600 seconds (10 minutes)
+- **Idle timeout**: 180 seconds (3 minutes)
+
+### Verification
+
+After applying the configuration:
+1. Restart your Strapi service in Coolify
+2. Check Traefik logs to confirm middleware is applied
+3. Test with a large file upload
+4. Monitor Traefik dashboard/metrics for timeout errors
+
 ## Troubleshooting
 
 ### "STRAPI_API_TOKEN environment variable is required"
@@ -118,6 +205,33 @@ After the migration completes:
 ### "HTTP 413 Payload Too Large"
 - Check file sizes (Strapi has upload size limits)
 - Review `backend/config/middlewares.ts` for configured limits
+
+### "HTTP 504 Gateway Timeout"
+This error occurs when Traefik (reverse proxy) times out before the upload completes. This is common with large files (>50MB).
+
+**Solution: Configure Traefik timeouts in Coolify**
+
+If using Coolify with Traefik, you need to increase Traefik timeouts. Add the following labels to your Strapi service in Coolify:
+
+```yaml
+traefik.http.middlewares.strapi-timeout.forwardauth.address: ""
+traefik.http.services.strapi.loadbalancer.server.port: "1337"
+traefik.http.routers.strapi.middlewares: "strapi-timeout"
+```
+
+Or configure via Coolify's environment variables/annotations:
+- `traefik.http.middlewares.strapi-timeout.forwardauth.address=""`
+- Set Traefik timeout values (e.g., `traefik.http.middlewares.strapi-timeout.forwardauth.forwardauth.responseForward=true`)
+
+Alternatively, configure Traefik directly in your `docker-compose.yml` or Coolify settings:
+- Increase `traefik.http.middlewares.strapi-timeout.forwardauth.forwardauth.responseForward` timeout
+- Set `traefik.http.services.strapi.loadbalancer.server.port` timeout to at least 600 seconds for large files
+
+**Recommended Traefik timeout values for large file uploads:**
+- `traefik.http.middlewares.strapi-timeout.forwardauth.forwardauth.responseForward`: 600s (10 minutes)
+- Or use Traefik's `timeout` middleware with appropriate values
+
+The script will automatically retry failed uploads, but persistent 504 errors indicate server-side timeout configuration is needed.
 
 ### Network Errors
 - Check internet connectivity

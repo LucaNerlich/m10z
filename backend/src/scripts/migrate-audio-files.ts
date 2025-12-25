@@ -15,6 +15,7 @@
 
 import {config} from 'dotenv';
 import FormData from 'form-data';
+import fetch from 'node-fetch';
 import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
@@ -48,9 +49,10 @@ interface MigrationReport {
 const STRAPI_UPLOAD_URL = 'https://cms.m10z.de/api/upload';
 const ALLOWED_DOMAIN = 'm10z.picnotes.de';
 const MAX_RETRIES = 3;
-const RETRY_DELAYS = [1000, 2000, 4000]; // Exponential backoff in milliseconds
+const RETRY_DELAYS = [2000, 5000, 10000]; // Longer delays for timeout errors
 const BETWEEN_FILE_DELAY_MIN = 1000;
 const BETWEEN_FILE_DELAY_MAX = 2000;
+const CLIENT_TIMEOUT_MS = 600000; // 10 minutes client-side timeout
 
 // Hardcoded list of 87 audio file URLs
 const AUDIO_FILE_URLS: string[] = [
@@ -284,7 +286,10 @@ async function uploadToStrapiWithRetry(
 
     try {
         const fileBuffer = await fs.readFile(filePath);
+        const fileSizeMB = (fileBuffer.length / (1024 * 1024)).toFixed(2);
         const mimeType = getMimeType(filename);
+        
+        log(`Uploading ${filename} (${fileSizeMB} MB, ${mimeType})...`);
 
         const formData = new FormData();
         formData.append('files', fileBuffer, {
@@ -292,25 +297,59 @@ async function uploadToStrapiWithRetry(
             contentType: mimeType,
         });
 
-        // Use form-data's getHeaders() to get proper Content-Type with boundary
-        const response = await fetch(STRAPI_UPLOAD_URL, {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${apiToken}`,
-                ...formData.getHeaders(),
-            },
-            body: formData as unknown as BodyInit,
-        });
+        // Calculate estimated upload time (rough estimate: 1MB per second)
+        const estimatedSeconds = Math.ceil(fileBuffer.length / (1024 * 1024));
+        if (estimatedSeconds > 30) {
+            log(`Large file detected, estimated upload time: ~${estimatedSeconds} seconds`);
+        }
+
+        // Create AbortController for client-side timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+            controller.abort();
+        }, CLIENT_TIMEOUT_MS);
+
+        try {
+            // Use node-fetch which has better compatibility with form-data
+            // getHeaders() includes Content-Type with boundary
+            const response = await fetch(STRAPI_UPLOAD_URL, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${apiToken}`,
+                    ...formData.getHeaders(),
+                },
+                body: formData,
+                signal: controller.signal,
+            });
+
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
                 let errorDetails = '';
+                let errorJson: any = null;
+                
                 try {
                     const text = await response.text();
                     // Try to parse as JSON for structured error messages
                     try {
-                        const errorJson = JSON.parse(text);
+                        errorJson = JSON.parse(text);
                         if (errorJson.error) {
-                            errorDetails = errorJson.error.message || JSON.stringify(errorJson.error);
+                            // Strapi error format: { error: { message: "...", details: {...} } }
+                            const errorMsg = errorJson.error.message || '';
+                            const errorDetailsObj = errorJson.error.details || errorJson.error;
+                            if (errorMsg) {
+                                errorDetails = errorMsg;
+                                if (errorDetailsObj && typeof errorDetailsObj === 'object') {
+                                    const detailsStr = JSON.stringify(errorDetailsObj);
+                                    if (detailsStr !== '{}' && detailsStr !== JSON.stringify({message: errorMsg})) {
+                                        errorDetails += ` - Details: ${detailsStr}`;
+                                    }
+                                }
+                            } else {
+                                errorDetails = JSON.stringify(errorJson.error);
+                            }
+                        } else if (errorJson.message) {
+                            errorDetails = errorJson.message;
                         } else {
                             errorDetails = JSON.stringify(errorJson);
                         }
@@ -318,8 +357,13 @@ async function uploadToStrapiWithRetry(
                         // If not JSON, use the text as-is
                         errorDetails = text || response.statusText;
                     }
-                } catch {
+                } catch (err) {
                     errorDetails = response.statusText;
+                }
+                
+                // Log full error details for debugging
+                if (response.status >= 500) {
+                    error(`Server error details for ${filename}:`, errorJson || errorDetails);
                 }
                 
                 throw new Error(
@@ -349,6 +393,9 @@ async function uploadToStrapiWithRetry(
                 id: uploadedFile.id,
                 url: uploadedFile.url || '',
             };
+        } finally {
+            clearTimeout(timeoutId);
+        }
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
         
@@ -356,7 +403,10 @@ async function uploadToStrapiWithRetry(
         let isRetryable = true;
         if (err instanceof Error) {
             if (err.name === 'AbortError') {
-                error(`Upload timeout for ${filename} (attempt ${attempt}/${MAX_RETRIES})`);
+                error(`Client-side timeout for ${filename} (attempt ${attempt}/${MAX_RETRIES}) - upload took longer than ${CLIENT_TIMEOUT_MS / 1000} seconds`);
+            } else if (errorMessage.includes('504') || errorMessage.includes('Gateway Timeout')) {
+                error(`Gateway timeout for ${filename} (attempt ${attempt}/${MAX_RETRIES}) - server/proxy timeout exceeded`);
+                error(`Note: This may indicate a server-side timeout configuration issue. Large files may need server timeout adjustments.`);
             } else if (errorMessage.includes('499') || errorMessage.includes('Client Closed Request')) {
                 error(`Connection closed for ${filename} (attempt ${attempt}/${MAX_RETRIES}): ${errorMessage}`);
                 // 499 errors are often transient, so retry with longer delay
