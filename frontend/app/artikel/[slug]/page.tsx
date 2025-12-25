@@ -14,6 +14,7 @@ import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {formatDateShort} from '@/src/lib/dateFormatters';
+import {calculateReadingTime} from '@/src/lib/readingTime';
 import {ContentAuthors} from '@/src/components/ContentAuthors';
 import {CategoryList} from '@/src/components/CategoryList';
 import styles from './page.module.css';
@@ -78,6 +79,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
     if (!article) return notFound();
 
     const published = getEffectiveDate(article);
+    const readingTime = calculateReadingTime(article.content ?? '');
     const jsonLd = generateArticleJsonLd(article);
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
@@ -111,6 +113,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
                                 {formatDateShort(published)}
                             </time>
                         ) : null}
+                        <span className={styles.readingTime}>{readingTime}</span>
                         <h1 className={styles.title}>{article.base.title}</h1>
                         {article.base.description ? (
                             <p className={styles.description}>
