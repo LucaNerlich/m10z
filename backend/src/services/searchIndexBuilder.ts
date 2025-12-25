@@ -282,7 +282,7 @@ function normalizeAuthor(raw: any, strapiUrl?: string): SearchRecord | null {
         title,
         description,
         href: `/team/${encodeURIComponent(slug)}`,
-        tags: ['AutorIn'],
+        tags: ['Autor-In'],
         coverImageUrl: extractAuthorAvatarUrl(author, strapiUrl),
     };
 }
