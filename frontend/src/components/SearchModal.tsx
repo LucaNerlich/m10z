@@ -19,12 +19,12 @@ type ResultItem = SearchRecord & {score?: number | null};
 const TYPE_LABEL: Record<SearchRecord['type'], string> = {
     article: 'Artikel',
     podcast: 'Podcast',
-    author: 'Autor',
+    author: 'Autor-In',
     category: 'Kategorie',
 };
 
 function normalizeImageUrl(url: string | null | undefined): string | null {
-    if (!url || typeof url !== 'string') return null;
+    if (!url) return null;
 
     // If URL already has a protocol, return as-is
     if (/^https?:\/\//i.test(url)) return url;
@@ -35,8 +35,7 @@ function normalizeImageUrl(url: string | null | undefined): string | null {
         return `http://${url}`;
     }
 
-    // Otherwise return as-is (might be a relative URL that Next.js Image can handle)
-    return url;
+    return 'https://' + url;
 }
 
 /**
@@ -166,6 +165,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         >
                             <div className={styles.resultContent}>
                                 {item.coverImageUrl ? (() => {
+                                    console.log('item', item);
                                     const normalizedUrl = normalizeImageUrl(item.coverImageUrl);
                                     return normalizedUrl ? (
                                         <div className={styles.resultImage}>
