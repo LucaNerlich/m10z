@@ -11,7 +11,7 @@ import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {pickCoverMedia, normalizeStrapiMedia, getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
+import {pickBannerOrCoverMedia, normalizeStrapiMedia, getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {formatDateShort} from '@/src/lib/dateFormatters';
 import {AuthorList} from '@/src/components/AuthorList';
@@ -34,8 +34,8 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const title = article.base.title;
     const description = article.base.description || undefined;
     const publishedTime = formatIso8601Date(getEffectiveDate(article));
-    const coverMedia = pickCoverMedia(article.base, article.categories);
-    const coverImage = coverMedia ? formatOpenGraphImage(normalizeStrapiMedia(coverMedia)) : undefined;
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
+    const coverImage = bannerOrCoverMedia ? formatOpenGraphImage(bannerOrCoverMedia) : undefined;
     const authors = article.authors?.map((a) => a.title).filter(Boolean) as string[] | undefined;
 
     return {
@@ -79,11 +79,11 @@ export default async function ArticleDetailPage({params}: PageProps) {
 
     const published = getEffectiveDate(article);
     const jsonLd = generateArticleJsonLd(article);
-    const coverMedia = pickCoverMedia(article.base, article.categories);
-    const optimizedCoverMedia = coverMedia ? getOptimalMediaFormat(normalizeStrapiMedia(coverMedia), 'medium') : undefined;
-    const coverImageUrl = optimizedCoverMedia ? mediaUrlToAbsolute({media: optimizedCoverMedia}) : undefined;
-    const coverWidth = optimizedCoverMedia?.width;
-    const coverHeight = optimizedCoverMedia?.height;
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const coverImageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
+    const coverWidth = optimizedMedia?.width;
+    const coverHeight = optimizedMedia?.height;
 
     return (
         <>
@@ -92,16 +92,18 @@ export default async function ArticleDetailPage({params}: PageProps) {
                 dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}}
             />
             <main>
-                <article>
+                <article className={styles.article}>
                     {coverImageUrl && coverWidth && coverHeight ? (
-                        <Image
-                            src={coverImageUrl}
-                            alt={article.base.title}
-                            width={coverWidth}
-                            height={coverHeight}
-                            priority
-                            className={styles.coverImage}
-                        />
+                        <div className={styles.coverImageContainer}>
+                            <Image
+                                src={coverImageUrl}
+                                alt={article.base.title}
+                                width={coverWidth}
+                                height={coverHeight}
+                                priority
+                                className={styles.coverImage}
+                            />
+                        </div>
                     ) : null}
                     <header className={styles.header}>
                         {published ? (

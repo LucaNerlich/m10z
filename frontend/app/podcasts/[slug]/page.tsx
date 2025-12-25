@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {mediaUrlToAbsolute, normalizeStrapiMedia, pickCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, normalizeStrapiMedia, pickBannerOrCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {PodcastPlayer} from './Player';
@@ -33,8 +33,8 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 
     const title = episode.base.title;
     const description = episode.base.description || undefined;
-    const coverMedia = pickCoverMedia(episode.base, episode.categories);
-    const coverImage = coverMedia ? formatOpenGraphImage(normalizeStrapiMedia(coverMedia)) : undefined;
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
+    const coverImage = bannerOrCoverMedia ? formatOpenGraphImage(bannerOrCoverMedia) : undefined;
 
     const openGraph: Metadata['openGraph'] = {
         type: 'article',
@@ -81,11 +81,11 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const fileMedia = normalizeStrapiMedia(episode.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia});
     const jsonLd = generatePodcastJsonLd(episode);
-    const coverMedia = pickCoverMedia(episode.base, episode.categories);
-    const optimizedCoverMedia = coverMedia ? getOptimalMediaFormat(normalizeStrapiMedia(coverMedia), 'medium') : undefined;
-    const coverImageUrl = optimizedCoverMedia ? mediaUrlToAbsolute({media: optimizedCoverMedia}) : undefined;
-    const coverWidth = optimizedCoverMedia?.width;
-    const coverHeight = optimizedCoverMedia?.height;
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const coverImageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
+    const coverWidth = optimizedMedia?.width;
+    const coverHeight = optimizedMedia?.height;
 
     return (
         <>
@@ -94,16 +94,18 @@ export default async function PodcastDetailPage({params}: PageProps) {
                 dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}}
             />
             <main>
-                <article>
+                <article className={styles.episode}>
                     {coverImageUrl && coverWidth && coverHeight ? (
-                        <Image
-                            src={coverImageUrl}
-                            alt={episode.base.title}
-                            width={coverWidth}
-                            height={coverHeight}
-                            priority
-                            className={styles.coverImage}
-                        />
+                        <div className={styles.coverImageContainer}>
+                            <Image
+                                src={coverImageUrl}
+                                alt={episode.base.title}
+                                width={coverWidth}
+                                height={coverHeight}
+                                priority
+                                className={styles.coverImage}
+                            />
+                        </div>
                     ) : null}
                     <header className={styles.header}>
                         {published ? (
