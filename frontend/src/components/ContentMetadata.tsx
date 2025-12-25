@@ -1,5 +1,6 @@
 import {type StrapiAuthor, type StrapiCategoryRef} from '@/src/lib/rss/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
+import {formatIso8601Duration} from '@/src/lib/jsonld/helpers';
 import {ContentAuthors} from './ContentAuthors';
 import {CategoryList} from './CategoryList';
 import styles from './ContentMetadata.module.css';
@@ -42,7 +43,9 @@ export function ContentMetadata({
                     <span className={styles.readingTime}>📖&nbsp;{readingTime}</span>
                 ) : null}
                 {duration ? (
-                    <time className={styles.duration}>🎶&nbsp;{formatDuration(duration)}</time>
+                    <time dateTime={formatIso8601Duration(duration)} className={styles.duration}>
+                        🎶&nbsp;{formatDuration(duration)}
+                    </time>
                 ) : null}
             </div>
             {authors && authors.length > 0 ? <ContentAuthors authors={authors} /> : null}

@@ -19,6 +19,7 @@ import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
 import styles from './page.module.css';
 
 type PageProps = {
@@ -143,6 +144,8 @@ export default async function PodcastDetailPage({params}: PageProps) {
                     <div className={styles.content}>
                         <Markdown markdown={episode.shownotes ?? ''} />
                     </div>
+
+                    <YoutubeSection youtube={episode.youtube} />
                 </article>
             </main>
         </>

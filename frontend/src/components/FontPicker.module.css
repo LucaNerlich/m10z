@@ -1,3 +1,8 @@
+.pickerWrapper {
+    position: relative;
+    display: inline-flex;
+}
+
 .picker {
     display: inline-flex;
     align-items: center;
@@ -11,10 +16,9 @@
     font-size: 0.95rem;
     text-decoration: none;
     transition: color 120ms ease, opacity 120ms ease;
-    position: relative;
 }
 
-.picker::after {
+.pickerWrapper::after {
     content: '';
     position: absolute;
     right: 0;
@@ -32,9 +36,10 @@
     -webkit-mask-position: center;
     -webkit-mask-size: contain;
     transition: background-color 120ms ease;
+    pointer-events: none;
 }
 
-.picker:hover::after {
+.pickerWrapper:hover::after {
     background-color: var(--color-primary);
 }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import {toYouTubeEmbedUrl} from '@/src/lib/youtube';
 
 interface YoutubeEmbedProps {
     videoId: string;
@@ -17,14 +18,22 @@ interface YoutubeEmbedProps {
  * @returns A React element containing the YouTube embed iframe for the given `videoId`, or an empty fragment when `videoId` is falsy.
  */
 export default function YoutubeEmbed(props: Readonly<YoutubeEmbedProps>): React.ReactElement {
-    if (!props.videoId) return <></>;
+    if (!props.videoId || typeof props.videoId !== 'string') return <></>;
+
+    // Validate videoId by constructing a watch URL and using toYouTubeEmbedUrl helper
+    // This ensures the videoId matches YouTube's expected format
+    const watchUrl = `https://www.youtube.com/watch?v=${props.videoId}`;
+    const embedUrl = toYouTubeEmbedUrl(watchUrl, true);
+
+    // If validation fails, return empty element
+    if (!embedUrl) return <></>;
 
     return (
         <div>
             <iframe
                 width={props.width ?? 560}
                 height={props.height ?? 315}
-                src={`https://www.youtube-nocookie.com/embed/${props.videoId}`}
+                src={embedUrl}
                 title={props.title ?? 'YouTube video player'}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"

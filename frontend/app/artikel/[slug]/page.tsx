@@ -14,9 +14,8 @@ import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {calculateReadingTime} from '@/src/lib/readingTime';
-import {extractYouTubeVideoId} from '@/src/lib/youtube';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
-import YoutubeEmbed from '@/src/components/YoutubeEmbed';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
 import styles from './page.module.css';
 
 type PageProps = {
@@ -131,21 +130,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
                     <div className={styles.content}>
                         <Markdown markdown={article.content ?? ''} />
                     </div>
-                    {article.youtube && article.youtube.length > 0 ? (
-                        <div className={styles.youtubeSection}>
-                            {article.youtube.map((youtubeItem) => {
-                                const videoId = extractYouTubeVideoId(youtubeItem.url);
-                                if (!videoId) return null;
-                                return (
-                                    <YoutubeEmbed
-                                        key={youtubeItem.id}
-                                        videoId={videoId}
-                                        title={youtubeItem.title ?? undefined}
-                                    />
-                                );
-                            })}
-                        </div>
-                    ) : null}
+                    <YoutubeSection youtube={article.youtube} />
                 </article>
             </main>
         </>
