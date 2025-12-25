@@ -83,8 +83,6 @@
     .coverImageContainer {
         margin-bottom: 1.5rem;
         border-radius: 0;
-        margin-left: calc(-1 * var(--content-padding, 0));
-        margin-right: calc(-1 * var(--content-padding, 0));
     }
 
     .coverImage {

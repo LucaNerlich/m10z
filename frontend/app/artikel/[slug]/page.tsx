@@ -11,7 +11,7 @@ import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {pickBannerOrCoverMedia, normalizeStrapiMedia, getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {formatDateShort} from '@/src/lib/dateFormatters';
 import {AuthorList} from '@/src/components/AuthorList';

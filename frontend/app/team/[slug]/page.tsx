@@ -3,7 +3,7 @@
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
-import {fetchAuthorBySlug, fetchArticlesBySlugsBatched, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
+import {fetchArticlesBySlugsBatched, fetchAuthorBySlug, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
 import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
@@ -100,7 +100,8 @@ export default async function AuthorPage({params}: PageProps) {
                     <h2 className={styles.sectionTitle}>Artikel ({sortedArticles.length})</h2>
                     <ContentGrid gap="comfortable">
                         {sortedArticles.map((article) => (
-                            <ArticleCard key={article.slug} article={article} showAuthors={false} showCategories={true} />
+                            <ArticleCard key={article.slug} article={article} showAuthors={false}
+                                         showCategories={true} />
                         ))}
                     </ContentGrid>
                 </section>
@@ -111,7 +112,8 @@ export default async function AuthorPage({params}: PageProps) {
                     <h2 className={styles.sectionTitle}>Podcasts ({sortedPodcasts.length})</h2>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
-                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false} showCategories={true} />
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false}
+                                         showCategories={true} />
                         ))}
                     </ContentGrid>
                 </section>

@@ -3,7 +3,7 @@
 import {type Metadata} from 'next';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {notFound} from 'next/navigation';
-import {fetchCategoryBySlug, fetchArticlesBySlugsBatched, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
+import {fetchArticlesBySlugsBatched, fetchCategoryBySlug, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {normalizeStrapiMedia} from '@/src/lib/rss/media';
@@ -34,11 +34,11 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const coverImage = coverMedia
         ? formatOpenGraphImage(coverMedia)
         : [
-              {
-                  url: absoluteRoute('/images/m10z.jpg'),
-                  alt: 'Mindestens 10 Zeichen',
-              },
-          ];
+            {
+                url: absoluteRoute('/images/m10z.jpg'),
+                alt: 'Mindestens 10 Zeichen',
+            },
+        ];
 
     return {
         title,
@@ -120,7 +120,8 @@ export default async function CategoryDetailPage({params}: PageProps) {
                     <h2 className={styles.sectionTitle}>Artikel ({sortedArticles.length})</h2>
                     <ContentGrid gap="comfortable">
                         {sortedArticles.map((article) => (
-                            <ArticleCard key={article.slug} article={article} showAuthors={true} showCategories={false} />
+                            <ArticleCard key={article.slug} article={article} showAuthors={true}
+                                         showCategories={false} />
                         ))}
                     </ContentGrid>
                 </section>
@@ -131,7 +132,8 @@ export default async function CategoryDetailPage({params}: PageProps) {
                     <h2 className={styles.sectionTitle}>Podcasts ({sortedPodcasts.length})</h2>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
-                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true} showCategories={false} />
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true}
+                                         showCategories={false} />
                         ))}
                     </ContentGrid>
                 </section>

@@ -6,7 +6,12 @@ import Image from 'next/image';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {mediaUrlToAbsolute, normalizeStrapiMedia, pickBannerOrCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
+import {
+    getOptimalMediaFormat,
+    mediaUrlToAbsolute,
+    normalizeStrapiMedia,
+    pickBannerOrCoverMedia,
+} from '@/src/lib/rss/media';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {PodcastPlayer} from './Player';
