@@ -13,6 +13,9 @@ import {PodcastPlayer} from './Player';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {formatDateShort} from '@/src/lib/dateFormatters';
+import {AuthorList} from '@/src/components/AuthorList';
+import {CategoryList} from '@/src/components/CategoryList';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -90,27 +93,52 @@ export default async function PodcastDetailPage({params}: PageProps) {
                 dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}}
             />
             <main>
-                <h2>TODO</h2>
-                <p>{published ? new Date(published).toLocaleDateString('de-DE') : ''}</p>
-                <h1>{episode.base.title}</h1>
-                {episode.base.description ? <p>{episode.base.description}</p> : null}
-                {coverImageUrl && coverWidth && coverHeight ? (
-                    <Image
-                        src={coverImageUrl}
-                        alt={episode.base.title}
-                        width={coverWidth}
-                        height={coverHeight}
-                        priority
-                    />
-                ) : null}
+                <article>
+                    {coverImageUrl && coverWidth && coverHeight ? (
+                        <Image
+                            src={coverImageUrl}
+                            alt={episode.base.title}
+                            width={coverWidth}
+                            height={coverHeight}
+                            priority
+                            style={{width: '100%', height: 'auto', marginBottom: '1.5rem'}}
+                        />
+                    ) : null}
+                    <header style={{marginBottom: '1.5rem'}}>
+                        {published ? (
+                            <time dateTime={published} style={{display: 'block', color: 'var(--color-text-muted)', marginBottom: '0.5rem'}}>
+                                {formatDateShort(published)}
+                            </time>
+                        ) : null}
+                        <h1 style={{marginBottom: '0.75rem'}}>{episode.base.title}</h1>
+                        {episode.base.description ? (
+                            <p style={{color: 'var(--color-text-muted)', fontSize: '1.125rem', marginBottom: '1rem'}}>
+                                {episode.base.description}
+                            </p>
+                        ) : null}
+                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center'}}>
+                            {episode.authors && episode.authors.length > 0 ? (
+                                <div>
+                                    <span style={{fontSize: '0.875rem', color: 'var(--color-text-muted)', marginRight: '0.5rem'}}>Von:</span>
+                                    <AuthorList authors={episode.authors} showAvatars={true} layout="inline" />
+                                </div>
+                            ) : null}
+                            {episode.categories && episode.categories.length > 0 ? (
+                                <CategoryList categories={episode.categories} />
+                            ) : null}
+                        </div>
+                    </header>
 
-                {audioUrl ? (
+                    {audioUrl ? (
+                        <div style={{marginBottom: '2rem'}}>
+                            <PodcastPlayer src={audioUrl} />
+                        </div>
+                    ) : null}
+
                     <div>
-                        <PodcastPlayer src={audioUrl} />
+                        <Markdown markdown={episode.shownotes ?? ''} />
                     </div>
-                ) : null}
-
-                <Markdown markdown={episode.shownotes ?? ''} />
+                </article>
             </main>
         </>
     );

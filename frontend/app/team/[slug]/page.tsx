@@ -4,11 +4,15 @@ import {type Metadata} from 'next';
 import Image from 'next/image';
 import {notFound} from 'next/navigation';
 
-import {fetchAuthorBySlug} from '@/src/lib/strapiContent';
-import {getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
+import {fetchAuthorBySlug, fetchArticlesBySlugs, fetchPodcastsBySlugs} from '@/src/lib/strapiContent';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {ContentGrid} from '@/src/components/ContentGrid';
+import {ArticleCard} from '@/src/components/ArticleCard';
+import {PodcastCard} from '@/src/components/PodcastCard';
+import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -65,43 +69,76 @@ export default async function AuthorPage({params}: PageProps) {
     const author = await fetchAuthorBySlug(slug);
     if (!author) return notFound();
 
-    const avatar = getOptimalMediaFormat(author.avatar, 'thumbnail');
+    const avatar = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
     const avatarUrl = mediaUrlToAbsolute({media: avatar});
     const avatarWidth = avatar.width ?? 96;
     const avatarHeight = avatar.height ?? 96;
 
+    const articleSlugs = author.articles?.map((a) => a.slug).filter(Boolean) ?? [];
+    const podcastSlugs = author.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
+
+    const [articles, podcasts] = await Promise.all([
+        fetchArticlesBySlugs(articleSlugs),
+        fetchPodcastsBySlugs(podcastSlugs),
+    ]);
+
+    // Sort by date descending
+    const sortedArticles = [...articles].sort((a, b) => {
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
+        return bd - ad;
+    });
+
+    const sortedPodcasts = [...podcasts].sort((a, b) => {
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
+        return bd - ad;
+    });
+
     return (
         <main>
-            <h2>TODO</h2>
-            {avatarUrl ? <Image src={avatarUrl} alt={author.title ?? 'Avatar'} width={avatarWidth}
-                                height={avatarHeight} /> : null}
-            <h1>{author.title}</h1>
-            {author.description ? <p>{author.description}</p> : null}
+            <header style={{marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '1rem'}}>
+                {avatarUrl ? (
+                    <Image
+                        src={avatarUrl}
+                        alt={author.title ?? 'Avatar'}
+                        width={avatarWidth}
+                        height={avatarHeight}
+                        style={{borderRadius: '50%', border: '2px solid var(--color-border)'}}
+                    />
+                ) : null}
+                <h1>{author.title ?? 'Unbekannter Autor'}</h1>
+                {author.description ? (
+                    <p style={{color: 'var(--color-text-muted)', fontSize: '1.125rem', maxWidth: '600px'}}>
+                        {author.description}
+                    </p>
+                ) : null}
+            </header>
 
-            {author.articles && author.articles.length > 0 ? (
-                <section>
-                    <h2>Artikel</h2>
-                    <ul>
-                        {author.articles.map((a) => (
-                            <li key={a.slug}>
-                                <a href={`/artikel/${a.slug}`}>{a.base.title}</a>
-                            </li>
+            {sortedArticles.length > 0 ? (
+                <section style={{marginBottom: '3rem'}}>
+                    <h2 style={{marginBottom: '1.5rem'}}>Artikel ({sortedArticles.length})</h2>
+                    <ContentGrid gap="comfortable">
+                        {sortedArticles.map((article) => (
+                            <ArticleCard key={article.slug} article={article} showAuthors={false} showCategories={true} />
                         ))}
-                    </ul>
+                    </ContentGrid>
                 </section>
             ) : null}
 
-            {author.podcasts && author.podcasts.length > 0 ? (
+            {sortedPodcasts.length > 0 ? (
                 <section>
-                    <h2>Podcasts</h2>
-                    <ul>
-                        {author.podcasts.map((p) => (
-                            <li key={p.slug}>
-                                <a href={`/podcasts/${p.slug}`}>{p.base.title}</a>
-                            </li>
+                    <h2 style={{marginBottom: '1.5rem'}}>Podcasts ({sortedPodcasts.length})</h2>
+                    <ContentGrid gap="comfortable">
+                        {sortedPodcasts.map((podcast) => (
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false} showCategories={true} />
                         ))}
-                    </ul>
+                    </ContentGrid>
                 </section>
+            ) : null}
+
+            {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
+                <p style={{color: 'var(--color-text-muted)'}}>Keine Inhalte von diesem Autor gefunden.</p>
             ) : null}
         </main>
     );

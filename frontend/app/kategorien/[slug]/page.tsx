@@ -3,10 +3,14 @@
 import {type Metadata} from 'next';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {notFound} from 'next/navigation';
-import {fetchCategoryBySlug} from '@/src/lib/strapiContent';
+import {fetchCategoryBySlug, fetchArticlesBySlugs, fetchPodcastsBySlugs} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {ContentGrid} from '@/src/components/ContentGrid';
+import {ArticleCard} from '@/src/components/ArticleCard';
+import {PodcastCard} from '@/src/components/PodcastCard';
+import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -73,9 +77,68 @@ export default async function CategoryDetailPage({params}: PageProps) {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
+    const category = await fetchCategoryBySlug(slug);
+    if (!category) return notFound();
+
+    const articleSlugs = category.articles?.map((a) => a.slug).filter(Boolean) ?? [];
+    const podcastSlugs = category.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
+
+    const [articles, podcasts] = await Promise.all([
+        fetchArticlesBySlugs(articleSlugs),
+        fetchPodcastsBySlugs(podcastSlugs),
+    ]);
+
+    // Sort by date descending
+    const sortedArticles = [...articles].sort((a, b) => {
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
+        return bd - ad;
+    });
+
+    const sortedPodcasts = [...podcasts].sort((a, b) => {
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
+        return bd - ad;
+    });
+
+    const title = category.base?.title ?? category.slug ?? 'Kategorie';
+
     return (
         <main>
-            <h1>Kategorie Detail Page</h1>
+            <header style={{marginBottom: '2rem'}}>
+                <h1>{title}</h1>
+                {category.base?.description ? (
+                    <p style={{color: 'var(--color-text-muted)', fontSize: '1.125rem', marginTop: '0.5rem'}}>
+                        {category.base.description}
+                    </p>
+                ) : null}
+            </header>
+
+            {sortedArticles.length > 0 ? (
+                <section style={{marginBottom: '3rem'}}>
+                    <h2 style={{marginBottom: '1.5rem'}}>Artikel ({sortedArticles.length})</h2>
+                    <ContentGrid gap="comfortable">
+                        {sortedArticles.map((article) => (
+                            <ArticleCard key={article.slug} article={article} showAuthors={true} showCategories={false} />
+                        ))}
+                    </ContentGrid>
+                </section>
+            ) : null}
+
+            {sortedPodcasts.length > 0 ? (
+                <section>
+                    <h2 style={{marginBottom: '1.5rem'}}>Podcasts ({sortedPodcasts.length})</h2>
+                    <ContentGrid gap="comfortable">
+                        {sortedPodcasts.map((podcast) => (
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true} showCategories={false} />
+                        ))}
+                    </ContentGrid>
+                </section>
+            ) : null}
+
+            {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
+                <p style={{color: 'var(--color-text-muted)'}}>Keine Inhalte in dieser Kategorie gefunden.</p>
+            ) : null}
         </main>
     );
 }

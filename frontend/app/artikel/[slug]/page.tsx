@@ -13,6 +13,9 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {pickCoverMedia, normalizeStrapiMedia, getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
+import {formatDateShort} from '@/src/lib/dateFormatters';
+import {AuthorList} from '@/src/components/AuthorList';
+import {CategoryList} from '@/src/components/CategoryList';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -88,20 +91,45 @@ export default async function ArticleDetailPage({params}: PageProps) {
                 dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}}
             />
             <main>
-                <h2>TODO</h2>
-                <p>{published ? new Date(published).toLocaleDateString('de-DE') : ''}</p>
-                <h1>{article.base.title}</h1>
-                {article.base.description ? <p>{article.base.description}</p> : null}
-                {coverImageUrl && coverWidth && coverHeight ? (
-                    <Image
-                        src={coverImageUrl}
-                        alt={article.base.title}
-                        width={coverWidth}
-                        height={coverHeight}
-                        priority
-                    />
-                ) : null}
-                <Markdown markdown={article.content ?? ''} />
+                <article>
+                    {coverImageUrl && coverWidth && coverHeight ? (
+                        <Image
+                            src={coverImageUrl}
+                            alt={article.base.title}
+                            width={coverWidth}
+                            height={coverHeight}
+                            priority
+                            style={{width: '100%', height: 'auto', marginBottom: '1.5rem'}}
+                        />
+                    ) : null}
+                    <header style={{marginBottom: '1.5rem'}}>
+                        {published ? (
+                            <time dateTime={published} style={{display: 'block', color: 'var(--color-text-muted)', marginBottom: '0.5rem'}}>
+                                {formatDateShort(published)}
+                            </time>
+                        ) : null}
+                        <h1 style={{marginBottom: '0.75rem'}}>{article.base.title}</h1>
+                        {article.base.description ? (
+                            <p style={{color: 'var(--color-text-muted)', fontSize: '1.125rem', marginBottom: '1rem'}}>
+                                {article.base.description}
+                            </p>
+                        ) : null}
+                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center'}}>
+                            {article.authors && article.authors.length > 0 ? (
+                                <div>
+                                    <span style={{fontSize: '0.875rem', color: 'var(--color-text-muted)', marginRight: '0.5rem'}}>Von:</span>
+                                    <AuthorList authors={article.authors} showAvatars={true} layout="inline" />
+                                </div>
+                            ) : null}
+                            {article.categories && article.categories.length > 0 ? (
+                                <CategoryList categories={article.categories} />
+                            ) : null}
+                        </div>
+                    </header>
+                    <div>
+                        <Markdown markdown={article.content ?? ''} />
+                    </div>
+                </article>
             </main>
         </>
     );
