@@ -11,7 +11,7 @@ export default ({env}) => ({
         cookie: {
             sameSite: 'lax',
             path: '/admin',
-            domain: env('BASE_DOMAIN', 'api.m10z.de'),
+            domain: env('BASE_DOMAIN', 'cms.m10z.de'),
         },
     },
     apiToken: {
