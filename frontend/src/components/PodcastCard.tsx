@@ -61,7 +61,7 @@ export function PodcastCard({
                         {formattedDate}
                     </time>
                     {podcast.duration ? (
-                        <span className={styles.duration}>{formatDuration(podcast.duration)}</span>
+                        <span className={styles.duration}>🎶&nbsp;{formatDuration(podcast.duration)}</span>
                     ) : null}
                 </div>
                 <h2 className={styles.cardTitle}>

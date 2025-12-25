@@ -39,12 +39,13 @@
 .metaRow {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     flex-wrap: wrap;
+    color: var(--color-text-muted);
 }
 
 .date {
-    color: var(--color-text-muted);
     font-size: 0.875rem;
 }
 
