@@ -25,3 +25,17 @@ export function toDateTimestamp(raw?: string | null): number | null {
     return Number.isFinite(ts) ? ts : null;
 }
 
+/**
+ * Sorts an array of items by their effective date in descending order (newest first).
+ *
+ * @param items - Array of items that have a base date or publishedAt date
+ * @returns A new sorted array (original array is not modified)
+ */
+export function sortByDateDesc<T extends PublishableWithBase>(items: T[]): T[] {
+    return [...items].sort((a, b) => {
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
+        return bd - ad;
+    });
+}
+

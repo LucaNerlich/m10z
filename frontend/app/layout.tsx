@@ -7,7 +7,7 @@ import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
 import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
 import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import {type Metadata, type Viewport} from 'next';
-import {absoluteRoute, routes} from '@/src/lib/routes';
+import {routes} from '@/src/lib/routes';
 import React from 'react';
 
 export const metadata: Metadata = {

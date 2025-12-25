@@ -1,10 +1,11 @@
 'use cache';
 
 import {type Metadata} from 'next';
-import Link from 'next/link';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
+import {ContentGrid} from '@/src/components/ContentGrid';
+import {CategoryCard} from '@/src/components/CategoryCard';
 
 export const metadata: Metadata = {
     title: 'Kategorien',
@@ -20,41 +21,20 @@ export default async function CategoriesPage() {
     return (
         <section>
             <h1>Kategorien</h1>
-            <h2>TODO</h2>
-            <ul>
-                {categories.map((cat) => (
-                    <li key={cat.slug ?? cat.id}>
-                        <h2>{cat.base?.title ?? cat.slug}</h2>
-                        {cat.base?.description ? <p>{cat.base.description}</p> : null}
-
-                        {cat.articles && cat.articles.length > 0 ? (
-                            <div>
-                                <h3>Artikel</h3>
-                                <ul>
-                                    {cat.articles.map((a) => (
-                                        <li key={a.slug}>
-                                            <Link href={`/artikel/${a.slug}`}>{a.base?.title}</Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : null}
-
-                        {cat.podcasts && cat.podcasts.length > 0 ? (
-                            <div>
-                                <h3>Podcasts</h3>
-                                <ul>
-                                    {cat.podcasts.map((p) => (
-                                        <li key={p.slug}>
-                                            <Link href={`/podcasts/${p.slug}`}>{p.base?.title}</Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : null}
-                    </li>
-                ))}
-            </ul>
+            {categories.length === 0 ? (
+                <p>Keine Kategorien gefunden.</p>
+            ) : (
+                <ContentGrid gap="comfortable">
+                    {categories.map((category) => (
+                        <CategoryCard
+                            key={category.slug ?? category.id}
+                            category={category}
+                            articleCount={category.articles?.length}
+                            podcastCount={category.podcasts?.length}
+                        />
+                    ))}
+                </ContentGrid>
+            )}
         </section>
     );
 }

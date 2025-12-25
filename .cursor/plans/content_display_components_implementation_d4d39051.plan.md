@@ -251,4 +251,3 @@ Create category list component:
 - Verify responsive breakpoints at 640px and 960px
 - Test date formatting with various date inputs (null, undefined, invalid, valid)
 - Test line-clamp truncation with long text
-- Verify image loading with missing/undefined media

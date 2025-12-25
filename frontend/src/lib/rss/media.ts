@@ -187,6 +187,19 @@ export function pickBannerMedia(base?: StrapiBaseContent, categories?: StrapiCat
 }
 
 /**
+ * Picks banner media if available, otherwise falls back to cover media.
+ * Used for content cards that need a 16:9 aspect ratio image.
+ */
+export function pickBannerOrCoverMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
+    // Try banner first
+    const banner = pickBannerMedia(base, categories);
+    if (banner?.url) return banner;
+
+    // Fall back to cover
+    return pickCoverMedia(base, categories);
+}
+
+/**
  * Selects the optimal image format from a StrapiMedia object based on the requested size.
  *
  * Searches for the requested format size in media.formats. If not found, falls back to the next larger size.

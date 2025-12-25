@@ -1,0 +1,27 @@
+.header {
+    margin-bottom: 2rem;
+}
+
+.title {
+    margin: 0;
+}
+
+.description {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+.section {
+    margin-bottom: 3rem;
+}
+
+.sectionTitle {
+    margin-bottom: 1.5rem;
+}
+
+.emptyState {
+    color: var(--color-text-muted);
+}
+

@@ -1,21 +1,25 @@
 'use cache';
 
 import {type Metadata} from 'next';
-import Image from 'next/image';
 import {notFound} from 'next/navigation';
 
-import {fetchAuthorBySlug} from '@/src/lib/strapiContent';
-import {getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
+import {fetchArticlesBySlugsBatched, fetchAuthorBySlug, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
+import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {ContentGrid} from '@/src/components/ContentGrid';
+import {ArticleCard} from '@/src/components/ArticleCard';
+import {PodcastCard} from '@/src/components/PodcastCard';
+import {AuthorHeader} from '@/src/components/AuthorHeader';
+import {sortByDateDesc} from '@/src/lib/effectiveDate';
+import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
 
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-    'use cache';
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
@@ -65,43 +69,63 @@ export default async function AuthorPage({params}: PageProps) {
     const author = await fetchAuthorBySlug(slug);
     if (!author) return notFound();
 
-    const avatar = getOptimalMediaFormat(author.avatar, 'thumbnail');
-    const avatarUrl = mediaUrlToAbsolute({media: avatar});
-    const avatarWidth = avatar.width ?? 96;
-    const avatarHeight = avatar.height ?? 96;
+    const articleSlugs = author.articles?.map((a) => a.slug).filter(Boolean) ?? [];
+    const podcastSlugs = author.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
+
+    const [articlesResult, podcastsResult] = await Promise.allSettled([
+        fetchArticlesBySlugsBatched(articleSlugs),
+        fetchPodcastsBySlugsBatched(podcastSlugs),
+    ]);
+
+    let articles: Awaited<ReturnType<typeof fetchArticlesBySlugsBatched>> = [];
+    let podcasts: Awaited<ReturnType<typeof fetchPodcastsBySlugsBatched>> = [];
+
+    if (articlesResult.status === 'fulfilled') {
+        articles = articlesResult.value;
+    } else {
+        console.error('Failed to fetch articles for author:', articlesResult.reason);
+    }
+
+    if (podcastsResult.status === 'fulfilled') {
+        podcasts = podcastsResult.value;
+    } else {
+        console.error('Failed to fetch podcasts for author:', podcastsResult.reason);
+    }
+
+    // Sort by date descending
+    const sortedArticles = sortByDateDesc(articles);
+    const sortedPodcasts = sortByDateDesc(podcasts);
 
     return (
         <main>
-            <h2>TODO</h2>
-            {avatarUrl ? <Image src={avatarUrl} alt={author.title ?? 'Avatar'} width={avatarWidth}
-                                height={avatarHeight} /> : null}
-            <h1>{author.title}</h1>
-            {author.description ? <p>{author.description}</p> : null}
+            <AuthorHeader author={author} />
 
-            {author.articles && author.articles.length > 0 ? (
-                <section>
-                    <h2>Artikel</h2>
-                    <ul>
-                        {author.articles.map((a) => (
-                            <li key={a.slug}>
-                                <a href={`/artikel/${a.slug}`}>{a.base.title}</a>
-                            </li>
+            {sortedArticles.length > 0 ? (
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>Artikel ({sortedArticles.length})</h2>
+                    <ContentGrid gap="comfortable">
+                        {sortedArticles.map((article) => (
+                            <ArticleCard key={article.slug} article={article} showAuthors={false}
+                                         showCategories={true} />
                         ))}
-                    </ul>
+                    </ContentGrid>
                 </section>
             ) : null}
 
-            {author.podcasts && author.podcasts.length > 0 ? (
-                <section>
-                    <h2>Podcasts</h2>
-                    <ul>
-                        {author.podcasts.map((p) => (
-                            <li key={p.slug}>
-                                <a href={`/podcasts/${p.slug}`}>{p.base.title}</a>
-                            </li>
+            {sortedPodcasts.length > 0 ? (
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>Podcasts ({sortedPodcasts.length})</h2>
+                    <ContentGrid gap="comfortable">
+                        {sortedPodcasts.map((podcast) => (
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false}
+                                         showCategories={true} />
                         ))}
-                    </ul>
+                    </ContentGrid>
                 </section>
+            ) : null}
+
+            {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
+                <p className={styles.emptyState}>Keine Inhalte von diesem Autor gefunden.</p>
             ) : null}
         </main>
     );

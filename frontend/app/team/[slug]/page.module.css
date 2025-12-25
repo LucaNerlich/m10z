@@ -1,0 +1,12 @@
+.section {
+    margin-bottom: 3rem;
+}
+
+.sectionTitle {
+    margin-bottom: 1.5rem;
+}
+
+.emptyState {
+    color: var(--color-text-muted);
+}
+

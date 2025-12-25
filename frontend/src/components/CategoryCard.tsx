@@ -1,11 +1,20 @@
 import Link from 'next/link';
-import {type StrapiCategoryRef} from '@/src/lib/rss/media';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
 import styles from './CategoryCard.module.css';
 
+type CategoryCardCategory = {
+    slug?: string | null;
+    base?: {
+        title?: string | null;
+        description?: string | null;
+        cover?: unknown;
+        banner?: unknown;
+    } | null;
+};
+
 type CategoryCardProps = {
-    category: StrapiCategoryRef;
+    category: CategoryCardCategory;
     articleCount?: number;
     podcastCount?: number;
     className?: string;
@@ -17,7 +26,7 @@ type CategoryCardProps = {
 function formatContentCounts(articleCount?: number, podcastCount?: number): string {
     const parts: string[] = [];
     if (articleCount !== undefined && articleCount > 0) {
-        parts.push(`${articleCount} ${articleCount === 1 ? 'Artikel' : 'Artikel'}`);
+        parts.push(`${articleCount} Artikel`);
     }
     if (podcastCount !== undefined && podcastCount > 0) {
         parts.push(`${podcastCount} ${podcastCount === 1 ? 'Podcast' : 'Podcasts'}`);

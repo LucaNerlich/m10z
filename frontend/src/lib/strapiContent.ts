@@ -10,6 +10,8 @@ if (!STRAPI_URL) {
     throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
 }
 
+const MAX_SLUGS = 150;
+
 type FetchOptions = {
     tags: string[];
     revalidate?: number;
@@ -204,20 +206,24 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
     return paginated.items;
 }
 
-export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthor[]> {
+export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> {
     'use cache';
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
             sort: ['title:asc'],
             pagination: {pageSize: limit, page: 1},
-            populate: ['avatar'],
+            populate: {
+                avatar: true,
+                articles: {fields: ['slug', 'publishedAt']},
+                podcasts: {fields: ['slug', 'publishedAt']},
+            },
             fields: ['slug', 'title', 'description'],
         },
         {encodeValuesOnly: true},
     );
 
-    const res = await fetchJson<{data: StrapiAuthor[]}>(
+    const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(
         `/api/authors?${query}`,
         {tags: options.tags ?? ['strapi:author', 'strapi:author:list']},
     );
@@ -326,6 +332,122 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
     );
 
     return toPaginatedResult(res, page, pageSize);
+}
+
+/**
+ * Fetch multiple articles by their slugs.
+ */
+export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArticle[]> {
+    'use cache';
+    if (slugs.length === 0) return [];
+    if (slugs.length > MAX_SLUGS) {
+        throw new Error(
+            `fetchArticlesBySlugs: Maximum ${MAX_SLUGS} slugs allowed, but ${slugs.length} were provided. Please batch your requests.`,
+        );
+    }
+
+    const query = qs.stringify(
+        {
+            filters: {slug: {$in: slugs}},
+            status: 'published',
+            populate: {
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description', 'date']},
+                authors: {populate: ['avatar'], fields: ['title', 'slug', 'description']},
+                categories: {
+                    populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
+                    fields: ['slug'],
+                },
+                youtube: true,
+            },
+            fields: ['slug', 'content', 'publishedAt'],
+            pagination: {pageSize: MAX_SLUGS},
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiArticle[]}>(
+        `/api/articles?${query}`,
+        {tags: ['strapi:article', 'strapi:article:by-slugs']},
+    );
+    return res.data ?? [];
+}
+
+/**
+ * Fetch multiple podcasts by their slugs.
+ */
+export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodcast[]> {
+    'use cache';
+    if (slugs.length === 0) return [];
+    if (slugs.length > MAX_SLUGS) {
+        throw new Error(
+            `fetchPodcastsBySlugs: Maximum ${MAX_SLUGS} slugs allowed, but ${slugs.length} were provided. Please batch your requests.`,
+        );
+    }
+
+    const query = qs.stringify(
+        {
+            filters: {slug: {$in: slugs}},
+            status: 'published',
+            populate: {
+                base: {populate: ['cover', 'banner'], fields: ['title', 'description', 'date']},
+                authors: {populate: ['avatar'], fields: ['title', 'slug', 'description']},
+                categories: {
+                    populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
+                    fields: ['slug'],
+                },
+                file: {populate: '*'},
+            },
+            fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
+            pagination: {pageSize: MAX_SLUGS},
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJson<{data: StrapiPodcast[]}>(
+        `/api/podcasts?${query}`,
+        {tags: ['strapi:podcast', 'strapi:podcast:by-slugs']},
+    );
+    return res.data ?? [];
+}
+
+/**
+ * Fetch multiple articles by their slugs, automatically batching if the array exceeds MAX_SLUGS.
+ */
+export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<StrapiArticle[]> {
+    'use cache';
+    if (slugs.length === 0) return [];
+    if (slugs.length <= MAX_SLUGS) {
+        return fetchArticlesBySlugs(slugs);
+    }
+
+    // Batch requests
+    const batches: StrapiArticle[][] = [];
+    for (let i = 0; i < slugs.length; i += MAX_SLUGS) {
+        const batch = slugs.slice(i, i + MAX_SLUGS);
+        batches.push(await fetchArticlesBySlugs(batch));
+    }
+
+    return batches.flat();
+}
+
+/**
+ * Fetch multiple podcasts by their slugs, automatically batching if the array exceeds MAX_SLUGS.
+ */
+export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<StrapiPodcast[]> {
+    'use cache';
+    if (slugs.length === 0) return [];
+    if (slugs.length <= MAX_SLUGS) {
+        return fetchPodcastsBySlugs(slugs);
+    }
+
+    // Batch requests
+    const batches: StrapiPodcast[][] = [];
+    for (let i = 0; i < slugs.length; i += MAX_SLUGS) {
+        const batch = slugs.slice(i, i + MAX_SLUGS);
+        batches.push(await fetchPodcastsBySlugs(batch));
+    }
+
+    return batches.flat();
 }
 
 export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> {

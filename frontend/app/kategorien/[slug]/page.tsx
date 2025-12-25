@@ -3,10 +3,15 @@
 import {type Metadata} from 'next';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {notFound} from 'next/navigation';
-import {fetchCategoryBySlug} from '@/src/lib/strapiContent';
+import {fetchArticlesBySlugsBatched, fetchCategoryBySlug, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {ContentGrid} from '@/src/components/ContentGrid';
+import {ArticleCard} from '@/src/components/ArticleCard';
+import {PodcastCard} from '@/src/components/PodcastCard';
+import {sortByDateDesc} from '@/src/lib/effectiveDate';
+import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -29,11 +34,11 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const coverImage = coverMedia
         ? formatOpenGraphImage(coverMedia)
         : [
-              {
-                  url: absoluteRoute('/images/m10z.jpg'),
-                  alt: 'Mindestens 10 Zeichen',
-              },
-          ];
+            {
+                url: absoluteRoute('/images/m10z.jpg'),
+                alt: 'Mindestens 10 Zeichen',
+            },
+        ];
 
     return {
         title,
@@ -73,9 +78,61 @@ export default async function CategoryDetailPage({params}: PageProps) {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
+    const category = await fetchCategoryBySlug(slug);
+    if (!category) return notFound();
+
+    const articleSlugs = category.articles?.map((a) => a.slug).filter(Boolean) ?? [];
+    const podcastSlugs = category.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
+
+    const [articles, podcasts] = await Promise.all([
+        fetchArticlesBySlugsBatched(articleSlugs),
+        fetchPodcastsBySlugsBatched(podcastSlugs),
+    ]);
+
+    // Sort by date descending
+    const sortedArticles = sortByDateDesc(articles);
+    const sortedPodcasts = sortByDateDesc(podcasts);
+
+    const title = category.base?.title ?? category.slug ?? 'Kategorie';
+
     return (
         <main>
-            <h1>Kategorie Detail Page</h1>
+            <header className={styles.header}>
+                <h1 className={styles.title}>{title}</h1>
+                {category.base?.description ? (
+                    <p className={styles.description}>
+                        {category.base.description}
+                    </p>
+                ) : null}
+            </header>
+
+            {sortedArticles.length > 0 ? (
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>Artikel ({sortedArticles.length})</h2>
+                    <ContentGrid gap="comfortable">
+                        {sortedArticles.map((article) => (
+                            <ArticleCard key={article.slug} article={article} showAuthors={true}
+                                         showCategories={false} />
+                        ))}
+                    </ContentGrid>
+                </section>
+            ) : null}
+
+            {sortedPodcasts.length > 0 ? (
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>Podcasts ({sortedPodcasts.length})</h2>
+                    <ContentGrid gap="comfortable">
+                        {sortedPodcasts.map((podcast) => (
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true}
+                                         showCategories={false} />
+                        ))}
+                    </ContentGrid>
+                </section>
+            ) : null}
+
+            {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
+                <p className={styles.emptyState}>Keine Inhalte in dieser Kategorie gefunden.</p>
+            ) : null}
         </main>
     );
 }

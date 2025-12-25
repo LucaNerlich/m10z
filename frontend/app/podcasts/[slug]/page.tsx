@@ -6,13 +6,22 @@ import Image from 'next/image';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {mediaUrlToAbsolute, normalizeStrapiMedia, pickCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
+import {
+    getOptimalMediaFormat,
+    mediaUrlToAbsolute,
+    normalizeStrapiMedia,
+    pickBannerOrCoverMedia,
+} from '@/src/lib/rss/media';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {PodcastPlayer} from './Player';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {formatDateShort} from '@/src/lib/dateFormatters';
+import {ContentAuthors} from '@/src/components/ContentAuthors';
+import {CategoryList} from '@/src/components/CategoryList';
+import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -29,8 +38,8 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 
     const title = episode.base.title;
     const description = episode.base.description || undefined;
-    const coverMedia = pickCoverMedia(episode.base, episode.categories);
-    const coverImage = coverMedia ? formatOpenGraphImage(normalizeStrapiMedia(coverMedia)) : undefined;
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
+    const coverImage = bannerOrCoverMedia ? formatOpenGraphImage(bannerOrCoverMedia) : undefined;
 
     const openGraph: Metadata['openGraph'] = {
         type: 'article',
@@ -77,11 +86,11 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const fileMedia = normalizeStrapiMedia(episode.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia});
     const jsonLd = generatePodcastJsonLd(episode);
-    const coverMedia = pickCoverMedia(episode.base, episode.categories);
-    const optimizedCoverMedia = coverMedia ? getOptimalMediaFormat(normalizeStrapiMedia(coverMedia), 'medium') : undefined;
-    const coverImageUrl = optimizedCoverMedia ? mediaUrlToAbsolute({media: optimizedCoverMedia}) : undefined;
-    const coverWidth = optimizedCoverMedia?.width;
-    const coverHeight = optimizedCoverMedia?.height;
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const coverImageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
+    const coverWidth = optimizedMedia?.width;
+    const coverHeight = optimizedMedia?.height;
 
     return (
         <>
@@ -90,27 +99,51 @@ export default async function PodcastDetailPage({params}: PageProps) {
                 dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}}
             />
             <main>
-                <h2>TODO</h2>
-                <p>{published ? new Date(published).toLocaleDateString('de-DE') : ''}</p>
-                <h1>{episode.base.title}</h1>
-                {episode.base.description ? <p>{episode.base.description}</p> : null}
-                {coverImageUrl && coverWidth && coverHeight ? (
-                    <Image
-                        src={coverImageUrl}
-                        alt={episode.base.title}
-                        width={coverWidth}
-                        height={coverHeight}
-                        priority
-                    />
-                ) : null}
+                <article className={styles.episode}>
+                    {coverImageUrl && coverWidth && coverHeight ? (
+                        <div className={styles.coverImageContainer}>
+                            <Image
+                                src={coverImageUrl}
+                                alt={episode.base.title}
+                                width={coverWidth}
+                                height={coverHeight}
+                                priority
+                                className={styles.coverImage}
+                            />
+                        </div>
+                    ) : null}
+                    <header className={styles.header}>
+                        {published ? (
+                            <time dateTime={published} className={styles.publishedDate}>
+                                {formatDateShort(published)}
+                            </time>
+                        ) : null}
+                        <h1 className={styles.title}>{episode.base.title}</h1>
+                        {episode.base.description ? (
+                            <p className={styles.description}>
+                                {episode.base.description}
+                            </p>
+                        ) : null}
+                        <div className={styles.metaRow}>
+                            {episode.authors && episode.authors.length > 0 ? (
+                                <ContentAuthors authors={episode.authors} />
+                            ) : null}
+                            {episode.categories && episode.categories.length > 0 ? (
+                                <CategoryList categories={episode.categories} />
+                            ) : null}
+                        </div>
+                    </header>
 
-                {audioUrl ? (
-                    <div>
-                        <PodcastPlayer src={audioUrl} />
+                    {audioUrl ? (
+                        <div className={styles.player}>
+                            <PodcastPlayer src={audioUrl} />
+                        </div>
+                    ) : null}
+
+                    <div className={styles.content}>
+                        <Markdown markdown={episode.shownotes ?? ''} />
                     </div>
-                ) : null}
-
-                <Markdown markdown={episode.shownotes ?? ''} />
+                </article>
             </main>
         </>
     );
