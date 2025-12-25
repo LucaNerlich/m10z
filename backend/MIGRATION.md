@@ -22,7 +22,12 @@ The migration script (`src/scripts/migrate-audio-files.ts`) downloads 87 audio f
    pnpm install
    ```
 
-2. Set the environment variable:
+2. Create a `.env` file in the `backend` directory (if it doesn't exist) and add:
+   ```bash
+   STRAPI_API_TOKEN=your_token_here
+   ```
+
+   Alternatively, you can set it as an environment variable:
    ```bash
    export STRAPI_API_TOKEN=your_token_here
    ```

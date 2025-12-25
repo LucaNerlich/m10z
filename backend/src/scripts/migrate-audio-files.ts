@@ -7,13 +7,20 @@
  * Files are processed sequentially with retry logic and proper error handling.
  *
  * Usage:
- *   STRAPI_API_TOKEN=your_token pnpm migrate:audio
+ *   pnpm migrate:audio
+ *
+ * Environment variables can be set in .env file or as environment variables:
+ *   STRAPI_API_TOKEN=your_token
  */
 
-import {FormData, File} from 'formdata-node';
+import {config} from 'dotenv';
+import {File, FormData} from 'formdata-node';
 import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
+
+// Load environment variables from .env file
+config();
 
 // ============================================================================
 // Types and Interfaces
@@ -46,13 +53,99 @@ const BETWEEN_FILE_DELAY_MIN = 100;
 const BETWEEN_FILE_DELAY_MAX = 200;
 
 // Hardcoded list of 87 audio file URLs
-// TODO: Replace with actual URLs from m10z.picnotes.de
 const AUDIO_FILE_URLS: string[] = [
     // Placeholder - replace with actual 87 URLs
     // Example format:
     // 'https://m10z.picnotes.de/path/to/file1.mp3',
     // 'https://m10z.picnotes.de/path/to/file2.mp3',
     // ...
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_006.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_008.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_001.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_010.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_009.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_007.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_002.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_005.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_004.mp3',
+    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_003.mp3',
+    'https://m10z.picnotes.de/Quiz/m10z_quiz_4.mp3',
+    'https://m10z.picnotes.de/FantastischeFakten/Fakten_001.mp3',
+    'https://m10z.picnotes.de/FantastischeFakten/Fakten_002.mp3',
+    'https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_002.mp3',
+    'https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_001.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_008.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_015.wav',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_012.mp3',
+    'https://m10z.picnotes.de/Fundbuero/F11_Aufnahem_Edgar.wav',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_007.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_016.wav',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_016.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_013.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_003.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_002.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_011.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_001.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_004.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_010.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_015.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_017.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_014.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_009.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_005_Gallien_im_Krieg.mp3',
+    'https://m10z.picnotes.de/Fundbuero/Fundbuero_006_Winterspezial.mp3',
+    'https://m10z.picnotes.de/GamingStories/GamingStories_001.mp3',
+    'https://m10z.picnotes.de/OwwG/OwwG_Relaunch_03.mp3',
+    'https://m10z.picnotes.de/OwwG/OwwG_Relaunch_02.mp3',
+    'https://m10z.picnotes.de/OwwG/OwwG_1_Pilotfolge_mit_Luca.mp3',
+    'https://m10z.picnotes.de/OwwG/OwwG_Relaunch_004.mp3',
+    'https://m10z.picnotes.de/OwwG/OwwG_4_RogueLikeLite.mp3',
+    'https://m10z.picnotes.de/OwwG/OwwG_2_Nostalgie.mp3',
+    'https://m10z.picnotes.de/OwwG/OwwG_Relaunch_01.mp3',
+    'https://m10z.picnotes.de/OwwG/OwwG_3_KinderKrisenKonsolen.mp3',
+    'https://m10z.picnotes.de/ZockenOhneZaster/ZockenOhneZaster_1.mp3',
+    'https://m10z.picnotes.de/ZockenOhneZaster/ZockenOhneZaster_3.mp3',
+    'https://m10z.picnotes.de/ZockenOhneZaster/ZockenOhneZaster_2.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_004.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_009.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_005.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_011.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_003.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_010.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_002.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_008.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_006.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_001.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_012.mp3',
+    'https://m10z.picnotes.de/M10Z/M10Z_007.mp3',
+    'https://m10z.picnotes.de/Spezial/teehaus_1.mp3',
+    'https://m10z.picnotes.de/Spezial/M10ZSpezial_001.mp3',
+    'https://m10z.picnotes.de/Spezial/M10Z_Memes_Spezial.mp3',
+    'https://m10z.picnotes.de/Spezial/Spezial-Spiele_Militaer_Krieg.mp3',
+    'https://m10z.picnotes.de/Spezial/M10Z_Spiele_Verantwortung_Politik_Krisen.mp3',
+    'https://m10z.picnotes.de/Spezial/Spezial_Gewalt.mp3',
+    'https://m10z.picnotes.de/Spezial/M10Z_Xmas_2024.mp3',
+    'https://m10z.picnotes.de/Spezial/Spezial_Gewalt1.mp3',
+    'https://m10z.picnotes.de/EnRogue/EnRogue_004.mp3',
+    'https://m10z.picnotes.de/EnRogue/EnRogue_002.mp3',
+    'https://m10z.picnotes.de/EnRogue/EnRogue_001.mp3',
+    'https://m10z.picnotes.de/EnRogue/EnRogue_003.mp3',
+    'https://m10z.picnotes.de/EnRogue/EnRogue_005.mp3',
+    'https://m10z.picnotes.de/ComicCast/ComicCast_002.mp3',
+    'https://m10z.picnotes.de/ComicCast/ComicCast_001.mp3',
+    'https://m10z.picnotes.de/DasTelespielTrio/TelespielTrio_pilot.mp3',
+    'https://m10z.picnotes.de/DasTelespielTrio/TelespielTrio_1.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_9.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_8.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_6.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_3.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_7.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_1.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_5.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_2.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_Pilot.mp3',
+    'https://m10z.picnotes.de/DesGamePassesGeheimePerlen/DesGamePassesGeheimePerlen_4.mp3',
+    'https://m10z.picnotes.de/gds/GuertelDerSchmerzen23.mp3',
 ];
 
 // ============================================================================
@@ -182,7 +275,7 @@ async function uploadToStrapiWithRetry(
             headers: {
                 Authorization: `Bearer ${apiToken}`,
             },
-            body: formData,
+            body: formData as unknown as BodyInit,
         });
 
         if (!response.ok) {
