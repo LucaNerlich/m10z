@@ -2,26 +2,6 @@
     width: 100%;
 }
 
-.coverImageContainer {
-    padding: 1.5rem 0;
-    display: flex;
-    justify-content: center;
-    margin: 0 auto;
-    max-width: 700px;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    box-shadow: var(--shadow-soft);
-}
-
-.coverImage {
-    width: 100%;
-    border-radius: var(--border-radius);
-    height: auto;
-    display: block;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-}
-
 .header {
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--color-border);
@@ -46,6 +26,7 @@
 
 .content {
     line-height: 1.7;
+
     p img {
         border-radius: var(--border-radius);
     }
@@ -58,14 +39,6 @@
 
     .description {
         font-size: 1.125rem;
-    }
-
-    .coverImageContainer {
-        margin: 1rem -1rem 1.5rem;
-    }
-
-    .coverImage {
-        border-radius: 0;
     }
 }
 
