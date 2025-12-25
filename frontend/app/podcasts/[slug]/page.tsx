@@ -18,9 +18,7 @@ import {PodcastPlayer} from './Player';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
-import {ContentAuthors} from '@/src/components/ContentAuthors';
-import {CategoryList} from '@/src/components/CategoryList';
+import {ContentMetadata} from '@/src/components/ContentMetadata';
 import styles from './page.module.css';
 
 type PageProps = {
@@ -113,32 +111,18 @@ export default async function PodcastDetailPage({params}: PageProps) {
                         </div>
                     ) : null}
                     <header className={styles.header}>
-                        <div className={styles.metaDates}>
-                            {published ? (
-                                <time dateTime={published} className={styles.publishedDate}>
-                                    {formatDateShort(published)}
-                                </time>
-                            ) : null}
-                            {episode.duration ? (
-                                <time className={styles.duration}>
-                                    {formatDuration(episode.duration)}
-                                </time>
-                            ) : null}
-                        </div>
+                        <ContentMetadata
+                            publishedDate={published}
+                            duration={episode.duration}
+                            authors={episode.authors}
+                            categories={episode.categories}
+                        />
                         <h1 className={styles.title}>{episode.base.title}</h1>
                         {episode.base.description ? (
                             <p className={styles.description}>
                                 {episode.base.description}
                             </p>
                         ) : null}
-                        <div className={styles.metaRow}>
-                            {episode.authors && episode.authors.length > 0 ? (
-                                <ContentAuthors authors={episode.authors} />
-                            ) : null}
-                            {episode.categories && episode.categories.length > 0 ? (
-                                <CategoryList categories={episode.categories} />
-                            ) : null}
-                        </div>
                     </header>
 
                     {audioUrl ? (

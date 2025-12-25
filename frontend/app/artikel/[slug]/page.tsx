@@ -13,11 +13,9 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
-import {formatDateShort} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import {extractYouTubeVideoId} from '@/src/lib/youtube';
-import {ContentAuthors} from '@/src/components/ContentAuthors';
-import {CategoryList} from '@/src/components/CategoryList';
+import {ContentMetadata} from '@/src/components/ContentMetadata';
 import YoutubeEmbed from '@/src/components/YoutubeEmbed';
 import styles from './page.module.css';
 
@@ -109,26 +107,18 @@ export default async function ArticleDetailPage({params}: PageProps) {
                         </div>
                     ) : null}
                     <header className={styles.header}>
-                        {published ? (
-                            <time dateTime={published} className={styles.publishedDate}>
-                                {formatDateShort(published)}
-                            </time>
-                        ) : null}
-                        <span className={styles.readingTime}>{readingTime}</span>
+                        <ContentMetadata
+                            publishedDate={published}
+                            readingTime={readingTime}
+                            authors={article.authors}
+                            categories={article.categories}
+                        />
                         <h1 className={styles.title}>{article.base.title}</h1>
                         {article.base.description ? (
                             <p className={styles.description}>
                                 {article.base.description}
                             </p>
                         ) : null}
-                        <div className={styles.metaRow}>
-                            {article.authors && article.authors.length > 0 ? (
-                                <ContentAuthors authors={article.authors} />
-                            ) : null}
-                            {article.categories && article.categories.length > 0 ? (
-                                <CategoryList categories={article.categories} />
-                            ) : null}
-                        </div>
                     </header>
                     <div className={styles.content}>
                         <Markdown markdown={article.content ?? ''} />
