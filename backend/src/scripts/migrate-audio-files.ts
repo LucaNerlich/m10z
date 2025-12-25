@@ -48,8 +48,8 @@ interface MigrationReport {
 
 const STRAPI_UPLOAD_URL = 'https://cms.m10z.de/api/upload';
 const ALLOWED_DOMAIN = 'm10z.picnotes.de';
-const MAX_RETRIES = 3;
-const RETRY_DELAYS = [2000, 5000, 10000]; // Longer delays for timeout errors
+const MAX_RETRIES = 3; // Total number of attempts (1 initial + 2 retries)
+const RETRY_DELAYS = [2000, 5000]; // Delays for retries (one less than MAX_RETRIES)
 const BETWEEN_FILE_DELAY_MIN = 1000;
 const BETWEEN_FILE_DELAY_MAX = 2000;
 const CLIENT_TIMEOUT_MS = 600000; // 10 minutes client-side timeout
@@ -61,27 +61,24 @@ const AUDIO_FILE_URLS: string[] = [
     // 'https://m10z.picnotes.de/path/to/file1.mp3',
     // 'https://m10z.picnotes.de/path/to/file2.mp3',
     // ...
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_006.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_008.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_001.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_010.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_009.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_007.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_002.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_005.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_004.mp3',
-    'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_003.mp3',
-    'https://m10z.picnotes.de/Quiz/m10z_quiz_4.mp3',
-    'https://m10z.picnotes.de/FantastischeFakten/Fakten_001.mp3',
-    'https://m10z.picnotes.de/FantastischeFakten/Fakten_002.mp3',
-    'https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_002.mp3',
-    'https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_001.mp3',
-    'https://m10z.picnotes.de/Fundbuero/Fundbuero_008.mp3',
-    'https://m10z.picnotes.de/Fundbuero/Fundbuero_015.wav',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_006.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_008.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_001.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_010.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_009.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_007.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_002.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_005.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_004.mp3',
+    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_003.mp3',
+    // 'https://m10z.picnotes.de/Quiz/m10z_quiz_4.mp3',
+    // 'https://m10z.picnotes.de/FantastischeFakten/Fakten_001.mp3',
+    // 'https://m10z.picnotes.de/FantastischeFakten/Fakten_002.mp3',
+    // 'https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_002.mp3',
+    // 'https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_001.mp3',
+    // 'https://m10z.picnotes.de/Fundbuero/Fundbuero_008.mp3',
     'https://m10z.picnotes.de/Fundbuero/Fundbuero_012.mp3',
-    'https://m10z.picnotes.de/Fundbuero/F11_Aufnahem_Edgar.wav',
     'https://m10z.picnotes.de/Fundbuero/Fundbuero_007.mp3',
-    'https://m10z.picnotes.de/Fundbuero/Fundbuero_016.wav',
     'https://m10z.picnotes.de/Fundbuero/Fundbuero_016.mp3',
     'https://m10z.picnotes.de/Fundbuero/Fundbuero_013.mp3',
     'https://m10z.picnotes.de/Fundbuero/Fundbuero_003.mp3',
@@ -197,7 +194,7 @@ function extractFilename(url: string): string {
 
 function getMimeType(filename: string): string {
     const ext = path.extname(filename).toLowerCase();
-    
+
     // Audio MIME types
     const mimeTypes: Record<string, string> = {
         '.mp3': 'audio/mpeg',
@@ -288,7 +285,7 @@ async function uploadToStrapiWithRetry(
         const fileBuffer = await fs.readFile(filePath);
         const fileSizeMB = (fileBuffer.length / (1024 * 1024)).toFixed(2);
         const mimeType = getMimeType(filename);
-        
+
         log(`Uploading ${filename} (${fileSizeMB} MB, ${mimeType})...`);
 
         const formData = new FormData();
@@ -327,7 +324,7 @@ async function uploadToStrapiWithRetry(
             if (!response.ok) {
                 let errorDetails = '';
                 let errorJson: any = null;
-                
+
                 try {
                     const text = await response.text();
                     // Try to parse as JSON for structured error messages
@@ -360,12 +357,12 @@ async function uploadToStrapiWithRetry(
                 } catch (err) {
                     errorDetails = response.statusText;
                 }
-                
+
                 // Log full error details for debugging
                 if (response.status >= 500) {
                     error(`Server error details for ${filename}:`, errorJson || errorDetails);
                 }
-                
+
                 throw new Error(
                     `Upload failed: HTTP ${response.status} ${response.statusText}${errorDetails ? ` - ${errorDetails}` : ''}`,
                 );
@@ -398,7 +395,7 @@ async function uploadToStrapiWithRetry(
         }
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
-        
+
         // Handle abort/timeout errors
         let isRetryable = true;
         if (err instanceof Error) {
@@ -412,7 +409,7 @@ async function uploadToStrapiWithRetry(
                 // 499 errors are often transient, so retry with longer delay
             }
         }
-        
+
         if (attempt < MAX_RETRIES && isRetryable) {
             const delay = RETRY_DELAYS[attempt - 1];
             error(
@@ -422,7 +419,7 @@ async function uploadToStrapiWithRetry(
             await sleep(delay);
             return uploadToStrapiWithRetry(filePath, filename, attempt + 1);
         }
-        
+
         // Final attempt failed - throw with detailed error
         error(`Upload failed for ${filename} after ${MAX_RETRIES} attempts: ${errorMessage}`);
         throw err;
