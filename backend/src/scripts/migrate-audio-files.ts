@@ -301,9 +301,27 @@ async function uploadToStrapiWithRetry(
         });
 
         if (!response.ok) {
-            const text = await response.text().catch(() => '');
+            let errorDetails = '';
+            try {
+                const text = await response.text();
+                // Try to parse as JSON for structured error messages
+                try {
+                    const errorJson = JSON.parse(text);
+                    if (errorJson.error) {
+                        errorDetails = errorJson.error.message || JSON.stringify(errorJson.error);
+                    } else {
+                        errorDetails = JSON.stringify(errorJson);
+                    }
+                } catch {
+                    // If not JSON, use the text as-is
+                    errorDetails = text || response.statusText;
+                }
+            } catch {
+                errorDetails = response.statusText;
+            }
+            
             throw new Error(
-                `HTTP ${response.status} ${response.statusText}: ${text}`,
+                `Upload failed: HTTP ${response.status} ${response.statusText}${errorDetails ? ` - ${errorDetails}` : ''}`,
             );
         }
 
@@ -311,7 +329,9 @@ async function uploadToStrapiWithRetry(
 
         // Strapi upload returns an array of uploaded files
         if (!Array.isArray(json) || !json[0] || typeof json[0].id !== 'number') {
-            throw new Error('Unexpected Strapi upload response format');
+            throw new Error(
+                `Unexpected Strapi upload response format. Expected array with file objects, got: ${JSON.stringify(json)}`,
+            );
         }
 
         const uploadedFile = json[0];
@@ -324,14 +344,20 @@ async function uploadToStrapiWithRetry(
             url: uploadedFile.url || '',
         };
     } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        
         if (attempt < MAX_RETRIES) {
             const delay = RETRY_DELAYS[attempt - 1];
-            log(
-                `Upload failed (attempt ${attempt}/${MAX_RETRIES}), retrying in ${delay}ms...`,
+            error(
+                `Upload failed for ${filename} (attempt ${attempt}/${MAX_RETRIES}): ${errorMessage}`,
             );
+            log(`Retrying in ${delay}ms...`);
             await sleep(delay);
             return uploadToStrapiWithRetry(filePath, filename, attempt + 1);
         }
+        
+        // Final attempt failed - throw with detailed error
+        error(`Upload failed for ${filename} after ${MAX_RETRIES} attempts: ${errorMessage}`);
         throw err;
     }
 }
