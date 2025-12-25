@@ -19,9 +19,18 @@ export default async function TeamPage() {
                 <p>Keine Autoren gefunden.</p>
             ) : (
                 <ContentGrid gap="comfortable">
-                    {authors.map((author) => (
-                        <AuthorCard key={author.slug ?? author.id} author={author} />
-                    ))}
+                    {authors.map((author) => {
+                        const articleCount = author.articles?.filter((a) => a.publishedAt).length ?? 0;
+                        const podcastCount = author.podcasts?.filter((p) => p.publishedAt).length ?? 0;
+                        return (
+                            <AuthorCard
+                                key={author.slug ?? author.id}
+                                author={author}
+                                articleCount={articleCount}
+                                podcastCount={podcastCount}
+                            />
+                        );
+                    })}
                 </ContentGrid>
             )}
         </section>

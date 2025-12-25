@@ -16,6 +16,7 @@ import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {formatDateShort} from '@/src/lib/dateFormatters';
 import {AuthorList} from '@/src/components/AuthorList';
 import {CategoryList} from '@/src/components/CategoryList';
+import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -99,25 +100,25 @@ export default async function ArticleDetailPage({params}: PageProps) {
                             width={coverWidth}
                             height={coverHeight}
                             priority
-                            style={{width: '100%', height: 'auto', marginBottom: '1.5rem'}}
+                            className={styles.coverImage}
                         />
                     ) : null}
-                    <header style={{marginBottom: '1.5rem'}}>
+                    <header className={styles.header}>
                         {published ? (
-                            <time dateTime={published} style={{display: 'block', color: 'var(--color-text-muted)', marginBottom: '0.5rem'}}>
+                            <time dateTime={published} className={styles.publishedDate}>
                                 {formatDateShort(published)}
                             </time>
                         ) : null}
-                        <h1 style={{marginBottom: '0.75rem'}}>{article.base.title}</h1>
+                        <h1 className={styles.title}>{article.base.title}</h1>
                         {article.base.description ? (
-                            <p style={{color: 'var(--color-text-muted)', fontSize: '1.125rem', marginBottom: '1rem'}}>
+                            <p className={styles.description}>
                                 {article.base.description}
                             </p>
                         ) : null}
-                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center'}}>
+                        <div className={styles.metaRow}>
                             {article.authors && article.authors.length > 0 ? (
                                 <div>
-                                    <span style={{fontSize: '0.875rem', color: 'var(--color-text-muted)', marginRight: '0.5rem'}}>Von:</span>
+                                    <span className={styles.metaLabel}>Von:</span>
                                     <AuthorList authors={article.authors} showAvatars={true} layout="inline" />
                                 </div>
                             ) : null}
@@ -126,7 +127,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
                             ) : null}
                         </div>
                     </header>
-                    <div>
+                    <div className={styles.content}>
                         <Markdown markdown={article.content ?? ''} />
                     </div>
                 </article>

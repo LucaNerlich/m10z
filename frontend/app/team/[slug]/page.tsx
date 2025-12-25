@@ -4,7 +4,7 @@ import {type Metadata} from 'next';
 import Image from 'next/image';
 import {notFound} from 'next/navigation';
 
-import {fetchAuthorBySlug, fetchArticlesBySlugs, fetchPodcastsBySlugs} from '@/src/lib/strapiContent';
+import {fetchAuthorBySlug, fetchArticlesBySlugsBatched, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
@@ -13,6 +13,7 @@ import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -78,8 +79,8 @@ export default async function AuthorPage({params}: PageProps) {
     const podcastSlugs = author.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
 
     const [articles, podcasts] = await Promise.all([
-        fetchArticlesBySlugs(articleSlugs),
-        fetchPodcastsBySlugs(podcastSlugs),
+        fetchArticlesBySlugsBatched(articleSlugs),
+        fetchPodcastsBySlugsBatched(podcastSlugs),
     ]);
 
     // Sort by date descending
@@ -97,27 +98,27 @@ export default async function AuthorPage({params}: PageProps) {
 
     return (
         <main>
-            <header style={{marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '1rem'}}>
+            <header className={styles.header}>
                 {avatarUrl ? (
                     <Image
                         src={avatarUrl}
                         alt={author.title ?? 'Avatar'}
                         width={avatarWidth}
                         height={avatarHeight}
-                        style={{borderRadius: '50%', border: '2px solid var(--color-border)'}}
+                        className={styles.avatar}
                     />
                 ) : null}
-                <h1>{author.title ?? 'Unbekannter Autor'}</h1>
+                <h1 className={styles.title}>{author.title ?? 'Unbekannter Autor'}</h1>
                 {author.description ? (
-                    <p style={{color: 'var(--color-text-muted)', fontSize: '1.125rem', maxWidth: '600px'}}>
+                    <p className={styles.description}>
                         {author.description}
                     </p>
                 ) : null}
             </header>
 
             {sortedArticles.length > 0 ? (
-                <section style={{marginBottom: '3rem'}}>
-                    <h2 style={{marginBottom: '1.5rem'}}>Artikel ({sortedArticles.length})</h2>
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>Artikel ({sortedArticles.length})</h2>
                     <ContentGrid gap="comfortable">
                         {sortedArticles.map((article) => (
                             <ArticleCard key={article.slug} article={article} showAuthors={false} showCategories={true} />
@@ -127,8 +128,8 @@ export default async function AuthorPage({params}: PageProps) {
             ) : null}
 
             {sortedPodcasts.length > 0 ? (
-                <section>
-                    <h2 style={{marginBottom: '1.5rem'}}>Podcasts ({sortedPodcasts.length})</h2>
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>Podcasts ({sortedPodcasts.length})</h2>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
                             <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false} showCategories={true} />
@@ -138,7 +139,7 @@ export default async function AuthorPage({params}: PageProps) {
             ) : null}
 
             {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
-                <p style={{color: 'var(--color-text-muted)'}}>Keine Inhalte von diesem Autor gefunden.</p>
+                <p className={styles.emptyState}>Keine Inhalte von diesem Autor gefunden.</p>
             ) : null}
         </main>
     );

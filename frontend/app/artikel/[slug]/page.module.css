@@ -1,18 +1,43 @@
-.page {
-    padding: 24px 0;
+.coverImage {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1.5rem;
 }
 
-.meta {
+.header {
+    margin-bottom: 1.5rem;
+}
+
+.publishedDate {
+    display: block;
     color: var(--color-text-muted);
-    margin-bottom: 6px;
+    margin-bottom: 0.5rem;
 }
 
 .title {
-    margin: 0 0 12px;
+    margin-bottom: 0.75rem;
 }
 
 .description {
-    margin: 0 0 16px;
     color: var(--color-text-muted);
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+}
+
+.metaRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.metaLabel {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-right: 0.5rem;
+}
+
+.content {
+    /* Content area for markdown */
 }
 

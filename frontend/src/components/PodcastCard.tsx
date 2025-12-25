@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {mediaUrlToAbsolute, pickCoverMedia} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, pickBannerOrCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {formatDateShort} from '@/src/lib/dateFormatters';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
@@ -46,8 +46,9 @@ export function PodcastCard({
     descriptionLines = 3,
     className,
 }: PodcastCardProps) {
-    const coverMedia = pickCoverMedia(podcast.base, podcast.categories);
-    const coverUrl = mediaUrlToAbsolute({media: coverMedia});
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast.base, podcast.categories);
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
     const effectiveDate = getEffectiveDate(podcast);
     const formattedDate = formatDateShort(effectiveDate);
     const podcastUrl = routes.podcast(podcast.slug);
@@ -59,12 +60,12 @@ export function PodcastCard({
             <div className={styles.media}>
                 <Link href={podcastUrl} className={styles.mediaLink}>
                     <Image
-                        src={coverUrl ?? placeholderCover}
+                        src={imageUrl ?? placeholderCover}
                         alt={podcast.base.title}
-                        width={coverMedia?.width ?? 400}
-                        height={coverMedia?.height ?? 225}
+                        width={optimizedMedia?.width ?? 400}
+                        height={optimizedMedia?.height ?? 225}
                         className={styles.cover}
-                        placeholder={coverUrl ? 'empty' : 'blur'}
+                        placeholder={imageUrl ? 'empty' : 'blur'}
                     />
                 </Link>
             </div>
