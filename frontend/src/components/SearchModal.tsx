@@ -165,7 +165,6 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         >
                             <div className={styles.resultContent}>
                                 {item.coverImageUrl ? (() => {
-                                    console.log('item', item);
                                     const normalizedUrl = normalizeImageUrl(item.coverImageUrl);
                                     return normalizedUrl ? (
                                         <div className={styles.resultImage}>

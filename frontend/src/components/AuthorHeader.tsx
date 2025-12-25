@@ -18,8 +18,6 @@ export function AuthorHeader({author}: AuthorHeaderProps) {
     const avatarWidth = 80;
     const avatarHeight = 80;
 
-    console.log('avatarUrl', avatarUrl);
-
     return (
         <header className={styles.header}>
             {avatarUrl ? (
