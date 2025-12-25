@@ -49,8 +49,9 @@ const STRAPI_UPLOAD_URL = 'https://cms.m10z.de/api/upload';
 const ALLOWED_DOMAIN = 'm10z.picnotes.de';
 const MAX_RETRIES = 3;
 const RETRY_DELAYS = [1000, 2000, 4000]; // Exponential backoff in milliseconds
-const BETWEEN_FILE_DELAY_MIN = 100;
-const BETWEEN_FILE_DELAY_MAX = 200;
+const BETWEEN_FILE_DELAY_MIN = 500;
+const BETWEEN_FILE_DELAY_MAX = 1000;
+const UPLOAD_TIMEOUT_MS = 300000; // 5 minutes timeout for large file uploads
 
 // Hardcoded list of 87 audio file URLs
 const AUDIO_FILE_URLS: string[] = [
@@ -292,61 +293,84 @@ async function uploadToStrapiWithRetry(
         const formData = new FormData();
         formData.set('files', file);
 
-        const response = await fetch(STRAPI_UPLOAD_URL, {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${apiToken}`,
-            },
-            body: formData as unknown as BodyInit,
-        });
+        // Create AbortController for timeout handling
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
 
-        if (!response.ok) {
-            let errorDetails = '';
-            try {
-                const text = await response.text();
-                // Try to parse as JSON for structured error messages
+        try {
+            const response = await fetch(STRAPI_UPLOAD_URL, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${apiToken}`,
+                    'Connection': 'keep-alive',
+                },
+                body: formData as unknown as BodyInit,
+                signal: controller.signal,
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                let errorDetails = '';
                 try {
-                    const errorJson = JSON.parse(text);
-                    if (errorJson.error) {
-                        errorDetails = errorJson.error.message || JSON.stringify(errorJson.error);
-                    } else {
-                        errorDetails = JSON.stringify(errorJson);
+                    const text = await response.text();
+                    // Try to parse as JSON for structured error messages
+                    try {
+                        const errorJson = JSON.parse(text);
+                        if (errorJson.error) {
+                            errorDetails = errorJson.error.message || JSON.stringify(errorJson.error);
+                        } else {
+                            errorDetails = JSON.stringify(errorJson);
+                        }
+                    } catch {
+                        // If not JSON, use the text as-is
+                        errorDetails = text || response.statusText;
                     }
                 } catch {
-                    // If not JSON, use the text as-is
-                    errorDetails = text || response.statusText;
+                    errorDetails = response.statusText;
                 }
-            } catch {
-                errorDetails = response.statusText;
+                
+                throw new Error(
+                    `Upload failed: HTTP ${response.status} ${response.statusText}${errorDetails ? ` - ${errorDetails}` : ''}`,
+                );
             }
-            
-            throw new Error(
-                `Upload failed: HTTP ${response.status} ${response.statusText}${errorDetails ? ` - ${errorDetails}` : ''}`,
+
+            const json = await response.json();
+
+            // Strapi upload returns an array of uploaded files
+            if (!Array.isArray(json) || !json[0] || typeof json[0].id !== 'number') {
+                throw new Error(
+                    `Unexpected Strapi upload response format. Expected array with file objects, got: ${JSON.stringify(json)}`,
+                );
+            }
+
+            const uploadedFile = json[0];
+            log(
+                `Uploaded: ${filename} (ID: ${uploadedFile.id}, URL: ${uploadedFile.url})`,
             );
+
+            return {
+                id: uploadedFile.id,
+                url: uploadedFile.url || '',
+            };
+        } finally {
+            clearTimeout(timeoutId);
         }
-
-        const json = await response.json();
-
-        // Strapi upload returns an array of uploaded files
-        if (!Array.isArray(json) || !json[0] || typeof json[0].id !== 'number') {
-            throw new Error(
-                `Unexpected Strapi upload response format. Expected array with file objects, got: ${JSON.stringify(json)}`,
-            );
-        }
-
-        const uploadedFile = json[0];
-        log(
-            `Uploaded: ${filename} (ID: ${uploadedFile.id}, URL: ${uploadedFile.url})`,
-        );
-
-        return {
-            id: uploadedFile.id,
-            url: uploadedFile.url || '',
-        };
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
         
-        if (attempt < MAX_RETRIES) {
+        // Handle abort/timeout errors
+        let isRetryable = true;
+        if (err instanceof Error) {
+            if (err.name === 'AbortError') {
+                error(`Upload timeout for ${filename} (attempt ${attempt}/${MAX_RETRIES})`);
+            } else if (errorMessage.includes('499') || errorMessage.includes('Client Closed Request')) {
+                error(`Connection closed for ${filename} (attempt ${attempt}/${MAX_RETRIES}): ${errorMessage}`);
+                // 499 errors are often transient, so retry with longer delay
+            }
+        }
+        
+        if (attempt < MAX_RETRIES && isRetryable) {
             const delay = RETRY_DELAYS[attempt - 1];
             error(
                 `Upload failed for ${filename} (attempt ${attempt}/${MAX_RETRIES}): ${errorMessage}`,
