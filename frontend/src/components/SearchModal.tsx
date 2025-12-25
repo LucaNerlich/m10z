@@ -6,6 +6,7 @@ import Image from 'next/image';
 
 import {searchIndex} from '@/src/lib/search/fuseClient';
 import {type SearchRecord} from '@/src/lib/search/types';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
 
 import {Tag} from './Tag';
 import styles from './SearchModal.module.css';
@@ -22,22 +23,6 @@ const TYPE_LABEL: Record<SearchRecord['type'], string> = {
     author: 'Autor',
     category: 'Kategorie',
 };
-
-function normalizeImageUrl(url: string | null | undefined): string | null {
-    if (!url || typeof url !== 'string') return null;
-
-    // If URL already has a protocol, return as-is
-    if (/^https?:\/\//i.test(url)) return url;
-
-    // If URL starts with localhost or 127.0.0.1 without protocol, prepend http://
-    // This handles cases like "localhost:1337/path" or "127.0.0.1:1337/path"
-    if (/^localhost(?::\d+)?/i.test(url) || /^127\.0\.0\.1(?::\d+)?/i.test(url)) {
-        return `http://${url}`;
-    }
-
-    // Otherwise return as-is (might be a relative URL that Next.js Image can handle)
-    return url;
-}
 
 /**
  * Modal dialog that lets the user search site content and pick a result using mouse or keyboard.
@@ -165,14 +150,18 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                             aria-selected={idx === activeIndex}
                         >
                             <div className={styles.resultContent}>
-                                {item.coverImageUrl ? (() => {
-                                    const normalizedUrl = normalizeImageUrl(item.coverImageUrl);
-                                    return normalizedUrl ? (
+                                {item.coverImage ? (() => {
+                                    const coverMedia = normalizeStrapiMedia(item.coverImage);
+                                    const optimalMedia = getOptimalMediaFormat(coverMedia, 'small');
+                                    const imageUrl = mediaUrlToAbsolute({media: optimalMedia});
+                                    const imageWidth = optimalMedia.width ?? 80;
+                                    const imageHeight = optimalMedia.height ?? 80;
+                                    return imageUrl ? (
                                         <div className={styles.resultImage}>
                                             <Image
-                                                src={normalizedUrl}
-                                                width={80}
-                                                height={80}
+                                                src={imageUrl}
+                                                width={imageWidth}
+                                                height={imageHeight}
                                                 loading="lazy"
                                                 quality={50}
                                                 alt={item.title || ''}

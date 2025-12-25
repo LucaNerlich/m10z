@@ -2,6 +2,7 @@
 
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
+import Image from 'next/image';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
@@ -10,7 +11,7 @@ import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {pickCoverMedia, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {pickCoverMedia, normalizeStrapiMedia, getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 
 type PageProps = {
@@ -74,6 +75,11 @@ export default async function ArticleDetailPage({params}: PageProps) {
 
     const published = getEffectiveDate(article);
     const jsonLd = generateArticleJsonLd(article);
+    const coverMedia = pickCoverMedia(article.base, article.categories);
+    const optimizedCoverMedia = coverMedia ? getOptimalMediaFormat(normalizeStrapiMedia(coverMedia), 'medium') : undefined;
+    const coverImageUrl = optimizedCoverMedia ? mediaUrlToAbsolute({media: optimizedCoverMedia}) : undefined;
+    const coverWidth = optimizedCoverMedia?.width;
+    const coverHeight = optimizedCoverMedia?.height;
 
     return (
         <>
@@ -86,6 +92,15 @@ export default async function ArticleDetailPage({params}: PageProps) {
                 <p>{published ? new Date(published).toLocaleDateString('de-DE') : ''}</p>
                 <h1>{article.base.title}</h1>
                 {article.base.description ? <p>{article.base.description}</p> : null}
+                {coverImageUrl && coverWidth && coverHeight ? (
+                    <Image
+                        src={coverImageUrl}
+                        alt={article.base.title}
+                        width={coverWidth}
+                        height={coverHeight}
+                        priority
+                    />
+                ) : null}
                 <Markdown markdown={article.content ?? ''} />
             </main>
         </>

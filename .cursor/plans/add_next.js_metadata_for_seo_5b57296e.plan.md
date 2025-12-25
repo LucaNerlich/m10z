@@ -223,4 +223,3 @@ The implementation follows Next.js App Router metadata patterns:
 - `frontend/app/artikel/[slug]/page.tsx`
 - `frontend/app/podcasts/page.tsx`
 - `frontend/app/podcasts/[slug]/page.tsx`
-- `frontend/app/kategorien/page.tsx`

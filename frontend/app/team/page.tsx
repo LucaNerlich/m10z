@@ -3,7 +3,7 @@
 import Image from 'next/image';
 
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
-import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, getOptimalMediaFormat} from '@/src/lib/rss/media';
 import Link from 'next/link';
 
 /**
@@ -20,16 +20,15 @@ export default async function TeamPage() {
             <h2>TODO</h2>
             <ul>
                 {authors.map((author) => {
-                    const avatar = normalizeStrapiMedia(author.avatar);
-                    const preferredUrl = avatar.formats?.small?.url ?? avatar.url;
-                    const avatarUrl = mediaUrlToAbsolute({
-                        media: {...avatar, url: preferredUrl},
-                    });
+                    const avatar = getOptimalMediaFormat(author.avatar, 'thumbnail');
+                    const avatarUrl = mediaUrlToAbsolute({media: avatar});
+                    const avatarWidth = avatar.width ?? 64;
+                    const avatarHeight = avatar.height ?? 64;
                     return (
                         <li key={author.slug ?? author.id}>
                             <Link href={`/team/${author.slug ?? ''}`}>
                                 {avatarUrl ? (
-                                    <Image src={avatarUrl} alt={author.title ?? 'Avatar'} width={64} height={64} />
+                                    <Image src={avatarUrl} alt={author.title ?? 'Avatar'} width={avatarWidth} height={avatarHeight} />
                                 ) : null}
                                 <p>{author.title}</p>
                             </Link>

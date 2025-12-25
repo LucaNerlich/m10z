@@ -34,11 +34,11 @@ Extend the article feed to fetch and render channel-level images from Strapi, fo
 
 - Replace `populate: '*'` with explicit population structure:
   ```typescript
-      populate: {
-          channel: {
-              populate: ['image'],
-          },
-      }
+        populate: {
+            channel: {
+                populate: ['image'],
+            },
+        }
   ```
 
 
@@ -92,4 +92,3 @@ Extend the article feed to fetch and render channel-level images from Strapi, fo
 ## Testing Considerations
 
 - Verify RSS feed validates against RSS 2.0 spec
-- Test with channel image configured in Strapi

@@ -2,10 +2,11 @@
 
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
+import Image from 'next/image';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {mediaUrlToAbsolute, normalizeStrapiMedia, pickCoverMedia} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, normalizeStrapiMedia, pickCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {PodcastPlayer} from './Player';
@@ -76,6 +77,11 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const fileMedia = normalizeStrapiMedia(episode.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia});
     const jsonLd = generatePodcastJsonLd(episode);
+    const coverMedia = pickCoverMedia(episode.base, episode.categories);
+    const optimizedCoverMedia = coverMedia ? getOptimalMediaFormat(normalizeStrapiMedia(coverMedia), 'medium') : undefined;
+    const coverImageUrl = optimizedCoverMedia ? mediaUrlToAbsolute({media: optimizedCoverMedia}) : undefined;
+    const coverWidth = optimizedCoverMedia?.width;
+    const coverHeight = optimizedCoverMedia?.height;
 
     return (
         <>
@@ -88,6 +94,15 @@ export default async function PodcastDetailPage({params}: PageProps) {
                 <p>{published ? new Date(published).toLocaleDateString('de-DE') : ''}</p>
                 <h1>{episode.base.title}</h1>
                 {episode.base.description ? <p>{episode.base.description}</p> : null}
+                {coverImageUrl && coverWidth && coverHeight ? (
+                    <Image
+                        src={coverImageUrl}
+                        alt={episode.base.title}
+                        width={coverWidth}
+                        height={coverHeight}
+                        priority
+                    />
+                ) : null}
 
                 {audioUrl ? (
                     <div>
