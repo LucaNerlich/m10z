@@ -56,10 +56,23 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const router = useRouter();
     const resultsId = useId();
+    const shouldScrollRef = useRef(false);
 
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
+
+    useEffect(() => {
+        if (shouldScrollRef.current && activeIndex >= 0 && results.length > 0) {
+            const activeElement = document.getElementById(`search-result-${activeIndex}`);
+            if (activeElement) {
+                activeElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                });
+            }
+        }
+    }, [activeIndex, results.length]);
 
     useEffect(() => {
         let isCancelled = false;
@@ -80,6 +93,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                 .then((matches) => {
                     if (isCancelled) return;
                     setResults(matches);
+                    shouldScrollRef.current = false;
                     setActiveIndex(0);
                 })
                 .catch(() => {
@@ -114,9 +128,11 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'ArrowDown') {
             event.preventDefault();
+            shouldScrollRef.current = true;
             setActiveIndex((prev) => Math.min(prev + 1, Math.max(results.length - 1, 0)));
         } else if (event.key === 'ArrowUp') {
             event.preventDefault();
+            shouldScrollRef.current = true;
             setActiveIndex((prev) => Math.max(prev - 1, 0));
         } else if (event.key === 'Enter') {
             event.preventDefault();
@@ -165,7 +181,10 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                             id={`search-result-${idx}`}
                             type="button"
                             className={`${styles.result} ${idx === activeIndex ? styles.resultActive : ''}`}
-                            onMouseEnter={() => setActiveIndex(idx)}
+                            onMouseEnter={() => {
+                                shouldScrollRef.current = false;
+                                setActiveIndex(idx);
+                            }}
                             onClick={() => selectResult(item)}
                             role="option"
                             aria-selected={idx === activeIndex}
