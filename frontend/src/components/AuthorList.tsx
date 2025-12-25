@@ -33,7 +33,7 @@ export function AuthorList({
         return (
             <div className={styles.blockList}>
                 {displayAuthors.map((author, index) => {
-                    const avatarMedia = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
+                    const avatarMedia = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'thumbnail');
                     const avatarUrl = mediaUrlToAbsolute({media: avatarMedia});
                     const authorUrl = routes.author(author.slug ?? '');
                     const authorTitle = author.title ?? 'Unbekannter Autor';

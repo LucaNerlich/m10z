@@ -4,7 +4,7 @@
 }
 
 .coverImageContainer {
-    margin-bottom: 2rem;
+    margin: 1.5rem 0;
     border-radius: var(--border-radius);
     overflow: hidden;
     background: var(--color-surface-strong);
@@ -21,7 +21,6 @@
 
 .header {
     margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -42,8 +41,6 @@
     font-weight: 400;
 }
 
-
-
 .player {
     margin-bottom: 2.5rem;
     padding: 1.5rem;
@@ -54,8 +51,6 @@
 }
 
 .content {
-    max-width: 700px;
-    margin: 0 auto;
     line-height: 1.7;
 }
 
