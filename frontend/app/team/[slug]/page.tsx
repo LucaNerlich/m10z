@@ -1,17 +1,17 @@
 'use cache';
 
 import {type Metadata} from 'next';
-import Image from 'next/image';
 import {notFound} from 'next/navigation';
 
 import {fetchAuthorBySlug, fetchArticlesBySlugsBatched, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
+import {AuthorHeader} from '@/src/components/AuthorHeader';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import styles from './page.module.css';
 
@@ -70,11 +70,6 @@ export default async function AuthorPage({params}: PageProps) {
     const author = await fetchAuthorBySlug(slug);
     if (!author) return notFound();
 
-    const avatar = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
-    const avatarUrl = mediaUrlToAbsolute({media: avatar});
-    const avatarWidth = avatar.width ?? 96;
-    const avatarHeight = avatar.height ?? 96;
-
     const articleSlugs = author.articles?.map((a) => a.slug).filter(Boolean) ?? [];
     const podcastSlugs = author.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
 
@@ -98,23 +93,7 @@ export default async function AuthorPage({params}: PageProps) {
 
     return (
         <main>
-            <header className={styles.header}>
-                {avatarUrl ? (
-                    <Image
-                        src={avatarUrl}
-                        alt={author.title ?? 'Avatar'}
-                        width={avatarWidth}
-                        height={avatarHeight}
-                        className={styles.avatar}
-                    />
-                ) : null}
-                <h1 className={styles.title}>{author.title ?? 'Unbekannter Autor'}</h1>
-                {author.description ? (
-                    <p className={styles.description}>
-                        {author.description}
-                    </p>
-                ) : null}
-            </header>
+            <AuthorHeader author={author} />
 
             {sortedArticles.length > 0 ? (
                 <section className={styles.section}>
