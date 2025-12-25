@@ -2,7 +2,7 @@
 
 import {type Metadata} from 'next';
 
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import {fetchPodcastsList} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
 import {ContentGrid} from '@/src/components/ContentGrid';
@@ -18,11 +18,7 @@ export const metadata: Metadata = {
 
 export default async function PodcastsPage() {
     const podcasts = await fetchPodcastsList();
-    const sorted = [...podcasts].sort((a, b) => {
-        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
-        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
-        return bd - ad;
-    });
+    const sorted = sortByDateDesc(podcasts);
 
     return (
         <section>

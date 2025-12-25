@@ -10,7 +10,7 @@ import {normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import styles from './page.module.css';
 
 type PageProps = {
@@ -90,17 +90,8 @@ export default async function CategoryDetailPage({params}: PageProps) {
     ]);
 
     // Sort by date descending
-    const sortedArticles = [...articles].sort((a, b) => {
-        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
-        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
-        return bd - ad;
-    });
-
-    const sortedPodcasts = [...podcasts].sort((a, b) => {
-        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
-        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
-        return bd - ad;
-    });
+    const sortedArticles = sortByDateDesc(articles);
+    const sortedPodcasts = sortByDateDesc(podcasts);
 
     const title = category.base?.title ?? category.slug ?? 'Kategorie';
 

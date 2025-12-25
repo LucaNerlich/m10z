@@ -100,14 +100,6 @@
     border: 1px solid var(--color-border);
 }
 
-.avatarImage {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid var(--color-border);
-}
-
 .resultText {
     flex: 1;
     min-width: 0;

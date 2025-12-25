@@ -12,7 +12,7 @@ import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
 import {AuthorHeader} from '@/src/components/AuthorHeader';
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import styles from './page.module.css';
 
 type PageProps = {
@@ -20,7 +20,6 @@ type PageProps = {
 };
 
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-    'use cache';
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
@@ -73,23 +72,29 @@ export default async function AuthorPage({params}: PageProps) {
     const articleSlugs = author.articles?.map((a) => a.slug).filter(Boolean) ?? [];
     const podcastSlugs = author.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
 
-    const [articles, podcasts] = await Promise.all([
+    const [articlesResult, podcastsResult] = await Promise.allSettled([
         fetchArticlesBySlugsBatched(articleSlugs),
         fetchPodcastsBySlugsBatched(podcastSlugs),
     ]);
 
-    // Sort by date descending
-    const sortedArticles = [...articles].sort((a, b) => {
-        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
-        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
-        return bd - ad;
-    });
+    let articles: Awaited<ReturnType<typeof fetchArticlesBySlugsBatched>> = [];
+    let podcasts: Awaited<ReturnType<typeof fetchPodcastsBySlugsBatched>> = [];
 
-    const sortedPodcasts = [...podcasts].sort((a, b) => {
-        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
-        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
-        return bd - ad;
-    });
+    if (articlesResult.status === 'fulfilled') {
+        articles = articlesResult.value;
+    } else {
+        console.error('Failed to fetch articles for author:', articlesResult.reason);
+    }
+
+    if (podcastsResult.status === 'fulfilled') {
+        podcasts = podcastsResult.value;
+    } else {
+        console.error('Failed to fetch podcasts for author:', podcastsResult.reason);
+    }
+
+    // Sort by date descending
+    const sortedArticles = sortByDateDesc(articles);
+    const sortedPodcasts = sortByDateDesc(podcasts);
 
     return (
         <main>

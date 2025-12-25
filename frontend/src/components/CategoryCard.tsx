@@ -26,7 +26,7 @@ type CategoryCardProps = {
 function formatContentCounts(articleCount?: number, podcastCount?: number): string {
     const parts: string[] = [];
     if (articleCount !== undefined && articleCount > 0) {
-        parts.push(`${articleCount} ${articleCount === 1 ? 'Artikel' : 'Artikel'}`);
+        parts.push(`${articleCount} Artikel`);
     }
     if (podcastCount !== undefined && podcastCount > 0) {
         parts.push(`${podcastCount} ${podcastCount === 1 ? 'Podcast' : 'Podcasts'}`);

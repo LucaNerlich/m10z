@@ -360,7 +360,7 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
                 youtube: true,
             },
             fields: ['slug', 'content', 'publishedAt'],
-            pagination: {pageSize: 100},
+            pagination: {pageSize: MAX_SLUGS},
         },
         {encodeValuesOnly: true},
     );
@@ -398,7 +398,7 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
                 file: {populate: '*'},
             },
             fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
-            pagination: {pageSize: 100},
+            pagination: {pageSize: MAX_SLUGS},
         },
         {encodeValuesOnly: true},
     );
