@@ -18,7 +18,7 @@ import {PodcastPlayer} from './Player';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {formatDateShort} from '@/src/lib/dateFormatters';
+import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {ContentAuthors} from '@/src/components/ContentAuthors';
 import {CategoryList} from '@/src/components/CategoryList';
 import styles from './page.module.css';
@@ -87,7 +87,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const audioUrl = mediaUrlToAbsolute({media: fileMedia});
     const jsonLd = generatePodcastJsonLd(episode);
     const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
     const coverImageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
     const coverWidth = optimizedMedia?.width;
     const coverHeight = optimizedMedia?.height;
@@ -113,11 +113,18 @@ export default async function PodcastDetailPage({params}: PageProps) {
                         </div>
                     ) : null}
                     <header className={styles.header}>
-                        {published ? (
-                            <time dateTime={published} className={styles.publishedDate}>
-                                {formatDateShort(published)}
-                            </time>
-                        ) : null}
+                        <div className={styles.metaDates}>
+                            {published ? (
+                                <time dateTime={published} className={styles.publishedDate}>
+                                    {formatDateShort(published)}
+                                </time>
+                            ) : null}
+                            {episode.duration ? (
+                                <time className={styles.duration}>
+                                    {formatDuration(episode.duration)}
+                                </time>
+                            ) : null}
+                        </div>
                         <h1 className={styles.title}>{episode.base.title}</h1>
                         {episode.base.description ? (
                             <p className={styles.description}>

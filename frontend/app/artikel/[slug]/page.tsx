@@ -15,8 +15,10 @@ import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from 
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {formatDateShort} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
+import {extractYouTubeVideoId} from '@/src/lib/youtube';
 import {ContentAuthors} from '@/src/components/ContentAuthors';
 import {CategoryList} from '@/src/components/CategoryList';
+import YoutubeEmbed from '@/src/components/YoutubeEmbed';
 import styles from './page.module.css';
 
 type PageProps = {
@@ -81,7 +83,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const readingTime = calculateReadingTime(article.content ?? '');
     const jsonLd = generateArticleJsonLd(article);
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
     const coverImageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
     const coverWidth = optimizedMedia?.width;
     const coverHeight = optimizedMedia?.height;
@@ -131,6 +133,21 @@ export default async function ArticleDetailPage({params}: PageProps) {
                     <div className={styles.content}>
                         <Markdown markdown={article.content ?? ''} />
                     </div>
+                    {article.youtube && article.youtube.length > 0 ? (
+                        <div className={styles.youtubeSection}>
+                            {article.youtube.map((youtubeItem) => {
+                                const videoId = extractYouTubeVideoId(youtubeItem.url);
+                                if (!videoId) return null;
+                                return (
+                                    <YoutubeEmbed
+                                        key={youtubeItem.id}
+                                        videoId={videoId}
+                                        title={youtubeItem.title ?? undefined}
+                                    />
+                                );
+                            })}
+                        </div>
+                    ) : null}
                 </article>
             </main>
         </>

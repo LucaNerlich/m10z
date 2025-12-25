@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {mediaUrlToAbsolute, pickBannerOrCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
-import {formatDateShort} from '@/src/lib/dateFormatters';
+import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
 import styles from './ContentCard.module.css';
@@ -18,20 +18,6 @@ type PodcastCardProps = {
     descriptionLines?: number;
     className?: string;
 };
-
-/**
- * Formats duration in seconds to a readable string (e.g., "1:23:45").
- */
-function formatDuration(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-    return `${minutes}:${secs.toString().padStart(2, '0')}`;
-}
 
 /**
  * Card component for displaying podcast episode previews.

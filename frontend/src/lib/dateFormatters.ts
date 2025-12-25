@@ -94,3 +94,25 @@ export function formatDateRelative(date: string | null | undefined): string {
     }
 }
 
+/**
+ * Formats duration in seconds to a readable string (e.g., "1:23:45" or "23:45").
+ *
+ * @param seconds - Duration in seconds
+ * @returns Formatted duration string as "H:MM:SS" if hours > 0, otherwise "MM:SS"
+ *
+ * @example
+ * formatDuration(3665) // Returns "1:01:05"
+ * @example
+ * formatDuration(125) // Returns "2:05"
+ */
+export function formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+}
+
