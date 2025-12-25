@@ -5,3 +5,27 @@
     width: 100%;
 }
 
+.container {
+    width: 100%;
+}
+
+.withSidebar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+.content {
+    width: 100%;
+}
+
+.sidebar {
+    width: 100%;
+}
+
+@media (min-width: 641px) {
+    .withSidebar {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+

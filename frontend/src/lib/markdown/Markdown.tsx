@@ -4,6 +4,8 @@ import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import remarkSmartypants from 'remark-smartypants';
 import rehypeExternalLinks from 'rehype-external-links';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
 
 export type MarkdownProps = {
@@ -29,6 +31,26 @@ export function Markdown({markdown, className}: MarkdownProps) {
                     remarkSmartypants,
                 ]}
                 rehypePlugins={[
+                    rehypeSlug,
+                    [
+                        rehypeAutolinkHeadings,
+                        {
+                            behavior: 'append',
+                            properties: {
+                                className: ['anchor-link'],
+                                'aria-label': 'Link to section',
+                            },
+                            content: {
+                                type: 'element',
+                                tagName: 'span',
+                                properties: {
+                                    className: ['anchor-icon'],
+                                    'aria-hidden': 'true',
+                                },
+                                children: [{type: 'text', value: '#'}],
+                            },
+                        },
+                    ],
                     [rehypeExternalLinks, {target: '_blank', rel: ['noopener', 'noreferrer']}],
                 ]}
                 components={{

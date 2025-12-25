@@ -64,7 +64,6 @@ async function fetchStrapiJson<T>(
     apiPath: string,
     options: FetchStrapiOptions = {},
 ): Promise<T> {
-    'use cache';
     const base = getStrapiApiBaseUrl();
     const url = new URL(apiPath, base);
     const res = await fetch(url, {

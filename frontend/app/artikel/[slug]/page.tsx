@@ -4,7 +4,6 @@ import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 import Image from 'next/image';
 
-import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {fetchArticleBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
@@ -16,6 +15,8 @@ import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
+import {ContentWithToc} from '@/src/components/ContentWithToc';
+import {ContentLayout} from '@/app/ContentLayout';
 import styles from './page.module.css';
 
 type PageProps = {
@@ -101,36 +102,38 @@ export default async function ArticleDetailPage({params}: PageProps) {
             />
             <main>
                 <article className={styles.article}>
-                    {coverImageUrl && coverWidth && coverHeight ? (
-                        <div className={styles.coverImageContainer}>
-                            <Image
-                                src={coverImageUrl}
-                                alt={article.base.title}
-                                width={coverWidth}
-                                height={coverHeight}
-                                priority
-                                className={styles.coverImage}
-                            />
-                        </div>
-                    ) : null}
-                    <header className={styles.header}>
-                        <ContentMetadata
-                            publishedDate={published}
-                            readingTime={readingTime}
-                            authors={article.authors}
-                            categories={article.categories}
-                        />
-                        <h1 className={styles.title}>{article.base.title}</h1>
-                        {article.base.description ? (
-                            <p className={styles.description}>
-                                {article.base.description}
-                            </p>
+                    <ContentLayout>
+                        {coverImageUrl && coverWidth && coverHeight ? (
+                            <div className={styles.coverImageContainer}>
+                                <Image
+                                    src={coverImageUrl}
+                                    alt={article.base.title}
+                                    width={coverWidth}
+                                    height={coverHeight}
+                                    priority
+                                    className={styles.coverImage}
+                                />
+                            </div>
                         ) : null}
-                    </header>
-                    <div className={styles.content}>
-                        <Markdown markdown={article.content ?? ''} />
-                    </div>
-                    <YoutubeSection youtube={article.youtube} />
+                        <header className={styles.header}>
+                            <ContentMetadata
+                                publishedDate={published}
+                                readingTime={readingTime}
+                                authors={article.authors}
+                                categories={article.categories}
+                            />
+                            <h1 className={styles.title}>{article.base.title}</h1>
+                            {article.base.description ? (
+                                <p className={styles.description}>
+                                    {article.base.description}
+                                </p>
+                            ) : null}
+                        </header>
+                    </ContentLayout>
+                    <ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />
+                    <ContentLayout>
+                        <YoutubeSection youtube={article.youtube} />
+                    </ContentLayout>
                 </article>
             </main>
         </>
