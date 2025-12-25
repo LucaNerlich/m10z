@@ -10,6 +10,7 @@ import styles from './ContentCard.module.css';
 import placeholderCover from '@/public/images/m10z.jpg';
 import {AuthorList} from './AuthorList';
 import {CategoryList} from './CategoryList';
+import {calculateReadingTime} from '@/src/lib/readingTime';
 
 type ArticleCardProps = {
     article: StrapiArticle;
@@ -38,6 +39,7 @@ export function ArticleCard({
     const effectiveDate = getEffectiveDate(article);
     const formattedDate = formatDateShort(effectiveDate);
     const articleUrl = routes.article(article.slug);
+    const readingTime = calculateReadingTime(article.content ?? '');
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
 
@@ -60,6 +62,9 @@ export function ArticleCard({
                     <time className={styles.date} dateTime={effectiveDate ?? undefined}>
                         {formattedDate}
                     </time>
+                    {readingTime ? (
+                        <span className={styles.readingTime}>📖&nbsp;{readingTime}</span>
+                    ) : null}
                 </div>
                 <h2 className={styles.cardTitle}>
                     <Link href={articleUrl} className={styles.cardLink}>

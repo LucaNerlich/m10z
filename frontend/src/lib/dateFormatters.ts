@@ -50,12 +50,12 @@ export function formatDateShort(date: string | null | undefined): string {
 }
 
 /**
- * Formats a date string into a relative German date format.
+ * Produce a German human-friendly relative label for the given date.
  *
- * Examples: "heute", "gestern", "vor 2 Tagen", "vor 3 Wochen"
+ * Returns '—' for null, undefined, or unparseable date strings. For exact day offsets returns localized labels such as "heute", "gestern", or "morgen"; for other offsets returns a relative description (e.g., "vor 2 Tagen", "in 3 Wochen"). If relative formatting is unavailable or fails, falls back to the short German date format.
  *
  * @param date - Date string (ISO 8601 or any valid date string), or null/undefined
- * @returns Relative date string, or short date format if relative calculation fails
+ * @returns A German relative date string, or '—' for invalid input; may return a short formatted date on fallback
  */
 export function formatDateRelative(date: string | null | undefined): string {
     if (!date) return '—';
@@ -94,3 +94,25 @@ export function formatDateRelative(date: string | null | undefined): string {
     }
 }
 
+/**
+ * Formats duration in seconds to a readable string (e.g., "1:23:45" or "23:45").
+ *
+ * @param seconds - Duration in seconds
+ * @returns Formatted duration string as "H:MM:SS" if hours > 0, otherwise "MM:SS"
+ *
+ * @example
+ * formatDuration(3665) // Returns "1:01:05"
+ * @example
+ * formatDuration(125) // Returns "2:05"
+ */
+export function formatDuration(seconds: number): string {
+    const totalSeconds = Math.floor(seconds);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+}

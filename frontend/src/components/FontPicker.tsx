@@ -104,19 +104,21 @@ export default function FontPicker(): React.ReactElement | null {
         : undefined;
 
     return (
-        <select
-            className={styles.picker}
-            value={selectedFont}
-            onChange={handleChange}
-            aria-label="Schriftart auswählen"
-            style={selectStyle}
-        >
-            {FONT_OPTIONS.map((option) => (
-                <option key={option.id} value={option.id}>
-                    {option.displayName}
-                </option>
-            ))}
-        </select>
+        <div className={styles.pickerWrapper}>
+            <select
+                className={styles.picker}
+                value={selectedFont}
+                onChange={handleChange}
+                aria-label="Schriftart auswählen"
+                style={selectStyle}
+            >
+                {FONT_OPTIONS.map((option) => (
+                    <option key={option.id} value={option.id}>
+                        {option.displayName}
+                    </option>
+                ))}
+            </select>
+        </div>
     );
 }
 

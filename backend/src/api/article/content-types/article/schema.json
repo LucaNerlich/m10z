@@ -40,8 +40,7 @@
     "youtube": {
       "type": "component",
       "component": "collection-type.youtube",
-      "repeatable": true,
-      "min": 1
+      "repeatable": true
     }
   }
 }

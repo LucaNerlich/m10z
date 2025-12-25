@@ -13,18 +13,24 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
-import {formatDateShort} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
-import {ContentAuthors} from '@/src/components/ContentAuthors';
-import {CategoryList} from '@/src/components/CategoryList';
+import {ContentMetadata} from '@/src/components/ContentMetadata';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
 import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
 
+/**
+ * Builds metadata (OpenGraph, Twitter, authors, and alternates) for an article identified by slug.
+ *
+ * Returns an empty metadata object if the slug is invalid or the article cannot be found.
+ *
+ * @param params - Page route params containing a `slug` that identifies the article
+ * @returns A Metadata object containing `title`, `description`, `alternates` (canonical URL), `openGraph` (type, title, description, images, publishedTime, modifiedTime, authors), `twitter` (card, title, description, images), and `authors`; or an empty object if metadata cannot be produced
+ */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-    'use cache';
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
@@ -82,7 +88,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const readingTime = calculateReadingTime(article.content ?? '');
     const jsonLd = generateArticleJsonLd(article);
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
     const coverImageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
     const coverWidth = optimizedMedia?.width;
     const coverHeight = optimizedMedia?.height;
@@ -108,30 +114,23 @@ export default async function ArticleDetailPage({params}: PageProps) {
                         </div>
                     ) : null}
                     <header className={styles.header}>
-                        {published ? (
-                            <time dateTime={published} className={styles.publishedDate}>
-                                {formatDateShort(published)}
-                            </time>
-                        ) : null}
-                        <span className={styles.readingTime}>{readingTime}</span>
+                        <ContentMetadata
+                            publishedDate={published}
+                            readingTime={readingTime}
+                            authors={article.authors}
+                            categories={article.categories}
+                        />
                         <h1 className={styles.title}>{article.base.title}</h1>
                         {article.base.description ? (
                             <p className={styles.description}>
                                 {article.base.description}
                             </p>
                         ) : null}
-                        <div className={styles.metaRow}>
-                            {article.authors && article.authors.length > 0 ? (
-                                <ContentAuthors authors={article.authors} />
-                            ) : null}
-                            {article.categories && article.categories.length > 0 ? (
-                                <CategoryList categories={article.categories} />
-                            ) : null}
-                        </div>
                     </header>
                     <div className={styles.content}>
                         <Markdown markdown={article.content ?? ''} />
                     </div>
+                    <YoutubeSection youtube={article.youtube} />
                 </article>
             </main>
         </>
