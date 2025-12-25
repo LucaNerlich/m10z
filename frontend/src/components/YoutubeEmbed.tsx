@@ -7,6 +7,15 @@ interface YoutubeEmbedProps {
     height?: number;
 }
 
+/**
+ * Render an embedded YouTube video iframe based on the provided props.
+ *
+ * @param props.videoId - YouTube video identifier; when falsy the component renders an empty fragment.
+ * @param props.title - Accessible title for the iframe; defaults to `'YouTube video player'`.
+ * @param props.width - Width of the iframe in pixels; defaults to `560`.
+ * @param props.height - Height of the iframe in pixels; defaults to `315`.
+ * @returns A React element containing the YouTube embed iframe for the given `videoId`, or an empty fragment when `videoId` is falsy.
+ */
 export default function YoutubeEmbed(props: Readonly<YoutubeEmbedProps>): React.ReactElement {
     if (!props.videoId) return <></>;
 
