@@ -58,12 +58,6 @@
     border-top: 1px solid var(--color-border);
 }
 
-.metaLabel {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    margin-right: 0.5rem;
-    font-weight: 500;
-}
 
 .content {
     max-width: 700px;

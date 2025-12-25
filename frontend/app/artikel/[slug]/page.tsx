@@ -14,7 +14,7 @@ import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {formatDateShort} from '@/src/lib/dateFormatters';
-import {AuthorList} from '@/src/components/AuthorList';
+import {ContentAuthors} from '@/src/components/ContentAuthors';
 import {CategoryList} from '@/src/components/CategoryList';
 import styles from './page.module.css';
 
@@ -119,10 +119,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
                         ) : null}
                         <div className={styles.metaRow}>
                             {article.authors && article.authors.length > 0 ? (
-                                <div>
-                                    <span className={styles.metaLabel}>Von:</span>
-                                    <AuthorList authors={article.authors} showAvatars={true} layout="inline" />
-                                </div>
+                                <ContentAuthors authors={article.authors} />
                             ) : null}
                             {article.categories && article.categories.length > 0 ? (
                                 <CategoryList categories={article.categories} />

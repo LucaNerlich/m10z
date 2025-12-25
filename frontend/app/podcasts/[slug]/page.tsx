@@ -19,7 +19,7 @@ import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {formatDateShort} from '@/src/lib/dateFormatters';
-import {AuthorList} from '@/src/components/AuthorList';
+import {ContentAuthors} from '@/src/components/ContentAuthors';
 import {CategoryList} from '@/src/components/CategoryList';
 import styles from './page.module.css';
 
@@ -126,10 +126,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
                         ) : null}
                         <div className={styles.metaRow}>
                             {episode.authors && episode.authors.length > 0 ? (
-                                <div>
-                                    <span className={styles.metaLabel}>Von:</span>
-                                    <AuthorList authors={episode.authors} showAvatars={true} layout="inline" />
-                                </div>
+                                <ContentAuthors authors={episode.authors} />
                             ) : null}
                             {episode.categories && episode.categories.length > 0 ? (
                                 <CategoryList categories={episode.categories} />
