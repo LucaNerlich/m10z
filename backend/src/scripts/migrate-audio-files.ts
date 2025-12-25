@@ -193,6 +193,27 @@ function extractFilename(url: string): string {
     return filename;
 }
 
+function getMimeType(filename: string): string {
+    const ext = path.extname(filename).toLowerCase();
+    
+    // Audio MIME types
+    const mimeTypes: Record<string, string> = {
+        '.mp3': 'audio/mpeg',
+        '.mpeg': 'audio/mpeg',
+        '.wav': 'audio/wav',
+        '.wave': 'audio/wav',
+        '.ogg': 'audio/ogg',
+        '.oga': 'audio/ogg',
+        '.m4a': 'audio/mp4',
+        '.aac': 'audio/aac',
+        '.flac': 'audio/flac',
+        '.webm': 'audio/webm',
+        '.opus': 'audio/opus',
+    };
+
+    return mimeTypes[ext] || 'application/octet-stream';
+}
+
 function randomDelay(min: number, max: number): Promise<void> {
     const delay = Math.floor(Math.random() * (max - min + 1)) + min;
     return new Promise((resolve) => setTimeout(resolve, delay));
@@ -263,8 +284,9 @@ async function uploadToStrapiWithRetry(
 
     try {
         const fileBuffer = await fs.readFile(filePath);
+        const mimeType = getMimeType(filename);
         const file = new File([fileBuffer], filename, {
-            type: 'application/octet-stream',
+            type: mimeType,
         });
 
         const formData = new FormData();
