@@ -23,12 +23,18 @@ importers:
       dompurify:
         specifier: ^3.3.1
         version: 3.3.1
+      form-data:
+        specifier: ^4.0.1
+        version: 4.0.5
       jsdom:
         specifier: ^27.3.0
         version: 27.3.0
       marked:
         specifier: ^17.0.1
         version: 17.0.1
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
       pg:
         specifier: ~8.16.3
         version: 8.16.3
@@ -63,12 +69,18 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.7
         version: 18.3.7(@types/react@18.3.27)
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.6.1
+      tsx:
+        specifier: ^4.19.2
+        version: 4.21.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vite:
         specifier: ^7.3.0
-        version: 7.3.0(@types/node@22.19.3)(terser@5.44.1)
+        version: 7.3.0(@types/node@22.19.3)(terser@5.44.1)(tsx@4.21.0)
 
 packages:
 
@@ -3176,6 +3188,10 @@ packages:
   custom-media-element@1.4.5:
     resolution: {integrity: sha512-cjrsQufETwxjvwZbYbKBCJNvmQ2++G9AvT45zDi7NXL9k2PdVcs2h0jQz96J6G4TMKRCcEsoJ+QTgQD00Igtjw==}
 
+  data-uri-to-buffer@4.0.1:
+    resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
+    engines: {node: '>= 12'}
+
   data-urls@6.0.0:
     resolution: {integrity: sha512-BnBS08aLUM+DKamupXs3w2tJJoqU+AkaE/+6vQxi/G/DPmIZFJJp9Dkb1kM03AZx8ADehDUZgsNxju3mPXZYIA==}
     engines: {node: '>=20'}
@@ -3378,6 +3394,10 @@ packages:
 
   dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
+
+  dotenv@16.6.1:
+    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -3606,6 +3626,10 @@ packages:
   fecha@4.2.3:
     resolution: {integrity: sha512-OP2IUU6HeYKJi3i0z4A19kHMQoLVs4Hc+DPqqxI2h/DPZHTm/vjsfC6P0b4jCMy14XizLBqvndQ+UilD7707Jw==}
 
+  fetch-blob@3.2.0:
+    resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
+    engines: {node: ^12.20 || >= 14.13}
+
   fflate@0.8.2:
     resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
 
@@ -3704,6 +3728,10 @@ packages:
   form-data@4.0.5:
     resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
     engines: {node: '>= 6'}
+
+  formdata-polyfill@4.0.10:
+    resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
+    engines: {node: '>=12.20.0'}
 
   formidable@2.1.5:
     resolution: {integrity: sha512-Oz5Hwvwak/DCaXVVUtPn4oLMLLy1CdclLKO1LFgU7XzDpVMUU5UjlSLpGMocyQNNk8F6IJW9M/YdooSn2MRI+Q==}
@@ -5021,6 +5049,15 @@ packages:
 
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
+
+  node-domexception@1.0.0:
+    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
+    engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
+
+  node-fetch@3.3.2:
+    resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   node-machine-id@1.1.12:
     resolution: {integrity: sha512-QNABxbrPa3qEIfrE6GOJ7BYIuignnJw7iQ2YPbc3Nla1HzRJjXzZOiikfF8m7eAMfichLt3M4VgLOetqgDmgGQ==}
@@ -6437,6 +6474,11 @@ packages:
     resolution: {integrity: sha512-LxhtAkPDTkVCMQjt2h6eBVY28KCjikZqZfMcC15YBeNjkgUpdCfBu5HoiOTDu86v6smE8yOjyEktJ8hlbANHQA==}
     engines: {node: '>=0.6.x'}
 
+  tsx@4.21.0:
+    resolution: {integrity: sha512-5C1sg4USs1lfG0GFb2RLXsdpXqBSEhAaA/0kPL01wxzpMqLILNxIxIOKiILz+cdg/pLnOUxFYOR5yhHU666wbw==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+
   tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
 
@@ -6750,6 +6792,10 @@ packages:
 
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
+
+  web-streams-polyfill@3.3.3:
+    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
+    engines: {node: '>= 8'}
 
   webidl-conversions@8.0.0:
     resolution: {integrity: sha512-n4W4YFyz5JzOfQeA8oN7dUYpR+MBP3PIUsn2jLjWXwK5ASUzt0Jc/A5sAUZoCYFJRGF0FBKJ+1JjN43rNdsQzA==}
@@ -7754,18 +7800,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@formatjs/intl@2.10.0(typescript@5.4.4)':
-    dependencies:
-      '@formatjs/ecma402-abstract': 1.18.2
-      '@formatjs/fast-memoize': 2.2.0
-      '@formatjs/icu-messageformat-parser': 2.7.6
-      '@formatjs/intl-displaynames': 6.6.6
-      '@formatjs/intl-listformat': 7.5.5
-      intl-messageformat: 10.5.11
-      tslib: 2.8.1
-    optionalDependencies:
-      typescript: 5.4.4
-
   '@formatjs/intl@2.10.0(typescript@5.9.3)':
     dependencies:
       '@formatjs/ecma402-abstract': 1.18.2
@@ -8728,7 +8762,7 @@ snapshots:
       '@strapi/design-system': 2.0.1(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.39.6)(@strapi/icons@2.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)))(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(codemirror@5.65.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/icons': 2.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/permissions': 5.33.0
-      '@strapi/types': 5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/types': 5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.9.3)
       '@strapi/typescript-utils': 5.33.0
       '@strapi/utils': 5.33.0
       '@testing-library/dom': 10.4.1
@@ -8926,7 +8960,7 @@ snapshots:
       '@strapi/database': 5.33.0(@types/node@22.19.3)(pg@8.16.3)
       '@strapi/design-system': 2.0.1(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.39.6)(@strapi/icons@2.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)))(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(codemirror@5.65.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/icons': 2.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
-      '@strapi/types': 5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/types': 5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.9.3)
       '@strapi/utils': 5.33.0
       date-fns: 2.30.0
       date-fns-tz: 2.0.1(date-fns@2.30.0)
@@ -9027,7 +9061,7 @@ snapshots:
       '@strapi/generators': 5.33.0(@types/node@22.19.3)
       '@strapi/logger': 5.33.0
       '@strapi/permissions': 5.33.0
-      '@strapi/types': 5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/types': 5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.9.3)
       '@strapi/typescript-utils': 5.33.0
       '@strapi/utils': 5.33.0
       '@vercel/stega': 0.1.2
@@ -9445,7 +9479,7 @@ snapshots:
       '@strapi/openapi': 5.33.0
       '@strapi/permissions': 5.33.0
       '@strapi/review-workflows': 5.33.0(b6261764887dd53db7c4a9ce800fd1ec)
-      '@strapi/types': 5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/types': 5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.9.3)
       '@strapi/typescript-utils': 5.33.0
       '@strapi/upload': 5.33.0(49b90dad6412cd37860d6a0a935b5758)
       '@strapi/utils': 5.33.0
@@ -9548,36 +9582,6 @@ snapshots:
       - webpack-cli
       - webpack-dev-server
       - webpack-plugin-serve
-
-  '@strapi/types@5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.4.4)':
-    dependencies:
-      '@casl/ability': 6.5.0
-      '@koa/cors': 5.0.0
-      '@koa/router': 12.0.2
-      '@strapi/database': 5.33.0(@types/node@22.19.3)(pg@8.16.3)
-      '@strapi/logger': 5.33.0
-      '@strapi/permissions': 5.33.0
-      '@strapi/utils': 5.33.0
-      commander: 8.3.0
-      json-logic-js: 2.0.5
-      koa: 2.16.1
-      koa-body: 6.0.1
-      node-schedule: 2.1.1
-      typedoc: 0.25.10(typescript@5.4.4)
-      typedoc-github-wiki-theme: 1.1.0(typedoc-plugin-markdown@3.17.1(typedoc@0.25.10(typescript@5.9.3)))(typedoc@0.25.10(typescript@5.9.3))
-      typedoc-plugin-markdown: 3.17.1(typedoc@0.25.10(typescript@5.9.3))
-      zod: 3.25.67
-    transitivePeerDependencies:
-      - '@types/node'
-      - better-sqlite3
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - sqlite3
-      - supports-color
-      - tedious
-      - typescript
 
   '@strapi/types@5.33.0(@types/node@22.19.3)(pg@8.16.3)(typescript@5.9.3)':
     dependencies:
@@ -10378,7 +10382,7 @@ snapshots:
   axios@1.13.2:
     dependencies:
       follow-redirects: 1.15.11(debug@4.3.4)
-      form-data: 4.0.4
+      form-data: 4.0.5
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
@@ -10879,6 +10883,8 @@ snapshots:
 
   custom-media-element@1.4.5: {}
 
+  data-uri-to-buffer@4.0.1: {}
+
   data-urls@6.0.0:
     dependencies:
       whatwg-mimetype: 4.0.0
@@ -11058,6 +11064,8 @@ snapshots:
       is-obj: 2.0.0
 
   dotenv@16.4.5: {}
+
+  dotenv@16.6.1: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -11329,6 +11337,11 @@ snapshots:
 
   fecha@4.2.3: {}
 
+  fetch-blob@3.2.0:
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 3.3.3
+
   fflate@0.8.2: {}
 
   figures@3.2.0:
@@ -11449,6 +11462,10 @@ snapshots:
       es-set-tostringtag: 2.1.0
       hasown: 2.0.2
       mime-types: 2.1.35
+
+  formdata-polyfill@4.0.10:
+    dependencies:
+      fetch-blob: 3.2.0
 
   formidable@2.1.5:
     dependencies:
@@ -13028,6 +13045,14 @@ snapshots:
 
   node-abort-controller@3.1.1: {}
 
+  node-domexception@1.0.0: {}
+
+  node-fetch@3.3.2:
+    dependencies:
+      data-uri-to-buffer: 4.0.1
+      fetch-blob: 3.2.0
+      formdata-polyfill: 4.0.10
+
   node-machine-id@1.1.12: {}
 
   node-plop@0.32.3(@types/node@22.19.3):
@@ -13613,7 +13638,7 @@ snapshots:
     dependencies:
       '@formatjs/ecma402-abstract': 1.18.2
       '@formatjs/icu-messageformat-parser': 2.7.6
-      '@formatjs/intl': 2.10.0(typescript@5.4.4)
+      '@formatjs/intl': 2.10.0(typescript@5.9.3)
       '@formatjs/intl-displaynames': 6.6.6
       '@formatjs/intl-listformat': 7.5.5
       '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.27)
@@ -14578,6 +14603,13 @@ snapshots:
 
   tsscmp@1.0.6: {}
 
+  tsx@4.21.0:
+    dependencies:
+      esbuild: 0.27.2
+      get-tsconfig: 4.13.0
+    optionalDependencies:
+      fsevents: 2.3.3
+
   tunnel-agent@0.6.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -14612,14 +14644,6 @@ snapshots:
     dependencies:
       handlebars: 4.7.8
       typedoc: 0.25.10(typescript@5.9.3)
-
-  typedoc@0.25.10(typescript@5.4.4):
-    dependencies:
-      lunr: 2.3.9
-      marked: 4.3.0
-      minimatch: 9.0.5
-      shiki: 0.14.7
-      typescript: 5.4.4
 
   typedoc@0.25.10(typescript@5.9.3):
     dependencies:
@@ -14789,7 +14813,7 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.44.1
 
-  vite@7.3.0(@types/node@22.19.3)(terser@5.44.1):
+  vite@7.3.0(@types/node@22.19.3)(terser@5.44.1)(tsx@4.21.0):
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -14801,6 +14825,7 @@ snapshots:
       '@types/node': 22.19.3
       fsevents: 2.3.3
       terser: 5.44.1
+      tsx: 4.21.0
 
   vscode-oniguruma@1.7.0: {}
 
@@ -14820,6 +14845,8 @@ snapshots:
   wcwidth@1.0.1:
     dependencies:
       defaults: 1.0.4
+
+  web-streams-polyfill@3.3.3: {}
 
   webidl-conversions@8.0.0: {}
 

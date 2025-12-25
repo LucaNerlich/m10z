@@ -49,3 +49,24 @@
 
 On Podcast Episode crud, call frontend endpoint to invalidate feed xml.
 Use secret token via header for this.
+
+## Environment Variables
+
+### STRAPI_API_TOKEN
+
+Required for migration scripts that upload files to Strapi. This is the API token used for authenticating requests to the Strapi upload endpoint.
+
+**Usage:**
+
+The token can be set in a `.env` file in the `backend` directory:
+```bash
+STRAPI_API_TOKEN=your_token_here
+```
+
+Or as an environment variable:
+```bash
+export STRAPI_API_TOKEN=your_token_here
+pnpm migrate:audio
+```
+
+The token can be obtained from the Strapi admin panel under Settings > API Tokens.
