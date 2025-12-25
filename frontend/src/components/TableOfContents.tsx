@@ -64,54 +64,23 @@ export function TableOfContents({contentRef}: TableOfContentsProps) {
             observerRef.current.disconnect();
         }
 
-        // Function to find the active heading based on scroll position
-        const findActiveHeading = () => {
-            if (!contentRef.current) return;
-
-            const scrollTop = window.scrollY || document.documentElement.scrollTop;
-            const headerOffset = 100; // Match scroll-margin-top from CSS
-            const viewportTop = scrollTop + headerOffset;
-
-            // Find the heading that's currently at or just past the viewport top
-            let activeHeading: Element | null = null;
-            let minDistance = Infinity;
-
-            headingElements.forEach((element) => {
-                const rect = element.getBoundingClientRect();
-                const elementTop = scrollTop + rect.top;
-
-                // Check if heading is above the viewport top (accounting for scroll-margin)
-                if (elementTop <= viewportTop) {
-                    const distance = viewportTop - elementTop;
-                    // Prefer the heading closest to but above the viewport top
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        activeHeading = element;
+        // Create new observer
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                // Find the first visible heading
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        if (id) {
+                            setActiveId(id);
+                            break;
+                        }
                     }
                 }
-            });
-
-            // If no heading is above viewport, use the first one
-            if (!activeHeading && headingElements.length > 0) {
-                activeHeading = headingElements[0];
-            }
-
-            if (activeHeading && activeHeading.id) {
-                setActiveId(activeHeading.id);
-            }
-        };
-
-        // Initial check
-        findActiveHeading();
-
-        // Create observer with better rootMargin to detect when headings enter/leave
-        observerRef.current = new IntersectionObserver(
-            () => {
-                findActiveHeading();
             },
             {
-                rootMargin: `-${100}px 0% -70% 0%`, // Account for header height (100px scroll-margin-top)
-                threshold: [0, 0.1, 0.5, 1],
+                rootMargin: '-20% 0% -70% 0%', // Trigger slightly before heading enters viewport
+                threshold: 0,
             },
         );
 
@@ -120,19 +89,11 @@ export function TableOfContents({contentRef}: TableOfContentsProps) {
             observerRef.current?.observe(element);
         });
 
-        // Also listen to scroll events for more accurate tracking
-        const handleScroll = () => {
-            findActiveHeading();
-        };
-
-        window.addEventListener('scroll', handleScroll, {passive: true});
-
         // Cleanup on unmount
         return () => {
             if (observerRef.current) {
                 observerRef.current.disconnect();
             }
-            window.removeEventListener('scroll', handleScroll);
         };
     }, [contentRef, headings]);
 

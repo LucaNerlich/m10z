@@ -61,10 +61,6 @@
 }
 
 @media (max-width: 640px) {
-    .episode {
-        padding: 0 1rem;
-    }
-
     .title {
         font-size: 1.875rem;
     }
@@ -75,11 +71,6 @@
 
     .coverImageContainer {
         margin: 0 -1rem 1.5rem;
-        border-radius: 0;
-    }
-
-    .coverImage {
-        border-radius: 0;
     }
 
     .player {

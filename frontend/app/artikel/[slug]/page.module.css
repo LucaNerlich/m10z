@@ -44,8 +44,6 @@
     font-weight: 400;
 }
 
-
-
 .content {
     line-height: 1.7;
     p img {
@@ -54,10 +52,6 @@
 }
 
 @media (max-width: 640px) {
-    .article {
-        padding: 0 1rem;
-    }
-
     .title {
         font-size: 1.875rem;
     }
@@ -68,7 +62,6 @@
 
     .coverImageContainer {
         margin: 1rem -1rem 1.5rem;
-        border-radius: 0;
     }
 
     .coverImage {
