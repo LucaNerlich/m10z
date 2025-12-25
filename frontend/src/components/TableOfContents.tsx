@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import styles from './TableOfContents.module.css';
 
 type Heading = {
@@ -10,7 +10,7 @@ type Heading = {
 };
 
 type TableOfContentsProps = {
-    contentRef: React.RefObject<HTMLElement>;
+    contentRef: React.RefObject<HTMLElement | null>;
 };
 
 /**
@@ -81,7 +81,7 @@ export function TableOfContents({contentRef}: TableOfContentsProps) {
             {
                 rootMargin: '-20% 0% -70% 0%', // Trigger slightly before heading enters viewport
                 threshold: 0,
-            }
+            },
         );
 
         // Observe all headings
@@ -119,6 +119,7 @@ export function TableOfContents({contentRef}: TableOfContentsProps) {
 
     return (
         <nav className={styles.toc} aria-label="Inhaltsverzeichnis">
+            <h2>Inhaltsverzeichnis</h2>
             <ul className={styles.list}>
                 {headings.map((heading) => {
                     const isActive = activeId === heading.id;

@@ -76,3 +76,13 @@ h6:hover .anchor-link:hover {
     font-weight: normal;
     font-size: 0.9em;
 }
+
+/* Scroll offset for headings to account for sticky header */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    scroll-margin-top: 100px;
+}

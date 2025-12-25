@@ -103,36 +103,36 @@ export default async function ArticleDetailPage({params}: PageProps) {
             <main>
                 <article className={styles.article}>
                     <ContentLayout>
-                        {coverImageUrl && coverWidth && coverHeight ? (
-                            <div className={styles.coverImageContainer}>
-                                <Image
-                                    src={coverImageUrl}
-                                    alt={article.base.title}
-                                    width={coverWidth}
-                                    height={coverHeight}
-                                    priority
-                                    className={styles.coverImage}
-                                />
-                            </div>
-                        ) : null}
-                        <header className={styles.header}>
-                            <ContentMetadata
-                                publishedDate={published}
-                                readingTime={readingTime}
-                                authors={article.authors}
-                                categories={article.categories}
+                    {coverImageUrl && coverWidth && coverHeight ? (
+                        <div className={styles.coverImageContainer}>
+                            <Image
+                                src={coverImageUrl}
+                                alt={article.base.title}
+                                width={coverWidth}
+                                height={coverHeight}
+                                priority
+                                className={styles.coverImage}
                             />
-                            <h1 className={styles.title}>{article.base.title}</h1>
-                            {article.base.description ? (
-                                <p className={styles.description}>
-                                    {article.base.description}
-                                </p>
-                            ) : null}
-                        </header>
+                        </div>
+                    ) : null}
+                    <header className={styles.header}>
+                        <ContentMetadata
+                            publishedDate={published}
+                            readingTime={readingTime}
+                            authors={article.authors}
+                            categories={article.categories}
+                        />
+                        <h1 className={styles.title}>{article.base.title}</h1>
+                        {article.base.description ? (
+                            <p className={styles.description}>
+                                {article.base.description}
+                            </p>
+                        ) : null}
+                    </header>
                     </ContentLayout>
                     <ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />
                     <ContentLayout>
-                        <YoutubeSection youtube={article.youtube} />
+                    <YoutubeSection youtube={article.youtube} />
                     </ContentLayout>
                 </article>
             </main>

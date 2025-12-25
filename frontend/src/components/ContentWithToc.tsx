@@ -19,7 +19,7 @@ export function ContentWithToc({markdown, contentClassName}: ContentWithTocProps
     const contentRef = useRef<HTMLDivElement>(null);
 
     return (
-        <ContentLayout sidebar={<TableOfContents contentRef={contentRef} />}>
+        <ContentLayout sidebar={<TableOfContents contentRef={contentRef as React.RefObject<HTMLElement | null>} />}>
             <div ref={contentRef} className={contentClassName}>
                 <Markdown markdown={markdown} />
             </div>

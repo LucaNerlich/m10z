@@ -4,7 +4,7 @@
     align-self: start;
     max-height: calc(100vh - 100px);
     overflow-y: auto;
-    padding: 1rem 0;
+    padding: 1rem 0.5rem 1rem 0.5rem;
 }
 
 .list {
@@ -45,7 +45,8 @@
     font-weight: 600;
     background-color: var(--color-surface);
     border-left: 3px solid var(--color-link);
-    padding-left: calc(0.75rem - 3px);
+    margin-left: -0.5rem;
+    padding-left: calc(0.75rem - 3px + 0.5rem);
 }
 
 /* Mobile styles */

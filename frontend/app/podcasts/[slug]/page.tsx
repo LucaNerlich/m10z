@@ -110,44 +110,44 @@ export default async function PodcastDetailPage({params}: PageProps) {
             <main>
                 <article className={styles.episode}>
                     <ContentLayout>
-                        {coverImageUrl && coverWidth && coverHeight ? (
-                            <div className={styles.coverImageContainer}>
-                                <Image
-                                    src={coverImageUrl}
-                                    alt={episode.base.title}
-                                    width={coverWidth}
-                                    height={coverHeight}
-                                    priority
-                                    className={styles.coverImage}
-                                />
-                            </div>
-                        ) : null}
-                        <header className={styles.header}>
-                            <ContentMetadata
-                                publishedDate={published}
-                                duration={episode.duration}
-                                authors={episode.authors}
-                                categories={episode.categories}
+                    {coverImageUrl && coverWidth && coverHeight ? (
+                        <div className={styles.coverImageContainer}>
+                            <Image
+                                src={coverImageUrl}
+                                alt={episode.base.title}
+                                width={coverWidth}
+                                height={coverHeight}
+                                priority
+                                className={styles.coverImage}
                             />
-                            <h1 className={styles.title}>{episode.base.title}</h1>
-                            {episode.base.description ? (
-                                <p className={styles.description}>
-                                    {episode.base.description}
-                                </p>
-                            ) : null}
-                        </header>
-
-                        {audioUrl ? (
-                            <div className={styles.player}>
-                                <PodcastPlayer src={audioUrl} />
-                            </div>
+                        </div>
+                    ) : null}
+                    <header className={styles.header}>
+                        <ContentMetadata
+                            publishedDate={published}
+                            duration={episode.duration}
+                            authors={episode.authors}
+                            categories={episode.categories}
+                        />
+                        <h1 className={styles.title}>{episode.base.title}</h1>
+                        {episode.base.description ? (
+                            <p className={styles.description}>
+                                {episode.base.description}
+                            </p>
                         ) : null}
+                    </header>
+
+                    {audioUrl ? (
+                        <div className={styles.player}>
+                            <PodcastPlayer src={audioUrl} />
+                        </div>
+                    ) : null}
                     </ContentLayout>
 
                     <ContentWithToc markdown={episode.shownotes ?? ''} contentClassName={styles.content} />
 
                     <ContentLayout>
-                        <YoutubeSection youtube={episode.youtube} />
+                    <YoutubeSection youtube={episode.youtube} />
                     </ContentLayout>
                 </article>
             </main>
