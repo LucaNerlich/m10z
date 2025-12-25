@@ -133,4 +133,3 @@ This plan implements a centralized image format selection system that automatica
 - Verify format selection works for all size variants
 - Test fallback behavior when requested format unavailable
 - Ensure metadata still uses full resolution images
-- Verify search modal images display correctly with new structure
