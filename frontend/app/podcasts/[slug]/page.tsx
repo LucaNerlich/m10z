@@ -25,6 +25,18 @@ type PageProps = {
     params: Promise<{slug: string}>;
 };
 
+/**
+ * Builds Next.js page metadata for a podcast episode identified by the route slug.
+ *
+ * Fetches the episode by slug and, if found, produces metadata including title,
+ * description, canonical URL, OpenGraph (article) data, and Twitter card images
+ * based on the episode's banner or cover media.
+ *
+ * @param params - Route params (resolves to an object with a `slug` string)
+ * @returns A Metadata object containing title, description, alternates (canonical URL),
+ *          `openGraph` (type, title, description, images) and `twitter` card fields;
+ *          returns an empty Metadata object if the slug is invalid or no episode is found.
+ */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
@@ -62,14 +74,12 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 }
 
 /**
- * Render the podcast episode detail page for the route slug.
+ * Renders the podcast episode detail page for the given route slug.
  *
- * Fetches the episode by slug, prepares published date, media URL, and JSON-LD, and returns the page JSX.
+ * Fetches the episode by slug, prepares metadata (published date, media URLs, JSON-LD, cover image), and renders the episode content.
  *
- * Triggers a 404 response (via `notFound`) if the slug is invalid or no episode is found.
- *
- * @param params - A promise resolving to an object with a `slug` string from the route parameters
- * @returns A React element containing an `application/ld+json` script with episode JSON-LD, the episode metadata (title, date, description), an optional audio player when media is available, and rendered shownotes
+ * @param params - Route parameters object (contains a `slug` string)
+ * @returns A React element that includes an `application/ld+json` script with episode JSON-LD, the episode header (title, metadata, optional description and cover image), an optional audio player when media is available, and the rendered shownotes
  */
 export default async function PodcastDetailPage({params}: PageProps) {
     const {slug: rawSlug} = await params;

@@ -8,9 +8,12 @@ type AuthorHeaderProps = {
 };
 
 /**
- * Header component for displaying author information on detail pages.
+ * Render a header showing an author's avatar, name, and optional description.
  *
- * Displays avatar, title, and description in a compact, visually appealing layout.
+ * Renders the author's avatar when available, displays the author's title (falls back to "Unbekannter Autor" if missing), and includes the description only when provided.
+ *
+ * @param author - The author data used to populate avatar, title, and description
+ * @returns The header element containing the author's avatar and textual information
  */
 export function AuthorHeader({author}: AuthorHeaderProps) {
     const avatar = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
@@ -42,4 +45,3 @@ export function AuthorHeader({author}: AuthorHeaderProps) {
         </header>
     );
 }
-
