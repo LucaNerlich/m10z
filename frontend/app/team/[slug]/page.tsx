@@ -5,7 +5,7 @@ import Image from 'next/image';
 import {notFound} from 'next/navigation';
 
 import {fetchAuthorBySlug} from '@/src/lib/strapiContent';
-import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
@@ -25,7 +25,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 
     const title = author.title || 'Autor';
     const description = author.description || undefined;
-    const avatarMedia = normalizeStrapiMedia(author.avatar);
+    const avatarMedia = getOptimalMediaFormat(author.avatar, 'thumbnail');
     const avatarImage = avatarMedia ? formatOpenGraphImage(avatarMedia) : undefined;
 
     return {
@@ -65,13 +65,16 @@ export default async function AuthorPage({params}: PageProps) {
     const author = await fetchAuthorBySlug(slug);
     if (!author) return notFound();
 
-    const avatar = normalizeStrapiMedia(author.avatar);
+    const avatar = getOptimalMediaFormat(author.avatar, 'thumbnail');
     const avatarUrl = mediaUrlToAbsolute({media: avatar});
+    const avatarWidth = avatar.width ?? 96;
+    const avatarHeight = avatar.height ?? 96;
 
     return (
         <main>
             <h2>TODO</h2>
-            {avatarUrl ? <Image src={avatarUrl} alt={author.title ?? 'Avatar'} width={96} height={96} /> : null}
+            {avatarUrl ? <Image src={avatarUrl} alt={author.title ?? 'Avatar'} width={avatarWidth}
+                                height={avatarHeight} /> : null}
             <h1>{author.title}</h1>
             {author.description ? <p>{author.description}</p> : null}
 

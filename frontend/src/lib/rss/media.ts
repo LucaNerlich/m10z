@@ -97,6 +97,10 @@ export type StrapiYoutube = {
     url: string;
 }
 
+export type ImageSize = 'thumbnail' | 'small' | 'medium' | 'large';
+
+const IMAGE_SIZES_ORDERED: ImageSize[] = ['thumbnail', 'small', 'medium', 'large'];
+
 export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): StrapiMedia {
     if (!ref) return {};
     const attrs = ref.attributes ?? ref.data?.attributes ?? ref;
@@ -180,4 +184,71 @@ export function pickBannerMedia(base?: StrapiBaseContent, categories?: StrapiCat
     if (categoryBanner.url) return categoryBanner;
 
     return undefined;
+}
+
+/**
+ * Selects the optimal image format from a StrapiMedia object based on the requested size.
+ *
+ * Searches for the requested format size in media.formats. If not found, falls back to the next larger size.
+ * Returns a new StrapiMedia object with format-specific properties merged with root metadata, excluding the formats property.
+ *
+ * @param media - The StrapiMedia object (or null/undefined) to extract format from
+ * @param requestedSize - The desired image size ('thumbnail', 'small', 'medium', or 'large')
+ * @returns A StrapiMedia object with optimal format properties, or empty object if input is null/undefined, or original media if no format found
+ */
+export function getOptimalMediaFormat(
+    media: StrapiMedia | null | undefined,
+    requestedSize: ImageSize,
+): StrapiMedia {
+    if (!media) return {};
+
+    const formats = media.formats;
+    if (!formats || typeof formats !== 'object') {
+        // No formats available, return original media without formats property
+        const {formats: _, ...rest} = media;
+        return rest;
+    }
+
+    // Find the requested size index
+    const requestedIndex = IMAGE_SIZES_ORDERED.indexOf(requestedSize);
+    if (requestedIndex === -1) {
+        // Invalid size requested, return original media without formats
+        const {formats: _, ...rest} = media;
+        return rest;
+    }
+
+    // Search for requested size or fallback to larger sizes
+    for (let i = requestedIndex; i < IMAGE_SIZES_ORDERED.length; i++) {
+        const size = IMAGE_SIZES_ORDERED[i];
+        const format = formats[size];
+        if (format && format.url) {
+            // Found a matching format, merge format properties with root metadata
+            return {
+                id: media.id,
+                documentId: media.documentId,
+                name: media.name,
+                alternativeText: media.alternativeText,
+                caption: media.caption,
+                url: format.url,
+                width: format.width,
+                height: format.height,
+                ext: format.ext ?? media.ext,
+                hash: format.hash ?? media.hash,
+                mime: format.mime ?? media.mime,
+                size: format.size ?? media.size,
+                sizeInBytes: format.sizeInBytes ?? media.sizeInBytes,
+                previewUrl: media.previewUrl,
+                provider: media.provider,
+                provider_metadata: media.provider_metadata,
+                related: media.related,
+                createdAt: media.createdAt,
+                updatedAt: media.updatedAt,
+                publishedAt: media.publishedAt,
+            };
+        }
+    }
+
+    // No matching format found, return original media without formats property
+    const {formats: _, ...rest} = media;
+    return rest;
 }

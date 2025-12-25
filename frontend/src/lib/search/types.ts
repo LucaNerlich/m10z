@@ -1,3 +1,5 @@
+import {type StrapiMediaRef} from '@/src/lib/rss/media';
+
 export type SearchRecordType = 'article' | 'podcast' | 'author' | 'category';
 
 export type SearchRecord = {
@@ -10,7 +12,7 @@ export type SearchRecord = {
     href: string;
     publishedAt?: string | null;
     tags: string[];
-    coverImageUrl?: string | null;
+    coverImage?: StrapiMediaRef | null;
 };
 
 export type SearchIndexFile = {

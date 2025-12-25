@@ -95,11 +95,8 @@ function isValidSearchIndexFile(obj: unknown): obj is SearchIndexFile {
         }
         if (!Array.isArray(rec.tags)) return false;
         if (!rec.tags.every((tag: unknown) => typeof tag === 'string')) return false;
-        if (
-            rec.coverImageUrl !== null &&
-            rec.coverImageUrl !== undefined &&
-            typeof rec.coverImageUrl !== 'string'
-        ) {
+        // coverImage is optional and can be null, undefined, or a StrapiMediaRef object
+        if (rec.coverImage !== null && rec.coverImage !== undefined && typeof rec.coverImage !== 'object') {
             return false;
         }
     }
