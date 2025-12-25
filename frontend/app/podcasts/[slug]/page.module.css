@@ -1,22 +1,5 @@
 .episode {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.coverImageContainer {
-    margin: 1.5rem 0;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    background: var(--color-surface-strong);
-    box-shadow: var(--shadow-soft);
-}
-
-.coverImage {
     width: 100%;
-    height: auto;
-    display: block;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
 }
 
 .header {
@@ -52,31 +35,19 @@
 
 .content {
     line-height: 1.7;
+
     p img {
         border-radius: var(--border-radius);
     }
 }
 
 @media (max-width: 640px) {
-    .episode {
-        padding: 0 1rem;
-    }
-
     .title {
         font-size: 1.875rem;
     }
 
     .description {
         font-size: 1.125rem;
-    }
-
-    .coverImageContainer {
-        margin: 0 -1rem 1.5rem;
-        border-radius: 0;
-    }
-
-    .coverImage {
-        border-radius: 0;
     }
 
     .player {
