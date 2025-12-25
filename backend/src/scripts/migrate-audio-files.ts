@@ -14,7 +14,7 @@
  */
 
 import {config} from 'dotenv';
-import {File, FormData} from 'formdata-node';
+import FormData from 'form-data';
 import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
@@ -49,9 +49,8 @@ const STRAPI_UPLOAD_URL = 'https://cms.m10z.de/api/upload';
 const ALLOWED_DOMAIN = 'm10z.picnotes.de';
 const MAX_RETRIES = 3;
 const RETRY_DELAYS = [1000, 2000, 4000]; // Exponential backoff in milliseconds
-const BETWEEN_FILE_DELAY_MIN = 500;
-const BETWEEN_FILE_DELAY_MAX = 1000;
-const UPLOAD_TIMEOUT_MS = 300000; // 5 minutes timeout for large file uploads
+const BETWEEN_FILE_DELAY_MIN = 1000;
+const BETWEEN_FILE_DELAY_MAX = 2000;
 
 // Hardcoded list of 87 audio file URLs
 const AUDIO_FILE_URLS: string[] = [
@@ -286,29 +285,22 @@ async function uploadToStrapiWithRetry(
     try {
         const fileBuffer = await fs.readFile(filePath);
         const mimeType = getMimeType(filename);
-        const file = new File([fileBuffer], filename, {
-            type: mimeType,
-        });
 
         const formData = new FormData();
-        formData.set('files', file);
+        formData.append('files', fileBuffer, {
+            filename,
+            contentType: mimeType,
+        });
 
-        // Create AbortController for timeout handling
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
-
-        try {
-            const response = await fetch(STRAPI_UPLOAD_URL, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${apiToken}`,
-                    'Connection': 'keep-alive',
-                },
-                body: formData as unknown as BodyInit,
-                signal: controller.signal,
-            });
-
-            clearTimeout(timeoutId);
+        // Use form-data's getHeaders() to get proper Content-Type with boundary
+        const response = await fetch(STRAPI_UPLOAD_URL, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${apiToken}`,
+                ...formData.getHeaders(),
+            },
+            body: formData as unknown as BodyInit,
+        });
 
             if (!response.ok) {
                 let errorDetails = '';
@@ -335,6 +327,7 @@ async function uploadToStrapiWithRetry(
                 );
             }
 
+            // Ensure we fully read the response before closing
             const json = await response.json();
 
             // Strapi upload returns an array of uploaded files
@@ -349,13 +342,13 @@ async function uploadToStrapiWithRetry(
                 `Uploaded: ${filename} (ID: ${uploadedFile.id}, URL: ${uploadedFile.url})`,
             );
 
+            // Small delay to ensure connection is fully closed
+            await sleep(100);
+
             return {
                 id: uploadedFile.id,
                 url: uploadedFile.url || '',
             };
-        } finally {
-            clearTimeout(timeoutId);
-        }
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
         
@@ -428,7 +421,8 @@ async function processFile(
             error(`Failed to delete temp file ${tempFilePath}:`, err);
         });
 
-        // Delay between files
+        // Delay between files to avoid connection issues
+        // The delay is already included in uploadToStrapiWithRetry, but add extra here
         if (index < total - 1) {
             await randomDelay(BETWEEN_FILE_DELAY_MIN, BETWEEN_FILE_DELAY_MAX);
         }

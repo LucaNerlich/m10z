@@ -16,7 +16,7 @@
         "@strapi/strapi": "^5.33.0",
         "@strapi/utils": "^5.33.0",
         "dompurify": "^3.3.1",
-        "formdata-node": "^6.0.3",
+        "form-data": "^4.0.1",
         "jsdom": "^27.3.0",
         "marked": "^17.0.1",
         "pg": "~8.16.3",
