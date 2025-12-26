@@ -7,7 +7,7 @@ import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {mediaUrlToAbsolute, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, pickBannerMedia, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
 import {absoluteRoute} from '@/src/lib/routes';
 import styles from './page.module.css';
 import Image from 'next/image';
@@ -42,6 +42,7 @@ type FeedItem =
     description?: string | null;
     publishedAt?: string | null;
     cover?: StrapiMedia | undefined;
+    banner?: StrapiMedia | undefined;
     href: string;
 }
     | {
@@ -51,6 +52,7 @@ type FeedItem =
     description?: string | null;
     publishedAt?: string | null;
     cover?: StrapiMedia | undefined;
+    banner?: StrapiMedia | undefined;
     href: string;
 };
 
@@ -103,6 +105,7 @@ function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
         description: article.base.description,
         publishedAt: getEffectiveDate(article),
         cover: pickCoverMedia(article.base, article.categories),
+        banner: pickBannerMedia(article.base, article.categories),
         href: `/artikel/${article.slug}`,
     }));
 }
@@ -115,6 +118,7 @@ function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
         description: podcast.base.description,
         publishedAt: getEffectiveDate(podcast),
         cover: pickCoverMedia(podcast.base, podcast.categories),
+        banner: pickBannerMedia(podcast.base, podcast.categories),
         href: `/podcasts/${podcast.slug}`,
     }));
 }
@@ -193,8 +197,19 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                             return (
                                 <li key={anchor} className={styles.tocEntry}>
                                     <a href={`#${anchor}`} className={styles.tocLink}>
+                                        <div className={styles.tocMetadata}>
+                                            <Tag className={styles.tocTag}>
+                                                {item.type === 'article' ? 'Artikel' : 'Podcast'}
+                                            </Tag>
+                                            {item.publishedAt ? (
+                                                <time className={styles.tocDate} dateTime={item.publishedAt}>
+                                                    {formatDate(item.publishedAt)}
+                                                </time>
+                                            ) : (
+                                                <span className={styles.tocDate}>{formatDate(item.publishedAt)}</span>
+                                            )}
+                                        </div>
                                         <h3 className={styles.tocLabel}>{item.title}</h3>
-                                        <span className={styles.tocDate}>{formatDate(item.publishedAt)}</span>
                                     </a>
                                 </li>
                             );
@@ -210,6 +225,7 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                     currentItems.map((item) => {
                         const anchor = `${item.type}-${item.slug}`;
                         const coverUrl = toCoverUrl(item.cover);
+                        const bannerUrl = toCoverUrl(item.banner);
                         return (
                             <article key={anchor} id={anchor} className={styles.card}>
                                 <div className={styles.media}>
@@ -220,6 +236,14 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                         placeholder={coverUrl ? 'empty' : 'blur'}
                                         alt={item.title || ''}
                                         className={styles.cover}
+                                    />
+                                    <Image
+                                        src={bannerUrl ?? coverUrl ?? placeholderCover}
+                                        width={800}
+                                        height={450}
+                                        placeholder={bannerUrl || coverUrl ? 'empty' : 'blur'}
+                                        alt={item.title || ''}
+                                        className={styles.banner}
                                     />
                                 </div>
                                 <div className={styles.cardBody}>

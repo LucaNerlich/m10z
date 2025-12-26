@@ -42,7 +42,7 @@
           "editable": true
         },
         "list": {
-          "label": "slug",
+          "label": "URL Identifier",
           "searchable": true,
           "sortable": true
         }
@@ -71,7 +71,7 @@
           "mainField": "slug"
         },
         "list": {
-          "label": "authors",
+          "label": "Authors",
           "searchable": false,
           "sortable": false
         }
@@ -173,12 +173,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "categories",
-        "youtube"
-      ],
       "edit": [
         [
           {
@@ -214,6 +208,13 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "base",
+        "slug",
+        "categories",
+        "updatedAt",
+        "authors"
       ]
     },
     "uid": "api::article.article"
