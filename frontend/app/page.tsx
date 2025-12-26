@@ -193,8 +193,13 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                             return (
                                 <li key={anchor} className={styles.tocEntry}>
                                     <a href={`#${anchor}`} className={styles.tocLink}>
+                                        <div className={styles.tocMetadata}>
+                                            <Tag className={styles.tocTag}>
+                                                {item.type === 'article' ? 'Artikel' : 'Podcast'}
+                                            </Tag>
+                                            <span className={styles.tocDate}>{formatDate(item.publishedAt)}</span>
+                                        </div>
                                         <h3 className={styles.tocLabel}>{item.title}</h3>
-                                        <span className={styles.tocDate}>{formatDate(item.publishedAt)}</span>
                                     </a>
                                 </li>
                             );
