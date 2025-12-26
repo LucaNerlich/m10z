@@ -76,6 +76,11 @@
       "locale": null
     },
     {
+      "documentId": "klv9in1kaxoh8j62zjc61i8r",
+      "action": "plugin::upload.content-api.upload",
+      "locale": null
+    },
+    {
       "documentId": "n96qn4ojo0fq95u41a60ec7f",
       "action": "plugin::users-permissions.auth.changePassword",
       "locale": null

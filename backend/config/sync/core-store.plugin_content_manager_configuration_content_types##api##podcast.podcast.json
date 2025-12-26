@@ -21,7 +21,7 @@
       },
       "base": {
         "edit": {
-          "label": "base",
+          "label": "Base",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -67,7 +67,7 @@
           "description": "Audiofile duration in Seconds",
           "placeholder": "2567",
           "visible": true,
-          "editable": true
+          "editable": false
         },
         "list": {
           "label": "duration",
@@ -226,12 +226,6 @@
         ],
         [
           {
-            "name": "duration",
-            "size": 4
-          }
-        ],
-        [
-          {
             "name": "shownotes",
             "size": 12
           }
@@ -250,6 +244,12 @@
           {
             "name": "youtube",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "duration",
+            "size": 4
           }
         ]
       ]
