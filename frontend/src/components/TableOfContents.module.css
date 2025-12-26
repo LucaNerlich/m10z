@@ -44,9 +44,16 @@
     color: var(--color-link);
     font-weight: 600;
     background-color: var(--color-surface);
-    border-left: 3px solid var(--color-link);
-    margin-left: -0.5rem;
-    padding-left: calc(0.75rem - 3px + 0.5rem);
+    /* Use inset box-shadow instead of border to avoid layout shifts and overlap */
+    box-shadow: inset 2px 0 0 var(--color-link);
+}
+
+/* When both active and focused, use a combined approach */
+.link.active:focus {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+    /* Keep the inset shadow for active indicator */
+    box-shadow: inset 2px 0 0 var(--color-link);
 }
 
 /* Mobile styles */
