@@ -101,6 +101,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         routes.articleFeed,
     ]);
 
+    // Add about page with custom priority and changeFrequency
+    const aboutUrl = absoluteRoute(routes.about);
+    staticEntries.push({
+        url: aboutUrl,
+        priority: 0.8,
+        changeFrequency: 'monthly',
+        alternates: createLanguageAlternates(aboutUrl),
+    });
+
     const dynamicEntries: MetadataRoute.Sitemap = [
         ...buildDynamicEntries(articles, routes.article),
         ...buildDynamicEntries(podcasts, routes.podcast),

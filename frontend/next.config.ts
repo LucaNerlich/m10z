@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
             // Legacy Docusaurus pages -> Next.js routes
             {source: '/content/imprint', destination: '/impressum', permanent: true},
             {source: '/content/privacy', destination: '/datenschutz', permanent: true},
-            {source: '/content/hello', destination: '/team', permanent: true},
+            {source: '/content/hello', destination: '/ueber-uns', permanent: true},
 
             // Legacy tag-style entry points -> Next dashboards
             {source: '/tags/podcast', destination: '/podcasts', permanent: true},

@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 export interface StrapiMeta {
     // Strapi often returns an empty object here; keep it extensible.
     [key: string]: unknown;
@@ -26,6 +28,18 @@ export interface StrapiLegalDoc {
     documentId: string;
     title: string;
     content: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string | null;
+}
+
+export interface StrapiAbout {
+    id: number;
+    documentId: string;
+    name: string;
+    alternateName: string | null;
+    content: string;
+    logo: import('./rss/media').StrapiMediaRef | null;
     createdAt: string;
     updatedAt: string;
     publishedAt: string | null;
@@ -104,12 +118,14 @@ function assertIsLegalDoc(data: unknown): asserts data is StrapiLegalDoc {
 
 export async function fetchStrapiSingle<TData>(
     endpoint: string,
+    query: string = '',
     options: FetchStrapiOptions = {},
 ): Promise<StrapiSingleResponse<TData>> {
-    // endpoint examples: "imprint", "privacy"
+    // endpoint examples: "imprint", "privacy", "about"
     const normalized = endpoint.replace(/^\/*/, '');
+    const q = query.startsWith('?') || query.length === 0 ? query : `?${query}`;
     return await fetchStrapiJson<StrapiSingleResponse<TData>>(
-        `/api/${normalized}`,
+        `/api/${normalized}${q}`,
         options,
     );
 }
@@ -155,6 +171,49 @@ export async function getImprint(options: FetchStrapiOptions = {}) {
 
 export async function getPrivacy(options: FetchStrapiOptions = {}) {
     return getLegalDocWithFallback('privacy', options);
+}
+
+function assertIsAbout(data: unknown): asserts data is StrapiAbout {
+    if (!data || typeof data !== 'object') throw new Error('Invalid Strapi data');
+    const d = data as Partial<StrapiAbout>;
+
+    if (typeof d.name !== 'string' || d.name.length === 0) {
+        throw new Error('Invalid Strapi about: missing name');
+    }
+    if (typeof d.content !== 'string') {
+        throw new Error('Invalid Strapi about: missing content');
+    }
+}
+
+async function getAboutWithFallback(
+    options: FetchStrapiOptions = {},
+): Promise<StrapiAbout> {
+    const nowIso = new Date().toISOString();
+    const fallback: StrapiAbout = {
+        id: -1,
+        documentId: 'fallback-about',
+        name: 'Über Uns',
+        alternateName: null,
+        content: 'Dieser Inhalt ist derzeit nicht verfügbar.',
+        logo: null,
+        createdAt: nowIso,
+        updatedAt: nowIso,
+        publishedAt: null,
+    };
+
+    try {
+        const query = qs.stringify({populate: 'logo'}, {encodeValuesOnly: true});
+        const res = await fetchStrapiSingle<StrapiAbout>('about', query, options);
+        assertIsAbout(res.data);
+        return res.data;
+    } catch (err) {
+        console.warn(`[about] Failed to fetch about: ${err instanceof Error ? err.message : 'unknown error'}`);
+        return fallback;
+    }
+}
+
+export async function getAbout(options: FetchStrapiOptions = {}) {
+    return getAboutWithFallback(options);
 }
 
 
