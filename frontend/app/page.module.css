@@ -104,18 +104,6 @@
     gap: 16px;
 }
 
-.card {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 16px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-soft);
-    overflow: hidden;
-    scroll-margin-top: 85px;
-}
-
 .media {
     background: var(--color-surface-strong);
     position: relative;
@@ -147,10 +135,6 @@
 
 /* Tablet and mobile: Banner with column layout */
 @media (max-width: 1080px) {
-    .card {
-        grid-template-columns: 1fr;
-    }
-
     .media {
         aspect-ratio: 16/9;
     }
@@ -209,47 +193,5 @@
 
 .readMore {
     font-weight: 700;
-}
-
-.pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-top: 8px;
-}
-
-.pageInfo {
-    color: var(--color-text-muted);
-}
-
-.pageControls {
-    display: flex;
-    gap: 8px;
-}
-
-.pageButton {
-    padding: 8px 14px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    color: inherit;
-}
-
-.pageButtonDisabled {
-    pointer-events: none;
-    opacity: 0.5;
-}
-
-.empty,
-.emptyCard {
-    color: var(--color-text-muted);
-}
-
-.emptyCard {
-    border: 1px dashed var(--color-border);
-    padding: 16px;
-    border-radius: var(--border-radius);
-    text-align: center;
 }
 

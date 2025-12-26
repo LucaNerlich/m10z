@@ -1,0 +1,26 @@
+.card {
+    display: grid;
+    grid-template-columns: minmax(240px, 280px) 1fr;
+    gap: 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    scroll-margin-top: 85px;
+}
+
+.empty {
+    border-style: dashed;
+    padding: 16px;
+    text-align: center;
+}
+
+/* Tablet and mobile: Single column layout */
+@media (max-width: 1080px) {
+    .card {
+        grid-template-columns: 1fr;
+    }
+}
+
+

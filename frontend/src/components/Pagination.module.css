@@ -1,0 +1,39 @@
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.pageInfo {
+    color: var(--color-text-muted);
+}
+
+.pageControls {
+    display: flex;
+    gap: 8px;
+}
+
+.pageButton {
+    padding: 8px 14px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.pageButton:hover:not(.pageButtonDisabled) {
+    background: var(--color-surface-strong);
+}
+
+.pageButtonDisabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+

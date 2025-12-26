@@ -1,4 +1,5 @@
 import type {NextConfig} from 'next';
+import {getRemotePatterns} from './src/lib/imageHostnames';
 
 const nextConfig: NextConfig = {
     // Required for `'use cache'` directive.
@@ -14,15 +15,7 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     images: {
         dangerouslyAllowLocalIP: true,
-        remotePatterns: [
-            {protocol: 'http', hostname: 'localhost', port: '1337'},
-            {protocol: 'https', hostname: 'api-m10z.lucanerlich.com'},
-            {protocol: 'https', hostname: 'm10z.lucanerlich.com'},
-            {protocol: 'https', hostname: 'm10z.de'},
-            {protocol: 'https', hostname: 'api.m10z.de'},
-            {protocol: 'https', hostname: 'cms.m10z.de'},
-            {protocol: 'https', hostname: 'beta.m10z.de'},
-        ],
+        remotePatterns: getRemotePatterns(),
     },
     async redirects() {
         return [

@@ -20,6 +20,7 @@ import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {ContentWithToc} from '@/src/components/ContentWithToc';
 import {ContentImage} from '@/src/components/ContentImage';
+import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
@@ -127,7 +128,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
                             height={imageHeight}
                             placeholder={placeholder}
                         />
-                        <header className={styles.header}>
+                        <Section className={styles.header}>
                             <ContentMetadata
                                 publishedDate={published}
                                 duration={episode.duration}
@@ -140,7 +141,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
                                     {episode.base.description}
                                 </p>
                             ) : null}
-                        </header>
+                        </Section>
 
                         {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
                     </ContentLayout>

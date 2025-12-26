@@ -12,6 +12,8 @@ import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
 import {AuthorHeader} from '@/src/components/AuthorHeader';
+import {Section} from '@/src/components/Section';
+import {EmptyState} from '@/src/components/EmptyState';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import styles from './page.module.css';
 
@@ -101,31 +103,29 @@ export default async function AuthorPage({params}: PageProps) {
             <AuthorHeader author={author} />
 
             {sortedArticles.length > 0 ? (
-                <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Artikel ({sortedArticles.length})</h2>
+                <Section title={`Artikel (${sortedArticles.length})`}>
                     <ContentGrid gap="comfortable">
                         {sortedArticles.map((article) => (
                             <ArticleCard key={article.slug} article={article} showAuthors={false}
                                          showCategories={true} />
                         ))}
                     </ContentGrid>
-                </section>
+                </Section>
             ) : null}
 
             {sortedPodcasts.length > 0 ? (
-                <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Podcasts ({sortedPodcasts.length})</h2>
+                <Section title={`Podcasts (${sortedPodcasts.length})`}>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
                             <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false}
                                          showCategories={true} />
                         ))}
                     </ContentGrid>
-                </section>
+                </Section>
             ) : null}
 
             {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
-                <p className={styles.emptyState}>Keine Inhalte von diesem Autor gefunden.</p>
+                <EmptyState message="Keine Inhalte von diesem Autor gefunden." />
             ) : null}
         </main>
     );

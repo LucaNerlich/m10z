@@ -16,6 +16,7 @@ import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {ContentWithToc} from '@/src/components/ContentWithToc';
 import {ContentImage} from '@/src/components/ContentImage';
+import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
@@ -120,7 +121,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
                             height={imageHeight}
                             placeholder={placeholder}
                         />
-                        <header className={styles.header}>
+                        <Section className={styles.header}>
                             <ContentMetadata
                                 publishedDate={published}
                                 readingTime={readingTime}
@@ -133,7 +134,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
                                     {article.base.description}
                                 </p>
                             ) : null}
-                        </header>
+                        </Section>
                     </ContentLayout>
                     <ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />
                     <ContentLayout>

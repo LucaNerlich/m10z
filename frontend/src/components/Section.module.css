@@ -1,0 +1,16 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 3rem;
+}
+
+.header {
+    margin-bottom: 1.5rem;
+}
+
+.title {
+    margin: 0;
+}
+
+
