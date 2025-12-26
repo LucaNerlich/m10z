@@ -201,10 +201,11 @@ export async function GET(request: Request) {
     if (!query) {
         try {
             const content = await loadSearchIndex();
+            const expiresDate = new Date(Date.now() + 60000).toUTCString();
             return NextResponse.json(content, {
                 headers: {
                     'Cache-Control': 'public, max-age=60',
-                    'Expires': '0',
+                    'Expires': expiresDate,
                 },
             });
         } catch (error) {
@@ -254,6 +255,7 @@ export async function GET(request: Request) {
             score: match.score ?? null,
         }));
 
+        const expiresDate = new Date(Date.now() + 30000).toUTCString();
         return NextResponse.json(
             {
                 results,
@@ -264,7 +266,7 @@ export async function GET(request: Request) {
                 headers: {
                     'Cache-Control': 'public, max-age=30',
                     'Pragma': 'no-cache',
-                    'Expires': '0',
+                    'Expires': expiresDate,
                 },
             },
         );
