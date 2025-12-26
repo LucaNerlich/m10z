@@ -18,12 +18,12 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
-import {ContentWithToc} from '@/src/components/ContentWithToc';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
+import {Markdown} from '@/src/lib/markdown/Markdown';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -146,7 +146,8 @@ export default async function PodcastDetailPage({params}: PageProps) {
                         {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
                     </ContentLayout>
 
-                    <ContentWithToc markdown={episode.shownotes ?? ''} contentClassName={styles.content} />
+                    {/*<ContentWithToc markdown={episode.shownotes ?? ''} contentClassName={styles.content} />*/}
+                    <Markdown markdown={episode.shownotes ?? ''} className={styles.content} />
 
                     <ContentLayout>
                         <YoutubeSection youtube={episode.youtube} />

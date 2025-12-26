@@ -20,6 +20,7 @@ import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
+import {Markdown} from '@/src/lib/markdown/Markdown';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -136,7 +137,10 @@ export default async function ArticleDetailPage({params}: PageProps) {
                             ) : null}
                         </Section>
                     </ContentLayout>
-                    <ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />
+                    {/*<ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />*/}
+                    <Markdown markdown={article.content ?? ''} className={styles.content} />
+
+
                     <ContentLayout>
                         <YoutubeSection youtube={article.youtube} />
                     </ContentLayout>
