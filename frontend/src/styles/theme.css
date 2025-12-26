@@ -31,6 +31,20 @@
     --shadow-soft: var(--shadow-soft-light);
 }
 
+@media (prefers-color-scheme: light) {
+    :root {
+        color-scheme: light;
+        --color-background: var(--color-background-light);
+        --color-surface: var(--color-surface-light);
+        --color-surface-strong: var(--color-surface-strong-light);
+        --color-border: var(--color-border-light);
+        --color-text: var(--color-text-light);
+        --color-text-muted: var(--color-text-muted-light);
+        --color-link: var(--color-link-light);
+        --shadow-soft: var(--shadow-soft-light);
+    }
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         color-scheme: dark;
