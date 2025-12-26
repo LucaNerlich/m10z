@@ -201,7 +201,13 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                             <Tag className={styles.tocTag}>
                                                 {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                             </Tag>
-                                            <span className={styles.tocDate}>{formatDate(item.publishedAt)}</span>
+                                            {item.publishedAt ? (
+                                                <time className={styles.tocDate} dateTime={item.publishedAt}>
+                                                    {formatDate(item.publishedAt)}
+                                                </time>
+                                            ) : (
+                                                <span className={styles.tocDate}>{formatDate(item.publishedAt)}</span>
+                                            )}
                                         </div>
                                         <h3 className={styles.tocLabel}>{item.title}</h3>
                                     </a>

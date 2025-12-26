@@ -78,9 +78,9 @@
 
 .tocTag {
     flex-shrink: 0;
-    font-size: 10px;
+    font-size: 12px;
     padding: 1px 6px;
-    opacity: 0.6;
+    opacity: 0.8;
     font-weight: 500;
     white-space: nowrap;
 }
