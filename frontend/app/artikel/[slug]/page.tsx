@@ -17,6 +17,7 @@ import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {ContentWithToc} from '@/src/components/ContentWithToc';
 import {ContentImage} from '@/src/components/ContentImage';
 import {ContentLayout} from '@/app/ContentLayout';
+import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
 
 type PageProps = {
@@ -90,7 +91,17 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const jsonLd = generateArticleJsonLd(article);
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
-    const contentImageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
+
+    // Fallback configuration
+    const fallbackSrc = placeholderCover;
+    const fallbackWidth = 400;
+    const fallbackHeight = 225;
+
+    // Determine final values
+    const imageSrc = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : fallbackSrc;
+    const imageWidth = optimizedMedia?.width ?? fallbackWidth;
+    const imageHeight = optimizedMedia?.height ?? fallbackHeight;
+    const placeholder = optimizedMedia ? 'empty' : 'blur';
 
     return (
         <>
@@ -102,10 +113,11 @@ export default async function ArticleDetailPage({params}: PageProps) {
                 <article className={styles.article}>
                     <ContentLayout>
                         <ContentImage
-                            src={contentImageUrl || ''}
+                            src={imageSrc}
                             alt={article.base.title}
-                            width={optimizedMedia?.width || 0}
-                            height={optimizedMedia?.height || 0}
+                            width={imageWidth}
+                            height={imageHeight}
+                            placeholder={placeholder}
                         />
                         <header className={styles.header}>
                             <ContentMetadata
