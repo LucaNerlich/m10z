@@ -18,6 +18,7 @@ import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
 import {ContentWithToc} from '@/src/components/ContentWithToc';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -131,6 +132,12 @@ export default async function ArticleDetailPage({params}: PageProps) {
                     </ContentLayout>
 
                     <ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />
+
+                    {article.youtube && article.youtube.length > 0 && (
+                        <ContentLayout>
+                            <YoutubeSection youtube={article.youtube} />
+                        </ContentLayout>
+                    )}
                 </article>
             </main>
         </>
