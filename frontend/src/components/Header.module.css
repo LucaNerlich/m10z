@@ -22,6 +22,9 @@
     align-items: center;
     text-decoration: none;
     cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 .centerNav {
