@@ -5,6 +5,7 @@ import UmamiAnalytics from '@/src/components/UmamiAnalytics';
 import {ContentLayout} from '@/app/ContentLayout';
 import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
 import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
+import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import {type Metadata, type Viewport} from 'next';
 import {routes} from '@/src/lib/routes';
@@ -70,11 +71,11 @@ export default function RootLayout({
         <UmamiAnalytics />
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{__html: JSON.stringify(orgJsonLd)}}
+            dangerouslySetInnerHTML={{__html: stringifyJsonLd(orgJsonLd)}}
         />
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{__html: JSON.stringify(websiteJsonLd)}}
+            dangerouslySetInnerHTML={{__html: stringifyJsonLd(websiteJsonLd)}}
         />
         </body>
         </html>

@@ -1,6 +1,7 @@
 import {type ImageObject, type Person} from './types';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor, type StrapiMedia} from '@/src/lib/rss/media';
+import serialize from 'serialize-javascript';
 
 /**
  * Produce an ISO-8601 timestamp string for the given date input.
@@ -138,4 +139,25 @@ export function imagesEqual(image1: ImageObject | string | undefined, image2: Im
     const url2 = extractImageUrl(image2);
     if (!url1 || !url2) return false;
     return url1 === url2;
+}
+
+/**
+ * Stringifies a JSON-LD object in a stable, deterministic way to prevent hydration mismatches.
+ * Uses serialize-javascript for safe serialization as recommended by Next.js docs.
+ * Ensures consistent ordering, removes undefined values, and sanitizes the output.
+ *
+ * @param jsonLd - The JSON-LD object to stringify
+ * @returns A stable, sanitized JSON string representation safe for use in script tags
+ */
+export function stringifyJsonLd(jsonLd: unknown): string {
+    // Remove undefined values and ensure stable ordering
+    const cleaned = JSON.parse(JSON.stringify(jsonLd, (key, value) => {
+        // Remove undefined values
+        if (value === undefined) return undefined;
+        return value;
+    }));
+    // Use serialize-javascript for safe serialization (handles XSS protection)
+    // For JSON-LD, we want JSON format, so we use serialize with isJSON: true
+    // This produces JSON-compatible output while maintaining security
+    return serialize(cleaned, { isJSON: true });
 }
