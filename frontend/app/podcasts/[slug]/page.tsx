@@ -111,42 +111,40 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const placeholder = mediaUrl ? 'empty' : 'blur';
 
     return (
-        <main>
-            <article className={styles.episode}>
-                <ContentLayout>
-                    <ContentImage
-                        src={imageSrc}
-                        alt={episode.base.title}
-                        width={imageWidth}
-                        height={imageHeight}
-                        placeholder={placeholder}
+        <article className={styles.episode}>
+            <ContentLayout>
+                <ContentImage
+                    src={imageSrc}
+                    alt={episode.base.title}
+                    width={imageWidth}
+                    height={imageHeight}
+                    placeholder={placeholder}
+                />
+                <Section className={styles.header}>
+                    <ContentMetadata
+                        publishedDate={published}
+                        duration={episode.duration}
+                        authors={episode.authors}
+                        categories={episode.categories}
                     />
-                    <Section className={styles.header}>
-                        <ContentMetadata
-                            publishedDate={published}
-                            duration={episode.duration}
-                            authors={episode.authors}
-                            categories={episode.categories}
-                        />
-                        <h1 className={styles.title}>{episode.base.title}</h1>
-                        {episode.base.description ? (
-                            <p className={styles.description}>
-                                {episode.base.description}
-                            </p>
-                        ) : null}
-                    </Section>
+                    <h1 className={styles.title}>{episode.base.title}</h1>
+                    {episode.base.description ? (
+                        <p className={styles.description}>
+                            {episode.base.description}
+                        </p>
+                    ) : null}
+                </Section>
 
-                    {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
+                {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
+            </ContentLayout>
+
+            <ContentWithTocClient markdown={episode.shownotes ?? ''} contentClassName={styles.content} />
+
+            {episode.youtube && episode.youtube.length > 0 && (
+                <ContentLayout>
+                    <YoutubeSection youtube={episode.youtube} />
                 </ContentLayout>
-
-                <ContentWithTocClient markdown={episode.shownotes ?? ''} contentClassName={styles.content} />
-
-                {episode.youtube && episode.youtube.length > 0 && (
-                    <ContentLayout>
-                        <YoutubeSection youtube={episode.youtube} />
-                    </ContentLayout>
-                )}
-            </article>
-        </main>
+            )}
+        </article>
     );
 }

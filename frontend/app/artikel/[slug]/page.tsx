@@ -104,42 +104,38 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const placeholder = mediaUrl ? 'empty' : 'blur';
 
     return (
-        <>
-            <main>
-                <article className={styles.article}>
-                    <ContentLayout>
-                        <ContentImage
-                            src={imageSrc}
-                            alt={article.base.title}
-                            width={imageWidth}
-                            height={imageHeight}
-                            placeholder={placeholder}
-                        />
-                        <Section className={styles.header}>
-                            <ContentMetadata
-                                publishedDate={published}
-                                readingTime={readingTime}
-                                authors={article.authors}
-                                categories={article.categories}
-                            />
-                            <h1 className={styles.title}>{article.base.title}</h1>
-                            {article.base.description ? (
-                                <p className={styles.description}>
-                                    {article.base.description}
-                                </p>
-                            ) : null}
-                        </Section>
-                    </ContentLayout>
+        <article className={styles.article}>
+            <ContentLayout>
+                <ContentImage
+                    src={imageSrc}
+                    alt={article.base.title}
+                    width={imageWidth}
+                    height={imageHeight}
+                    placeholder={placeholder}
+                />
+                <Section className={styles.header}>
+                    <ContentMetadata
+                        publishedDate={published}
+                        readingTime={readingTime}
+                        authors={article.authors}
+                        categories={article.categories}
+                    />
+                    <h1 className={styles.title}>{article.base.title}</h1>
+                    {article.base.description ? (
+                        <p className={styles.description}>
+                            {article.base.description}
+                        </p>
+                    ) : null}
+                </Section>
+            </ContentLayout>
 
-                    <ContentWithTocClient markdown={article.content ?? ''} contentClassName={styles.content} />
+            <ContentWithTocClient markdown={article.content ?? ''} contentClassName={styles.content} />
 
-                    {article.youtube && article.youtube.length > 0 && (
-                        <ContentLayout>
-                            <YoutubeSection youtube={article.youtube} />
-                        </ContentLayout>
-                    )}
-                </article>
-            </main>
-        </>
+            {article.youtube && article.youtube.length > 0 && (
+                <ContentLayout>
+                    <YoutubeSection youtube={article.youtube} />
+                </ContentLayout>
+            )}
+        </article>
     );
 }

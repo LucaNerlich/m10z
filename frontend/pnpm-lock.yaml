@@ -62,6 +62,9 @@ importers:
       remark-smartypants:
         specifier: ^3.0.2
         version: 3.0.2
+      serialize-javascript:
+        specifier: ^7.0.2
+        version: 7.0.2
       xml-formatter:
         specifier: ^3.6.7
         version: 3.6.7
@@ -84,6 +87,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.7)
+      '@types/serialize-javascript':
+        specifier: ^5.0.4
+        version: 5.0.4
       babel-plugin-react-compiler:
         specifier: ^1.0.0
         version: 1.0.0
@@ -476,6 +482,9 @@ packages:
 
   '@types/react@19.2.7':
     resolution: {integrity: sha512-MWtvHrGZLFttgeEj28VXHxpmwYbor/ATPYbBfSFZEIRK0ecCFLl2Qo55z52Hss+UV9CRN7trSeq1zbgx7YDWWg==}
+
+  '@types/serialize-javascript@5.0.4':
+    resolution: {integrity: sha512-Z2R7UKFuNWCP8eoa2o9e5rkD3hmWxx/1L0CYz0k2BZzGh0PhEVMp9kfGiqEml/0IglwNERXZ2hwNzIrSz/KHTA==}
 
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
@@ -1141,6 +1150,10 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  serialize-javascript@7.0.2:
+    resolution: {integrity: sha512-Y/agDAqbUWRYFWLF5pMT9Rb8wN5ERPMbQH7oq6R+4YgFdMNO4+ELo4PjFCW3H+2CbXirPr/XUgYT+3iXJfTbZQ==}
+    engines: {node: '>=20.0.0'}
+
   sharp@0.34.5:
     resolution: {integrity: sha512-Ou9I5Ft9WNcCbXrU9cMgPBcCK8LiwLqcbywW3t4oDV37n1pzpuNLsYiAV8eODnjbtQlSDwZ2cUEeQz4E54Hltg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
@@ -1645,6 +1658,8 @@ snapshots:
   '@types/react@19.2.7':
     dependencies:
       csstype: 3.2.3
+
+  '@types/serialize-javascript@5.0.4': {}
 
   '@types/tough-cookie@4.0.5': {}
 
@@ -2697,6 +2712,8 @@ snapshots:
 
   semver@7.7.3:
     optional: true
+
+  serialize-javascript@7.0.2: {}
 
   sharp@0.34.5:
     dependencies:
