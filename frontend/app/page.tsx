@@ -3,6 +3,9 @@ import {Suspense} from 'react';
 import {type Metadata} from 'next';
 
 import {Tag} from '@/src/components/Tag';
+import {Card} from '@/src/components/Card';
+import {Pagination} from '@/src/components/Pagination';
+import {EmptyState} from '@/src/components/EmptyState';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
@@ -154,7 +157,7 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
                 <p className={styles.subtitle}>Ein offener Kanal für Videospielcontent und das Drumherum –
                     unentgeltlich, unabhängig, ungezwungen.</p>
             </header>
-            <Suspense fallback={<div className={styles.emptyCard}>Lade Inhalte…</div>}>
+            <Suspense fallback={<Card variant="empty">Lade Inhalte…</Card>}>
                 <FeedContent searchParams={props.searchParams} />
             </Suspense>
         </div>
@@ -220,14 +223,14 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
 
             <section className={styles.feed} aria-label="Neueste Inhalte">
                 {currentItems.length === 0 ? (
-                    <div className={styles.emptyCard}>Keine Inhalte gefunden.</div>
+                    <Card variant="empty">Keine Inhalte gefunden.</Card>
                 ) : (
                     currentItems.map((item) => {
                         const anchor = `${item.type}-${item.slug}`;
                         const coverUrl = toCoverUrl(item.cover);
                         const bannerUrl = toCoverUrl(item.banner);
                         return (
-                            <article key={anchor} id={anchor} className={styles.card}>
+                            <Card key={anchor} id={anchor}>
                                 <div className={styles.media}>
                                     <Image
                                         src={coverUrl ?? placeholderCover}
@@ -267,36 +270,19 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                         </Link>
                                     </div>
                                 </div>
-                            </article>
+                            </Card>
                         );
                     })
                 )}
 
-                <nav className={styles.pagination} aria-label="Seiten">
-                    <div className={styles.pageInfo}>
-                        Seite {currentPage}
-                    </div>
-                    <div className={styles.pageControls}>
-                        {prevPage ? (
-                            <Link className={styles.pageButton} href={`/?page=${prevPage}`}>
-                                Zurück
-                            </Link>
-                        ) : (
-                            <span className={`${styles.pageButton} ${styles.pageButtonDisabled}`} aria-disabled>
-                                Zurück
-                            </span>
-                        )}
-                        {nextPage ? (
-                            <Link className={styles.pageButton} href={`/?page=${nextPage}`}>
-                                Weiter
-                            </Link>
-                        ) : (
-                            <span className={`${styles.pageButton} ${styles.pageButtonDisabled}`} aria-disabled>
-                                Weiter
-                            </span>
-                        )}
-                    </div>
-                </nav>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(combinedTotal / PAGE_SIZE)}
+                    onPrevious={() => {}}
+                    onNext={() => {}}
+                    previousHref={prevPage ? `/?page=${prevPage}` : undefined}
+                    nextHref={nextPage ? `/?page=${nextPage}` : undefined}
+                />
             </section>
         </div>
     );

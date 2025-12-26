@@ -10,6 +10,8 @@ import {normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
+import {Section} from '@/src/components/Section';
+import {EmptyState} from '@/src/components/EmptyState';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import styles from './page.module.css';
 
@@ -107,31 +109,29 @@ export default async function CategoryDetailPage({params}: PageProps) {
             </header>
 
             {sortedArticles.length > 0 ? (
-                <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Artikel ({sortedArticles.length})</h2>
+                <Section title={`Artikel (${sortedArticles.length})`}>
                     <ContentGrid gap="comfortable">
                         {sortedArticles.map((article) => (
                             <ArticleCard key={article.slug} article={article} showAuthors={true}
                                          showCategories={false} />
                         ))}
                     </ContentGrid>
-                </section>
+                </Section>
             ) : null}
 
             {sortedPodcasts.length > 0 ? (
-                <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Podcasts ({sortedPodcasts.length})</h2>
+                <Section title={`Podcasts (${sortedPodcasts.length})`}>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
                             <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true}
                                          showCategories={false} />
                         ))}
                     </ContentGrid>
-                </section>
+                </Section>
             ) : null}
 
             {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
-                <p className={styles.emptyState}>Keine Inhalte in dieser Kategorie gefunden.</p>
+                <EmptyState message="Keine Inhalte in dieser Kategorie gefunden." />
             ) : null}
         </main>
     );
