@@ -1,4 +1,4 @@
-import {type AudioObject, type ImageObject, type Person, type PodcastEpisode, type PodcastSeries} from './types';
+import {type AudioObject, type Person, type PodcastEpisode, type PodcastSeries} from './types';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {authorToPerson, formatIso8601Date, formatIso8601Duration, mediaToImage} from './helpers';

@@ -21,7 +21,7 @@ const ALLOWED_HOSTNAMES = [
 
 /**
  * Checks if a URL's hostname is allowed for Next.js Image optimization.
- * 
+ *
  * @param url - The image URL to check
  * @returns true if the hostname is allowed, false otherwise
  */

@@ -1,4 +1,3 @@
-import {type Metadata} from 'next';
 import {mediaUrlToAbsolute, type StrapiMedia} from '@/src/lib/rss/media';
 
 type OGImageObject = {

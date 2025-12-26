@@ -19,4 +19,3 @@ Remove the `box-shadow: var(--shadow-soft);` property from the `.container` clas
 
 - Keep `padding`, `display`, `justify-content`, `margin`, `max-width`
 - Keep `border-radius: var(--border-radius);`
-- Keep `overflow: hidden;`

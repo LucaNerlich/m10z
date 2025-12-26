@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {mediaUrlToAbsolute, pickBannerOrCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
@@ -26,12 +26,12 @@ type PodcastCardProps = {
  * Uses semantic HTML with article element and proper link structure.
  */
 export function PodcastCard({
-    podcast,
-    showAuthors = false,
-    showCategories = false,
-    descriptionLines = 3,
-    className,
-}: PodcastCardProps) {
+                                podcast,
+                                showAuthors = false,
+                                showCategories = false,
+                                descriptionLines = 3,
+                                className,
+                            }: PodcastCardProps) {
     const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast.base, podcast.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;

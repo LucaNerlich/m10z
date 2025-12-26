@@ -1,6 +1,5 @@
 import Image from 'next/image';
-import {type StrapiAuthor} from '@/src/lib/rss/media';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/rss/media';
 import styles from './AuthorHeader.module.css';
 
 type AuthorHeaderProps = {
