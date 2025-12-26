@@ -65,8 +65,8 @@ export function generateArticleFeedXml(args: {
         `    <link>${escapeXml(siteUrl)}</link>` +
         `    <description>${escapeXml(channel.description)}</description>` +
         `    <language>de</language>` +
-        `    <managingEditor>${escapeXml(channel.mail)}</managingEditor>` +
-        `    <webMaster>${escapeXml(channel.mail)}</webMaster>` +
+        `    <managingEditor>${escapeXml(`${channel.mail} (M10Z)`)}</managingEditor>` +
+        `    <webMaster>${escapeXml(`${channel.mail} (M10Z)`)}</webMaster>` +
         `    <lastBuildDate>${formatRssDate(now)}</lastBuildDate>` +
         `    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>` +
         `    <image>` +

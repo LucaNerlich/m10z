@@ -76,7 +76,8 @@ function renderChannelHeader(
         `        <ttl>${Math.round(cfg.ttlSeconds / 60)}</ttl>` +
         `        <language>${escapeXml(cfg.language)}</language>` +
         `        <copyright>${escapeXml(cfg.copyright)}</copyright>` +
-        `        <webMaster>${escapeXml(cfg.webMaster)}</webMaster>` +
+        `        <webMaster>${escapeXml(`${cfg.webMaster} (${cfg.itunesAuthor})`)}</webMaster>` +
+        `        <managingEditor>${escapeXml(`${cfg.authorEmail || channel.mail} (${cfg.itunesAuthor})`)}</managingEditor>` +
         `        <author>${escapeXml(cfg.authorEmail)}</author>` +
         `        <itunes:category text="Leisure"/>` +
         `        <itunes:owner>` +
@@ -199,7 +200,8 @@ export function generateAudioFeedXml(args: {
     const latestDateRaw = getEffectiveDate(sorted[0]);
     const latestPublishedAt = latestDateRaw ? new Date(latestDateRaw) : null;
     // Use the latest published date for channel pubDate to avoid changing on every request.
-    const channelPubDate = latestPublishedAt ?? new Date(0);
+    // Fallback to current time (not Unix epoch) aligns with RSS best practices and article feed pattern.
+    const channelPubDate = latestPublishedAt ?? new Date();
 
     const header = renderChannelHeader(cfg, channel, channelImageUrl, channelPubDate);
 
