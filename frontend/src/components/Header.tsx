@@ -18,6 +18,15 @@ const secondaryLinks = [
     {label: 'Über uns', href: routes.about},
 ] as const;
 
+/**
+ * Renders the site header containing the logo, primary navigation, search launcher, and client-side header actions.
+ *
+ * The header includes an accessible logo link to the home route, a centered navigation built from `primaryLinks`,
+ * a search launcher, and a `HeaderClient` loaded inside `Suspense` (with a burger menu fallback) that receives
+ * `primaryLinks` and `secondaryLinks`.
+ *
+ * @returns The header element as a `React.ReactElement`.
+ */
 export default function Header(): React.ReactElement {
     return (
         <header className={styles.header}>
