@@ -445,6 +445,43 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
     };
 }
 
+export interface ApiAboutAbout extends Struct.SingleTypeSchema {
+    collectionName: 'abouts';
+    info: {
+        displayName: '\u00DCber Uns';
+        pluralName: 'abouts';
+        singularName: 'about';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        alternateName: Schema.Attribute.String &
+            Schema.Attribute.Required &
+            Schema.Attribute.DefaultTo<'Mindestens 10 Zeichen'>;
+        content: Schema.Attribute.RichText &
+            Schema.Attribute.Required &
+            Schema.Attribute.DefaultTo<'todo'>;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::about.about'
+        > &
+            Schema.Attribute.Private;
+        logo: Schema.Attribute.Media<'images'>;
+        name: Schema.Attribute.String &
+            Schema.Attribute.Required &
+            Schema.Attribute.DefaultTo<'m10z'>;
+        publishedAt: Schema.Attribute.DateTime;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
 export interface ApiArticleFeedArticleFeed extends Struct.SingleTypeSchema {
     collectionName: 'article_feeds';
     info: {
@@ -1291,6 +1328,7 @@ declare module '@strapi/strapi' {
             'admin::transfer-token': AdminTransferToken;
             'admin::transfer-token-permission': AdminTransferTokenPermission;
             'admin::user': AdminUser;
+            'api::about.about': ApiAboutAbout;
             'api::article-feed.article-feed': ApiArticleFeedArticleFeed;
             'api::article.article': ApiArticleArticle;
             'api::audio-feed.audio-feed': ApiAudioFeedAudioFeed;
