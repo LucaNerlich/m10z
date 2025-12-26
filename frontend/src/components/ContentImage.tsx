@@ -1,8 +1,8 @@
-import Image from 'next/image';
+import Image, {type StaticImageData} from 'next/image';
 import styles from './ContentImage.module.css';
 
 type CoverImageProps = {
-    src: string;
+    src: string | StaticImageData;
     alt: string;
     width: number;
     height: number;

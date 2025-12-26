@@ -98,10 +98,11 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const fallbackHeight = 225;
 
     // Determine final values
-    const imageSrc = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : fallbackSrc;
+    const mediaUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
+    const imageSrc = mediaUrl ?? fallbackSrc;
     const imageWidth = optimizedMedia?.width ?? fallbackWidth;
     const imageHeight = optimizedMedia?.height ?? fallbackHeight;
-    const placeholder = optimizedMedia ? 'empty' : 'blur';
+    const placeholder = mediaUrl ? 'empty' : 'blur';
 
     return (
         <>
