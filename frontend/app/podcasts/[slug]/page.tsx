@@ -22,6 +22,7 @@ import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
+import {ContentWithToc} from '@/src/components/ContentWithToc';
 
 type PageProps = {
     params: Promise<{slug: string}>;
