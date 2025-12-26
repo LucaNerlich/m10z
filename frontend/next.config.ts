@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
             {protocol: 'https', hostname: 'm10z.de'},
             {protocol: 'https', hostname: 'api.m10z.de'},
             {protocol: 'https', hostname: 'cms.m10z.de'},
+            {protocol: 'https', hostname: 'beta.m10z.de'},
         ],
     },
     async redirects() {
