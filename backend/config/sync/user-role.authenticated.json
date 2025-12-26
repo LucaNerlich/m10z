@@ -6,6 +6,11 @@
   "locale": null,
   "permissions": [
     {
+      "documentId": "kfsd3v0rndofmkpzvfm06p1l",
+      "action": "api::about.about.find",
+      "locale": null
+    },
+    {
       "documentId": "e3epsf2uxiv7p18g8g1qajhn",
       "action": "api::article-feed.article-feed.find",
       "locale": null

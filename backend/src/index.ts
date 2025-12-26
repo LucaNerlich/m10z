@@ -109,9 +109,10 @@ export default {
             ['api::podcast.podcast', 'audiofeed'],
         ]);
 
-        const updateTargets = new Map<string, 'articlefeed' | 'audiofeed'>([
+        const updateTargets = new Map<string, 'articlefeed' | 'audiofeed' | 'about'>([
             ['api::article-feed.article-feed', 'articlefeed'],
             ['api::audio-feed.audio-feed', 'audiofeed'],
+            ['api::about.about', 'about'],
         ]);
 
         const searchTargets = new Set<string>([
