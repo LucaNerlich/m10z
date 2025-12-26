@@ -1,12 +1,13 @@
-import Image from 'next/image';
+import Image, {type StaticImageData} from 'next/image';
 import styles from './ContentImage.module.css';
 
 type CoverImageProps = {
-    src: string;
+    src: string | StaticImageData;
     alt: string;
     width: number;
     height: number;
     className?: string;
+    placeholder?: 'blur' | 'empty';
 };
 
 /**
@@ -18,13 +19,10 @@ type CoverImageProps = {
  * @param width - Image width
  * @param height - Image height
  * @param className - Optional additional CSS class
- * @returns A cover image container with the image, or null if required props are missing
+ * @param placeholder - Placeholder type ('blur' or 'empty'), defaults to 'empty'
+ * @returns A cover image container with the image
  */
-export function ContentImage({src, alt, width, height, className}: CoverImageProps) {
-    if (!src || !width || !height) {
-        return null;
-    }
-
+export function ContentImage({src, alt, width, height, className, placeholder = 'empty'}: CoverImageProps) {
     return (
         <div className={`${styles.container} ${className || ''}`}>
             <Image
@@ -33,6 +31,7 @@ export function ContentImage({src, alt, width, height, className}: CoverImagePro
                 width={width}
                 height={height}
                 priority
+                placeholder={placeholder}
                 className={styles.image}
             />
         </div>
