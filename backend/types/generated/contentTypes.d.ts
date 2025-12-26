@@ -471,7 +471,7 @@ export interface ApiAboutAbout extends Struct.SingleTypeSchema {
             'api::about.about'
         > &
             Schema.Attribute.Private;
-        logo: Schema.Attribute.Media<'images'>;
+        logo: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
         name: Schema.Attribute.String &
             Schema.Attribute.Required &
             Schema.Attribute.DefaultTo<'m10z'>;
