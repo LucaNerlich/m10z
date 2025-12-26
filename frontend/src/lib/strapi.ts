@@ -156,7 +156,7 @@ async function getLegalDocWithFallback(
     };
 
     try {
-        const res = await fetchStrapiSingle<StrapiLegalDoc>(kind, options);
+        const res = await fetchStrapiSingle<StrapiLegalDoc>(kind, '', options);
         assertIsLegalDoc(res.data);
         return res.data;
     } catch (err) {

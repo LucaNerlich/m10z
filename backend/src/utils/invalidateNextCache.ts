@@ -7,7 +7,7 @@
  * - Fails open: never blocks Strapi write path if Next is unreachable.
  */
 
-type InvalidateTarget = 'audiofeed' | 'articlefeed' | 'legal' | 'search-index' | 'sitemap';
+type InvalidateTarget = 'audiofeed' | 'articlefeed' | 'legal' | 'about' | 'search-index' | 'sitemap';
 
 function getEnv(name: string): string | undefined {
     const v = process.env[name];

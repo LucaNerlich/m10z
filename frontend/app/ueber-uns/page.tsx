@@ -3,7 +3,6 @@
 import {type Metadata} from 'next';
 import {getAbout} from '@/src/lib/strapi';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
-import {Markdown} from '@/src/lib/markdown/Markdown';
 import {absoluteRoute} from '@/src/lib/routes';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
@@ -17,18 +16,18 @@ function extractDescription(content: string): string {
     // Remove markdown headers, links, and formatting
     const plainText = content
         .replace(/^#+\s+/gm, '')
-        .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-        .replace(/\*\*([^\*]+)\*\*/g, '$1')
-        .replace(/\*([^\*]+)\*/g, '$1')
+        .replace(/\[([^\]]+)]\([^)]+\)/g, '$1')
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/\*([^*]+)\*/g, '$1')
         .replace(/`([^`]+)`/g, '$1')
         .trim();
-    
+
     // Extract first paragraph (up to 160 chars)
     const firstParagraph = plainText.split('\n\n')[0] || plainText;
-    const truncated = firstParagraph.length > 160 
+    const truncated = firstParagraph.length > 160
         ? firstParagraph.substring(0, 157) + '...'
         : firstParagraph;
-    
+
     return truncated || 'Von und mit Mindestens 10 Zeichen. Wer wir sind und was wir machen.';
 }
 
