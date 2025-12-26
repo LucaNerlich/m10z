@@ -6,21 +6,19 @@ import {notFound} from 'next/navigation';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {fetchArticleBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
-import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
-import {YoutubeSection} from '@/src/components/YoutubeSection';
-import {ContentWithToc} from '@/src/components/ContentWithToc';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
-import {Markdown} from '@/src/lib/markdown/Markdown';
+import {ContentWithToc} from '@/src/components/ContentWithToc';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -90,7 +88,6 @@ export default async function ArticleDetailPage({params}: PageProps) {
 
     const published = getEffectiveDate(article);
     const readingTime = calculateReadingTime(article.content ?? '');
-    const jsonLd = generateArticleJsonLd(article);
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
@@ -108,10 +105,6 @@ export default async function ArticleDetailPage({params}: PageProps) {
 
     return (
         <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}}
-            />
             <main>
                 <article className={styles.article}>
                     <ContentLayout>
@@ -137,13 +130,14 @@ export default async function ArticleDetailPage({params}: PageProps) {
                             ) : null}
                         </Section>
                     </ContentLayout>
-                    {/*<ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />*/}
-                    <Markdown markdown={article.content ?? ''} className={styles.content} />
 
+                    <ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />
 
-                    <ContentLayout>
-                        <YoutubeSection youtube={article.youtube} />
-                    </ContentLayout>
+                    {article.youtube && article.youtube.length > 0 && (
+                        <ContentLayout>
+                            <YoutubeSection youtube={article.youtube} />
+                        </ContentLayout>
+                    )}
                 </article>
             </main>
         </>

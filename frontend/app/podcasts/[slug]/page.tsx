@@ -13,17 +13,16 @@ import {
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {PodcastPlayer} from './Player';
-import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
-import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
-import {Markdown} from '@/src/lib/markdown/Markdown';
+import {ContentWithToc} from '@/src/components/ContentWithToc';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -96,7 +95,6 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const published = getEffectiveDate(episode);
     const fileMedia = normalizeStrapiMedia(episode.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia});
-    const jsonLd = generatePodcastJsonLd(episode);
     const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
@@ -113,47 +111,42 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const placeholder = mediaUrl ? 'empty' : 'blur';
 
     return (
-        <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}}
-            />
-            <main>
-                <article className={styles.episode}>
-                    <ContentLayout>
-                        <ContentImage
-                            src={imageSrc}
-                            alt={episode.base.title}
-                            width={imageWidth}
-                            height={imageHeight}
-                            placeholder={placeholder}
+        <main>
+            <article className={styles.episode}>
+                <ContentLayout>
+                    <ContentImage
+                        src={imageSrc}
+                        alt={episode.base.title}
+                        width={imageWidth}
+                        height={imageHeight}
+                        placeholder={placeholder}
+                    />
+                    <Section className={styles.header}>
+                        <ContentMetadata
+                            publishedDate={published}
+                            duration={episode.duration}
+                            authors={episode.authors}
+                            categories={episode.categories}
                         />
-                        <Section className={styles.header}>
-                            <ContentMetadata
-                                publishedDate={published}
-                                duration={episode.duration}
-                                authors={episode.authors}
-                                categories={episode.categories}
-                            />
-                            <h1 className={styles.title}>{episode.base.title}</h1>
-                            {episode.base.description ? (
-                                <p className={styles.description}>
-                                    {episode.base.description}
-                                </p>
-                            ) : null}
-                        </Section>
+                        <h1 className={styles.title}>{episode.base.title}</h1>
+                        {episode.base.description ? (
+                            <p className={styles.description}>
+                                {episode.base.description}
+                            </p>
+                        ) : null}
+                    </Section>
 
-                        {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
-                    </ContentLayout>
+                    {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
+                </ContentLayout>
 
-                    {/*<ContentWithToc markdown={episode.shownotes ?? ''} contentClassName={styles.content} />*/}
-                    <Markdown markdown={episode.shownotes ?? ''} className={styles.content} />
+                <ContentWithToc markdown={episode.shownotes ?? ''} contentClassName={styles.content} />
 
+                {episode.youtube && episode.youtube.length > 0 && (
                     <ContentLayout>
                         <YoutubeSection youtube={episode.youtube} />
                     </ContentLayout>
-                </article>
-            </main>
-        </>
+                )}
+            </article>
+        </main>
     );
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import ReactPlayer from 'react-player';
 import styles from './Player.module.css';
