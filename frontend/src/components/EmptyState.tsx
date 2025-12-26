@@ -11,3 +11,4 @@ export function EmptyState({message, className}: EmptyStateProps) {
     return <p className={classes}>{message}</p>;
 }
 
+

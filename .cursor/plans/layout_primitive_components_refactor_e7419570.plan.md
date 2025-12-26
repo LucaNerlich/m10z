@@ -288,4 +288,3 @@ type PlayerProps = {
 
 - Verify responsive behavior matches current implementation
 - Ensure theme variables work correctly in both light and dark modes
-- Check that disabled states in Pagination work correctly
