@@ -3,6 +3,7 @@ import Fuse from 'fuse.js';
 
 import {getStrapiApiBaseUrl} from '@/src/lib/strapi';
 import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '@/src/lib/search/types';
+import {checkRateLimit} from '@/src/lib/security/rateLimit';
 
 /**
  * Custom error class for fetch-related errors.
@@ -160,8 +161,34 @@ function buildFuse(records: SearchRecord[]): Fuse<SearchRecord> {
     });
 }
 
+function getClientIp(request: Request): string {
+    const xff = request.headers.get('x-forwarded-for');
+    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
+    return request.headers.get('x-real-ip') ?? 'unknown';
+}
+
 /**
  * Handle GET requests for the search-index endpoint, returning either the full index or search results based on the `q` query parameter.
+ *
+ * Safari-Specific Caching Strategy:
+ * Safari has aggressive caching behavior that can cause stale search results. To address this:
+ *
+ * - Search queries (`?q=` param): Use `public, max-age=30` (30 seconds) to prevent Safari from caching
+ *   indefinitely while still providing some protection against DDoS attacks. The short TTL ensures
+ *   users get reasonably fresh results. We include `Pragma: no-cache` and `Expires: 0` for older Safari
+ *   versions that may not fully respect Cache-Control. Rate limiting (100 requests per minute per IP)
+ *   provides additional protection against abuse.
+ *
+ * - Full index requests (no `?q=` param): Use `public, max-age=60` (1 minute) without stale-while-revalidate.
+ *   This provides a short cache window for the full index while ensuring it refreshes frequently.
+ *   The `Expires: 0` header is included for older Safari versions, but modern Safari will prioritize
+ *   the Cache-Control header.
+ *
+ * Security Considerations:
+ * - Rate limiting is applied to search queries to prevent DDoS attacks
+ * - Short cache TTLs balance freshness with protection against cache-bypass attacks
+ * - The ISR config (`next: {revalidate: 3600, tags: ['search-index']}`) provides server-side caching
+ *   independent of HTTP cache headers, reducing load on Strapi API
  *
  * @param request - Incoming HTTP request. If the `q` query parameter is omitted, the full search index is returned; if present, a search is performed using its trimmed value.
  * @returns When `q` is not provided: the full search index object. When `q` is provided: an object with `results` (array of matched records with `score`), `total` (number of results), and `query` (the trimmed search string). On failure returns a JSON error object describing the problem.
@@ -174,9 +201,11 @@ export async function GET(request: Request) {
     if (!query) {
         try {
             const content = await loadSearchIndex();
+            const expiresDate = new Date(Date.now() + 60000).toUTCString();
             return NextResponse.json(content, {
                 headers: {
-                    'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+                    'Cache-Control': 'public, max-age=60',
+                    'Expires': expiresDate,
                 },
             });
         } catch (error) {
@@ -203,6 +232,22 @@ export async function GET(request: Request) {
             return NextResponse.json({error: 'Query too long'}, {status: 400});
         }
 
+        // Apply rate limiting to prevent DDoS attacks
+        const ip = getClientIp(request);
+        const rl = checkRateLimit(`search:${ip}`, {windowMs: 60_000, max: 100});
+        if (!rl.ok) {
+            return NextResponse.json(
+                {error: 'Too Many Requests'},
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': String(rl.retryAfterSeconds),
+                        'Cache-Control': 'no-store',
+                    },
+                },
+            );
+        }
+
         const index = await loadSearchIndex();
         const fuse = buildFuse(index.records);
         const results = fuse.search(trimmedQuery, {limit: 20}).map((match) => ({
@@ -210,6 +255,7 @@ export async function GET(request: Request) {
             score: match.score ?? null,
         }));
 
+        const expiresDate = new Date(Date.now() + 30000).toUTCString();
         return NextResponse.json(
             {
                 results,
@@ -218,7 +264,9 @@ export async function GET(request: Request) {
             },
             {
                 headers: {
-                    'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+                    'Cache-Control': 'public, max-age=30',
+                    'Pragma': 'no-cache',
+                    'Expires': expiresDate,
                 },
             },
         );
