@@ -11,6 +11,7 @@ export const routes = {
     home: '/',
     imprint: '/impressum',
     privacy: '/datenschutz',
+    about: '/ueber-uns',
     articles: '/artikel',
     article: (slug: string) => `/artikel/${slug}`,
     podcasts: '/podcasts',
