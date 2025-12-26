@@ -106,16 +106,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         routes.authors,
         routes.audioFeed,
         routes.articleFeed,
+        routes.about,
     ]);
 
-    // Add about page with custom priority and changeFrequency
-    const aboutUrl = absoluteRoute(routes.about);
-    staticEntries.push({
-        url: aboutUrl,
-        priority: 0.8,
-        changeFrequency: 'monthly',
-        alternates: createLanguageAlternates(aboutUrl),
-    });
+    // Update about page entry with custom priority and changeFrequency
+    const aboutIndex = staticEntries.findIndex((entry) => entry.url === absoluteRoute(routes.about));
+    if (aboutIndex !== -1) {
+        staticEntries[aboutIndex] = {
+            ...staticEntries[aboutIndex],
+            priority: 0.8,
+            changeFrequency: 'monthly',
+        };
+    }
 
     const dynamicEntries: MetadataRoute.Sitemap = [
         ...buildDynamicEntries(articles, routes.article),
