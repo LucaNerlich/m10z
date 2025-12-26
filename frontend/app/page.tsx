@@ -278,8 +278,6 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                 <Pagination
                     currentPage={currentPage}
                     totalPages={Math.ceil(combinedTotal / PAGE_SIZE)}
-                    onPrevious={() => {}}
-                    onNext={() => {}}
                     previousHref={prevPage ? `/?page=${prevPage}` : undefined}
                     nextHref={nextPage ? `/?page=${nextPage}` : undefined}
                 />
