@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {mediaUrlToAbsolute, pickBannerOrCoverMedia, getOptimalMediaFormat} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatDateShort} from '@/src/lib/dateFormatters';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
@@ -27,12 +27,12 @@ type ArticleCardProps = {
  * Uses semantic HTML with article element and proper link structure.
  */
 export function ArticleCard({
-    article,
-    showAuthors = false,
-    showCategories = false,
-    descriptionLines = 3,
-    className,
-}: ArticleCardProps) {
+                                article,
+                                showAuthors = false,
+                                showCategories = false,
+                                descriptionLines = 3,
+                                className,
+                            }: ArticleCardProps) {
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;

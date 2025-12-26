@@ -1,6 +1,6 @@
 'use client';
 
-import {useRef, useState, useEffect} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {TableOfContents} from '@/src/components/TableOfContents';
 import {ContentLayout} from '@/app/ContentLayout';

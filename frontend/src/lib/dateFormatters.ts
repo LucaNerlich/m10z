@@ -1,5 +1,3 @@
-import {getEffectiveDate} from './effectiveDate';
-
 /**
  * German locale date formatting utilities.
  *

@@ -1,11 +1,6 @@
 import {type ImageObject, type Person} from './types';
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {
-    mediaUrlToAbsolute,
-    normalizeStrapiMedia,
-    type StrapiAuthor,
-    type StrapiMedia,
-} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor, type StrapiMedia} from '@/src/lib/rss/media';
 
 /**
  * Produce an ISO-8601 timestamp string for the given date input.

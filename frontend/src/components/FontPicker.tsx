@@ -63,7 +63,7 @@ export default function FontPicker(): React.ReactElement | null {
         if (!hydrated) return;
         // Always apply font regardless of storage success/failure
         applyFont(selectedFont);
-        
+
         // Attempt to persist to localStorage with fallback to memory store
         let storageSucceeded = false;
         if (typeof window !== 'undefined' && window.localStorage) {
@@ -75,7 +75,7 @@ export default function FontPicker(): React.ReactElement | null {
             } catch (error) {
                 // Handle quota exceeded or security exceptions
                 const isQuotaError = error instanceof DOMException && error.name === 'QuotaExceededError';
-                
+
                 if (isQuotaError) {
                     console.warn('localStorage quota exceeded, using in-memory store for font preference');
                 } else {
@@ -83,7 +83,7 @@ export default function FontPicker(): React.ReactElement | null {
                 }
             }
         }
-        
+
         // Fallback to in-memory store if localStorage failed or unavailable
         if (!storageSucceeded) {
             memoryStore.set(STORAGE_KEY, selectedFont);

@@ -20,12 +20,12 @@ type ContentMetadataProps = {
  * authors, and categories in a consistent layout.
  */
 export function ContentMetadata({
-    publishedDate,
-    readingTime,
-    duration,
-    authors,
-    categories,
-}: ContentMetadataProps) {
+                                    publishedDate,
+                                    readingTime,
+                                    duration,
+                                    authors,
+                                    categories,
+                                }: ContentMetadataProps) {
     const hasDateOrTime = publishedDate || readingTime || duration;
     const hasTags = (authors && authors.length > 0) || (categories && categories.length > 0);
 

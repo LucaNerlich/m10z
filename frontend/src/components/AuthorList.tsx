@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {type StrapiAuthor} from '@/src/lib/rss/media';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/rss/media';
 import {routes} from '@/src/lib/routes';
 import styles from './AuthorList.module.css';
 
@@ -19,11 +18,11 @@ type AuthorListProps = {
  * Can display avatars or text-only mode.
  */
 export function AuthorList({
-    authors,
-    showAvatars = true,
-    layout = 'inline',
-    maxDisplay,
-}: AuthorListProps) {
+                               authors,
+                               showAvatars = true,
+                               layout = 'inline',
+                               maxDisplay,
+                           }: AuthorListProps) {
     if (authors.length === 0) return null;
 
     const displayAuthors = maxDisplay ? authors.slice(0, maxDisplay) : authors;

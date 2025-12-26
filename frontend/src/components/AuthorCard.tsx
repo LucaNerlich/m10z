@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {type StrapiAuthor} from '@/src/lib/rss/media';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/rss/media';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
 import styles from './AuthorCard.module.css';
