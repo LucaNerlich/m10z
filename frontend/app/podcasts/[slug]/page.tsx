@@ -21,7 +21,7 @@ import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
-import {ContentWithToc} from '@/src/components/ContentWithToc';
+import {ContentWithTocClient} from '@/src/components/ContentWithTocClient';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 
 type PageProps = {
@@ -139,7 +139,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
                     {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
                 </ContentLayout>
 
-                <ContentWithToc markdown={episode.shownotes ?? ''} contentClassName={styles.content} />
+                <ContentWithTocClient markdown={episode.shownotes ?? ''} contentClassName={styles.content} />
 
                 {episode.youtube && episode.youtube.length > 0 && (
                     <ContentLayout>
