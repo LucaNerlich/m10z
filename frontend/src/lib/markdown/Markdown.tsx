@@ -35,7 +35,9 @@ export function Markdown({markdown, className}: MarkdownProps) {
     // Superscript: ^text^ -> <sup>text</sup>
     normalized = normalized.replace(/\^([^\^\n]+)\^/g, '<sup>$1</sup>');
     // Subscript: ~text~ -> <sub>text</sub>
-    normalized = normalized.replace(/~([^~\n]+)~/g, '<sub>$1</sub>');
+    // Use negative lookbehind/lookahead to avoid collision with GFM strikethrough (~~text~~)
+    // Only match single tildes that are not part of double-tildes
+    normalized = normalized.replace(/(?<!~)~([^~\n]+)~(?!~)/g, '<sub>$1</sub>');
 
     return (
         <div className={className ? `markdown-content ${className}` : 'markdown-content'}>
