@@ -9,6 +9,12 @@
 
 type InvalidateTarget = 'audiofeed' | 'articlefeed' | 'legal' | 'about' | 'search-index' | 'sitemap';
 
+/**
+ * Read an environment variable and return its value if it is set and non-empty.
+ *
+ * @param name - Name of the environment variable to read
+ * @returns The environment variable's value, or `undefined` if it is not set or is an empty string
+ */
 function getEnv(name: string): string | undefined {
     const v = process.env[name];
     return v && v.length > 0 ? v : undefined;
@@ -54,5 +60,4 @@ export async function invalidateNext(target: InvalidateTarget): Promise<void> {
         console.warn(`Next invalidation request error (${target})`, err);
     }
 }
-
 

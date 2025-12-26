@@ -81,6 +81,13 @@ async function fetchPublishedSlugs(
     return entries;
 }
 
+/**
+ * Generate the site's sitemap by combining static routes with published content entries.
+ *
+ * Includes language alternates for each URL and a dedicated about page entry with priority 0.8 and changeFrequency "monthly".
+ *
+ * @returns An array of sitemap items containing static routes and dynamic entries for articles, podcasts, categories, and authors
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const [articles, podcasts, categories, authors] = await Promise.all([
         fetchPublishedSlugs('articles', ['sitemap:articles', 'strapi:article']),
@@ -119,4 +126,3 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [...staticEntries, ...dynamicEntries];
 }
-
