@@ -129,11 +129,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
                             ) : null}
                         </header>
 
-                        {audioUrl ? (
-                            <div className={styles.player}>
-                                <PodcastPlayer src={audioUrl} />
-                            </div>
-                        ) : null}
+                        {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
                     </ContentLayout>
 
                     <ContentWithToc markdown={episode.shownotes ?? ''} contentClassName={styles.content} />
