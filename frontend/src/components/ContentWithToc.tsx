@@ -5,7 +5,7 @@ import {Markdown} from '@/src/lib/markdown/Markdown';
 import {TableOfContents} from '@/src/components/TableOfContents';
 import {ContentLayout} from '@/app/ContentLayout';
 
-type ContentWithTocProps = {
+export type ContentWithTocProps = {
     markdown: string;
     contentClassName?: string;
 };
