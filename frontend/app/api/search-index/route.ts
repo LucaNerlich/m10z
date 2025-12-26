@@ -4,6 +4,7 @@ import Fuse from 'fuse.js';
 import {getStrapiApiBaseUrl} from '@/src/lib/strapi';
 import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '@/src/lib/search/types';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {sha256Hex} from '@/src/lib/rss/xml';
 
 /**
  * Custom error class for fetch-related errors.
@@ -173,20 +174,21 @@ function getClientIp(request: Request): string {
  * Safari-Specific Caching Strategy:
  * Safari has aggressive caching behavior that can cause stale search results. To address this:
  *
- * - Search queries (`?q=` param): Use `public, max-age=30` (30 seconds) to prevent Safari from caching
- *   indefinitely while still providing some protection against DDoS attacks. The short TTL ensures
- *   users get reasonably fresh results. We include `Pragma: no-cache` and `Expires: 0` for older Safari
- *   versions that may not fully respect Cache-Control. Rate limiting (100 requests per minute per IP)
- *   provides additional protection against abuse.
+ * - Search queries (`?q=` param): Use `private, max-age=0, must-revalidate` with ETag support for efficient
+ *   revalidation. This ensures search results are never cached publicly (preventing stale results) while
+ *   allowing clients to efficiently revalidate using If-None-Match headers to receive 304 responses when
+ *   content hasn't changed. The `private` directive ensures user-specific search results aren't cached
+ *   by shared caches (CDNs, proxies). We avoid `no-store` as it breaks Safari's bfcache. Rate limiting
+ *   (100 requests per minute per IP) provides additional protection against abuse.
  *
  * - Full index requests (no `?q=` param): Use `public, max-age=60` (1 minute) without stale-while-revalidate.
  *   This provides a short cache window for the full index while ensuring it refreshes frequently.
- *   The `Expires: 0` header is included for older Safari versions, but modern Safari will prioritize
- *   the Cache-Control header.
+ *   The `Expires` header is set to match the max-age for consistency with older Safari versions.
  *
  * Security Considerations:
  * - Rate limiting is applied to search queries to prevent DDoS attacks
- * - Short cache TTLs balance freshness with protection against cache-bypass attacks
+ * - Private cache control for search queries prevents shared cache poisoning
+ * - ETag-based revalidation allows efficient cache validation without storing responses
  * - The ISR config (`next: {revalidate: 3600, tags: ['search-index']}`) provides server-side caching
  *   independent of HTTP cache headers, reducing load on Strapi API
  *
@@ -255,7 +257,23 @@ export async function GET(request: Request) {
             score: match.score ?? null,
         }));
 
-        const expiresDate = new Date(Date.now() + 30000).toUTCString();
+        // Generate ETag based on query, index version, and generatedAt timestamp
+        // This ensures ETag changes when the index is updated or query changes
+        const etagSeed = `${trimmedQuery}:${index.version}:${index.generatedAt}`;
+        const etag = `"${sha256Hex(etagSeed)}"`;
+
+        // Check if client has cached version with matching ETag
+        const ifNoneMatch = request.headers.get('if-none-match');
+        if (ifNoneMatch === etag) {
+            return new NextResponse(null, {
+                status: 304,
+                headers: {
+                    'Cache-Control': 'private, max-age=0, must-revalidate',
+                    'ETag': etag,
+                },
+            });
+        }
+
         return NextResponse.json(
             {
                 results,
@@ -264,9 +282,8 @@ export async function GET(request: Request) {
             },
             {
                 headers: {
-                    'Cache-Control': 'public, max-age=30',
-                    'Pragma': 'no-cache',
-                    'Expires': expiresDate,
+                    'Cache-Control': 'private, max-age=0, must-revalidate',
+                    'ETag': etag,
                 },
             },
         );
