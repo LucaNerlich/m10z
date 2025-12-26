@@ -17,7 +17,7 @@ Discourse Log Location: /var/discourse/shared/standalone/log/var-log
 
 ### Customized Changes
 To make it run with the coolify setup this was done: 
-´´
+```
 docker_args:
   - "--network=coolify"
 
@@ -38,6 +38,11 @@ labels:
   traefik.http.routers.discourse_secure.tls.certresolver: letsencrypt
   traefik.http.routers.discourse_secure.middlewares: gzip
   traefik.http.services.discourse_secure.loadbalancer.server.port: 80
-´´
+``` 
 
+Each change done to the config has to be taken over via (takes ~30 minutes): 
+```
+cd /var/discourse
+./launcher rebuild app
+```
 ## Backup Strategy
