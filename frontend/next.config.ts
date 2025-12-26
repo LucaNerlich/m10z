@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     // we use fetch-level caching (`next.revalidate`, cache tags) + explicit invalidation instead.
     cacheComponents: true,
     compiler: {
-        removeConsole: process.env.NODE_ENV === 'production',
+        // removeConsole: process.env.NODE_ENV === 'production',
     },
     experimental: {
         turbopackFileSystemCacheForDev: true,

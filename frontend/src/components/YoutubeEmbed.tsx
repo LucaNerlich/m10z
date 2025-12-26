@@ -18,7 +18,7 @@ interface YoutubeEmbedProps {
  * @returns A React element containing the YouTube embed iframe for the given `videoId`, or an empty fragment when `videoId` is falsy.
  */
 export default function YoutubeEmbed(props: Readonly<YoutubeEmbedProps>): React.ReactElement {
-    if (!props.videoId || typeof props.videoId !== 'string') return <></>;
+    if (!props.videoId) return <></>;
 
     // Validate videoId by constructing a watch URL and using toYouTubeEmbedUrl helper
     // This ensures the videoId matches YouTube's expected format

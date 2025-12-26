@@ -39,7 +39,7 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
         '@type': 'BlogPosting',
         headline: article.base.title,
         description: article.base.description ?? undefined,
-        datePublished: datePublished ?? new Date().toISOString(),
+        datePublished: datePublished ?? dateModified,
         dateModified,
         articleBody: article.content || undefined,
         url: articleUrl,

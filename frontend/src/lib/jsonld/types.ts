@@ -48,7 +48,7 @@ export interface BlogPosting extends JsonLdBase {
     '@type': 'BlogPosting';
     headline: string;
     description?: string;
-    datePublished: string;
+    datePublished?: string;
     dateModified?: string;
     articleBody?: string;
     url: string;
@@ -62,7 +62,7 @@ export interface PodcastEpisode extends JsonLdBase {
     '@type': 'PodcastEpisode';
     name: string;
     description?: string;
-    datePublished: string;
+    datePublished?: string;
     duration: string;
     associatedMedia?: AudioObject;
     image?: (ImageObject | string)[];

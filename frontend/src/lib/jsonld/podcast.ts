@@ -53,7 +53,7 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
         '@type': 'PodcastEpisode',
         name: podcast.base.title,
         description: podcast.base.description ?? undefined,
-        datePublished: datePublished ?? new Date().toISOString(),
+        datePublished: datePublished,
         duration,
         associatedMedia,
         image: coverImage ? [coverImage] : undefined,

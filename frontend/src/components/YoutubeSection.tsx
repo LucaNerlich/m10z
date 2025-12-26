@@ -1,5 +1,3 @@
-'use client'
-
 import {type StrapiYoutube} from '@/src/lib/rss/media';
 import {extractYouTubeVideoId} from '@/src/lib/youtube';
 import YoutubeEmbed from './YoutubeEmbed';
@@ -16,7 +14,7 @@ type YoutubeSectionProps = {
  * and displaying them in a responsive grid layout.
  */
 export function YoutubeSection({youtube}: YoutubeSectionProps) {
-    if (!youtube || youtube.length === 0) return null;
+    if (!youtube || youtube.length === 0) return <></>;
 
     return (
         <div className={styles.youtubeSection}>
