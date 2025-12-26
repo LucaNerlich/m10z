@@ -13,14 +13,13 @@ import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from 
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
-import {YoutubeSection} from '@/src/components/YoutubeSection';
-import {ContentWithToc} from '@/src/components/ContentWithToc';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
-import {Markdown} from '@/src/lib/markdown/Markdown';
+import {ContentWithToc} from '@/src/components/ContentWithToc';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -108,10 +107,6 @@ export default async function ArticleDetailPage({params}: PageProps) {
 
     return (
         <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}}
-            />
             <main>
                 <article className={styles.article}>
                     <ContentLayout>
@@ -137,13 +132,11 @@ export default async function ArticleDetailPage({params}: PageProps) {
                             ) : null}
                         </Section>
                     </ContentLayout>
-                    {/*<ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />*/}
-                    <Markdown markdown={article.content ?? ''} className={styles.content} />
+                    <ContentWithToc markdown={article.content ?? ''} contentClassName={styles.content} />
 
-
-                    <ContentLayout>
-                        <YoutubeSection youtube={article.youtube} />
-                    </ContentLayout>
+                    {/*<ContentLayout>*/}
+                    {/*    <YoutubeSection youtube={article.youtube} />*/}
+                    {/*</ContentLayout>*/}
                 </article>
             </main>
         </>

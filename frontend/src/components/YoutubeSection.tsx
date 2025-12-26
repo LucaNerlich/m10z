@@ -1,3 +1,5 @@
+'use client'
+
 import {type StrapiYoutube} from '@/src/lib/rss/media';
 import {extractYouTubeVideoId} from '@/src/lib/youtube';
 import YoutubeEmbed from './YoutubeEmbed';
