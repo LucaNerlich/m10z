@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
@@ -7,6 +6,7 @@ import rehypeExternalLinks from 'rehype-external-links';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
+import {SafeImage} from '@/src/components/SafeImage';
 
 export type MarkdownProps = {
     markdown: string;
@@ -59,8 +59,9 @@ export function Markdown({markdown, className}: MarkdownProps) {
                         if (!src || typeof src !== 'string') return null;
                         const url = /^https?:\/\//i.test(src) ? src : toAbsoluteUrl(src);
                         // Use sensible defaults; Next/Image needs concrete dimensions.
+                        // SafeImage handles unauthorized external domains gracefully.
                         return (
-                            <Image
+                            <SafeImage
                                 src={url}
                                 alt={alt}
                                 width={1200}
