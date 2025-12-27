@@ -194,7 +194,7 @@ export function Markdown({markdown, className}: MarkdownProps) {
                                 // Use siteUrl as base for relative URLs (protocol-relative URLs like //example.com)
                                 const baseUrl = href.startsWith('//') ? `https:${href}` : href;
                                 const url = new URL(baseUrl, routes.siteUrl);
-                                
+
                                 // Compare origins securely (handles protocol, case, subdomain differences)
                                 const urlOrigin = url.origin;
                                 isInternal = urlOrigin === siteOrigin;
@@ -244,8 +244,13 @@ export function Markdown({markdown, className}: MarkdownProps) {
                         // Forward aria-* and other anchor attributes - Link will pass them to <a>
                         Object.keys(props).forEach((key) => {
                             const value = (props as Record<string, unknown>)[key];
-                            // Forward aria-* attributes and other standard anchor attributes
-                            if (key.startsWith('aria-') || key === 'title' || key === 'download') {
+                            // Forward aria-*, data-*, and standard anchor attributes
+                            // Exclude React-specific props and events we don't want to forward
+                            if (
+                                key.startsWith('aria-') ||
+                                key.startsWith('data-') ||
+                                ['title', 'download', 'tabIndex', 'role', 'hrefLang', 'ping', 'referrerPolicy', 'type'].includes(key)
+                            ) {
                                 linkProps[key] = value;
                             }
                         });
