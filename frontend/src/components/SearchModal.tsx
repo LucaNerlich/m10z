@@ -39,10 +39,10 @@ function normalizeImageUrl(url: string | null | undefined): string | null {
 }
 
 /**
- * Modal dialog that lets the user search site content and pick a result using mouse or keyboard.
+ * Display a modal that lets the user search site content and choose a result.
  *
- * Renders a search input, debounced results list with status messages, keyboard navigation (ArrowUp/Down, Enter, Escape),
- * and navigates to a selected result while closing the modal.
+ * Provides a search input with debounced results, keyboard navigation (ArrowUp/Down, Enter, Escape),
+ * Tab/Shift+Tab focus trapping between the input and results, status messages, and navigation to a selected result while closing the modal.
  *
  * @param onClose - Callback invoked to close the modal
  * @returns The React element for the search modal
@@ -54,6 +54,8 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const [error, setError] = useState<string | null>(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const modalRef = useRef<HTMLDivElement | null>(null);
+    const closeButtonRef = useRef<HTMLButtonElement | null>(null);
     const router = useRouter();
     const resultsId = useId();
     const shouldScrollRef = useRef(false);
@@ -61,6 +63,68 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
+
+    useEffect(() => {
+        const handleTabKey = (event: globalThis.KeyboardEvent) => {
+            if (event.key !== 'Tab') return;
+
+            if (!modalRef.current) return;
+
+            // Only handle Tab if focus is within the modal
+            if (!modalRef.current.contains(document.activeElement)) return;
+
+            // Get all tabbable elements: input, close button, and result buttons
+            const tabbableElements = Array.from(
+                modalRef.current.querySelectorAll<HTMLElement>(
+                    'input, button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                )
+            ).filter((el) => !el.hasAttribute('disabled'));
+
+            if (tabbableElements.length === 0) return;
+
+            const isInput = document.activeElement === inputRef.current;
+            const isCloseButton = document.activeElement === closeButtonRef.current;
+            const isResultButton = tabbableElements.includes(document.activeElement as HTMLElement) && !isInput && !isCloseButton;
+
+            // Only trap Tab when focus is on input, close button, or result buttons
+            if (!isInput && !isCloseButton && !isResultButton) return;
+
+            // Get result buttons (exclude input and close button)
+            const resultButtons = tabbableElements.filter(
+                (el) => el !== inputRef.current && el !== closeButtonRef.current
+            );
+
+            event.preventDefault();
+
+            const currentIndex = tabbableElements.indexOf(document.activeElement as HTMLElement);
+            if (currentIndex === -1) return;
+
+            if (event.shiftKey) {
+                // Shift+Tab: backward
+                if (currentIndex === 0) {
+                    // Cycle to last element
+                    tabbableElements[tabbableElements.length - 1]?.focus();
+                } else {
+                    // Move to previous element
+                    tabbableElements[currentIndex - 1]?.focus();
+                }
+            } else {
+                // Tab: forward
+                if (currentIndex === tabbableElements.length - 1) {
+                    // Cycle to first element
+                    tabbableElements[0]?.focus();
+                } else {
+                    // Move to next element
+                    tabbableElements[currentIndex + 1]?.focus();
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleTabKey);
+        return () => {
+            document.removeEventListener('keydown', handleTabKey);
+        };
+    }, [results.length]);
 
     useEffect(() => {
         if (shouldScrollRef.current && activeIndex >= 0 && results.length > 0) {
@@ -151,7 +215,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
 
     return (
         <div className={styles.backdrop} onClick={handleBackdropClick} role="presentation">
-            <div className={styles.modal} role="dialog" aria-modal="true" aria-label="Suche">
+            <div ref={modalRef} className={styles.modal} role="dialog" aria-modal="true" aria-label="Suche">
                 <div className={styles.inputRow}>
                     <input
                         ref={inputRef}
@@ -167,7 +231,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         aria-activedescendant={activeIndex >= 0 && results.length > 0 ? `search-result-${activeIndex}` : undefined}
                         aria-expanded={results.length > 0}
                     />
-                    <button type="button" className={styles.closeButton} onClick={onClose}>
+                    <button ref={closeButtonRef} type="button" className={styles.closeButton} onClick={onClose}>
                         Esc
                     </button>
                 </div>
@@ -231,4 +295,3 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         </div>
     );
 }
-

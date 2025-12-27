@@ -84,13 +84,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
+    gap: 8px;
+    padding: 8px 10px;
+    min-width: 42px;
     height: 42px;
     border-radius: var(--border-radius);
     border: 1px solid var(--color-border);
     background: var(--color-surface);
     cursor: pointer;
     transition: border-color 120ms ease, background-color 120ms ease;
+    position: relative;
 }
 
 .burgerButton:hover {
@@ -127,6 +130,16 @@
 
 .burgerButtonActive .burgerLines span:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
+}
+
+.burgerShortcut {
+    font-size: 12px;
+    color: var(--color-text-subtle);
+    border: 1px solid var(--color-border);
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: var(--color-surface-strong);
+    display: none;
 }
 
 .burgerFallback {
@@ -204,6 +217,10 @@
         display: none;
     }
 
+    .burgerShortcut {
+        display: none;
+    }
+
     .menu {
         left: 16px;
         right: 16px;
@@ -212,6 +229,9 @@
 }
 
 @media (min-width: 768px) {
+    .burgerShortcut {
+        display: inline-block;
+    }
     .centerNav {
         display: inline-flex;
     }

@@ -7,13 +7,15 @@ import {SearchModal} from './SearchModal';
 
 export function SearchLauncher(): React.ReactElement {
     const [isOpen, setIsOpen] = useState(false);
+    const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    const shortcutLabel = isMac ? 'Cmd+K' : 'Ctrl+K';
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
             if (isShortcut) {
                 event.preventDefault();
-                setIsOpen(true);
+                setIsOpen((prev) => !prev);
             } else if (event.key === 'Escape') {
                 setIsOpen(false);
             }
@@ -32,7 +34,7 @@ export function SearchLauncher(): React.ReactElement {
                 aria-expanded={isOpen}
             >
                 <span className={styles.searchButtonLabel}>Suche</span>
-                <span className={styles.searchShortcut}>Cmd+K</span>
+                <span className={styles.searchShortcut}>{shortcutLabel}</span>
             </button>
             {isOpen ? <SearchModal onClose={() => setIsOpen(false)} /> : null}
         </>

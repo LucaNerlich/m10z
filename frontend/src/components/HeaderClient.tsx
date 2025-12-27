@@ -11,6 +11,15 @@ type HeaderClientProps = {
     secondaryLinks: ReadonlyArray<{label: string; href: string}>;
 };
 
+/**
+ * Header component that renders a responsive, accessible navigation with a toggleable mobile menu.
+ *
+ * Manages menu open/close state, global shortcut (Cmd/Ctrl+M), outside-click closing, focus management (focus first item on open, restore focus to the toggle on close), and keyboard navigation/trapping while the menu is open.
+ *
+ * @param primaryLinks - Readonly array of primary navigation links (rendered mobile-only).
+ * @param secondaryLinks - Readonly array of secondary navigation links.
+ * @returns The header element containing the burger toggle and the navigation menu.
+ */
 export default function HeaderClient({
                                          primaryLinks,
                                          secondaryLinks,
@@ -18,8 +27,35 @@ export default function HeaderClient({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const pathname = usePathname();
     const menuRef = useRef<HTMLDivElement | null>(null);
+    const burgerButtonRef = useRef<HTMLButtonElement | null>(null);
+    const prevMenuOpenRef = useRef(false);
+    const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    const shortcutLabel = isMac ? 'Cmd+M' : 'Ctrl+M';
 
     const closeMenu = () => setIsMenuOpen(false);
+
+    const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
+    const getFocusableElements = (): HTMLElement[] => {
+        if (!menuRef.current) return [];
+        const focusableSelectors = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        const elements = menuRef.current.querySelectorAll<HTMLElement>(focusableSelectors);
+        return Array.from(elements).filter((el) => !el.hasAttribute('disabled'));
+    };
+
+    const handleBurgerKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+        if (event.key === ' ' || event.key === 'Enter') {
+            event.preventDefault();
+            toggleMenu();
+        }
+    };
+
+    const handleMenuLinkKeyDown = (event: React.KeyboardEvent<HTMLAnchorElement>) => {
+        if (event.key === ' ') {
+            event.preventDefault();
+            (event.currentTarget as HTMLAnchorElement).click();
+        }
+    };
 
     useEffect(() => {
         if (!isMenuOpen) return;
@@ -42,21 +78,93 @@ export default function HeaderClient({
         closeMenu();
     }, [pathname]);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'm';
+            if (isShortcut) {
+                event.preventDefault();
+                setIsMenuOpen((prev) => !prev);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isMenuOpen]);
+
+    useEffect(() => {
+        if (!isMenuOpen) return;
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                closeMenu();
+                return;
+            }
+
+            if (event.key === 'Tab' && menuRef.current?.contains(document.activeElement)) {
+                const focusableElements = getFocusableElements();
+                if (focusableElements.length === 0) return;
+
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (event.shiftKey) {
+                    // Shift+Tab: backward
+                    if (document.activeElement === firstElement) {
+                        event.preventDefault();
+                        lastElement.focus();
+                    }
+                } else {
+                    // Tab: forward
+                    if (document.activeElement === lastElement) {
+                        event.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isMenuOpen]);
+
+    useEffect(() => {
+        if (isMenuOpen) {
+            // Focus first link when menu opens
+            setTimeout(() => {
+                const firstFocusable = menuRef.current?.querySelector<HTMLElement>('a, button');
+                if (firstFocusable) {
+                    firstFocusable.focus();
+                }
+            }, 0);
+        } else if (prevMenuOpenRef.current) {
+            // Restore focus to burger button when menu closes (only if it was previously open)
+            if (burgerButtonRef.current) {
+                burgerButtonRef.current.focus();
+            }
+        }
+        prevMenuOpenRef.current = isMenuOpen;
+    }, [isMenuOpen]);
+
     return (
         <div style={{display: 'flex'}} ref={menuRef}>
             <button
+                ref={burgerButtonRef}
                 type="button"
                 className={`${styles.burgerButton} ${isMenuOpen ? styles.burgerButtonActive : ''}`}
                 aria-expanded={isMenuOpen}
                 aria-controls="header-menu"
                 aria-label="Menü öffnen"
-                onClick={() => setIsMenuOpen((prev) => !prev)}
+                onClick={toggleMenu}
+                onKeyDown={handleBurgerKeyDown}
             >
                 <span className={styles.burgerLines} aria-hidden>
                     <span />
                     <span />
                     <span />
                 </span>
+                <span className={styles.burgerShortcut}>{shortcutLabel}</span>
                 <span className={styles.srOnly}>Menü</span>
             </button>
 
@@ -69,14 +177,24 @@ export default function HeaderClient({
                     <ul className={styles.menuList}>
                         {primaryLinks.map((link) => (
                             <li key={link.href} className={styles.mobileOnly}>
-                                <Link className={styles.menuLink} href={link.href} onClick={closeMenu}>
+                                <Link
+                                    className={styles.menuLink}
+                                    href={link.href}
+                                    onClick={closeMenu}
+                                    onKeyDown={handleMenuLinkKeyDown}
+                                >
                                     {link.label}
                                 </Link>
                             </li>
                         ))}
                         {secondaryLinks.map((link) => (
                             <li key={link.href}>
-                                <Link className={styles.menuLink} href={link.href} onClick={closeMenu}>
+                                <Link
+                                    className={styles.menuLink}
+                                    href={link.href}
+                                    onClick={closeMenu}
+                                    onKeyDown={handleMenuLinkKeyDown}
+                                >
                                     {link.label}
                                 </Link>
                             </li>
@@ -87,4 +205,3 @@ export default function HeaderClient({
         </div>
     );
 }
-
