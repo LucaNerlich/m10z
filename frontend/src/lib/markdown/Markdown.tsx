@@ -20,12 +20,16 @@ export type MarkdownProps = {
 };
 
 /**
- * Safe-by-default Markdown renderer.
- * - Supports GitHub Flavored Markdown including tables and blockquotes.
- * - Supports markdown syntax for sub (~text~), sup (^text^), ins (++text++), and mark (==text==).
- * - Allows only specific HTML tags (ins, sup, sub, mark) with sanitization to prevent XSS.
- * - Demotes Markdown h1 to h2 so the page title can remain the only h1.
- * - Initializes Fancybox for image galleries with data-fancybox="article-gallery" attribute.
+ * Render sanitized Markdown into HTML with extended inline syntax and image gallery support.
+ *
+ * Supports GitHub Flavored Markdown, converts inline extensions (==mark==, ++ins++, ^sup^, ~sub~),
+ * demotes top-level headings (h1 → h2), and initializes Fancybox for images grouped by
+ * `data-fancybox="article-gallery"`. HTML is parsed then sanitized with an extended schema
+ * that allows `ins`, `sup`, `sub`, and `mark`.
+ *
+ * @param markdown - The Markdown source to render.
+ * @param className - Optional additional CSS class(es) added to the container.
+ * @returns The rendered Markdown content as a React element.
  */
 export function Markdown({markdown, className}: MarkdownProps) {
     const contentRef = useRef<HTMLDivElement>(null);
@@ -154,5 +158,4 @@ export function Markdown({markdown, className}: MarkdownProps) {
         </div>
     );
 }
-
 
