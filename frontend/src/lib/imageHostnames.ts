@@ -5,13 +5,11 @@
  */
 
 export const ALLOWED_IMAGE_HOSTNAMES = [
-    'localhost',
-    'api-m10z.lucanerlich.com',
-    'm10z.lucanerlich.com',
-    'm10z.de',
-    'api.m10z.de',
-    'cms.m10z.de',
     'beta.m10z.de',
+    'cdn.akamai.steamstatic.com',
+    'cms.m10z.de',
+    'localhost',
+    'm10z.de',
 ] as const;
 
 /**
