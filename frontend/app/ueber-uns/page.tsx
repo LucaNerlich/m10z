@@ -7,7 +7,7 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
-import {ContentWithTocClient} from '@/src/components/ContentWithTocClient';
+import {Markdown} from '@/src/lib/markdown/Markdown';
 import placeholderCover from '@/public/images/m10z.jpg';
 
 const REVALIDATE_SECONDS = 3600;
@@ -116,7 +116,9 @@ export default async function AboutUsPage() {
                         ) : null}
                     </Section>
                 </ContentLayout>
-                <ContentWithTocClient markdown={about.content} />
+                <ContentLayout>
+                    <Markdown markdown={about.content} />
+                </ContentLayout>
             </article>
         </main>
     );
