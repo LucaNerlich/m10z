@@ -29,6 +29,8 @@ export default function HeaderClient({
     const menuRef = useRef<HTMLDivElement | null>(null);
     const burgerButtonRef = useRef<HTMLButtonElement | null>(null);
     const prevMenuOpenRef = useRef(false);
+    const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    const shortcutLabel = isMac ? 'Cmd+M' : 'Ctrl+M';
 
     const closeMenu = () => setIsMenuOpen(false);
 
@@ -81,9 +83,7 @@ export default function HeaderClient({
             const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'm';
             if (isShortcut) {
                 event.preventDefault();
-                if (!isMenuOpen) {
-                    setIsMenuOpen(true);
-                }
+                setIsMenuOpen((prev) => !prev);
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -164,7 +164,7 @@ export default function HeaderClient({
                     <span />
                     <span />
                 </span>
-                <span className={styles.burgerShortcut}>Cmd+M</span>
+                <span className={styles.burgerShortcut}>{shortcutLabel}</span>
                 <span className={styles.srOnly}>Menü</span>
             </button>
 

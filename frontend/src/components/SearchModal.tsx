@@ -54,6 +54,8 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const [error, setError] = useState<string | null>(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const modalRef = useRef<HTMLDivElement | null>(null);
+    const closeButtonRef = useRef<HTMLButtonElement | null>(null);
     const router = useRouter();
     const resultsId = useId();
     const shouldScrollRef = useRef(false);
@@ -66,59 +68,54 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         const handleTabKey = (event: globalThis.KeyboardEvent) => {
             if (event.key !== 'Tab') return;
 
-            const modalElement = document.querySelector(`.${styles.modal}`);
-            if (!modalElement) return;
+            if (!modalRef.current) return;
 
             // Only handle Tab if focus is within the modal
-            if (!modalElement.contains(document.activeElement)) return;
+            if (!modalRef.current.contains(document.activeElement)) return;
+
+            // Get all tabbable elements: input, close button, and result buttons
+            const tabbableElements = Array.from(
+                modalRef.current.querySelectorAll<HTMLElement>(
+                    'input, button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                )
+            ).filter((el) => !el.hasAttribute('disabled'));
+
+            if (tabbableElements.length === 0) return;
 
             const isInput = document.activeElement === inputRef.current;
-            const isResultButton = document.activeElement?.classList.contains(styles.result);
+            const isCloseButton = document.activeElement === closeButtonRef.current;
+            const isResultButton = tabbableElements.includes(document.activeElement as HTMLElement) && !isInput && !isCloseButton;
 
-            // Only trap Tab when focus is on input or result buttons
-            if (!isInput && !isResultButton) return;
+            // Only trap Tab when focus is on input, close button, or result buttons
+            if (!isInput && !isCloseButton && !isResultButton) return;
 
-            // Get all result buttons
-            const resultButtons = Array.from(
-                modalElement.querySelectorAll<HTMLElement>(`.${styles.result}`)
+            // Get result buttons (exclude input and close button)
+            const resultButtons = tabbableElements.filter(
+                (el) => el !== inputRef.current && el !== closeButtonRef.current
             );
-
-            if (resultButtons.length === 0) return;
 
             event.preventDefault();
 
-            if (isInput) {
-                // Tab from input: go to first result
-                if (event.shiftKey) {
-                    // Shift+Tab from input: go to last result
-                    resultButtons[resultButtons.length - 1]?.focus();
-                } else {
-                    // Tab from input: go to first result
-                    resultButtons[0]?.focus();
-                }
-            } else if (isResultButton) {
-                // Tab from result button
-                const currentResultIndex = resultButtons.indexOf(document.activeElement as HTMLElement);
-                if (currentResultIndex === -1) return;
+            const currentIndex = tabbableElements.indexOf(document.activeElement as HTMLElement);
+            if (currentIndex === -1) return;
 
-                if (event.shiftKey) {
-                    // Shift+Tab: backward
-                    if (currentResultIndex === 0) {
-                        // Cycle to input
-                        inputRef.current?.focus();
-                    } else {
-                        // Move to previous result
-                        resultButtons[currentResultIndex - 1]?.focus();
-                    }
+            if (event.shiftKey) {
+                // Shift+Tab: backward
+                if (currentIndex === 0) {
+                    // Cycle to last element
+                    tabbableElements[tabbableElements.length - 1]?.focus();
                 } else {
-                    // Tab: forward
-                    if (currentResultIndex === resultButtons.length - 1) {
-                        // Cycle to input
-                        inputRef.current?.focus();
-                    } else {
-                        // Move to next result
-                        resultButtons[currentResultIndex + 1]?.focus();
-                    }
+                    // Move to previous element
+                    tabbableElements[currentIndex - 1]?.focus();
+                }
+            } else {
+                // Tab: forward
+                if (currentIndex === tabbableElements.length - 1) {
+                    // Cycle to first element
+                    tabbableElements[0]?.focus();
+                } else {
+                    // Move to next element
+                    tabbableElements[currentIndex + 1]?.focus();
                 }
             }
         };
@@ -218,7 +215,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
 
     return (
         <div className={styles.backdrop} onClick={handleBackdropClick} role="presentation">
-            <div className={styles.modal} role="dialog" aria-modal="true" aria-label="Suche">
+            <div ref={modalRef} className={styles.modal} role="dialog" aria-modal="true" aria-label="Suche">
                 <div className={styles.inputRow}>
                     <input
                         ref={inputRef}
@@ -234,7 +231,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         aria-activedescendant={activeIndex >= 0 && results.length > 0 ? `search-result-${activeIndex}` : undefined}
                         aria-expanded={results.length > 0}
                     />
-                    <button type="button" className={styles.closeButton} onClick={onClose}>
+                    <button ref={closeButtonRef} type="button" className={styles.closeButton} onClick={onClose}>
                         Esc
                     </button>
                 </div>

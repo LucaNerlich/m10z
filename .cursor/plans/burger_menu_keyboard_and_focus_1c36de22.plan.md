@@ -137,4 +137,3 @@ const handleKeyDown = (event: KeyboardEvent) => {
 - Test Escape closes menu
 - Test focus moves to first link when menu opens
 - Test focus returns to burger button when menu closes
-- Test Tab cycles through menu links
