@@ -1,6 +1,7 @@
 'use client';
 
-import {useEffect, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
+import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
@@ -11,6 +12,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, {defaultSchema} from 'rehype-sanitize';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
+import {isInternalLink, routes} from '@/src/lib/routes';
 import {SafeImage} from '@/src/components/SafeImage';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
@@ -151,6 +153,58 @@ export function Markdown({markdown, className}: MarkdownProps) {
                                     style={{height: 'auto', width: '100%'}}
                                 />
                             </a>
+                        );
+                    },
+                    a: ({href, children, className, id, ...props}) => {
+                        if (!href) {
+                            return <a href={href} className={className} id={id} {...props}>{children}</a>;
+                        }
+
+                        // Convert absolute SITE_URL links to relative paths
+                        let processedHref = href;
+                        if (href.startsWith(routes.siteUrl)) {
+                            // Remove the domain portion, preserve path, query params, and hash
+                            processedHref = href.substring(routes.siteUrl.length) || '/';
+                        }
+
+                        // Determine if link is internal
+                        const isInternal = isInternalLink(href);
+                        const isAnchorLink = href.startsWith('#');
+
+                        // Build props for Link component - Next.js Link forwards props to underlying <a>
+                        const linkProps: React.ComponentProps<typeof Link> & Record<string, unknown> = {
+                            href: processedHref,
+                        };
+
+                        // Forward className
+                        if (className) {
+                            linkProps.className = className;
+                        }
+
+                        // Forward id
+                        if (id) {
+                            linkProps.id = id;
+                        }
+
+                        // Add security attributes for external links (but not anchor links)
+                        if (!isInternal && !isAnchorLink) {
+                            linkProps.target = '_blank';
+                            linkProps.rel = 'noopener noreferrer';
+                        }
+
+                        // Forward aria-* and other anchor attributes - Link will pass them to <a>
+                        Object.keys(props).forEach((key) => {
+                            const value = (props as Record<string, unknown>)[key];
+                            // Forward aria-* attributes and other standard anchor attributes
+                            if (key.startsWith('aria-') || key === 'title' || key === 'download') {
+                                linkProps[key] = value;
+                            }
+                        });
+
+                        return (
+                            <Link {...linkProps}>
+                                {children}
+                            </Link>
                         );
                     },
                 }}

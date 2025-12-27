@@ -37,3 +37,57 @@ export function absoluteRoute(path: string): string {
     return `${SITE_URL}${normalized}`;
 }
 
+/**
+ * Determines if a URL is an internal link (same domain) or external link.
+ *
+ * @param url - The URL string to check
+ * @returns true if the URL is internal, false if external
+ */
+export function isInternalLink(url: string): boolean {
+    if (!url || typeof url !== 'string') {
+        return false;
+    }
+
+    // Relative internal path
+    if (url.startsWith('/')) {
+        return true;
+    }
+
+    // Anchor link - treat as external (but won't get target="_blank")
+    if (url.startsWith('#')) {
+        return false;
+    }
+
+    // Protocol-specific links (mailto:, tel:, etc.) - treat as external
+    if (url.includes(':')) {
+        // Check if it's http:// or https://
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            // Extract domain from URL
+            try {
+                const urlObj = new URL(url);
+                const urlDomain = urlObj.hostname.toLowerCase();
+
+                // Extract domain from SITE_URL
+                const siteUrlObj = new URL(SITE_URL);
+                const siteDomain = siteUrlObj.hostname.toLowerCase();
+
+                // Compare domains
+                return urlDomain === siteDomain;
+            } catch {
+                // Invalid URL format - treat as external
+                return false;
+            }
+        }
+        // Other protocols (mailto:, tel:, etc.) - treat as external
+        return false;
+    }
+
+    // Protocol-relative URLs (//example.com) - treat as external
+    if (url.startsWith('//')) {
+        return false;
+    }
+
+    // Default to external for unrecognized formats
+    return false;
+}
+
