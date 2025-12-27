@@ -21,7 +21,7 @@ import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
-import {Markdown} from '@/src/lib/markdown/Markdown';
+import {MarkdownClient} from '@/src/components/MarkdownClient';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -137,7 +137,7 @@ export default async function PodcastDetailPage({params}: PageProps) {
                 {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
 
                 <div className={styles.content}>
-                    <Markdown markdown={episode.shownotes ?? ''} />
+                    <MarkdownClient markdown={episode.shownotes ?? ''} />
                 </div>
             </ContentLayout>
         </article>

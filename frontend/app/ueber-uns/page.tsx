@@ -7,7 +7,7 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
-import {Markdown} from '@/src/lib/markdown/Markdown';
+import {MarkdownClient} from '@/src/components/MarkdownClient';
 import placeholderCover from '@/public/images/m10z.jpg';
 
 const REVALIDATE_SECONDS = 3600;
@@ -116,7 +116,7 @@ export default async function AboutUsPage() {
                         ) : null}
                     </Section>
 
-                    <Markdown markdown={about.content} />
+                    <MarkdownClient markdown={about.content} />
                 </ContentLayout>
             </article>
         </main>
