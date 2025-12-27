@@ -22,6 +22,8 @@ import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
 import {MarkdownClient} from '@/src/components/MarkdownClient';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
+import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -109,9 +111,17 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const imageHeight = optimizedMedia?.height ?? fallbackHeight;
     const blurhash = optimizedMedia?.blurhash ?? null;
     const placeholder = blurhash ? 'blur' : 'empty'; // Use blur placeholder only when blurhash is available
+    const jsonLd = generatePodcastJsonLd(episode);
 
     return (
         <article className={styles.episode}>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+                }}
+            />
+
             <ContentLayout>
                 <ContentImage
                     src={imageSrc}
@@ -138,9 +148,11 @@ export default async function PodcastDetailPage({params}: PageProps) {
 
                 {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
 
-                <div className={styles.content}>
-                    <MarkdownClient markdown={episode.shownotes ?? ''} />
-                </div>
+                <MarkdownClient markdown={episode.shownotes ?? ''} />
+
+                {episode.youtube && episode.youtube.length > 0 && (
+                    <YoutubeSection youtube={episode.youtube} />
+                )}
             </ContentLayout>
         </article>
     );
