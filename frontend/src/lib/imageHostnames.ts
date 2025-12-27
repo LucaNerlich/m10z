@@ -9,6 +9,7 @@ export const ALLOWED_IMAGE_HOSTNAMES = [
     'cdn.akamai.steamstatic.com',
     'cms.m10z.de',
     'localhost',
+    'shared.akamai.steamstatic.com',
     'm10z.de',
 ] as const;
 
