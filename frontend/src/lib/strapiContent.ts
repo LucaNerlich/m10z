@@ -33,6 +33,7 @@ export type PaginatedResult<T> = {
 type FetchListOptions = {
     limit?: number;
     tags?: string[];
+    revalidate?: number;
 };
 
 type FetchPageOptions = {
@@ -190,7 +191,7 @@ export async function fetchArticlesList(options: FetchListOptions = {}): Promise
         page: 1,
         pageSize: limit,
         tags: options.tags ?? ['strapi:article', 'strapi:article:list'],
-        revalidate: undefined,
+        revalidate: options.revalidate,
     });
     return paginated.items;
 }
@@ -201,7 +202,7 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
         page: 1,
         pageSize: limit,
         tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list'],
-        revalidate: undefined,
+        revalidate: options.revalidate,
     });
     return paginated.items;
 }
