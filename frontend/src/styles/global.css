@@ -194,3 +194,29 @@ h6 {
     border-radius: 0.25rem;
     font-weight: 500;
 }
+
+/* Paragraph spacing in markdown content */
+.markdown-content p {
+    margin-bottom: 1.5rem;
+}
+
+.markdown-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Image spacing in markdown content */
+.markdown-content img {
+    margin: 1.5rem 0;
+}
+
+/* Horizontal rule spacing in markdown content */
+.markdown-content hr {
+    margin: 1rem 0;
+}
+
+/* Mobile text wrapping for better text distribution */
+@media (max-width: 768px) {
+    .markdown-content p {
+        text-wrap: balance;
+    }
+}
