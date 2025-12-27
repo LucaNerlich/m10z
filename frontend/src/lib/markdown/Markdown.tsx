@@ -1,5 +1,6 @@
 'use client';
 
+import {useEffect, useRef} from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
@@ -11,6 +12,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, {defaultSchema} from 'rehype-sanitize';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
 import {SafeImage} from '@/src/components/SafeImage';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 export type MarkdownProps = {
     markdown: string;
@@ -23,8 +25,38 @@ export type MarkdownProps = {
  * - Supports markdown syntax for sub (~text~), sup (^text^), ins (++text++), and mark (==text==).
  * - Allows only specific HTML tags (ins, sup, sub, mark) with sanitization to prevent XSS.
  * - Demotes Markdown h1 to h2 so the page title can remain the only h1.
+ * - Initializes Fancybox for image galleries with data-fancybox="article-gallery" attribute.
  */
 export function Markdown({markdown, className}: MarkdownProps) {
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    // Initialize Fancybox for image galleries
+    useEffect(() => {
+        if (!contentRef.current) return;
+
+        let isMounted = true;
+
+        // Dynamically import Fancybox to ensure SSR compatibility
+        import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
+            if (!isMounted || !contentRef.current) return;
+
+            // Bind Fancybox to all elements with data-fancybox="article-gallery"
+            // Fancybox automatically groups items by their data-fancybox value
+            Fancybox.bind(contentRef.current, '[data-fancybox="article-gallery"]');
+        });
+
+        // Cleanup on unmount
+        return () => {
+            isMounted = false;
+            import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
+                if (contentRef.current) {
+                    Fancybox.unbind(contentRef.current);
+                }
+                Fancybox.close();
+            });
+        };
+    }, []);
+
     // Normalize common inline <br> tags to Markdown line breaks without enabling raw HTML.
     let normalized = markdown.replace(/<br\s*\/?>/gi, '  \n');
 
@@ -42,7 +74,7 @@ export function Markdown({markdown, className}: MarkdownProps) {
     normalized = normalized.replace(/(?<!~)~([^~\n]+)~(?!~)/g, '<sub>$1</sub>');
 
     return (
-        <div className={className ? `markdown-content ${className}` : 'markdown-content'}>
+        <div ref={contentRef} className={className ? `markdown-content ${className}` : 'markdown-content'}>
             <ReactMarkdown
                 remarkPlugins={[
                     remarkBreaks,
@@ -98,14 +130,21 @@ export function Markdown({markdown, className}: MarkdownProps) {
                         // Use sensible defaults; Next/Image needs concrete dimensions.
                         // SafeImage handles unauthorized external domains gracefully.
                         return (
-                            <SafeImage
-                                src={url}
-                                alt={alt}
-                                width={1200}
-                                height={675}
-                                sizes="100vw"
-                                style={{height: 'auto', width: '100%'}}
-                            />
+                            <a
+                                href={url}
+                                data-fancybox="article-gallery"
+                                aria-label={`View image: ${alt || 'Gallery image'}`}
+                                style={{display: 'inline-block', width: '100%'}}
+                            >
+                                <SafeImage
+                                    src={url}
+                                    alt={alt}
+                                    width={1200}
+                                    height={675}
+                                    sizes="100vw"
+                                    style={{height: 'auto', width: '100%'}}
+                                />
+                            </a>
                         );
                     },
                 }}

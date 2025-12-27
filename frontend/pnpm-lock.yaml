@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fancyapps/ui':
+        specifier: ^6.1.7
+        version: 6.1.7
       dompurify:
         specifier: ^3.3.1
         version: 3.3.1
@@ -166,6 +169,9 @@ packages:
     peerDependenciesMeta:
       '@exodus/crypto':
         optional: true
+
+  '@fancyapps/ui@6.1.7':
+    resolution: {integrity: sha512-KHOvuy90JBFDgbNa2V1N9Jg7PE/lSQMXN9VbhR+WQSIxIEi4PV7kndeao7ezir5WeJ8OZRyDelNKJVLicXfBIg==}
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -1408,6 +1414,8 @@ snapshots:
     optional: true
 
   '@exodus/bytes@1.6.0': {}
+
+  '@fancyapps/ui@6.1.7': {}
 
   '@img/colour@1.0.0':
     optional: true

@@ -8,6 +8,7 @@
         "start": "next start"
     },
     "dependencies": {
+        "@fancyapps/ui": "^6.1.7",
         "dompurify": "^3.3.1",
         "fuse.js": "^7.1.0",
         "jsdom": "^27.4.0",
