@@ -63,6 +63,73 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     }, []);
 
     useEffect(() => {
+        const handleTabKey = (event: globalThis.KeyboardEvent) => {
+            if (event.key !== 'Tab') return;
+
+            const modalElement = document.querySelector(`.${styles.modal}`);
+            if (!modalElement) return;
+
+            // Only handle Tab if focus is within the modal
+            if (!modalElement.contains(document.activeElement)) return;
+
+            const isInput = document.activeElement === inputRef.current;
+            const isResultButton = document.activeElement?.classList.contains(styles.result);
+
+            // Only trap Tab when focus is on input or result buttons
+            if (!isInput && !isResultButton) return;
+
+            // Get all result buttons
+            const resultButtons = Array.from(
+                modalElement.querySelectorAll<HTMLElement>(`.${styles.result}`)
+            );
+
+            if (resultButtons.length === 0) return;
+
+            event.preventDefault();
+
+            if (isInput) {
+                // Tab from input: go to first result
+                if (event.shiftKey) {
+                    // Shift+Tab from input: go to last result
+                    resultButtons[resultButtons.length - 1]?.focus();
+                } else {
+                    // Tab from input: go to first result
+                    resultButtons[0]?.focus();
+                }
+            } else if (isResultButton) {
+                // Tab from result button
+                const currentResultIndex = resultButtons.indexOf(document.activeElement as HTMLElement);
+                if (currentResultIndex === -1) return;
+
+                if (event.shiftKey) {
+                    // Shift+Tab: backward
+                    if (currentResultIndex === 0) {
+                        // Cycle to input
+                        inputRef.current?.focus();
+                    } else {
+                        // Move to previous result
+                        resultButtons[currentResultIndex - 1]?.focus();
+                    }
+                } else {
+                    // Tab: forward
+                    if (currentResultIndex === resultButtons.length - 1) {
+                        // Cycle to input
+                        inputRef.current?.focus();
+                    } else {
+                        // Move to next result
+                        resultButtons[currentResultIndex + 1]?.focus();
+                    }
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleTabKey);
+        return () => {
+            document.removeEventListener('keydown', handleTabKey);
+        };
+    }, [results.length]);
+
+    useEffect(() => {
         if (shouldScrollRef.current && activeIndex >= 0 && results.length > 0) {
             const activeElement = document.getElementById(`search-result-${activeIndex}`);
             if (activeElement) {

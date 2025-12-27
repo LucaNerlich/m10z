@@ -138,4 +138,3 @@ const handleKeyDown = (event: KeyboardEvent) => {
 - Test focus moves to first link when menu opens
 - Test focus returns to burger button when menu closes
 - Test Tab cycles through menu links
-- Test Shift+Tab cycles backward
