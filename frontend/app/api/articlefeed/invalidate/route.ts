@@ -27,7 +27,14 @@ export async function POST(request: Request) {
     }
 
     revalidateTag('feed:article', 'max');
+    revalidateTag('strapi:article', 'max');
     revalidatePath('/rss.xml');
+    revalidatePath('/', 'page');
+    revalidatePath('/artikel', 'page');
+    revalidatePath('/artikel/[slug]', 'page');
 
-    return Response.json({ok: true, revalidated: ['feed:article', '/rss.xml']});
+    return Response.json({
+        ok: true,
+        revalidated: ['feed:article', 'strapi:article', '/rss.xml', '/', '/artikel', '/artikel/[slug]'],
+    });
 }

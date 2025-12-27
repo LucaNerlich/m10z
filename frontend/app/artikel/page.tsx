@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlePage() {
-    const articles = await fetchArticlesList();
+    const articles = await fetchArticlesList({revalidate: 900});
     const sorted = sortByDateDesc(articles);
 
     return (

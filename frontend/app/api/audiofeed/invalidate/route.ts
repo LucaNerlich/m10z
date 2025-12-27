@@ -30,7 +30,14 @@ export async function POST(request: Request) {
 
 
     revalidateTag('feed:audio', 'max');
+    revalidateTag('strapi:podcast', 'max');
     revalidatePath('/audiofeed.xml');
+    revalidatePath('/', 'page');
+    revalidatePath('/podcasts', 'page');
+    revalidatePath('/podcasts/[slug]', 'page');
 
-    return Response.json({ok: true, revalidated: ['feed:audio', '/audiofeed.xml']});
+    return Response.json({
+        ok: true,
+        revalidated: ['feed:audio', 'strapi:podcast', '/audiofeed.xml', '/', '/podcasts', '/podcasts/[slug]'],
+    });
 }

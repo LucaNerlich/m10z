@@ -170,8 +170,8 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const fetchCount = Math.min(PAGE_SIZE * requestedPage + PAGE_SIZE, 200);
 
     const [articlesPage, podcastsPage] = await Promise.all([
-        fetchArticlesPage({page: 1, pageSize: fetchCount, tags: HOME_ARTICLE_TAGS}),
-        fetchPodcastsPage({page: 1, pageSize: fetchCount, tags: HOME_PODCAST_TAGS}),
+        fetchArticlesPage({page: 1, pageSize: fetchCount, tags: HOME_ARTICLE_TAGS, revalidate: 900}),
+        fetchPodcastsPage({page: 1, pageSize: fetchCount, tags: HOME_PODCAST_TAGS, revalidate: 900}),
     ]);
 
     const combinedTotal = articlesPage.pagination.total + podcastsPage.pagination.total;
