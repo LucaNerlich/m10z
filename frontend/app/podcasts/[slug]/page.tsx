@@ -78,12 +78,14 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 }
 
 /**
- * Renders the podcast episode detail page for the given route slug.
+ * Render the podcast episode detail page for a route slug.
  *
- * Fetches the episode by slug, prepares metadata (published date, media URLs, JSON-LD, cover image), and renders the episode content.
+ * Builds page content and metadata for the episode identified by `params.slug`, injects episode JSON-LD,
+ * displays the cover image, episode metadata (published date, duration, authors, categories), title and optional description,
+ * includes an audio player when episode media exists, renders shownotes as Markdown, and conditionally renders a YouTube section.
  *
- * @param params - Route parameters object (contains a `slug` string)
- * @returns A React element that includes an `application/ld+json` script with episode JSON-LD, the episode header (title, metadata, optional description and cover image), an optional audio player when media is available, and the rendered shownotes
+ * @param params - Route parameters object containing a `slug` string
+ * @returns A React element representing the podcast episode detail page
  */
 export default async function PodcastDetailPage({params}: PageProps) {
     const {slug: rawSlug} = await params;
