@@ -17,7 +17,7 @@ import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
-import {Markdown} from '@/src/lib/markdown/Markdown';
+import {MarkdownClient} from '@/src/components/MarkdownClient';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -128,7 +128,7 @@ export default async function ArticleDetailPage({params}: PageProps) {
                 </Section>
 
                 <div className={styles.content}>
-                    <Markdown markdown={article.content ?? ''} />
+                    <MarkdownClient markdown={article.content ?? ''} />
                 </div>
             </ContentLayout>
         </article>
