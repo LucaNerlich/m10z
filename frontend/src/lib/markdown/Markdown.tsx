@@ -38,11 +38,13 @@ export function Markdown({markdown, className}: MarkdownProps) {
     useEffect(() => {
         if (!contentRef.current) return;
 
-        let isMounted = true;
+        let fancyboxModule: typeof import('@fancyapps/ui/dist/fancybox/') | null = null;
 
         // Dynamically import Fancybox to ensure SSR compatibility
         import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
-            if (!isMounted || !contentRef.current) return;
+            if (!contentRef.current) return;
+            
+            fancyboxModule = {Fancybox};
 
             // Bind Fancybox to all elements with data-fancybox="article-gallery"
             // Fancybox automatically groups items by their data-fancybox value
@@ -51,13 +53,13 @@ export function Markdown({markdown, className}: MarkdownProps) {
 
         // Cleanup on unmount
         return () => {
-            isMounted = false;
-            import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
+            if (fancyboxModule) {
+                const {Fancybox} = fancyboxModule;
                 if (contentRef.current) {
                     Fancybox.unbind(contentRef.current);
                 }
                 Fancybox.close();
-            });
+            }
         };
     }, []);
 
