@@ -36,6 +36,7 @@ export function ArticleCard({
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
+    const blurhash = optimizedMedia?.blurhash ?? null;
     const effectiveDate = getEffectiveDate(article);
     const formattedDate = formatDateShort(effectiveDate);
     const articleUrl = routes.article(article.slug);
@@ -53,7 +54,8 @@ export function ArticleCard({
                         width={optimizedMedia?.width ?? 400}
                         height={optimizedMedia?.height ?? 225}
                         className={styles.cover}
-                        placeholder={imageUrl ? 'empty' : 'blur'}
+                        placeholder={blurhash ? 'blur' : 'empty'}
+                        blurDataURL={blurhash ?? undefined}
                     />
                 </Link>
             </div>

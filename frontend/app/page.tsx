@@ -229,6 +229,15 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                         const anchor = `${item.type}-${item.slug}`;
                         const coverUrl = toCoverUrl(item.cover);
                         const bannerUrl = toCoverUrl(item.banner);
+                        
+                        // Get blur data URLs from cover and banner
+                        const coverBlurDataUrl = item.cover?.blurhash ?? null;
+                        const bannerBlurDataUrl = item.banner?.blurhash ?? null;
+                        
+                        // Determine placeholders - use blur if we have data URL, otherwise empty
+                        const coverPlaceholder = coverBlurDataUrl ? 'blur' : (coverUrl ? 'empty' : 'blur');
+                        const bannerPlaceholder = bannerBlurDataUrl ? 'blur' : (bannerUrl || coverUrl ? 'empty' : 'blur');
+                        
                         return (
                             <Card key={anchor} id={anchor}>
                                 <div className={styles.media}>
@@ -236,7 +245,8 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                         src={coverUrl ?? placeholderCover}
                                         width={200}
                                         height={200}
-                                        placeholder={coverUrl ? 'empty' : 'blur'}
+                                        placeholder={coverPlaceholder}
+                                        blurDataURL={coverBlurDataUrl || undefined}
                                         alt={item.title || ''}
                                         className={styles.cover}
                                     />
@@ -244,7 +254,8 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                         src={bannerUrl ?? coverUrl ?? placeholderCover}
                                         width={800}
                                         height={450}
-                                        placeholder={bannerUrl || coverUrl ? 'empty' : 'blur'}
+                                        placeholder={bannerPlaceholder}
+                                        blurDataURL={bannerBlurDataUrl || coverBlurDataUrl || undefined}
                                         alt={item.title || ''}
                                         className={styles.banner}
                                     />

@@ -30,6 +30,7 @@ export type StrapiMedia = {
     provider?: string;
     provider_metadata?: unknown;
     related?: unknown[]; // keep flexible; Strapi returns heterogeneous relations
+    blurhash?: string | null;
     createdAt?: string;
     updatedAt?: string;
     publishedAt?: string | null;
@@ -54,6 +55,7 @@ export type StrapiMediaRef = {
     provider?: string;
     provider_metadata?: unknown;
     related?: unknown[]; // keep flexible; Strapi returns heterogeneous relations
+    blurhash?: string | null;
     createdAt?: string;
     updatedAt?: string;
     publishedAt?: string | null;
@@ -123,6 +125,7 @@ export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): St
         provider: attrs.provider,
         provider_metadata: attrs.provider_metadata,
         related: attrs.related,
+        blurhash: attrs.blurhash,
         createdAt: attrs.createdAt,
         updatedAt: attrs.updatedAt,
         publishedAt: attrs.publishedAt,
