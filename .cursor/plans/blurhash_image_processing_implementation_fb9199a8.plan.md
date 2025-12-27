@@ -159,4 +159,3 @@ This schema merges with the existing `plugin::upload.file` schema at startup.
 
 - Return `null` from utility on error
 - Log warnings but don't throw in middleware
-- Continue processing in backfill on individual failures

@@ -29,39 +29,3 @@ export async function generateBlurDataUrl(fileBuffer: Buffer, width: number = 10
         return null;
     }
 }
-
-/**
- * Generate a blurhash string from an image buffer (kept for backwards compatibility).
- * Resizes the image to 32x32, extracts RGBA pixel data, and encodes with blurhash.
- *
- * @param fileBuffer - The image file buffer
- * @returns The blurhash string, or null if generation fails
- */
-export async function generateBlurhash(fileBuffer: Buffer): Promise<string | null> {
-    try {
-        // Resize image to 32x32 for performance and extract RGBA pixel data
-        const {data, info} = await sharp(fileBuffer)
-            .resize(32, 32, {
-                fit: 'cover',
-            })
-            .ensureAlpha()
-            .raw()
-            .toBuffer({resolveWithObject: true});
-
-        // Encode with blurhash using 4x3 components (good balance of quality and size)
-        const blurhash = encode(
-            new Uint8ClampedArray(data),
-            info.width,
-            info.height,
-            4,
-            3,
-        );
-
-        return blurhash;
-    } catch (error) {
-        // Log error but return null to avoid blocking uploads
-        console.error('Error generating blurhash:', error);
-        return null;
-    }
-}
-

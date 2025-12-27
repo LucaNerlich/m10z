@@ -100,8 +100,8 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const imageSrc = mediaUrl ?? fallbackSrc;
     const imageWidth = optimizedMedia?.width ?? fallbackWidth;
     const imageHeight = optimizedMedia?.height ?? fallbackHeight;
-    const placeholder = mediaUrl ? 'blur' : 'blur'; // Use blur placeholder when blurhash is available
     const blurhash = optimizedMedia?.blurhash ?? null;
+    const placeholder = blurhash ? 'blur' : 'empty'; // Use blur placeholder only when blurhash is available
 
     return (
         <article className={styles.article}>
