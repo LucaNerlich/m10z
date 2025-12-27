@@ -39,6 +39,13 @@ export default function HeaderClient({
         }
     };
 
+    const handleMenuLinkKeyDown = (event: React.KeyboardEvent<HTMLAnchorElement>) => {
+        if (event.key === ' ') {
+            event.preventDefault();
+            (event.currentTarget as HTMLAnchorElement).click();
+        }
+    };
+
     useEffect(() => {
         if (!isMenuOpen) return;
         const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -59,6 +66,20 @@ export default function HeaderClient({
     useEffect(() => {
         closeMenu();
     }, [pathname]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'm';
+            if (isShortcut) {
+                event.preventDefault();
+                if (!isMenuOpen) {
+                    setIsMenuOpen(true);
+                }
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isMenuOpen]);
 
     useEffect(() => {
         if (!isMenuOpen) return;
@@ -134,6 +155,7 @@ export default function HeaderClient({
                     <span />
                     <span />
                 </span>
+                <span className={styles.burgerShortcut}>Cmd+M</span>
                 <span className={styles.srOnly}>Menü</span>
             </button>
 
@@ -146,14 +168,24 @@ export default function HeaderClient({
                     <ul className={styles.menuList}>
                         {primaryLinks.map((link) => (
                             <li key={link.href} className={styles.mobileOnly}>
-                                <Link className={styles.menuLink} href={link.href} onClick={closeMenu}>
+                                <Link
+                                    className={styles.menuLink}
+                                    href={link.href}
+                                    onClick={closeMenu}
+                                    onKeyDown={handleMenuLinkKeyDown}
+                                >
                                     {link.label}
                                 </Link>
                             </li>
                         ))}
                         {secondaryLinks.map((link) => (
                             <li key={link.href}>
-                                <Link className={styles.menuLink} href={link.href} onClick={closeMenu}>
+                                <Link
+                                    className={styles.menuLink}
+                                    href={link.href}
+                                    onClick={closeMenu}
+                                    onKeyDown={handleMenuLinkKeyDown}
+                                >
                                     {link.label}
                                 </Link>
                             </li>
