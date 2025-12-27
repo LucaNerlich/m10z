@@ -39,10 +39,15 @@ function formatContentCounts(articleCount?: number, podcastCount?: number): stri
 }
 
 /**
- * Card component for displaying category information.
+ * Render a category card with optional cover image, title, description, and content counts.
  *
- * Displays title, description, and content counts.
- * Links to category detail page.
+ * The card links to the category page. If the category has a cover image, it is shown (with a blurhash placeholder when available); otherwise a placeholder image is used.
+ *
+ * @param category - Category data; expected to include optional `slug` and `base` properties (`title`, `description`, `cover`)
+ * @param articleCount - Optional number of articles in the category, used to build the content counts string
+ * @param podcastCount - Optional number of podcasts in the category, used to build the content counts string
+ * @param className - Optional additional CSS class applied to the outer article element
+ * @returns The JSX element representing the category card
  */
 export function CategoryCard({category, articleCount, podcastCount, className}: CategoryCardProps) {
     const categorySlug = category.slug ?? '';
@@ -97,4 +102,3 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
         </article>
     );
 }
-
