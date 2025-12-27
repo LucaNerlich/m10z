@@ -39,10 +39,10 @@ function normalizeImageUrl(url: string | null | undefined): string | null {
 }
 
 /**
- * Modal dialog that lets the user search site content and pick a result using mouse or keyboard.
+ * Display a modal that lets the user search site content and choose a result.
  *
- * Renders a search input, debounced results list with status messages, keyboard navigation (ArrowUp/Down, Enter, Escape),
- * and navigates to a selected result while closing the modal.
+ * Provides a search input with debounced results, keyboard navigation (ArrowUp/Down, Enter, Escape),
+ * Tab/Shift+Tab focus trapping between the input and results, status messages, and navigation to a selected result while closing the modal.
  *
  * @param onClose - Callback invoked to close the modal
  * @returns The React element for the search modal
@@ -298,4 +298,3 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         </div>
     );
 }
-
