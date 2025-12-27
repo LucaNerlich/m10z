@@ -2,7 +2,9 @@ import qs from 'qs';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {type StrapiAuthor} from '@/src/lib/rss/media';
+import {type StrapiAuthor, type StrapiMediaRef} from '@/src/lib/rss/media';
+
+export type {StrapiMediaRef};
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/+$/, '');
 
@@ -191,8 +193,8 @@ export type StrapiCategoryWithContent = {
     base?: {
         title?: string | null;
         description?: string | null;
-        cover?: unknown;
-        banner?: unknown;
+        cover?: StrapiMediaRef | null;
+        banner?: StrapiMediaRef | null;
     } | null;
     articles?: Array<{
         slug: string;
