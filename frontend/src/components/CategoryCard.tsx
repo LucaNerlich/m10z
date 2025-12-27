@@ -60,7 +60,7 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
     const coverMedia = normalizeStrapiMedia(category.base?.cover ?? undefined);
     const optimizedMedia = coverMedia ? getOptimalMediaFormat(coverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
-    const blurhash = category.base?.cover?.blurhash ?? null;
+    const blurhash = category.base?.cover?.blurhash;
     const imageSrc = imageUrl ?? placeholderCover;
     const imageWidth = optimizedMedia?.width ?? 400;
     const imageHeight = optimizedMedia?.height ?? 225;
@@ -71,21 +71,19 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
 
     return (
         <article className={cardClasses}>
-            {imageSrc && (
-                <div className={styles.media}>
-                    <Link href={categoryUrl} className={styles.mediaLink}>
-                        <ContentImage
-                            src={imageSrc}
-                            alt={imageAlt}
-                            width={imageWidth}
-                            height={imageHeight}
-                            placeholder={placeholder}
-                            blurhash={blurhash ?? undefined}
-                            className={styles.cover}
-                        />
-                    </Link>
-                </div>
-            )}
+            <div className={styles.media}>
+                <Link href={categoryUrl} className={styles.mediaLink}>
+                    <ContentImage
+                        src={imageSrc}
+                        alt={imageAlt}
+                        width={imageWidth}
+                        height={imageHeight}
+                        placeholder={placeholder}
+                        blurhash={blurhash}
+                        className={styles.cover}
+                    />
+                </Link>
+            </div>
             <div className={styles.cardBody}>
                 <h2 className={styles.cardTitle}>
                     <Link href={categoryUrl} className={styles.cardLink}>
