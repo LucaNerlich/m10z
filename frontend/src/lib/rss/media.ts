@@ -55,6 +55,7 @@ export type StrapiMediaRef = {
     provider?: string;
     provider_metadata?: unknown;
     related?: unknown[]; // keep flexible; Strapi returns heterogeneous relations
+    blurhash?: string | null;
     createdAt?: string;
     updatedAt?: string;
     publishedAt?: string | null;
