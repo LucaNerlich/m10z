@@ -29,6 +29,12 @@ export const routes = {
     linktree: 'https://linktr.ee/m10z',
 };
 
+/**
+ * Constructs an absolute URL for the given route path.
+ *
+ * @param path - A route path (relative or without a leading slash) or a full `http://`/`https://` URL
+ * @returns An absolute URL string; returns `path` unchanged when it is an `http(s)` URL, otherwise returns the site origin joined with the normalized path
+ */
 export function absoluteRoute(path: string): string {
     const normalized = ensureLeadingSlash(path);
     if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
@@ -38,10 +44,10 @@ export function absoluteRoute(path: string): string {
 }
 
 /**
- * Determines if a URL is an internal link (same domain) or external link.
+ * Determines whether a given URL points to the same site or is a relative internal path.
  *
- * @param url - The URL string to check
- * @returns true if the URL is internal, false if external
+ * @param url - The URL or path to check.
+ * @returns `true` if the URL is internal (a relative path or has the same hostname as SITE_URL), `false` otherwise.
  */
 export function isInternalLink(url: string): boolean {
     if (!url || typeof url !== 'string') {
@@ -90,4 +96,3 @@ export function isInternalLink(url: string): boolean {
     // Default to external for unrecognized formats
     return false;
 }
-
