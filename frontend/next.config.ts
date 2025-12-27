@@ -2,10 +2,6 @@ import type {NextConfig} from 'next';
 import {getRemotePatterns} from './src/lib/imageHostnames';
 
 const nextConfig: NextConfig = {
-    // Required for `'use cache'` directive.
-    // Note: route segment config exports like `export const revalidate = ...` are incompatible with this;
-    // we use fetch-level caching (`next.revalidate`, cache tags) + explicit invalidation instead.
-    cacheComponents: true,
     compiler: {
         // removeConsole: process.env.NODE_ENV === 'production',
     },

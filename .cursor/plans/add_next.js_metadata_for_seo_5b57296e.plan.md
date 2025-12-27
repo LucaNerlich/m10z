@@ -206,7 +206,7 @@ The implementation follows Next.js App Router metadata patterns:
 - Use `getEffectiveDate()` for published dates
 - Follow German language conventions for descriptions
 - Maintain consistency with existing JSON-LD patterns
-- All dynamic metadata functions use `'use cache'` directive for performance
+- All dynamic metadata functions use `` directive for performance
 
 ## Files to Create
 

@@ -1,4 +1,4 @@
-'use cache';
+;
 
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
 import {ContentGrid} from '@/src/components/ContentGrid';

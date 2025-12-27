@@ -114,6 +114,6 @@ Update [`frontend/app/sitemap.ts`](frontend/app/sitemap.ts):
 ## Implementation Notes
 
 - Follow existing patterns from `datenschutz/page.tsx` and `impressum/page.tsx` for page structure
-- Use `'use cache'` directive at top of page component
+- Use `` directive at top of page component
 - Media handling follows patterns from `AuthorHeader.tsx` and `ArticleCard.tsx`
 - Error handling should gracefully degrade with fallback content

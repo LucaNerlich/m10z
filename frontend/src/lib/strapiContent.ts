@@ -98,7 +98,7 @@ function toPaginatedResult<T>(
 }
 
 export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | null> {
-    'use cache';
+    ;
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -143,7 +143,7 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
 }
 
 export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | null> {
-    'use cache';
+    ;
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -244,7 +244,7 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
 }
 
 export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> {
-    'use cache';
+    ;
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -268,7 +268,7 @@ export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<
 }
 
 export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithContent | null> {
-    'use cache';
+    ;
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -291,7 +291,7 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
 }
 
 export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryWithContent | null> {
-    'use cache';
+    ;
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -320,7 +320,7 @@ export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryW
 }
 
 export async function fetchCategoriesWithContent(options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> {
-    'use cache';
+    ;
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -350,7 +350,7 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
 }
 
 export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> {
-    'use cache';
+    ;
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
 
@@ -387,7 +387,7 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
  * Fetch multiple articles by their slugs.
  */
 export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArticle[]> {
-    'use cache';
+    ;
     if (slugs.length === 0) return [];
     if (slugs.length > MAX_SLUGS) {
         throw new Error(
@@ -442,7 +442,7 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
  * Fetch multiple podcasts by their slugs.
  */
 export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodcast[]> {
-    'use cache';
+    ;
     if (slugs.length === 0) return [];
     if (slugs.length > MAX_SLUGS) {
         throw new Error(
@@ -497,7 +497,7 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
  * Fetch multiple articles by their slugs, automatically batching if the array exceeds MAX_SLUGS.
  */
 export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<StrapiArticle[]> {
-    'use cache';
+    ;
     if (slugs.length === 0) return [];
     if (slugs.length <= MAX_SLUGS) {
         return fetchArticlesBySlugs(slugs);
@@ -517,7 +517,7 @@ export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<Stra
  * Fetch multiple podcasts by their slugs, automatically batching if the array exceeds MAX_SLUGS.
  */
 export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<StrapiPodcast[]> {
-    'use cache';
+    ;
     if (slugs.length === 0) return [];
     if (slugs.length <= MAX_SLUGS) {
         return fetchPodcastsBySlugs(slugs);
@@ -534,7 +534,7 @@ export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<Stra
 }
 
 export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> {
-    'use cache';
+    ;
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
 

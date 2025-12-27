@@ -1,4 +1,4 @@
-'use cache';
+;
 
 import {type Metadata} from 'next';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
@@ -20,7 +20,7 @@ type PageProps = {
 };
 
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-    'use cache';
+    ;
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
