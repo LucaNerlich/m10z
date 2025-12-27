@@ -1070,6 +1070,7 @@ export interface PluginUploadFile extends Struct.CollectionTypeSchema {
     };
     attributes: {
         alternativeText: Schema.Attribute.Text;
+        blurhash: Schema.Attribute.Text;
         caption: Schema.Attribute.Text;
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
