@@ -65,8 +65,8 @@ export function Markdown({markdown, className}: MarkdownProps) {
         };
     }, []);
 
-    // Normalize common inline <br> tags to Markdown line breaks without enabling raw HTML.
-    let normalized = markdown.replace(/<br\s*\/?>/gi, '  \n');
+    // Remove inline <br>, to avoid large gaps. Markdown Parsing already handles linebreaks via \n.
+    let normalized = markdown.replace(/<br\s*\/?>/gi, '');
 
     // Convert markdown syntax to HTML tags for sub, sup, ins, and mark
     // Process in order to avoid conflicts: mark first, then ins, then sup/sub

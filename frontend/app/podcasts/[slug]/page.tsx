@@ -22,6 +22,8 @@ import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
 import {MarkdownClient} from '@/src/components/MarkdownClient';
+import {YoutubeSection} from '@/src/components/YoutubeSection';
+import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -76,12 +78,14 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 }
 
 /**
- * Renders the podcast episode detail page for the given route slug.
+ * Render the podcast episode detail page for a route slug.
  *
- * Fetches the episode by slug, prepares metadata (published date, media URLs, JSON-LD, cover image), and renders the episode content.
+ * Builds page content and metadata for the episode identified by `params.slug`, injects episode JSON-LD,
+ * displays the cover image, episode metadata (published date, duration, authors, categories), title and optional description,
+ * includes an audio player when episode media exists, renders shownotes as Markdown, and conditionally renders a YouTube section.
  *
- * @param params - Route parameters object (contains a `slug` string)
- * @returns A React element that includes an `application/ld+json` script with episode JSON-LD, the episode header (title, metadata, optional description and cover image), an optional audio player when media is available, and the rendered shownotes
+ * @param params - Route parameters object containing a `slug` string
+ * @returns A React element representing the podcast episode detail page
  */
 export default async function PodcastDetailPage({params}: PageProps) {
     const {slug: rawSlug} = await params;
@@ -109,9 +113,17 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const imageHeight = optimizedMedia?.height ?? fallbackHeight;
     const blurhash = optimizedMedia?.blurhash ?? null;
     const placeholder = blurhash ? 'blur' : 'empty'; // Use blur placeholder only when blurhash is available
+    const jsonLd = generatePodcastJsonLd(episode);
 
     return (
         <article className={styles.episode}>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+                }}
+            />
+
             <ContentLayout>
                 <ContentImage
                     src={imageSrc}
@@ -138,9 +150,11 @@ export default async function PodcastDetailPage({params}: PageProps) {
 
                 {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
 
-                <div className={styles.content}>
-                    <MarkdownClient markdown={episode.shownotes ?? ''} />
-                </div>
+                <MarkdownClient markdown={episode.shownotes ?? ''} />
+
+                {episode.youtube && episode.youtube.length > 0 && (
+                    <YoutubeSection youtube={episode.youtube} />
+                )}
             </ContentLayout>
         </article>
     );
