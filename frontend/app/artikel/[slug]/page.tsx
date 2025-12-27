@@ -18,7 +18,6 @@ import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
 import {Markdown} from '@/src/lib/markdown/Markdown';
-import {YoutubeSection} from '@/src/components/YoutubeSection';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -127,19 +126,11 @@ export default async function ArticleDetailPage({params}: PageProps) {
                         </p>
                     ) : null}
                 </Section>
-            </ContentLayout>
 
-            <ContentLayout>
                 <div className={styles.content}>
                     <Markdown markdown={article.content ?? ''} />
                 </div>
             </ContentLayout>
-
-            {article.youtube && article.youtube.length > 0 && (
-                <ContentLayout>
-                    <YoutubeSection youtube={article.youtube} />
-                </ContentLayout>
-            )}
         </article>
     );
 }

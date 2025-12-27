@@ -22,7 +22,6 @@ import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
 import {Markdown} from '@/src/lib/markdown/Markdown';
-import {YoutubeSection} from '@/src/components/YoutubeSection';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -136,19 +135,11 @@ export default async function PodcastDetailPage({params}: PageProps) {
                 </Section>
 
                 {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
-            </ContentLayout>
 
-            <ContentLayout>
                 <div className={styles.content}>
                     <Markdown markdown={episode.shownotes ?? ''} />
                 </div>
             </ContentLayout>
-
-            {episode.youtube && episode.youtube.length > 0 && (
-                <ContentLayout>
-                    <YoutubeSection youtube={episode.youtube} />
-                </ContentLayout>
-            )}
         </article>
     );
 }

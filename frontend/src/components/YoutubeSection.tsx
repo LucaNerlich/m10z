@@ -1,7 +1,7 @@
 import {type StrapiYoutube} from '@/src/lib/rss/media';
 import {extractYouTubeVideoId} from '@/src/lib/youtube';
-import YoutubeEmbed from './YoutubeEmbed';
 import styles from './YoutubeSection.module.css';
+import YoutubeEmbed from '@/src/components/YoutubeEmbed';
 
 type YoutubeSectionProps = {
     youtube?: StrapiYoutube[] | null;

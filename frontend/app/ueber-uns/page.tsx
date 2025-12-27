@@ -115,8 +115,7 @@ export default async function AboutUsPage() {
                             <p>{about.alternateName}</p>
                         ) : null}
                     </Section>
-                </ContentLayout>
-                <ContentLayout>
+
                     <Markdown markdown={about.content} />
                 </ContentLayout>
             </article>
