@@ -11,6 +11,15 @@ type HeaderClientProps = {
     secondaryLinks: ReadonlyArray<{label: string; href: string}>;
 };
 
+/**
+ * Header component that renders a responsive, accessible navigation with a toggleable mobile menu.
+ *
+ * Manages menu open/close state, global shortcut (Cmd/Ctrl+M), outside-click closing, focus management (focus first item on open, restore focus to the toggle on close), and keyboard navigation/trapping while the menu is open.
+ *
+ * @param primaryLinks - Readonly array of primary navigation links (rendered mobile-only).
+ * @param secondaryLinks - Readonly array of secondary navigation links.
+ * @returns The header element containing the burger toggle and the navigation menu.
+ */
 export default function HeaderClient({
                                          primaryLinks,
                                          secondaryLinks,
@@ -196,4 +205,3 @@ export default function HeaderClient({
         </div>
     );
 }
-
