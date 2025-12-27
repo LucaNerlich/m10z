@@ -12,7 +12,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, {defaultSchema} from 'rehype-sanitize';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
-import {isInternalLink, routes} from '@/src/lib/routes';
+import {routes} from '@/src/lib/routes';
 import {SafeImage} from '@/src/components/SafeImage';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
@@ -160,16 +160,65 @@ export function Markdown({markdown, className}: MarkdownProps) {
                             return <a href={href} className={className} id={id} {...props}>{children}</a>;
                         }
 
-                        // Convert absolute SITE_URL links to relative paths
+                        // Secure same-site detection using URL origin comparison
+                        // This prevents protocol/case/trailing-slash/subdomain/protocol-relative URL attacks
                         let processedHref = href;
-                        if (href.startsWith(routes.siteUrl)) {
-                            // Remove the domain portion, preserve path, query params, and hash
-                            processedHref = href.substring(routes.siteUrl.length) || '/';
-                        }
-
-                        // Determine if link is internal
-                        const isInternal = isInternalLink(href);
+                        let isInternal = false;
                         const isAnchorLink = href.startsWith('#');
+
+                        // Get site origin for comparison (normalized, no trailing slash)
+                        const siteOrigin = (() => {
+                            try {
+                                return new URL(routes.siteUrl).origin;
+                            } catch {
+                                return routes.siteUrl;
+                            }
+                        })();
+
+                        // Handle anchor links (treat as external for security attributes, but keep href)
+                        if (isAnchorLink) {
+                            isInternal = false;
+                            processedHref = href;
+                        } else if (href.startsWith('/')) {
+                            // Relative path - treat as internal
+                            isInternal = true;
+                            // Normalize trailing slash (remove for consistency, except root)
+                            if (href !== '/' && href.endsWith('/') && !href.includes('?') && !href.includes('#')) {
+                                processedHref = href.slice(0, -1);
+                            } else {
+                                processedHref = href;
+                            }
+                        } else {
+                            // Absolute URL or protocol-relative - parse and compare origins
+                            try {
+                                // Use siteUrl as base for relative URLs (protocol-relative URLs like //example.com)
+                                const baseUrl = href.startsWith('//') ? `https:${href}` : href;
+                                const url = new URL(baseUrl, routes.siteUrl);
+                                
+                                // Compare origins securely (handles protocol, case, subdomain differences)
+                                const urlOrigin = url.origin;
+                                isInternal = urlOrigin === siteOrigin;
+
+                                if (isInternal) {
+                                    // Same-site link - extract pathname, search, and hash
+                                    processedHref = url.pathname + url.search + url.hash;
+                                    // Ensure leading slash for empty paths
+                                    if (!processedHref || processedHref === '/') {
+                                        processedHref = '/';
+                                    } else if (!processedHref.startsWith('/')) {
+                                        processedHref = '/' + processedHref;
+                                    }
+                                } else {
+                                    // External link - keep original href
+                                    processedHref = href;
+                                }
+                            } catch {
+                                // Non-parseable URL (e.g., mailto:, tel:, javascript:, etc.)
+                                // Keep unchanged and treat as external
+                                isInternal = false;
+                                processedHref = href;
+                            }
+                        }
 
                         // Build props for Link component - Next.js Link forwards props to underlying <a>
                         const linkProps: React.ComponentProps<typeof Link> & Record<string, unknown> = {
