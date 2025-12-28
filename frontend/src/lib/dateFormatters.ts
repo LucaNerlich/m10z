@@ -8,6 +8,30 @@
 const GERMAN_LOCALE = 'de-DE';
 
 /**
+ * Parses a date string, extracting only the date part (YYYY-MM-DD) and parsing it as UTC
+ * to avoid timezone shifts that would show the wrong day.
+ *
+ * This is appropriate for calendar dates (like "published on December 25th") where
+ * the time component is not meaningful and should be ignored.
+ *
+ * @param date - Date string (ISO 8601 or any valid date string)
+ * @returns Date object parsed as UTC date-only (time set to 00:00:00 UTC)
+ */
+function parseDateAsUtcDateOnly(date: string): Date {
+    // Extract the date part (YYYY-MM-DD) from the string
+    // Handles formats like: "2024-12-25", "2024-12-25T00:00:00", "2024-12-25T01:00:00Z", etc.
+    const dateMatch = date.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (dateMatch) {
+        // Parse as UTC date to avoid timezone shifts
+        // This ensures "2024-12-25" always displays as December 25th regardless of timezone
+        const [year, month, day] = dateMatch[1].split('-').map(Number);
+        return new Date(Date.UTC(year, month - 1, day));
+    }
+    // Fallback to normal parsing if format is unexpected
+    return new Date(date);
+}
+
+/**
  * Formats a date string into a full German date format.
  *
  * Example: "15. Januar 2024"
@@ -17,7 +41,7 @@ const GERMAN_LOCALE = 'de-DE';
  */
 export function formatDateFull(date: string | null | undefined): string {
     if (!date) return '—';
-    const dateObj = new Date(date);
+    const dateObj = parseDateAsUtcDateOnly(date);
     if (Number.isNaN(dateObj.getTime())) return '—';
 
     return dateObj.toLocaleDateString(GERMAN_LOCALE, {
@@ -37,7 +61,7 @@ export function formatDateFull(date: string | null | undefined): string {
  */
 export function formatDateShort(date: string | null | undefined): string {
     if (!date) return '—';
-    const dateObj = new Date(date);
+    const dateObj = parseDateAsUtcDateOnly(date);
     if (Number.isNaN(dateObj.getTime())) return '—';
 
     return dateObj.toLocaleDateString(GERMAN_LOCALE, {
@@ -57,7 +81,7 @@ export function formatDateShort(date: string | null | undefined): string {
  */
 export function formatDateRelative(date: string | null | undefined): string {
     if (!date) return '—';
-    const dateObj = new Date(date);
+    const dateObj = parseDateAsUtcDateOnly(date);
     if (Number.isNaN(dateObj.getTime())) return '—';
 
     const now = new Date();
