@@ -9,7 +9,7 @@
  */
 export function calculateReadingTime(markdown: string): string {
     if (!markdown || markdown.trim().length === 0) {
-        return '< 1 min read';
+        return '< 1 Min. Lesezeit';
     }
 
     // Strip markdown syntax to extract plain text
@@ -69,9 +69,9 @@ export function calculateReadingTime(markdown: string): string {
 
     // Return "< 1 min read" for content with < 1 minute reading time
     if (minutes < 1) {
-        return '< 1 min read';
+        return '< 1 Min. Lesezeit';
     }
 
     // Return "X min read" for all other cases
-    return `${minutes} min read`;
+    return `${minutes} Min. Lesezeit`;
 }
