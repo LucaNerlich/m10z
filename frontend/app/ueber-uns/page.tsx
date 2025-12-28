@@ -1,5 +1,3 @@
-;
-
 import {type Metadata} from 'next';
 import {getAbout} from '@/src/lib/strapi';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
@@ -9,8 +7,6 @@ import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
 import {MarkdownClient} from '@/src/components/MarkdownClient';
 import placeholderCover from '@/public/images/m10z.jpg';
-
-const REVALIDATE_SECONDS = 3600;
 
 /**
  * Produce a short plain-text description from Markdown content.
@@ -50,7 +46,6 @@ function extractDescription(content: string): string {
  */
 export async function generateMetadata(): Promise<Metadata> {
     const about = await getAbout({
-        revalidateSeconds: REVALIDATE_SECONDS,
         tags: ['about', 'strapi:about'],
     });
 
@@ -79,7 +74,6 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function AboutUsPage() {
     const about = await getAbout({
-        revalidateSeconds: REVALIDATE_SECONDS,
         tags: ['about', 'strapi:about'],
     });
 

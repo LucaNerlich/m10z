@@ -35,14 +35,12 @@ export type PaginatedResult<T> = {
 type FetchListOptions = {
     limit?: number;
     tags?: string[];
-    revalidate?: number;
 };
 
 type FetchPageOptions = {
     page?: number;
     pageSize?: number;
     tags?: string[];
-    revalidate?: number;
 };
 
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
@@ -98,7 +96,6 @@ function toPaginatedResult<T>(
 }
 
 export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | null> {
-    ;
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -143,7 +140,6 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
 }
 
 export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | null> {
-    ;
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -227,7 +223,6 @@ export async function fetchArticlesList(options: FetchListOptions = {}): Promise
         page: 1,
         pageSize: limit,
         tags: options.tags ?? ['strapi:article', 'strapi:article:list'],
-        revalidate: options.revalidate,
     });
     return paginated.items;
 }
@@ -238,13 +233,11 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
         page: 1,
         pageSize: limit,
         tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list'],
-        revalidate: options.revalidate,
     });
     return paginated.items;
 }
 
 export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> {
-    ;
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -350,7 +343,6 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
 }
 
 export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> {
-    ;
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
 
@@ -376,7 +368,6 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
         `/api/articles?${query}`,
         {
             tags: options.tags ?? ['strapi:article', 'strapi:article:list:page'],
-            revalidate: options.revalidate,
         },
     );
 
@@ -574,7 +565,6 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
         `/api/podcasts?${query}`,
         {
             tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list:page'],
-            revalidate: options.revalidate,
         },
     );
 

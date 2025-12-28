@@ -59,7 +59,6 @@ async function fetchPublishedSlugs(
             `status=published`;
 
         const res = await fetchStrapiCollection<StrapiSlugItem>(endpoint, query, {
-            revalidateSeconds: 3600,
             tags,
         });
 

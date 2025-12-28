@@ -170,8 +170,8 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const fetchCount = Math.min(PAGE_SIZE * requestedPage + PAGE_SIZE, 200);
 
     const [articlesPage, podcastsPage] = await Promise.all([
-        fetchArticlesPage({page: 1, pageSize: fetchCount, tags: HOME_ARTICLE_TAGS, revalidate: 900}),
-        fetchPodcastsPage({page: 1, pageSize: fetchCount, tags: HOME_PODCAST_TAGS, revalidate: 900}),
+        fetchArticlesPage({page: 1, pageSize: fetchCount, tags: HOME_ARTICLE_TAGS}),
+        fetchPodcastsPage({page: 1, pageSize: fetchCount, tags: HOME_PODCAST_TAGS}),
     ]);
 
     const combinedTotal = articlesPage.pagination.total + podcastsPage.pagination.total;
@@ -229,15 +229,15 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                         const anchor = `${item.type}-${item.slug}`;
                         const coverUrl = toCoverUrl(item.cover);
                         const bannerUrl = toCoverUrl(item.banner);
-                        
+
                         // Get blur data URLs from cover and banner
                         const coverBlurDataUrl = item.cover?.blurhash ?? null;
                         const bannerBlurDataUrl = item.banner?.blurhash ?? null;
-                        
+
                         // Determine placeholders - use blur if we have data URL, otherwise empty
                         const coverPlaceholder = coverBlurDataUrl ? 'blur' : (coverUrl ? 'empty' : 'blur');
                         const bannerPlaceholder = bannerBlurDataUrl ? 'blur' : (bannerUrl || coverUrl ? 'empty' : 'blur');
-                        
+
                         return (
                             <Card key={anchor} id={anchor}>
                                 <div className={styles.media}>

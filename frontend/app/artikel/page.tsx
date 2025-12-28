@@ -1,5 +1,3 @@
-;
-
 import {type Metadata} from 'next';
 
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
@@ -17,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlePage() {
-    const articles = await fetchArticlesList({revalidate: 900});
+    const articles = await fetchArticlesList();
     const sorted = sortByDateDesc(articles);
 
     return (

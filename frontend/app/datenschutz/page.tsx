@@ -5,8 +5,6 @@ import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getPrivacy} from '@/src/lib/strapi';
 import {absoluteRoute} from '@/src/lib/routes';
 
-const REVALIDATE_SECONDS = 3600;
-
 export const metadata: Metadata = {
     title: 'Datenschutz',
     description: 'Datenschutzerklärung von Mindestens 10 Zeichen. Informationen zur Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten.',
@@ -21,7 +19,6 @@ export const metadata: Metadata = {
 
 export default async function PrivacyPage() {
     const privacy = await getPrivacy({
-        revalidateSeconds: REVALIDATE_SECONDS,
         tags: ['legal', 'privacy'],
     });
 

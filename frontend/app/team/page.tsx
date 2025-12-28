@@ -1,5 +1,3 @@
-;
-
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {AuthorCard} from '@/src/components/AuthorCard';

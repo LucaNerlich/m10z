@@ -46,13 +46,6 @@ export interface StrapiAbout {
 }
 
 export interface FetchStrapiOptions {
-    /**
-     * ISR revalidate seconds. Example: 3600 for 1 hour.
-     */
-    revalidateSeconds?: number;
-    /**
-     * Optional cache tags for later invalidation via revalidateTag().
-     */
     tags?: string[];
 }
 
@@ -82,7 +75,6 @@ async function fetchStrapiJson<T>(
     const url = new URL(apiPath, base);
     const res = await fetch(url, {
         next: {
-            revalidate: options.revalidateSeconds,
             tags: options.tags,
         },
     });
