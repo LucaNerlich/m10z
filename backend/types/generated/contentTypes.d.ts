@@ -717,7 +717,6 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
         duration: Schema.Attribute.Integer &
-            Schema.Attribute.Required &
             Schema.Attribute.SetMinMax<
                 {
                     min: 1;

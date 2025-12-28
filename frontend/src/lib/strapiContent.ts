@@ -537,7 +537,7 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
                         cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
                         banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
                     },
-                    fields: ['title', 'description'],
+                    fields: ['title', 'description', 'date'],
                 },
                 categories: {
                     populate: {
