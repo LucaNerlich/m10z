@@ -4,8 +4,11 @@ import {usePathname} from 'next/navigation';
 import {useEffect} from 'react';
 
 /**
- * Scroll restoration component that scrolls to the top of the page when the route changes.
- * The scroll-padding-top CSS property on html handles the offset for anchor links.
+ * Restores scroll to the top of the page whenever the current route changes.
+ *
+ * The `scroll-padding-top` CSS property on `html` handles any offset for anchor links.
+ *
+ * @returns The component's rendered element (`null` — renders nothing).
  */
 export function ScrollRestoration(): null {
     const pathname = usePathname();
@@ -20,4 +23,3 @@ export function ScrollRestoration(): null {
 
     return null;
 }
-
