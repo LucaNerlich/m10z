@@ -70,7 +70,7 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
     return (
         <article className={cardClasses}>
             <div className={styles.media}>
-                <Link href={categoryUrl} className={styles.mediaLink}>
+                <Link href={categoryUrl} className={styles.mediaLink} aria-label={`Kategorie anzeigen: ${title}`}>
                     <ContentImage
                         src={imageSrc}
                         alt={imageAlt}

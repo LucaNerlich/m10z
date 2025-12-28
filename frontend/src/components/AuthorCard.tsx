@@ -44,7 +44,7 @@ export function AuthorCard({author, articleCount, podcastCount, className}: Auth
         <article className={cardClasses}>
             {avatarUrl ? (
                 <div className={styles.avatarContainer}>
-                    <Link href={authorUrl}>
+                    <Link href={authorUrl} aria-label={`Autorenprofil anzeigen: ${author.title ?? 'Autor'}`}>
                         <Image
                             src={avatarUrl}
                             alt={author.title ?? 'Avatar'}

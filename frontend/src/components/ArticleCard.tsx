@@ -47,7 +47,7 @@ export function ArticleCard({
     return (
         <article className={cardClasses}>
             <div className={styles.media}>
-                <Link href={articleUrl} className={styles.mediaLink}>
+                <Link href={articleUrl} className={styles.mediaLink} aria-label={`Artikelbild anzeigen: ${article.base.title}`}>
                     <Image
                         src={imageUrl ?? placeholderCover}
                         alt={article.base.title}
