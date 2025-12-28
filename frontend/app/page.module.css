@@ -37,7 +37,7 @@
 
 .toc {
     position: sticky;
-    top: calc(1rem + 66px);
+    top: calc(1rem + 64px);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
