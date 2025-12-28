@@ -28,6 +28,7 @@
     --color-text: var(--color-text-light);
     --color-text-muted: var(--color-text-muted-light);
     --color-link: var(--color-link-light);
+    --color-secondary: var(--color-secondary-light);
     --shadow-soft: var(--shadow-soft-light);
 }
 
@@ -41,6 +42,7 @@
         --color-text: var(--color-text-light);
         --color-text-muted: var(--color-text-muted-light);
         --color-link: var(--color-link-light);
+        --color-secondary: var(--color-secondary-light);
         --shadow-soft: var(--shadow-soft-light);
     }
 }
@@ -55,6 +57,7 @@
         --color-text: var(--color-text-dark);
         --color-text-muted: var(--color-text-muted-dark);
         --color-link: var(--color-link-dark);
+        --color-secondary: var(--color-secondary-dark);
         --shadow-soft: var(--shadow-soft-dark);
     }
 }
@@ -68,6 +71,7 @@
     --color-text: var(--color-text-light);
     --color-text-muted: var(--color-text-muted-light);
     --color-link: var(--color-link-light);
+    --color-secondary: var(--color-secondary-light);
     --shadow-soft: var(--shadow-soft-light);
 }
 
@@ -80,5 +84,6 @@
     --color-text: var(--color-text-dark);
     --color-text-muted: var(--color-text-muted-dark);
     --color-link: var(--color-link-dark);
+    --color-secondary: var(--color-secondary-dark);
     --shadow-soft: var(--shadow-soft-dark);
 }
