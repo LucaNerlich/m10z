@@ -244,6 +244,20 @@
           "sortable": true
         }
       },
+      "blurhash": {
+        "edit": {
+          "label": "blurhash",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "blurhash",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -400,6 +414,12 @@
           },
           {
             "name": "folderPath",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "blurhash",
             "size": 6
           }
         ]
