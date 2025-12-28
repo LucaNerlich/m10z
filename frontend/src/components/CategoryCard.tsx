@@ -2,7 +2,7 @@ import Link from 'next/link';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
 import {type StrapiMediaRef} from '@/src/lib/strapiContent';
-import {normalizeStrapiMedia, getOptimalMediaFormat, mediaUrlToAbsolute} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {ContentImage} from '@/src/components/ContentImage';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './CategoryCard.module.css';
@@ -57,7 +57,7 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
     const contentCounts = formatContentCounts(articleCount, podcastCount);
 
     // Extract cover image data
-    const coverMedia = normalizeStrapiMedia(category.base?.cover ?? undefined);
+    const coverMedia = normalizeStrapiMedia(category.base?.banner ?? category.base?.cover);
     const optimizedMedia = coverMedia ? getOptimalMediaFormat(coverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
     const blurhash = category.base?.cover?.blurhash;
