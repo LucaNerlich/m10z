@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`articlefeed:${ip}`, {windowMs: 60_000, max: 30});
+    const rl = checkRateLimit(`category:${ip}`, {windowMs: 60_000, max: 30});
     if (!rl.ok) {
         return new Response('Too Many Requests', {
             status: 429,
@@ -26,33 +26,38 @@ export async function POST(request: Request) {
         });
     }
 
-    revalidateTag('feed:article', 'max');
-    revalidateTag('strapi:article', 'max');
-    revalidateTag('strapi:article:list', 'max');
-    // Categories show article counts, so invalidate category pages too
+    // Invalidate category-related cache tags
     revalidateTag('strapi:category', 'max');
     revalidateTag('strapi:category:list', 'max');
-    revalidatePath('/rss.xml');
-    revalidatePath('/', 'page');
-    revalidatePath('/artikel', 'page');
-    revalidatePath('/artikel/[slug]', 'page');
+    
+    // Categories appear on article and podcast list pages, so invalidate those too
+    revalidateTag('strapi:article', 'max');
+    revalidateTag('strapi:article:list', 'max');
+    revalidateTag('strapi:podcast', 'max');
+    revalidateTag('strapi:podcast:list', 'max');
+    
+    // Invalidate pages that display categories
     revalidatePath('/kategorien', 'page');
     revalidatePath('/kategorien/[slug]', 'page');
+    revalidatePath('/artikel', 'page');
+    revalidatePath('/podcasts', 'page');
+    revalidatePath('/', 'page');
 
     return Response.json({
         ok: true,
         revalidated: [
-            'feed:article',
-            'strapi:article',
-            'strapi:article:list',
             'strapi:category',
             'strapi:category:list',
-            '/rss.xml',
-            '/',
-            '/artikel',
-            '/artikel/[slug]',
+            'strapi:article',
+            'strapi:article:list',
+            'strapi:podcast',
+            'strapi:podcast:list',
             '/kategorien',
             '/kategorien/[slug]',
+            '/artikel',
+            '/podcasts',
+            '/',
         ],
     });
 }
+

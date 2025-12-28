@@ -16,7 +16,6 @@ const MAX_SLUGS = 150;
 
 type FetchOptions = {
     tags: string[];
-    revalidate?: number;
 };
 
 export type PaginationMeta = {
@@ -47,7 +46,6 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
     const url = new URL(pathWithQuery, STRAPI_URL);
     const res = await fetch(url.toString(), {
         next: {
-            revalidate: options.revalidate ?? 3600,
             tags: options.tags,
         },
     });
@@ -313,7 +311,6 @@ export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryW
 }
 
 export async function fetchCategoriesWithContent(options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> {
-    ;
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {

@@ -31,13 +31,31 @@ export async function POST(request: Request) {
 
     revalidateTag('feed:audio', 'max');
     revalidateTag('strapi:podcast', 'max');
+    revalidateTag('strapi:podcast:list', 'max');
+    // Categories show podcast counts, so invalidate category pages too
+    revalidateTag('strapi:category', 'max');
+    revalidateTag('strapi:category:list', 'max');
     revalidatePath('/audiofeed.xml');
     revalidatePath('/', 'page');
     revalidatePath('/podcasts', 'page');
     revalidatePath('/podcasts/[slug]', 'page');
+    revalidatePath('/kategorien', 'page');
+    revalidatePath('/kategorien/[slug]', 'page');
 
     return Response.json({
         ok: true,
-        revalidated: ['feed:audio', 'strapi:podcast', '/audiofeed.xml', '/', '/podcasts', '/podcasts/[slug]'],
+        revalidated: [
+            'feed:audio',
+            'strapi:podcast',
+            'strapi:podcast:list',
+            'strapi:category',
+            'strapi:category:list',
+            '/audiofeed.xml',
+            '/',
+            '/podcasts',
+            '/podcasts/[slug]',
+            '/kategorien',
+            '/kategorien/[slug]',
+        ],
     });
 }

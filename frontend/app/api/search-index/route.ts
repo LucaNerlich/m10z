@@ -119,7 +119,7 @@ async function loadSearchIndex(): Promise<SearchIndexFile> {
 
     const res = await fetch(url, {
         headers: getAuthHeader(),
-        next: {revalidate: 3600, tags: ['search-index']},
+        next: {tags: ['search-index']},
     });
 
     if (!res.ok) {

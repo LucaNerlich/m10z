@@ -15,8 +15,6 @@ import {
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 
-const REVALIDATE_SECONDS = 86400; // heavy caching; invalidate explicitly on Strapi lifecycle changes
-
 const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
     ? process.env.NEXT_PUBLIC_STRAPI_URL.replace(/\/+$/, '')
@@ -29,7 +27,6 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
         strapiBaseUrl: STRAPI_URL,
         apiPathWithQuery: pathWithQuery,
         token: STRAPI_TOKEN,
-        revalidateSeconds: REVALIDATE_SECONDS,
         tags: ['feed:audio', 'strapi:podcast', 'strapi:audio-feed'],
     });
 }

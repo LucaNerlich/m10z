@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`articlefeed:${ip}`, {windowMs: 60_000, max: 30});
+    const rl = checkRateLimit(`author:${ip}`, {windowMs: 60_000, max: 30});
     if (!rl.ok) {
         return new Response('Too Many Requests', {
             status: 429,
@@ -26,33 +26,40 @@ export async function POST(request: Request) {
         });
     }
 
-    revalidateTag('feed:article', 'max');
+    // Invalidate author-related cache tags
+    revalidateTag('strapi:author', 'max');
+    revalidateTag('strapi:author:list', 'max');
+    
+    // Authors appear on article and podcast list pages, so invalidate those too
     revalidateTag('strapi:article', 'max');
     revalidateTag('strapi:article:list', 'max');
-    // Categories show article counts, so invalidate category pages too
-    revalidateTag('strapi:category', 'max');
-    revalidateTag('strapi:category:list', 'max');
-    revalidatePath('/rss.xml');
-    revalidatePath('/', 'page');
+    revalidateTag('strapi:podcast', 'max');
+    revalidateTag('strapi:podcast:list', 'max');
+    
+    // Invalidate pages that display authors
     revalidatePath('/artikel', 'page');
     revalidatePath('/artikel/[slug]', 'page');
-    revalidatePath('/kategorien', 'page');
-    revalidatePath('/kategorien/[slug]', 'page');
+    revalidatePath('/podcasts', 'page');
+    revalidatePath('/podcasts/[slug]', 'page');
+    revalidatePath('/team/[slug]', 'page');
+    revalidatePath('/', 'page');
 
     return Response.json({
         ok: true,
         revalidated: [
-            'feed:article',
+            'strapi:author',
+            'strapi:author:list',
             'strapi:article',
             'strapi:article:list',
-            'strapi:category',
-            'strapi:category:list',
-            '/rss.xml',
-            '/',
+            'strapi:podcast',
+            'strapi:podcast:list',
             '/artikel',
             '/artikel/[slug]',
-            '/kategorien',
-            '/kategorien/[slug]',
+            '/podcasts',
+            '/podcasts/[slug]',
+            '/team/[slug]',
+            '/',
         ],
     });
 }
+
