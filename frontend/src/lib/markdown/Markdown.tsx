@@ -8,7 +8,6 @@ import remarkGfm from 'remark-gfm';
 import remarkSmartypants from 'remark-smartypants';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeSlug from 'rehype-slug';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, {defaultSchema} from 'rehype-sanitize';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
@@ -91,25 +90,6 @@ export function Markdown({markdown, className}: MarkdownProps) {
                 ]}
                 rehypePlugins={[
                     rehypeSlug,
-                    [
-                        rehypeAutolinkHeadings,
-                        {
-                            behavior: 'append',
-                            properties: {
-                                className: ['anchor-link'],
-                                'aria-label': 'Link to section',
-                            },
-                            content: {
-                                type: 'element',
-                                tagName: 'span',
-                                properties: {
-                                    className: ['anchor-icon'],
-                                    'aria-hidden': 'true',
-                                },
-                                children: [{type: 'text', value: '#'}],
-                            },
-                        },
-                    ],
                     [rehypeExternalLinks, {target: '_blank', rel: ['noopener', 'noreferrer']}],
                     // Parse HTML tags (required before sanitization)
                     rehypeRaw,
@@ -118,6 +98,8 @@ export function Markdown({markdown, className}: MarkdownProps) {
                         rehypeSanitize,
                         {
                             ...defaultSchema,
+                            // clobberPrefix defaults to 'user-content-' for security against DOM clobbering
+                            clobberPrefix: 'uc-',
                             tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark'],
                             // No additional attributes allowed for these tags to prevent XSS
                             attributes: {

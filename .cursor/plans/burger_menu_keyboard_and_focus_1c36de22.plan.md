@@ -136,4 +136,3 @@ const handleKeyDown = (event: KeyboardEvent) => {
 - Test Space/Enter on burger button opens menu
 - Test Escape closes menu
 - Test focus moves to first link when menu opens
-- Test focus returns to burger button when menu closes

@@ -1,8 +1,8 @@
 {
   "key": "plugin_upload_view_configuration",
   "value": {
-    "pageSize": 10,
-    "sort": "createdAt:DESC"
+    "pageSize": 50,
+    "sort": "name:ASC"
   },
   "type": "object",
   "environment": null,
