@@ -2,6 +2,18 @@
 
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/LucaNerlich/m10z?utm_source=oss&utm_medium=github&utm_campaign=LucaNerlich%2Fm10z&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
+## Load Backups
+
+1. Pull Assets
+    - `scp -r luca@94.130.75.93:/mnt/data-volume-1/strapi/m10z /Users/nerlich/workspace/luca/m10z/backend/public/remote-uploads`
+    - Manually overwrite local upload files with remote ones
+    - or use rsync
+    - `rsync -a --ignore-existing /Users/nerlich/workspace/luca/m10z/backend/public/remote-uploads luca@94.130.75.93:/mnt/data-volume-1/strapi/m10z`
+2. Load Database Dump from Coolify
+    - https://coolify.m10z.de/project/sg4k4so4ooo8g4sgwkoccsco/environment/qggo00o4s0gokw0ok4kosswo/database/g8wgkcoogw8w044gsog8oo4g/backups
+3. Ingest Database Dump locally using pg-restore
+    - `pg_restore -U postgres -c -d m10z pg-dump-m10z-1766918338.dmp`
+
 ## Content Types
 
 - Author

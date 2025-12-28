@@ -81,6 +81,7 @@ ssl
 .idea
 nbproject
 public/uploads/*
+public/remote-uploads/*
 !public/uploads/.gitkeep
 .tsbuildinfo
 .eslintcache

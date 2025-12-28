@@ -5,7 +5,6 @@ import {type Metadata} from 'next';
 import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
-import {EmptyState} from '@/src/components/EmptyState';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
@@ -152,11 +151,6 @@ type SearchParams =
 export default function HomePage(props: {searchParams?: SearchParams}) {
     return (
         <div>
-            <header className={styles.header}>
-                <h1 className={styles.title}>Mindestens 10 Zeichen</h1>
-                <p className={styles.subtitle}>Ein offener Kanal für Videospielcontent und das Drumherum –
-                    unentgeltlich, unabhängig, ungezwungen.</p>
-            </header>
             <Suspense fallback={<Card variant="empty">Lade Inhalte…</Card>}>
                 <FeedContent searchParams={props.searchParams} />
             </Suspense>
