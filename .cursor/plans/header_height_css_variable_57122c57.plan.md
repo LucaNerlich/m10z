@@ -84,4 +84,3 @@ After implementation, verify:
 
 - The `--header-height` value (75px) can be adjusted if needed after visual testing
 - The `Card.module.css` file also has a `scroll-margin-top: 85px` value, but this appears to be for card-specific anchor behavior and is not part of this task
-- The offset of `1rem` (16px) provides consistent visual spacing and can be adjusted if needed

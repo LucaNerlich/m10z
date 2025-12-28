@@ -5,7 +5,7 @@ import {type Metadata} from 'next';
 import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import {getEffectiveDate, sortByDateDesc, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
@@ -125,13 +125,6 @@ function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
     }));
 }
 
-function sortFeedByDateDesc(items: FeedItem[]): FeedItem[] {
-    return [...items].sort((a, b) => {
-        const ad = toDateTimestamp(a.publishedAt) ?? 0;
-        const bd = toDateTimestamp(b.publishedAt) ?? 0;
-        return bd - ad;
-    });
-}
 
 function clampPageToData(page: number, totalItems: number): number {
     if (totalItems <= 0) return 1;
@@ -172,10 +165,20 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const currentPage = clampPageToData(requestedPage, combinedTotal);
     const offset = (currentPage - 1) * PAGE_SIZE;
 
-    const feedItems = sortFeedByDateDesc([
-        ...mapArticlesToFeed(articlesPage.items),
-        ...mapPodcastsToFeed(podcastsPage.items),
-    ]);
+    // Sort articles and podcasts by effective date (base.date prioritized over publishedAt)
+    const sortedArticles = sortByDateDesc(articlesPage.items);
+    const sortedPodcasts = sortByDateDesc(podcastsPage.items);
+    
+    // Combine and sort the mapped feed items by their effective date
+    // Both publishedAt fields already contain the effective date from getEffectiveDate
+    const feedItems = [
+        ...mapArticlesToFeed(sortedArticles),
+        ...mapPodcastsToFeed(sortedPodcasts),
+    ].sort((a, b) => {
+        const ad = toDateTimestamp(a.publishedAt) ?? 0;
+        const bd = toDateTimestamp(b.publishedAt) ?? 0;
+        return bd - ad;
+    });
 
     const currentItems = feedItems.slice(offset, offset + PAGE_SIZE);
     const nextPage = hasNextPage(currentPage, combinedTotal) ? currentPage + 1 : null;
