@@ -13,6 +13,7 @@
     - https://coolify.m10z.de/project/sg4k4so4ooo8g4sgwkoccsco/environment/qggo00o4s0gokw0ok4kosswo/database/g8wgkcoogw8w044gsog8oo4g/backups
 3. Ingest Database Dump locally using pg-restore
     - `pg_restore -U postgres -c -d m10z pg-dump-m10z-1766918338.dmp`
+4. Update Strapi API Token in `/frontend.env.local`
 
 ## Content Types
 
