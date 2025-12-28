@@ -2,6 +2,7 @@ import '../src/styles/global.css';
 import Header from '@/src/components/Header';
 import Footer from '@/src/components/Footer';
 import UmamiAnalytics from '@/src/components/UmamiAnalytics';
+import {ScrollRestoration} from '@/src/components/ScrollRestoration';
 import {ContentLayout} from '@/app/ContentLayout';
 import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
 import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
@@ -63,6 +64,7 @@ export default function RootLayout({
             className={`${poppins.variable} ${argon.variable} ${krypton.variable} ${neon.variable} ${radon.variable} ${xenon.variable}`}
         >
         <body>
+        <ScrollRestoration />
         <Header />
         <main>
             <ContentLayout>{children}</ContentLayout>
