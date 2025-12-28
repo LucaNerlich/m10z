@@ -127,6 +127,19 @@
     margin: 1.5rem 0;
 }
 
+/* Desktop image constraints for markdown content */
+@media (min-width: 641px) {
+    .markdown-content a[data-fancybox] {
+        display: block;
+        max-width: 800px;
+        margin: 1.5rem auto;
+    }
+
+    .markdown-content a[data-fancybox] img {
+        margin: 0;
+    }
+}
+
 /* Horizontal rule spacing in markdown content */
 .markdown-content hr {
     margin: 1rem 0;
