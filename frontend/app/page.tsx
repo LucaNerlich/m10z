@@ -5,6 +5,7 @@ import {type Metadata} from 'next';
 import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
+import {FeedSkeleton} from '@/src/components/FeedSkeleton';
 import {getEffectiveDate, sortByDateDesc, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
@@ -132,7 +133,7 @@ type SearchParams =
 export default function HomePage(props: {searchParams?: SearchParams}) {
     return (
         <div>
-            <Suspense fallback={<Card variant="empty">Lade Inhalte…</Card>}>
+            <Suspense fallback={<FeedSkeleton />}>
                 <FeedContent searchParams={props.searchParams} />
             </Suspense>
         </div>
