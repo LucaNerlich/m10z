@@ -106,7 +106,7 @@ export function Markdown({markdown, className}: MarkdownProps) {
                                     className: ['anchor-icon'],
                                     'aria-hidden': 'true',
                                 },
-                                children: [{type: 'text', value: '#'}],
+                                children: [{type: 'text', value: ' #'}],
                             },
                         },
                     ],
@@ -118,6 +118,8 @@ export function Markdown({markdown, className}: MarkdownProps) {
                         rehypeSanitize,
                         {
                             ...defaultSchema,
+                            // clobberPrefix defaults to 'user-content-' for security against DOM clobbering
+                            clobberPrefix: '',
                             tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark'],
                             // No additional attributes allowed for these tags to prevent XSS
                             attributes: {

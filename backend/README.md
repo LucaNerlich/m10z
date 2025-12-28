@@ -8,7 +8,7 @@
     - `scp -r luca@94.130.75.93:/mnt/data-volume-1/strapi/m10z /Users/nerlich/workspace/luca/m10z/backend/public/remote-uploads`
     - Manually overwrite local upload files with remote ones
     - or use rsync
-    - `rsync -a --ignore-existing /Users/nerlich/workspace/luca/m10z/backend/public/remote-uploads luca@94.130.75.93:/mnt/data-volume-1/strapi/m10z`
+    - `rsync -a --ignore-existing luca@94.130.75.93:/mnt/data-volume-1/strapi/m10z /Users/nerlich/workspace/luca/m10z/backend/public/uploads`
 2. Load Database Dump from Coolify
     - https://coolify.m10z.de/project/sg4k4so4ooo8g4sgwkoccsco/environment/qggo00o4s0gokw0ok4kosswo/database/g8wgkcoogw8w044gsog8oo4g/backups
 3. Ingest Database Dump locally using pg-restore
