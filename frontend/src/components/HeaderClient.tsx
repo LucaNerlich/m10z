@@ -11,10 +11,12 @@ type HeaderClientProps = {
     secondaryLinks: ReadonlyArray<{label: string; href: string}>;
 };
 
+const shortcutKeyMenu = 'J';
+
 /**
  * Header component that renders a responsive, accessible navigation with a toggleable mobile menu.
  *
- * Manages menu open/close state, global shortcut (Cmd/Ctrl+M), outside-click closing, focus management (focus first item on open, restore focus to the toggle on close), and keyboard navigation/trapping while the menu is open.
+ * Manages menu open/close state, global shortcut (Cmd/Ctrl+J), outside-click closing, focus management (focus first item on open, restore focus to the toggle on close), and keyboard navigation/trapping while the menu is open.
  *
  * @param primaryLinks - Readonly array of primary navigation links (rendered mobile-only).
  * @param secondaryLinks - Readonly array of secondary navigation links.
@@ -30,7 +32,7 @@ export default function HeaderClient({
     const burgerButtonRef = useRef<HTMLButtonElement | null>(null);
     const prevMenuOpenRef = useRef(false);
     const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
-    const shortcutLabel = isMac ? 'Cmd+M' : 'Ctrl+M';
+    const shortcutLabel = isMac ? 'Cmd+' + shortcutKeyMenu : 'Ctrl+' + shortcutKeyMenu;
 
     const closeMenu = () => setIsMenuOpen(false);
 
@@ -80,7 +82,7 @@ export default function HeaderClient({
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'm';
+            const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === shortcutKeyMenu.toLowerCase();
             if (isShortcut) {
                 event.preventDefault();
                 setIsMenuOpen((prev) => !prev);

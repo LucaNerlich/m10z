@@ -5,14 +5,16 @@ import {useEffect, useState} from 'react';
 import styles from './Header.module.css';
 import {SearchModal} from './SearchModal';
 
+const shortcutKeySearch = 'K';
+
 export function SearchLauncher(): React.ReactElement {
     const [isOpen, setIsOpen] = useState(false);
     const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
-    const shortcutLabel = isMac ? 'Cmd+K' : 'Ctrl+K';
+    const shortcutLabel = isMac ? 'Cmd+' + shortcutKeySearch : 'Ctrl+' + shortcutKeySearch;
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
-            const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+            const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === shortcutKeySearch.toLowerCase();
             if (isShortcut) {
                 event.preventDefault();
                 setIsOpen((prev) => !prev);
