@@ -1,0 +1,25 @@
+'use client';
+
+import {usePathname} from 'next/navigation';
+import {useEffect} from 'react';
+
+/**
+ * Restores scroll to the top of the page whenever the current route changes.
+ *
+ * The `scroll-padding-top` CSS property on `html` handles any offset for anchor links.
+ *
+ * @returns The component's rendered element (`null` — renders nothing).
+ */
+export function ScrollRestoration(): null {
+    const pathname = usePathname();
+
+    useEffect(() => {
+        // Scroll to top when route changes
+        window.scrollTo({
+            top: 0,
+            behavior: 'instant',
+        });
+    }, [pathname]);
+
+    return null;
+}

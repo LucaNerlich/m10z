@@ -7,6 +7,7 @@
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: var(--header-height);
     background-color: var(--color-background);
 }
 
@@ -85,5 +86,5 @@ h3,
 h4,
 h5,
 h6 {
-    scroll-margin-top: 100px;
+    scroll-margin-top: var(--header-height);
 }
