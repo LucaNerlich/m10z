@@ -45,10 +45,12 @@ export const viewport: Viewport = {
 };
 
 /**
- * Root layout component that embeds organization and website JSON-LD into the document head and renders the page chrome.
+ * Root layout component that provides the application's top-level HTML structure and embeds organization and website JSON-LD.
  *
- * @param children - The page content to render inside the main content area.
- * @returns The top-level HTML structure including <head> with JSON-LD scripts, header, main content wrapped by ContentLayout, footer, and analytics.
+ * Renders <html> with configured fonts and a <body> that includes ScrollRestoration, Header, a <main> containing ContentLayout wrapping `children`, Footer, UmamiAnalytics, and two `application/ld+json` scripts with organization and website JSON-LD.
+ *
+ * @param children - The page content to render inside ContentLayout
+ * @returns The complete HTML element tree for the application, including embedded JSON-LD scripts
  */
 export default function RootLayout({
                                        children,
