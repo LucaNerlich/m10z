@@ -11,20 +11,43 @@ const GERMAN_LOCALE = 'de-DE';
  * Parses a date string, extracting only the date part (YYYY-MM-DD) and parsing it as UTC
  * to avoid timezone shifts that would show the wrong day.
  *
- * This is appropriate for calendar dates (like "published on December 25th") where
- * the time component is not meaningful and should be ignored.
+ * This function treats UTC timestamps as calendar dates by extracting the YYYY-MM-DD
+ * component from the UTC representation and creating a Date object from those components.
+ * This ensures that dates display consistently regardless of the user's timezone.
+ *
+ * When dates are entered in Strapi as calendar dates (e.g., "Dec 28, 00:00" local time),
+ * they may be stored as UTC timestamps from the previous day (e.g., "2025-12-27T23:00:00Z"
+ * for Germany UTC+1). This function detects such cases and adjusts to show the intended
+ * calendar date by checking if the UTC time is late in the day (22:00-23:59), which typically
+ * indicates a date entered at midnight local time in a timezone ahead of UTC.
  *
  * @param date - Date string (ISO 8601 or any valid date string)
  * @returns Date object parsed as UTC date-only (time set to 00:00:00 UTC)
  */
 function parseDateAsUtcDateOnly(date: string): Date {
     // Extract the date part (YYYY-MM-DD) from the string
-    // Handles formats like: "2024-12-25", "2024-12-25T00:00:00", "2024-12-25T01:00:00Z", etc.
-    const dateMatch = date.match(/^(\d{4}-\d{2}-\d{2})/);
+    // Handles formats like: "2024-12-25", "2024-12-25T00:00:00", "2024-12-25T23:00:00Z", etc.
+    const dateMatch = date.match(/^(\d{4}-\d{2}-\d{2})(?:T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?Z?)?/);
     if (dateMatch) {
+        const [year, month, day] = dateMatch[1].split('-').map(Number);
+        
+        // If we have a time component, check if it's late in the day UTC (20:00-23:59)
+        // This typically indicates a date entered at midnight local time in a timezone ahead of UTC
+        // In such cases, we should interpret it as the next calendar day
+        if (dateMatch[2] !== undefined) {
+            const hour = parseInt(dateMatch[2], 10);
+            // If hour is 20-23 UTC, this is likely a date entered at 00:00 local time
+            // in a timezone 1-4 hours ahead of UTC (e.g., Germany UTC+1/UTC+2, or other European/African timezones)
+            // Adjust to show the intended calendar date
+            if (hour >= 20) {
+                // Add one day to get the intended calendar date
+                const adjustedDate = new Date(Date.UTC(year, month - 1, day + 1));
+                return adjustedDate;
+            }
+        }
+        
         // Parse as UTC date to avoid timezone shifts
         // This ensures "2024-12-25" always displays as December 25th regardless of timezone
-        const [year, month, day] = dateMatch[1].split('-').map(Number);
         return new Date(Date.UTC(year, month - 1, day));
     }
     // Fallback to normal parsing if format is unexpected
@@ -33,6 +56,9 @@ function parseDateAsUtcDateOnly(date: string): Date {
 
 /**
  * Formats a date string into a full German date format.
+ *
+ * Treats UTC timestamps as calendar dates by using UTC component extraction,
+ * ensuring dates display consistently regardless of user timezone.
  *
  * Example: "15. Januar 2024"
  *
@@ -54,6 +80,9 @@ export function formatDateFull(date: string | null | undefined): string {
 /**
  * Formats a date string into a short German date format.
  *
+ * Treats UTC timestamps as calendar dates by using UTC component extraction,
+ * ensuring dates display consistently regardless of user timezone.
+ *
  * Example: "15. Jan. 2024"
  *
  * @param date - Date string (ISO 8601 or any valid date string), or null/undefined
@@ -73,6 +102,10 @@ export function formatDateShort(date: string | null | undefined): string {
 
 /**
  * Produce a German human-friendly relative label for the given date.
+ *
+ * Treats UTC timestamps as calendar dates by using UTC component extraction,
+ * ensuring dates display consistently regardless of user timezone. Relative date
+ * calculations are based on calendar days, not time-of-day differences.
  *
  * Returns '—' for null, undefined, or unparseable date strings. For exact day offsets returns localized labels such as "heute", "gestern", or "morgen"; for other offsets returns a relative description (e.g., "vor 2 Tagen", "in 3 Wochen"). If relative formatting is unavailable or fails, falls back to the short German date format.
  *

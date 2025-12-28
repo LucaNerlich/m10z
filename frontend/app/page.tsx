@@ -11,6 +11,7 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {mediaUrlToAbsolute, pickBannerMedia, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
 import {absoluteRoute} from '@/src/lib/routes';
+import {formatDateShort} from '@/src/lib/dateFormatters';
 import styles from './page.module.css';
 import Image from 'next/image';
 import placeholderCover from '@/public/images/m10z.jpg';
@@ -68,19 +69,6 @@ function parsePageParam(searchParams?: Record<string, string | string[] | undefi
     const parsed = Number(value);
     if (!Number.isFinite(parsed) || parsed < 1) return 1;
     return Math.min(Math.floor(parsed), MAX_PAGE);
-}
-
-/**
- * Format a date string into a German short-readable date.
- *
- * @param raw - An optional date string (e.g., ISO 8601) or any value accepted by the Date constructor
- * @returns The date formatted as "DD. MMM YYYY" for the "de-DE" locale, or `'—'` if `raw` is missing or invalid
- */
-function formatDate(raw?: string | null): string {
-    if (!raw) return '—';
-    const date = new Date(raw);
-    if (Number.isNaN(date.getTime())) return '—';
-    return date.toLocaleDateString('de-DE', {year: 'numeric', month: 'short', day: 'numeric'});
 }
 
 /**
@@ -203,10 +191,10 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                             </Tag>
                                             {item.publishedAt ? (
                                                 <time className={styles.tocDate} dateTime={item.publishedAt}>
-                                                    {formatDate(item.publishedAt)}
+                                                    {formatDateShort(item.publishedAt)}
                                                 </time>
                                             ) : (
-                                                <span className={styles.tocDate}>{formatDate(item.publishedAt)}</span>
+                                                <span className={styles.tocDate}>{formatDateShort(item.publishedAt)}</span>
                                             )}
                                         </div>
                                         <h3 className={styles.tocLabel}>{item.title}</h3>
@@ -262,7 +250,7 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                         <Tag className={styles.metaTag}>
                                             {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                         </Tag>
-                                        <time className={styles.date}>{formatDate(item.publishedAt)}</time>
+                                        <time className={styles.date}>{formatDateShort(item.publishedAt)}</time>
                                     </div>
                                     <h2 className={styles.cardTitle}>
                                         <Link href={item.href} className={styles.cardLink}>

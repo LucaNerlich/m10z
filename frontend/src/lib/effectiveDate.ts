@@ -13,7 +13,6 @@ function cleanDate(raw?: string | null): string | null {
 
 export function getEffectiveDate(item: PublishableWithBase | null | undefined): string | null {
     if (!item) return null;
-    console.log('item', item);
     const override = cleanDate(item.base?.date);
     if (override) return override;
     const published = cleanDate(item.publishedAt);
