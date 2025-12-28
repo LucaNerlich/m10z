@@ -1,5 +1,3 @@
-;
-
 import {type Metadata} from 'next';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getPrivacy} from '@/src/lib/strapi';

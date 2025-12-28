@@ -1,5 +1,3 @@
-;
-
 import {type Metadata} from 'next';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';

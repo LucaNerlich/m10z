@@ -55,8 +55,6 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
     const title = category.base?.title ?? categorySlug;
     const description = category.base?.description;
     const contentCounts = formatContentCounts(articleCount, podcastCount);
-
-    // Extract cover image data
     const coverMedia = normalizeStrapiMedia(category.base?.banner ?? category.base?.cover);
     const optimizedMedia = coverMedia ? getOptimalMediaFormat(coverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;

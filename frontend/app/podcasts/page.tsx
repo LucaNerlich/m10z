@@ -1,5 +1,3 @@
-;
-
 import {type Metadata} from 'next';
 
 import {sortByDateDesc} from '@/src/lib/effectiveDate';

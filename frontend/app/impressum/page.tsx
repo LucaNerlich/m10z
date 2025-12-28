@@ -1,5 +1,3 @@
-;
-
 import {type Metadata} from 'next';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getImprint} from '@/src/lib/strapi';

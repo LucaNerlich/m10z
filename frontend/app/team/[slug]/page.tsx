@@ -13,7 +13,6 @@ import {AuthorHeader} from '@/src/components/AuthorHeader';
 import {Section} from '@/src/components/Section';
 import {EmptyState} from '@/src/components/EmptyState';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
-import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;

@@ -1,5 +1,3 @@
-;
-
 import {type Metadata} from 'next';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {notFound} from 'next/navigation';
@@ -20,7 +18,6 @@ type PageProps = {
 };
 
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-    ;
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
