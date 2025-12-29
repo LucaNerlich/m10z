@@ -19,13 +19,12 @@ const secondaryLinks = [
 ] as const;
 
 /**
- * Renders the site header containing the logo, primary navigation, search launcher, and client-side header actions.
+ * Renders the site header containing the logo, centered primary navigation, search launcher, and client-side header actions.
  *
- * The header includes an accessible logo link to the home route, a centered navigation built from `primaryLinks`,
- * a search launcher, and a `HeaderClient` loaded inside `Suspense` (with a burger menu fallback) that receives
- * `primaryLinks` and `secondaryLinks`.
+ * The primary navigation is built from `primaryLinks`. `HeaderClient` is loaded inside a `Suspense` boundary and receives
+ * `primaryLinks` and `secondaryLinks`; while loading a burger-menu fallback is shown.
  *
- * @returns The header element as a `React.ReactElement`.
+ * @returns The header element.
  */
 export default function Header(): React.ReactElement {
     return (

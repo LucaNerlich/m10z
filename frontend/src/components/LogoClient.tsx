@@ -13,11 +13,10 @@ interface LogoClientProps {
 }
 
 /**
- * Client-side logo component that scrolls to top when clicked on home page,
- * otherwise navigates normally to the home route.
+ * Render a logo link that scrolls smoothly to the top when clicked on the home route, otherwise navigates to the home page.
  *
- * @param className - Optional CSS class name to apply to the logo link
- * @returns The logo link element as a React element
+ * @param className - Optional CSS class name applied to the link; defaults to the component's logo style when omitted
+ * @returns A React element containing the logo wrapped in a link to the home route
  */
 export default function LogoClient({className}: LogoClientProps): React.ReactElement {
     const pathname = usePathname();
@@ -47,4 +46,3 @@ export default function LogoClient({className}: LogoClientProps): React.ReactEle
         </Link>
     );
 }
-
