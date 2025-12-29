@@ -4,8 +4,7 @@
  */
 
 import {generateBlurDataUrl} from '../utils/generateBlurhash';
-import {existsSync} from 'fs';
-import {promises as fsPromises} from 'fs';
+import {existsSync, promises as fsPromises} from 'fs';
 import {resolve} from 'path';
 
 /**

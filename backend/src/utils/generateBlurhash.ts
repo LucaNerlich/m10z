@@ -1,5 +1,4 @@
 import sharp from 'sharp';
-import {encode, decode} from 'blurhash';
 
 /**
  * Generate a base64 data URL from an image buffer for use as Next.js Image blur placeholder.

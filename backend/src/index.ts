@@ -1,4 +1,3 @@
-import {invalidateNext} from './utils/invalidateNextCache';
 import {buildAndPersistSearchIndex} from './services/searchIndexBuilder';
 import {wordCountMiddleware} from './middlewares/wordCount';
 import {durationMiddleware} from './middlewares/duration';
