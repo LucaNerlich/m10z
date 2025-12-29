@@ -5,7 +5,7 @@
       "bulkable": true,
       "filterable": true,
       "searchable": true,
-      "pageSize": 10,
+      "pageSize": 20,
       "mainField": "slug",
       "defaultSortBy": "updatedAt",
       "defaultSortOrder": "DESC"
@@ -30,7 +30,7 @@
         "list": {
           "label": "Title",
           "searchable": false,
-          "sortable": false
+          "sortable": true
         }
       },
       "slug": {
@@ -201,12 +201,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "categories",
-        "youtube"
-      ],
       "edit": [
         [
           {
@@ -252,6 +246,12 @@
             "size": 4
           }
         ]
+      ],
+      "list": [
+        "base",
+        "updatedAt",
+        "categories",
+        "youtube"
       ]
     },
     "uid": "api::podcast.podcast"

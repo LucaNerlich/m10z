@@ -8,10 +8,12 @@ export const ALLOWED_IMAGE_HOSTNAMES = [
     'beta.m10z.de',
     'cdn.akamai.steamstatic.com',
     'cms.m10z.de',
-    'shared.fastly.steamstatic.com',
+    'image.api.playstation.com',
     'localhost',
-    'shared.akamai.steamstatic.com',
     'm10z.de',
+    'shared.akamai.steamstatic.com',
+    'shared.fastly.steamstatic.com',
+    'shared.steamstatic.com',
 ] as const;
 
 /**

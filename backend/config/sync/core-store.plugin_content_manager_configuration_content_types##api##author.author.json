@@ -5,10 +5,10 @@
       "bulkable": true,
       "filterable": true,
       "searchable": true,
-      "pageSize": 10,
+      "pageSize": 20,
       "mainField": "slug",
-      "defaultSortBy": "updatedAt",
-      "defaultSortOrder": "DESC"
+      "defaultSortBy": "title",
+      "defaultSortOrder": "ASC"
     },
     "metadatas": {
       "id": {
