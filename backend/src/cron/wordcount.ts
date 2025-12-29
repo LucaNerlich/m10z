@@ -3,7 +3,7 @@
  * Runs hourly to process up to 50 items per execution.
  */
 
-import {countWords} from '../middlewares/wordCount';
+import {countWords, extractTextFromRichtext} from '../middlewares/wordCount';
 
 /**
  * Backfills missing wordCount fields for articles and podcasts by computing and updating them.
@@ -48,13 +48,13 @@ export async function generateMissingWordCounts({strapi}: {strapi: any}): Promis
 
                 for (const article of articles) {
                     try {
-                        const content = article.content;
+                        const richtextValue = article.content;
+                        const content = extractTextFromRichtext(richtextValue);
                         const wordCount = countWords(content);
-
                         await strapi.documents('api::article.article').update({
                             documentId: article.documentId || article.id,
                             data: {
-                                wordCount,
+                                wordCount: wordCount,
                             },
                         });
 
@@ -104,13 +104,14 @@ export async function generateMissingWordCounts({strapi}: {strapi: any}): Promis
 
                 for (const podcast of podcasts) {
                     try {
-                        const shownotes = podcast.shownotes;
-                        const wordCount = countWords(shownotes);
+                        const richtextValue = podcast.shownotes;
+                        const content = extractTextFromRichtext(richtextValue);
+                        const wordCount = countWords(content);
 
                         await strapi.documents('api::podcast.podcast').update({
                             documentId: podcast.documentId || podcast.id,
                             data: {
-                                wordCount,
+                                wordCount: wordCount,
                             },
                         });
 

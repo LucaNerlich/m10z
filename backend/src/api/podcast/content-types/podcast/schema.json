@@ -56,7 +56,7 @@
         },
         "wordCount": {
             "type": "integer",
-            "min": 1
+            "min": 0
         }
     }
 }

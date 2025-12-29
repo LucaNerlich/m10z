@@ -550,7 +550,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         wordCount: Schema.Attribute.Integer &
             Schema.Attribute.SetMinMax<
                 {
-                    min: 1;
+                    min: 0;
                 },
                 number
             >;
@@ -746,7 +746,7 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         wordCount: Schema.Attribute.Integer &
             Schema.Attribute.SetMinMax<
                 {
-                    min: 1;
+                    min: 0;
                 },
                 number
             >;

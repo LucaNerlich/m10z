@@ -71,6 +71,7 @@ export function countWords(content: string | null | undefined): number {
         const words = text.split(/\s+/).filter((word) => word.length > 0);
         return words.length;
     } catch (error) {
+        console.log('error', error);
         // Log error but return 0 - never throw
         // Note: strapi is not available in this pure function, so we can't log here
         // Errors will be logged in extractWordCount
@@ -79,29 +80,125 @@ export function countWords(content: string | null | undefined): number {
 }
 
 /**
- * Compute the word count from an article's content or a podcast's shownotes and store it on the provided data object.
- *
- * Selects the source field based on `contentType`, sets `data.wordCount` to the computed number, and logs the result.
- * If `contentType` is unrecognized the function logs a warning and returns without modifying `data`.
- * On error the function logs the error and sets `data.wordCount` to 0.
- *
- * @param data - The entity data being saved; `wordCount` will be written to this object
- * @param contentType - Either `'article'` (uses `data.content`) or `'podcast'` (uses `data.shownotes`)
+ * Extract text content from Strapi richtext field.
+ * Handles both string (markdown) and object (Strapi richtext format) formats.
  */
+export function extractTextFromRichtext(richtext: any): string | null | undefined {
+    if (!richtext) {
+        return null;
+    }
+
+    // If it's already a string (markdown), return as-is
+    if (typeof richtext === 'string') {
+        return richtext;
+    }
+
+    // If it's an object (Strapi richtext format), try to extract text
+    if (typeof richtext === 'object') {
+        // Strapi v5 richtext might be stored as JSON with structure like { type: 'doc', content: [...] }
+        // Try to serialize it to markdown/plain text
+        try {
+            // Check if it's a Strapi richtext object (ProseMirror/Strapi format)
+            if (richtext.type === 'doc' && Array.isArray(richtext.content)) {
+                // Recursively extract text from content nodes
+                function extractFromNodes(nodes: any[]): string {
+                    return nodes
+                        .map((node) => {
+                            if (node.type === 'text' && typeof node.text === 'string') {
+                                return node.text;
+                            }
+                            if (node.content && Array.isArray(node.content)) {
+                                return extractFromNodes(node.content);
+                            }
+                            // Handle paragraph nodes that might have text directly
+                            if (node.text && typeof node.text === 'string') {
+                                return node.text;
+                            }
+                            return '';
+                        })
+                        .filter((text) => text.length > 0)
+                        .join(' ');
+                }
+                const extracted = extractFromNodes(richtext.content);
+                return extracted.length > 0 ? extracted : null;
+            }
+
+            // Check if it's an array (some formats use arrays)
+            if (Array.isArray(richtext)) {
+                const extracted = richtext
+                    .map((item) => {
+                        if (typeof item === 'string') return item;
+                        if (item && typeof item === 'object') {
+                            if (item.text) return item.text;
+                            if (item.content) return extractTextFromRichtext(item.content);
+                        }
+                        return '';
+                    })
+                    .filter((text) => text.length > 0)
+                    .join(' ');
+                return extracted.length > 0 ? extracted : null;
+            }
+
+            // If it has a toString method, try that
+            if (typeof richtext.toString === 'function') {
+                const str = richtext.toString();
+                if (str && str !== '[object Object]') {
+                    return str;
+                }
+            }
+
+            // Last resort: JSON stringify (not ideal but better than nothing)
+            // This will include JSON syntax, but countWords will handle it
+            return JSON.stringify(richtext);
+        } catch (error) {
+            // If extraction fails, return null
+            return null;
+        }
+    }
+
+    return null;
+}
+
 export async function extractWordCount(
     strapi: any,
     data: any,
     contentType: 'article' | 'podcast',
 ): Promise<void> {
     try {
-        let content: string | null | undefined;
+        let richtextValue: any;
 
         if (contentType === 'article') {
-            content = data.content;
+            richtextValue = data.content;
         } else if (contentType === 'podcast') {
-            content = data.shownotes;
+            richtextValue = data.shownotes;
         } else {
             strapi.log.warn(`Unknown contentType for word count extraction: ${contentType}`);
+            return;
+        }
+
+        // Extract text from richtext (handles both string and object formats)
+        const content = extractTextFromRichtext(richtextValue);
+
+        // Log for debugging
+        if (richtextValue && typeof richtextValue !== 'string') {
+            strapi.log.info(
+                `Richtext is not a string for ${contentType} (${data.slug || 'new'}), type: ${typeof richtextValue}, value preview: ${JSON.stringify(richtextValue).substring(0, 200)}`,
+            );
+        }
+
+        if (!richtextValue) {
+            strapi.log.warn(
+                `No richtext value found for ${contentType} (${data.slug || 'new'}), setting wordCount to 0`,
+            );
+            data.wordCount = 0;
+            return;
+        }
+
+        if (!content) {
+            strapi.log.warn(
+                `Could not extract text from richtext for ${contentType} (${data.slug || 'new'}), type: ${typeof richtextValue}, setting wordCount to 0`,
+            );
+            data.wordCount = 0;
             return;
         }
 
@@ -112,8 +209,13 @@ export async function extractWordCount(
         data.wordCount = wordCount;
 
         if (wordCount > 0) {
-            strapi.log.debug(
-                `Calculated wordCount: ${wordCount} for ${contentType} (${data.slug || 'new'})`,
+            strapi.log.info(
+                `Calculated wordCount: ${wordCount} for ${contentType} (${data.slug || 'new'}), content length: ${content.length}`,
+            );
+        } else {
+            // Log warning if we have content but got 0 words (might indicate extraction issue)
+            strapi.log.warn(
+                `WordCount is 0 for ${contentType} (${data.slug || 'new'}) but extracted content exists (length: ${content.length}), preview: ${content.substring(0, 100)}`,
             );
         }
     } catch (error) {
@@ -145,6 +247,14 @@ export async function wordCountMiddleware(
         ) {
             const data = context.params?.data;
             if (data) {
+                // Skip word count calculation if wordCount is already explicitly set in the data
+                // This prevents the middleware from overwriting wordCount when it's being set directly
+                // (e.g., by the cronjob or manual updates)
+                if (data.wordCount !== undefined && data.wordCount !== null) {
+                    // WordCount is already set, skip calculation
+                    return next();
+                }
+
                 // Get strapi instance from context
                 const strapiInstance = context.params?.strapi || strapi;
                 // Determine contentType based on uid
