@@ -36,8 +36,7 @@ export function getStoredTheme(): Theme {
 
 export function applyTheme(theme: Theme): void {
     if (typeof document === 'undefined') return;
-    const effectiveTheme = resolveEffectiveTheme(theme);
-    document.documentElement.dataset.theme = effectiveTheme;
+    document.documentElement.dataset.theme = resolveEffectiveTheme(theme);
 }
 
 /**
