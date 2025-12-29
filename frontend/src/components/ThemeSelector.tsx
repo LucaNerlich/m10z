@@ -2,12 +2,9 @@
 
 import React, {useEffect, useState} from 'react';
 
+import {applyTheme, getStoredTheme, STORAGE_KEY, type Theme} from '@/src/lib/theme/initTheme';
+
 import styles from './ThemeSelector.module.css';
-
-const STORAGE_KEY = 'm10z-theme';
-
-type Theme = 'system' | 'light' | 'dark' | 'grey';
-type EffectiveTheme = 'light' | 'dark' | 'grey';
 
 interface ThemeOption {
     id: Theme;
@@ -23,40 +20,12 @@ const THEME_OPTIONS: ThemeOption[] = [
 
 const DEFAULT_THEME: Theme = 'system';
 
-function getSystemTheme(): 'light' | 'dark' {
-    if (typeof window === 'undefined') return 'light';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-function resolveEffectiveTheme(theme: Theme): EffectiveTheme {
-    if (theme === 'system') {
-        return getSystemTheme();
-    }
-    return theme;
-}
-
-function applyTheme(theme: Theme) {
-    if (typeof document === 'undefined') return;
-    const effectiveTheme = resolveEffectiveTheme(theme);
-    document.documentElement.dataset.theme = effectiveTheme;
-}
-
 export default function ThemeSelector(): React.ReactElement | null {
     const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
     const [hydrated, setHydrated] = useState(false);
 
     useEffect(() => {
-        let stored: string | null = null;
-        if (typeof window !== 'undefined' && window.localStorage) {
-            try {
-                stored = window.localStorage.getItem(STORAGE_KEY);
-            } catch (error) {
-                console.warn('Failed to read theme preference from localStorage:', error);
-                stored = null;
-            }
-        }
-        const initial: Theme =
-            stored && THEME_OPTIONS.some((option) => option.id === stored) ? (stored as Theme) : DEFAULT_THEME;
+        const initial = getStoredTheme();
         setTheme(initial);
         applyTheme(initial);
         setHydrated(true);
