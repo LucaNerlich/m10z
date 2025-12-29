@@ -16,6 +16,7 @@ const THEME_OPTIONS: ThemeOption[] = [
     {id: 'light', displayName: 'Light'},
     {id: 'dark', displayName: 'Dark'},
     {id: 'grey', displayName: 'Grey'},
+    {id: 'paper', displayName: 'Paper'},
 ];
 
 const DEFAULT_THEME: Theme = 'system';

@@ -100,3 +100,16 @@
     --color-secondary: var(--color-secondary-grey);
     --shadow-soft: var(--shadow-soft-grey);
 }
+
+:root[data-theme='paper'] {
+    color-scheme: light;
+    --color-background: var(--color-background-paper);
+    --color-surface: var(--color-surface-paper);
+    --color-surface-strong: var(--color-surface-strong-paper);
+    --color-border: var(--color-border-paper);
+    --color-text: var(--color-text-paper);
+    --color-text-muted: var(--color-text-muted-paper);
+    --color-link: var(--color-link-paper);
+    --color-secondary: var(--color-secondary-paper);
+    --shadow-soft: var(--shadow-soft-paper);
+}

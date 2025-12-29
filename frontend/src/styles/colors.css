@@ -19,4 +19,15 @@
     --color-link-grey: var(--color-primary-soft);
     --color-secondary-grey: oklch(0.3 0.005 250);
     --shadow-soft-grey: 0 16px 50px -24px rgba(0, 0, 0, 0.8);
+
+    /* Paper theme tokens - paper/e-ink inspired */
+    --color-background-paper: oklch(0.97 0.005 85);
+    --color-surface-paper: oklch(0.98 0.005 85);
+    --color-surface-strong-paper: oklch(0.99 0.005 85);
+    --color-border-paper: oklch(0.9 0.008 85);
+    --color-text-paper: oklch(0.15 0.01 85);
+    --color-text-muted-paper: oklch(0.4 0.008 85);
+    --color-link-paper: var(--color-primary-strong);
+    --color-secondary-paper: oklch(0.95 0.005 85);
+    --shadow-soft-paper: 0 14px 40px -26px rgba(0, 10, 30, 0.1);
 }
