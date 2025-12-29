@@ -5,7 +5,7 @@
       "bulkable": true,
       "filterable": true,
       "searchable": true,
-      "pageSize": 10,
+      "pageSize": 20,
       "mainField": "slug",
       "defaultSortOrder": "ASC",
       "defaultSortBy": "slug"
@@ -30,7 +30,7 @@
         "list": {
           "label": "Title",
           "searchable": false,
-          "sortable": false
+          "sortable": true
         }
       },
       "slug": {
@@ -145,11 +145,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "slug",
-        "base"
-      ],
       "edit": [
         [
           {
@@ -173,6 +168,10 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "slug",
+        "base"
       ]
     },
     "uid": "api::category.category"

@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/rss/media';
+import {formatAuthorList} from '@/src/lib/listFormatters';
 import {routes} from '@/src/lib/routes';
 import styles from './AuthorList.module.css';
 
@@ -25,8 +26,15 @@ export function AuthorList({
                            }: AuthorListProps) {
     if (authors.length === 0) return null;
 
-    const displayAuthors = maxDisplay ? authors.slice(0, maxDisplay) : authors;
-    const remainingCount = maxDisplay && authors.length > maxDisplay ? authors.length - maxDisplay : 0;
+    // Sort authors alphabetically by name
+    const sortedAuthors = [...authors].sort((a, b) => {
+        const nameA = (a.title ?? 'Unbekannter Autor').toLowerCase();
+        const nameB = (b.title ?? 'Unbekannter Autor').toLowerCase();
+        return nameA.localeCompare(nameB, 'de-DE');
+    });
+
+    const displayAuthors = maxDisplay ? sortedAuthors.slice(0, maxDisplay) : sortedAuthors;
+    const remainingCount = maxDisplay && sortedAuthors.length > maxDisplay ? sortedAuthors.length - maxDisplay : 0;
 
     if (layout === 'block') {
         return (
@@ -62,32 +70,46 @@ export function AuthorList({
     }
 
     // Inline layout
+    const authorNames = displayAuthors.map(author => author.title ?? 'Unbekannter Autor');
+    const formattedParts = formatAuthorList(authorNames);
+    let authorIndex = 0;
+
     return (
         <div className={styles.inlineList}>
-            {displayAuthors.map((author, index) => {
-                const avatarMedia = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
-                const avatarUrl = mediaUrlToAbsolute({media: avatarMedia});
-                const authorUrl = routes.author(author.slug ?? '');
-                const authorTitle = author.title ?? 'Unbekannter Autor';
-                const isLast = index === displayAuthors.length - 1 && remainingCount === 0;
+            {formattedParts.map((part, partIndex) => {
+                if (part.type === 'element') {
+                    const author = displayAuthors[authorIndex];
+                    const avatarMedia = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
+                    const avatarUrl = mediaUrlToAbsolute({media: avatarMedia});
+                    const authorUrl = routes.author(author.slug ?? '');
+                    const authorTitle = author.title ?? 'Unbekannter Autor';
+                    const currentIndex = authorIndex;
+                    authorIndex++;
 
-                return (
-                    <span key={author.id ?? index} className={styles.inlineItem}>
-                        {showAvatars && avatarUrl ? (
-                            <Image
-                                src={avatarUrl}
-                                alt={authorTitle}
-                                width={32}
-                                height={32}
-                                className={styles.inlineAvatar}
-                            />
-                        ) : null}
-                        <Link href={authorUrl} className={styles.inlineLink}>
-                            {authorTitle}
-                        </Link>
-                        {!isLast && <span className={styles.separator}>, </span>}
-                    </span>
-                );
+                    return (
+                        <span key={author.id ?? currentIndex} className={styles.inlineItem}>
+                            {showAvatars && avatarUrl ? (
+                                <Image
+                                    src={avatarUrl}
+                                    alt={authorTitle}
+                                    width={32}
+                                    height={32}
+                                    className={styles.inlineAvatar}
+                                />
+                            ) : null}
+                            <Link href={authorUrl} className={styles.inlineLink}>
+                                {authorTitle}
+                            </Link>
+                        </span>
+                    );
+                } else {
+                    // part.type === 'literal'
+                    return (
+                        <span key={`separator-${partIndex}`} className={styles.separator}>
+                            {part.value}
+                        </span>
+                    );
+                }
             })}
             {remainingCount > 0 ? (
                 <span className={styles.more}>, und {remainingCount} weitere</span>
