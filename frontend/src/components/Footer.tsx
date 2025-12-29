@@ -26,6 +26,7 @@ const sections: FooterSection[] = [
         links: [
             {label: 'Forum', href: routes.forum, external: true},
             {label: 'Discord', href: routes.discord, external: true},
+            {label: 'LinkTree', href: routes.linktree, external: true},
         ],
     },
     {

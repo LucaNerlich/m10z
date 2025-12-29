@@ -30,3 +30,8 @@
     }
 }
 
+@media (max-width: 767px) {
+    .layout {
+        padding: 0 0.5rem;
+    }
+}
