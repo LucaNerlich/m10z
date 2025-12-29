@@ -154,14 +154,13 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
 /**
  * Render the combined, paginated feed of articles and podcasts for the requested page.
  *
- * Resolves the provided search parameters to determine the requested page, fetches articles
- * and podcasts (up to a capped fetch size), normalizes and sorts items by their effective
- * publication date, and renders a two-column layout with a table of contents and the feed
- * cards (including media, metadata, optional reading time, and navigation). Pagination links
- * are produced based on the combined total of available items.
+ * Resolves the provided search parameters to determine the requested page, fetches a buffered
+ * set of articles and podcasts, normalizes and sorts items by their effective publication date,
+ * and renders a two-column layout containing a table of contents and the feed cards with media,
+ * metadata, optional reading time, and pagination links.
  *
  * @param searchParams - Optional search parameters (or a promise resolving to them) used to read the `page` query value.
- * @returns A JSX element that renders the combined, paginated feed of articles and podcasts.
+ * @returns A JSX element rendering the paginated combined feed for the resolved page.
  */
 async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const resolvedSearchParams = await searchParams;

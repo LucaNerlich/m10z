@@ -353,12 +353,10 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
 }
 
 /**
- * Fetches a paginated list of published articles sorted by newest first.
+ * Retrieve a paginated list of published articles sorted by newest first.
  *
- * Accepts paging controls and optional fetch tags. `page` defaults to 1. `pageSize` defaults to 20 and is clamped to the range 1–200.
- *
- * @param options - Optional fetch options. `page` is the requested page number. `pageSize` is the number of items per page (1–200). `tags` overrides request cache tags.
- * @returns An object with `items` (array of articles), `pagination` metadata (`page`, `pageSize`, `pageCount`, `total`), and `hasNextPage`.
+ * @param options - Optional controls: `page` (requested page, defaults to 1), `pageSize` (items per page, defaults to 20, clamped to 1–200), and `tags` (request cache tags override).
+ * @returns The fetched result containing `items` (array of articles), `pagination` (`page`, `pageSize`, `pageCount`, `total`), and `hasNextPage`.
  */
 export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> {
     const page = Math.max(1, Math.floor(options.page ?? 1));
