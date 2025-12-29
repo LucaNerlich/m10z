@@ -366,7 +366,7 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
 
     const query = qs.stringify(
         {
-            sort: ['publishedAt:desc'],
+            sort: ['base.date:desc'],
             status: 'published',
             pagination: {pageSize, page},
             populate: {
@@ -573,7 +573,7 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
 
     const query = qs.stringify(
         {
-            sort: ['publishedAt:desc'],
+            sort: ['base.date:desc'],
             status: 'published',
             pagination: {pageSize, page},
             populate: {

@@ -166,7 +166,13 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
 async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const resolvedSearchParams = await searchParams;
     const requestedPage = parsePageParam(resolvedSearchParams);
-    const fetchCount = Math.min(PAGE_SIZE * requestedPage + PAGE_SIZE, 200);
+    // Fetch buffer: Ensure minimum 100 items to provide coverage after client-side re-sorting.
+    // This compensates for potential sorting mismatch between Strapi's publishedAt sorting
+    // and our display sorting by base.date (via getEffectiveDate). If Strapi cannot sort by
+    // relation component fields (base.date), we fetch a larger sample set and re-sort client-side
+    // to ensure correct ordering. The buffer ensures we have enough items to cover pagination
+    // after re-sorting, especially when base.date differs from publishedAt.
+    const fetchCount = Math.min(Math.max(100, PAGE_SIZE * requestedPage + PAGE_SIZE), 200);
 
     const [articlesPage, podcastsPage] = await Promise.all([
         fetchArticlesPage({page: 1, pageSize: fetchCount, tags: HOME_ARTICLE_TAGS}),
@@ -177,7 +183,9 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const currentPage = clampPageToData(requestedPage, combinedTotal);
     const offset = (currentPage - 1) * PAGE_SIZE;
 
-    // Sort articles and podcasts by effective date (base.date prioritized over publishedAt)
+    // Defensive client-side sorting: Sort articles and podcasts by effective date (base.date prioritized over publishedAt)
+    // This compensates for potential Strapi sorting limitations when sorting by relation component fields (base.date).
+    // Even if Strapi doesn't support sorting by base.date, this ensures correct ordering using getEffectiveDate().
     const sortedArticles = sortByDateDesc(articlesPage.items);
     const sortedPodcasts = sortByDateDesc(podcastsPage.items);
 
