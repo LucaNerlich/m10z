@@ -1,7 +1,7 @@
 (function() {
     try {
         const stored = localStorage.getItem('m10z-theme');
-        const theme = stored && ['system', 'light', 'dark', 'grey', 'paper'].includes(stored) ? stored : 'system';
+        const theme = stored && ['system', 'light', 'dark', 'grey', 'paper', 'hacker'].includes(stored) ? stored : 'system';
         let effectiveTheme;
 
         if (theme === 'system') {
