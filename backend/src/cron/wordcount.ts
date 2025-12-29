@@ -23,16 +23,18 @@ export async function generateMissingWordCounts({strapi}: {strapi: any}): Promis
         try {
             const articles = await strapi.documents('api::article.article').findMany({
                 filters: {
-                    wordCount: {
-                        $or: [
-                            {
+                    $or: [
+                        {
+                            wordCount: {
                                 $null: true,
                             },
-                            {
+                        },
+                        {
+                            wordCount: {
                                 $eq: 0,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
                 pagination: {
                     page: 1,
@@ -77,16 +79,18 @@ export async function generateMissingWordCounts({strapi}: {strapi: any}): Promis
         try {
             const podcasts = await strapi.documents('api::podcast.podcast').findMany({
                 filters: {
-                    wordCount: {
-                        $or: [
-                            {
+                    $or: [
+                        {
+                            wordCount: {
                                 $null: true,
                             },
-                            {
+                        },
+                        {
+                            wordCount: {
                                 $eq: 0,
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
                 pagination: {
                     page: 1,
