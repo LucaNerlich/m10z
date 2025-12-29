@@ -24,6 +24,7 @@ export type StrapiPodcast = {
     duration: number;
     file: StrapiMediaRef;
     authors?: StrapiAuthor[];
+    wordCount?: number | null;
 };
 
 export type StrapiAudioFeedSingle = {

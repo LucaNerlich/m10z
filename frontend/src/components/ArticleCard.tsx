@@ -40,7 +40,9 @@ export function ArticleCard({
     const effectiveDate = getEffectiveDate(article);
     const formattedDate = formatDateShort(effectiveDate);
     const articleUrl = routes.article(article.slug);
-    const readingTime = calculateReadingTime(article.content ?? '');
+    
+    // Use wordCount for reading time calculation (no fallback to content)
+    const readingTime = article.wordCount != null ? calculateReadingTime(article.wordCount) : null;
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
 

@@ -21,6 +21,7 @@ export type StrapiArticle = {
     authors?: StrapiAuthor[];
     youtube?: StrapiYoutube[];
     content: string;
+    wordCount?: number | null;
 };
 
 export type StrapiArticleFeedSingle = {

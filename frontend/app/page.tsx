@@ -13,6 +13,7 @@ import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {mediaUrlToAbsolute, pickBannerMedia, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatDateShort} from '@/src/lib/dateFormatters';
+import {calculateReadingTime} from '@/src/lib/readingTime';
 import styles from './page.module.css';
 import Image from 'next/image';
 import placeholderCover from '@/public/images/m10z.jpg';
@@ -47,6 +48,7 @@ type FeedItem =
     publishedAt?: string | null;
     cover?: StrapiMedia | undefined;
     banner?: StrapiMedia | undefined;
+    wordCount?: number | null;
     href: string;
 }
     | {
@@ -57,6 +59,7 @@ type FeedItem =
     publishedAt?: string | null;
     cover?: StrapiMedia | undefined;
     banner?: StrapiMedia | undefined;
+    wordCount?: number | null;
     href: string;
 };
 
@@ -97,6 +100,7 @@ function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
         publishedAt: getEffectiveDate(article),
         cover: pickCoverMedia(article.base, article.categories),
         banner: pickBannerMedia(article.base, article.categories),
+        wordCount: article.wordCount ?? null,
         href: `/artikel/${article.slug}`,
     }));
 }
@@ -110,6 +114,7 @@ function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
         publishedAt: getEffectiveDate(podcast),
         cover: pickCoverMedia(podcast.base, podcast.categories),
         banner: pickBannerMedia(podcast.base, podcast.categories),
+        wordCount: podcast.wordCount ?? null,
         href: `/podcasts/${podcast.slug}`,
     }));
 }
@@ -157,7 +162,7 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     // Sort articles and podcasts by effective date (base.date prioritized over publishedAt)
     const sortedArticles = sortByDateDesc(articlesPage.items);
     const sortedPodcasts = sortByDateDesc(podcastsPage.items);
-    
+
     // Combine and sort the mapped feed items by their effective date
     // Both publishedAt fields already contain the effective date from getEffectiveDate
     const feedItems = [
@@ -251,6 +256,11 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                         <Tag className={styles.metaTag}>
                                             {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                         </Tag>
+                                        {item.wordCount != null ? (
+                                            <span className={styles.readingTime}>
+                                                📖&nbsp;{calculateReadingTime(item.wordCount)}
+                                            </span>
+                                        ) : null}
                                         <time className={styles.date}>{formatDateShort(item.publishedAt)}</time>
                                     </div>
                                     <h2 className={styles.cardTitle}>

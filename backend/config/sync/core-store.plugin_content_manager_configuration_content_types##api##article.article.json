@@ -25,8 +25,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "Title",
@@ -98,8 +97,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "url"
+          "editable": true
         },
         "list": {
           "label": "youtube",
@@ -189,6 +187,13 @@
       }
     },
     "layouts": {
+      "list": [
+        "base",
+        "slug",
+        "categories",
+        "updatedAt",
+        "authors"
+      ],
       "edit": [
         [
           {
@@ -228,13 +233,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "base",
-        "slug",
-        "categories",
-        "updatedAt",
-        "authors"
       ]
     },
     "uid": "api::article.article"

@@ -547,7 +547,13 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
-        wordCount: Schema.Attribute.Integer;
+        wordCount: Schema.Attribute.Integer &
+            Schema.Attribute.SetMinMax<
+                {
+                    min: 1;
+                },
+                number
+            >;
         youtube: Schema.Attribute.Component<'collection-type.youtube', true>;
     };
 }
@@ -737,7 +743,13 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
-        wordCount: Schema.Attribute.Integer;
+        wordCount: Schema.Attribute.Integer &
+            Schema.Attribute.SetMinMax<
+                {
+                    min: 1;
+                },
+                number
+            >;
         youtube: Schema.Attribute.Component<'collection-type.youtube', true>;
     };
 }

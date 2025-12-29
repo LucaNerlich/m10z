@@ -55,7 +55,8 @@
       "repeatable": true
     },
     "wordCount": {
-      "type": "integer"
+      "type": "integer",
+      "min": 1
     }
   }
 }
