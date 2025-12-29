@@ -154,14 +154,13 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
 /**
  * Render the combined, paginated feed of articles and podcasts for the requested page.
  *
- * Resolves the provided search parameters to determine the requested page, fetches articles
- * and podcasts (up to a capped fetch size), normalizes and sorts items by their effective
- * publication date, and renders a two-column layout with a table of contents and the feed
- * cards (including media, metadata, optional reading time, and navigation). Pagination links
- * are produced based on the combined total of available items.
+ * Resolves the provided search parameters to determine the requested page, fetches a buffered
+ * set of articles and podcasts, normalizes and sorts items by their effective publication date,
+ * and renders a two-column layout containing a table of contents and the feed cards with media,
+ * metadata, optional reading time, and pagination links.
  *
  * @param searchParams - Optional search parameters (or a promise resolving to them) used to read the `page` query value.
- * @returns A JSX element that renders the combined, paginated feed of articles and podcasts.
+ * @returns A JSX element rendering the paginated combined feed for the resolved page.
  */
 async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const resolvedSearchParams = await searchParams;
@@ -177,7 +176,9 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const currentPage = clampPageToData(requestedPage, combinedTotal);
     const offset = (currentPage - 1) * PAGE_SIZE;
 
-    // Sort articles and podcasts by effective date (base.date prioritized over publishedAt)
+    // Defensive client-side sorting: Sort articles and podcasts by effective date (base.date prioritized over publishedAt)
+    // This compensates for potential Strapi sorting limitations when sorting by relation component fields (base.date).
+    // Even if Strapi doesn't support sorting by base.date, this ensures correct ordering using getEffectiveDate().
     const sortedArticles = sortByDateDesc(articlesPage.items);
     const sortedPodcasts = sortByDateDesc(podcastsPage.items);
 
