@@ -165,13 +165,7 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
 async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const resolvedSearchParams = await searchParams;
     const requestedPage = parsePageParam(resolvedSearchParams);
-    // Fetch buffer: Ensure minimum 100 items to provide coverage after client-side re-sorting.
-    // This compensates for potential sorting mismatch between Strapi's publishedAt sorting
-    // and our display sorting by base.date (via getEffectiveDate). If Strapi cannot sort by
-    // relation component fields (base.date), we fetch a larger sample set and re-sort client-side
-    // to ensure correct ordering. The buffer ensures we have enough items to cover pagination
-    // after re-sorting, especially when base.date differs from publishedAt.
-    const fetchCount = Math.min(Math.max(100, PAGE_SIZE * requestedPage + PAGE_SIZE), 200);
+    const fetchCount = Math.min(PAGE_SIZE * requestedPage + PAGE_SIZE, 200);
 
     const [articlesPage, podcastsPage] = await Promise.all([
         fetchArticlesPage({page: 1, pageSize: fetchCount, tags: HOME_ARTICLE_TAGS}),
