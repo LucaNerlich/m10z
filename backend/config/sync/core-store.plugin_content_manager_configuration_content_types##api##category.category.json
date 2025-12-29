@@ -30,7 +30,7 @@
         "list": {
           "label": "Title",
           "searchable": false,
-          "sortable": true
+          "sortable": false
         }
       },
       "slug": {
@@ -145,6 +145,10 @@
       }
     },
     "layouts": {
+      "list": [
+        "slug",
+        "base"
+      ],
       "edit": [
         [
           {
@@ -168,10 +172,6 @@
             "size": 6
           }
         ]
-      ],
-      "list": [
-        "slug",
-        "base"
       ]
     },
     "uid": "api::category.category"

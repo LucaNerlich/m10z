@@ -6,7 +6,7 @@
   "locale": null,
   "permissions": [
     {
-      "documentId": "s8tlwy7ppp6ks07x8p3je942",
+      "documentId": "dqd8m1ueh7bdfhskp823m91r",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::article.article",
@@ -22,7 +22,8 @@
           "authors",
           "categories",
           "youtube.title",
-          "youtube.url"
+          "youtube.url",
+          "wordCount"
         ]
       },
       "conditions": [
@@ -53,7 +54,7 @@
       "locale": null
     },
     {
-      "documentId": "f0wvi9er77oe73arovwekg1v",
+      "documentId": "yg6i95xt0ri0d17cuekvbmpv",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::article.article",
@@ -69,7 +70,8 @@
           "authors",
           "categories",
           "youtube.title",
-          "youtube.url"
+          "youtube.url",
+          "wordCount"
         ]
       },
       "conditions": [
@@ -78,7 +80,7 @@
       "locale": null
     },
     {
-      "documentId": "hadxsj9brfh86coi0ka3yeiq",
+      "documentId": "x915h40cbbqx2gniot3i50ze",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::article.article",
@@ -94,7 +96,8 @@
           "authors",
           "categories",
           "youtube.title",
-          "youtube.url"
+          "youtube.url",
+          "wordCount"
         ]
       },
       "conditions": [
@@ -141,7 +144,7 @@
       "locale": null
     },
     {
-      "documentId": "pfqbuxjka2nch3xw7hp7sjhp",
+      "documentId": "nz9dyq4nv5zxm9x8y9x4m1ne",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
@@ -159,7 +162,8 @@
           "authors",
           "categories",
           "youtube.title",
-          "youtube.url"
+          "youtube.url",
+          "wordCount"
         ]
       },
       "conditions": [
@@ -190,7 +194,7 @@
       "locale": null
     },
     {
-      "documentId": "abgft1rwqzc65bwtwto7hjze",
+      "documentId": "mf36aeqgk678081tiif7r5yr",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
@@ -208,7 +212,8 @@
           "authors",
           "categories",
           "youtube.title",
-          "youtube.url"
+          "youtube.url",
+          "wordCount"
         ]
       },
       "conditions": [
@@ -217,7 +222,7 @@
       "locale": null
     },
     {
-      "documentId": "i3z87jtj4647b0qcui41x77e",
+      "documentId": "ejqdwpn9zwyhcdeyzf35fe73",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
@@ -235,7 +240,8 @@
           "authors",
           "categories",
           "youtube.title",
-          "youtube.url"
+          "youtube.url",
+          "wordCount"
         ]
       },
       "conditions": [

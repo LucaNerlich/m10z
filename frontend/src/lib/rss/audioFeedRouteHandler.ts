@@ -31,6 +31,13 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
     });
 }
 
+/**
+ * Fetches all published podcasts from Strapi, handling pagination until all pages are retrieved.
+ *
+ * The results are ordered by `publishedAt` descending and include each podcast's populated relations.
+ *
+ * @returns An array of `StrapiPodcast` objects retrieved from Strapi (empty array if none).
+ */
 async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     const pageSize = 100;
     let page = 1;
@@ -63,7 +70,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
                         populate: '*',
                     },
                 },
-                fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
+                fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt'],
             },
             {encodeValuesOnly: true},
         );
@@ -163,4 +170,3 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
         });
     }
 }
-

@@ -105,6 +105,20 @@
           "sortable": false
         }
       },
+      "wordCount": {
+        "edit": {
+          "label": "Word Count",
+          "description": "Number of Words in the Content",
+          "placeholder": "123",
+          "visible": true,
+          "editable": false
+        },
+        "list": {
+          "label": "wordCount",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -173,6 +187,13 @@
       }
     },
     "layouts": {
+      "list": [
+        "base",
+        "slug",
+        "categories",
+        "updatedAt",
+        "authors"
+      ],
       "edit": [
         [
           {
@@ -183,6 +204,10 @@
         [
           {
             "name": "slug",
+            "size": 6
+          },
+          {
+            "name": "wordCount",
             "size": 6
           }
         ],
@@ -208,13 +233,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "base",
-        "slug",
-        "categories",
-        "updatedAt",
-        "authors"
       ]
     },
     "uid": "api::article.article"

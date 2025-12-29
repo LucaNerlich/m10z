@@ -21,10 +21,16 @@ type ArticleCardProps = {
 };
 
 /**
- * Card component for displaying article previews.
+ * Render a card preview for an article including cover image, meta, title, description, and optional authors/categories.
  *
- * Displays cover image, title, date, description, and optional author/category lists.
- * Uses semantic HTML with article element and proper link structure.
+ * Displays the article cover (or a placeholder), the effective publish date, an optional reading time computed from `article.wordCount`, the title linked to the article page, a line-clamped description, and optional author and category lists when enabled.
+ *
+ * @param article - The article data to render (StrapiArticle).
+ * @param showAuthors - If true, render the article's authors list (defaults to `false`).
+ * @param showCategories - If true, render the article's categories list (defaults to `false`).
+ * @param descriptionLines - Number of lines to clamp the description to (defaults to `3`).
+ * @param className - Additional CSS class names to append to the card element.
+ * @returns The article card element ready for rendering in the UI.
  */
 export function ArticleCard({
                                 article,
@@ -40,7 +46,9 @@ export function ArticleCard({
     const effectiveDate = getEffectiveDate(article);
     const formattedDate = formatDateShort(effectiveDate);
     const articleUrl = routes.article(article.slug);
-    const readingTime = calculateReadingTime(article.content ?? '');
+    
+    // Use wordCount for reading time calculation (no fallback to content)
+    const readingTime = article.wordCount != null ? calculateReadingTime(article.wordCount) : null;
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
 
@@ -93,4 +101,3 @@ export function ArticleCard({
         </article>
     );
 }
-

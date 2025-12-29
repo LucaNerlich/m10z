@@ -1,46 +1,46 @@
 {
-  "kind": "collectionType",
-  "collectionName": "authors",
-  "info": {
-    "singularName": "author",
-    "pluralName": "authors",
-    "displayName": "Author"
-  },
-  "options": {
-    "draftAndPublish": false
-  },
-  "pluginOptions": {},
-  "attributes": {
-    "title": {
-      "type": "string"
+    "kind": "collectionType",
+    "collectionName": "authors",
+    "info": {
+        "singularName": "author",
+        "pluralName": "authors",
+        "displayName": "Author"
     },
-    "description": {
-      "type": "text"
+    "options": {
+        "draftAndPublish": false
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "title",
-      "required": true
-    },
-    "avatar": {
-      "type": "media",
-      "multiple": false,
-      "required": true,
-      "allowedTypes": [
-        "images"
-      ]
-    },
-    "podcasts": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::podcast.podcast",
-      "inversedBy": "authors"
-    },
-    "articles": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::article.article",
-      "mappedBy": "authors"
+    "pluginOptions": {},
+    "attributes": {
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "text"
+        },
+        "slug": {
+            "type": "uid",
+            "targetField": "title",
+            "required": true
+        },
+        "avatar": {
+            "type": "media",
+            "multiple": false,
+            "required": true,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "podcasts": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::podcast.podcast",
+            "inversedBy": "authors"
+        },
+        "articles": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::article.article",
+            "mappedBy": "authors"
+        }
     }
-  }
 }

@@ -1,16 +1,48 @@
 /**
- * Calculates estimated reading time from markdown content.
+ * Calculates estimated reading time from markdown content or word count.
  *
- * Strips markdown syntax and counts words, then estimates reading time
- * using 250 words per minute (WPM) as the standard reading speed.
+ * If wordCount is provided (number), calculates directly.
+ * If markdown is provided (string), strips markdown syntax and counts words.
+ * Estimates reading time using 250 words per minute (WPM) as the standard reading speed.
  *
- * @param markdown - The markdown content string to analyze
- * @returns Formatted reading time string: "< 1 min read" or "X min read"
+ * @param markdownOrWordCount - The markdown content string or word count number to analyze
+ * @returns Formatted reading time string: "< 1 Min. Lesezeit" or "X Min. Lesezeit"
  */
-export function calculateReadingTime(markdown: string): string {
-    if (!markdown || markdown.trim().length === 0) {
+export function calculateReadingTime(
+    markdownOrWordCount: string | number | null | undefined,
+): string {
+    // Handle wordCount number (preferred, faster)
+    if (typeof markdownOrWordCount === 'number') {
+        const wordCount = markdownOrWordCount;
+        if (wordCount <= 0) {
+            return '< 1 Min. Lesezeit';
+        }
+
+        // Calculate reading time: 250 words per minute, rounded up
+        const minutes = Math.ceil(wordCount / 250);
+
+        // Return "< 1 min read" for content with < 1 minute reading time
+        if (minutes < 1) {
+            return '< 1 Min. Lesezeit';
+        }
+
+        // Return "X min read" for all other cases
+        return `${minutes} Min. Lesezeit`;
+    }
+
+    // Handle markdown string (backward compatibility)
+    if (typeof markdownOrWordCount === 'string') {
+        const markdown = markdownOrWordCount;
+        if (!markdown || markdown.trim().length === 0) {
+            return '< 1 Min. Lesezeit';
+        }
+    } else {
+        // null or undefined
         return '< 1 Min. Lesezeit';
     }
+
+    // Fallback: process markdown (backward compatibility)
+    const markdown = markdownOrWordCount as string;
 
     // Strip markdown syntax to extract plain text
     let text = markdown;

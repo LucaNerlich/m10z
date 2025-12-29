@@ -7,7 +7,17 @@
  * - Fails open: never blocks Strapi write path if Next is unreachable.
  */
 
-type InvalidateTarget = 'audiofeed' | 'articlefeed' | 'legal' | 'about' | 'search-index' | 'sitemap' | 'category' | 'author';
+type InvalidateTarget =
+    'audiofeed'
+    | 'articlefeed'
+    | 'legal'
+    | 'about'
+    | 'search-index'
+    | 'sitemap'
+    | 'category'
+    | 'author'
+    | 'article'
+    | 'podcast';
 
 /**
  * Read an environment variable and return its value if it is set and non-empty.

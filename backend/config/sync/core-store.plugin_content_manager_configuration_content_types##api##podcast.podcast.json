@@ -30,7 +30,7 @@
         "list": {
           "label": "Title",
           "searchable": false,
-          "sortable": true
+          "sortable": false
         }
       },
       "slug": {
@@ -133,6 +133,20 @@
           "sortable": false
         }
       },
+      "wordCount": {
+        "edit": {
+          "label": "Word Count",
+          "description": "Number of Words in the Shownotes",
+          "placeholder": "123",
+          "visible": true,
+          "editable": false
+        },
+        "list": {
+          "label": "wordCount",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -201,6 +215,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "base",
+        "updatedAt",
+        "categories",
+        "youtube"
+      ],
       "edit": [
         [
           {
@@ -243,15 +263,13 @@
         [
           {
             "name": "duration",
-            "size": 4
+            "size": 6
+          },
+          {
+            "name": "wordCount",
+            "size": 6
           }
         ]
-      ],
-      "list": [
-        "base",
-        "updatedAt",
-        "categories",
-        "youtube"
       ]
     },
     "uid": "api::podcast.podcast"
