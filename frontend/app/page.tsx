@@ -86,10 +86,10 @@ function toCoverUrl(media?: StrapiMedia): string | undefined {
 }
 
 /**
- * Convert an array of StrapiArticle records into feed items suitable for rendering on the home feed.
+ * Map Strapi article records to feed items used by the home feed.
  *
- * @param items - Array of articles from Strapi
- * @returns An array of `FeedItem` objects with `type: 'article'`, `slug`, `title`, `description`, `publishedAt`, `cover`, and `href` set for each article
+ * @param items - Array of Strapi article records to convert
+ * @returns An array of `FeedItem` objects for articles where each entry has `type: 'article'`, `slug`, `title`, `description`, `publishedAt`, `cover` and `banner` (if available), `wordCount` (number or `null`), and `href`
  */
 function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
     return items.map((article) => ({
@@ -105,6 +105,12 @@ function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
     }));
 }
 
+/**
+ * Convert an array of Strapi podcast records into an array of normalized feed items.
+ *
+ * @param items - Array of podcast objects from Strapi
+ * @returns An array of `FeedItem` objects with `type: 'podcast'`, `slug`, `title`, `description`, `publishedAt`, optional `cover` and `banner` media, `wordCount` (or `null`), and `href` for the podcast detail page
+ */
 function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
     return items.map((podcast) => ({
         type: 'podcast',
@@ -145,6 +151,18 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
     );
 }
 
+/**
+ * Render the combined, paginated feed of articles and podcasts for the requested page.
+ *
+ * Resolves the provided search parameters to determine the requested page, fetches articles
+ * and podcasts (up to a capped fetch size), normalizes and sorts items by their effective
+ * publication date, and renders a two-column layout with a table of contents and the feed
+ * cards (including media, metadata, optional reading time, and navigation). Pagination links
+ * are produced based on the combined total of available items.
+ *
+ * @param searchParams - Optional search parameters (or a promise resolving to them) used to read the `page` query value.
+ * @returns A JSX element that renders the combined, paginated feed of articles and podcasts.
+ */
 async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const resolvedSearchParams = await searchParams;
     const requestedPage = parsePageParam(resolvedSearchParams);

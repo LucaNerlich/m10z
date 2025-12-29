@@ -5,6 +5,12 @@
 
 import {countWords} from '../middlewares/wordCount';
 
+/**
+ * Backfills missing wordCount fields for articles and podcasts by computing and updating them.
+ *
+ * Processes up to 50 articles and 50 podcasts per invocation; updates each document's `wordCount`
+ * when it is null or equal to zero and logs a summary of processed, successful, and failed updates.
+ */
 export async function generateMissingWordCounts({strapi}: {strapi: any}): Promise<void> {
     try {
         strapi.log.info('Starting hourly wordCount backfill for missing articles and podcasts...');
@@ -132,4 +138,3 @@ export async function generateMissingWordCounts({strapi}: {strapi: any}): Promis
         strapi.log.error('Error in wordCount cron job:', error);
     }
 }
-

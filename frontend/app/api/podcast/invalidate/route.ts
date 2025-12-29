@@ -3,12 +3,30 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 
+/**
+ * Determine the client's IP address from request headers.
+ *
+ * @param request - The incoming request whose headers are inspected
+ * @returns The first IP from `x-forwarded-for` if present, otherwise the `x-real-ip` value, or the string `'unknown'` if neither header provides an IP
+ */
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
     if (xff) return xff.split(',')[0]?.trim() || 'unknown';
     return request.headers.get('x-real-ip') ?? 'unknown';
 }
 
+/**
+ * Handle POST requests to invalidate podcast-related cache tags and pages.
+ *
+ * Verifies the secret provided in the `x-m10z-invalidation-secret` header against
+ * the `FEED_INVALIDATION_TOKEN` environment value and enforces a per-IP rate limit.
+ * On success, invalidates podcast cache tags and related page paths, then responds
+ * with a JSON payload listing the invalidated keys. Responds with 401 when the
+ * secret is invalid and 429 when the rate limit is exceeded.
+ *
+ * @param request - Incoming Request; must include the `x-m10z-invalidation-secret` header when calling this endpoint
+ * @returns An object `{ ok: true, revalidated: string[] }` listing the cache tags and paths that were revalidated
+ */
 export async function POST(request: Request) {
     const expected = process.env.FEED_INVALIDATION_TOKEN ?? null;
     const provided = request.headers.get('x-m10z-invalidation-secret');
@@ -46,4 +64,3 @@ export async function POST(request: Request) {
         ],
     });
 }
-

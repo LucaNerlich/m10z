@@ -26,6 +26,15 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
     });
 }
 
+/**
+ * Fetches all published articles from Strapi, paging through results until all pages are retrieved.
+ *
+ * The fetched articles include `slug`, `content`, `wordCount`, and `publishedAt`, and have populated
+ * `base` (cover, banner, title, description, date), `authors` (avatar, title, slug, description),
+ * and `categories` (slug with populated base cover/banner/title/description).
+ *
+ * @returns An array of `StrapiArticle` objects ordered by `publishedAt` descending.
+ */
 async function fetchAllArticles(): Promise<StrapiArticle[]> {
     const pageSize = 100;
     let page = 1;
@@ -95,6 +104,14 @@ async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
     return res.data;
 }
 
+/**
+ * Builds the article feed XML, computes a content-derived ETag, and returns the XML with caching metadata.
+ *
+ * @returns An object containing:
+ * - `xml` — the complete feed XML string.
+ * - `etag` — a quoted SHA-256 hex ETag derived from the feed content and seed.
+ * - `lastModified` — the feed's last-modified timestamp as provided by the source feed data.
+ */
 async function getCachedArticleFeed() {
     const [feed, articles] = await Promise.all([fetchArticleFeedSingle(), fetchAllArticles()]);
     const {xml, etagSeed, lastModified} = generateArticleFeedXml({
@@ -135,4 +152,3 @@ export async function buildArticleFeedResponse(request: Request): Promise<Respon
         });
     }
 }
-

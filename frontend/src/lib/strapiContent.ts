@@ -93,6 +93,12 @@ function toPaginatedResult<T>(
     return {items, pagination, hasNextPage};
 }
 
+/**
+ * Fetches a published article by slug with populated media, authors, categories, and YouTube data.
+ *
+ * @param slug - The article's slug to look up
+ * @returns The matching `StrapiArticle` if found, `null` otherwise
+ */
 export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | null> {
     const query = qs.stringify(
         {
@@ -137,6 +143,12 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
     return res.data?.[0] ?? null;
 }
 
+/**
+ * Fetches a published podcast identified by its slug and returns it with related media, authors, categories, YouTube info, and file populated.
+ *
+ * @param slug - The podcast's slug to search for
+ * @returns The matching `StrapiPodcast` with populated relations, or `null` if no published podcast matches the slug
+ */
 export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | null> {
     const query = qs.stringify(
         {
@@ -340,6 +352,14 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
     return res.data ?? [];
 }
 
+/**
+ * Fetches a paginated list of published articles sorted by newest first.
+ *
+ * Accepts paging controls and optional fetch tags. `page` defaults to 1. `pageSize` defaults to 20 and is clamped to the range 1–200.
+ *
+ * @param options - Optional fetch options. `page` is the requested page number. `pageSize` is the number of items per page (1–200). `tags` overrides request cache tags.
+ * @returns An object with `items` (array of articles), `pagination` metadata (`page`, `pageSize`, `pageCount`, `total`), and `hasNextPage`.
+ */
 export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> {
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
@@ -373,7 +393,11 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
 }
 
 /**
- * Fetch multiple articles by their slugs.
+ * Fetch articles that match the given slugs.
+ *
+ * @param slugs - Array of article slugs to retrieve
+ * @returns The list of matching `StrapiArticle` objects; returns an empty array if none match or if `slugs` is empty
+ * @throws Error if more than MAX_SLUGS slugs are provided
  */
 export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArticle[]> {
     if (slugs.length === 0) return [];
@@ -427,7 +451,11 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
 }
 
 /**
- * Fetch multiple podcasts by their slugs.
+ * Retrieve published podcasts that match the provided slugs.
+ *
+ * @param slugs - Array of podcast slug identifiers to fetch. If empty, the function returns an empty array.
+ * @returns An array of matching `StrapiPodcast` objects; returns an empty array if no matches are found.
+ * @throws Error if more than `MAX_SLUGS` slugs are provided.
  */
 export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodcast[]> {
     ;
@@ -483,7 +511,10 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
 }
 
 /**
- * Fetch multiple articles by their slugs, automatically batching if the array exceeds MAX_SLUGS.
+ * Retrieve articles for the given slugs, batching requests when the input length exceeds the maximum allowed per request.
+ *
+ * @param slugs - Array of article slugs to fetch
+ * @returns An array of articles whose slugs are included in `slugs` (may be returned in an implementation-defined order)
  */
 export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<StrapiArticle[]> {
     if (slugs.length === 0) return [];
@@ -502,7 +533,10 @@ export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<Stra
 }
 
 /**
- * Fetch multiple podcasts by their slugs, automatically batching if the array exceeds MAX_SLUGS.
+ * Fetches podcasts matching the given slugs and batches requests when the list exceeds MAX_SLUGS.
+ *
+ * @param slugs - Array of podcast slugs to fetch
+ * @returns An array of matching StrapiPodcast objects; returns an empty array if `slugs` is empty or no items are found
  */
 export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<StrapiPodcast[]> {
     if (slugs.length === 0) return [];
@@ -520,6 +554,18 @@ export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<Stra
     return batches.flat();
 }
 
+/**
+ * Fetches a paginated list of published podcasts from Strapi.
+ *
+ * The returned podcast items include populated `base` (title, description, date, cover, banner),
+ * `categories` (slug and their base title/description and cover/banner), `youtube` (title, url),
+ * and `file` fields. Each item also includes `slug`, `duration`, `wordCount`, and `publishedAt`.
+ *
+ * @param options - Optional settings for the request.
+ *   - `page`: Page number to fetch (minimum 1). Defaults to 1.
+ *   - `pageSize`: Number of items per page (clamped to 1–200). Defaults to 20.
+ *   - `tags`: Optional cache/tracing tags to attach to the fetch request.
+ * @returns A PaginatedResult of StrapiPodcast containing the page's items, pagination metadata, and `hasNextPage`.
 export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> {
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
@@ -566,4 +612,3 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
 
     return toPaginatedResult(res, page, pageSize);
 }
-
