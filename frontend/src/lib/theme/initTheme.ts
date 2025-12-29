@@ -1,6 +1,7 @@
 /**
  * Theme initialization utility.
- * Used both by the blocking script (for FOUC prevention) and ThemeSelector component.
+ * Used by ThemeSelector component for theme management.
+ * The blocking script in public/theme-init.js contains its own implementation for FOUC prevention.
  */
 
 export const STORAGE_KEY = 'm10z-theme';
@@ -37,22 +38,5 @@ export function getStoredTheme(): Theme {
 export function applyTheme(theme: Theme): void {
     if (typeof document === 'undefined') return;
     document.documentElement.dataset.theme = resolveEffectiveTheme(theme);
-}
-
-/**
- * Initialize theme from localStorage or system preference.
- * This is the function used by the blocking script.
- */
-export function initTheme(): void {
-    try {
-        const theme = getStoredTheme();
-        applyTheme(theme);
-    } catch {
-        // Fallback to system preference if anything fails
-        const effectiveTheme = getSystemTheme();
-        if (typeof document !== 'undefined') {
-            document.documentElement.dataset.theme = effectiveTheme;
-        }
-    }
 }
 
