@@ -73,7 +73,7 @@
 
 .searchShortcut {
     font-size: 12px;
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     border: 1px solid var(--color-border);
     padding: 2px 6px;
     border-radius: 8px;
@@ -134,7 +134,7 @@
 
 .burgerShortcut {
     font-size: 12px;
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     border: 1px solid var(--color-border);
     padding: 2px 6px;
     border-radius: 8px;

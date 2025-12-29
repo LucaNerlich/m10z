@@ -9,6 +9,7 @@ import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import {type Metadata, type Viewport} from 'next';
+import Script from 'next/script';
 import {routes} from '@/src/lib/routes';
 import React from 'react';
 
@@ -64,8 +65,10 @@ export default function RootLayout({
         <html
             lang="de"
             className={`${poppins.variable} ${argon.variable} ${krypton.variable} ${neon.variable} ${radon.variable} ${xenon.variable}`}
+            suppressHydrationWarning
         >
         <body>
+        <Script id="theme-init" strategy="beforeInteractive" src="/theme-init.js" />
         <ScrollRestoration />
         <Header />
         <main>

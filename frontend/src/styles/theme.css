@@ -29,6 +29,7 @@
     --color-text-muted: var(--color-text-muted-light);
     --color-link: var(--color-link-light);
     --color-secondary: var(--color-secondary-light);
+    --color-secondary-strong: var(--color-secondary-strong-light);
     --shadow-soft: var(--shadow-soft-light);
 }
 
@@ -43,6 +44,7 @@
         --color-text-muted: var(--color-text-muted-light);
         --color-link: var(--color-link-light);
         --color-secondary: var(--color-secondary-light);
+        --color-secondary-strong: var(--color-secondary-strong-light);
         --shadow-soft: var(--shadow-soft-light);
     }
 }
@@ -58,6 +60,7 @@
         --color-text-muted: var(--color-text-muted-dark);
         --color-link: var(--color-link-dark);
         --color-secondary: var(--color-secondary-dark);
+        --color-secondary-strong: var(--color-secondary-strong-dark);
         --shadow-soft: var(--shadow-soft-dark);
     }
 }
@@ -72,6 +75,7 @@
     --color-text-muted: var(--color-text-muted-light);
     --color-link: var(--color-link-light);
     --color-secondary: var(--color-secondary-light);
+    --color-secondary-strong: var(--color-secondary-strong-light);
     --shadow-soft: var(--shadow-soft-light);
 }
 
@@ -85,5 +89,51 @@
     --color-text-muted: var(--color-text-muted-dark);
     --color-link: var(--color-link-dark);
     --color-secondary: var(--color-secondary-dark);
+    --color-secondary-strong: var(--color-secondary-strong-dark);
     --shadow-soft: var(--shadow-soft-dark);
+}
+
+:root[data-theme='grey'] {
+    color-scheme: dark;
+    --color-background: var(--color-background-grey);
+    --color-surface: var(--color-surface-grey);
+    --color-surface-strong: var(--color-surface-strong-grey);
+    --color-border: var(--color-border-grey);
+    --color-text: var(--color-text-grey);
+    --color-text-muted: var(--color-text-muted-grey);
+    --color-link: var(--color-link-grey);
+    --color-secondary: var(--color-secondary-grey);
+    --color-secondary-strong: var(--color-secondary-strong-grey);
+    --shadow-soft: var(--shadow-soft-grey);
+}
+
+:root[data-theme='paper'] {
+    color-scheme: light;
+    --color-background: var(--color-background-paper);
+    --color-surface: var(--color-surface-paper);
+    --color-surface-strong: var(--color-surface-strong-paper);
+    --color-border: var(--color-border-paper);
+    --color-text: var(--color-text-paper);
+    --color-text-muted: var(--color-text-muted-paper);
+    --color-link: var(--color-link-paper);
+    --color-secondary: var(--color-secondary-paper);
+    --color-secondary-strong: var(--color-secondary-strong-paper);
+    --shadow-soft: var(--shadow-soft-paper);
+}
+
+:root[data-theme='hacker'] {
+    color-scheme: dark;
+    --color-background: var(--color-background-hacker);
+    --color-surface: var(--color-surface-hacker);
+    --color-surface-strong: var(--color-surface-strong-hacker);
+    --color-border: var(--color-border-hacker);
+    --color-text: var(--color-text-hacker);
+    --color-text-muted: var(--color-text-muted-hacker);
+    --color-link: var(--color-link-hacker);
+    --color-primary: var(--color-primary-hacker);
+    --color-primary-strong: var(--color-primary-strong-hacker);
+    --color-primary-soft: var(--color-primary-soft-hacker);
+    --color-secondary: var(--color-secondary-hacker);
+    --color-secondary-strong: var(--color-secondary-strong-hacker);
+    --shadow-soft: var(--shadow-soft-hacker);
 }
