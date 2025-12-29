@@ -25,7 +25,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "Title",
@@ -97,12 +98,27 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "url"
         },
         "list": {
           "label": "youtube",
           "searchable": false,
           "sortable": false
+        }
+      },
+      "wordCount": {
+        "edit": {
+          "label": "Word Count",
+          "description": "Number of Words in the Content",
+          "placeholder": "123",
+          "visible": true,
+          "editable": false
+        },
+        "list": {
+          "label": "wordCount",
+          "searchable": true,
+          "sortable": true
         }
       },
       "createdAt": {
@@ -183,6 +199,10 @@
         [
           {
             "name": "slug",
+            "size": 6
+          },
+          {
+            "name": "wordCount",
             "size": 6
           }
         ],

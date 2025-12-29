@@ -25,12 +25,13 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "Title",
           "searchable": false,
-          "sortable": true
+          "sortable": false
         }
       },
       "slug": {
@@ -125,12 +126,27 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "url"
         },
         "list": {
           "label": "youtube",
           "searchable": false,
           "sortable": false
+        }
+      },
+      "wordCount": {
+        "edit": {
+          "label": "Word Count",
+          "description": "Number of Words in the Shownotes",
+          "placeholder": "123",
+          "visible": true,
+          "editable": false
+        },
+        "list": {
+          "label": "wordCount",
+          "searchable": true,
+          "sortable": true
         }
       },
       "createdAt": {
@@ -243,7 +259,11 @@
         [
           {
             "name": "duration",
-            "size": 4
+            "size": 6
+          },
+          {
+            "name": "wordCount",
+            "size": 6
           }
         ]
       ],

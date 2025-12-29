@@ -41,6 +41,9 @@
       "type": "component",
       "component": "collection-type.youtube",
       "repeatable": true
+    },
+    "wordCount": {
+      "type": "integer"
     }
   }
 }
