@@ -13,10 +13,15 @@ type AuthorListProps = {
 };
 
 /**
- * Component for displaying a list of authors.
+ * Render a list of authors in either an inline (comma-separated) or block (vertical) layout.
  *
- * Supports inline (comma-separated) and block (vertical) layouts.
- * Can display avatars or text-only mode.
+ * Authors are displayed alphabetically by name. When `maxDisplay` is provided, only that many authors are shown and a count of remaining authors is appended.
+ *
+ * @param authors - Array of author objects to display
+ * @param showAvatars - If `true`, include each author's avatar when available
+ * @param layout - Layout style: `'inline'` (default) or `'block'`
+ * @param maxDisplay - Optional maximum number of authors to render; excess authors are summarized as a remaining count
+ * @returns The JSX element containing the formatted author list, or `null` when `authors` is empty
  */
 export function AuthorList({
                                authors,
@@ -117,4 +122,3 @@ export function AuthorList({
         </div>
     );
 }
-
