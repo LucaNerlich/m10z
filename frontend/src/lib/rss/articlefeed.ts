@@ -47,11 +47,10 @@ export type StrapiArticleFeedSingle = {
  */
 export function generateArticleFeedXml(args: {
     siteUrl: string; // e.g. https://m10z.de
-    strapiUrl: string;
     channel: StrapiArticleFeedSingle['channel'];
     articles: StrapiArticle[];
 }): {xml: string; etagSeed: string; lastModified: Date | null} {
-    const {siteUrl, strapiUrl, channel, articles} = args;
+    const {siteUrl, channel, articles} = args;
 
     const now = new Date();
     const channelImage = normalizeStrapiMedia(channel.image);

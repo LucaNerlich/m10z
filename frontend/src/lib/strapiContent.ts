@@ -376,7 +376,6 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
  * Fetch multiple articles by their slugs.
  */
 export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArticle[]> {
-    ;
     if (slugs.length === 0) return [];
     if (slugs.length > MAX_SLUGS) {
         throw new Error(
@@ -487,7 +486,6 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
  * Fetch multiple articles by their slugs, automatically batching if the array exceeds MAX_SLUGS.
  */
 export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<StrapiArticle[]> {
-    ;
     if (slugs.length === 0) return [];
     if (slugs.length <= MAX_SLUGS) {
         return fetchArticlesBySlugs(slugs);
@@ -507,7 +505,6 @@ export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<Stra
  * Fetch multiple podcasts by their slugs, automatically batching if the array exceeds MAX_SLUGS.
  */
 export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<StrapiPodcast[]> {
-    ;
     if (slugs.length === 0) return [];
     if (slugs.length <= MAX_SLUGS) {
         return fetchPodcastsBySlugs(slugs);
@@ -524,7 +521,6 @@ export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<Stra
 }
 
 export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> {
-    ;
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
 

@@ -55,7 +55,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
                         fields: ['slug'],
                     },
                 },
-                fields: ['slug', 'content', 'publishedAt'],
+                fields: ['slug', 'content', 'wordCount', 'publishedAt'],
             },
             {encodeValuesOnly: true},
         );
@@ -99,7 +99,6 @@ async function getCachedArticleFeed() {
     const [feed, articles] = await Promise.all([fetchArticleFeedSingle(), fetchAllArticles()]);
     const {xml, etagSeed, lastModified} = generateArticleFeedXml({
         siteUrl: SITE_URL,
-        strapiUrl: STRAPI_URL,
         channel: feed.channel,
         articles,
     });

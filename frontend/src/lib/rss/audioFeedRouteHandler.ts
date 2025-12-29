@@ -63,7 +63,7 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
                         populate: '*',
                     },
                 },
-                fields: ['slug', 'duration', 'shownotes', 'publishedAt'],
+                fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt'],
             },
             {encodeValuesOnly: true},
         );
