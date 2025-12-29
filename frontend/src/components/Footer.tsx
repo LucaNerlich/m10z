@@ -2,7 +2,7 @@ import styles from './Footer.module.css';
 import Link from 'next/link';
 
 import FontPicker from './FontPicker';
-import ThemeToggle from './ThemeToggle';
+import ThemeSelector from './ThemeSelector';
 import {routes} from '@/src/lib/routes';
 
 const BUILD_YEAR = new Date().getUTCFullYear();
@@ -76,7 +76,7 @@ export default function Footer() {
             </div>
             <div className={styles.metaRow}>
                 <FontPicker />
-                <ThemeToggle />
+                <ThemeSelector />
                 <p className={styles.meta}>© {BUILD_YEAR} m10z</p>
             </div>
         </footer>

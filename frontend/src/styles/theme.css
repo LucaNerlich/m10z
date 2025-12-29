@@ -87,3 +87,16 @@
     --color-secondary: var(--color-secondary-dark);
     --shadow-soft: var(--shadow-soft-dark);
 }
+
+:root[data-theme='grey'] {
+    color-scheme: dark;
+    --color-background: var(--color-background-grey);
+    --color-surface: var(--color-surface-grey);
+    --color-surface-strong: var(--color-surface-strong-grey);
+    --color-border: var(--color-border-grey);
+    --color-text: var(--color-text-grey);
+    --color-text-muted: var(--color-text-muted-grey);
+    --color-link: var(--color-link-grey);
+    --color-secondary: var(--color-secondary-grey);
+    --shadow-soft: var(--shadow-soft-grey);
+}

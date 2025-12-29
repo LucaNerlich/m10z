@@ -9,6 +9,7 @@ import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import {type Metadata, type Viewport} from 'next';
+import Script from 'next/script';
 import {routes} from '@/src/lib/routes';
 import React from 'react';
 
@@ -64,8 +65,36 @@ export default function RootLayout({
         <html
             lang="de"
             className={`${poppins.variable} ${argon.variable} ${krypton.variable} ${neon.variable} ${radon.variable} ${xenon.variable}`}
+            suppressHydrationWarning
         >
         <body>
+        <Script
+            id="theme-init"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{
+                __html: `
+(function() {
+    try {
+        var stored = localStorage.getItem('m10z-theme');
+        var theme = stored && ['system', 'light', 'dark', 'grey'].includes(stored) ? stored : 'system';
+        var effectiveTheme;
+        
+        if (theme === 'system') {
+            effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        } else {
+            effectiveTheme = theme;
+        }
+        
+        document.documentElement.dataset.theme = effectiveTheme;
+    } catch (e) {
+        // Fallback to system preference if localStorage fails
+        var effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = effectiveTheme;
+    }
+})();
+                `.trim(),
+            }}
+        />
         <ScrollRestoration />
         <Header />
         <main>
