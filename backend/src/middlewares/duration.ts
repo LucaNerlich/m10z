@@ -9,12 +9,11 @@ import {existsSync} from 'fs';
 import {resolve} from 'path';
 
 /**
- * Extract duration from podcast audio file and set it in the data object.
- * This function handles file retrieval, path resolution, metadata extraction,
- * and error handling without blocking the save operation.
+ * Extracts audio duration from the podcast file referenced by `data.file` and sets `data.duration` to the rounded number of seconds.
  *
- * @param strapi - Strapi instance
- * @param data - Data object being saved
+ * Attempts to locate the file URL from `data.file` (object with `url`, numeric/string id, `id`, or `documentId`), resolves the path inside Strapi's public directory, reads audio metadata, and updates `data.duration` when a positive duration is found. Errors are logged and do not interrupt the save operation.
+ *
+ * @param data - The entity data being saved; if a file is present its duration will be assigned to `data.duration` as an integer number of seconds
  */
 async function extractDuration(strapi: any, data: any): Promise<void> {
     try {
@@ -106,11 +105,15 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
 }
 
 /**
- * Middleware function to extract audio duration for podcasts before save operations.
+ * Runs on podcast create/update to extract audio duration and attach it to the entity data before saving.
  *
- * @param context - Document service context
- * @param next - Next middleware function
- * @returns Result from next middleware
+ * When the context targets `api::podcast.podcast` and the action is `create` or `update`, this middleware
+ * attempts to extract the audio duration when `params.data.file` is present and populate `data.duration`.
+ * Any extraction errors are logged and do not block the request.
+ *
+ * @param context - The middleware context containing `uid`, `action`, and `params` (including `data` and optional `strapi`)
+ * @param next - The next middleware function in the chain
+ * @returns The value returned by the next middleware
  */
 export async function durationMiddleware(
     context: {uid: string; action: string; params?: any},
@@ -136,4 +139,3 @@ export async function durationMiddleware(
     }
     return next();
 }
-

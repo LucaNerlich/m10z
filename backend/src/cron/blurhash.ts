@@ -8,6 +8,13 @@ import {existsSync} from 'fs';
 import {promises as fsPromises} from 'fs';
 import {resolve} from 'path';
 
+/**
+ * Scan uploaded image files and generate blurhash data URLs for those missing a blurhash.
+ *
+ * Processes up to 50 image files per run: validates file paths inside the public directory, reads image files, generates a blur data URL, and updates the corresponding upload file records with the generated blurhash. Logs per-file outcomes and a final summary of successful and failed updates.
+ *
+ * @param strapi - The Strapi application instance used to query/update upload documents, access configured directories, and emit logs
+ */
 export async function generateMissingBlurhashes({strapi}: {strapi: any}): Promise<void> {
     try {
         strapi.log.info('Starting hourly blurhash generation for missing images...');
@@ -113,4 +120,3 @@ export async function generateMissingBlurhashes({strapi}: {strapi: any}): Promis
         strapi.log.error('Error in blurhash cron job:', error);
     }
 }
-

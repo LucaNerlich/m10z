@@ -6,11 +6,12 @@
  */
 
 /**
- * Count words in markdown/richtext content by stripping markdown syntax
- * and HTML tags, then counting whitespace-separated words.
+ * Compute the number of words in markdown or richtext content.
+ *
+ * Returns 0 for null, empty, non-string input, or when an internal error occurs.
  *
  * @param content - Markdown or richtext string to count words in
- * @returns Word count number (0 for null/empty or on error)
+ * @returns `0` for null, empty, non-string input, or on error; otherwise the number of words found
  */
 export function countWords(content: string | null | undefined): number {
     try {
@@ -78,12 +79,14 @@ export function countWords(content: string | null | undefined): number {
 }
 
 /**
- * Extract word count from article content or podcast shownotes
- * and set it in the data object.
+ * Compute the word count from an article's content or a podcast's shownotes and store it on the provided data object.
  *
- * @param strapi - Strapi instance
- * @param data - Data object being saved
- * @param contentType - Content type: 'article' or 'podcast'
+ * Selects the source field based on `contentType`, sets `data.wordCount` to the computed number, and logs the result.
+ * If `contentType` is unrecognized the function logs a warning and returns without modifying `data`.
+ * On error the function logs the error and sets `data.wordCount` to 0.
+ *
+ * @param data - The entity data being saved; `wordCount` will be written to this object
+ * @param contentType - Either `'article'` (uses `data.content`) or `'podcast'` (uses `data.shownotes`)
  */
 export async function extractWordCount(
     strapi: any,
@@ -122,12 +125,13 @@ export async function extractWordCount(
 }
 
 /**
- * Middleware function to calculate wordCount for articles and podcasts
- * before save operations.
+ * Compute and attach a wordCount to article or podcast data before save operations, then continue the middleware chain.
  *
- * @param context - Document service context
- * @param next - Next middleware function
- * @returns Result from next middleware
+ * This middleware runs for create and update actions when the context uid refers to an article or podcast.
+ *
+ * @param context - Middleware context containing `uid`, `action`, and optional `params` (where `params.data` is the entity being saved)
+ * @param next - The next middleware function to invoke
+ * @returns The value returned by the next middleware
  */
 export async function wordCountMiddleware(
     context: {uid: string; action: string; params?: any},
@@ -157,4 +161,3 @@ export async function wordCountMiddleware(
     // Always call next() even if word count calculation failed
     return next();
 }
-

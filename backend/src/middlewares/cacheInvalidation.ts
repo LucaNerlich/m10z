@@ -28,12 +28,11 @@ const searchTargets = new Set<string>([
 const rebuildActions = new Set<string>(['publish', 'update', 'delete', 'unpublish']);
 
 /**
- * Middleware function to invalidate Next.js caches and rebuild search index
- * after successful document mutations.
+ * Invalidates Next.js caches and rebuilds the search index after a successful Strapi document mutation.
  *
- * @param context - Document service context
- * @param next - Next middleware function
- * @returns Result from next middleware
+ * @param context - Operation context containing `uid` (document UID), `action` (the performed action), and optional `params` (may include `strapi` instance under `params.strapi`)
+ * @param next - The next middleware/operation to execute; its result is returned unchanged
+ * @returns The value returned by the invoked `next` middleware
  */
 export async function cacheInvalidationMiddleware(
     context: {uid: string; action: string; params?: any},
@@ -70,4 +69,3 @@ export async function cacheInvalidationMiddleware(
 
     return result;
 }
-
