@@ -1,5 +1,6 @@
 .article {
     width: 100%;
+    padding: 0 20px;
 }
 
 .header {
@@ -30,6 +31,12 @@
 
     p img {
         border-radius: var(--border-radius);
+    }
+}
+
+@media (max-width: 767px) {
+    .article {
+        padding: 0 0.5rem;
     }
 }
 

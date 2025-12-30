@@ -22,6 +22,12 @@ body {
     min-height: 100vh;
 }
 
+@media (max-width: 767px) {
+    main {
+        padding-top: 1rem;
+    }
+}
+
 a {
     color: var(--color-link);
     text-decoration: none;
