@@ -12,7 +12,7 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {mediaUrlToAbsolute, pickBannerMedia, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
 import {absoluteRoute} from '@/src/lib/routes';
-import {formatDateShort} from '@/src/lib/dateFormatters';
+import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import styles from './page.module.css';
 import Image from 'next/image';
@@ -60,6 +60,7 @@ type FeedItem =
     cover?: StrapiMedia | undefined;
     banner?: StrapiMedia | undefined;
     wordCount?: number | null;
+    duration?: number | null;
     href: string;
 };
 
@@ -121,6 +122,7 @@ function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
         cover: pickCoverMedia(podcast.base, podcast.categories),
         banner: pickBannerMedia(podcast.base, podcast.categories),
         wordCount: podcast.wordCount ?? null,
+        duration: podcast.duration ?? null,
         href: `/podcasts/${podcast.slug}`,
     }));
 }
@@ -275,9 +277,14 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                         <Tag className={styles.metaTag}>
                                             {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                         </Tag>
-                                        {item.wordCount != null ? (
+                                        {item.type === 'article' && item.wordCount != null ? (
                                             <span className={styles.readingTime}>
                                                 📖&nbsp;{calculateReadingTime(item.wordCount)}
+                                            </span>
+                                        ) : null}
+                                        {item.type === 'podcast' && item.duration != null ? (
+                                            <span className={styles.readingTime}>
+                                                🎶&nbsp;{formatDuration(item.duration)}
                                             </span>
                                         ) : null}
                                         <time className={styles.date}>{formatDateShort(item.publishedAt)}</time>

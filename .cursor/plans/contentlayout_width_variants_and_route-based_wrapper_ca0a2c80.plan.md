@@ -41,4 +41,3 @@ Update `ContentLayout` to support width variants using pure CSS selectors. The h
 - Uses CSS `:has()` selector to detect the presence of `[data-homepage]` attribute within `<main>`
 - When homepage marker is present, CSS applies wide variant (1200px) to ContentLayout
 - All styling logic is handled by CSS - no JavaScript or client components needed
-- The `data-homepage` attribute serves as a semantic marker that CSS can detect
