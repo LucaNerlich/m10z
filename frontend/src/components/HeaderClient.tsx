@@ -150,7 +150,7 @@ export default function HeaderClient({
     }, [isMenuOpen]);
 
     return (
-        <div style={{display: 'flex'}} ref={menuRef}>
+        <div className={styles.burgerWrapper} ref={menuRef}>
             <button
                 ref={burgerButtonRef}
                 type="button"
