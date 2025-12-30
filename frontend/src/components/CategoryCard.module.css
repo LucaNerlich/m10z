@@ -28,6 +28,14 @@
     height: 100%;
 }
 
+.mediaLink div {
+    border-radius: unset;
+}
+
+.mediaLink div img {
+    border-radius: unset;
+}
+
 .cover {
     padding: 0 !important;
     margin: 0 !important;

@@ -153,10 +153,15 @@
     justify-content: center;
 }
 
+.burgerWrapper {
+    position: relative;
+    display: flex;
+}
+
 .menu {
     display: none;
     position: absolute;
-    right: 20px;
+    right: 0;
     top: 100%;
     margin-top: 10px;
     background: var(--color-surface);
@@ -221,10 +226,17 @@
         display: none;
     }
 
+    .burgerWrapper {
+        position: static;
+    }
+
     .menu {
         left: 16px;
         right: 16px;
         min-width: unset;
+        position: fixed;
+        top: calc(var(--header-height, 58px) + 10px);
+        margin-top: 0;
     }
 }
 
@@ -241,7 +253,7 @@
     }
 
     .menu {
-        right: 20px;
+        right: 0;
         width: 260px;
     }
 }

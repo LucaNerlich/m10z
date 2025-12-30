@@ -14,13 +14,13 @@ type HeaderClientProps = {
 const shortcutKeyMenu = 'J';
 
 /**
- * Header component that renders a responsive, accessible navigation with a toggleable mobile menu.
+ * Renders a responsive header with a toggleable mobile menu and accessible keyboard interactions.
  *
- * Manages menu open/close state, global shortcut (Cmd/Ctrl+J), outside-click closing, focus management (focus first item on open, restore focus to the toggle on close), and keyboard navigation/trapping while the menu is open.
+ * Manages menu open/close state, keyboard shortcut (Cmd/Ctrl+J), outside-click closing, focus management, and focus trapping while the menu is open.
  *
- * @param primaryLinks - Readonly array of primary navigation links (rendered mobile-only).
- * @param secondaryLinks - Readonly array of secondary navigation links.
- * @returns The header element containing the burger toggle and the navigation menu.
+ * @param primaryLinks - Readonly array of primary navigation links; rendered only in the mobile section of the menu
+ * @param secondaryLinks - Readonly array of secondary navigation links shown in the main menu
+ * @returns The header element containing the burger toggle button and the navigation menu
  */
 export default function HeaderClient({
                                          primaryLinks,
@@ -150,7 +150,7 @@ export default function HeaderClient({
     }, [isMenuOpen]);
 
     return (
-        <div style={{display: 'flex'}} ref={menuRef}>
+        <div className={styles.burgerWrapper} ref={menuRef}>
             <button
                 ref={burgerButtonRef}
                 type="button"
