@@ -68,8 +68,7 @@ function renderChannelHeader(
     channelImageUrl: string,
     pubDate: Date,
 ): string {
-    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
-        `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">` +
+    return `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">` +
         `    <channel>` +
         `        <title>${escapeXml(channel.title)}</title>` +
         `        <link>${escapeXml(cfg.siteUrl)}</link>` +
@@ -170,14 +169,11 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
  * renders the channel header and each episode item, and produces the final RSS XML string together with
  * an ETag seed and the latest published date for Last-Modified usage.
  *
- * @param cfg - Feed configuration used to populate channel and iTunes metadata and defaults
- * @param channel - Channel-level data (title, description, image, etc.) for the feed header
- * @param episodeFooter - Optional footer content appended to each episode's description
- * @param episodes - Array of podcast episodes to consider for inclusion in the feed
  * @returns An object with:
  *  - `xml`: the complete RSS/Atom feed XML as a string,
  *  - `etagSeed`: a seed string in the form `"<count>:<ISO date>"` or `"<count>:none"` when no publish date exists,
  *  - `lastModified`: the Date of the latest published episode or `null` if none
+ * @param args
  */
 export function generateAudioFeedXml(args: {
     cfg: AudioFeedConfig;

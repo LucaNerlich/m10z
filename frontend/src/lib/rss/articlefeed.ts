@@ -36,13 +36,11 @@ export type StrapiArticleFeedSingle = {
 /**
  * Builds an RSS 2.0 feed XML document from the provided channel and articles.
  *
- * @param siteUrl - Base site URL used to construct item links and the self-referencing atom link (e.g. https://example.com)
- * @param channel - Channel metadata (title, description, mail, image) for the feed header
- * @param articles - Articles to include in the feed; items are ordered by effective publication date (newest first)
  * @returns An object containing:
  *   - `xml`: the complete RSS 2.0 XML document as a string
  *   - `etagSeed`: a seed string formatted as "<itemCount>:<latestPublishedAt|none>" suitable for ETag computation
  *   - `lastModified`: the Date of the latest published article, or `null` if there are no published articles
+ * @param args
  */
 export function generateArticleFeedXml(args: {
     siteUrl: string; // e.g. https://m10z.de
@@ -57,7 +55,6 @@ export function generateArticleFeedXml(args: {
         mediaUrlToAbsolute({media: channelImage}) ??
         `${siteUrl}/images/m10z.jpg`;
     const header =
-        `<?xml version="1.0" encoding="UTF-8"?>` +
         `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">` +
         `  <channel>` +
         `    <title>${escapeXml(channel.title)}</title>` +
