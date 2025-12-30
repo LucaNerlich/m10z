@@ -37,7 +37,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 
     const title = author.title || 'Autor';
     const description = author.description || undefined;
-    const avatarMedia = getOptimalMediaFormat(author.avatar, 'thumbnail');
+    const avatarMedia = getOptimalMediaFormat(author.avatar, 'medium');
     const avatarImage = avatarMedia ? formatOpenGraphImage(avatarMedia) : undefined;
 
     return {

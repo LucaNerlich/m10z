@@ -5,7 +5,7 @@ import {fetchArticlesBySlugsBatched, fetchCategoryBySlug, fetchPodcastsBySlugsBa
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
-import {normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
@@ -37,17 +37,9 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 
     const title = category.base?.title || category.slug || 'Kategorie';
     const description = category.base?.description || undefined;
-    const coverMedia = category.base?.cover
-        ? normalizeStrapiMedia(category.base.cover)
-        : undefined;
-    const coverImage = coverMedia
-        ? formatOpenGraphImage(coverMedia)
-        : [
-            {
-                url: absoluteRoute('/images/m10z.jpg'),
-                alt: 'Mindestens 10 Zeichen',
-            },
-        ];
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(undefined, [category]);
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
 
     return {
         title,

@@ -50,7 +50,8 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const title = episode.base.title;
     const description = episode.base.description || undefined;
     const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
-    const coverImage = bannerOrCoverMedia ? formatOpenGraphImage(bannerOrCoverMedia) : undefined;
+    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+    const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
 
     const openGraph: Metadata['openGraph'] = {
         type: 'article',
