@@ -16,7 +16,6 @@ import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
-import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
 import {MarkdownClient} from '@/src/components/MarkdownClient';
@@ -122,38 +121,36 @@ export default async function PodcastDetailPage({params}: PageProps) {
                 }}
             />
 
-            <ContentLayout>
-                <ContentImage
-                    src={imageSrc}
-                    alt={episode.base.title}
-                    width={imageWidth}
-                    height={imageHeight}
-                    placeholder={placeholder}
-                    blurhash={blurhash}
+            <ContentImage
+                src={imageSrc}
+                alt={episode.base.title}
+                width={imageWidth}
+                height={imageHeight}
+                placeholder={placeholder}
+                blurhash={blurhash}
+            />
+            <Section className={styles.header}>
+                <ContentMetadata
+                    publishedDate={published}
+                    duration={episode.duration}
+                    authors={episode.authors}
+                    categories={episode.categories}
                 />
-                <Section className={styles.header}>
-                    <ContentMetadata
-                        publishedDate={published}
-                        duration={episode.duration}
-                        authors={episode.authors}
-                        categories={episode.categories}
-                    />
-                    <h1 className={styles.title}>{episode.base.title}</h1>
-                    {episode.base.description ? (
-                        <p className={styles.description}>
-                            {episode.base.description}
-                        </p>
-                    ) : null}
-                </Section>
+                <h1 className={styles.title}>{episode.base.title}</h1>
+                {episode.base.description ? (
+                    <p className={styles.description}>
+                        {episode.base.description}
+                    </p>
+                ) : null}
+            </Section>
 
-                {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
+            {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
 
-                <MarkdownClient markdown={episode.shownotes ?? ''} />
+            <MarkdownClient markdown={episode.shownotes ?? ''} />
 
-                {episode.youtube && episode.youtube.length > 0 && (
-                    <YoutubeSection youtube={episode.youtube} />
-                )}
-            </ContentLayout>
+            {episode.youtube && episode.youtube.length > 0 && (
+                <YoutubeSection youtube={episode.youtube} />
+            )}
         </article>
     );
 }
