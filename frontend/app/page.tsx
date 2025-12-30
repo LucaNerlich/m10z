@@ -12,6 +12,7 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {mediaUrlToAbsolute, pickBannerMedia, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
 import {absoluteRoute} from '@/src/lib/routes';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import styles from './page.module.css';
@@ -21,6 +22,10 @@ import placeholderCover from '@/public/images/m10z.jpg';
 export const metadata: Metadata = {
     description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen. Artikel, Podcasts und mehr zu Gaming, Organisationskultur und HR-Themen.',
     openGraph: {
+        type: 'website',
+        locale: OG_LOCALE,
+        siteName: OG_SITE_NAME,
+        url: absoluteRoute('/'),
         images: [
             {
                 url: absoluteRoute('/images/m10z.jpg'),

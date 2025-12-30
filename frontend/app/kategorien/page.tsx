@@ -2,12 +2,19 @@ import {type Metadata} from 'next';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {CategoryCard} from '@/src/components/CategoryCard';
 
 export const metadata: Metadata = {
     title: 'Kategorien',
     description: 'Durchsuchen Sie unsere Inhalte nach Kategorien. Finden Sie Artikel und Podcasts zu verschiedenen Themen.',
+    openGraph: {
+        type: 'website',
+        locale: OG_LOCALE,
+        siteName: OG_SITE_NAME,
+        url: absoluteRoute('/kategorien'),
+    },
     alternates: {
         canonical: absoluteRoute('/kategorien'),
     },

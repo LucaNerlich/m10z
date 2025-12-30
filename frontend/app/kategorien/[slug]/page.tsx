@@ -4,6 +4,7 @@ import {notFound} from 'next/navigation';
 import {fetchArticlesBySlugsBatched, fetchCategoryBySlug, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
@@ -17,6 +18,15 @@ type PageProps = {
     params: Promise<{slug: string}>;
 };
 
+/**
+ * Builds metadata for a category page based on the route `slug`.
+ *
+ * Fetches the category by slug and constructs title, description, canonical alternates,
+ * Open Graph (including locale, siteName, url, images), Twitter card data, and robots directives.
+ *
+ * @param params - Route parameters object. Expects `params.slug` to identify the category.
+ * @returns The assembled `Metadata` for the category page (title, description, alternates, `openGraph`, `twitter`, and `robots`).
+ */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
@@ -47,6 +57,9 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         },
         openGraph: {
             type: 'website',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
+            url: absoluteRoute(`/kategorien/${slug}`),
             title,
             description,
             images: coverImage,

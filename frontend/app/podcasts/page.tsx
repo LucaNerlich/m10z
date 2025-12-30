@@ -3,12 +3,19 @@ import {type Metadata} from 'next';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import {fetchPodcastsList} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {PodcastCard} from '@/src/components/PodcastCard';
 
 export const metadata: Metadata = {
     title: 'Podcasts',
     description: 'Alle Podcast-Episoden von Mindestens 10 Zeichen. Hören Sie unsere Diskussionen zu Gaming, Organisationskultur und mehr.',
+    openGraph: {
+        type: 'website',
+        locale: OG_LOCALE,
+        siteName: OG_SITE_NAME,
+        url: absoluteRoute('/podcasts'),
+    },
     alternates: {
         canonical: absoluteRoute('/podcasts'),
     },

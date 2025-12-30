@@ -1,6 +1,23 @@
+import {type Metadata} from 'next';
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
+import {absoluteRoute} from '@/src/lib/routes';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {AuthorCard} from '@/src/components/AuthorCard';
+
+export const metadata: Metadata = {
+    title: 'Team',
+    description: 'Lernen Sie das Team von Mindestens 10 Zeichen kennen. Unsere Autoren und Podcaster.',
+    openGraph: {
+        type: 'website',
+        locale: OG_LOCALE,
+        siteName: OG_SITE_NAME,
+        url: absoluteRoute('/team'),
+    },
+    alternates: {
+        canonical: absoluteRoute('/team'),
+    },
+};
 
 /**
  * Renders the Team page by fetching authors and displaying each as a card with avatar, title, description, and content counts.

@@ -27,6 +27,7 @@ export const routes = {
     youtube: 'https://www.youtube.com/@M10Z_TV',
     twitch: 'https://www.twitch.tv/m10z_tv',
     linktree: 'https://linktr.ee/m10z',
+    twitter: '@m10z_tv',
 };
 
 /**

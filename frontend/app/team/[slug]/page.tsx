@@ -6,6 +6,7 @@ import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
@@ -18,6 +19,14 @@ type PageProps = {
     params: Promise<{slug: string}>;
 };
 
+/**
+ * Generate page metadata (title, description, Open Graph and Twitter cards) for an author page identified by slug.
+ *
+ * If the slug is invalid or no matching author is found, returns an empty metadata object.
+ *
+ * @param params - An object (awaitable) whose resolved `slug` value identifies the author route.
+ * @returns A `Metadata` object containing the page `title`, `description`, canonical alternate URL, `openGraph` data (type `'profile'`, `locale: 'de'`, `siteName`, URL, `title`, `description`, and `images` when available) and `twitter` card data; or an empty object if no valid slug or author is found.
+ */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
@@ -39,6 +48,9 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         },
         openGraph: {
             type: 'profile',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
+            url: absoluteRoute(`/team/${slug}`),
             title,
             description,
             images: avatarImage,

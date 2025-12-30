@@ -6,6 +6,7 @@ import {fetchArticleBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {calculateReadingTime} from '@/src/lib/readingTime';
@@ -23,12 +24,10 @@ type PageProps = {
 };
 
 /**
- * Builds metadata (OpenGraph, Twitter, authors, and alternates) for an article identified by slug.
- *
- * Returns an empty metadata object if the slug is invalid or the article cannot be found.
+ * Build OpenGraph, Twitter, author, and alternate metadata for an article identified by slug.
  *
  * @param params - Page route params containing a `slug` that identifies the article
- * @returns A Metadata object containing `title`, `description`, `alternates` (canonical URL), `openGraph` (type, title, description, images, publishedTime, modifiedTime, authors), `twitter` (card, title, description, images), and `authors`; or an empty object if metadata cannot be produced
+ * @returns A Metadata object with `title`, `description`, `alternates` (canonical URL), `openGraph` (type 'article', `locale`, `siteName`, `url`, `title`, `description`, `images`, `publishedTime`, `modifiedTime`, `authors`), `twitter` (card, `title`, `description`, `images`), and `authors`; or an empty object if the slug is invalid or the article cannot be found.
  */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const {slug: rawSlug} = await params;
@@ -53,6 +52,9 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         },
         openGraph: {
             type: 'article',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
+            url: absoluteRoute(`/artikel/${slug}`),
             title,
             description,
             images: coverImage,
