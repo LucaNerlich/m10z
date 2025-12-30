@@ -95,7 +95,7 @@ export default async function CategoryDetailPage({params}: PageProps) {
     const title = category.base?.title ?? category.slug ?? 'Kategorie';
 
     return (
-        <main>
+        <main data-list-page>
             <header className={styles.header}>
                 <h1 className={styles.title}>{title}</h1>
                 {category.base?.description ? (
