@@ -19,7 +19,7 @@ export default async function ArticlePage() {
     const sorted = sortByDateDesc(articles);
 
     return (
-        <section>
+        <section data-list-page>
             <h1>Artikel</h1>
             {sorted.length === 0 ? (
                 <p>Keine Artikel gefunden.</p>

@@ -11,7 +11,7 @@ export default async function TeamPage() {
     const authors = await fetchAuthorsList();
 
     return (
-        <section>
+        <section data-list-page>
             <h1>Team</h1>
             {authors.length === 0 ? (
                 <p>Keine Autoren gefunden.</p>

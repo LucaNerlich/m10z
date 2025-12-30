@@ -21,7 +21,7 @@ export default async function ImprintPage() {
     });
 
     return (
-        <main>
+        <main data-list-page>
             <h1>{imprint.title}</h1>
             <Markdown markdown={imprint.content} />
         </main>

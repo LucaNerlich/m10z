@@ -6,7 +6,8 @@
     width: 100%;
 }
 
-main:has([data-homepage]) .layout {
+main:has([data-homepage]) .layout,
+main:has([data-list-page]) .layout {
     max-width: 1200px;
 }
 

@@ -19,7 +19,7 @@ export default async function PodcastsPage() {
     const sorted = sortByDateDesc(podcasts);
 
     return (
-        <section>
+        <section data-list-page>
             <h1>Podcasts</h1>
             {sorted.length === 0 ? (
                 <p>Keine Podcasts gefunden.</p>

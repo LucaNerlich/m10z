@@ -17,7 +17,7 @@ export default async function CategoriesPage() {
     const categories = await fetchCategoriesWithContent();
 
     return (
-        <section>
+        <section data-list-page>
             <h1>Kategorien</h1>
             {categories.length === 0 ? (
                 <p>Keine Kategorien gefunden.</p>
