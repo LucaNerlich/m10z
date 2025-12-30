@@ -17,6 +17,10 @@ html {
 body {
     font-family: var(--font-family), system-ui;
     font-size: 16px;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
     hyphens: auto;
+    hyphenate-limit-chars: 6 3 2;
+    hyphenate-limit-lines: 2;
     line-height: 1.6;
 }
