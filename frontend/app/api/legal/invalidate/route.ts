@@ -2,6 +2,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {routes} from '@/src/lib/routes';
 
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
@@ -30,12 +31,12 @@ export async function POST(request: Request) {
     revalidateTag('legal', 'max');
     revalidateTag('imprint', 'max');
     revalidateTag('privacy', 'max');
-    revalidatePath('/impressum');
-    revalidatePath('/datenschutz');
+    revalidatePath(routes.imprint);
+    revalidatePath(routes.privacy);
 
     return Response.json({
         ok: true,
-        revalidated: ['legal', 'imprint', 'privacy', '/impressum', '/datenschutz'],
+        revalidated: ['legal', 'imprint', 'privacy', routes.imprint, routes.privacy],
     });
 }
 

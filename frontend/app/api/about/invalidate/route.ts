@@ -2,6 +2,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {routes} from '@/src/lib/routes';
 
 /**
  * Extracts the client's IP address from the request headers, preferring the X-Forwarded-For header.
@@ -40,10 +41,10 @@ export async function POST(request: Request) {
 
     revalidateTag('about', 'max');
     revalidateTag('strapi:about', 'max');
-    revalidatePath('/ueber-uns');
+    revalidatePath(routes.about, 'page');
 
     return Response.json({
         ok: true,
-        revalidated: ['about', 'strapi:about', '/ueber-uns'],
+        revalidated: ['about', 'strapi:about', routes.about],
     });
 }

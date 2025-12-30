@@ -2,6 +2,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {routes} from '@/src/lib/routes';
 
 /**
  * Extracts the client's IP address from the request headers.
@@ -48,19 +49,19 @@ export async function POST(request: Request) {
     // enable targeted cache control, while page:home allows homepage-specific invalidation without
     // invalidating all article detail pages. This separation enables future optimizations.
     revalidateTag('page:home', 'max');
-    
+
     // Invalidate pages that display articles
-    revalidatePath('/artikel', 'page');
-    revalidatePath('/artikel/[slug]', 'page');
-    revalidatePath('/', 'page');
+    revalidatePath(routes.articles, 'page');
+    revalidatePath(routes.articles + '/[slug]', 'page');
+    revalidatePath(routes.home, 'page');
 
     return Response.json({
         ok: true,
         revalidated: [
             'strapi:article',
             'strapi:article:list',
-            '/artikel',
-            '/artikel/[slug]',
+            routes.articles,
+            routes.articles + '/[slug]',
             '/',
         ],
     });

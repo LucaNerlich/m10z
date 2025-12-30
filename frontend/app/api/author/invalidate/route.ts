@@ -2,6 +2,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {routes} from '@/src/lib/routes';
 
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
@@ -29,20 +30,20 @@ export async function POST(request: Request) {
     // Invalidate author-related cache tags
     revalidateTag('strapi:author', 'max');
     revalidateTag('strapi:author:list', 'max');
-    
+
     // Authors appear on article and podcast list pages, so invalidate those too
     revalidateTag('strapi:article', 'max');
     revalidateTag('strapi:article:list', 'max');
     revalidateTag('strapi:podcast', 'max');
     revalidateTag('strapi:podcast:list', 'max');
-    
+
     // Invalidate pages that display authors
-    revalidatePath('/artikel', 'page');
-    revalidatePath('/artikel/[slug]', 'page');
-    revalidatePath('/podcasts', 'page');
-    revalidatePath('/podcasts/[slug]', 'page');
-    revalidatePath('/team/[slug]', 'page');
-    revalidatePath('/', 'page');
+    revalidatePath(routes.articles, 'page');
+    revalidatePath(routes.articles + '/[slug]', 'page');
+    revalidatePath(routes.podcasts, 'page');
+    revalidatePath(routes.podcasts + '/[slug]', 'page');
+    revalidatePath(routes.authors + '/[slug]', 'page');
+    revalidatePath(routes.home, 'page');
 
     return Response.json({
         ok: true,

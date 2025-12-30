@@ -2,6 +2,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {routes} from '@/src/lib/routes';
 
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
@@ -33,11 +34,11 @@ export async function POST(request: Request) {
     revalidateTag('strapi:category', 'max');
     revalidateTag('strapi:category:list', 'max');
     revalidatePath('/rss.xml');
-    revalidatePath('/', 'page');
-    revalidatePath('/artikel', 'page');
-    revalidatePath('/artikel/[slug]', 'page');
-    revalidatePath('/kategorien', 'page');
-    revalidatePath('/kategorien/[slug]', 'page');
+    revalidatePath(routes.home, 'page');
+    revalidatePath(routes.articles, 'page');
+    revalidatePath(routes.articles + '/[slug]', 'page');
+    revalidatePath(routes.categories, 'page');
+    revalidatePath(routes.categories + '/[slug]', 'page');
 
     return Response.json({
         ok: true,

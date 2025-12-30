@@ -2,6 +2,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {routes} from '@/src/lib/routes';
 
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
@@ -29,19 +30,19 @@ export async function POST(request: Request) {
     // Invalidate category-related cache tags
     revalidateTag('strapi:category', 'max');
     revalidateTag('strapi:category:list', 'max');
-    
+
     // Categories appear on article and podcast list pages, so invalidate those too
     revalidateTag('strapi:article', 'max');
     revalidateTag('strapi:article:list', 'max');
     revalidateTag('strapi:podcast', 'max');
     revalidateTag('strapi:podcast:list', 'max');
-    
+
     // Invalidate pages that display categories
-    revalidatePath('/kategorien', 'page');
-    revalidatePath('/kategorien/[slug]', 'page');
-    revalidatePath('/artikel', 'page');
-    revalidatePath('/podcasts', 'page');
-    revalidatePath('/', 'page');
+    revalidatePath(routes.categories, 'page');
+    revalidatePath(routes.categories + '/[slug]', 'page');
+    revalidatePath(routes.articles, 'page');
+    revalidatePath(routes.podcasts, 'page');
+    revalidatePath(routes.home, 'page');
 
     return Response.json({
         ok: true,

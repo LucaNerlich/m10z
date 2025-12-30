@@ -2,6 +2,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {routes} from '@/src/lib/routes';
 
 /**
  * Determine the client's IP address from request headers.
@@ -52,19 +53,19 @@ export async function POST(request: Request) {
     // enable targeted cache control, while page:home allows homepage-specific invalidation without
     // invalidating all podcast detail pages. This separation enables future optimizations.
     revalidateTag('page:home', 'max');
-    
+
     // Invalidate pages that display podcasts
-    revalidatePath('/podcasts', 'page');
-    revalidatePath('/podcasts/[slug]', 'page');
-    revalidatePath('/', 'page');
+    revalidatePath(routes.podcasts, 'page');
+    revalidatePath(routes.podcasts + '/[slug]', 'page');
+    revalidatePath(routes.home, 'page');
 
     return Response.json({
         ok: true,
         revalidated: [
             'strapi:podcast',
             'strapi:podcast:list',
-            '/podcasts',
-            '/podcasts/[slug]',
+            routes.podcasts,
+            routes.podcasts + '/[slug]',
             '/',
         ],
     });

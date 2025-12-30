@@ -2,6 +2,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {routes} from '@/src/lib/routes';
 
 function getClientIp(request: Request): string {
     // Best-effort; behind a proxy you may want to rely on platform-provided headers.
@@ -28,7 +29,6 @@ export async function POST(request: Request) {
         });
     }
 
-
     revalidateTag('feed:audio', 'max');
     revalidateTag('strapi:podcast', 'max');
     revalidateTag('strapi:podcast:list', 'max');
@@ -36,11 +36,11 @@ export async function POST(request: Request) {
     revalidateTag('strapi:category', 'max');
     revalidateTag('strapi:category:list', 'max');
     revalidatePath('/audiofeed.xml');
-    revalidatePath('/', 'page');
-    revalidatePath('/podcasts', 'page');
-    revalidatePath('/podcasts/[slug]', 'page');
-    revalidatePath('/kategorien', 'page');
-    revalidatePath('/kategorien/[slug]', 'page');
+    revalidatePath(routes.home, 'page');
+    revalidatePath(routes.podcasts, 'page');
+    revalidatePath(routes.podcasts + '/[slug]', 'page');
+    revalidatePath(routes.categories, 'page');
+    revalidatePath(routes.categories + '/[slug]', 'page');
 
     return Response.json({
         ok: true,
