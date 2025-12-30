@@ -6,6 +6,7 @@ import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
@@ -47,8 +48,8 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         },
         openGraph: {
             type: 'profile',
-            locale: 'de',
-            siteName: 'Mindestens 10 Zeichen',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
             url: absoluteRoute(`/team/${slug}`),
             title,
             description,

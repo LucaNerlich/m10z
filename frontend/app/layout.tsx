@@ -11,6 +11,7 @@ import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import {type Metadata, type Viewport} from 'next';
 import Script from 'next/script';
 import {routes} from '@/src/lib/routes';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import React from 'react';
 
 export const metadata: Metadata = {
@@ -25,8 +26,8 @@ export const metadata: Metadata = {
     },
     openGraph: {
         type: 'website',
-        locale: 'de',
-        siteName: 'Mindestens 10 Zeichen',
+        locale: OG_LOCALE,
+        siteName: OG_SITE_NAME,
         url: routes.siteUrl,
         title: 'Mindestens 10 Zeichen',
         description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen.',

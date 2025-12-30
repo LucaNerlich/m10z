@@ -2,6 +2,7 @@ import {type Metadata} from 'next';
 import {getAbout} from '@/src/lib/strapi';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {absoluteRoute} from '@/src/lib/routes';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
@@ -57,8 +58,8 @@ export async function generateMetadata(): Promise<Metadata> {
         description,
         openGraph: {
             type: 'website',
-            locale: 'de',
-            siteName: 'Mindestens 10 Zeichen',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
             url: absoluteRoute('/ueber-uns'),
         },
         robots: {

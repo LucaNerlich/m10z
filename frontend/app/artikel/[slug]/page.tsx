@@ -6,6 +6,7 @@ import {fetchArticleBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {calculateReadingTime} from '@/src/lib/readingTime';
@@ -51,8 +52,8 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         },
         openGraph: {
             type: 'article',
-            locale: 'de',
-            siteName: 'Mindestens 10 Zeichen',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
             url: absoluteRoute(`/artikel/${slug}`),
             title,
             description,

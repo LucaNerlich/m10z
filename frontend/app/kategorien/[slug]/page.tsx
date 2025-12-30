@@ -4,6 +4,7 @@ import {notFound} from 'next/navigation';
 import {fetchArticlesBySlugsBatched, fetchCategoryBySlug, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {normalizeStrapiMedia} from '@/src/lib/rss/media';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
@@ -56,8 +57,8 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         },
         openGraph: {
             type: 'website',
-            locale: 'de',
-            siteName: 'Mindestens 10 Zeichen',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
             url: absoluteRoute(`/kategorien/${slug}`),
             title,
             description,

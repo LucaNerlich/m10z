@@ -1,6 +1,7 @@
 import {type Metadata} from 'next';
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
 import {absoluteRoute} from '@/src/lib/routes';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {AuthorCard} from '@/src/components/AuthorCard';
 
@@ -9,8 +10,8 @@ export const metadata: Metadata = {
     description: 'Lernen Sie das Team von Mindestens 10 Zeichen kennen. Unsere Autoren und Podcaster.',
     openGraph: {
         type: 'website',
-        locale: 'de',
-        siteName: 'Mindestens 10 Zeichen',
+        locale: OG_LOCALE,
+        siteName: OG_SITE_NAME,
         url: absoluteRoute('/team'),
     },
     alternates: {

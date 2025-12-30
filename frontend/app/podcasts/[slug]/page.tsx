@@ -13,6 +13,7 @@ import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {PodcastPlayer} from './Player';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
+import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
@@ -53,8 +54,8 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 
     const openGraph: Metadata['openGraph'] = {
         type: 'article',
-        locale: 'de',
-        siteName: 'Mindestens 10 Zeichen',
+        locale: OG_LOCALE,
+        siteName: OG_SITE_NAME,
         url: absoluteRoute(`/podcasts/${slug}`),
         title,
         description,
