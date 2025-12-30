@@ -221,7 +221,8 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                                     {formatDateShort(item.publishedAt)}
                                                 </time>
                                             ) : (
-                                                <span className={styles.tocDate}>{formatDateShort(item.publishedAt)}</span>
+                                                <span
+                                                    className={styles.tocDate}>{formatDateShort(item.publishedAt)}</span>
                                             )}
                                         </div>
                                         <h3 className={styles.tocLabel}>{item.title}</h3>
@@ -299,7 +300,7 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                                     ) : null}
                                     <div className={styles.cardActions}>
                                         <Link href={item.href} className={styles.readMore}>
-                                            Weiterlesen
+                                            {item.type === 'article' ? 'Weiterlesen' : 'Anhören'}
                                         </Link>
                                     </div>
                                 </div>
