@@ -18,6 +18,14 @@ type PageProps = {
     params: Promise<{slug: string}>;
 };
 
+/**
+ * Generate page metadata (title, description, Open Graph and Twitter cards) for an author page identified by slug.
+ *
+ * If the slug is invalid or no matching author is found, returns an empty metadata object.
+ *
+ * @param params - An object (awaitable) whose resolved `slug` value identifies the author route.
+ * @returns A `Metadata` object containing the page `title`, `description`, canonical alternate URL, `openGraph` data (type `'profile'`, `locale: 'de'`, `siteName`, URL, `title`, `description`, and `images` when available) and `twitter` card data; or an empty object if no valid slug or author is found.
+ */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
