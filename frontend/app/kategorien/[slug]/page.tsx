@@ -17,6 +17,15 @@ type PageProps = {
     params: Promise<{slug: string}>;
 };
 
+/**
+ * Builds metadata for a category page based on the route `slug`.
+ *
+ * Fetches the category by slug and constructs title, description, canonical alternates,
+ * Open Graph (including locale, siteName, url, images), Twitter card data, and robots directives.
+ *
+ * @param params - Route parameters object. Expects `params.slug` to identify the category.
+ * @returns The assembled `Metadata` for the category page (title, description, alternates, `openGraph`, `twitter`, and `robots`).
+ */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);

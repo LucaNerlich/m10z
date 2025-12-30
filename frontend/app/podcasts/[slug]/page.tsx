@@ -27,16 +27,16 @@ type PageProps = {
 };
 
 /**
- * Builds Next.js page metadata for a podcast episode identified by the route slug.
+ * Generate page metadata for a podcast episode identified by the route slug.
  *
- * Fetches the episode by slug and, if found, produces metadata including title,
- * description, canonical URL, OpenGraph (article) data, and Twitter card images
- * based on the episode's banner or cover media.
+ * Fetches the episode referenced by `params.slug` and, if found, produces metadata
+ * containing the page title, description, canonical alternate URL, OpenGraph article
+ * data (including `locale: 'de'`, `siteName`, `url`, `title`, `description`, and `images`)
+ * and Twitter card fields. Returns an empty object when the slug is invalid or the episode
+ * cannot be found.
  *
- * @param params - Route params (resolves to an object with a `slug` string)
- * @returns A Metadata object containing title, description, alternates (canonical URL),
- *          `openGraph` (type, title, description, images) and `twitter` card fields;
- *          returns an empty Metadata object if the slug is invalid or no episode is found.
+ * @param params - Route params resolving to an object with a `slug` string
+ * @returns A Metadata object with title, description, alternates.canonical, `openGraph`, and `twitter` fields, or an empty object if metadata cannot be generated
  */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const {slug: rawSlug} = await params;
