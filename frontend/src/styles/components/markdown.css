@@ -133,6 +133,29 @@
     font-weight: 500;
 }
 
+/* Inline code styles */
+.markdown-content code:not(pre code) {
+    background-color: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--border-radius);
+    font-family: var(--font-argon-family);
+    font-size: 0.9em;
+}
+
+/* Code block spacing */
+.markdown-content pre {
+    margin: 1.5rem 0;
+}
+
+.markdown-content pre:first-child {
+    margin-top: 0;
+}
+
+.markdown-content pre:last-child {
+    margin-bottom: 0;
+}
+
 /* Paragraph spacing in markdown content */
 .markdown-content p {
     margin-bottom: 1.5rem;

@@ -1,0 +1,50 @@
+.pre {
+    background-color: var(--code-bg);
+    color: var(--code-text);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    font-family: var(--font-neon-family), monospace;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.code {
+    display: block;
+    font-family: inherit;
+}
+
+/* Syntax highlighting token styles */
+.token.keyword {
+    color: var(--code-keyword);
+}
+
+.token.string {
+    color: var(--code-string);
+}
+
+.token.comment {
+    color: var(--code-comment);
+    font-style: italic;
+}
+
+.token.function {
+    color: var(--code-function);
+}
+
+.token.number {
+    color: var(--code-number);
+}
+
+.token.operator {
+    color: var(--code-operator);
+}
+
+/* Enable horizontal scrolling for narrow viewports */
+@media (max-width: 768px) {
+    .pre {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+}
+
