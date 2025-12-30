@@ -51,12 +51,14 @@ export function formatXml(xml: string): string {
 
 export function buildRssHeaders(args: {
     etag?: string;
+    contentDisposition: 'inline' | 'attachment',
     lastModified?: Date | null;
     cacheControl?: string;
 }): Headers {
     const headers = new Headers();
-    headers.set('Content-Type', 'application/rss+xml; charset=utf-8');
+    headers.set('Content-Type', 'application/xml; charset=utf-8');
     headers.set('Cache-Control', args.cacheControl ?? 'public, max-age=3600, must-revalidate');
+    headers.set('Content-Disposition', args.contentDisposition ?? 'inline');
     if (args.etag) headers.set('ETag', args.etag);
     if (args.lastModified) headers.set('Last-Modified', args.lastModified.toUTCString());
     return headers;
