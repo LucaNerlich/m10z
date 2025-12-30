@@ -6,6 +6,12 @@ import {absoluteRoute} from '@/src/lib/routes';
 export const metadata: Metadata = {
     title: 'Impressum',
     description: 'Impressum von Mindestens 10 Zeichen. Angaben gemäß § 5 TMG über den Anbieter dieser Website.',
+    openGraph: {
+        type: 'website',
+        locale: 'de',
+        siteName: 'Mindestens 10 Zeichen',
+        url: absoluteRoute('/impressum'),
+    },
     robots: {
         index: true,
         follow: true,

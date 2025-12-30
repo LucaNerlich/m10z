@@ -9,6 +9,12 @@ import {ArticleCard} from '@/src/components/ArticleCard';
 export const metadata: Metadata = {
     title: 'Artikel',
     description: 'Alle Artikel von Mindestens 10 Zeichen. Lesen Sie unsere Beiträge zu Gaming, Organisationskultur, HR-Themen und mehr.',
+    openGraph: {
+        type: 'website',
+        locale: 'de',
+        siteName: 'Mindestens 10 Zeichen',
+        url: absoluteRoute('/artikel'),
+    },
     alternates: {
         canonical: absoluteRoute('/artikel'),
     },

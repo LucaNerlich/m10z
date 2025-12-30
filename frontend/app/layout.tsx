@@ -35,6 +35,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Mindestens 10 Zeichen',
         description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen.',
+        site: routes.twitter,
     },
 };
 

@@ -9,6 +9,12 @@ import {PodcastCard} from '@/src/components/PodcastCard';
 export const metadata: Metadata = {
     title: 'Podcasts',
     description: 'Alle Podcast-Episoden von Mindestens 10 Zeichen. Hören Sie unsere Diskussionen zu Gaming, Organisationskultur und mehr.',
+    openGraph: {
+        type: 'website',
+        locale: 'de',
+        siteName: 'Mindestens 10 Zeichen',
+        url: absoluteRoute('/podcasts'),
+    },
     alternates: {
         canonical: absoluteRoute('/podcasts'),
     },

@@ -53,6 +53,9 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 
     const openGraph: Metadata['openGraph'] = {
         type: 'article',
+        locale: 'de',
+        siteName: 'Mindestens 10 Zeichen',
+        url: absoluteRoute(`/podcasts/${slug}`),
         title,
         description,
         images: coverImage,

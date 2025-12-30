@@ -47,6 +47,9 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         },
         openGraph: {
             type: 'website',
+            locale: 'de',
+            siteName: 'Mindestens 10 Zeichen',
+            url: absoluteRoute(`/kategorien/${slug}`),
             title,
             description,
             images: coverImage,

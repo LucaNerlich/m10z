@@ -21,6 +21,10 @@ import placeholderCover from '@/public/images/m10z.jpg';
 export const metadata: Metadata = {
     description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen. Artikel, Podcasts und mehr zu Gaming, Organisationskultur und HR-Themen.',
     openGraph: {
+        type: 'website',
+        locale: 'de',
+        siteName: 'Mindestens 10 Zeichen',
+        url: absoluteRoute('/'),
         images: [
             {
                 url: absoluteRoute('/images/m10z.jpg'),

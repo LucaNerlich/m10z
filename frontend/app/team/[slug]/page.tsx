@@ -39,6 +39,9 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         },
         openGraph: {
             type: 'profile',
+            locale: 'de',
+            siteName: 'Mindestens 10 Zeichen',
+            url: absoluteRoute(`/team/${slug}`),
             title,
             description,
             images: avatarImage,

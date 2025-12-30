@@ -8,6 +8,12 @@ import {CategoryCard} from '@/src/components/CategoryCard';
 export const metadata: Metadata = {
     title: 'Kategorien',
     description: 'Durchsuchen Sie unsere Inhalte nach Kategorien. Finden Sie Artikel und Podcasts zu verschiedenen Themen.',
+    openGraph: {
+        type: 'website',
+        locale: 'de',
+        siteName: 'Mindestens 10 Zeichen',
+        url: absoluteRoute('/kategorien'),
+    },
     alternates: {
         canonical: absoluteRoute('/kategorien'),
     },

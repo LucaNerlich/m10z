@@ -6,6 +6,12 @@ import {absoluteRoute} from '@/src/lib/routes';
 export const metadata: Metadata = {
     title: 'Datenschutz',
     description: 'Datenschutzerklärung von Mindestens 10 Zeichen. Informationen zur Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten.',
+    openGraph: {
+        type: 'website',
+        locale: 'de',
+        siteName: 'Mindestens 10 Zeichen',
+        url: absoluteRoute('/datenschutz'),
+    },
     robots: {
         index: true,
         follow: true,

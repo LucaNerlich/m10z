@@ -55,6 +55,12 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title,
         description,
+        openGraph: {
+            type: 'website',
+            locale: 'de',
+            siteName: 'Mindestens 10 Zeichen',
+            url: absoluteRoute('/ueber-uns'),
+        },
         robots: {
             index: true,
             follow: true,
