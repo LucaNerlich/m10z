@@ -67,6 +67,26 @@
     padding-top: 1rem;
 }
 
+/* Remove padding-top from the first heading */
+.markdown-content > h1:first-child,
+.markdown-content > h2:first-child,
+.markdown-content > h3:first-child,
+.markdown-content > h4:first-child,
+.markdown-content > h5:first-child,
+.markdown-content > h6:first-child {
+    padding-top: 0;
+}
+
+/* Also handle case where first heading might not be first child */
+.markdown-content > p:first-child + h1,
+.markdown-content > p:first-child + h2,
+.markdown-content > p:first-child + h3,
+.markdown-content > p:first-child + h4,
+.markdown-content > p:first-child + h5,
+.markdown-content > p:first-child + h6 {
+    padding-top: 0;
+}
+
 .markdown-content blockquote {
     margin: 1.5rem 0;
     padding: 1rem 1.5rem;
