@@ -12,7 +12,6 @@ import {calculateReadingTime} from '@/src/lib/readingTime';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
-import {ContentLayout} from '@/app/ContentLayout';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './page.module.css';
 import {MarkdownClient} from '@/src/components/MarkdownClient';
@@ -113,36 +112,34 @@ export default async function ArticleDetailPage({params}: PageProps) {
                 }}
             />
 
-            <ContentLayout>
-                <ContentImage
-                    src={imageSrc}
-                    alt={article.base.title}
-                    width={imageWidth}
-                    height={imageHeight}
-                    placeholder={placeholder}
-                    blurhash={blurhash}
+            <ContentImage
+                src={imageSrc}
+                alt={article.base.title}
+                width={imageWidth}
+                height={imageHeight}
+                placeholder={placeholder}
+                blurhash={blurhash}
+            />
+            <Section className={styles.header}>
+                <ContentMetadata
+                    publishedDate={published}
+                    readingTime={readingTime}
+                    authors={article.authors}
+                    categories={article.categories}
                 />
-                <Section className={styles.header}>
-                    <ContentMetadata
-                        publishedDate={published}
-                        readingTime={readingTime}
-                        authors={article.authors}
-                        categories={article.categories}
-                    />
-                    <h1 className={styles.title}>{article.base.title}</h1>
-                    {article.base.description ? (
-                        <p className={styles.description}>
-                            {article.base.description}
-                        </p>
-                    ) : null}
-                </Section>
+                <h1 className={styles.title}>{article.base.title}</h1>
+                {article.base.description ? (
+                    <p className={styles.description}>
+                        {article.base.description}
+                    </p>
+                ) : null}
+            </Section>
 
-                <MarkdownClient markdown={article.content ?? ''} />
+            <MarkdownClient markdown={article.content ?? ''} />
 
-                {article.youtube && article.youtube.length > 0 && (
-                    <YoutubeSection youtube={article.youtube} />
-                )}
-            </ContentLayout>
+            {article.youtube && article.youtube.length > 0 && (
+                <YoutubeSection youtube={article.youtube} />
+            )}
         </article>
     );
 }

@@ -33,6 +33,12 @@
     }
 }
 
+@media (max-width: 767px) {
+    .article {
+        padding: 0 0.5rem;
+    }
+}
+
 @media (max-width: 640px) {
     .title {
         font-size: 1.875rem;
