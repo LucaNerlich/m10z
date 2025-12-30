@@ -51,7 +51,7 @@ export function formatXml(xml: string): string {
 
 export function buildRssHeaders(args: {
     etag?: string;
-    contentDisposition: 'inline' | 'attachment',
+    contentDisposition?: 'inline' | 'attachment',
     lastModified?: Date | null;
     cacheControl?: string;
 }): Headers {
