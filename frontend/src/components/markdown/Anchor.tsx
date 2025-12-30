@@ -5,14 +5,11 @@ import {routes} from '@/src/lib/routes';
 export type AnchorProps = React.ComponentProps<'a'>;
 
 /**
- * Anchor component for markdown content with secure link handling.
- * 
- * Features:
- * - Detects internal vs external links using secure origin comparison
- * - Uses Next.js Link for internal navigation
- * - Adds security attributes (target, rel) for external links
- * - Normalizes URLs for consistency
- * - Handles anchor links, relative paths, and absolute URLs securely
+ * Render a secure markdown link that normalizes URLs and chooses internal Next.js navigation or a safe external anchor.
+ *
+ * Normalizes hrefs, treats same-origin paths as internal (rendered with Next.js Link), preserves anchor and non-parseable schemes, and adds security attributes (`target="_blank"`, `rel="noopener noreferrer"`) for external destinations. For internal paths, ensures a consistent pathname (leading slash, removes trailing slash except for root) before passing to Next.js Link. For anchor links (href starting with `#`) and non-parseable URLs, the original href is preserved.
+ *
+ * @returns A React element — either a Next.js `Link` configured for internal navigation or an `<a>` element configured for external/anchor targets.
  */
 export function Anchor({href, children, className, id, ...props}: AnchorProps) {
     if (!href) {
@@ -120,4 +117,3 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
 
     return <Link {...linkProps}>{children}</Link>;
 }
-

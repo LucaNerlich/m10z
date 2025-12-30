@@ -5,9 +5,11 @@ import {SafeImage} from '@/src/components/SafeImage';
 export type ImageProps = React.ComponentProps<'img'>;
 
 /**
- * Image component for markdown content with Fancybox gallery support.
- * Wraps images in a link for gallery functionality and uses SafeImage
- * for secure image handling.
+ * Render an image suitable for markdown with Fancybox gallery support.
+ *
+ * @param src - Image source URL or path; if missing or not a string, the component returns `null`
+ * @param alt - Alternate text for the image and for the link's aria-label (defaults to an empty string)
+ * @returns The anchor-wrapped image element configured for gallery viewing, or `null` when `src` is invalid
  */
 export function Image({src, alt = '', ...props}: ImageProps) {
     if (!src || typeof src !== 'string') return null;
@@ -34,4 +36,3 @@ export function Image({src, alt = '', ...props}: ImageProps) {
         </a>
     );
 }
-

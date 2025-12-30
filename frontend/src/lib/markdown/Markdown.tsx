@@ -21,16 +21,16 @@ export type MarkdownProps = {
 };
 
 /**
- * Render sanitized Markdown into HTML with extended inline syntax and image gallery support.
+ * Render sanitized Markdown into a React element with extended inline syntax and image gallery support.
  *
- * Supports GitHub Flavored Markdown, converts inline extensions (==mark==, ++ins++, ^sup^, ~sub~),
- * demotes top-level headings (h1 → h2), and initializes Fancybox for images grouped by
- * `data-fancybox="article-gallery"`. HTML is parsed then sanitized with an extended schema
- * that allows `ins`, `sup`, `sub`, and `mark`.
+ * Converts inline extensions (==mark==, ++ins++, ^sup^, ~sub~), strips inline `<br>` tags,
+ * enables GitHub Flavored Markdown and smart typographic replacements, and initializes Fancybox
+ * for images grouped by `data-fancybox="article-gallery"`. HTML in the Markdown is parsed then
+ * sanitized with an extended schema that allows `ins`, `sup`, `sub`, and `mark` tags.
  *
  * @param markdown - The Markdown source to render.
  * @param className - Optional additional CSS class(es) added to the container.
- * @returns The rendered Markdown content as a React element.
+ * @returns A React element containing the rendered and sanitized Markdown content.
  */
 export function Markdown({markdown, className}: MarkdownProps) {
     const contentRef = useRef<HTMLDivElement>(null);
@@ -124,4 +124,3 @@ export function Markdown({markdown, className}: MarkdownProps) {
         </div>
     );
 }
-

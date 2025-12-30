@@ -9,8 +9,14 @@ export type CodeProps = React.ComponentProps<'code'> & {
 };
 
 /**
- * Code component for syntax highlighting in markdown content.
- * Handles both inline code and code blocks with language-specific highlighting.
+ * Render inline code or a syntax-highlighted code block when a language is specified in `className`.
+ *
+ * If `className` contains a `language-{lang}` token, the component renders a highlighted block for that language;
+ * otherwise it renders a plain inline `<code>` element.
+ *
+ * @param className - Optional CSS class(es). Include `language-{lang}` to enable syntax highlighting for `lang`.
+ * @param inline - When true, always render as inline code regardless of `className`.
+ * @returns A React element containing either plain inline code or a syntax-highlighted code block. 
  */
 export function Code({className = '', children, inline = false, ...props}: CodeProps) {
     // Extract language from className (format: "language-{lang}")
@@ -51,4 +57,3 @@ export function Code({className = '', children, inline = false, ...props}: CodeP
         </Highlight>
     );
 }
-
