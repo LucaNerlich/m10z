@@ -143,7 +143,7 @@ type SearchParams =
 
 export default function HomePage(props: {searchParams?: SearchParams}) {
     return (
-        <div>
+        <div data-homepage>
             <Suspense fallback={<FeedSkeleton />}>
                 <FeedContent searchParams={props.searchParams} />
             </Suspense>
