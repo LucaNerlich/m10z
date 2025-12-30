@@ -13,6 +13,7 @@ import rehypeSanitize, {defaultSchema} from 'rehype-sanitize';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
 import {routes} from '@/src/lib/routes';
 import {SafeImage} from '@/src/components/SafeImage';
+import {Code} from '@/src/components/markdown/Code';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 export type MarkdownProps = {
@@ -114,6 +115,7 @@ export function Markdown({markdown, className}: MarkdownProps) {
                 ]}
                 components={{
                     h1: ({children, ...props}) => <h2 {...props}>{children}</h2>,
+                    code: Code,
                     img: ({src, alt = ''}) => {
                         if (!src || typeof src !== 'string') return null;
                         const url = /^https?:\/\//i.test(src) ? src : toAbsoluteUrl(src);

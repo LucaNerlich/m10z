@@ -11,6 +11,26 @@
     --color-secondary-strong-dark: oklch(0.3 0.01 250);
     --color-secondary-strong: var(--color-secondary-strong-light);
 
+    /* Code syntax highlighting tokens - light theme (default) */
+    --code-bg: oklch(0.96 0.005 250);
+    --code-text: oklch(0.16 0.03 255);
+    --code-keyword: oklch(0.45 0.15 280);
+    --code-string: oklch(0.35 0.12 200);
+    --code-comment: oklch(0.5 0.01 250);
+    --code-function: oklch(0.4 0.15 240);
+    --code-number: oklch(0.45 0.12 50);
+    --code-operator: oklch(0.4 0.1 20);
+
+    /* Code syntax highlighting tokens - dark theme */
+    --code-bg-dark: oklch(0.15 0.02 255);
+    --code-text-dark: oklch(0.92 0.01 260);
+    --code-keyword-dark: oklch(0.7 0.15 280);
+    --code-string-dark: oklch(0.75 0.12 150);
+    --code-comment-dark: oklch(0.6 0.01 250);
+    --code-function-dark: oklch(0.7 0.15 240);
+    --code-number-dark: oklch(0.75 0.12 50);
+    --code-operator-dark: oklch(0.7 0.1 20);
+
     /* Grey theme tokens - base #222222 */
     --color-background-grey: oklch(0.2 0 0);
     --color-surface-grey: oklch(0.24 0 0);
@@ -22,6 +42,15 @@
     --color-secondary-grey: oklch(0.3 0.005 250);
     --color-secondary-strong-grey: oklch(0.35 0.005 250);
     --shadow-soft-grey: 0 16px 50px -24px rgba(0, 0, 0, 0.8);
+    /* Code syntax highlighting tokens - grey theme */
+    --code-bg-grey: oklch(0.22 0 0);
+    --code-text-grey: oklch(0.9 0 0);
+    --code-keyword-grey: oklch(0.75 0.1 280);
+    --code-string-grey: oklch(0.7 0.1 150);
+    --code-comment-grey: oklch(0.55 0 0);
+    --code-function-grey: oklch(0.75 0.1 240);
+    --code-number-grey: oklch(0.7 0.1 50);
+    --code-operator-grey: oklch(0.7 0.08 20);
 
     /* Paper theme tokens - paper/e-ink inspired */
     --color-background-paper: oklch(0.97 0.005 85);
@@ -34,6 +63,15 @@
     --color-secondary-paper: oklch(0.95 0.005 85);
     --color-secondary-strong-paper: oklch(0.88 0.008 85);
     --shadow-soft-paper: 0 14px 40px -26px rgba(0, 10, 30, 0.1);
+    /* Code syntax highlighting tokens - paper theme */
+    --code-bg-paper: oklch(0.94 0.005 85);
+    --code-text-paper: oklch(0.2 0.01 85);
+    --code-keyword-paper: oklch(0.35 0.12 280);
+    --code-string-paper: oklch(0.3 0.1 200);
+    --code-comment-paper: oklch(0.45 0.008 85);
+    --code-function-paper: oklch(0.35 0.12 240);
+    --code-number-paper: oklch(0.4 0.1 50);
+    --code-operator-paper: oklch(0.35 0.08 20);
 
     /* Hacker theme tokens - terminal green on black */
     --color-background-hacker: oklch(0.08 0 0);
@@ -49,4 +87,13 @@
     --color-secondary-hacker: oklch(0.15 0.05 150);
     --color-secondary-strong-hacker: oklch(0.2 0.08 150);
     --shadow-soft-hacker: 0 0 20px 0 oklch(0.7 0.2 150 / 0.3);
+    /* Code syntax highlighting tokens - hacker theme */
+    --code-bg-hacker: oklch(0.1 0 0);
+    --code-text-hacker: oklch(0.7 0.2 150);
+    --code-keyword-hacker: oklch(0.75 0.25 150);
+    --code-string-hacker: oklch(0.65 0.2 150);
+    --code-comment-hacker: oklch(0.5 0.15 150);
+    --code-function-hacker: oklch(0.8 0.2 150);
+    --code-number-hacker: oklch(0.7 0.2 150);
+    --code-operator-hacker: oklch(0.75 0.2 150);
 }

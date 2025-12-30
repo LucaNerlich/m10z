@@ -8,6 +8,15 @@
     --color-text-muted-light: oklch(0.42 0.015 250);
     --color-link-light: var(--color-primary-strong);
     --shadow-soft-light: 0 14px 40px -26px rgba(0, 10, 30, 0.22);
+    /* Code syntax highlighting tokens - light mode (reference base variables from colors.css) */
+    --code-bg-light: oklch(0.96 0.005 250);
+    --code-text-light: oklch(0.16 0.03 255);
+    --code-keyword-light: oklch(0.45 0.15 280);
+    --code-string-light: oklch(0.35 0.12 200);
+    --code-comment-light: oklch(0.5 0.01 250);
+    --code-function-light: oklch(0.4 0.15 240);
+    --code-number-light: oklch(0.45 0.12 50);
+    --code-operator-light: oklch(0.4 0.1 20);
 
     /* Dark mode tokens derived from the same primary hue */
     --color-background-dark: oklch(0.13 0.03 255);
@@ -18,6 +27,15 @@
     --color-text-muted-dark: oklch(0.75 0.015 260);
     --color-link-dark: var(--color-primary-soft);
     --shadow-soft-dark: 0 16px 50px -24px rgba(0, 0, 0, 0.6);
+    /* Code syntax highlighting tokens - dark mode (reference base variables from colors.css) */
+    --code-bg-dark: oklch(0.15 0.02 255);
+    --code-text-dark: oklch(0.92 0.01 260);
+    --code-keyword-dark: oklch(0.7 0.15 280);
+    --code-string-dark: oklch(0.75 0.12 150);
+    --code-comment-dark: oklch(0.6 0.01 250);
+    --code-function-dark: oklch(0.7 0.15 240);
+    --code-number-dark: oklch(0.75 0.12 50);
+    --code-operator-dark: oklch(0.7 0.1 20);
 
     /* Default to light mode */
     color-scheme: light;
@@ -31,6 +49,15 @@
     --color-secondary: var(--color-secondary-light);
     --color-secondary-strong: var(--color-secondary-strong-light);
     --shadow-soft: var(--shadow-soft-light);
+    /* Code syntax highlighting tokens - default to light */
+    --code-bg: var(--code-bg-light);
+    --code-text: var(--code-text-light);
+    --code-keyword: var(--code-keyword-light);
+    --code-string: var(--code-string-light);
+    --code-comment: var(--code-comment-light);
+    --code-function: var(--code-function-light);
+    --code-number: var(--code-number-light);
+    --code-operator: var(--code-operator-light);
 }
 
 @media (prefers-color-scheme: light) {
@@ -46,6 +73,15 @@
         --color-secondary: var(--color-secondary-light);
         --color-secondary-strong: var(--color-secondary-strong-light);
         --shadow-soft: var(--shadow-soft-light);
+        /* Code syntax highlighting tokens - light mode */
+        --code-bg: var(--code-bg-light);
+        --code-text: var(--code-text-light);
+        --code-keyword: var(--code-keyword-light);
+        --code-string: var(--code-string-light);
+        --code-comment: var(--code-comment-light);
+        --code-function: var(--code-function-light);
+        --code-number: var(--code-number-light);
+        --code-operator: var(--code-operator-light);
     }
 }
 
@@ -62,6 +98,15 @@
         --color-secondary: var(--color-secondary-dark);
         --color-secondary-strong: var(--color-secondary-strong-dark);
         --shadow-soft: var(--shadow-soft-dark);
+        /* Code syntax highlighting tokens - dark mode */
+        --code-bg: var(--code-bg-dark);
+        --code-text: var(--code-text-dark);
+        --code-keyword: var(--code-keyword-dark);
+        --code-string: var(--code-string-dark);
+        --code-comment: var(--code-comment-dark);
+        --code-function: var(--code-function-dark);
+        --code-number: var(--code-number-dark);
+        --code-operator: var(--code-operator-dark);
     }
 }
 
@@ -77,6 +122,15 @@
     --color-secondary: var(--color-secondary-light);
     --color-secondary-strong: var(--color-secondary-strong-light);
     --shadow-soft: var(--shadow-soft-light);
+    /* Code syntax highlighting tokens - light theme */
+    --code-bg: var(--code-bg-light);
+    --code-text: var(--code-text-light);
+    --code-keyword: var(--code-keyword-light);
+    --code-string: var(--code-string-light);
+    --code-comment: var(--code-comment-light);
+    --code-function: var(--code-function-light);
+    --code-number: var(--code-number-light);
+    --code-operator: var(--code-operator-light);
 }
 
 :root[data-theme='dark'] {
@@ -91,6 +145,15 @@
     --color-secondary: var(--color-secondary-dark);
     --color-secondary-strong: var(--color-secondary-strong-dark);
     --shadow-soft: var(--shadow-soft-dark);
+    /* Code syntax highlighting tokens - dark theme */
+    --code-bg: var(--code-bg-dark);
+    --code-text: var(--code-text-dark);
+    --code-keyword: var(--code-keyword-dark);
+    --code-string: var(--code-string-dark);
+    --code-comment: var(--code-comment-dark);
+    --code-function: var(--code-function-dark);
+    --code-number: var(--code-number-dark);
+    --code-operator: var(--code-operator-dark);
 }
 
 :root[data-theme='grey'] {
@@ -105,6 +168,15 @@
     --color-secondary: var(--color-secondary-grey);
     --color-secondary-strong: var(--color-secondary-strong-grey);
     --shadow-soft: var(--shadow-soft-grey);
+    /* Code syntax highlighting tokens - grey theme */
+    --code-bg: var(--code-bg-grey);
+    --code-text: var(--code-text-grey);
+    --code-keyword: var(--code-keyword-grey);
+    --code-string: var(--code-string-grey);
+    --code-comment: var(--code-comment-grey);
+    --code-function: var(--code-function-grey);
+    --code-number: var(--code-number-grey);
+    --code-operator: var(--code-operator-grey);
 }
 
 :root[data-theme='paper'] {
@@ -119,6 +191,15 @@
     --color-secondary: var(--color-secondary-paper);
     --color-secondary-strong: var(--color-secondary-strong-paper);
     --shadow-soft: var(--shadow-soft-paper);
+    /* Code syntax highlighting tokens - paper theme */
+    --code-bg: var(--code-bg-paper);
+    --code-text: var(--code-text-paper);
+    --code-keyword: var(--code-keyword-paper);
+    --code-string: var(--code-string-paper);
+    --code-comment: var(--code-comment-paper);
+    --code-function: var(--code-function-paper);
+    --code-number: var(--code-number-paper);
+    --code-operator: var(--code-operator-paper);
 }
 
 :root[data-theme='hacker'] {
@@ -136,4 +217,13 @@
     --color-secondary: var(--color-secondary-hacker);
     --color-secondary-strong: var(--color-secondary-strong-hacker);
     --shadow-soft: var(--shadow-soft-hacker);
+    /* Code syntax highlighting tokens - hacker theme */
+    --code-bg: var(--code-bg-hacker);
+    --code-text: var(--code-text-hacker);
+    --code-keyword: var(--code-keyword-hacker);
+    --code-string: var(--code-string-hacker);
+    --code-comment: var(--code-comment-hacker);
+    --code-function: var(--code-function-hacker);
+    --code-number: var(--code-number-hacker);
+    --code-operator: var(--code-operator-hacker);
 }
