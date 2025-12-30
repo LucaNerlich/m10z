@@ -136,16 +136,10 @@
 /* Paragraph spacing in markdown content */
 .markdown-content p {
     margin-bottom: 1.5rem;
-    text-align: justify;
 }
 
 .markdown-content p:last-child {
     margin-bottom: 0;
-}
-
-/* List item justification for multi-line items */
-.markdown-content li {
-    text-align: justify;
 }
 
 /* Image spacing in markdown content */
