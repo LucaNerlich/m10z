@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import {usePathname} from 'next/navigation';
+import {usePathname, useSearchParams} from 'next/navigation';
 import React from 'react';
 
 import {routes} from '@/src/lib/routes';
@@ -20,9 +20,10 @@ interface LogoClientProps {
  */
 export default function LogoClient({className}: LogoClientProps): React.ReactElement {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        if (pathname === routes.home) {
+        if (pathname === routes.home && searchParams.size === 0) {
             e.preventDefault();
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
