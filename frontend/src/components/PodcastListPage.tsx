@@ -32,6 +32,7 @@ export function PodcastListPage() {
                 <Card variant="empty">
                     <p>Fehler beim Laden der Podcasts.</p>
                     <button
+                        type="button"
                         onClick={() => window.location.reload()}
                         style={{marginTop: '1rem', padding: '0.5rem 1rem'}}
                     >

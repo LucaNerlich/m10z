@@ -14,6 +14,8 @@ import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {MarkdownClient} from '@/src/components/MarkdownClient';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
+import {LoadingPlaceholder} from '@/src/components/LoadingPlaceholder';
+import {ErrorCardWithRetry} from '@/src/components/ErrorCardWithRetry';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
 import placeholderCover from '@/public/images/m10z.jpg';
@@ -38,7 +40,11 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     if (isLoading && !podcast) {
         return (
             <article className={styles.episode}>
-                <div style={{padding: '2rem', textAlign: 'center'}}>Lade Podcast...</div>
+                <LoadingPlaceholder
+                    isLoading={isLoading}
+                    hasData={!!podcast}
+                    message="Lade Podcast..."
+                />
             </article>
         );
     }
@@ -47,15 +53,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     if (error || !podcast) {
         return (
             <article className={styles.episode}>
-                <Section>
-                    <p>Fehler beim Laden des Podcasts.</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        style={{marginTop: '1rem', padding: '0.5rem 1rem'}}
-                    >
-                        Erneut versuchen
-                    </button>
-                </Section>
+                <ErrorCardWithRetry message="Fehler beim Laden des Podcasts." />
             </article>
         );
     }

@@ -1,7 +1,7 @@
 import {ContentGrid} from './ContentGrid';
 import {Card} from './Card';
 import cardStyles from './ContentCard.module.css';
-import styles from './PodcastListSkeleton.module.css';
+import styles from './SkeletonList.module.css';
 
 /**
  * Render a skeleton UI for the Podcasts list showing placeholder cards while content loads.

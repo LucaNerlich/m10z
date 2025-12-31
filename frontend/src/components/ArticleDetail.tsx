@@ -10,6 +10,8 @@ import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {MarkdownClient} from '@/src/components/MarkdownClient';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
+import {LoadingPlaceholder} from '@/src/components/LoadingPlaceholder';
+import {ErrorCardWithRetry} from '@/src/components/ErrorCardWithRetry';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/artikel/[slug]/page.module.css';
@@ -33,7 +35,11 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     if (isLoading && !article) {
         return (
             <article className={styles.article}>
-                <div style={{padding: '2rem', textAlign: 'center'}}>Lade Artikel...</div>
+                <LoadingPlaceholder
+                    isLoading={isLoading}
+                    hasData={!!article}
+                    message="Lade Artikel..."
+                />
             </article>
         );
     }
@@ -42,15 +48,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     if (error || !article) {
         return (
             <article className={styles.article}>
-                <Section>
-                    <p>Fehler beim Laden des Artikels.</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        style={{marginTop: '1rem', padding: '0.5rem 1rem'}}
-                    >
-                        Erneut versuchen
-                    </button>
-                </Section>
+                <ErrorCardWithRetry message="Fehler beim Laden des Artikels." />
             </article>
         );
     }

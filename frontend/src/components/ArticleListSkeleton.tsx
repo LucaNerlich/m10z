@@ -1,7 +1,7 @@
 import {ContentGrid} from './ContentGrid';
 import {Card} from './Card';
 import cardStyles from './ContentCard.module.css';
-import styles from './ArticleListSkeleton.module.css';
+import styles from './SkeletonList.module.css';
 
 /**
  * Render a skeleton grid of article cards used as a loading placeholder.

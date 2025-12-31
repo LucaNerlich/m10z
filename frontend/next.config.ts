@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
     },
     reactCompiler: true,
     images: {
-        minimumCacheTTL: 60,
+        minimumCacheTTL: process.env.NODE_ENV === 'production' ? 3600 : 60,
         dangerouslyAllowLocalIP: true,
         remotePatterns: getRemotePatterns(),
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
