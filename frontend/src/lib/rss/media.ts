@@ -272,6 +272,7 @@ export function getOptimalMediaFormat(
                 provider: media.provider,
                 provider_metadata: media.provider_metadata,
                 related: media.related,
+                blurhash: media.blurhash,
                 createdAt: media.createdAt,
                 updatedAt: media.updatedAt,
                 publishedAt: media.publishedAt,
