@@ -12,6 +12,7 @@ import {type Metadata, type Viewport} from 'next';
 import Script from 'next/script';
 import {routes} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {SWRProvider} from '@/src/components/SWRProvider';
 import React from 'react';
 
 export const metadata: Metadata = {
@@ -70,22 +71,24 @@ export default function RootLayout({
             suppressHydrationWarning
         >
         <body>
-        <Script id="theme-init" strategy="beforeInteractive" src="/theme-init.js" />
-        <ScrollRestoration />
-        <Header />
-        <main>
-            <ContentLayout>{children}</ContentLayout>
-        </main>
-        <Footer />
-        <UmamiAnalytics />
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{__html: stringifyJsonLd(orgJsonLd)}}
-        />
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{__html: stringifyJsonLd(websiteJsonLd)}}
-        />
+        <SWRProvider>
+            <Script id="theme-init" strategy="beforeInteractive" src="/theme-init.js" />
+            <ScrollRestoration />
+            <Header />
+            <main>
+                <ContentLayout>{children}</ContentLayout>
+            </main>
+            <Footer />
+            <UmamiAnalytics />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{__html: stringifyJsonLd(orgJsonLd)}}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{__html: stringifyJsonLd(websiteJsonLd)}}
+            />
+        </SWRProvider>
         </body>
         </html>
     );

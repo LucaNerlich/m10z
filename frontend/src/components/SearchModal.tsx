@@ -4,7 +4,7 @@ import {type KeyboardEvent, type MouseEvent, useEffect, useId, useMemo, useRef, 
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
 
-import {searchIndex} from '@/src/lib/search/fuseClient';
+import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {type SearchRecord} from '@/src/lib/search/types';
 
 import {Tag} from './Tag';
@@ -49,9 +49,6 @@ function normalizeImageUrl(url: string | null | undefined): string | null {
  */
 export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState<ResultItem[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const modalRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +56,9 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const router = useRouter();
     const resultsId = useId();
     const shouldScrollRef = useRef(false);
+
+    // Use SWR hook for search queries with automatic debouncing and caching
+    const {results, isLoading, error: searchError} = useSearchQuery(query, 150);
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -138,51 +138,21 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         }
     }, [activeIndex, results.length]);
 
+    // Reset active index when results change
     useEffect(() => {
-        let isCancelled = false;
-        const trimmed = query.trim();
-
-        if (trimmed.length === 0) {
-            setResults([]);
-            setLoading(false);
-            setError(null);
-            return;
+        if (results.length > 0) {
+            shouldScrollRef.current = false;
+            setActiveIndex(0);
         }
-
-        setLoading(true);
-        setError(null);
-
-        const handle = setTimeout(() => {
-            searchIndex(trimmed, 16)
-                .then((matches) => {
-                    if (isCancelled) return;
-                    setResults(matches);
-                    shouldScrollRef.current = false;
-                    setActiveIndex(0);
-                })
-                .catch(() => {
-                    if (isCancelled) return;
-                    setError('Suche konnte nicht geladen werden.');
-                })
-                .finally(() => {
-                    if (isCancelled) return;
-                    setLoading(false);
-                });
-        }, 150);
-
-        return () => {
-            isCancelled = true;
-            clearTimeout(handle);
-        };
-    }, [query]);
+    }, [results.length]);
 
     const statusMessage = useMemo(() => {
-        if (error) return error;
-        if (loading) return 'Suchen ...';
+        if (searchError) return 'Suche konnte nicht geladen werden.';
+        if (isLoading) return 'Suchen ...';
         if (results.length === 0 && query.trim().length > 0) return 'Keine Treffer gefunden.';
         if (query.trim().length === 0) return 'Tippe, um nach Artikeln, Podcasts oder Autoren zu suchen.';
         return null;
-    }, [error, loading, query, results.length]);
+    }, [searchError, isLoading, query, results.length]);
 
     const selectResult = (item: ResultItem) => {
         router.push(item.href);

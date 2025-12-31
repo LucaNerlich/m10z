@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @deprecated This module is deprecated. Use the SWR hooks instead:
+ * - `useSearchIndex()` for fetching the full search index
+ * - `useSearchQuery(query)` for performing search queries
+ *
+ * The search functionality now uses the `/api/search-index` endpoint directly
+ * via SWR hooks, which provides automatic caching, deduplication, and better
+ * error handling.
+ */
+
 import Fuse from 'fuse.js';
 
 import {type SearchIndexFile, type SearchRecord} from './types';
@@ -37,6 +47,9 @@ async function getFuse(): Promise<Fuse<SearchRecord>> {
     return buildFuse(index.records);
 }
 
+/**
+ * @deprecated Use `useSearchQuery(query)` hook instead for better caching and error handling.
+ */
 export async function searchIndex(query: string, limit = 12): Promise<SearchResult[]> {
     const q = query.trim();
     if (q.length === 0) return [];
