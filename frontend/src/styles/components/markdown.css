@@ -124,6 +124,12 @@
     }
 }
 
+@media (max-width: 767px) {
+    .markdown-content {
+        padding: 0 0.5rem;
+    }
+}
+
 /* Marked text styles scoped to markdown content only */
 .markdown-content mark {
     background-color: var(--color-primary-soft);
