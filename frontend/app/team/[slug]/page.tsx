@@ -108,7 +108,7 @@ export default async function AuthorPage({params}: PageProps) {
     const sortedPodcasts = sortByDateDesc(podcasts);
 
     return (
-        <main>
+        <main data-list-page>
             <AuthorHeader author={author} />
 
             {sortedArticles.length > 0 ? (
