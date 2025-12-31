@@ -227,7 +227,10 @@ async function getAboutWithFallback(
     };
 
     try {
-        const query = qs.stringify({populate: 'logo'}, {encodeValuesOnly: true});
+        const query = qs.stringify(
+            {populate: {logo: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}}},
+            {encodeValuesOnly: true},
+        );
         const res = await fetchStrapiSingle<StrapiAbout>('about', query, options);
         assertIsAbout(res.data);
         return res.data;

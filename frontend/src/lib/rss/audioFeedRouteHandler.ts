@@ -50,17 +50,23 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
                 pagination: {pageSize, page},
                 populate: {
                     base: {
-                        populate: ['cover', 'banner'],
+                        populate: {
+                            cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                            banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        },
                         fields: ['title', 'description', 'date'],
                     },
                     authors: {
-                        populate: ['avatar'],
+                        populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
                         fields: ['title', 'slug', 'description'],
                     },
                     categories: {
                         populate: {
                             base: {
-                                populate: ['cover', 'banner'],
+                                populate: {
+                                    cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                    banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                },
                                 fields: ['title', 'description'],
                             },
                         },
@@ -96,12 +102,20 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
     return all;
 }
 
+/**
+ * Fetches the single audio feed entry from Strapi including channel image metadata.
+ *
+ * The returned object includes the channel and its image with these populated image fields:
+ * `url`, `width`, `height`, `blurhash`, `alternativeText`, and `formats`.
+ *
+ * @returns The audio feed entry as stored in Strapi (`StrapiAudioFeedSingle`), containing channel data and populated image metadata.
+ */
 async function fetchAudioFeedSingle(): Promise<StrapiAudioFeedSingle> {
     const query = qs.stringify(
         {
             populate: {
                 channel: {
-                    populate: ['image'],
+                    populate: {image: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
                 },
             },
         },

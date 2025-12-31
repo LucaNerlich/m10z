@@ -10,7 +10,13 @@ import {getEffectiveDate, sortByDateDesc, toDateTimestamp} from '@/src/lib/effec
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {mediaUrlToAbsolute, pickBannerMedia, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
+import {
+    getOptimalMediaFormat,
+    mediaUrlToAbsolute,
+    pickBannerMedia,
+    pickCoverMedia,
+    type StrapiMedia,
+} from '@/src/lib/rss/media';
 import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
@@ -73,22 +79,18 @@ if (!STRAPI_URL) {
     throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
 }
 
+/**
+ * Normalize the requested page number from URL search parameters.
+ *
+ * @param searchParams - Optional mapping of URL search parameters; may contain a `page` entry as a string or string array
+ * @returns The resulting page number between 1 and MAX_PAGE. Returns 1 when `page` is missing, invalid, or less than 1; fractional values are rounded down; values above MAX_PAGE are clamped to MAX_PAGE.
+ */
 function parsePageParam(searchParams?: Record<string, string | string[] | undefined>): number {
     const raw = searchParams?.page;
     const value = Array.isArray(raw) ? raw[0] : raw;
     const parsed = Number(value);
     if (!Number.isFinite(parsed) || parsed < 1) return 1;
     return Math.min(Math.floor(parsed), MAX_PAGE);
-}
-
-/**
- * Convert a Strapi media object into an absolute URL.
- *
- * @param media - The Strapi media object to convert; may be undefined
- * @returns The absolute URL for the media, or `undefined` if the media is missing or cannot be resolved
- */
-function toCoverUrl(media?: StrapiMedia): string | undefined {
-    return mediaUrlToAbsolute({media});
 }
 
 /**
@@ -104,18 +106,18 @@ function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
         title: article.base.title,
         description: article.base.description,
         publishedAt: getEffectiveDate(article),
-        cover: pickCoverMedia(article.base, article.categories),
-        banner: pickBannerMedia(article.base, article.categories),
+        cover: getOptimalMediaFormat(pickCoverMedia(article.base, article.categories), 'medium'),
+        banner: getOptimalMediaFormat(pickBannerMedia(article.base, article.categories), 'medium'),
         wordCount: article.wordCount ?? null,
         href: `/artikel/${article.slug}`,
     }));
 }
 
 /**
- * Convert an array of Strapi podcast records into an array of normalized feed items.
+ * Convert an array of Strapi podcast records into normalized feed items.
  *
- * @param items - Array of podcast objects from Strapi
- * @returns An array of `FeedItem` objects with `type: 'podcast'`, `slug`, `title`, `description`, `publishedAt`, optional `cover` and `banner` media, `wordCount` (or `null`), and `href` for the podcast detail page
+ * @param items - Strapi podcast records to map into feed entries
+ * @returns An array of feed items for podcasts, each containing `type: 'podcast'`, `slug`, `title`, `description`, `publishedAt`, optional `cover` and `banner` media, `wordCount` or `null`, `duration` or `null`, and `href` to the podcast detail page
  */
 function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
     return items.map((podcast) => ({
@@ -124,15 +126,21 @@ function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
         title: podcast.base.title,
         description: podcast.base.description,
         publishedAt: getEffectiveDate(podcast),
-        cover: pickCoverMedia(podcast.base, podcast.categories),
-        banner: pickBannerMedia(podcast.base, podcast.categories),
+        cover: getOptimalMediaFormat(pickCoverMedia(podcast.base, podcast.categories), 'medium'),
+        banner: getOptimalMediaFormat(pickBannerMedia(podcast.base, podcast.categories), 'medium'),
         wordCount: podcast.wordCount ?? null,
         duration: podcast.duration ?? null,
         href: `/podcasts/${podcast.slug}`,
     }));
 }
 
-
+/**
+ * Clamp a requested page number to the valid range based on total available items.
+ *
+ * @param page - Requested 1-based page number
+ * @param totalItems - Total number of available items
+ * @returns The page number clamped to the range [1, maxPage], where maxPage = ceil(totalItems / PAGE_SIZE); returns 1 when `totalItems` is 0 or negative
+ */
 function clampPageToData(page: number, totalItems: number): number {
     if (totalItems <= 0) return 1;
     const maxPage = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
@@ -159,15 +167,15 @@ export default function HomePage(props: {searchParams?: SearchParams}) {
 }
 
 /**
- * Render the combined, paginated feed of articles and podcasts for the requested page.
+ * Render the combined paginated feed of articles and podcasts for the requested page.
  *
  * Resolves the provided search parameters to determine the requested page, fetches a buffered
- * set of articles and podcasts, normalizes and sorts items by their effective publication date,
- * and renders a two-column layout containing a table of contents and the feed cards with media,
- * metadata, optional reading time, and pagination links.
+ * set of articles and podcasts, merges and sorts them by effective publication date, and
+ * returns the layout containing the table of contents, feed cards (with media and metadata),
+ * and pagination controls for that page.
  *
  * @param searchParams - Optional search parameters (or a promise resolving to them) used to read the `page` query value.
- * @returns A JSX element rendering the paginated combined feed for the resolved page.
+ * @returns A JSX element containing the table of contents, feed items, and pagination for the resolved page.
  */
 async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
     const resolvedSearchParams = await searchParams;
@@ -245,8 +253,8 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                 ) : (
                     currentItems.map((item) => {
                         const anchor = `${item.type}-${item.slug}`;
-                        const coverUrl = toCoverUrl(item.cover);
-                        const bannerUrl = toCoverUrl(item.banner);
+                        const coverUrl = mediaUrlToAbsolute({media: item.cover});
+                        const bannerUrl = mediaUrlToAbsolute({media: item.banner});
 
                         // Get blur data URLs from cover and banner
                         const coverBlurDataUrl = item.cover?.blurhash ?? null;

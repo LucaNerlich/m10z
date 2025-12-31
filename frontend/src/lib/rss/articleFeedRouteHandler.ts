@@ -47,17 +47,23 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
                 pagination: {pageSize, page},
                 populate: {
                     base: {
-                        populate: ['cover', 'banner'],
+                        populate: {
+                            cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                            banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        },
                         fields: ['title', 'description', 'date'],
                     },
                     authors: {
-                        populate: ['avatar'],
+                        populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
                         fields: ['title', 'slug', 'description'],
                     },
                     categories: {
                         populate: {
                             base: {
-                                populate: ['cover', 'banner'],
+                                populate: {
+                                    cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                    banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                },
                                 fields: ['title', 'description'],
                             },
                         },
@@ -89,12 +95,17 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
     return all;
 }
 
+/**
+ * Fetches the article feed entity with its channel image populated.
+ *
+ * @returns The article feed record including `channel.image` with `url`, `width`, `height`, `blurhash`, `alternativeText`, and `formats` fields
+ */
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
     const query = qs.stringify(
         {
             populate: {
                 channel: {
-                    populate: ['image'],
+                    populate: {image: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
                 },
             },
         },

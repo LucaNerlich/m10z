@@ -1,9 +1,10 @@
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {
+    getOptimalMediaFormat,
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
-    pickBannerMedia,
+    pickCoverOrBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
     type StrapiCategoryRef,
@@ -34,13 +35,15 @@ export type StrapiArticleFeedSingle = {
 };
 
 /**
- * Builds an RSS 2.0 feed XML document from the provided channel and articles.
+ * Build an RSS 2.0 feed XML document for a channel from a list of articles.
  *
- * @returns An object containing:
+ * @param args.siteUrl - Base site URL (e.g. https://m10z.de) used to build article and feed links
+ * @param args.channel - Channel metadata (title, description, mail, image) for the feed header
+ * @param args.articles - Array of articles to include in the feed
+ * @returns An object with:
  *   - `xml`: the complete RSS 2.0 XML document as a string
  *   - `etagSeed`: a seed string formatted as "<itemCount>:<latestPublishedAt|none>" suitable for ETag computation
  *   - `lastModified`: the Date of the latest published article, or `null` if there are no published articles
- * @param args
  */
 export function generateArticleFeedXml(args: {
     siteUrl: string; // e.g. https://m10z.de
@@ -82,8 +85,9 @@ export function generateArticleFeedXml(args: {
             const pubRaw = getEffectiveDate(a);
             const pub = pubRaw ? new Date(pubRaw) : new Date(0);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
-            const bannerMedia = pickBannerMedia(a.base, a.categories);
-            const bannerUrl = mediaUrlToAbsolute({media: bannerMedia});
+            const preferredMedia = pickCoverOrBannerMedia(a.base, a.categories);
+            const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
+            const optimizedMediaUrl = mediaUrlToAbsolute({media: optimizedMedia});
 
             // Prepare and Sanitize Content
             const title = escapeXml(a.base.title);
@@ -103,8 +107,8 @@ export function generateArticleFeedXml(args: {
                 `      <pubDate>${formatRssDate(pub)}</pubDate>` +
                 `      <description>${description}</description>` +
                 `      <content:encoded><![CDATA[${cdataContent}]]></content:encoded>` +
-                (bannerUrl
-                    ? `      <enclosure url="${escapeXml(bannerUrl)}" length="${bannerMedia?.sizeInBytes ?? 0}" type="${escapeXml(bannerMedia?.mime ?? 'image/jpeg')}"/>`
+                (optimizedMediaUrl
+                    ? `      <enclosure url="${escapeXml(optimizedMediaUrl)}" length="${optimizedMedia?.sizeInBytes ?? 0}" type="${escapeXml(optimizedMedia?.mime ?? 'image/jpeg')}"/>`
                     : '') +
                 `    </item>`
             );

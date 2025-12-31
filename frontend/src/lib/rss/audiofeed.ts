@@ -1,9 +1,10 @@
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {
+    getOptimalMediaFormat,
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
-    pickCoverMedia,
+    pickCoverOrBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
     type StrapiCategoryRef,
@@ -113,8 +114,6 @@ function renderChannelHeader(
  */
 function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null): string | null {
     const fileMedia = normalizeStrapiMedia(episode.file);
-    const coverMedia = pickCoverMedia(episode.base, episode.categories);
-
     const enclosureUrl = mediaUrlToAbsolute({media: fileMedia});
     if (!enclosureUrl) {
         console.warn(`[audiofeed] Skipping episode "${episode.base.title}" (slug: ${episode.slug}): no valid enclosure URL`);
@@ -127,8 +126,10 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
     const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
     const pubDate = formatRssDate(pub);
 
+    const preferredMedia = pickCoverOrBannerMedia(episode.base, episode.categories);
+    const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
     const itunesImageHref =
-        mediaUrlToAbsolute({media: coverMedia}) ??
+        mediaUrlToAbsolute({media: optimizedMedia}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
     // Prepare and Sanitize Content
