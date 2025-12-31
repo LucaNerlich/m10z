@@ -87,7 +87,7 @@ export function generateArticleFeedXml(args: {
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
             const preferredMedia = pickCoverOrBannerMedia(a.base, a.categories);
             const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
-            const preferredMediaUrl = mediaUrlToAbsolute({media: optimizedMedia});
+            const optimizedMediaUrl = mediaUrlToAbsolute({media: optimizedMedia});
 
             // Prepare and Sanitize Content
             const title = escapeXml(a.base.title);
@@ -107,8 +107,8 @@ export function generateArticleFeedXml(args: {
                 `      <pubDate>${formatRssDate(pub)}</pubDate>` +
                 `      <description>${description}</description>` +
                 `      <content:encoded><![CDATA[${cdataContent}]]></content:encoded>` +
-                (preferredMediaUrl
-                    ? `      <enclosure url="${escapeXml(preferredMediaUrl)}" length="${preferredMedia?.sizeInBytes ?? 0}" type="${escapeXml(preferredMedia?.mime ?? 'image/jpeg')}"/>`
+                (optimizedMediaUrl
+                    ? `      <enclosure url="${escapeXml(optimizedMediaUrl)}" length="${optimizedMedia?.sizeInBytes ?? 0}" type="${escapeXml(optimizedMedia?.mime ?? 'image/jpeg')}"/>`
                     : '') +
                 `    </item>`
             );
