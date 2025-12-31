@@ -3,7 +3,12 @@ import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {authorToPerson, formatIso8601Date, formatIso8601Duration, mediaToImage} from './helpers';
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {mediaUrlToAbsolute, normalizeStrapiMedia, pickCoverOrBannerMedia} from '@/src/lib/rss/media';
+import {
+    getOptimalMediaFormat,
+    mediaUrlToAbsolute,
+    normalizeStrapiMedia,
+    pickCoverOrBannerMedia,
+} from '@/src/lib/rss/media';
 
 /**
  * Create a Schema.org PodcastEpisode JSON-LD object from Strapi podcast data.
@@ -34,8 +39,9 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
         }
         : undefined;
 
-    const coverMedia = pickCoverOrBannerMedia(podcast.base, podcast.categories);
-    const coverImage = mediaToImage(coverMedia);
+    const preferredMedia = pickCoverOrBannerMedia(podcast.base, podcast.categories);
+    const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
+    const coverImage = mediaToImage(optimizedMedia);
 
     const authors: Person[] | undefined = podcast.authors?.length
         ? podcast.authors.map((author) => authorToPerson(author))

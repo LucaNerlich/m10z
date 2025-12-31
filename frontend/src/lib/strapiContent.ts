@@ -107,21 +107,21 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },
                 authors: {
-                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']}},
+                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
                     fields: ['title', 'slug', 'description'],
                 },
                 categories: {
                     populate: {
                         base: {
                             populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                             },
                             fields: ['title', 'description'],
                         },
@@ -157,21 +157,21 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },
                 authors: {
-                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']}},
+                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
                     fields: ['title', 'slug', 'description'],
                 },
                 categories: {
                     populate: {
                         base: {
                             populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                             },
                             fields: ['title', 'description'],
                         },
@@ -272,7 +272,6 @@ export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<
 }
 
 export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithContent | null> {
-    ;
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -295,15 +294,14 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
 }
 
 export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryWithContent | null> {
-    ;
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },
@@ -332,8 +330,8 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },
@@ -368,7 +366,13 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
             status: 'published',
             pagination: {pageSize, page},
             populate: {
-                base: {populate: ['cover', 'banner'], fields: ['title', 'description', 'date']},
+                base: {
+                    populate: {
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                    },
+                    fields: ['title', 'description', 'date'],
+                },
                 categories: {
                     populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
                     fields: ['slug'],
@@ -412,21 +416,21 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },
                 authors: {
-                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']}},
+                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
                     fields: ['title', 'slug', 'description'],
                 },
                 categories: {
                     populate: {
                         base: {
                             populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                             },
                             fields: ['title', 'description'],
                         },
@@ -456,7 +460,6 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
  * @throws Error if more than `MAX_SLUGS` slugs are provided.
  */
 export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodcast[]> {
-    ;
     if (slugs.length === 0) return [];
     if (slugs.length > MAX_SLUGS) {
         throw new Error(
@@ -471,21 +474,21 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },
                 authors: {
-                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']}},
+                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
                     fields: ['title', 'slug', 'description'],
                 },
                 categories: {
                     populate: {
                         base: {
                             populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                             },
                             fields: ['title', 'description'],
                         },
@@ -577,8 +580,8 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },
@@ -586,8 +589,8 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
                     populate: {
                         base: {
                             populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText']},
+                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
                             },
                             fields: ['title', 'description'],
                         },

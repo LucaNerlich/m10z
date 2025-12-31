@@ -10,7 +10,13 @@ import {getEffectiveDate, sortByDateDesc, toDateTimestamp} from '@/src/lib/effec
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {mediaUrlToAbsolute, pickBannerMedia, pickCoverMedia, type StrapiMedia} from '@/src/lib/rss/media';
+import {
+    getOptimalMediaFormat,
+    mediaUrlToAbsolute,
+    pickBannerMedia,
+    pickCoverMedia,
+    type StrapiMedia,
+} from '@/src/lib/rss/media';
 import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
@@ -82,16 +88,6 @@ function parsePageParam(searchParams?: Record<string, string | string[] | undefi
 }
 
 /**
- * Convert a Strapi media object into an absolute URL.
- *
- * @param media - The Strapi media object to convert; may be undefined
- * @returns The absolute URL for the media, or `undefined` if the media is missing or cannot be resolved
- */
-function toCoverUrl(media?: StrapiMedia): string | undefined {
-    return mediaUrlToAbsolute({media});
-}
-
-/**
  * Map Strapi article records to feed items used by the home feed.
  *
  * @param items - Array of Strapi article records to convert
@@ -104,8 +100,8 @@ function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
         title: article.base.title,
         description: article.base.description,
         publishedAt: getEffectiveDate(article),
-        cover: pickCoverMedia(article.base, article.categories),
-        banner: pickBannerMedia(article.base, article.categories),
+        cover: getOptimalMediaFormat(pickCoverMedia(article.base, article.categories), 'medium'),
+        banner: getOptimalMediaFormat(pickBannerMedia(article.base, article.categories), 'medium'),
         wordCount: article.wordCount ?? null,
         href: `/artikel/${article.slug}`,
     }));
@@ -124,14 +120,13 @@ function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
         title: podcast.base.title,
         description: podcast.base.description,
         publishedAt: getEffectiveDate(podcast),
-        cover: pickCoverMedia(podcast.base, podcast.categories),
-        banner: pickBannerMedia(podcast.base, podcast.categories),
+        cover: getOptimalMediaFormat(pickCoverMedia(podcast.base, podcast.categories), 'medium'),
+        banner: getOptimalMediaFormat(pickBannerMedia(podcast.base, podcast.categories), 'medium'),
         wordCount: podcast.wordCount ?? null,
         duration: podcast.duration ?? null,
         href: `/podcasts/${podcast.slug}`,
     }));
 }
-
 
 function clampPageToData(page: number, totalItems: number): number {
     if (totalItems <= 0) return 1;
@@ -245,8 +240,8 @@ async function FeedContent({searchParams}: {searchParams?: SearchParams}) {
                 ) : (
                     currentItems.map((item) => {
                         const anchor = `${item.type}-${item.slug}`;
-                        const coverUrl = toCoverUrl(item.cover);
-                        const bannerUrl = toCoverUrl(item.banner);
+                        const coverUrl = mediaUrlToAbsolute({media: item.cover});
+                        const bannerUrl = mediaUrlToAbsolute({media: item.banner});
 
                         // Get blur data URLs from cover and banner
                         const coverBlurDataUrl = item.cover?.blurhash ?? null;
