@@ -16,8 +16,11 @@ if (!STRAPI_URL) {
 }
 
 /**
- * Client-side fetcher for Strapi API requests.
- * Uses standard fetch without Next.js cache options (SWR handles caching).
+ * Fetches JSON from the given Strapi API URL and returns the parsed response.
+ *
+ * @param url - The full request URL to fetch
+ * @returns The parsed JSON response cast to `T`
+ * @throws Error if the HTTP response status is not OK
  */
 async function fetcher<T>(url: string): Promise<T> {
     const res = await fetch(url);
@@ -28,7 +31,12 @@ async function fetcher<T>(url: string): Promise<T> {
 }
 
 /**
- * Normalize pagination metadata from Strapi response.
+ * Normalize Strapi pagination metadata into a consistent PaginationMeta object.
+ *
+ * @param meta - Strapi response metadata which may include a `pagination` object
+ * @param fallbackPage - Default page number to use when metadata is missing or invalid
+ * @param fallbackPageSize - Default page size to use when metadata is missing or invalid
+ * @returns A PaginationMeta with `page` (minimum 1), `pageSize` (1–200), `total` (minimum 0), and `pageCount` (at least 1)
  */
 function normalizePagination(
     meta: {pagination?: Partial<PaginationMeta>} | undefined,
@@ -58,7 +66,14 @@ function normalizePagination(
 }
 
 /**
- * Convert Strapi response to PaginatedResult format.
+ * Convert a Strapi list response into a PaginatedResult.
+ *
+ * Normalizes pagination using the provided requested page and page size, uses `res.data` or an empty array for items, and sets `hasNextPage` when the normalized page is less than the page count.
+ *
+ * @param res - Strapi response object with optional `data` array and optional `meta.pagination`
+ * @param requestedPage - The page number requested by the caller (used as fallback/default in normalization)
+ * @param requestedPageSize - The page size requested by the caller (used as fallback/default in normalization)
+ * @returns A PaginatedResult with `items` (from `res.data` or `[]`), normalized `pagination`, and `hasNextPage` indicating whether a subsequent page exists
  */
 function toPaginatedResult<T>(
     res: {data?: T[]; meta?: {pagination?: Partial<PaginationMeta>}},
@@ -179,11 +194,11 @@ export function usePodcastsList(page: number = 1, pageSize: number = 20) {
 }
 
 /**
- * SWR hook for fetching a single article by slug.
+ * Fetches a single published article by slug and exposes its SWR-backed state.
  *
- * @param slug - Article slug (null/undefined disables fetching)
- * @param initialData - Optional initial data for server-side hydration
- * @returns SWR result with StrapiArticle | null data
+ * @param slug - Article slug; pass `null` or `undefined` to disable fetching
+ * @param initialData - Optional initial article for hydration; pass `null` to indicate no article
+ * @returns An object with `data` containing the found `StrapiArticle` or `null`, and `error`, `isLoading`, and `isValidating` state flags
  */
 export function useArticle(slug: string | null | undefined, initialData?: StrapiArticle | null) {
     const shouldFetch = slug != null && slug.length > 0;
@@ -244,11 +259,11 @@ export function useArticle(slug: string | null | undefined, initialData?: Strapi
 }
 
 /**
- * SWR hook for fetching a single podcast by slug.
+ * Fetches a single published podcast by slug using SWR.
  *
- * @param slug - Podcast slug (null/undefined disables fetching)
- * @param initialData - Optional initial data for server-side hydration
- * @returns SWR result with StrapiPodcast | null data
+ * @param slug - Podcast slug; when `null` or empty the fetch is disabled
+ * @param initialData - Optional server-side hydrated podcast used as initial data
+ * @returns The matching published `StrapiPodcast` as `data` or `null`, together with SWR state (`error`, `isLoading`, `isValidating`)
  */
 export function usePodcast(slug: string | null | undefined, initialData?: StrapiPodcast | null) {
     const shouldFetch = slug != null && slug.length > 0;
@@ -341,12 +356,13 @@ type ContentFeedResult = {
 };
 
 /**
- * SWR hook for fetching combined content feed (articles + podcasts).
- * Fetches both content types in parallel and merges them sorted by publishedAt.
+ * Fetches articles and podcasts in parallel, merges them by published date, and returns the requested page of the combined feed.
  *
- * @param page - Page number (defaults to 1)
- * @param pageSize - Items per page (defaults to 10)
- * @returns SWR result with merged and paginated feed items
+ * Fetches enough items from each source to satisfy the requested pagination (up to 200), maps content to a unified FeedItem shape, sorts by `publishedAt`, and slices the combined list according to `page` and `pageSize`.
+ *
+ * @param page - 1-based page number to return
+ * @param pageSize - Number of items per page
+ * @returns An object with `data` (the merged, paginated feed or `undefined` if no source returned data), `error` (first encountered fetch error or `undefined`), `isLoading`, and `isValidating`
  */
 export function useContentFeed(page: number = 1, pageSize: number = 10) {
     // Fetch enough items to cover pagination (buffer approach like original)
@@ -440,4 +456,3 @@ export function useContentFeed(page: number = 1, pageSize: number = 10) {
         isValidating,
     };
 }
-

@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * Wraps the HomePage component in a Suspense boundary and provides a skeleton fallback.
+ *
+ * @returns A root element with `data-homepage` containing `HomePage` rendered inside `Suspense` with `FeedSkeleton` as the fallback.
+ */
 export default function HomePageWrapper() {
     return (
         <div data-homepage>

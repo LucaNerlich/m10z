@@ -3,6 +3,11 @@ import {Card} from './Card';
 import cardStyles from './ContentCard.module.css';
 import styles from './PodcastListSkeleton.module.css';
 
+/**
+ * Render a skeleton UI for the Podcasts list showing placeholder cards while content loads.
+ *
+ * @returns A React element containing a section titled "Podcasts" with a grid of 12 placeholder cards (media, meta, title, and description skeletons).
+ */
 export function PodcastListSkeleton() {
     return (
         <section data-list-page>
@@ -25,4 +30,3 @@ export function PodcastListSkeleton() {
         </section>
     );
 }
-

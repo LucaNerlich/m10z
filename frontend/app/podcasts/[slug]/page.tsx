@@ -66,11 +66,10 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 }
 
 /**
- * Render the podcast episode detail page for a route slug.
- * Fetches podcast server-side for metadata generation and passes it to client component.
+ * Render the podcast episode detail page for the given route slug; if the slug is invalid or the episode is not found, return a 404.
  *
- * @param params - Route parameters object containing a `slug` string
- * @returns A React element containing the PodcastDetail client component
+ * @param params - Route parameters object containing the `slug` string
+ * @returns The `PodcastDetail` React element for the resolved episode
  */
 export default async function PodcastDetailPage({params}: PageProps) {
     const {slug: rawSlug} = await params;

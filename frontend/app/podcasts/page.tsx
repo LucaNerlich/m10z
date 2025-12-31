@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * Render the podcasts listing page.
+ *
+ * @returns The JSX element that renders the podcast list.
+ */
 export default function PodcastsPage() {
     return <PodcastListPage />;
 }

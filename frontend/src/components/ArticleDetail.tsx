@@ -20,8 +20,11 @@ type ArticleDetailProps = {
 };
 
 /**
- * Client component for displaying article detail pages.
- * Uses SWR hook with initialData for server-side hydration.
+ * Render an article detail page with image, metadata, content, and structured data.
+ *
+ * @param slug - The article slug used to fetch article data
+ * @param initialArticle - Optional initial server-side article data used to hydrate the client fetch
+ * @returns The article detail element including loading and error states
  */
 export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProps) {
     const {data: article, error, isLoading} = useArticle(slug, initialArticle);
@@ -107,4 +110,3 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
         </article>
     );
 }
-
