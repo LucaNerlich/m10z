@@ -9,6 +9,7 @@ import {
     formatXml,
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
+import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -23,6 +24,7 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
         apiPathWithQuery: pathWithQuery,
         token: STRAPI_TOKEN,
         tags: ['feed:article', 'strapi:article', 'strapi:article-feed'],
+        revalidate: CACHE_REVALIDATE_DEFAULT,
     });
 }
 

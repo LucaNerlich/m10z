@@ -41,10 +41,10 @@ Content pages use content-type tags for cache invalidation:
 
 ### Feed Endpoints
 
-RSS feed endpoints use feed-specific tags:
+RSS feed endpoints use feed-specific tags and revalidate periods:
 
-- **Article feed** (`/rss.xml`): Uses `feed:article` tag
-- **Audio feed** (`/audiofeed.xml`): Uses `feed:audio` tag
+- **Article feed** (`/rss.xml`): Uses `feed:article` tag with `CACHE_REVALIDATE_DEFAULT` (3600s)
+- **Audio feed** (`/audiofeed.xml`): Uses `feed:audio` tag with `CACHE_REVALIDATE_DEFAULT` (3600s)
 
 ### Invalidation Endpoints
 
@@ -161,6 +161,10 @@ All fetch functions support cache configuration with both tags and revalidate pe
 
 **RSS feeds** (`src/lib/rss/feedRoute.ts`):
 - `fetchStrapiJson()`: Accepts `revalidate` parameter in `StrapiFetchArgs`
+
+**RSS feed handlers**:
+- `buildArticleFeedResponse()` (`src/lib/rss/articleFeedRouteHandler.ts`): Uses `CACHE_REVALIDATE_DEFAULT` for all Strapi fetches
+- `buildAudioFeedResponse()` (`src/lib/rss/audioFeedRouteHandler.ts`): Uses `CACHE_REVALIDATE_DEFAULT` for all Strapi fetches
 
 All functions maintain backward compatibility - revalidate is optional and can be overridden via options.
 
