@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import {usePathname, useSearchParams} from 'next/navigation';
 import React from 'react';
@@ -37,12 +36,11 @@ export default function LogoClient({className}: LogoClientProps): React.ReactEle
             aria-label="Zur Startseite"
             onClick={handleClick}
         >
-            <Image
+            <img
                 src="/logo.svg"
                 alt="m10z"
                 width={100}
                 height={38}
-                priority
             />
         </Link>
     );

@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/rss/media';
 import {formatAuthorList} from '@/src/lib/listFormatters';
@@ -53,12 +52,13 @@ export function AuthorList({
                     return (
                         <div key={author.id ?? index} className={styles.blockItem}>
                             {showAvatars && avatarUrl ? (
-                                <Image
+                                <img
                                     src={avatarUrl}
                                     alt={authorTitle}
                                     width={48}
                                     height={48}
                                     className={styles.blockAvatar}
+                                    loading="lazy"
                                 />
                             ) : null}
                             <Link href={authorUrl} className={styles.blockLink}>
@@ -94,12 +94,13 @@ export function AuthorList({
                     return (
                         <span key={author.id ?? currentIndex} className={styles.inlineItem}>
                             {showAvatars && avatarUrl ? (
-                                <Image
+                                <img
                                     src={avatarUrl}
                                     alt={authorTitle}
                                     width={32}
                                     height={32}
                                     className={styles.inlineAvatar}
+                                    loading="lazy"
                                 />
                             ) : null}
                             <Link href={authorUrl} className={styles.inlineLink}>

@@ -2,7 +2,6 @@
 
 import {useSearchParams} from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 
 import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
@@ -162,23 +161,21 @@ export function HomePage() {
                         return (
                             <Card key={anchor} id={anchor}>
                                 <div className={styles.media}>
-                                    <Image
-                                        src={coverUrl ?? placeholderCover}
+                                    <img
+                                        src={coverUrl ?? (typeof placeholderCover === 'string' ? placeholderCover : placeholderCover.src)}
                                         width={200}
                                         height={200}
-                                        placeholder={coverPlaceholder}
-                                        blurDataURL={coverBlurDataUrl || undefined}
                                         alt={item.title || ''}
                                         className={styles.cover}
+                                        loading="lazy"
                                     />
-                                    <Image
-                                        src={bannerUrl ?? coverUrl ?? placeholderCover}
+                                    <img
+                                        src={bannerUrl ?? coverUrl ?? (typeof placeholderCover === 'string' ? placeholderCover : placeholderCover.src)}
                                         width={800}
                                         height={450}
-                                        placeholder={bannerPlaceholder}
-                                        blurDataURL={bannerBlurDataUrl || coverBlurDataUrl || undefined}
                                         alt={item.title || ''}
                                         className={styles.banner}
+                                        loading="lazy"
                                     />
                                 </div>
                                 <div className={styles.cardBody}>

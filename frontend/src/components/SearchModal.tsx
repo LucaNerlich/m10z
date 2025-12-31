@@ -2,7 +2,6 @@
 
 import {type KeyboardEvent, type MouseEvent, useEffect, useId, useMemo, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
-import Image from 'next/image';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {type SearchRecord} from '@/src/lib/search/types';
@@ -228,12 +227,11 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                                     const normalizedUrl = normalizeImageUrl(item.coverImageUrl);
                                     return normalizedUrl ? (
                                         <div className={styles.resultImage}>
-                                            <Image
+                                            <img
                                                 src={normalizedUrl}
                                                 width={80}
                                                 height={80}
                                                 loading="lazy"
-                                                quality={50}
                                                 alt={item.title || ''}
                                                 className={styles.coverImage}
                                             />
