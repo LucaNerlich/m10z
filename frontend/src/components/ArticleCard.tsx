@@ -49,6 +49,7 @@ export function ArticleCard({
     
     // Use wordCount for reading time calculation (no fallback to content)
     const readingTime = article.wordCount != null ? calculateReadingTime(article.wordCount) : null;
+    const effectiveDescription = article.base.description || article.categories?.[0]?.base?.description;
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
 
@@ -81,9 +82,9 @@ export function ArticleCard({
                         {article.base.title}
                     </Link>
                 </h2>
-                {article.base.description ? (
+                {effectiveDescription ? (
                     <p className={styles.description} style={getLineClampCSS(descriptionLines)}>
-                        {article.base.description}
+                        {effectiveDescription}
                     </p>
                 ) : null}
                 {showAuthors && article.authors && article.authors.length > 0 ? (

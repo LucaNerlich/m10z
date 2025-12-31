@@ -100,17 +100,20 @@ function parsePageParam(searchParams?: Record<string, string | string[] | undefi
  * @returns An array of `FeedItem` objects for articles where each entry has `type: 'article'`, `slug`, `title`, `description`, `publishedAt`, `cover` and `banner` (if available), `wordCount` (number or `null`), and `href`
  */
 function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
-    return items.map((article) => ({
-        type: 'article',
-        slug: article.slug,
-        title: article.base.title,
-        description: article.base.description,
-        publishedAt: getEffectiveDate(article),
-        cover: getOptimalMediaFormat(pickCoverMedia(article.base, article.categories), 'medium'),
-        banner: getOptimalMediaFormat(pickBannerMedia(article.base, article.categories), 'medium'),
-        wordCount: article.wordCount ?? null,
-        href: `/artikel/${article.slug}`,
-    }));
+    return items.map((article) => {
+        const effectiveDescription = article.base.description || article.categories?.[0]?.base?.description;
+        return {
+            type: 'article',
+            slug: article.slug,
+            title: article.base.title,
+            description: effectiveDescription,
+            publishedAt: getEffectiveDate(article),
+            cover: getOptimalMediaFormat(pickCoverMedia(article.base, article.categories), 'medium'),
+            banner: getOptimalMediaFormat(pickBannerMedia(article.base, article.categories), 'medium'),
+            wordCount: article.wordCount ?? null,
+            href: `/artikel/${article.slug}`,
+        };
+    });
 }
 
 /**
@@ -120,18 +123,21 @@ function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
  * @returns An array of feed items for podcasts, each containing `type: 'podcast'`, `slug`, `title`, `description`, `publishedAt`, optional `cover` and `banner` media, `wordCount` or `null`, `duration` or `null`, and `href` to the podcast detail page
  */
 function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
-    return items.map((podcast) => ({
-        type: 'podcast',
-        slug: podcast.slug,
-        title: podcast.base.title,
-        description: podcast.base.description,
-        publishedAt: getEffectiveDate(podcast),
-        cover: getOptimalMediaFormat(pickCoverMedia(podcast.base, podcast.categories), 'medium'),
-        banner: getOptimalMediaFormat(pickBannerMedia(podcast.base, podcast.categories), 'medium'),
-        wordCount: podcast.wordCount ?? null,
-        duration: podcast.duration ?? null,
-        href: `/podcasts/${podcast.slug}`,
-    }));
+    return items.map((podcast) => {
+        const effectiveDescription = podcast.base.description || podcast.categories?.[0]?.base?.description;
+        return {
+            type: 'podcast',
+            slug: podcast.slug,
+            title: podcast.base.title,
+            description: effectiveDescription,
+            publishedAt: getEffectiveDate(podcast),
+            cover: getOptimalMediaFormat(pickCoverMedia(podcast.base, podcast.categories), 'medium'),
+            banner: getOptimalMediaFormat(pickBannerMedia(podcast.base, podcast.categories), 'medium'),
+            wordCount: podcast.wordCount ?? null,
+            duration: podcast.duration ?? null,
+            href: `/podcasts/${podcast.slug}`,
+        };
+    });
 }
 
 /**

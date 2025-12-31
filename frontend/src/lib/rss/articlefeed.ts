@@ -91,7 +91,8 @@ export function generateArticleFeedXml(args: {
 
             // Prepare and Sanitize Content
             const title = escapeXml(a.base.title);
-            const description = escapeXml(a.base.description ?? '');
+            const effectiveDescription = a.base.description || a.categories?.[0]?.base?.description;
+            const description = escapeXml(effectiveDescription ?? '');
             const html = markdownToHtml(a.content ?? '');
             const cdataContent = escapeCdata(html);
 
