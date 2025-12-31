@@ -3,6 +3,111 @@
  * Runs every 15 minutes to publish drafts whose scheduled time (base.date) has arrived.
  */
 
+type ContentTypeConfig = {
+    uid: string;
+    contentTypeName: string;
+};
+
+const CONTENT_TYPES: ContentTypeConfig[] = [
+    {uid: 'api::article.article', contentTypeName: 'article'},
+    {uid: 'api::podcast.podcast', contentTypeName: 'podcast'},
+];
+
+/*
+NOTE THIS DOES NOT WORK
+
+https://github.com/strapi/strapi/issues/22721
+
+WE CANNOT QUERY DRAFT ONLY DOCUMENTS ...
+ */
+
+/**
+ * Publishes scheduled content of a specific type.
+ *
+ * @param strapi - The Strapi application instance
+ * @param config - Content type configuration
+ * @param now - Current date/time for filtering scheduled items
+ * @returns Object with counts of processed, successful, and failed publications
+ */
+async function publishScheduledContentType(
+    strapi: any,
+    config: ContentTypeConfig,
+    now: Date,
+): Promise<{processed: number; successful: number; failed: number}> {
+    let processed = 0;
+    let successful = 0;
+    let failed = 0;
+
+    try {
+        // Query drafts that have never been published
+        // Note: We filter by base.date in-memory since Document Service API
+        // may not support nested component field filtering reliably
+        const items = await strapi.documents(config.uid).findMany({
+            status: 'draft',
+            filters: {
+                publishedAt: {
+                    $null: true,
+                },
+            },
+            pagination: {
+                page: 1,
+                pageSize: 50, // Process up to 50 items per hour
+            },
+            populate: {
+                base: {
+                    fields: ['date'],
+                },
+            },
+            fields: ['slug'],
+        });
+
+        if (!items || items.length === 0) {
+            return {processed: 0, successful: 0, failed: 0};
+        }
+
+        // Filter by base.date in-memory since nested component filtering may not work
+        const scheduledItems = items.filter((item: any) => {
+            const baseDate = item.base?.date;
+            if (!baseDate) {
+                return false;
+            }
+            const itemDate = new Date(baseDate);
+            return itemDate <= now;
+        });
+
+        if (scheduledItems.length === 0) {
+            return {processed: 0, successful: 0, failed: 0};
+        }
+
+        strapi.log.info(
+            `Found ${scheduledItems.length} scheduled ${config.contentTypeName}s to publish (out of ${items.length} drafts)`,
+        );
+
+        for (const item of scheduledItems) {
+            try {
+                const documentId = item.documentId || item.id;
+                await strapi.documents(config.uid).publish({
+                    documentId: documentId,
+                });
+
+                successful++;
+                const identifier = item.slug || documentId;
+                strapi.log.info(`Published ${config.contentTypeName}: ${identifier}`);
+            } catch (error) {
+                failed++;
+                const identifier = item.slug || item.documentId || item.id;
+                strapi.log.error(`Error publishing ${config.contentTypeName} ${identifier}:`, error);
+            }
+        }
+
+        processed = scheduledItems.length;
+    } catch (error) {
+        strapi.log.error(`Error querying ${config.contentTypeName}s for scheduled publishing:`, error);
+    }
+
+    return {processed, successful, failed};
+}
+
 /**
  * Publishes scheduled articles and podcasts whose scheduled time has arrived.
  *
@@ -11,6 +116,10 @@
  * unpublished content is not automatically republished.
  * Processes up to 50 articles and 50 podcasts per execution. Logs successful publications
  * and continues processing even if individual publish operations fail.
+ *
+ * Note: Cache invalidation is handled by the middleware for each publish operation.
+ * Multiple invalidations may occur, but the rate limit (30/min) should be sufficient
+ * for typical batch sizes.
  *
  * @param strapi - The Strapi application instance used to query and publish documents
  */
@@ -24,110 +133,12 @@ export async function publishScheduledContent({strapi}: {strapi: any}): Promise<
 
         const now = new Date();
 
-        // Process articles
-        try {
-            const articles = await strapi.documents('api::article.article').findMany({
-                status: 'draft',
-                filters: {
-                    $and: [
-                        {
-                            publishedAt: {
-                                $null: true,
-                            },
-                        },
-                        {
-                            base: {
-                                date: {
-                                    $lte: now,
-                                },
-                            },
-                        },
-                    ],
-                },
-                pagination: {
-                    page: 1,
-                    pageSize: 50, // Process up to 50 items per hour
-                },
-                fields: ['slug'],
-            });
-
-            if (articles && articles.length > 0) {
-                strapi.log.info(`Found ${articles.length} scheduled articles to publish`);
-
-                for (const article of articles) {
-                    try {
-                        const documentId = article.documentId || article.id;
-                        await strapi.documents('api::article.article').publish({
-                            documentId: documentId,
-                        });
-
-                        totalSuccessful++;
-                        const identifier = article.slug || documentId;
-                        strapi.log.info(`Published article: ${identifier}`);
-                    } catch (error) {
-                        totalFailed++;
-                        const identifier = article.slug || article.documentId || article.id;
-                        strapi.log.error(`Error publishing article ${identifier}:`, error);
-                    }
-                }
-
-                totalProcessed += articles.length;
-            }
-        } catch (error) {
-            strapi.log.error('Error querying articles for scheduled publishing:', error);
-        }
-
-        // Process podcasts
-        try {
-            const podcasts = await strapi.documents('api::podcast.podcast').findMany({
-                status: 'draft',
-                filters: {
-                    $and: [
-                        {
-                            publishedAt: {
-                                $null: true,
-                            },
-                        },
-                        {
-                            base: {
-                                date: {
-                                    $lte: now,
-                                },
-                            },
-                        },
-                    ],
-                },
-                pagination: {
-                    page: 1,
-                    pageSize: 50, // Process up to 50 items per hour
-                },
-                fields: ['slug'],
-            });
-
-            if (podcasts && podcasts.length > 0) {
-                strapi.log.info(`Found ${podcasts.length} scheduled podcasts to publish`);
-
-                for (const podcast of podcasts) {
-                    try {
-                        const documentId = podcast.documentId || podcast.id;
-                        await strapi.documents('api::podcast.podcast').publish({
-                            documentId: documentId,
-                        });
-
-                        totalSuccessful++;
-                        const identifier = podcast.slug || documentId;
-                        strapi.log.info(`Published podcast: ${identifier}`);
-                    } catch (error) {
-                        totalFailed++;
-                        const identifier = podcast.slug || podcast.documentId || podcast.id;
-                        strapi.log.error(`Error publishing podcast ${identifier}:`, error);
-                    }
-                }
-
-                totalProcessed += podcasts.length;
-            }
-        } catch (error) {
-            strapi.log.error('Error querying podcasts for scheduled publishing:', error);
+        // Process each content type
+        for (const config of CONTENT_TYPES) {
+            const result = await publishScheduledContentType(strapi, config, now);
+            totalProcessed += result.processed;
+            totalSuccessful += result.successful;
+            totalFailed += result.failed;
         }
 
         if (totalProcessed === 0) {
@@ -141,4 +152,3 @@ export async function publishScheduledContent({strapi}: {strapi: any}): Promise<
         strapi.log.error('Error in scheduled publishing cron job:', error);
     }
 }
-

@@ -29,6 +29,7 @@ export default ({env}) => ({
             publishScheduledContent: {
                 task: publishScheduledContent,
                 options: {
+                    // rule: '*/15 * * * *', // Run every 15 minutes
                     rule: '* * * * *', // Run every 15 minutes
                 },
             },
