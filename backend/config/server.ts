@@ -1,5 +1,6 @@
 import {generateMissingBlurhashes} from '../src/cron/blurhash';
 import {generateMissingWordCounts} from '../src/cron/wordcount';
+import {publishScheduledContent} from '../src/cron/publishScheduled';
 
 export default ({env}) => ({
     host: env('HOST', '0.0.0.0'),
@@ -22,6 +23,13 @@ export default ({env}) => ({
                 task: generateMissingWordCounts,
                 options: {
                     rule: '0 * * * *', // Run every hour at minute 0
+                },
+            },
+            // Publish scheduled articles and podcasts - runs every 15 minutes
+            publishScheduledContent: {
+                task: publishScheduledContent,
+                options: {
+                    rule: '* * * * *', // Run every 15 minutes
                 },
             },
         },
