@@ -1,11 +1,8 @@
 import {type Metadata} from 'next';
 
-import {sortByDateDesc} from '@/src/lib/effectiveDate';
-import {fetchArticlesList} from '@/src/lib/strapiContent';
+import {ArticleListPage} from '@/src/components/ArticleListPage';
 import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
-import {ContentGrid} from '@/src/components/ContentGrid';
-import {ArticleCard} from '@/src/components/ArticleCard';
 
 export const metadata: Metadata = {
     title: 'Artikel',
@@ -28,27 +25,6 @@ export const metadata: Metadata = {
     },
 };
 
-export default async function ArticlePage() {
-    const articles = await fetchArticlesList();
-    const sorted = sortByDateDesc(articles);
-
-    return (
-        <section data-list-page>
-            <h1>Artikel</h1>
-            {sorted.length === 0 ? (
-                <p>Keine Artikel gefunden.</p>
-            ) : (
-                <ContentGrid gap="comfortable">
-                    {sorted.map((article) => (
-                        <ArticleCard
-                            key={article.slug}
-                            article={article}
-                            showAuthors={true}
-                            showCategories={true}
-                        />
-                    ))}
-                </ContentGrid>
-            )}
-        </section>
-    );
+export default function ArticlePage() {
+    return <ArticleListPage />;
 }
