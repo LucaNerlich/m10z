@@ -12,6 +12,7 @@ export type StrapiFetchArgs = {
     apiPathWithQuery: string;
     token?: string | undefined;
     tags: string[];
+    revalidate?: number;
 };
 
 export async function fetchStrapiJson<T>({
@@ -19,6 +20,7 @@ export async function fetchStrapiJson<T>({
                                              apiPathWithQuery,
                                              token,
                                              tags,
+                                             revalidate,
                                          }: StrapiFetchArgs): Promise<T> {
     const url = new URL(apiPathWithQuery, strapiBaseUrl);
 
@@ -28,6 +30,7 @@ export async function fetchStrapiJson<T>({
         headers,
         next: {
             tags,
+            revalidate,
         },
     });
 

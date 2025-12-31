@@ -3,6 +3,7 @@ import qs from 'qs';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {type StrapiAuthor, type StrapiMediaRef} from '@/src/lib/rss/media';
+import {CACHE_REVALIDATE_DEFAULT, CACHE_REVALIDATE_CONTENT_PAGE} from '@/src/lib/cache/constants';
 
 export type {StrapiMediaRef};
 
@@ -16,6 +17,7 @@ const MAX_SLUGS = 150;
 
 type FetchOptions = {
     tags: string[];
+    revalidate?: number;
 };
 
 export type PaginationMeta = {
@@ -47,6 +49,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
     const res = await fetch(url.toString(), {
         next: {
             tags: options.tags,
+            revalidate: options.revalidate,
         },
     });
     if (!res.ok) {
@@ -138,7 +141,10 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
 
     const res = await fetchJson<{data: StrapiArticle[]}>(
         `/api/articles?${query}`,
-        {tags: ['strapi:article', `strapi:article:${slug}`]},
+        {
+            tags: ['strapi:article', `strapi:article:${slug}`],
+            revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+        },
     );
     return res.data?.[0] ?? null;
 }
@@ -189,7 +195,10 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
 
     const res = await fetchJson<{data: StrapiPodcast[]}>(
         `/api/podcasts?${query}`,
-        {tags: ['strapi:podcast', `strapi:podcast:${slug}`]},
+        {
+            tags: ['strapi:podcast', `strapi:podcast:${slug}`],
+            revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+        },
     );
     return res.data?.[0] ?? null;
 }
@@ -272,7 +281,10 @@ export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<
 
     const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(
         `/api/authors?${query}`,
-        {tags: options.tags ?? ['strapi:author', 'strapi:author:list']},
+        {
+            tags: options.tags ?? ['strapi:author', 'strapi:author:list'],
+            revalidate: CACHE_REVALIDATE_DEFAULT,
+        },
     );
     return res.data ?? [];
 }
@@ -300,7 +312,10 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
 
     const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(
         `/api/authors?${query}`,
-        {tags: ['strapi:author', `strapi:author:${slug}`]},
+        {
+            tags: ['strapi:author', `strapi:author:${slug}`],
+            revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+        },
     );
     return res.data?.[0] ?? null;
 }
@@ -334,7 +349,10 @@ export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryW
 
     const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(
         `/api/categories?${query}`,
-        {tags: ['strapi:category', `strapi:category:${slug}`]},
+        {
+            tags: ['strapi:category', `strapi:category:${slug}`],
+            revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+        },
     );
     return res.data?.[0] ?? null;
 }
@@ -369,7 +387,10 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
 
     const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(
         `/api/categories?${query}`,
-        {tags: options.tags ?? ['strapi:category', 'strapi:category:list']},
+        {
+            tags: options.tags ?? ['strapi:category', 'strapi:category:list'],
+            revalidate: CACHE_REVALIDATE_DEFAULT,
+        },
     );
     return res.data ?? [];
 }
@@ -412,6 +433,7 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
         `/api/articles?${query}`,
         {
             tags: options.tags ?? ['strapi:article', 'strapi:article:list:page'],
+            revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
 
@@ -471,7 +493,10 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
 
     const res = await fetchJson<{data: StrapiArticle[]}>(
         `/api/articles?${query}`,
-        {tags: ['strapi:article', 'strapi:article:by-slugs']},
+        {
+            tags: ['strapi:article', 'strapi:article:by-slugs'],
+            revalidate: CACHE_REVALIDATE_DEFAULT,
+        },
     );
     return res.data ?? [];
 }
@@ -530,7 +555,10 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
 
     const res = await fetchJson<{data: StrapiPodcast[]}>(
         `/api/podcasts?${query}`,
-        {tags: ['strapi:podcast', 'strapi:podcast:by-slugs']},
+        {
+            tags: ['strapi:podcast', 'strapi:podcast:by-slugs'],
+            revalidate: CACHE_REVALIDATE_DEFAULT,
+        },
     );
     return res.data ?? [];
 }
@@ -633,6 +661,7 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
         `/api/podcasts?${query}`,
         {
             tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list:page'],
+            revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
 

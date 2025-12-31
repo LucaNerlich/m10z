@@ -1,5 +1,7 @@
 import qs from 'qs';
 
+import {CACHE_REVALIDATE_DEFAULT} from './cache/constants';
+
 export interface StrapiMeta {
     // Strapi often returns an empty object here; keep it extensible.
     [key: string]: unknown;
@@ -47,6 +49,7 @@ export interface StrapiAbout {
 
 export interface FetchStrapiOptions {
     tags?: string[];
+    revalidate?: number;
 }
 
 export function getStrapiApiBaseUrl(): URL {
@@ -67,6 +70,13 @@ export function getStrapiApiBaseUrl(): URL {
     }
 }
 
+/**
+ * Fetches JSON data from the Strapi API with optional cache configuration.
+ *
+ * @param apiPath - The API path to fetch (relative to Strapi base URL)
+ * @param options - Optional fetch options including cache tags and revalidation period
+ * @returns The parsed JSON response
+ */
 async function fetchStrapiJson<T>(
     apiPath: string,
     options: FetchStrapiOptions = {},
@@ -76,6 +86,7 @@ async function fetchStrapiJson<T>(
     const res = await fetch(url, {
         next: {
             tags: options.tags,
+            revalidate: options.revalidate,
         },
     });
 
@@ -113,7 +124,7 @@ function assertIsLegalDoc(data: unknown): asserts data is StrapiLegalDoc {
  *
  * @param endpoint - The resource endpoint (for example: "imprint", "privacy", "about")
  * @param query - Optional query string to append to the request; may be empty or may start with `?` (the function accepts either form)
- * @param options - Fetch options such as cache revalidation seconds and cache tags
+ * @param options - Fetch options including cache tags and revalidation period (revalidate in seconds)
  * @returns The Strapi single response object containing the resource in `data` and request metadata in `meta`
  */
 export async function fetchStrapiSingle<TData>(
@@ -173,7 +184,10 @@ async function getLegalDocWithFallback(
 }
 
 export async function getImprint(options: FetchStrapiOptions = {}) {
-    return getLegalDocWithFallback('imprint', options);
+    return getLegalDocWithFallback('imprint', {
+        ...options,
+        revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
+    });
 }
 
 /**
@@ -183,7 +197,10 @@ export async function getImprint(options: FetchStrapiOptions = {}) {
  * @returns The privacy `StrapiLegalDoc` retrieved from Strapi, or a fallback `StrapiLegalDoc` if fetching or validation fails
  */
 export async function getPrivacy(options: FetchStrapiOptions = {}) {
-    return getLegalDocWithFallback('privacy', options);
+    return getLegalDocWithFallback('privacy', {
+        ...options,
+        revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
+    });
 }
 
 /**
@@ -247,6 +264,9 @@ async function getAboutWithFallback(
  * @returns The site's About content as a `StrapiAbout` object; a fallback `StrapiAbout` if the remote fetch fails
  */
 export async function getAbout(options: FetchStrapiOptions = {}) {
-    return getAboutWithFallback(options);
+    return getAboutWithFallback({
+        ...options,
+        revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
+    });
 }
 

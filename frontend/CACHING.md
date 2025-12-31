@@ -62,38 +62,107 @@ The application uses a two-tier caching strategy:
 1. **Tag-based invalidation** (primary): Takes precedence over time-based expiration
 2. **Time-based expiration** (fallback): Provides a safety net for cache refresh
 
-### Default Cache Duration
+### Explicit Revalidate Periods
 
-- **Most content**: 3600s (1 hour) default
-- **Article/podcast pages**: 900s (15 minutes) as fallback mechanism
+Explicit revalidation periods are now applied throughout the codebase as fallback mechanisms to tag-based invalidation. All fetch functions use the `revalidate` option in Next.js fetch's `next` configuration, which works alongside cache tags.
 
-The shorter duration for article and podcast pages ensures more frequent updates while tag-based invalidation handles immediate updates when content changes.
+**Important**: The application uses traditional Next.js fetch cache options (`next: { tags, revalidate }`), not the 'use cache' directive. This ensures compatibility with Next.js's standard caching mechanisms.
+
+### Cache Duration Constants
+
+Cache duration constants are defined in `src/lib/cache/constants.ts`:
+
+- **`CACHE_REVALIDATE_DEFAULT`** (3600 seconds / 1 hour)
+  - Used for: List/collection pages, legal/static pages, RSS feeds
+  - Applied to: `fetchArticlesList()`, `fetchPodcastsList()`, `fetchAuthorsList()`, `fetchCategoriesWithContent()`, `fetchArticlesPage()`, `fetchPodcastsPage()`, `fetchArticlesBySlugs()`, `fetchPodcastsBySlugs()`, `getPrivacy()`, `getImprint()`, `getAbout()`
+
+- **`CACHE_REVALIDATE_CONTENT_PAGE`** (900 seconds / 15 minutes)
+  - Used for: Individual content detail pages
+  - Applied to: `fetchArticleBySlug()`, `fetchPodcastBySlug()`, `fetchAuthorBySlug()`, `fetchCategoryBySlug()`
+  - Shorter duration ensures more frequent updates for detail pages while tag-based invalidation handles immediate updates when content changes
+
+- **`CACHE_REVALIDATE_SEARCH`** (3600 seconds / 1 hour)
+  - Used for: Search index API endpoint
+  - Applied to: `loadSearchIndex()` in `/api/search-index/route.ts`
+
+### Combined Tag and Revalidate Strategy
+
+Tags and revalidate periods work together:
+
+1. **Tag-based invalidation takes precedence**: When `revalidateTag()` is called, the cache is immediately invalidated regardless of the revalidate period
+2. **Revalidate serves as fallback**: If tag invalidation doesn't occur, the cache will automatically refresh after the revalidate period expires
+3. **Both are always specified**: All fetch calls include both `tags` and `revalidate` for comprehensive cache management
+
+**Example**:
+```typescript
+const res = await fetchJson('/api/articles', {
+  tags: ['strapi:article', 'strapi:article:list'],
+  revalidate: CACHE_REVALIDATE_DEFAULT, // 3600 seconds
+});
+```
+
+In this example:
+- The cache can be immediately invalidated by calling `revalidateTag('strapi:article')`
+- If no tag invalidation occurs, the cache will automatically refresh after 1 hour
+- Both mechanisms ensure the cache stays fresh
 
 ### Cache Duration by Page
 
 - **Home page** (`/`): 900s (15 minutes)
-- **Article list** (`/artikel`): 900s (15 minutes)
-- **Podcast list** (`/podcasts`): 900s (15 minutes)
-- **Individual content pages**: Inherit from content-type tags (default 3600s)
+- **Article list** (`/artikel`): Uses `CACHE_REVALIDATE_DEFAULT` (3600s / 1 hour)
+- **Podcast list** (`/podcasts`): Uses `CACHE_REVALIDATE_DEFAULT` (3600s / 1 hour)
+- **Individual content pages**: Use `CACHE_REVALIDATE_CONTENT_PAGE` (900s / 15 minutes)
 
 ## Reference Implementation
 
 The search-index endpoint (`/api/search-index/route.ts`) serves as a reference implementation:
 
-- Uses `tags: ['search-index']` pattern
+- Uses `tags: ['search-index']` pattern with `revalidate: CACHE_REVALIDATE_SEARCH`
 - Implements both tag-based and time-based caching
 - Demonstrates proper cache header configuration for different use cases
+- Shows how to combine tags and revalidate periods
+
+**Example from search-index route**:
+```typescript
+const res = await fetch(url, {
+  headers: getAuthHeader(),
+  next: {
+    tags: ['search-index'],
+    revalidate: CACHE_REVALIDATE_SEARCH, // 3600 seconds
+  },
+});
+```
 
 ## Implementation Details
 
 ### Fetch Functions
 
-All fetch functions in `src/lib/strapiContent.ts` support cache configuration:
+All fetch functions support cache configuration with both tags and revalidate periods:
 
-- `fetchArticlesList(options)`: Accepts `revalidate` option
-- `fetchPodcastsList(options)`: Accepts `revalidate` option
-- `fetchArticlesPage(options)`: Accepts `revalidate` option
-- `fetchPodcastsPage(options)`: Accepts `revalidate` option
+**Base utilities** (`src/lib/strapi.ts`):
+- `fetchStrapiJson()`: Accepts `FetchStrapiOptions` with `tags` and `revalidate`
+- `fetchStrapiSingle()`: Accepts `FetchStrapiOptions` with `tags` and `revalidate`
+- `fetchStrapiCollection()`: Accepts `FetchStrapiOptions` with `tags` and `revalidate`
+- `getPrivacy()`, `getImprint()`, `getAbout()`: Default to `CACHE_REVALIDATE_DEFAULT`
+
+**Content fetching** (`src/lib/strapiContent.ts`):
+- `fetchArticlesList()`: Uses `CACHE_REVALIDATE_DEFAULT`
+- `fetchPodcastsList()`: Uses `CACHE_REVALIDATE_DEFAULT`
+- `fetchAuthorsList()`: Uses `CACHE_REVALIDATE_DEFAULT`
+- `fetchCategoriesWithContent()`: Uses `CACHE_REVALIDATE_DEFAULT`
+- `fetchArticlesPage()`: Uses `CACHE_REVALIDATE_DEFAULT`
+- `fetchPodcastsPage()`: Uses `CACHE_REVALIDATE_DEFAULT`
+- `fetchArticlesBySlugs()`: Uses `CACHE_REVALIDATE_DEFAULT`
+- `fetchPodcastsBySlugs()`: Uses `CACHE_REVALIDATE_DEFAULT`
+- `fetchArticleBySlug()`: Uses `CACHE_REVALIDATE_CONTENT_PAGE`
+- `fetchPodcastBySlug()`: Uses `CACHE_REVALIDATE_CONTENT_PAGE`
+- `fetchAuthorBySlug()`: Uses `CACHE_REVALIDATE_CONTENT_PAGE`
+- `fetchCategoryBySlug()`: Uses `CACHE_REVALIDATE_CONTENT_PAGE`
+
+**RSS feeds** (`src/lib/rss/feedRoute.ts`):
+- `fetchStrapiJson()`: Accepts `revalidate` parameter in `StrapiFetchArgs`
+
+All functions maintain backward compatibility - revalidate is optional and can be overridden via options.
 
 ### Invalidation Flow
 
@@ -173,8 +242,10 @@ See `src/components/SearchModal.tsx` for an example of SWR usage.
 1. **Always use content-type tags** for content pages to ensure proper invalidation
 2. **Use specific tags** (e.g., `strapi:article:{slug}`) for individual items when possible
 3. **Invalidate both feed and content tags** when content changes
-4. **Set appropriate revalidate durations** as fallback mechanisms
-5. **Prefer tag-based invalidation** over time-based expiration for immediate updates
+4. **Always specify both tags and revalidate** - tags for immediate invalidation, revalidate as fallback
+5. **Use cache duration constants** from `src/lib/cache/constants.ts` for consistency
+6. **Prefer tag-based invalidation** over time-based expiration for immediate updates
+7. **Use traditional Next.js fetch options** (`next: { tags, revalidate }`), not the 'use cache' directive
 
 ### Client-Side Caching (SWR)
 

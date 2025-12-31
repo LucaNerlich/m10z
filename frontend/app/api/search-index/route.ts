@@ -5,6 +5,7 @@ import {getStrapiApiBaseUrl} from '@/src/lib/strapi';
 import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '@/src/lib/search/types';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {sha256Hex} from '@/src/lib/rss/xml';
+import {CACHE_REVALIDATE_SEARCH} from '@/src/lib/cache/constants';
 
 /**
  * Custom error class for fetch-related errors.
@@ -119,7 +120,10 @@ async function loadSearchIndex(): Promise<SearchIndexFile> {
 
     const res = await fetch(url, {
         headers: getAuthHeader(),
-        next: {tags: ['search-index']},
+        next: {
+            tags: ['search-index'],
+            revalidate: CACHE_REVALIDATE_SEARCH,
+        },
     });
 
     if (!res.ok) {
