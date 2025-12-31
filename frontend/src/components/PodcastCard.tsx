@@ -39,6 +39,7 @@ export function PodcastCard({
     const effectiveDate = getEffectiveDate(podcast);
     const formattedDate = formatDateShort(effectiveDate);
     const podcastUrl = routes.podcast(podcast.slug);
+    const effectiveDescription = podcast.base.description || podcast.categories?.[0]?.base?.description;
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
 
@@ -71,9 +72,9 @@ export function PodcastCard({
                         {podcast.base.title}
                     </Link>
                 </h2>
-                {podcast.base.description ? (
+                {effectiveDescription ? (
                     <p className={styles.description} style={getLineClampCSS(descriptionLines)}>
-                        {podcast.base.description}
+                        {effectiveDescription}
                     </p>
                 ) : null}
                 {showAuthors && podcast.authors && podcast.authors.length > 0 ? (

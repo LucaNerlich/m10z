@@ -133,10 +133,12 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
     // Prepare and Sanitize Content
-    // const description = escapeCdata(episode.base.description ?? '');
+    const effectiveDescription = episode.base.description || episode.categories?.[0]?.base?.description;
     const shownotes = (episode.shownotes ?? '').toString();
     const footer = episodeFooter ?? '';
-    const htmlShownotes = markdownToHtml(shownotes);
+    // Use shownotes if available, otherwise fall back to base.description (with category fallback)
+    const descriptionText = shownotes || effectiveDescription || '';
+    const htmlShownotes = markdownToHtml(descriptionText);
     const htmlFooter = markdownToHtml(footer);
     const cdataShownotes = escapeCdata(htmlShownotes);
     const cdataFooter = escapeCdata(htmlFooter ? '<br/>' + htmlFooter : '');
