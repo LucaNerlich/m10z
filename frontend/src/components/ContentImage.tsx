@@ -45,7 +45,6 @@ export function ContentImage({
                 alt={alt}
                 width={width}
                 height={height}
-                priority
                 placeholder={imagePlaceholder}
                 {...blurDataUrlProp}
                 className={styles.image}
