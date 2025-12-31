@@ -117,10 +117,10 @@ function mapArticlesToFeed(items: StrapiArticle[]): FeedItem[] {
 }
 
 /**
- * Convert an array of Strapi podcast records into normalized feed items.
+ * Converts an array of Strapi podcast records into normalized feed items for the UI.
  *
  * @param items - Strapi podcast records to map into feed entries
- * @returns An array of feed items for podcasts, each containing `type: 'podcast'`, `slug`, `title`, `description`, `publishedAt`, optional `cover` and `banner` media, `wordCount` or `null`, `duration` or `null`, and `href` to the podcast detail page
+ * @returns An array of feed items representing podcasts. Each item contains `type: 'podcast'`, `slug`, `title`, `description` (falls back to the first category's description when missing), `publishedAt`, optional `cover` and `banner` media, `wordCount` or `null`, `duration` or `null`, and `href` to the podcast detail page
  */
 function mapPodcastsToFeed(items: StrapiPodcast[]): FeedItem[] {
     return items.map((podcast) => {
