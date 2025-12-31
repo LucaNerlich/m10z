@@ -9,7 +9,12 @@ const shortcutKeySearch = 'K';
 
 export function SearchLauncher(): React.ReactElement {
     const [isOpen, setIsOpen] = useState(false);
-    const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    const [isMac, setIsMac] = useState(false);
+
+    useEffect(() => {
+        setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+    }, []);
+
     const shortcutLabel = isMac ? 'Cmd+' + shortcutKeySearch : 'Ctrl+' + shortcutKeySearch;
 
     useEffect(() => {

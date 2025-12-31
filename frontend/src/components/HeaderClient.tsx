@@ -27,11 +27,16 @@ export default function HeaderClient({
                                          secondaryLinks,
                                      }: HeaderClientProps): React.ReactElement {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMac, setIsMac] = useState(false);
     const pathname = usePathname();
     const menuRef = useRef<HTMLDivElement | null>(null);
     const burgerButtonRef = useRef<HTMLButtonElement | null>(null);
     const prevMenuOpenRef = useRef(false);
-    const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+
+    useEffect(() => {
+        setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+    }, []);
+
     const shortcutLabel = isMac ? 'Cmd+' + shortcutKeyMenu : 'Ctrl+' + shortcutKeyMenu;
 
     const closeMenu = () => setIsMenuOpen(false);
