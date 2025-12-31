@@ -3,7 +3,7 @@ import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
-    pickBannerMedia,
+    pickCoverOrBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
     type StrapiCategoryRef,
@@ -82,7 +82,7 @@ export function generateArticleFeedXml(args: {
             const pubRaw = getEffectiveDate(a);
             const pub = pubRaw ? new Date(pubRaw) : new Date(0);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
-            const bannerMedia = pickBannerMedia(a.base, a.categories);
+            const bannerMedia = pickCoverOrBannerMedia(a.base, a.categories);
             const bannerUrl = mediaUrlToAbsolute({media: bannerMedia});
 
             // Prepare and Sanitize Content

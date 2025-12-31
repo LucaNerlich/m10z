@@ -203,6 +203,19 @@ export function pickBannerOrCoverMedia(base?: StrapiBaseContent, categories?: St
 }
 
 /**
+ * Picks cover media if available, otherwise falls back to banner media.
+ * Used when cover images are preferred but banner can serve as a fallback.
+ */
+export function pickCoverOrBannerMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
+    // Try cover first
+    const cover = pickCoverMedia(base, categories);
+    if (cover?.url) return cover;
+
+    // Fall back to banner
+    return pickBannerMedia(base, categories);
+}
+
+/**
  * Selects the optimal image format from a StrapiMedia object based on the requested size.
  *
  * Searches for the requested format size in media.formats. If not found, falls back to the next larger size.

@@ -3,7 +3,7 @@ import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
-    pickCoverMedia,
+    pickCoverOrBannerMedia,
     type StrapiAuthor,
     type StrapiBaseContent,
     type StrapiCategoryRef,
@@ -113,7 +113,7 @@ function renderChannelHeader(
  */
 function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null): string | null {
     const fileMedia = normalizeStrapiMedia(episode.file);
-    const coverMedia = pickCoverMedia(episode.base, episode.categories);
+    const coverMedia = pickCoverOrBannerMedia(episode.base, episode.categories);
 
     const enclosureUrl = mediaUrlToAbsolute({media: fileMedia});
     if (!enclosureUrl) {
