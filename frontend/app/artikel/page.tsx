@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * Renders the article listing page for the /artikel route.
+ *
+ * @returns The JSX element that displays the article list page.
+ */
 export default function ArticlePage() {
     return <ArticleListPage />;
 }

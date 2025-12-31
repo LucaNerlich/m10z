@@ -25,8 +25,11 @@ type PodcastDetailProps = {
 };
 
 /**
- * Client component for displaying podcast detail pages.
- * Uses SWR hook with initialData for server-side hydration.
+ * Renders a podcast episode detail view including image, metadata, audio player, shownotes, and an optional YouTube section.
+ *
+ * Embeds episode JSON-LD for SEO and displays appropriate loading or error UI when data is unavailable.
+ *
+ * @returns A React element that renders the podcast detail view.
  */
 export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProps) {
     const {data: podcast, error, isLoading} = usePodcast(slug, initialPodcast);
@@ -115,4 +118,3 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
         </article>
     );
 }
-

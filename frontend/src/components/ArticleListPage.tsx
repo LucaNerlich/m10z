@@ -8,8 +8,11 @@ import {ArticleListSkeleton} from '@/src/components/ArticleListSkeleton';
 import {Card} from '@/src/components/Card';
 
 /**
- * Client component for the article list page.
- * Fetches articles using SWR and displays them in a grid layout.
+ * Render the article list page, handling loading, error, empty, and populated states.
+ *
+ * Displays a loading skeleton while articles are being fetched, an error card with a retry button if the fetch fails, a message when no articles are found, and a sorted grid of ArticleCard components when data is available.
+ *
+ * @returns A JSX element representing the article list page
  */
 export function ArticleListPage() {
     const {data, error, isLoading, isValidating} = useArticlesList(1, 100);
@@ -66,4 +69,3 @@ export function ArticleListPage() {
         </section>
     );
 }
-

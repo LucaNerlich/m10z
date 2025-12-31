@@ -3,6 +3,11 @@ import {Card} from './Card';
 import cardStyles from './ContentCard.module.css';
 import styles from './ArticleListSkeleton.module.css';
 
+/**
+ * Render a skeleton grid of article cards used as a loading placeholder.
+ *
+ * @returns A JSX element containing a section with an "Artikel" heading and a ContentGrid of 12 skeleton article cards.
+ */
 export function ArticleListSkeleton() {
     return (
         <section data-list-page>
@@ -25,4 +30,3 @@ export function ArticleListSkeleton() {
         </section>
     );
 }
-

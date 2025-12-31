@@ -8,8 +8,13 @@ import {PodcastListSkeleton} from '@/src/components/PodcastListSkeleton';
 import {Card} from '@/src/components/Card';
 
 /**
- * Client component for the podcast list page.
- * Fetches podcasts using SWR and displays them in a grid layout.
+ * Render a podcasts listing page with loading, error, empty, and populated states.
+ *
+ * Fetches the first 100 podcasts and displays a loading skeleton while loading, an error panel
+ * with a retry button when fetching fails, a message when no podcasts are available, or a
+ * date-descending sorted grid of PodcastCard items when data is present.
+ *
+ * @returns The page's JSX: either a loading skeleton, an error panel with retry, an empty-state message, or a grid of podcast cards.
  */
 export function PodcastListPage() {
     const {data, error, isLoading, isValidating} = usePodcastsList(1, 100);
@@ -66,4 +71,3 @@ export function PodcastListPage() {
         </section>
     );
 }
-

@@ -25,7 +25,10 @@ const PAGE_SIZE = 10;
 const MAX_PAGE = 50;
 
 /**
- * Normalize the requested page number from URL search parameters.
+ * Determine the requested page number from URL search parameters, validated and clamped to the allowed range.
+ *
+ * @param searchParams - URL search parameters potentially containing a `page` entry
+ * @returns The page number as an integer between 1 and `MAX_PAGE` (inclusive); returns 1 for missing, non‑finite, or out‑of‑range values
  */
 function parsePageParam(searchParams: URLSearchParams): number {
     const raw = searchParams.get('page');
@@ -35,7 +38,11 @@ function parsePageParam(searchParams: URLSearchParams): number {
 }
 
 /**
- * Clamp a requested page number to the valid range based on total available items.
+ * Clamp a requested page number to the valid range for the available items.
+ *
+ * @param page - The requested page number (may be out of range)
+ * @param totalItems - Total number of available items
+ * @returns The page number clipped to be at least 1 and at most the highest page (ceil(totalItems / PAGE_SIZE)); returns 1 when `totalItems` is 0 or negative
  */
 function clampPageToData(page: number, totalItems: number): number {
     if (totalItems <= 0) return 1;
@@ -43,13 +50,21 @@ function clampPageToData(page: number, totalItems: number): number {
     return Math.min(page, maxPage);
 }
 
+/**
+ * Determines whether a subsequent page exists given the current page and total item count.
+ *
+ * @returns `true` if there are more items after `currentPage`, `false` otherwise.
+ */
 function hasNextPage(currentPage: number, totalItems: number): boolean {
     return currentPage * PAGE_SIZE < totalItems;
 }
 
 /**
- * Client component for the homepage feed.
- * Fetches articles and podcasts using SWR and displays them in a combined, paginated feed.
+ * Render the client-side homepage feed that displays a combined, paginated list of articles and podcasts.
+ *
+ * Handles loading, error, and empty states and derives the current page from the URL `page` query parameter.
+ *
+ * @returns The rendered feed component containing the table of contents, content cards, and pagination controls.
  */
 export function HomePage() {
     const searchParams = useSearchParams();
@@ -210,4 +225,3 @@ export function HomePage() {
         </div>
     );
 }
-
