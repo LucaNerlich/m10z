@@ -5,8 +5,6 @@ import FontPicker from './FontPicker';
 import ThemeSelector from './ThemeSelector';
 import {routes} from '@/src/lib/routes';
 
-const BUILD_YEAR = new Date().getUTCFullYear();
-
 type FooterLink = {label: string; href: string; external?: boolean};
 type FooterSection = {title: string; links: FooterLink[]};
 
@@ -78,7 +76,6 @@ export default function Footer() {
             <div className={styles.metaRow}>
                 <FontPicker />
                 <ThemeSelector />
-                <p className={styles.meta}>© {BUILD_YEAR} m10z</p>
             </div>
         </footer>
     );
