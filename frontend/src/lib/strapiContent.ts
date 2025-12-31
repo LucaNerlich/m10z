@@ -248,6 +248,12 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
     return paginated.items;
 }
 
+/**
+ * Fetches authors with their avatar and minimal references to their articles and podcasts.
+ *
+ * @param options - Optional settings. `limit` controls the maximum number of authors returned (default 100). `tags` can be provided to tag the underlying request.
+ * @returns An array of authors including `slug`, `title`, `description`, `avatar`, and `articles`/`podcasts` lists where each item contains `slug` and `publishedAt`.
+ */
 export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> {
     const limit = options.limit ?? 100;
     const query = qs.stringify(
@@ -271,6 +277,12 @@ export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<
     return res.data ?? [];
 }
 
+/**
+ * Fetches an author by slug, including avatar, articles, and podcasts with their base title and date.
+ *
+ * @param slug - The author's slug to query
+ * @returns The matching author with populated content, or `null` if not found
+ */
 export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithContent | null> {
     const query = qs.stringify(
         {
@@ -293,6 +305,12 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
     return res.data?.[0] ?? null;
 }
 
+/**
+ * Fetches a category by its slug and returns it with populated base metadata and related content lists.
+ *
+ * @param slug - The category slug to look up
+ * @returns The category including `base` (title, description, date, cover, banner), `articles` and `podcasts` (each with `slug`, `publishedAt`, and `base` containing `title` and `date`), or `null` if no matching category is found
+ */
 export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryWithContent | null> {
     const query = qs.stringify(
         {
@@ -321,6 +339,12 @@ export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryW
     return res.data?.[0] ?? null;
 }
 
+/**
+ * Fetches categories along with their populated metadata, articles, and podcasts.
+ *
+ * @param options - Optional fetch settings. `limit` caps the number of categories (default 100); `tags` provides request tags for caching/observability.
+ * @returns An array of categories with base metadata (title, description, date, cover, banner), and lists of related articles and podcasts (each with slug, publishedAt, and base title/date).
+ */
 export async function fetchCategoriesWithContent(options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> {
     const limit = options.limit ?? 100;
     const query = qs.stringify(
