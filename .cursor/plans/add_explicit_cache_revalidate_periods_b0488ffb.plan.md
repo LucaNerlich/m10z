@@ -180,4 +180,3 @@ Update existing sections:
 ## Testing Considerations
 
 - Verify that existing tag-based invalidation still works
-- Confirm that revalidate periods are respected by Next.js cache

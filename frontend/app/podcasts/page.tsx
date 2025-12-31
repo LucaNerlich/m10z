@@ -1,11 +1,8 @@
 import {type Metadata} from 'next';
 
-import {sortByDateDesc} from '@/src/lib/effectiveDate';
-import {fetchPodcastsList} from '@/src/lib/strapiContent';
+import {PodcastListPage} from '@/src/components/PodcastListPage';
 import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
-import {ContentGrid} from '@/src/components/ContentGrid';
-import {PodcastCard} from '@/src/components/PodcastCard';
 
 export const metadata: Metadata = {
     title: 'Podcasts',
@@ -28,27 +25,11 @@ export const metadata: Metadata = {
     },
 };
 
-export default async function PodcastsPage() {
-    const podcasts = await fetchPodcastsList();
-    const sorted = sortByDateDesc(podcasts);
-
-    return (
-        <section data-list-page>
-            <h1>Podcasts</h1>
-            {sorted.length === 0 ? (
-                <p>Keine Podcasts gefunden.</p>
-            ) : (
-                <ContentGrid gap="comfortable">
-                    {sorted.map((podcast) => (
-                        <PodcastCard
-                            key={podcast.slug}
-                            podcast={podcast}
-                            showAuthors={true}
-                            showCategories={true}
-                        />
-                    ))}
-                </ContentGrid>
-            )}
-        </section>
-    );
+/**
+ * Render the podcasts listing page.
+ *
+ * @returns The JSX element that renders the podcast list.
+ */
+export default function PodcastsPage() {
+    return <PodcastListPage />;
 }
