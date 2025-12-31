@@ -114,10 +114,7 @@ function renderChannelHeader(
  */
 function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter: string | null): string | null {
     const fileMedia = normalizeStrapiMedia(episode.file);
-    const preferredMedia = pickCoverOrBannerMedia(episode.base, episode.categories);
-    const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
-
-    const enclosureUrl = mediaUrlToAbsolute({media: optimizedMedia});
+    const enclosureUrl = mediaUrlToAbsolute({media: fileMedia});
     if (!enclosureUrl) {
         console.warn(`[audiofeed] Skipping episode "${episode.base.title}" (slug: ${episode.slug}): no valid enclosure URL`);
         return null;
@@ -129,6 +126,8 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
     const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
     const pubDate = formatRssDate(pub);
 
+    const preferredMedia = pickCoverOrBannerMedia(episode.base, episode.categories);
+    const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
     const itunesImageHref =
         mediaUrlToAbsolute({media: optimizedMedia}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
