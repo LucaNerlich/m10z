@@ -61,6 +61,13 @@ export async function generateMetadata(): Promise<Metadata> {
             locale: OG_LOCALE,
             siteName: OG_SITE_NAME,
             url: absoluteRoute('/ueber-uns'),
+            images: [
+                {
+                    url: absoluteRoute('/images/m10z.jpg'),
+                    width: 1200,
+                    height: 630,
+                },
+            ],
         },
         robots: {
             index: true,
