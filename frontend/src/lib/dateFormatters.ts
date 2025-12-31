@@ -3,9 +3,79 @@
  *
  * Provides functions for formatting dates in German locale (de-DE) with
  * support for full, short, and relative date formats.
+ *
+ * Uses manual formatting instead of toLocaleDateString to ensure consistent
+ * output on server and client regardless of locale configuration, preventing
+ * React hydration mismatches.
  */
 
 const GERMAN_LOCALE = 'de-DE';
+
+/**
+ * German month names (full).
+ */
+const GERMAN_MONTHS_FULL: readonly string[] = [
+    'Januar',
+    'Februar',
+    'März',
+    'April',
+    'Mai',
+    'Juni',
+    'Juli',
+    'August',
+    'September',
+    'Oktober',
+    'November',
+    'Dezember',
+] as const;
+
+/**
+ * German month names (abbreviated).
+ */
+const GERMAN_MONTHS_SHORT: readonly string[] = [
+    'Jan.',
+    'Feb.',
+    'März',
+    'Apr.',
+    'Mai',
+    'Juni',
+    'Juli',
+    'Aug.',
+    'Sept.',
+    'Okt.',
+    'Nov.',
+    'Dez.',
+] as const;
+
+/**
+ * Formats a Date object into German full date format manually.
+ * This ensures consistent output regardless of locale configuration.
+ *
+ * @param dateObj - Date object (must be valid, already parsed)
+ * @returns Formatted date string in format "15. Januar 2024"
+ */
+function formatGermanDateFull(dateObj: Date): string {
+    const year = dateObj.getUTCFullYear();
+    const month = dateObj.getUTCMonth(); // 0-11
+    const day = dateObj.getUTCDate();
+    
+    return `${day}. ${GERMAN_MONTHS_FULL[month]} ${year}`;
+}
+
+/**
+ * Formats a Date object into German short date format manually.
+ * This ensures consistent output regardless of locale configuration.
+ *
+ * @param dateObj - Date object (must be valid, already parsed)
+ * @returns Formatted date string in format "15. Jan. 2024"
+ */
+function formatGermanDateShort(dateObj: Date): string {
+    const year = dateObj.getUTCFullYear();
+    const month = dateObj.getUTCMonth(); // 0-11
+    const day = dateObj.getUTCDate();
+    
+    return `${day}. ${GERMAN_MONTHS_SHORT[month]} ${year}`;
+}
 
 /**
  * Parses a date string, extracting only the date part (YYYY-MM-DD) and parsing it as UTC
@@ -60,6 +130,9 @@ function parseDateAsUtcDateOnly(date: string): Date {
  * Treats UTC timestamps as calendar dates by using UTC component extraction,
  * ensuring dates display consistently regardless of user timezone.
  *
+ * Uses manual formatting to ensure consistent output on server and client,
+ * preventing React hydration mismatches.
+ *
  * Example: "15. Januar 2024"
  *
  * @param date - Date string (ISO 8601 or any valid date string), or null/undefined
@@ -70,11 +143,7 @@ export function formatDateFull(date: string | null | undefined): string {
     const dateObj = parseDateAsUtcDateOnly(date);
     if (Number.isNaN(dateObj.getTime())) return '—';
 
-    return dateObj.toLocaleDateString(GERMAN_LOCALE, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
+    return formatGermanDateFull(dateObj);
 }
 
 /**
@@ -82,6 +151,9 @@ export function formatDateFull(date: string | null | undefined): string {
  *
  * Treats UTC timestamps as calendar dates by using UTC component extraction,
  * ensuring dates display consistently regardless of user timezone.
+ *
+ * Uses manual formatting to ensure consistent output on server and client,
+ * preventing React hydration mismatches.
  *
  * Example: "15. Jan. 2024"
  *
@@ -93,11 +165,7 @@ export function formatDateShort(date: string | null | undefined): string {
     const dateObj = parseDateAsUtcDateOnly(date);
     if (Number.isNaN(dateObj.getTime())) return '—';
 
-    return dateObj.toLocaleDateString(GERMAN_LOCALE, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
+    return formatGermanDateShort(dateObj);
 }
 
 /**
@@ -108,6 +176,10 @@ export function formatDateShort(date: string | null | undefined): string {
  * calculations are based on calendar days, not time-of-day differences.
  *
  * Returns '—' for null, undefined, or unparseable date strings. For exact day offsets returns localized labels such as "heute", "gestern", or "morgen"; for other offsets returns a relative description (e.g., "vor 2 Tagen", "in 3 Wochen"). If relative formatting is unavailable or fails, falls back to the short German date format.
+ *
+ * WARNING: This function uses `new Date()` for the current time, which can cause
+ * hydration mismatches if used during SSR. Only use this function in client-side
+ * components or after hydration is complete.
  *
  * @param date - Date string (ISO 8601 or any valid date string), or null/undefined
  * @returns A German relative date string, or '—' for invalid input; may return a short formatted date on fallback
