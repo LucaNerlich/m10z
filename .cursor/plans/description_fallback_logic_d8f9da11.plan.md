@@ -55,4 +55,3 @@ const effectiveDescription = podcast.base.description || podcast.categories?.[0]
 
 - Verify cards display category descriptions when content descriptions are empty
 - Verify cards still display content descriptions when they exist
-- Verify cards handle cases where both content and category descriptions are missing (should render nothing)

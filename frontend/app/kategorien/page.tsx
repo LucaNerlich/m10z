@@ -14,6 +14,13 @@ export const metadata: Metadata = {
         locale: OG_LOCALE,
         siteName: OG_SITE_NAME,
         url: absoluteRoute('/kategorien'),
+        images: [
+            {
+                url: absoluteRoute('/images/m10z.jpg'),
+                width: 1200,
+                height: 630,
+            },
+        ],
     },
     alternates: {
         canonical: absoluteRoute('/kategorien'),
