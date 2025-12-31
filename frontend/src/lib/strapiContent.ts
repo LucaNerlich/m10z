@@ -15,6 +15,41 @@ if (!STRAPI_URL) {
 
 const MAX_SLUGS = 150;
 
+// Reusable populate configurations to reduce duplication and query string length
+export const MEDIA_FIELDS = ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats'] as const;
+const BASE_FIELDS = ['title', 'description', 'date'] as const;
+const AUTHOR_FIELDS = ['title', 'slug', 'description'] as const;
+const CATEGORY_BASE_FIELDS = ['title', 'description'] as const;
+
+// Optimized populate configurations
+// Note: Field selection requires object syntax per Strapi docs
+// Array syntax (populate[0]=relation) only works without field selection
+// Since we need specific fields, object syntax is required and already optimal
+const populateMedia = {fields: MEDIA_FIELDS};
+export const populateBaseMedia = {
+    populate: {
+        cover: populateMedia,
+        banner: populateMedia,
+    },
+    fields: BASE_FIELDS,
+};
+export const populateAuthorAvatar = {
+    populate: {avatar: populateMedia},
+    fields: AUTHOR_FIELDS,
+};
+export const populateCategoryBase = {
+    populate: {
+        base: {
+            populate: {
+                cover: populateMedia,
+                banner: populateMedia,
+            },
+            fields: CATEGORY_BASE_FIELDS,
+        },
+    },
+    fields: ['slug'] as const,
+};
+
 type FetchOptions = {
     tags: string[];
     revalidate?: number;
@@ -108,29 +143,9 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
             filters: {slug: {$eq: slug}},
             status: 'published',
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
-                },
-                authors: {
-                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
-                    fields: ['title', 'slug', 'description'],
-                },
-                categories: {
-                    populate: {
-                        base: {
-                            populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                            },
-                            fields: ['title', 'description'],
-                        },
-                    },
-                    fields: ['slug'],
-                },
+                base: populateBaseMedia,
+                authors: populateAuthorAvatar,
+                categories: populateCategoryBase,
                 youtube: true,
             },
             fields: ['slug', 'content', 'wordCount', 'publishedAt'],
@@ -161,29 +176,9 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
             filters: {slug: {$eq: slug}},
             status: 'published',
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
-                },
-                authors: {
-                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
-                    fields: ['title', 'slug', 'description'],
-                },
-                categories: {
-                    populate: {
-                        base: {
-                            populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                            },
-                            fields: ['title', 'description'],
-                        },
-                    },
-                    fields: ['slug'],
-                },
+                base: populateBaseMedia,
+                authors: populateAuthorAvatar,
+                categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
                 file: {populate: '*'},
             },
@@ -411,17 +406,8 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
             status: 'published',
             pagination: {pageSize, page},
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
-                },
-                categories: {
-                    populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
-                    fields: ['slug'],
-                },
+                base: populateBaseMedia,
+                categories: populateCategoryBase,
                 youtube: true,
             },
             fields: ['slug', 'wordCount', 'publishedAt'],
@@ -460,29 +446,9 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
             filters: {slug: {$in: slugs}},
             status: 'published',
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
-                },
-                authors: {
-                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
-                    fields: ['title', 'slug', 'description'],
-                },
-                categories: {
-                    populate: {
-                        base: {
-                            populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                            },
-                            fields: ['title', 'description'],
-                        },
-                    },
-                    fields: ['slug'],
-                },
+                base: populateBaseMedia,
+                authors: populateAuthorAvatar,
+                categories: populateCategoryBase,
                 youtube: true,
             },
             fields: ['slug', 'wordCount', 'publishedAt'],
@@ -521,29 +487,9 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
             filters: {slug: {$in: slugs}},
             status: 'published',
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
-                },
-                authors: {
-                    populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
-                    fields: ['title', 'slug', 'description'],
-                },
-                categories: {
-                    populate: {
-                        base: {
-                            populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                            },
-                            fields: ['title', 'description'],
-                        },
-                    },
-                    fields: ['slug'],
-                },
+                base: populateBaseMedia,
+                authors: populateAuthorAvatar,
+                categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
                 file: {populate: '*'},
             },
@@ -630,25 +576,8 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
             status: 'published',
             pagination: {pageSize, page},
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
-                },
-                categories: {
-                    populate: {
-                        base: {
-                            populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                            },
-                            fields: ['title', 'description'],
-                        },
-                    },
-                    fields: ['slug'],
-                },
+                base: populateBaseMedia,
+                categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
                 file: {populate: '*'},
             },

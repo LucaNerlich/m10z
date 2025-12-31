@@ -5,7 +5,13 @@ import qs from 'qs';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {type PaginatedResult, type PaginationMeta} from '@/src/lib/strapiContent';
+import {
+    type PaginatedResult,
+    type PaginationMeta,
+    populateBaseMedia,
+    populateAuthorAvatar,
+    populateCategoryBase,
+} from '@/src/lib/strapiContent';
 import {getEffectiveDate, sortByDateDesc, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
 
@@ -103,17 +109,8 @@ export function useArticlesList(page: number = 1, pageSize: number = 20) {
             status: 'published',
             pagination: {pageSize: normalizedPageSize, page: normalizedPage},
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
-                },
-                categories: {
-                    populate: {base: {populate: ['cover', 'banner'], fields: ['title', 'description']}},
-                    fields: ['slug'],
-                },
+                base: populateBaseMedia,
+                categories: populateCategoryBase,
                 youtube: true,
             },
             fields: ['slug', 'wordCount', 'publishedAt'],
@@ -151,29 +148,12 @@ export function usePodcastsList(page: number = 1, pageSize: number = 20) {
             sort: ['base.date:desc'],
             status: 'published',
             pagination: {pageSize: normalizedPageSize, page: normalizedPage},
-            populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
+                populate: {
+                    base: populateBaseMedia,
+                    categories: populateCategoryBase,
+                    youtube: {fields: ['title', 'url']},
+                    file: {populate: '*'},
                 },
-                categories: {
-                    populate: {
-                        base: {
-                            populate: {
-                                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                            },
-                            fields: ['title', 'description'],
-                        },
-                    },
-                    fields: ['slug'],
-                },
-                youtube: {fields: ['title', 'url']},
-                file: {populate: '*'},
-            },
             fields: ['slug', 'duration', 'wordCount', 'publishedAt'],
         },
         {encodeValuesOnly: true},
@@ -209,29 +189,9 @@ export function useArticle(slug: string | null | undefined, initialData?: Strapi
                   filters: {slug: {$eq: slug}},
                   status: 'published',
                   populate: {
-                      base: {
-                          populate: {
-                              cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                              banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                          },
-                          fields: ['title', 'description', 'date'],
-                      },
-                      authors: {
-                          populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
-                          fields: ['title', 'slug', 'description'],
-                      },
-                      categories: {
-                          populate: {
-                              base: {
-                                  populate: {
-                                      cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                      banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                  },
-                                  fields: ['title', 'description'],
-                              },
-                          },
-                          fields: ['slug'],
-                      },
+                      base: populateBaseMedia,
+                      authors: populateAuthorAvatar,
+                      categories: populateCategoryBase,
                       youtube: true,
                   },
                   fields: ['slug', 'content', 'wordCount', 'publishedAt'],
@@ -274,29 +234,9 @@ export function usePodcast(slug: string | null | undefined, initialData?: Strapi
                   filters: {slug: {$eq: slug}},
                   status: 'published',
                   populate: {
-                      base: {
-                          populate: {
-                              cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                              banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                          },
-                          fields: ['title', 'description', 'date'],
-                      },
-                      authors: {
-                          populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
-                          fields: ['title', 'slug', 'description'],
-                      },
-                      categories: {
-                          populate: {
-                              base: {
-                                  populate: {
-                                      cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                      banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                  },
-                                  fields: ['title', 'description'],
-                              },
-                          },
-                          fields: ['slug'],
-                      },
+                      base: populateBaseMedia,
+                      authors: populateAuthorAvatar,
+                      categories: populateCategoryBase,
                       youtube: {fields: ['title', 'url']},
                       file: {populate: '*'},
                   },

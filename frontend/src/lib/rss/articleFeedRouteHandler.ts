@@ -10,6 +10,12 @@ import {
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {
+    populateBaseMedia,
+    populateAuthorAvatar,
+    populateCategoryBase,
+    MEDIA_FIELDS,
+} from '@/src/lib/strapiContent';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -48,29 +54,9 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
                 status: 'published',
                 pagination: {pageSize, page},
                 populate: {
-                    base: {
-                        populate: {
-                            cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                            banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        },
-                        fields: ['title', 'description', 'date'],
-                    },
-                    authors: {
-                        populate: {avatar: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
-                        fields: ['title', 'slug', 'description'],
-                    },
-                    categories: {
-                        populate: {
-                            base: {
-                                populate: {
-                                    cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                    banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                                },
-                                fields: ['title', 'description'],
-                            },
-                        },
-                        fields: ['slug'],
-                    },
+                    base: populateBaseMedia,
+                    authors: populateAuthorAvatar,
+                    categories: populateCategoryBase,
                 },
                 fields: ['slug', 'content', 'wordCount', 'publishedAt'],
             },
@@ -107,7 +93,7 @@ async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
         {
             populate: {
                 channel: {
-                    populate: {image: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']}},
+                    populate: {image: {fields: MEDIA_FIELDS}},
                 },
             },
         },
