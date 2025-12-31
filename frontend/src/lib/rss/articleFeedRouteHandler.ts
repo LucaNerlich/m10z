@@ -95,6 +95,11 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
     return all;
 }
 
+/**
+ * Fetches the article feed entity with its channel image populated.
+ *
+ * @returns The article feed record including `channel.image` with `url`, `width`, `height`, `blurhash`, `alternativeText`, and `formats` fields
+ */
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
     const query = qs.stringify(
         {

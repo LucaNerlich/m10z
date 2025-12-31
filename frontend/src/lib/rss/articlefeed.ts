@@ -35,13 +35,15 @@ export type StrapiArticleFeedSingle = {
 };
 
 /**
- * Builds an RSS 2.0 feed XML document from the provided channel and articles.
+ * Build an RSS 2.0 feed XML document for a channel from a list of articles.
  *
- * @returns An object containing:
+ * @param args.siteUrl - Base site URL (e.g. https://m10z.de) used to build article and feed links
+ * @param args.channel - Channel metadata (title, description, mail, image) for the feed header
+ * @param args.articles - Array of articles to include in the feed
+ * @returns An object with:
  *   - `xml`: the complete RSS 2.0 XML document as a string
  *   - `etagSeed`: a seed string formatted as "<itemCount>:<latestPublishedAt|none>" suitable for ETag computation
  *   - `lastModified`: the Date of the latest published article, or `null` if there are no published articles
- * @param args
  */
 export function generateArticleFeedXml(args: {
     siteUrl: string; // e.g. https://m10z.de

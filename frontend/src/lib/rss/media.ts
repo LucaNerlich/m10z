@@ -190,8 +190,9 @@ export function pickBannerMedia(base?: StrapiBaseContent, categories?: StrapiCat
 }
 
 /**
- * Picks banner media if available, otherwise falls back to cover media.
- * Used for content cards that need a 16:9 aspect ratio image.
+ * Selects banner media, falling back to cover media when no banner is available.
+ *
+ * @returns The chosen `StrapiMedia` containing a `url` when available, or `undefined` if neither banner nor cover media exist.
  */
 export function pickBannerOrCoverMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
     // Try banner first
@@ -203,8 +204,9 @@ export function pickBannerOrCoverMedia(base?: StrapiBaseContent, categories?: St
 }
 
 /**
- * Picks cover media if available, otherwise falls back to banner media.
- * Used when cover images are preferred but banner can serve as a fallback.
+ * Selects cover media if present; otherwise returns banner media as a fallback.
+ *
+ * @returns The chosen `StrapiMedia` (cover preferred, banner fallback), or `undefined` if no media is available.
  */
 export function pickCoverOrBannerMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
     // Try cover first
