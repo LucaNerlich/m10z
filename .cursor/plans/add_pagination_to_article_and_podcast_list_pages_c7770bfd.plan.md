@@ -100,5 +100,3 @@ Implement page-based pagination for both the articles listing page (`/artikel`) 
 - The implementation follows the same pattern as `HomePage.tsx` for consistency
 
 ## Files to Modify
-
-- `frontend/src/components/ArticleListPage.tsx` - Add pagination support

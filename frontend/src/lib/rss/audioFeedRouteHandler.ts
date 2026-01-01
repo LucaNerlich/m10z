@@ -290,6 +290,12 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
     const ip = getClientIp(request);
     const rl = checkRateLimit(`feed:audio:${ip}`, {windowMs: 60_000, max: 20});
     if (!rl.ok) {
+        const fallback = fallbackFeedXml({
+            title: 'M10Z Podcasts',
+            link: SITE_URL,
+            selfLink: `${SITE_URL}/audiofeed.xml`,
+            description: 'Rate limited. Please try again shortly.',
+        });
         const headers = buildRssHeaders({
             cacheControl: 'no-store',
         });
@@ -302,7 +308,7 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
             durationMs: 0,
             detail: {retryAfterSeconds: rl.retryAfterSeconds},
         });
-        return new Response('Too Many Requests', {
+        return new Response(fallback, {
             status: 429,
             headers,
         });

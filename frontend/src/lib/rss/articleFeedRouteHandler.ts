@@ -258,6 +258,12 @@ export async function buildArticleFeedResponse(request: Request): Promise<Respon
     const ip = getClientIp(request);
     const rl = checkRateLimit(`feed:article:${ip}`, {windowMs: 60_000, max: 20});
     if (!rl.ok) {
+        const fallback = fallbackFeedXml({
+            title: 'M10Z Artikel',
+            link: SITE_URL,
+            selfLink: `${SITE_URL}/rss.xml`,
+            description: 'Rate limited. Please try again shortly.',
+        });
         const headers = buildRssHeaders({
             cacheControl: 'no-store',
         });
@@ -270,7 +276,7 @@ export async function buildArticleFeedResponse(request: Request): Promise<Respon
             durationMs: 0,
             detail: {retryAfterSeconds: rl.retryAfterSeconds},
         });
-        return new Response('Too Many Requests', {
+        return new Response(fallback, {
             status: 429,
             headers,
         });
