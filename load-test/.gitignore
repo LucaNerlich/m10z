@@ -1,0 +1,5 @@
+.env
+.env.local
+reports/
+!.env.example
+node_modules

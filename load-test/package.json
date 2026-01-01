@@ -1,0 +1,22 @@
+{
+    "name": "m10z-load-test",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "description": "Load/performance test harness for m10z using k6 (via Docker) + local HTML report generation.",
+    "dependencies": {
+        "dotenv": "^17.2.3"
+    },
+    "scripts": {
+        "smoke": "node run.mjs smoke",
+        "ramp": "node run.mjs ramp",
+        "spike": "node run.mjs spike",
+        "report:smoke": "node report.mjs reports/smoke-summary.json reports/smoke-report.html",
+        "report:ramp": "node report.mjs reports/ramp-summary.json reports/ramp-report.html",
+        "report:spike": "node report.mjs reports/spike-summary.json reports/spike-report.html"
+    },
+    "engines": {
+        "node": ">=22"
+    },
+    "packageManager": "pnpm@10.16.1"
+}
