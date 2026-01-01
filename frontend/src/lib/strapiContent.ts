@@ -86,12 +86,12 @@ type FetchPageOptions = {
 };
 
 /**
- * Fetches JSON data from Strapi API with timeout handling and error logging.
+ * Fetches JSON from the Strapi API for the given path and query, applying a request timeout and structured error logging.
  *
- * @param pathWithQuery - API path with query string
- * @param options - Fetch options including cache tags, revalidate period, timeout, and context
- * @returns Parsed JSON response
- * @throws Error with descriptive message on timeout, socket errors, or HTTP errors
+ * @param pathWithQuery - API path and query string (resolved against the configured STRAPI_URL)
+ * @param options - Request options: cache `tags`, `revalidate` period, `timeout` in milliseconds, and optional `context` used for logging
+ * @returns The parsed response body typed as `T`
+ * @throws Error when the request times out, when a socket/connection error occurs, or when the HTTP response status is not OK
  */
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
     const timeout = options.timeout ?? 30000; // Default 30 seconds
@@ -176,6 +176,18 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
     }
 }
 
+/**
+ * Normalize pagination metadata into a consistent PaginationMeta object with sensible bounds.
+ *
+ * Ensures `page` is at least 1, clamps `pageSize` to an integer between 1 and 200 (or uses the fallback),
+ * ensures `total` is zero or greater, and derives `pageCount` either from the provided value (if positive)
+ * or by computing `ceil(total / pageSize)` with a minimum of 1.
+ *
+ * @param meta - Raw response metadata that may contain a partial `pagination` object
+ * @param fallbackPage - Page number to use when the raw page is missing or invalid
+ * @param fallbackPageSize - Page size to use when the raw pageSize is missing or invalid
+ * @returns A normalized PaginationMeta with `page`, `pageSize`, `total`, and `pageCount`
+ */
 function normalizePagination(
     meta: {pagination?: Partial<PaginationMeta>} | undefined,
     fallbackPage: number,

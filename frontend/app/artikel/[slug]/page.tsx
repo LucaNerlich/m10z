@@ -85,11 +85,11 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 }
 
 /**
- * Renders the article detail page for a validated slug.
- * Fetches article server-side for metadata generation and passes it to client component.
+ * Render the article detail page for the given slug.
  *
- * @param params - An object with a `slug` string identifying the article to render
- * @returns A React element containing the ArticleDetail client component
+ * Fetches the article server-side and returns the ArticleDetail client component. If the slug is invalid, the article does not exist, or a fetch error/404 occurs, this will trigger a 404 response via `notFound()`.
+ *
+ * @returns The React element that renders the article detail view, or triggers a 404 response.
  */
 export default async function ArticleDetailPage({params}: PageProps) {
     const {slug: rawSlug} = await params;

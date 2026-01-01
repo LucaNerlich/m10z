@@ -1,10 +1,8 @@
 import {initializeFetchAgent} from './src/lib/fetchAgent';
 
 /**
- * Next.js instrumentation hook that runs once when the server starts.
- * Initializes the global fetch agent for connection pooling.
+ * Initializes the global fetch agent used for connection pooling when the Next.js server starts.
  */
 export async function register() {
     initializeFetchAgent();
 }
-
