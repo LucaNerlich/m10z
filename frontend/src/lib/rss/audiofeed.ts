@@ -144,7 +144,7 @@ function renderItem(cfg: AudioFeedConfig, episode: StrapiPodcast, episodeFooter:
     const cdataFooter = escapeCdata(htmlFooter ? '<br/>' + htmlFooter : '');
     const description = `${cdataShownotes}${cdataFooter}`;
 
-    const link = `${cfg.siteUrl.replace(/\/+$/, '')}/podcast/${encodeURIComponent(episode.slug)}`;
+    const link = `${cfg.siteUrl.replace(/\/+$/, '')}/podcasts/${encodeURIComponent(episode.slug)}`;
 
     const guid = sha256Hex(enclosureUrl);
 
