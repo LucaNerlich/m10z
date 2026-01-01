@@ -1,6 +1,4 @@
-'use client';
-
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
@@ -13,7 +11,7 @@ import {Code} from '@/src/components/markdown/Code';
 import {Heading} from '@/src/components/markdown/Heading';
 import {Image} from '@/src/components/markdown/Image';
 import {Anchor} from '@/src/components/markdown/Anchor';
-import '@fancyapps/ui/dist/fancybox/fancybox.css';
+import {FancyboxClient} from '@/src/components/markdown/FancyboxClient';
 
 export type MarkdownProps = {
     markdown: string;
@@ -33,37 +31,6 @@ export type MarkdownProps = {
  * @returns A React element containing the rendered and sanitized Markdown content.
  */
 export function Markdown({markdown, className}: MarkdownProps) {
-    const contentRef = useRef<HTMLDivElement>(null);
-
-    // Initialize Fancybox for image galleries
-    useEffect(() => {
-        if (!contentRef.current) return;
-
-        // Dynamically import Fancybox to ensure SSR compatibility
-        let isMounted = true;
-        const cleanupPromise = import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
-            if (!isMounted || !contentRef.current) return;
-
-            // Bind Fancybox to all elements with data-fancybox="article-gallery"
-            // Fancybox automatically groups items by their data-fancybox value
-            Fancybox.bind(contentRef.current, '[data-fancybox="article-gallery"]');
-        });
-
-        // Cleanup on unmount
-        return () => {
-            isMounted = false;
-            cleanupPromise.then(() => {
-                // Re-import for cleanup (module is cached, so this is fast)
-                import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
-                    if (contentRef.current) {
-                        Fancybox.unbind(contentRef.current);
-                    }
-                    Fancybox.close();
-                });
-            });
-        };
-    }, []);
-
     // Remove inline <br>, to avoid large gaps. Markdown Parsing already handles linebreaks via \n.
     let normalized = markdown.replace(/<br\s*\/?>/gi, '');
 
@@ -80,14 +47,12 @@ export function Markdown({markdown, className}: MarkdownProps) {
     // Only match single tildes that are not part of double-tildes
     normalized = normalized.replace(/(?<!~)~([^~\n]+)~(?!~)/g, '<sub>$1</sub>');
 
+    const containerClassName = className ? `markdown-content ${className}` : 'markdown-content';
+
     return (
-        <div ref={contentRef} className={className ? `markdown-content ${className}` : 'markdown-content'}>
+        <FancyboxClient className={containerClassName}>
             <ReactMarkdown
-                remarkPlugins={[
-                    remarkBreaks,
-                    remarkGfm,
-                    remarkSmartypants,
-                ]}
+                remarkPlugins={[remarkBreaks, remarkGfm, remarkSmartypants]}
                 rehypePlugins={[
                     rehypeSlug,
                     [rehypeExternalLinks, {target: '_blank', rel: ['noopener', 'noreferrer']}],
@@ -121,6 +86,6 @@ export function Markdown({markdown, className}: MarkdownProps) {
             >
                 {normalized}
             </ReactMarkdown>
-        </div>
+        </FancyboxClient>
     );
 }
