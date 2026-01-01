@@ -1,0 +1,54 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+    padding: 1rem;
+    background: var(--color-surface);
+    border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.container :global(svg) {
+    max-width: 100%;
+    height: auto;
+}
+
+.error {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: var(--color-surface-strong);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text);
+}
+
+.error p {
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+    color: var(--color-primary-strong);
+}
+
+.error details {
+    margin-top: 0.5rem;
+}
+
+.error summary {
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.source {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--color-text);
+}
+

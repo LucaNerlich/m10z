@@ -2,6 +2,7 @@
 
 import React from 'react';
 import {Highlight} from 'prism-react-renderer';
+import {Mermaid} from './Mermaid';
 import styles from './Code.module.css';
 
 export type CodeProps = React.ComponentProps<'code'> & {
@@ -14,9 +15,11 @@ export type CodeProps = React.ComponentProps<'code'> & {
  * If `className` contains a `language-{lang}` token, the component renders a highlighted block for that language;
  * otherwise it renders a plain inline `<code>` element.
  *
+ * Special handling for `language-mermaid` or `language-mermaidjs` - renders a Mermaid diagram instead of syntax highlighting.
+ *
  * @param className - Optional CSS class(es). Include `language-{lang}` to enable syntax highlighting for `lang`.
  * @param inline - When true, always render as inline code regardless of `className`.
- * @returns A React element containing either plain inline code or a syntax-highlighted code block. 
+ * @returns A React element containing either plain inline code, a syntax-highlighted code block, or a Mermaid diagram.
  */
 export function Code({className = '', children, inline = false, ...props}: CodeProps) {
     // Extract language from className (format: "language-{lang}")
@@ -30,6 +33,12 @@ export function Code({className = '', children, inline = false, ...props}: CodeP
                 {children}
             </code>
         );
+    }
+
+    // Handle Mermaid diagrams
+    if (language === 'mermaid' || language === 'mermaidjs') {
+        const codeString = typeof children === 'string' ? children : String(children || '');
+        return <Mermaid chart={codeString} />;
     }
 
     // For code blocks with language, use prism-react-renderer
