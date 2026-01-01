@@ -1,7 +1,4 @@
-'use client';
-
-import {useSearchParams} from 'next/navigation';
-import {useArticlesList} from '@/src/hooks/useStrapiContent';
+import {fetchArticlesPage} from '@/src/lib/strapiContent';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {ArticleListSkeleton} from '@/src/components/ArticleListSkeleton';
@@ -14,9 +11,10 @@ import {Pagination} from '@/src/components/Pagination';
  * @param searchParams - URL search parameters potentially containing a `page` entry
  * @returns The page number as an integer (minimum 1); returns 1 for missing or invalid values
  */
-function parsePageParam(searchParams: URLSearchParams): number {
-    const raw = searchParams.get('page');
-    const parsed = Number(raw);
+function parsePageParam(searchParams: Record<string, string | string[] | undefined>): number {
+    const raw = searchParams.page;
+    const rawString = Array.isArray(raw) ? raw[0] : raw;
+    const parsed = Number(rawString);
     if (!Number.isFinite(parsed) || parsed < 1) return 1;
     return Math.max(1, Math.floor(parsed));
 }
@@ -28,29 +26,26 @@ function parsePageParam(searchParams: URLSearchParams): number {
  *
  * @returns A JSX element representing the article list page
  */
-export function ArticleListPage() {
-    const searchParams = useSearchParams();
-    const currentPage = parsePageParam(searchParams);
-    const {data, error, isLoading, isValidating} = useArticlesList(currentPage, 12);
+export async function ArticleListPage({
+    searchParams,
+}: {
+    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+}) {
+    const sp = await Promise.resolve(searchParams ?? {});
+    const currentPage = parsePageParam(sp);
 
-    // Show loading skeleton
-    if (isLoading && !data) {
-        return <ArticleListSkeleton />;
-    }
-
-    // Handle errors
-    if (error) {
+    let data;
+    try {
+        data = await fetchArticlesPage({page: currentPage, pageSize: 12});
+    } catch {
         return (
             <section data-list-page>
                 <h1>Artikel</h1>
                 <Card variant="empty">
                     <p>Fehler beim Laden der Artikel.</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        style={{marginTop: '1rem', padding: '0.5rem 1rem'}}
-                    >
+                    <a href="/artikel" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
                         Erneut versuchen
-                    </button>
+                    </a>
                 </Card>
             </section>
         );

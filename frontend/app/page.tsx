@@ -25,16 +25,30 @@ export const metadata: Metadata = {
     },
 };
 
+type PageProps = {
+    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+};
+
+function parsePageParamFromSearchParams(searchParams: Record<string, string | string[] | undefined>): number {
+    const raw = searchParams.page;
+    const rawString = Array.isArray(raw) ? raw[0] : raw;
+    const parsed = Number(rawString);
+    if (!Number.isFinite(parsed) || parsed < 1) return 1;
+    return Math.min(Math.floor(parsed), 50);
+}
+
 /**
  * Wraps the HomePage component in a Suspense boundary and provides a skeleton fallback.
  *
  * @returns A root element with `data-homepage` containing `HomePage` rendered inside `Suspense` with `FeedSkeleton` as the fallback.
  */
-export default function HomePageWrapper() {
+export default async function HomePageWrapper({searchParams}: PageProps) {
+    const sp = await Promise.resolve(searchParams ?? {});
+    const page = parsePageParamFromSearchParams(sp);
     return (
         <div data-homepage>
             <Suspense fallback={<FeedSkeleton />}>
-                <HomePage />
+                <HomePage page={page} />
             </Suspense>
         </div>
     );

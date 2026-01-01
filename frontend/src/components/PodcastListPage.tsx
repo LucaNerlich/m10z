@@ -1,7 +1,4 @@
-'use client';
-
-import {useSearchParams} from 'next/navigation';
-import {usePodcastsList} from '@/src/hooks/useStrapiContent';
+import {fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {PodcastCard} from '@/src/components/PodcastCard';
 import {PodcastListSkeleton} from '@/src/components/PodcastListSkeleton';
@@ -14,9 +11,10 @@ import {Pagination} from '@/src/components/Pagination';
  * @param searchParams - URL search parameters potentially containing a `page` entry
  * @returns The page number as an integer (minimum 1); returns 1 for missing or invalid values
  */
-function parsePageParam(searchParams: URLSearchParams): number {
-    const raw = searchParams.get('page');
-    const parsed = Number(raw);
+function parsePageParam(searchParams: Record<string, string | string[] | undefined>): number {
+    const raw = searchParams.page;
+    const rawString = Array.isArray(raw) ? raw[0] : raw;
+    const parsed = Number(rawString);
     if (!Number.isFinite(parsed) || parsed < 1) return 1;
     return Math.max(1, Math.floor(parsed));
 }
@@ -30,30 +28,26 @@ function parsePageParam(searchParams: URLSearchParams): number {
  *
  * @returns The page's JSX: either a loading skeleton, an error panel with retry, an empty-state message, or a grid of podcast cards.
  */
-export function PodcastListPage() {
-    const searchParams = useSearchParams();
-    const currentPage = parsePageParam(searchParams);
-    const {data, error, isLoading, isValidating} = usePodcastsList(currentPage, 12);
+export async function PodcastListPage({
+    searchParams,
+}: {
+    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+}) {
+    const sp = await Promise.resolve(searchParams ?? {});
+    const currentPage = parsePageParam(sp);
 
-    // Show loading skeleton
-    if (isLoading && !data) {
-        return <PodcastListSkeleton />;
-    }
-
-    // Handle errors
-    if (error) {
+    let data;
+    try {
+        data = await fetchPodcastsPage({page: currentPage, pageSize: 12});
+    } catch {
         return (
             <section data-list-page>
                 <h1>Podcasts</h1>
                 <Card variant="empty">
                     <p>Fehler beim Laden der Podcasts.</p>
-                    <button
-                        type="button"
-                        onClick={() => window.location.reload()}
-                        style={{marginTop: '1rem', padding: '0.5rem 1rem'}}
-                    >
+                    <a href="/podcasts" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
                         Erneut versuchen
-                    </button>
+                    </a>
                 </Card>
             </section>
         );

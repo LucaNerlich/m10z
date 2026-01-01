@@ -1,6 +1,3 @@
-'use client';
-
-import {useSearchParams} from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -8,7 +5,7 @@ import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
 import {FeedSkeleton} from '@/src/components/FeedSkeleton';
-import {useContentFeed} from '@/src/hooks/useStrapiContent';
+import {buildContentFeed} from '@/src/lib/contentFeed';
 import {
     getOptimalMediaFormat,
     mediaUrlToAbsolute,
@@ -66,34 +63,23 @@ function hasNextPage(currentPage: number, totalItems: number): boolean {
  *
  * @returns The rendered feed component containing the table of contents, content cards, and pagination controls.
  */
-export function HomePage() {
-    const searchParams = useSearchParams();
-    const requestedPage = parsePageParam(searchParams);
-    const {data, error, isLoading, isValidating} = useContentFeed(requestedPage, PAGE_SIZE);
-
-    // Show loading skeleton
-    if (isLoading && !data) {
-        return <FeedSkeleton />;
-    }
-
-    // Handle errors
-    if (error) {
+export async function HomePage({page}: {page: number}) {
+    let data;
+    try {
+        data = await buildContentFeed(page, PAGE_SIZE);
+    } catch {
         return (
             <div className={styles.page}>
                 <Card variant="empty">
                     <p>Fehler beim Laden der Inhalte.</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        style={{marginTop: '1rem', padding: '0.5rem 1rem'}}
-                    >
+                    <a href="/" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
                         Erneut versuchen
-                    </button>
+                    </a>
                 </Card>
             </div>
         );
     }
 
-    // Handle empty state
     if (!data || data.items.length === 0) {
         return (
             <div className={styles.page}>
@@ -103,7 +89,7 @@ export function HomePage() {
     }
 
     const combinedTotal = data.pagination.total;
-    const currentPage = clampPageToData(requestedPage, combinedTotal);
+    const currentPage = clampPageToData(page, combinedTotal);
     const currentItems = data.items;
     const nextPage = hasNextPage(currentPage, combinedTotal) ? currentPage + 1 : null;
     const prevPage = currentPage > 1 ? currentPage - 1 : null;

@@ -34,10 +34,14 @@ export const metadata: Metadata = {
  *
  * @returns The JSX element that displays the article list page.
  */
-export default function ArticlePage() {
+export default function ArticlePage({
+    searchParams,
+}: {
+    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+}) {
     return (
         <Suspense fallback={<ArticleListSkeleton />}>
-            <ArticleListPage />
+            <ArticleListPage searchParams={searchParams} />
         </Suspense>
     );
 }

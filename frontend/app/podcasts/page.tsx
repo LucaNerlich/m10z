@@ -34,10 +34,14 @@ export const metadata: Metadata = {
  *
  * @returns The JSX element that renders the podcast list.
  */
-export default function PodcastsPage() {
+export default function PodcastsPage({
+    searchParams,
+}: {
+    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+}) {
     return (
         <Suspense fallback={<PodcastListSkeleton />}>
-            <PodcastListPage />
+            <PodcastListPage searchParams={searchParams} />
         </Suspense>
     );
 }
