@@ -30,39 +30,58 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
 
-    const episode = await fetchPodcastBySlug(slug);
-    if (!episode) return {};
+    try {
+        const episode = await fetchPodcastBySlug(slug);
+        if (!episode) return {};
 
-    const title = episode.base.title;
-    const description = episode.base.description || undefined;
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
-    const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
+        const title = episode.base.title;
+        const description = episode.base.description || undefined;
+        const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
+        const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+        const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
 
-    const openGraph: Metadata['openGraph'] = {
-        type: 'article',
-        locale: OG_LOCALE,
-        siteName: OG_SITE_NAME,
-        url: absoluteRoute(`/podcasts/${slug}`),
-        title,
-        description,
-        images: coverImage,
-    };
-
-    return {
-        title,
-        description,
-        alternates: {
-            canonical: absoluteRoute(`/podcasts/${slug}`),
-        },
-        openGraph,
-        twitter: {
-            card: 'summary_large_image',
+        const openGraph: Metadata['openGraph'] = {
+            type: 'article',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
+            url: absoluteRoute(`/podcasts/${slug}`),
             title,
             description,
             images: coverImage,
-        },
-    };
+        };
+
+        return {
+            title,
+            description,
+            alternates: {
+                canonical: absoluteRoute(`/podcasts/${slug}`),
+            },
+            openGraph,
+            twitter: {
+                card: 'summary_large_image',
+                title,
+                description,
+                images: coverImage,
+            },
+        };
+    } catch (error) {
+        // Log error but return empty metadata to allow page to render with defaults
+        const err = error as Error;
+        const isTimeoutOrSocketError =
+            err.message.includes('timeout') ||
+            err.message.includes('connection error') ||
+            err.message.includes('ECONNRESET') ||
+            err.message.includes('ECONNREFUSED') ||
+            err.message.includes('UND_ERR_SOCKET');
+
+        if (isTimeoutOrSocketError) {
+            console.error(`Socket/timeout error fetching podcast metadata for slug "${slug}":`, err.message);
+        } else {
+            console.error(`Error fetching podcast metadata for slug "${slug}":`, err.message);
+        }
+
+        return {};
+    }
 }
 
 /**
@@ -76,8 +95,33 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
-    const episode = await fetchPodcastBySlug(slug);
-    if (!episode) return notFound();
+    try {
+        const episode = await fetchPodcastBySlug(slug);
+        if (!episode) return notFound();
 
-    return <PodcastDetail slug={slug} podcast={episode} />;
+        return <PodcastDetail slug={slug} podcast={episode} />;
+    } catch (error) {
+        const err = error as Error;
+        const isTimeoutOrSocketError =
+            err.message.includes('timeout') ||
+            err.message.includes('connection error') ||
+            err.message.includes('ECONNRESET') ||
+            err.message.includes('ECONNREFUSED') ||
+            err.message.includes('UND_ERR_SOCKET');
+
+        if (isTimeoutOrSocketError) {
+            console.error(`Socket/timeout error fetching podcast for slug "${slug}":`, err.message);
+            // Return 404 for socket/timeout errors to trigger fallback behavior
+            return notFound();
+        }
+
+        // Check if it's a 404 error
+        if (err.message.includes('404') || err.message.includes('not found')) {
+            return notFound();
+        }
+
+        // Log other errors and return 404
+        console.error(`Error fetching podcast for slug "${slug}":`, err.message);
+        return notFound();
+    }
 }

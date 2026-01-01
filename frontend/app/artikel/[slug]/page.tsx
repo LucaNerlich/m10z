@@ -26,43 +26,62 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
 
-    const article = await fetchArticleBySlug(slug);
-    if (!article) return {};
+    try {
+        const article = await fetchArticleBySlug(slug);
+        if (!article) return {};
 
-    const title = article.base.title;
-    const description = article.base.description || undefined;
-    const publishedTime = formatIso8601Date(getEffectiveDate(article));
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
-    const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
-    const authors = article.authors?.map((a) => a.title).filter(Boolean) as string[] | undefined;
+        const title = article.base.title;
+        const description = article.base.description || undefined;
+        const publishedTime = formatIso8601Date(getEffectiveDate(article));
+        const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
+        const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+        const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
+        const authors = article.authors?.map((a) => a.title).filter(Boolean) as string[] | undefined;
 
-    return {
-        title,
-        description,
-        alternates: {
-            canonical: absoluteRoute(`/artikel/${slug}`),
-        },
-        openGraph: {
-            type: 'article',
-            locale: OG_LOCALE,
-            siteName: OG_SITE_NAME,
-            url: absoluteRoute(`/artikel/${slug}`),
+        return {
             title,
             description,
-            images: coverImage,
-            publishedTime,
-            modifiedTime: formatIso8601Date(article.publishedAt),
-            authors,
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title,
-            description,
-            images: coverImage,
-        },
-        authors: authors?.map((name) => ({name})),
-    };
+            alternates: {
+                canonical: absoluteRoute(`/artikel/${slug}`),
+            },
+            openGraph: {
+                type: 'article',
+                locale: OG_LOCALE,
+                siteName: OG_SITE_NAME,
+                url: absoluteRoute(`/artikel/${slug}`),
+                title,
+                description,
+                images: coverImage,
+                publishedTime,
+                modifiedTime: formatIso8601Date(article.publishedAt),
+                authors,
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title,
+                description,
+                images: coverImage,
+            },
+            authors: authors?.map((name) => ({name})),
+        };
+    } catch (error) {
+        // Log error but return empty metadata to allow page to render with defaults
+        const err = error as Error;
+        const isTimeoutOrSocketError =
+            err.message.includes('timeout') ||
+            err.message.includes('connection error') ||
+            err.message.includes('ECONNRESET') ||
+            err.message.includes('ECONNREFUSED') ||
+            err.message.includes('UND_ERR_SOCKET');
+
+        if (isTimeoutOrSocketError) {
+            console.error(`Socket/timeout error fetching article metadata for slug "${slug}":`, err.message);
+        } else {
+            console.error(`Error fetching article metadata for slug "${slug}":`, err.message);
+        }
+
+        return {};
+    }
 }
 
 /**
@@ -77,8 +96,33 @@ export default async function ArticleDetailPage({params}: PageProps) {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
-    const article = await fetchArticleBySlug(slug);
-    if (!article) return notFound();
+    try {
+        const article = await fetchArticleBySlug(slug);
+        if (!article) return notFound();
 
-    return <ArticleDetail slug={slug} article={article} />;
+        return <ArticleDetail slug={slug} article={article} />;
+    } catch (error) {
+        const err = error as Error;
+        const isTimeoutOrSocketError =
+            err.message.includes('timeout') ||
+            err.message.includes('connection error') ||
+            err.message.includes('ECONNRESET') ||
+            err.message.includes('ECONNREFUSED') ||
+            err.message.includes('UND_ERR_SOCKET');
+
+        if (isTimeoutOrSocketError) {
+            console.error(`Socket/timeout error fetching article for slug "${slug}":`, err.message);
+            // Return 404 for socket/timeout errors to trigger fallback behavior
+            return notFound();
+        }
+
+        // Check if it's a 404 error
+        if (err.message.includes('404') || err.message.includes('not found')) {
+            return notFound();
+        }
+
+        // Log other errors and return 404
+        console.error(`Error fetching article for slug "${slug}":`, err.message);
+        return notFound();
+    }
 }

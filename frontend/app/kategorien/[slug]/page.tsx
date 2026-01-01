@@ -32,41 +32,60 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
 
-    const category = await fetchCategoryBySlug(slug);
-    if (!category) return {};
+    try {
+        const category = await fetchCategoryBySlug(slug);
+        if (!category) return {};
 
-    const title = category.base?.title || category.slug || 'Kategorie';
-    const description = category.base?.description || undefined;
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(undefined, [category]);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
-    const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
+        const title = category.base?.title || category.slug || 'Kategorie';
+        const description = category.base?.description || undefined;
+        const bannerOrCoverMedia = pickBannerOrCoverMedia(undefined, [category]);
+        const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+        const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
 
-    return {
-        title,
-        description,
-        alternates: {
-            canonical: absoluteRoute(`/kategorien/${slug}`),
-        },
-        openGraph: {
-            type: 'website',
-            locale: OG_LOCALE,
-            siteName: OG_SITE_NAME,
-            url: absoluteRoute(`/kategorien/${slug}`),
+        return {
             title,
             description,
-            images: coverImage,
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title,
-            description,
-            images: coverImage,
-        },
-        robots: {
-            index: true,
-            follow: true,
-        },
-    };
+            alternates: {
+                canonical: absoluteRoute(`/kategorien/${slug}`),
+            },
+            openGraph: {
+                type: 'website',
+                locale: OG_LOCALE,
+                siteName: OG_SITE_NAME,
+                url: absoluteRoute(`/kategorien/${slug}`),
+                title,
+                description,
+                images: coverImage,
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title,
+                description,
+                images: coverImage,
+            },
+            robots: {
+                index: true,
+                follow: true,
+            },
+        };
+    } catch (error) {
+        // Log error but return empty metadata to allow page to render with defaults
+        const err = error as Error;
+        const isTimeoutOrSocketError =
+            err.message.includes('timeout') ||
+            err.message.includes('connection error') ||
+            err.message.includes('ECONNRESET') ||
+            err.message.includes('ECONNREFUSED') ||
+            err.message.includes('UND_ERR_SOCKET');
+
+        if (isTimeoutOrSocketError) {
+            console.error(`Socket/timeout error fetching category metadata for slug "${slug}":`, err.message);
+        } else {
+            console.error(`Error fetching category metadata for slug "${slug}":`, err.message);
+        }
+
+        return {};
+    }
 }
 
 /**
@@ -82,16 +101,64 @@ export default async function CategoryDetailPage({params}: PageProps) {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
-    const category = await fetchCategoryBySlug(slug);
-    if (!category) return notFound();
+    let category;
+    try {
+        category = await fetchCategoryBySlug(slug);
+        if (!category) return notFound();
+    } catch (error) {
+        const err = error as Error;
+        const isTimeoutOrSocketError =
+            err.message.includes('timeout') ||
+            err.message.includes('connection error') ||
+            err.message.includes('ECONNRESET') ||
+            err.message.includes('ECONNREFUSED') ||
+            err.message.includes('UND_ERR_SOCKET');
+
+        if (isTimeoutOrSocketError) {
+            console.error(`Socket/timeout error fetching category for slug "${slug}":`, err.message);
+        } else {
+            console.error(`Error fetching category for slug "${slug}":`, err.message);
+        }
+
+        // Check if it's a 404 error
+        if (err.message.includes('404') || err.message.includes('not found')) {
+            return notFound();
+        }
+
+        // Return 404 for other errors
+        return notFound();
+    }
 
     const articleSlugs = category.articles?.map((a) => a.slug).filter(Boolean) ?? [];
     const podcastSlugs = category.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
 
-    const [articles, podcasts] = await Promise.all([
-        fetchArticlesBySlugsBatched(articleSlugs),
-        fetchPodcastsBySlugsBatched(podcastSlugs),
-    ]);
+    // Handle batched fetches with graceful degradation - show available content even if some fail
+    let articles: Awaited<ReturnType<typeof fetchArticlesBySlugsBatched>> = [];
+    let podcasts: Awaited<ReturnType<typeof fetchPodcastsBySlugsBatched>> = [];
+
+    try {
+        [articles, podcasts] = await Promise.all([
+            fetchArticlesBySlugsBatched(articleSlugs),
+            fetchPodcastsBySlugsBatched(podcastSlugs),
+        ]);
+    } catch (error) {
+        const err = error as Error;
+        const isTimeoutOrSocketError =
+            err.message.includes('timeout') ||
+            err.message.includes('connection error') ||
+            err.message.includes('ECONNRESET') ||
+            err.message.includes('ECONNREFUSED') ||
+            err.message.includes('UND_ERR_SOCKET');
+
+        if (isTimeoutOrSocketError) {
+            console.error(`Socket/timeout error fetching category content for slug "${slug}":`, err.message);
+        } else {
+            console.error(`Error fetching category content for slug "${slug}":`, err.message);
+        }
+
+        // Continue with empty arrays - page will show empty state
+        // This allows the category page to render even if content fetches fail
+    }
 
     // Sort by date descending
     const sortedArticles = sortByDateDesc(articles);

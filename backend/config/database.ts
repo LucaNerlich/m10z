@@ -20,7 +20,12 @@ export default ({env}) => {
                     rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
                 },
             },
-            pool: {min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10)},
+            pool: {
+                min: env.int('DATABASE_POOL_MIN', 2),
+                max: env.int('DATABASE_POOL_MAX', 25),
+                acquireTimeoutMillis: env.int('DATABASE_ACQUIRE_TIMEOUT_MILLIS', 30000),
+                idleTimeoutMillis: env.int('DATABASE_IDLE_TIMEOUT_MILLIS', 30000),
+            },
         },
         postgres: {
             connection: {
@@ -40,7 +45,12 @@ export default ({env}) => {
                 },
                 schema: env('DATABASE_SCHEMA', 'public'),
             },
-            pool: {min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10)},
+            pool: {
+                min: env.int('DATABASE_POOL_MIN', 2),
+                max: env.int('DATABASE_POOL_MAX', 25),
+                acquireTimeoutMillis: env.int('DATABASE_ACQUIRE_TIMEOUT_MILLIS', 30000),
+                idleTimeoutMillis: env.int('DATABASE_IDLE_TIMEOUT_MILLIS', 30000),
+            },
         },
         sqlite: {
             connection: {
@@ -54,6 +64,23 @@ export default ({env}) => {
         connection: {
             client,
             ...connections[client],
+            /**
+             * Database connection pool configuration:
+             *
+             * Pool sizing rationale:
+             * - max: Increased to 25 to handle higher concurrency during SSR requests.
+             *   This prevents connection exhaustion when multiple Next.js SSR requests
+             *   fetch content simultaneously.
+             *
+             * - acquireTimeoutMillis: Set to 30 seconds to allow sufficient time
+             *   for acquiring connections during peak load periods.
+             *
+             * - idleTimeoutMillis: Set to 30 seconds to balance between keeping connections
+             *   available for reuse and releasing unused connections to manage resources efficiently.
+             *
+             * Note: acquireConnectionTimeout at the connection level is kept for backward
+             * compatibility, but pool-level acquireTimeoutMillis takes precedence.
+             */
             acquireConnectionTimeout: env.int('DATABASE_CONNECTION_TIMEOUT', 60000),
         },
     };
