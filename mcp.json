@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+        "strapi-docs": {
+            "type": "http",
+            "url": "https://strapi-docs.mcp.kapa.ai",
+            "headers": {}
+        },
+        "next-devtools": {
+            "command": "npx",
+            "args": ["-y", "next-devtools-mcp@latest"]
+        }
+    }
+}
