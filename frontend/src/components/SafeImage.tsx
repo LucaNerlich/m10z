@@ -1,6 +1,7 @@
 'use client';
 
 import {useState} from 'react';
+import Image from 'next/image';
 import {isImageHostnameAllowed} from '@/src/lib/imageUtils';
 import {ImageWarning} from './ImageWarning';
 
@@ -14,7 +15,7 @@ type SafeImageProps = {
 };
 
 /**
- * Safe wrapper around img element that handles unauthorized external images.
+ * Safe wrapper around Next.js Image component that handles unauthorized external images.
  * If the image hostname is not allowed, displays a warning component instead of crashing.
  * Also handles runtime loading errors gracefully.
  */
@@ -22,6 +23,7 @@ export function SafeImage({src, alt = '', width = 1200, height = 675, sizes = '1
     const [hasError, setHasError] = useState(false);
 
     // Check if hostname is allowed before rendering
+    // This prevents Next.js from throwing configuration errors
     if (!isImageHostnameAllowed(src)) {
         return <ImageWarning src={src} alt={alt} />;
     }
@@ -32,7 +34,7 @@ export function SafeImage({src, alt = '', width = 1200, height = 675, sizes = '1
     }
 
     return (
-        <img
+        <Image
             src={src}
             alt={alt}
             width={width}
@@ -40,7 +42,6 @@ export function SafeImage({src, alt = '', width = 1200, height = 675, sizes = '1
             sizes={sizes}
             style={style}
             onError={() => setHasError(true)}
-            loading="lazy"
         />
     );
 }

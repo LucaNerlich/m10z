@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/rss/media';
 import styles from './AuthorHeader.module.css';
 
@@ -23,13 +24,12 @@ export function AuthorHeader({author}: AuthorHeaderProps) {
         <header className={styles.header}>
             {avatarUrl ? (
                 <div className={styles.avatarContainer}>
-                    <img
+                    <Image
                         src={avatarUrl}
                         alt={author.title ?? 'Avatar'}
                         width={avatarWidth}
                         height={avatarHeight}
                         className={styles.avatar}
-                        loading="lazy"
                     />
                 </div>
             ) : null}

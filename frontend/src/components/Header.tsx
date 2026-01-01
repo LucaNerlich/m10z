@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React, {Suspense} from 'react';
 
@@ -33,11 +34,12 @@ export default function Header(): React.ReactElement {
                 <Suspense
                     fallback={
                         <Link className={styles.logo} href={routes.home} aria-label="Zur Startseite">
-                            <img
+                            <Image
                                 src="/logo.svg"
                                 alt="m10z"
                                 width={100}
                                 height={38}
+                                priority
                             />
                         </Link>
                     }

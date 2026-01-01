@@ -1,7 +1,8 @@
+import Image, {type StaticImageData} from 'next/image';
 import styles from './ContentImage.module.css';
 
 type CoverImageProps = {
-    src: string | {src: string};
+    src: string | StaticImageData;
     alt: string;
     width: number;
     height: number;
@@ -12,7 +13,7 @@ type CoverImageProps = {
 
 /**
  * Reusable cover image component for articles and podcasts.
- * Displays a cover image with consistent styling.
+ * Displays an optimized cover image with consistent styling.
  * Supports base64 blur placeholder for better loading experience.
  *
  * @param src - Image URL
@@ -33,23 +34,20 @@ export function ContentImage({
     placeholder = 'empty',
     blurhash,
 }: CoverImageProps) {
-    const srcString = typeof src === 'string' ? src : src.src;
-    const style = blurhash && placeholder === 'blur' ? {
-        backgroundImage: `url(${blurhash})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-    } : {};
+    // Use blurhash directly as blurDataURL if provided and placeholder is 'blur'
+    const imagePlaceholder = blurhash && placeholder === 'blur' ? 'blur' : placeholder;
+    const blurDataUrlProp = blurhash && placeholder === 'blur' ? {blurDataURL: blurhash} : {};
 
     return (
         <div className={`${styles.container} ${className || ''}`}>
-            <img
-                src={srcString}
+            <Image
+                src={src}
                 alt={alt}
                 width={width}
                 height={height}
+                placeholder={imagePlaceholder}
+                {...blurDataUrlProp}
                 className={styles.image}
-                style={style}
-                loading="lazy"
             />
         </div>
     );

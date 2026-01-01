@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/rss/media';
 import {getLineClampCSS} from '@/src/lib/textUtils';
@@ -44,13 +45,12 @@ export function AuthorCard({author, articleCount, podcastCount, className}: Auth
             {avatarUrl ? (
                 <div className={styles.avatarContainer}>
                     <Link href={authorUrl} aria-label={`Autorenprofil anzeigen: ${author.title ?? 'Autor'}`}>
-                        <img
+                        <Image
                             src={avatarUrl}
                             alt={author.title ?? 'Avatar'}
                             width={64}
                             height={64}
                             className={styles.avatar}
-                            loading="lazy"
                         />
                     </Link>
                 </div>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
@@ -46,13 +47,14 @@ export function PodcastCard({
         <article className={cardClasses}>
             <div className={styles.media}>
                 <Link href={podcastUrl} className={styles.mediaLink} aria-label={`Podcast-Cover anzeigen: ${podcast.base.title}`}>
-                    <img
-                        src={imageUrl ?? (typeof placeholderCover === 'string' ? placeholderCover : placeholderCover.src)}
+                    <Image
+                        src={imageUrl ?? placeholderCover}
                         alt={podcast.base.title}
                         width={optimizedMedia?.width ?? 400}
                         height={optimizedMedia?.height ?? 225}
                         className={styles.cover}
-                        loading="lazy"
+                        placeholder={blurhash ? 'blur' : 'empty'}
+                        blurDataURL={blurhash ?? undefined}
                     />
                 </Link>
             </div>
