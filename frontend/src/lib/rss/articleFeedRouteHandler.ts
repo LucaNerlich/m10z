@@ -1,4 +1,6 @@
 import qs from 'qs';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 import {generateArticleFeedXml, type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/rss/articlefeed';
 import {sha256Hex} from '@/src/lib/rss/xml';
@@ -24,6 +26,11 @@ const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
     : '';
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
+const FEED_REGENERATE_MS = Number(process.env.FEED_REGENERATE_MS ?? '') || 30 * 60_000;
+const FEED_CACHE_DIR = process.env.FEED_CACHE_DIR ?? path.join(process.cwd(), '.feed-cache');
+const ARTICLE_FEED_PATH = path.join(FEED_CACHE_DIR, 'rss.xml');
+const ARTICLE_FEED_META_PATH = path.join(FEED_CACHE_DIR, 'rss.meta.json');
+
 type CachedFeed = {
     xml: string;
     etag: string;
@@ -34,11 +41,60 @@ type CachedFeed = {
 
 let cachedFeed: CachedFeed | null = null;
 let inflight: Promise<CachedFeed> | null = null;
+let schedulerStarted = false;
 
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
     if (xff) return xff.split(',')[0]?.trim() || 'unknown';
     return request.headers.get('x-real-ip') ?? 'unknown';
+}
+
+async function ensureFeedDir() {
+    await fs.mkdir(FEED_CACHE_DIR, {recursive: true});
+}
+
+async function writeFeedToDisk(feed: CachedFeed) {
+    await ensureFeedDir();
+    await fs.writeFile(ARTICLE_FEED_PATH, feed.xml, 'utf8');
+    await fs.writeFile(
+        ARTICLE_FEED_META_PATH,
+        JSON.stringify(
+            {
+                etag: feed.etag,
+                builtAtMs: feed.builtAtMs,
+                lastModified: feed.lastModified ? feed.lastModified.toISOString() : null,
+                itemCount: feed.itemCount,
+            },
+            null,
+            2,
+        ),
+        'utf8',
+    );
+}
+
+async function readFeedFromDisk(): Promise<CachedFeed | null> {
+    try {
+        const [xml, metaRaw] = await Promise.all([
+            fs.readFile(ARTICLE_FEED_PATH, 'utf8'),
+            fs.readFile(ARTICLE_FEED_META_PATH, 'utf8'),
+        ]);
+        const meta = JSON.parse(metaRaw) as {
+            etag?: string;
+            builtAtMs?: number;
+            lastModified?: string | null;
+            itemCount?: number;
+        };
+        if (!meta.etag || !meta.builtAtMs) return null;
+        return {
+            xml,
+            etag: meta.etag,
+            builtAtMs: meta.builtAtMs,
+            lastModified: meta.lastModified ? new Date(meta.lastModified) : null,
+            itemCount: meta.itemCount ?? 0,
+        };
+    } catch {
+        return null;
+    }
 }
 
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
@@ -147,14 +203,7 @@ async function getCachedArticleFeed() {
     return {xml, etag, lastModified, itemCount: articles.length};
 }
 
-async function getOrBuildCachedFeed(): Promise<CachedFeed> {
-    const now = Date.now();
-    const ttlMs = 60_000;
-
-    if (cachedFeed && now - cachedFeed.builtAtMs < ttlMs) {
-        return cachedFeed;
-    }
-
+async function refreshFeed(): Promise<CachedFeed> {
     if (inflight) return inflight;
 
     inflight = (async () => {
@@ -170,6 +219,7 @@ async function getOrBuildCachedFeed(): Promise<CachedFeed> {
         };
         cachedFeed = next;
         inflight = null;
+        await writeFeedToDisk(next);
 
         if (durationMs >= 500) {
             recordDiagnosticEvent({
@@ -191,7 +241,20 @@ async function getOrBuildCachedFeed(): Promise<CachedFeed> {
     return inflight;
 }
 
+function ensureScheduler() {
+    if (schedulerStarted) return;
+    schedulerStarted = true;
+    void refreshFeed().catch(() => undefined);
+    const timer = setInterval(() => {
+        void refreshFeed().catch(() => undefined);
+    }, FEED_REGENERATE_MS);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (timer as any).unref?.();
+}
+
 export async function buildArticleFeedResponse(request: Request): Promise<Response> {
+    ensureScheduler();
+
     const ip = getClientIp(request);
     const rl = checkRateLimit(`feed:article:${ip}`, {windowMs: 60_000, max: 20});
     if (!rl.ok) {
@@ -214,31 +277,21 @@ export async function buildArticleFeedResponse(request: Request): Promise<Respon
     }
 
     try {
-        const startedAt = Date.now();
-        const {xml, etag, lastModified, itemCount} = await getOrBuildCachedFeed();
-        const durationMs = Date.now() - startedAt;
+        const now = Date.now();
+        const disk = await readFeedFromDisk();
+        const freshEnough = disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
+        const feed = disk && freshEnough ? disk : await refreshFeed();
 
         // Encourage clients to revalidate on every request; server-side fetch remains cached by tags.
         const headers = buildRssHeaders({
-            etag,
-            lastModified,
+            etag: feed.etag,
+            lastModified: feed.lastModified,
             cacheControl: 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate',
         });
-        const maybe304 = maybeReturn304(request, etag, headers);
+        const maybe304 = maybeReturn304(request, feed.etag, headers);
         if (maybe304) return maybe304;
 
-        if (durationMs >= 250) {
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'route',
-                name: 'feed.article.serve',
-                ok: true,
-                durationMs,
-                detail: {items: itemCount},
-            });
-        }
-
-        return new Response(process.env.NODE_ENV === 'production' ? xml : xml, {headers});
+        return new Response(feed.xml, {headers});
     } catch {
         const fallback = fallbackFeedXml({
             title: 'M10Z Artikel',

@@ -1,4 +1,6 @@
 import qs from 'qs';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 import {
     type AudioFeedConfig,
@@ -29,6 +31,11 @@ const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
     : '';
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
+const FEED_REGENERATE_MS = Number(process.env.FEED_REGENERATE_MS ?? '') || 30 * 60_000;
+const FEED_CACHE_DIR = process.env.FEED_CACHE_DIR ?? path.join(process.cwd(), '.feed-cache');
+const AUDIO_FEED_PATH = path.join(FEED_CACHE_DIR, 'audiofeed.xml');
+const AUDIO_FEED_META_PATH = path.join(FEED_CACHE_DIR, 'audiofeed.meta.json');
+
 type CachedFeed = {
     xml: string;
     etag: string;
@@ -39,11 +46,62 @@ type CachedFeed = {
 
 let cachedFeed: CachedFeed | null = null;
 let inflight: Promise<CachedFeed> | null = null;
+let schedulerStarted = false;
 
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
     if (xff) return xff.split(',')[0]?.trim() || 'unknown';
     return request.headers.get('x-real-ip') ?? 'unknown';
+}
+
+async function ensureFeedDir() {
+    await fs.mkdir(FEED_CACHE_DIR, {recursive: true});
+}
+
+async function writeFeedToDisk(feed: CachedFeed) {
+    await ensureFeedDir();
+    await fs.writeFile(AUDIO_FEED_PATH, feed.xml, 'utf8');
+    await fs.writeFile(
+        AUDIO_FEED_META_PATH,
+        JSON.stringify(
+            {
+                etag: feed.etag,
+                builtAtMs: feed.builtAtMs,
+                lastModified: feed.lastModified ? feed.lastModified.toISOString() : null,
+                episodeCount: feed.episodeCount,
+            },
+            null,
+            2,
+        ),
+        'utf8',
+    );
+}
+
+async function readFeedFromDisk(): Promise<CachedFeed | null> {
+    try {
+        const [xml, metaRaw] = await Promise.all([
+            fs.readFile(AUDIO_FEED_PATH, 'utf8'),
+            fs.readFile(AUDIO_FEED_META_PATH, 'utf8'),
+        ]);
+        const meta = JSON.parse(metaRaw) as {
+            etag?: string;
+            builtAtMs?: number;
+            lastModified?: string | null;
+            episodeCount?: number;
+        };
+
+        if (!meta.etag || !meta.builtAtMs) return null;
+
+        return {
+            xml,
+            etag: meta.etag,
+            builtAtMs: meta.builtAtMs,
+            lastModified: meta.lastModified ? new Date(meta.lastModified) : null,
+            episodeCount: meta.episodeCount ?? 0,
+        };
+    } catch {
+        return null;
+    }
 }
 
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
@@ -168,13 +226,9 @@ async function getCachedAudioFeed() {
     return {xml, etag, lastModified, episodeCount: episodes.length};
 }
 
-async function getOrBuildCachedFeed(): Promise<CachedFeed> {
+async function refreshFeed(): Promise<CachedFeed> {
     const now = Date.now();
-    const ttlMs = 60_000; // keep server-side rebuilds bounded even when clients hard-refresh
-
-    if (cachedFeed && now - cachedFeed.builtAtMs < ttlMs) {
-        return cachedFeed;
-    }
+    const ttlMs = FEED_REGENERATE_MS;
 
     if (inflight) {
         return inflight;
@@ -193,6 +247,8 @@ async function getOrBuildCachedFeed(): Promise<CachedFeed> {
         };
         cachedFeed = next;
         inflight = null;
+        // Best-effort persist so future requests can serve without rebuild.
+        await writeFeedToDisk(next);
 
         if (durationMs >= 500) {
             recordDiagnosticEvent({
@@ -214,7 +270,22 @@ async function getOrBuildCachedFeed(): Promise<CachedFeed> {
     return inflight;
 }
 
+function ensureScheduler() {
+    if (schedulerStarted) return;
+    schedulerStarted = true;
+    // Kick off an initial refresh in the background.
+    void refreshFeed().catch(() => undefined);
+    const timer = setInterval(() => {
+        void refreshFeed().catch(() => undefined);
+    }, FEED_REGENERATE_MS);
+    // Don't keep the process alive just for the timer.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (timer as any).unref?.();
+}
+
 export async function buildAudioFeedResponse(request: Request): Promise<Response> {
+    ensureScheduler();
+
     // Prevent self-DoS: feeds are attractive to spam and can be expensive to build.
     const ip = getClientIp(request);
     const rl = checkRateLimit(`feed:audio:${ip}`, {windowMs: 60_000, max: 20});
@@ -238,33 +309,23 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
     }
 
     try {
-        const startedAt = Date.now();
-        const {xml, etag, lastModified, episodeCount} = await getOrBuildCachedFeed();
-        const durationMs = Date.now() - startedAt;
+        // Prefer on-disk cached feed (fast, no rebuild). Fall back to refresh on cache miss/staleness.
+        const now = Date.now();
+        const disk = await readFeedFromDisk();
+        const freshEnough = disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
+        const feed = disk && freshEnough ? disk : await refreshFeed();
 
         // Encourage clients to revalidate on every request; server-side fetch remains cached by tags.
         const headers = buildRssHeaders({
-            etag,
-            lastModified,
+            etag: feed.etag,
+            lastModified: feed.lastModified,
             // Browsers may still hard-refresh, but shared caches (CDN/proxy) can absorb load.
             cacheControl: 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate',
         });
-        const maybe304 = maybeReturn304(request, etag, headers);
+        const maybe304 = maybeReturn304(request, feed.etag, headers);
         if (maybe304) return maybe304;
 
-        if (durationMs >= 250) {
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'route',
-                name: 'feed.audio.serve',
-                ok: true,
-                durationMs,
-                detail: {episodes: episodeCount},
-            });
-        }
-
-        // IMPORTANT: avoid xml-formatter in production; it is CPU-expensive and not needed for consumers.
-        return new Response(process.env.NODE_ENV === 'production' ? xml : xml, {headers});
+        return new Response(feed.xml, {headers});
     } catch (err) {
         const fallback = fallbackFeedXml({
             title: 'M10Z Podcasts',
