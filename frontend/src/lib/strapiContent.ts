@@ -53,6 +53,12 @@ export const populateCategoryBase = {
 type FetchOptions = {
     tags: string[];
     revalidate?: number;
+    timeout?: number;
+    context?: {
+        slug?: string;
+        contentType?: string;
+        populateOptions?: unknown;
+    };
 };
 
 export type PaginationMeta = {
@@ -79,20 +85,109 @@ type FetchPageOptions = {
     tags?: string[];
 };
 
+/**
+ * Fetches JSON from the Strapi API for the given path and query, applying a request timeout and structured error logging.
+ *
+ * @param pathWithQuery - API path and query string (resolved against the configured STRAPI_URL)
+ * @param options - Request options: cache `tags`, `revalidate` period, `timeout` in milliseconds, and optional `context` used for logging
+ * @returns The parsed response body typed as `T`
+ * @throws Error when the request times out, when a socket/connection error occurs, or when the HTTP response status is not OK
+ */
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
+    const timeout = options.timeout ?? 30000; // Default 30 seconds
     const url = new URL(pathWithQuery, STRAPI_URL);
-    const res = await fetch(url.toString(), {
-        next: {
-            tags: options.tags,
-            revalidate: options.revalidate,
-        },
-    });
-    if (!res.ok) {
-        throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
+    const urlString = url.toString();
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+    }, timeout);
+
+    try {
+        const res = await fetch(urlString, {
+            signal: controller.signal,
+            next: {
+                tags: options.tags,
+                revalidate: options.revalidate,
+            },
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!res.ok) {
+            throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
+        }
+
+        return (await res.json()) as T;
+    } catch (error: unknown) {
+        clearTimeout(timeoutId);
+
+        // Check if this is an abort error (timeout)
+        if (error instanceof Error && error.name === 'AbortError') {
+            const timeoutError = new Error(`Strapi request timed out after ${timeout}ms: ${urlString}`);
+            console.error(
+                JSON.stringify({
+                    error: 'Request timeout',
+                    errorCode: 'TIMEOUT',
+                    timeout: true,
+                    timeoutMs: timeout,
+                    url: urlString,
+                    context: options.context,
+                }),
+            );
+            throw timeoutError;
+        }
+
+        // Check for socket errors (UND_ERR_SOCKET from undici)
+        const err = error as Error & {
+            code?: string;
+            cause?: Error & {
+                code?: string;
+                bytesRead?: number;
+                bytesWritten?: number;
+                localAddress?: string;
+                remoteAddress?: string;
+            };
+        };
+
+        const errorCode = err.code || err.cause?.code;
+        const isSocketError = errorCode === 'UND_ERR_SOCKET' || errorCode === 'ECONNRESET' || errorCode === 'ECONNREFUSED';
+
+        if (isSocketError) {
+            const socketErrorInfo = {
+                error: err.message,
+                errorCode: errorCode || 'UNKNOWN_SOCKET_ERROR',
+                bytesRead: err.cause?.bytesRead,
+                bytesWritten: err.cause?.bytesWritten,
+                localAddress: err.cause?.localAddress,
+                remoteAddress: err.cause?.remoteAddress,
+                timeout: false,
+                url: urlString,
+                context: options.context,
+            };
+
+            console.error(JSON.stringify(socketErrorInfo));
+
+            throw new Error(`Strapi connection error (${errorCode}): ${err.message}`);
+        }
+
+        // Re-throw other errors as-is
+        throw error;
     }
-    return (await res.json()) as T;
 }
 
+/**
+ * Normalize pagination metadata into a consistent PaginationMeta object with sensible bounds.
+ *
+ * Ensures `page` is at least 1, clamps `pageSize` to an integer between 1 and 200 (or uses the fallback),
+ * ensures `total` is zero or greater, and derives `pageCount` either from the provided value (if positive)
+ * or by computing `ceil(total / pageSize)` with a minimum of 1.
+ *
+ * @param meta - Raw response metadata that may contain a partial `pagination` object
+ * @param fallbackPage - Page number to use when the raw page is missing or invalid
+ * @param fallbackPageSize - Page size to use when the raw pageSize is missing or invalid
+ * @returns A normalized PaginationMeta with `page`, `pageSize`, `total`, and `pageCount`
+ */
 function normalizePagination(
     meta: {pagination?: Partial<PaginationMeta>} | undefined,
     fallbackPage: number,
@@ -159,6 +254,16 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
         {
             tags: ['strapi:article', `strapi:article:${slug}`],
             revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+            context: {
+                slug,
+                contentType: 'article',
+                populateOptions: {
+                    base: populateBaseMedia,
+                    authors: populateAuthorAvatar,
+                    categories: populateCategoryBase,
+                    youtube: true,
+                },
+            },
         },
     );
     return res.data?.[0] ?? null;
@@ -193,6 +298,17 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
         {
             tags: ['strapi:podcast', `strapi:podcast:${slug}`],
             revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+            context: {
+                slug,
+                contentType: 'podcast',
+                populateOptions: {
+                    base: populateBaseMedia,
+                    authors: populateAuthorAvatar,
+                    categories: populateCategoryBase,
+                    youtube: {fields: ['title', 'url']},
+                    file: {populate: '*'},
+                },
+            },
         },
     );
     return res.data?.[0] ?? null;
@@ -347,6 +463,21 @@ export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryW
         {
             tags: ['strapi:category', `strapi:category:${slug}`],
             revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+            context: {
+                slug,
+                contentType: 'category',
+                populateOptions: {
+                    base: {
+                        populate: {
+                            cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                            banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        },
+                        fields: ['title', 'description', 'date'],
+                    },
+                    articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                    podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                },
+            },
         },
     );
     return res.data?.[0] ?? null;

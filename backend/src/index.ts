@@ -2,6 +2,7 @@ import {buildAndPersistSearchIndex} from './services/searchIndexBuilder';
 import {wordCountMiddleware} from './middlewares/wordCount';
 import {durationMiddleware} from './middlewares/duration';
 import {cacheInvalidationMiddleware} from './middlewares/cacheInvalidation';
+import {configureServerTimeouts} from '../config/server';
 
 export default {
     /**
@@ -9,6 +10,31 @@ export default {
      * the Next.js frontend after successful mutations.
      */
     register({strapi}: {strapi: any}) {
+        // Configure HTTP server timeouts to prevent premature socket closure
+        // during SSR requests. The server may not be initialized immediately,
+        // so we use a timeout to retry if needed.
+        const MAX_RETRIES = process.env.STRAPI_SERVER_CONFIG_MAX_RETRIES
+            ? parseInt(process.env.STRAPI_SERVER_CONFIG_MAX_RETRIES, 10)
+            : 50; // Default: 50 retries * 100ms = 5 seconds total
+        let retryCount = 0;
+
+        const configureServer = () => {
+            if (strapi.server?.httpServer) {
+                configureServerTimeouts(strapi.server.httpServer);
+                strapi.log.info('HTTP server timeouts configured (keepAlive: 65s, headers: 66s, request: 120s)');
+            } else {
+                retryCount++;
+                if (retryCount >= MAX_RETRIES) {
+                    strapi.log.error(
+                        `Failed to configure HTTP server timeouts: server never became ready after ${MAX_RETRIES} attempts (${MAX_RETRIES * 100}ms). Server timeouts may not be configured correctly.`,
+                    );
+                    return;
+                }
+                // Retry after a short delay if server isn't ready yet
+                setTimeout(configureServer, 100);
+            }
+        };
+        configureServer();
         // Extend upload file schema with blurhash attribute (stores base64 data URL)
         if (strapi.plugin('upload')?.contentTypes?.file?.attributes) {
             strapi.plugin('upload').contentTypes.file.attributes.blurhash = {
@@ -98,6 +124,84 @@ export default {
         } catch (err) {
             // eslint-disable-next-line no-console
             console.warn('Search index bootstrap failed (will rebuild on next publish)', err);
+        }
+
+        // Set up database connection pool monitoring
+        try {
+            const db = strapi.db;
+            const connection = db.connection;
+            const client = connection?.client;
+
+            if (client?.pool) {
+                const pool = client.pool;
+
+                // Helper function to get pool metrics
+                const getPoolMetrics = () => {
+                    const numUsed = pool.numUsed();
+                    const numFree = pool.numFree();
+                    const numPendingAcquires = pool.numPendingAcquires();
+                    return {
+                        active: numUsed,
+                        idle: numFree,
+                        waiting: numPendingAcquires,
+                        total: numUsed + numFree,
+                    };
+                };
+
+                // Event handler for successful connection acquisition
+                pool.on('acquireSuccess', () => {
+                    const metrics = getPoolMetrics();
+                    strapi.log.debug('Database connection acquired', metrics);
+                });
+
+                // Event handler for failed connection acquisition
+                pool.on('acquireFail', (err: Error) => {
+                    const metrics = getPoolMetrics();
+                    strapi.log.error('Database connection acquisition failed', {
+                        error: err.message,
+                        ...metrics,
+                    });
+                });
+
+                // Event handler for connection destruction
+                pool.on('destroySuccess', () => {
+                    const metrics = getPoolMetrics();
+                    strapi.log.debug('Database connection destroyed', metrics);
+                });
+
+                strapi.log.info('Database pool monitoring enabled');
+
+                // Periodic pool health logging in development
+                if (process.env.NODE_ENV === 'development') {
+                    const healthInterval = setInterval(() => {
+                        const metrics = getPoolMetrics();
+                        strapi.log.info('Database pool health', metrics);
+
+                        // Metric interpretation:
+                        // - High 'waiting' count indicates pool exhaustion - consider increasing max
+                        // - 'active' + 'idle' should not exceed 'max' (25)
+                        // - Monitor for connection leaks (idle connections not being released)
+                        if (metrics.waiting > 0) {
+                            strapi.log.warn('Database pool has waiting requests - consider increasing pool size', metrics);
+                        }
+                        if (metrics.total > 25) {
+                            strapi.log.warn('Database pool exceeds max connections - potential connection leak', metrics);
+                        }
+                    }, 60000); // Every 60 seconds
+
+                    // Clear interval on application shutdown
+                    process.on('SIGTERM', () => {
+                        clearInterval(healthInterval);
+                    });
+                    process.on('SIGINT', () => {
+                        clearInterval(healthInterval);
+                    });
+                }
+            } else {
+                strapi.log.warn('Database pool not available for monitoring');
+            }
+        } catch (err) {
+            strapi.log.warn('Failed to set up database pool monitoring', err);
         }
     },
 };

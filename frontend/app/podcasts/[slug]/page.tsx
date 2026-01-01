@@ -8,6 +8,7 @@ import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
+import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -30,39 +31,52 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};
 
-    const episode = await fetchPodcastBySlug(slug);
-    if (!episode) return {};
+    try {
+        const episode = await fetchPodcastBySlug(slug);
+        if (!episode) return {};
 
-    const title = episode.base.title;
-    const description = episode.base.description || undefined;
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
-    const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
+        const title = episode.base.title;
+        const description = episode.base.description || undefined;
+        const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
+        const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
+        const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
 
-    const openGraph: Metadata['openGraph'] = {
-        type: 'article',
-        locale: OG_LOCALE,
-        siteName: OG_SITE_NAME,
-        url: absoluteRoute(`/podcasts/${slug}`),
-        title,
-        description,
-        images: coverImage,
-    };
-
-    return {
-        title,
-        description,
-        alternates: {
-            canonical: absoluteRoute(`/podcasts/${slug}`),
-        },
-        openGraph,
-        twitter: {
-            card: 'summary_large_image',
+        const openGraph: Metadata['openGraph'] = {
+            type: 'article',
+            locale: OG_LOCALE,
+            siteName: OG_SITE_NAME,
+            url: absoluteRoute(`/podcasts/${slug}`),
             title,
             description,
             images: coverImage,
-        },
-    };
+        };
+
+        return {
+            title,
+            description,
+            alternates: {
+                canonical: absoluteRoute(`/podcasts/${slug}`),
+            },
+            openGraph,
+            twitter: {
+                card: 'summary_large_image',
+                title,
+                description,
+                images: coverImage,
+            },
+        };
+    } catch (error) {
+        // Log error but return empty metadata to allow page to render with defaults
+        const errorMessage = getErrorMessage(error);
+
+        if (isTimeoutOrSocketError(error)) {
+            console.error(`Socket/timeout error fetching podcast metadata for slug "${slug}":`, errorMessage);
+        } else {
+            console.error(`Error fetching podcast metadata for slug "${slug}":`, errorMessage);
+        }
+
+        return {};
+    }
 }
 
 /**
@@ -76,8 +90,27 @@ export default async function PodcastDetailPage({params}: PageProps) {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
-    const episode = await fetchPodcastBySlug(slug);
-    if (!episode) return notFound();
+    try {
+        const episode = await fetchPodcastBySlug(slug);
+        if (!episode) return notFound();
 
-    return <PodcastDetail slug={slug} podcast={episode} />;
+        return <PodcastDetail slug={slug} podcast={episode} />;
+    } catch (error) {
+        const errorMessage = getErrorMessage(error);
+
+        if (isTimeoutOrSocketError(error)) {
+            console.error(`Socket/timeout error fetching podcast for slug "${slug}":`, errorMessage);
+            // Return 404 for socket/timeout errors to trigger fallback behavior
+            return notFound();
+        }
+
+        // Check if it's a 404 error
+        if (errorMessage.includes('404') || errorMessage.includes('not found')) {
+            return notFound();
+        }
+
+        // Log other errors and return 404
+        console.error(`Error fetching podcast for slug "${slug}":`, errorMessage);
+        return notFound();
+    }
 }
