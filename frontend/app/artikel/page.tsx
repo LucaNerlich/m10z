@@ -1,6 +1,8 @@
 import {type Metadata} from 'next';
+import {Suspense} from 'react';
 
 import {ArticleListPage} from '@/src/components/ArticleListPage';
+import {ArticleListSkeleton} from '@/src/components/ArticleListSkeleton';
 import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 
@@ -28,8 +30,14 @@ export const metadata: Metadata = {
 /**
  * Renders the article listing page for the /artikel route.
  *
+ * Wraps the ArticleListPage component in a Suspense boundary and provides a skeleton fallback.
+ *
  * @returns The JSX element that displays the article list page.
  */
 export default function ArticlePage() {
-    return <ArticleListPage />;
+    return (
+        <Suspense fallback={<ArticleListSkeleton />}>
+            <ArticleListPage />
+        </Suspense>
+    );
 }

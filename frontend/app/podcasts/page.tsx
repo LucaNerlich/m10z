@@ -1,6 +1,8 @@
 import {type Metadata} from 'next';
+import {Suspense} from 'react';
 
 import {PodcastListPage} from '@/src/components/PodcastListPage';
+import {PodcastListSkeleton} from '@/src/components/PodcastListSkeleton';
 import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 
@@ -28,8 +30,14 @@ export const metadata: Metadata = {
 /**
  * Render the podcasts listing page.
  *
+ * Wraps the PodcastListPage component in a Suspense boundary and provides a skeleton fallback.
+ *
  * @returns The JSX element that renders the podcast list.
  */
 export default function PodcastsPage() {
-    return <PodcastListPage />;
+    return (
+        <Suspense fallback={<PodcastListSkeleton />}>
+            <PodcastListPage />
+        </Suspense>
+    );
 }
