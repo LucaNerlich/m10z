@@ -24,6 +24,25 @@ function escapeHtml(s) {
     .replace(/'/g, '&#39;');
 }
 
+function parseSubmetricKey(key) {
+  const brace = key.indexOf('{');
+  if (brace === -1 || !key.endsWith('}')) return null;
+  const base = key.slice(0, brace);
+  const inside = key.slice(brace + 1, -1);
+  const tags = {};
+  for (const part of inside.split(',')) {
+    const [k, v] = part.split(':');
+    if (!k || v == null) continue;
+    tags[k.trim()] = v.trim();
+  }
+  return {base, tags};
+}
+
+function getCounterCount(metric) {
+  // Counter in summary-export commonly: {count, rate} or {values: {count}}
+  return metric?.values?.count ?? metric?.count ?? null;
+}
+
 function getMetric(metrics, name) {
   return metrics?.[name] ?? null;
 }
@@ -72,6 +91,42 @@ const vusMax = getMetric(metrics, 'vus_max')?.values?.value ?? getMetric(metrics
 const iterations = getMetric(metrics, 'iterations')?.values?.count ?? getMetric(metrics, 'iterations')?.count ?? null;
 const approxFailedReqs =
   httpReqFailed.rate != null && httpReqs != null ? Math.round(Number(httpReqFailed.rate) * Number(httpReqs)) : null;
+
+// Failure reasons (explicit counters show up in summary-export reliably)
+const statusCounters = [
+  {key: 'm10z_http_4xx', label: '4xx total'},
+  {key: 'm10z_http_429', label: '429 Too Many Requests'},
+  {key: 'm10z_http_5xx', label: '5xx total'},
+  {key: 'm10z_http_500', label: '500 Internal Server Error'},
+  {key: 'm10z_http_502', label: '502 Bad Gateway'},
+  {key: 'm10z_http_503', label: '503 Service Unavailable'},
+];
+
+const statusCounterRows = statusCounters
+  .map((c) => ({...c, count: getCounterCount(getMetric(metrics, c.key))}))
+  .filter((r) => r.count != null)
+  .map((r) => ({...r, count: Number(r.count)}));
+
+const total4xx = statusCounterRows.find((r) => r.key === 'm10z_http_4xx')?.count ?? null;
+const total5xx = statusCounterRows.find((r) => r.key === 'm10z_http_5xx')?.count ?? null;
+const approxNon2xx3xx = (total4xx != null || total5xx != null) ? (Number(total4xx ?? 0) + Number(total5xx ?? 0)) : null;
+const approxNon2xx3xxRate = (approxNon2xx3xx != null && httpReqs != null) ? (Number(approxNon2xx3xx) / Number(httpReqs)) : null;
+
+// Failures by endpoint name (from explicit counters)
+const failByNameCounters = [
+  {key: 'm10z_fail_home', label: 'home'},
+  {key: 'm10z_fail_articles', label: 'articles'},
+  {key: 'm10z_fail_podcasts', label: 'podcasts'},
+  {key: 'm10z_fail_api_contentfeed', label: 'api_contentfeed'},
+  {key: 'm10z_fail_api_search', label: 'api_search'},
+  {key: 'm10z_fail_audiofeed_xml', label: 'audiofeed_xml'},
+];
+
+const failByNameRows = failByNameCounters
+  .map((c) => ({...c, count: getCounterCount(getMetric(metrics, c.key))}))
+  .filter((r) => r.count != null && Number(r.count) > 0)
+  .map((r) => ({...r, count: Number(r.count)}))
+  .sort((a, b) => b.count - a.count);
 
 const title = `k6 Report: ${escapeHtml(inputPath)}`;
 
@@ -130,6 +185,37 @@ const html = `<!doctype html>
           <tr><td>p99</td><td><code>${fmtMs(httpReqDuration.p99)}</code></td></tr>
           <tr><td>max</td><td><code>${fmtMs(httpReqDuration.max)}</code></td></tr>
         </table>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 8px">HTTP status breakdown</h2>
+        ${
+          statusCounterRows.length === 0
+            ? `<div class="muted">No status counters found. Re-run the test after updating the scripts.</div>`
+            : `
+              <div class="muted">What caused failed requests (approx): <code>${approxNon2xx3xxRate != null ? (approxNon2xx3xxRate * 100).toFixed(2) + '%' : 'n/a'}</code></div>
+              <table>
+                ${statusCounterRows
+                  .filter((r) => r.count > 0)
+                  .map((r) => `<tr><td>${escapeHtml(r.label)}</td><td><code>${fmtNum(r.count)}</code></td></tr>`)
+                  .join('') || '<tr><td colspan="2"><span class="muted">No 4xx/5xx responses recorded.</span></td></tr>'}
+              </table>
+            `
+        }
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 8px">Failures by endpoint</h2>
+        ${
+          failByNameRows.length === 0
+            ? `<div class="muted">No endpoint failures recorded (no 4xx/5xx).</div>`
+            : `
+              <div class="muted">Where failures happened (based on our request <code>name</code> tags).</div>
+              <table>
+                ${failByNameRows.map((r) => `<tr><td>${escapeHtml(r.label)}</td><td><code>${fmtNum(r.count)}</code></td></tr>`).join('')}
+              </table>
+            `
+        }
       </div>
 
       <div class="card">
