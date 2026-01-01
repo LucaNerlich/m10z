@@ -13,6 +13,7 @@ export type StrapiFetchArgs = {
     token?: string | undefined;
     tags: string[];
     revalidate?: number;
+    timeoutMs?: number;
 };
 
 export async function fetchStrapiJson<T>({
@@ -21,24 +22,38 @@ export async function fetchStrapiJson<T>({
                                              token,
                                              tags,
                                              revalidate,
+                                             timeoutMs,
                                          }: StrapiFetchArgs): Promise<T> {
     const url = new URL(apiPathWithQuery, strapiBaseUrl);
 
     const headers = new Headers();
     if (token) headers.set('Authorization', `Bearer ${token}`);
-    const res = await fetch(url, {
-        headers,
-        next: {
-            tags,
-            revalidate,
-        },
-    });
+    const controller = new AbortController();
+    const timeout = timeoutMs ?? 30_000;
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    try {
+        const res = await fetch(url, {
+            headers,
+            signal: controller.signal,
+            next: {
+                tags,
+                revalidate,
+            },
+        });
 
-    if (!res.ok) {
-        throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
+        if (!res.ok) {
+            throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
+        }
+
+        return (await res.json()) as T;
+    } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+            throw new Error(`Strapi request timed out after ${timeout}ms: ${url.toString()}`);
+        }
+        throw err;
+    } finally {
+        clearTimeout(timeoutId);
     }
-
-    return (await res.json()) as T;
 }
 
 export function normalizeBaseUrl(raw: string): string {

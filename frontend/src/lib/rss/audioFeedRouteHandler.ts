@@ -11,7 +11,6 @@ import {
     buildRssHeaders,
     fallbackFeedXml,
     fetchStrapiJson as fetchStrapiJsonCore,
-    formatXml,
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
@@ -21,12 +20,31 @@ import {
     populateCategoryBase,
     MEDIA_FIELDS,
 } from '@/src/lib/strapiContent';
+import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
     ? process.env.NEXT_PUBLIC_STRAPI_URL.replace(/\/+$/, '')
     : '';
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
+
+type CachedFeed = {
+    xml: string;
+    etag: string;
+    lastModified: Date | null | undefined;
+    builtAtMs: number;
+    episodeCount: number;
+};
+
+let cachedFeed: CachedFeed | null = null;
+let inflight: Promise<CachedFeed> | null = null;
+
+function getClientIp(request: Request): string {
+    const xff = request.headers.get('x-forwarded-for');
+    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
+    return request.headers.get('x-real-ip') ?? 'unknown';
+}
 
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
     if (!STRAPI_URL) throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
@@ -36,6 +54,7 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
         token: STRAPI_TOKEN,
         tags: ['feed:audio', 'strapi:podcast', 'strapi:audio-feed'],
         revalidate: CACHE_REVALIDATE_DEFAULT,
+        timeoutMs: 30_000,
     });
 }
 
@@ -47,10 +66,12 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
  * @returns An array of `StrapiPodcast` objects retrieved from Strapi (empty array if none).
  */
 async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
+    const maxPages = 50; // safety: prevents runaway loops if pagination gets weird
+    const maxItems = Number(process.env.FEED_AUDIO_MAX_ITEMS ?? '') || 1000; // configurable; default 1000
     const pageSize = 100;
     let page = 1;
     const all: StrapiPodcast[] = [];
-    while (true) {
+    while (page <= maxPages && all.length < maxItems) {
         const query = qs.stringify(
             {
                 sort: ['publishedAt:desc'],
@@ -75,7 +96,10 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
         }>(`/api/podcasts?${query}`);
 
         const items = Array.isArray(res.data) ? (res.data as StrapiPodcast[]) : [];
-        all.push(...items);
+        const remaining = Math.max(0, maxItems - all.length);
+        if (remaining > 0) {
+            all.push(...items.slice(0, remaining));
+        }
 
         const pagination = res.meta?.pagination;
         const done =
@@ -141,23 +165,106 @@ async function getCachedAudioFeed() {
     // Strong-ish ETag tied to latest publish + count (same across instances).
     // Include XML content to ensure content-only changes update the ETag.
     const etag = `"${sha256Hex(`${etagSeed}:${sha256Hex(xml)}`)}"`;
-    return {xml, etag, lastModified};
+    return {xml, etag, lastModified, episodeCount: episodes.length};
+}
+
+async function getOrBuildCachedFeed(): Promise<CachedFeed> {
+    const now = Date.now();
+    const ttlMs = 60_000; // keep server-side rebuilds bounded even when clients hard-refresh
+
+    if (cachedFeed && now - cachedFeed.builtAtMs < ttlMs) {
+        return cachedFeed;
+    }
+
+    if (inflight) {
+        return inflight;
+    }
+
+    inflight = (async () => {
+        const startedAt = Date.now();
+        const built = await getCachedAudioFeed();
+        const durationMs = Date.now() - startedAt;
+        const next: CachedFeed = {
+            xml: built.xml,
+            etag: built.etag,
+            lastModified: built.lastModified,
+            builtAtMs: Date.now(),
+            episodeCount: built.episodeCount,
+        };
+        cachedFeed = next;
+        inflight = null;
+
+        if (durationMs >= 500) {
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'route',
+                name: 'feed.audio.build',
+                ok: true,
+                durationMs,
+                detail: {episodes: built.episodeCount},
+            });
+        }
+
+        return next;
+    })().catch((err) => {
+        inflight = null;
+        throw err;
+    });
+
+    return inflight;
 }
 
 export async function buildAudioFeedResponse(request: Request): Promise<Response> {
+    // Prevent self-DoS: feeds are attractive to spam and can be expensive to build.
+    const ip = getClientIp(request);
+    const rl = checkRateLimit(`feed:audio:${ip}`, {windowMs: 60_000, max: 20});
+    if (!rl.ok) {
+        const headers = buildRssHeaders({
+            cacheControl: 'no-store',
+        });
+        headers.set('Retry-After', String(rl.retryAfterSeconds));
+        recordDiagnosticEvent({
+            ts: Date.now(),
+            kind: 'route',
+            name: 'feed.audio.rate_limit',
+            ok: false,
+            durationMs: 0,
+            detail: {retryAfterSeconds: rl.retryAfterSeconds},
+        });
+        return new Response('Too Many Requests', {
+            status: 429,
+            headers,
+        });
+    }
+
     try {
-        const {xml, etag, lastModified} = await getCachedAudioFeed();
-        const prettyXml = formatXml(xml);
+        const startedAt = Date.now();
+        const {xml, etag, lastModified, episodeCount} = await getOrBuildCachedFeed();
+        const durationMs = Date.now() - startedAt;
 
         // Encourage clients to revalidate on every request; server-side fetch remains cached by tags.
         const headers = buildRssHeaders({
             etag,
             lastModified,
+            // Browsers may still hard-refresh, but shared caches (CDN/proxy) can absorb load.
+            cacheControl: 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate',
         });
         const maybe304 = maybeReturn304(request, etag, headers);
         if (maybe304) return maybe304;
 
-        return new Response(prettyXml, {headers});
+        if (durationMs >= 250) {
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'route',
+                name: 'feed.audio.serve',
+                ok: true,
+                durationMs,
+                detail: {episodes: episodeCount},
+            });
+        }
+
+        // IMPORTANT: avoid xml-formatter in production; it is CPU-expensive and not needed for consumers.
+        return new Response(process.env.NODE_ENV === 'production' ? xml : xml, {headers});
     } catch (err) {
         const fallback = fallbackFeedXml({
             title: 'M10Z Podcasts',
@@ -166,9 +273,19 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
             description: 'Feed temporarily unavailable',
         });
 
-        return new Response(formatXml(fallback), {
+        recordDiagnosticEvent({
+            ts: Date.now(),
+            kind: 'route',
+            name: 'feed.audio.serve',
+            ok: false,
+            durationMs: 0,
+        });
+
+        return new Response(fallback, {
             status: 503,
-            headers: buildRssHeaders({}),
+            headers: buildRssHeaders({
+                cacheControl: 'no-store',
+            }),
         });
     }
 }
