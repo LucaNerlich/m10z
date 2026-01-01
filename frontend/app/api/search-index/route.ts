@@ -308,6 +308,10 @@ export async function GET(request: Request) {
         if (trimmedQuery.length === 0) {
             return NextResponse.json({results: [], total: 0});
         }
+        // Fuse is configured with minMatchCharLength: 2; avoid expensive work for 1-char queries.
+        if (trimmedQuery.length < 2) {
+            return NextResponse.json({results: [], total: 0, query: trimmedQuery});
+        }
         if (trimmedQuery.length > 200) {
             return NextResponse.json({error: 'Query too long'}, {status: 400});
         }

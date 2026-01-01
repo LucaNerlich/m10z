@@ -124,7 +124,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
         const body = (await res.json()) as T;
 
         const durationMs = Date.now() - startedAt;
-        if (durationMs >= 1500) {
+        if (durationMs >= 800) {
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',

@@ -45,7 +45,8 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
     }, [query, debounceMs]);
 
     // Use SWR with conditional key - only fetch when debouncedQuery length > 0
-    const shouldFetch = debouncedQuery.length > 0;
+    // Match Fuse config (minMatchCharLength: 2) and avoid hammering the server for 1-char queries.
+    const shouldFetch = debouncedQuery.length >= 2;
     const swrKey = shouldFetch ? `${SEARCH_INDEX_URL}?q=${encodeURIComponent(debouncedQuery)}` : null;
 
     const {data, error, isLoading, isValidating} = useSWR<SearchQueryResponse>(
