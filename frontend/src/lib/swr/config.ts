@@ -45,9 +45,13 @@ export const swrConfig: SWRConfiguration = {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
     dedupingInterval: 2000,
-    errorRetryCount: 3,
-    errorRetryInterval: 5000,
-    shouldRetryOnError: true,
+    errorRetryCount: 1,
+    errorRetryInterval: 3000,
+    shouldRetryOnError: (error) => {
+        // Don't retry on timeout/socket errors
+        const message = error?.message?.toLowerCase() || '';
+        return !(message.includes('timeout') || message.includes('socket'));
+    },
     onError: (error) => {
         // Log errors for debugging, but don't expose sensitive information
         console.error('[SWR] Request failed:', error instanceof Error ? error.message : 'Unknown error');

@@ -12,8 +12,6 @@ import {
     populateAuthorAvatar,
     populateCategoryBase,
 } from '@/src/lib/strapiContent';
-import {getEffectiveDate, sortByDateDesc, toDateTimestamp} from '@/src/lib/effectiveDate';
-import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/+$/, '');
 
@@ -296,125 +294,22 @@ type ContentFeedResult = {
 };
 
 /**
- * Fetches articles and podcasts in parallel, merges them by published date, and returns the requested page of the combined feed.
+ * Fetches a merged feed of articles and podcasts from the server-side API route.
  *
- * Computes minimal per-source fetches to satisfy the requested pagination (only fetches what's needed
- * from each source until the combined page can be satisfied, capped at 200 items per source).
- *
- * Due to the 200-item cap per source, deep pagination may return incomplete pages. The function
- * enforces a safe maxPage and warns when the requested page exceeds it.
- *
- * TODO: Replace this client-side merge approach with a server-side merged pagination endpoint for
- * production usage to support deep paging beyond the 200-item cap and improve efficiency.
+ * The server-side endpoint handles merging, sorting, and pagination, eliminating
+ * expensive client-side operations and reducing data transfer.
  *
  * @param page - 1-based page number to return
- * @param pageSize - Number of items per page
- * @returns An object with `data` (the merged, paginated feed or `undefined` if no source returned data), `error` (first encountered fetch error or `undefined`), `isLoading`, and `isValidating`
+ * @param pageSize - Number of items per page (default: 10, max: 100)
+ * @returns An object with `data` (the merged, paginated feed or `undefined` if loading), `error` (fetch error or `undefined`), `isLoading`, and `isValidating`
  */
 export function useContentFeed(page: number = 1, pageSize: number = 10) {
     // Normalize inputs
     const normalizedPage = Math.max(1, Math.floor(page));
-    const normalizedPageSize = Math.max(1, Math.floor(pageSize));
+    const normalizedPageSize = Math.max(1, Math.min(100, Math.floor(pageSize)));
 
-    // Calculate safe maximum page based on 200-item cap per source
-    // We need at least (page - 1) * pageSize + pageSize items from each source in worst case
-    // So: maxPage * pageSize <= 200, therefore maxPage = floor(200 / pageSize)
-    const MAX_ITEMS_PER_SOURCE = 200;
-    const maxPage = Math.floor(MAX_ITEMS_PER_SOURCE / normalizedPageSize);
-
-    // Warn if requested page exceeds safe maximum
-    if (normalizedPage > maxPage) {
-        const warningMessage = `useContentFeed: Requested page ${normalizedPage} exceeds safe maximum page ${maxPage} (based on ${MAX_ITEMS_PER_SOURCE}-item cap per source). Results may be incomplete. Consider using a server-side merged pagination endpoint for deep paging.`;
-        if (typeof console !== 'undefined' && console.warn) {
-            console.warn(warningMessage);
-        }
-    }
-
-    // Compute minimal per-source fetch count
-    // To guarantee we can fill the requested page, we need at least:
-    // offset + pageSize items from each source (worst case: all items come from one source)
-    // Capped at MAX_ITEMS_PER_SOURCE to respect API limits
-    const offset = (normalizedPage - 1) * normalizedPageSize;
-    const fetchCount = Math.min(offset + normalizedPageSize, MAX_ITEMS_PER_SOURCE);
-
-    const articlesResult = useArticlesList(1, fetchCount);
-    const podcastsResult = usePodcastsList(1, fetchCount);
-
-    // Determine loading state
-    const isLoading = articlesResult.isLoading || podcastsResult.isLoading;
-    const isValidating = articlesResult.isValidating || podcastsResult.isValidating;
-
-    // Handle errors - allow partial data if one fetch succeeds
-    const error = articlesResult.error || podcastsResult.error;
-
-    // Process data if available
-    let data: ContentFeedResult | undefined = undefined;
-
-    if (articlesResult.data || podcastsResult.data) {
-        const articles = articlesResult.data?.items ?? [];
-        const podcasts = podcastsResult.data?.items ?? [];
-
-        // Sort each list by date
-        const sortedArticles = sortByDateDesc(articles);
-        const sortedPodcasts = sortByDateDesc(podcasts);
-
-        // Map to feed items
-        const articleItems: FeedItem[] = sortedArticles.map((article) => {
-            const effectiveDescription = article.base.description || article.categories?.[0]?.base?.description;
-            return {
-                type: 'article',
-                slug: article.slug,
-                title: article.base.title,
-                description: effectiveDescription,
-                publishedAt: getEffectiveDate(article),
-                cover: getOptimalMediaFormat(pickCoverMedia(article.base, article.categories), 'medium'),
-                banner: getOptimalMediaFormat(pickBannerMedia(article.base, article.categories), 'medium'),
-                wordCount: article.wordCount ?? null,
-                href: `/artikel/${article.slug}`,
-            };
-        });
-
-        const podcastItems: FeedItem[] = sortedPodcasts.map((podcast) => {
-            const effectiveDescription = podcast.base.description || podcast.categories?.[0]?.base?.description;
-            return {
-                type: 'podcast',
-                slug: podcast.slug,
-                title: podcast.base.title,
-                description: effectiveDescription,
-                publishedAt: getEffectiveDate(podcast),
-                cover: getOptimalMediaFormat(pickCoverMedia(podcast.base, podcast.categories), 'medium'),
-                banner: getOptimalMediaFormat(pickBannerMedia(podcast.base, podcast.categories), 'medium'),
-                wordCount: podcast.wordCount ?? null,
-                duration: podcast.duration ?? null,
-                href: `/podcasts/${podcast.slug}`,
-            };
-        });
-
-        // Combine and sort by publishedAt
-        const allItems = [...articleItems, ...podcastItems].sort((a, b) => {
-            const ad = toDateTimestamp(a.publishedAt) ?? 0;
-            const bd = toDateTimestamp(b.publishedAt) ?? 0;
-            return bd - ad;
-        });
-
-        // Calculate pagination
-        const combinedTotal = allItems.length;
-        const paginatedItems = allItems.slice(offset, offset + normalizedPageSize);
-        // Calculate actual maxPage based on available data (may be limited by fetch cap)
-        const actualMaxPage = Math.max(1, Math.ceil(combinedTotal / normalizedPageSize));
-        const hasNextPage = normalizedPage < actualMaxPage;
-
-        data = {
-            items: paginatedItems,
-            pagination: {
-                page: normalizedPage,
-                pageSize: normalizedPageSize,
-                total: combinedTotal,
-                pageCount: actualMaxPage,
-            },
-            hasNextPage,
-        };
-    }
+    const url = `/api/contentfeed?page=${normalizedPage}&pageSize=${normalizedPageSize}`;
+    const {data, error, isLoading, isValidating} = useSWR<ContentFeedResult>(url, fetcher);
 
     return {
         data,

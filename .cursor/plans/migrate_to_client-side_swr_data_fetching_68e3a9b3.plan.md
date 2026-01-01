@@ -295,4 +295,3 @@ graph TB
 - Verify SWR hooks handle loading, error, and success states correctly
 - Test pagination on homepage and list pages
 - Verify detail pages receive initialData and handle navigation correctly
-- Ensure metadata generation still works for SEO
