@@ -1,6 +1,3 @@
-'use client';
-
-import {useArticle} from '@/src/hooks/useStrapiContent';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
@@ -8,10 +5,8 @@ import {calculateReadingTime} from '@/src/lib/readingTime';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
-import {MarkdownClient} from '@/src/components/MarkdownClient';
+import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
-import {LoadingPlaceholder} from '@/src/components/LoadingPlaceholder';
-import {ErrorCardWithRetry} from '@/src/components/ErrorCardWithRetry';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/artikel/[slug]/page.module.css';
@@ -22,36 +17,18 @@ type ArticleDetailProps = {
 };
 
 /**
- * Render an article detail page with image, metadata, content, and structured data.
+ * Render the article detail view using the provided article data.
  *
- * @param slug - The article slug used to fetch article data
- * @param initialArticle - Optional initial server-side article data used to hydrate the client fetch
- * @returns The article detail element including loading and error states
+ * Renders the article element with an optimized or fallback image, content metadata (published date, reading time, authors, categories),
+ * the article title and optional description, the rendered Markdown content, an optional YouTube section, and embedded JSON-LD.
+ *
+ * @param slug - The article slug
+ * @param article - Server-provided article data to render; if `null` or `undefined`, the component returns `null`
+ * @returns The article element populated with image, metadata, content, and structured JSON-LD, or `null` if `article` is missing
  */
 export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProps) {
-    const {data: article, error, isLoading} = useArticle(slug, initialArticle);
-
-    // Show loading state only if we don't have initial data
-    if (isLoading && !article) {
-        return (
-            <article className={styles.article}>
-                <LoadingPlaceholder
-                    isLoading={isLoading}
-                    hasData={!!article}
-                    message="Lade Artikel..."
-                />
-            </article>
-        );
-    }
-
-    // Handle errors
-    if (error || !article) {
-        return (
-            <article className={styles.article}>
-                <ErrorCardWithRetry message="Fehler beim Laden des Artikels." />
-            </article>
-        );
-    }
+    const article = initialArticle;
+    if (!article) return null;
 
     const published = getEffectiveDate(article);
     const readingTime = calculateReadingTime(article.content ?? '');
@@ -102,7 +79,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                 ) : null}
             </Section>
 
-            <MarkdownClient markdown={article.content ?? ''} />
+            <Markdown markdown={article.content ?? ''} />
 
             {article.youtube && article.youtube.length > 0 && <YoutubeSection youtube={article.youtube} />}
         </article>

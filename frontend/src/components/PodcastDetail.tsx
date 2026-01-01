@@ -1,6 +1,3 @@
-'use client';
-
-import {usePodcast} from '@/src/hooks/useStrapiContent';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {
@@ -12,10 +9,8 @@ import {
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
-import {MarkdownClient} from '@/src/components/MarkdownClient';
+import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
-import {LoadingPlaceholder} from '@/src/components/LoadingPlaceholder';
-import {ErrorCardWithRetry} from '@/src/components/ErrorCardWithRetry';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
 import placeholderCover from '@/public/images/m10z.jpg';
@@ -27,36 +22,15 @@ type PodcastDetailProps = {
 };
 
 /**
- * Renders a podcast episode detail view including image, metadata, audio player, shownotes, and an optional YouTube section.
+ * Render a podcast episode detail view including image, metadata, audio player, shownotes, and an optional YouTube section.
  *
- * Embeds episode JSON-LD for SEO and displays appropriate loading or error UI when data is unavailable.
+ * If `podcast` is nullish, returns `null`. Embeds episode JSON-LD for SEO and resolves an optimized image and audio URL with sensible fallbacks.
  *
- * @returns A React element that renders the podcast detail view.
+ * @returns A React element that renders the episode detail, or `null` if the `podcast` prop is nullish.
  */
 export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProps) {
-    const {data: podcast, error, isLoading} = usePodcast(slug, initialPodcast);
-
-    // Show loading state only if we don't have initial data
-    if (isLoading && !podcast) {
-        return (
-            <article className={styles.episode}>
-                <LoadingPlaceholder
-                    isLoading={isLoading}
-                    hasData={!!podcast}
-                    message="Lade Podcast..."
-                />
-            </article>
-        );
-    }
-
-    // Handle errors
-    if (error || !podcast) {
-        return (
-            <article className={styles.episode}>
-                <ErrorCardWithRetry message="Fehler beim Laden des Podcasts." />
-            </article>
-        );
-    }
+    const podcast = initialPodcast;
+    if (!podcast) return null;
 
     const published = getEffectiveDate(podcast);
     const fileMedia = normalizeStrapiMedia(podcast.file);
@@ -110,7 +84,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
 
             {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
 
-            <MarkdownClient markdown={podcast.shownotes ?? ''} />
+            <Markdown markdown={podcast.shownotes ?? ''} />
 
             {podcast.youtube && podcast.youtube.length > 0 && <YoutubeSection youtube={podcast.youtube} />}
         </article>

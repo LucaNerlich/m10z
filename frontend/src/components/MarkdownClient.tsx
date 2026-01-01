@@ -1,13 +1,11 @@
-'use client';
+export {Markdown, type MarkdownProps} from '@/src/lib/markdown/Markdown';
 
-import dynamic from 'next/dynamic';
-import {type MarkdownProps} from '@/src/lib/markdown/Markdown';
+// Clearer name for server-rendered wrapper
+export {Markdown as MarkdownWrapper} from '@/src/lib/markdown/Markdown';
 
-const Markdown = dynamic(() => import('@/src/lib/markdown/Markdown').then((mod) => ({default: mod.Markdown})), {
-    ssr: false,
-});
-
-export function MarkdownClient(props: MarkdownProps) {
-    return <Markdown {...props} />;
-}
+/**
+ * @deprecated Use `Markdown` (or `MarkdownWrapper`) instead.
+ * Kept temporarily for backwards compatibility with older imports.
+ */
+export {Markdown as MarkdownClient} from '@/src/lib/markdown/Markdown';
 
