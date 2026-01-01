@@ -1,10 +1,11 @@
-import {Markdown, type MarkdownProps} from '@/src/lib/markdown/Markdown';
+export {Markdown, type MarkdownProps} from '@/src/lib/markdown/Markdown';
+
+// Clearer name for server-rendered wrapper
+export {Markdown as MarkdownWrapper} from '@/src/lib/markdown/Markdown';
 
 /**
- * Backward-compatible wrapper that renders Markdown using the server-rendered Markdown component.
- *
- * @param props - Props forwarded to the underlying Markdown component.
+ * @deprecated Use `Markdown` (or `MarkdownWrapper`) instead.
+ * Kept temporarily for backwards compatibility with older imports.
  */
-export function MarkdownClient(props: MarkdownProps) {
-    return <Markdown {...props} />;
-}
+export {Markdown as MarkdownClient} from '@/src/lib/markdown/Markdown';
+

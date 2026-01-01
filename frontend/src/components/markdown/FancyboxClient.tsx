@@ -1,21 +1,23 @@
 'use client';
 
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, type ReactNode} from 'react';
 
 type FancyboxClientProps = {
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
 };
 
-/**
- * Wraps children in a container and initializes Fancybox for any descendants using `data-fancybox="article-gallery"`.
- *
- * @param children - Content rendered inside the Fancybox-enabled wrapper
- * @param className - Optional CSS class applied to the wrapper div
- * @returns A div element containing `children` that is bound to Fancybox for gallery elements
- */
+type FancyboxApi = {
+    // Fancybox.bind has multiple overloads; we only use the (container, selector) form.
+    // Keep the typing permissive to avoid fighting upstream types.
+    bind: (container: Element | null, itemSelector: string, ...rest: unknown[]) => void;
+    unbind: (container: Element | null, ...rest: unknown[]) => void;
+    close: (...rest: unknown[]) => void;
+};
+
 export function FancyboxClient({children, className}: FancyboxClientProps) {
     const ref = useRef<HTMLDivElement | null>(null);
+    const fancyboxRef = useRef<FancyboxApi | null>(null);
 
     useEffect(() => {
         if (!ref.current) return;
@@ -25,16 +27,19 @@ export function FancyboxClient({children, className}: FancyboxClientProps) {
 
         const cleanupPromise = import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
             if (!isMounted) return;
+            fancyboxRef.current = Fancybox as unknown as FancyboxApi;
             Fancybox.bind(el, '[data-fancybox="article-gallery"]');
         });
 
         return () => {
             isMounted = false;
-            cleanupPromise.then(() => {
-                import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
-                    Fancybox.unbind(el);
-                    Fancybox.close();
-                });
+            cleanupPromise.finally(() => {
+                const fb = fancyboxRef.current;
+                if (fb) {
+                    fb.unbind(el);
+                    fb.close();
+                }
+                fancyboxRef.current = null;
             });
         };
     }, []);
@@ -45,4 +50,5 @@ export function FancyboxClient({children, className}: FancyboxClientProps) {
         </div>
     );
 }
+
 

@@ -9,7 +9,7 @@ import {
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
-import {MarkdownClient} from '@/src/components/MarkdownClient';
+import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
@@ -84,7 +84,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
 
             {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
 
-            <MarkdownClient markdown={podcast.shownotes ?? ''} />
+            <Markdown markdown={podcast.shownotes ?? ''} />
 
             {podcast.youtube && podcast.youtube.length > 0 && <YoutubeSection youtube={podcast.youtube} />}
         </article>

@@ -6,7 +6,7 @@ import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
 import {ContentLayout} from '@/app/ContentLayout';
-import {MarkdownClient} from '@/src/components/MarkdownClient';
+import {Markdown} from '@/src/lib/markdown/Markdown';
 import placeholderCover from '@/public/images/m10z.jpg';
 
 /**
@@ -124,7 +124,7 @@ export default async function AboutUsPage() {
                         ) : null}
                     </Section>
 
-                    <MarkdownClient markdown={about.content} />
+                    <Markdown markdown={about.content} />
                 </ContentLayout>
             </article>
         </main>

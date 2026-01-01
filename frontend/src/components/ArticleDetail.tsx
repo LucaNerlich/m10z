@@ -5,7 +5,7 @@ import {calculateReadingTime} from '@/src/lib/readingTime';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Section} from '@/src/components/Section';
-import {MarkdownClient} from '@/src/components/MarkdownClient';
+import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import placeholderCover from '@/public/images/m10z.jpg';
@@ -79,7 +79,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                 ) : null}
             </Section>
 
-            <MarkdownClient markdown={article.content ?? ''} />
+            <Markdown markdown={article.content ?? ''} />
 
             {article.youtube && article.youtube.length > 0 && <YoutubeSection youtube={article.youtube} />}
         </article>
