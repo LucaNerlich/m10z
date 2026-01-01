@@ -8,6 +8,7 @@ import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
+import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -66,18 +67,12 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         };
     } catch (error) {
         // Log error but return empty metadata to allow page to render with defaults
-        const err = error as Error;
-        const isTimeoutOrSocketError =
-            err.message.includes('timeout') ||
-            err.message.includes('connection error') ||
-            err.message.includes('ECONNRESET') ||
-            err.message.includes('ECONNREFUSED') ||
-            err.message.includes('UND_ERR_SOCKET');
+        const errorMessage = getErrorMessage(error);
 
-        if (isTimeoutOrSocketError) {
-            console.error(`Socket/timeout error fetching podcast metadata for slug "${slug}":`, err.message);
+        if (isTimeoutOrSocketError(error)) {
+            console.error(`Socket/timeout error fetching podcast metadata for slug "${slug}":`, errorMessage);
         } else {
-            console.error(`Error fetching podcast metadata for slug "${slug}":`, err.message);
+            console.error(`Error fetching podcast metadata for slug "${slug}":`, errorMessage);
         }
 
         return {};
@@ -101,27 +96,21 @@ export default async function PodcastDetailPage({params}: PageProps) {
 
         return <PodcastDetail slug={slug} podcast={episode} />;
     } catch (error) {
-        const err = error as Error;
-        const isTimeoutOrSocketError =
-            err.message.includes('timeout') ||
-            err.message.includes('connection error') ||
-            err.message.includes('ECONNRESET') ||
-            err.message.includes('ECONNREFUSED') ||
-            err.message.includes('UND_ERR_SOCKET');
+        const errorMessage = getErrorMessage(error);
 
-        if (isTimeoutOrSocketError) {
-            console.error(`Socket/timeout error fetching podcast for slug "${slug}":`, err.message);
+        if (isTimeoutOrSocketError(error)) {
+            console.error(`Socket/timeout error fetching podcast for slug "${slug}":`, errorMessage);
             // Return 404 for socket/timeout errors to trigger fallback behavior
             return notFound();
         }
 
         // Check if it's a 404 error
-        if (err.message.includes('404') || err.message.includes('not found')) {
+        if (errorMessage.includes('404') || errorMessage.includes('not found')) {
             return notFound();
         }
 
         // Log other errors and return 404
-        console.error(`Error fetching podcast for slug "${slug}":`, err.message);
+        console.error(`Error fetching podcast for slug "${slug}":`, errorMessage);
         return notFound();
     }
 }

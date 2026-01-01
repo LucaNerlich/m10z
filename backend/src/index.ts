@@ -13,11 +13,23 @@ export default {
         // Configure HTTP server timeouts to prevent premature socket closure
         // during SSR requests. The server may not be initialized immediately,
         // so we use a timeout to retry if needed.
+        const MAX_RETRIES = process.env.STRAPI_SERVER_CONFIG_MAX_RETRIES
+            ? parseInt(process.env.STRAPI_SERVER_CONFIG_MAX_RETRIES, 10)
+            : 50; // Default: 50 retries * 100ms = 5 seconds total
+        let retryCount = 0;
+
         const configureServer = () => {
             if (strapi.server?.httpServer) {
                 configureServerTimeouts(strapi.server.httpServer);
                 strapi.log.info('HTTP server timeouts configured (keepAlive: 65s, headers: 66s, request: 120s)');
             } else {
+                retryCount++;
+                if (retryCount >= MAX_RETRIES) {
+                    strapi.log.error(
+                        `Failed to configure HTTP server timeouts: server never became ready after ${MAX_RETRIES} attempts (${MAX_RETRIES * 100}ms). Server timeouts may not be configured correctly.`,
+                    );
+                    return;
+                }
                 // Retry after a short delay if server isn't ready yet
                 setTimeout(configureServer, 100);
             }

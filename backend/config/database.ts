@@ -78,8 +78,11 @@ export default ({env}) => {
              * - idleTimeoutMillis: Set to 30 seconds to balance between keeping connections
              *   available for reuse and releasing unused connections to manage resources efficiently.
              *
-             * Note: acquireConnectionTimeout at the connection level is kept for backward
-             * compatibility, but pool-level acquireTimeoutMillis takes precedence.
+             * Note: acquireConnectionTimeout at the connection level (default 60s) and
+             * pool-level acquireTimeoutMillis (30s) are separate timeouts that run concurrently.
+             * The effective acquire timeout is whichever fires first. In this configuration,
+             * the pool-level 30s timeout will fire before the connection-level 60s timeout,
+             * resulting in an effective acquire timeout of 30 seconds.
              */
             acquireConnectionTimeout: env.int('DATABASE_CONNECTION_TIMEOUT', 60000),
         },
