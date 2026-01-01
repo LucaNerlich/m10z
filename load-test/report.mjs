@@ -29,7 +29,10 @@ function getMetric(metrics, name) {
 }
 
 function getTrend(trend) {
-  const values = trend?.values ?? {};
+  // k6 --summary-export format varies:
+  // - Newer JSON exports often have stats at the top-level: {avg, med, "p(95)", ...}
+  // - Some formats nest under {values: {...}}
+  const values = trend?.values ?? trend ?? {};
   return {
     avg: values.avg,
     p50: values['p(50)'] ?? values.med,
@@ -42,9 +45,9 @@ function getTrend(trend) {
 }
 
 function getRate(rate) {
-  const values = rate?.values ?? {};
+  const values = rate?.values ?? rate ?? {};
   return {
-    rate: values.rate,
+    rate: values.rate ?? values.value,
     passes: values.passes,
     fails: values.fails,
   };
@@ -64,9 +67,11 @@ const duration = (summary.state?.testRunDurationMs ?? null);
 
 const httpReqDuration = getTrend(getMetric(metrics, 'http_req_duration'));
 const httpReqFailed = getRate(getMetric(metrics, 'http_req_failed'));
-const httpReqs = getMetric(metrics, 'http_reqs')?.values?.count ?? null;
-const vusMax = getMetric(metrics, 'vus_max')?.values?.value ?? null;
-const iterations = getMetric(metrics, 'iterations')?.values?.count ?? null;
+const httpReqs = getMetric(metrics, 'http_reqs')?.values?.count ?? getMetric(metrics, 'http_reqs')?.count ?? null;
+const vusMax = getMetric(metrics, 'vus_max')?.values?.value ?? getMetric(metrics, 'vus_max')?.max ?? getMetric(metrics, 'vus_max')?.value ?? null;
+const iterations = getMetric(metrics, 'iterations')?.values?.count ?? getMetric(metrics, 'iterations')?.count ?? null;
+const approxFailedReqs =
+  httpReqFailed.rate != null && httpReqs != null ? Math.round(Number(httpReqFailed.rate) * Number(httpReqs)) : null;
 
 const title = `k6 Report: ${escapeHtml(inputPath)}`;
 
@@ -109,6 +114,7 @@ const html = `<!doctype html>
         <h2 style="margin:0 0 8px">Errors</h2>
         <table>
           <tr><td>http_req_failed rate</td><td><code>${httpReqFailed.rate != null ? (httpReqFailed.rate * 100).toFixed(2) + '%' : 'n/a'}</code></td></tr>
+          <tr><td>failed requests (approx)</td><td><code>${fmtNum(approxFailedReqs)}</code></td></tr>
           <tr><td>passes</td><td><code>${fmtNum(httpReqFailed.passes)}</code></td></tr>
           <tr><td>fails</td><td><code>${fmtNum(httpReqFailed.fails)}</code></td></tr>
         </table>
