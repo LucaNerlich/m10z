@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import useSWR from 'swr';
 import {type SearchRecord} from '@/src/lib/search/types';
+import {fetcher} from '@/src/lib/swr/config';
 
 const SEARCH_INDEX_URL = '/api/search-index';
 
@@ -49,11 +50,14 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
 
     const {data, error, isLoading, isValidating} = useSWR<SearchQueryResponse>(
         swrKey,
+        fetcher,
         {
             // Don't revalidate on focus for search queries (user is actively typing)
             revalidateOnFocus: false,
-            // Keep results fresh for 60 seconds
-            revalidateIfStale: true,
+            // Avoid revalidation storms on flaky connections for user-typed queries
+            revalidateOnReconnect: false,
+            // Don't continuously revalidate already-fetched queries
+            revalidateIfStale: false,
         },
     );
 

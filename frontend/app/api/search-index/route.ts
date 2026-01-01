@@ -7,6 +7,17 @@ import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {CACHE_REVALIDATE_SEARCH} from '@/src/lib/cache/constants';
 
+type SearchIndexCache = {
+    key: string;
+    fuse: Fuse<SearchRecord>;
+    recordCount: number;
+    builtAtMs: number;
+};
+
+// Fuse index construction can be expensive for large indices.
+// Cache the built Fuse instance per (version, generatedAt) to avoid rebuilding on every query.
+let fuseCache: SearchIndexCache | null = null;
+
 /**
  * Custom error class for fetch-related errors.
  */
@@ -166,6 +177,32 @@ function buildFuse(records: SearchRecord[]): Fuse<SearchRecord> {
     });
 }
 
+function getIndexKey(index: SearchIndexFile): string {
+    return `${index.version}:${index.generatedAt}`;
+}
+
+function getCachedFuse(index: SearchIndexFile): Fuse<SearchRecord> {
+    const now = Date.now();
+    const key = getIndexKey(index);
+
+    // Keep the cache from growing stale indefinitely in long-running servers.
+    // We set a TTL <= the fetch revalidation window to avoid diverging too far from source updates.
+    const ttlMs = Math.min(CACHE_REVALIDATE_SEARCH * 1000, 5 * 60_000);
+
+    if (
+        fuseCache &&
+        fuseCache.key === key &&
+        now - fuseCache.builtAtMs < ttlMs &&
+        fuseCache.recordCount === index.records.length
+    ) {
+        return fuseCache.fuse;
+    }
+
+    const fuse = buildFuse(index.records);
+    fuseCache = {key, fuse, recordCount: index.records.length, builtAtMs: now};
+    return fuse;
+}
+
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
     if (xff) return xff.split(',')[0]?.trim() || 'unknown';
@@ -255,12 +292,6 @@ export async function GET(request: Request) {
         }
 
         const index = await loadSearchIndex();
-        const fuse = buildFuse(index.records);
-        const results = fuse.search(trimmedQuery, {limit: 20}).map((match) => ({
-            ...match.item,
-            score: match.score ?? null,
-        }));
-
         // Generate ETag based on query, index version, and generatedAt timestamp
         // This ensures ETag changes when the index is updated or query changes
         const etagSeed = `${trimmedQuery}:${index.version}:${index.generatedAt}`;
@@ -277,6 +308,12 @@ export async function GET(request: Request) {
                 },
             });
         }
+
+        const fuse = getCachedFuse(index);
+        const results = fuse.search(trimmedQuery, {limit: 20}).map((match) => ({
+            ...match.item,
+            score: match.score ?? null,
+        }));
 
         return NextResponse.json(
             {

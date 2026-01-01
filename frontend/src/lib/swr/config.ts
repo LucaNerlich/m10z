@@ -1,4 +1,4 @@
-import type {Fetcher, SWRConfiguration} from 'swr';
+import type {SWRConfiguration} from 'swr';
 
 /**
  * Secure fetcher function for SWR that handles errors without exposing sensitive information.
@@ -13,7 +13,7 @@ import type {Fetcher, SWRConfiguration} from 'swr';
  * @returns The parsed JSON response
  * @throws Error with a generic message if the request fails
  */
-const fetcher: Fetcher<unknown, string> = async (url: string) => {
+export async function fetcher<T = unknown>(url: string): Promise<T> {
     const res = await fetch(url);
 
     if (!res.ok) {
@@ -22,12 +22,12 @@ const fetcher: Fetcher<unknown, string> = async (url: string) => {
     }
 
     try {
-        return await res.json();
+        return (await res.json()) as T;
     } catch (error) {
         // Fail securely: do not expose parsing errors that might contain sensitive data.
         throw new Error('Invalid response format');
     }
-};
+}
 
 /**
  * Global SWR configuration for the application.
@@ -50,7 +50,15 @@ export const swrConfig: SWRConfiguration = {
     shouldRetryOnError: (error) => {
         // Don't retry on timeout/socket errors
         const message = error?.message?.toLowerCase() || '';
-        return !(message.includes('timeout') || message.includes('socket'));
+        if (message.includes('timeout') || message.includes('socket')) return false;
+
+        // Avoid retry storms on rate limiting and common upstream gateway failures.
+        // We infer status from the error message because our fetcher throws a generic Error.
+        if (message.includes('429') || message.includes('too many requests')) return false;
+        if (message.includes('502') || message.includes('bad gateway')) return false;
+        if (message.includes('503') || message.includes('service unavailable')) return false;
+
+        return true;
     },
     onError: (error) => {
         // Log errors for debugging, but don't expose sensitive information

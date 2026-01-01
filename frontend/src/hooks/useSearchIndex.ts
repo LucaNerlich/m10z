@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 import {type SearchIndexFile} from '@/src/lib/search/types';
+import {fetcher} from '@/src/lib/swr/config';
 
 const SEARCH_INDEX_URL = '/api/search-index';
 
@@ -21,6 +22,7 @@ const SEARCH_INDEX_URL = '/api/search-index';
 export function useSearchIndex() {
     const {data, error, isLoading, isValidating} = useSWR<SearchIndexFile>(
         SEARCH_INDEX_URL,
+        fetcher,
         {
             // Keep data fresh for 60 seconds (matches API cache duration)
             revalidateIfStale: true,
