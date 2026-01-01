@@ -2,6 +2,18 @@ type Bucket = {count: number; resetAtMs: number};
 
 const buckets = new Map<string, Bucket>();
 
+// Add cleanup
+if (typeof setInterval !== 'undefined') {
+    setInterval(() => {
+        const now = Date.now();
+        for (const [key, bucket] of buckets.entries()) {
+            if (bucket.resetAtMs <= now) {
+                buckets.delete(key);
+            }
+        }
+    }, 60000); // Clean every minute
+}
+
 export type RateLimitConfig = {
     windowMs: number;
     max: number;

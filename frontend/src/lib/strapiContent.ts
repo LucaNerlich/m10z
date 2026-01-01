@@ -1,4 +1,5 @@
 import qs from 'qs';
+import {cache} from 'react';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
@@ -232,7 +233,7 @@ function toPaginatedResult<T>(
  * @param slug - The article's slug to look up
  * @returns The matching `StrapiArticle` if found, `null` otherwise
  */
-export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | null> {
+export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArticle | null> => {
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -267,7 +268,7 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
         },
     );
     return res.data?.[0] ?? null;
-}
+});
 
 /**
  * Fetches a published podcast identified by its slug and returns it with related media, authors, categories, YouTube info, and file populated.
@@ -275,7 +276,7 @@ export async function fetchArticleBySlug(slug: string): Promise<StrapiArticle | 
  * @param slug - The podcast's slug to search for
  * @returns The matching `StrapiPodcast` with populated relations, or `null` if no published podcast matches the slug
  */
-export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | null> {
+export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodcast | null> => {
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -312,7 +313,7 @@ export async function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | 
         },
     );
     return res.data?.[0] ?? null;
-}
+});
 
 export type StrapiCategoryWithContent = {
     id: number;
@@ -348,7 +349,7 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
     }>;
 };
 
-export async function fetchArticlesList(options: FetchListOptions = {}): Promise<StrapiArticle[]> {
+export const fetchArticlesList = cache(async (options: FetchListOptions = {}): Promise<StrapiArticle[]> => {
     const limit = options.limit ?? 100;
     const paginated = await fetchArticlesPage({
         page: 1,
@@ -356,9 +357,9 @@ export async function fetchArticlesList(options: FetchListOptions = {}): Promise
         tags: options.tags ?? ['strapi:article', 'strapi:article:list'],
     });
     return paginated.items;
-}
+});
 
-export async function fetchPodcastsList(options: FetchListOptions = {}): Promise<StrapiPodcast[]> {
+export const fetchPodcastsList = cache(async (options: FetchListOptions = {}): Promise<StrapiPodcast[]> => {
     const limit = options.limit ?? 100;
     const paginated = await fetchPodcastsPage({
         page: 1,
@@ -366,7 +367,7 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
         tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list'],
     });
     return paginated.items;
-}
+});
 
 /**
  * Fetches authors with their avatar and minimal references to their articles and podcasts.
@@ -374,7 +375,7 @@ export async function fetchPodcastsList(options: FetchListOptions = {}): Promise
  * @param options - Optional settings. `limit` controls the maximum number of authors returned (default 100). `tags` can be provided to tag the underlying request.
  * @returns An array of authors including `slug`, `title`, `description`, `avatar`, and `articles`/`podcasts` lists where each item contains `slug` and `publishedAt`.
  */
-export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> {
+export const fetchAuthorsList = cache(async (options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> => {
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -398,7 +399,7 @@ export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<
         },
     );
     return res.data ?? [];
-}
+});
 
 /**
  * Fetches an author by slug, including avatar, articles, and podcasts with their base title and date.
@@ -406,7 +407,7 @@ export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<
  * @param slug - The author's slug to query
  * @returns The matching author with populated content, or `null` if not found
  */
-export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithContent | null> {
+export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAuthorWithContent | null> => {
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -429,7 +430,7 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
         },
     );
     return res.data?.[0] ?? null;
-}
+});
 
 /**
  * Fetches a category by its slug and returns it with populated base metadata and related content lists.
@@ -437,7 +438,7 @@ export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithC
  * @param slug - The category slug to look up
  * @returns The category including `base` (title, description, date, cover, banner), `articles` and `podcasts` (each with `slug`, `publishedAt`, and `base` containing `title` and `date`), or `null` if no matching category is found
  */
-export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryWithContent | null> {
+export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCategoryWithContent | null> => {
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
@@ -481,7 +482,7 @@ export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryW
         },
     );
     return res.data?.[0] ?? null;
-}
+});
 
 /**
  * Fetches categories along with their populated metadata, articles, and podcasts.
@@ -489,7 +490,7 @@ export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryW
  * @param options - Optional fetch settings. `limit` caps the number of categories (default 100); `tags` provides request tags for caching/observability.
  * @returns An array of categories with base metadata (title, description, date, cover, banner), and lists of related articles and podcasts (each with slug, publishedAt, and base title/date).
  */
-export async function fetchCategoriesWithContent(options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> {
+export const fetchCategoriesWithContent = cache(async (options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> => {
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
@@ -519,7 +520,7 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
         },
     );
     return res.data ?? [];
-}
+});
 
 /**
  * Retrieve a paginated list of published articles sorted by newest first.
@@ -527,7 +528,7 @@ export async function fetchCategoriesWithContent(options: FetchListOptions = {})
  * @param options - Optional controls: `page` (requested page, defaults to 1), `pageSize` (items per page, defaults to 20, clamped to 1–200), and `tags` (request cache tags override).
  * @returns The fetched result containing `items` (array of articles), `pagination` (`page`, `pageSize`, `pageCount`, `total`), and `hasNextPage`.
  */
-export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> {
+export const fetchArticlesPage = cache(async (options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> => {
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
 
@@ -555,7 +556,7 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
     );
 
     return toPaginatedResult(res, page, pageSize);
-}
+});
 
 /**
  * Fetch articles that match the given slugs.
@@ -564,7 +565,7 @@ export async function fetchArticlesPage(options: FetchPageOptions = {}): Promise
  * @returns The list of matching `StrapiArticle` objects; returns an empty array if none match or if `slugs` is empty
  * @throws Error if more than MAX_SLUGS slugs are provided
  */
-export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArticle[]> {
+export const fetchArticlesBySlugs = cache(async (slugs: string[]): Promise<StrapiArticle[]> => {
     if (slugs.length === 0) return [];
     if (slugs.length > MAX_SLUGS) {
         throw new Error(
@@ -596,7 +597,7 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
         },
     );
     return res.data ?? [];
-}
+});
 
 /**
  * Retrieve published podcasts that match the provided slugs.
@@ -605,7 +606,7 @@ export async function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArtic
  * @returns An array of matching `StrapiPodcast` objects; returns an empty array if no matches are found.
  * @throws Error if more than `MAX_SLUGS` slugs are provided.
  */
-export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodcast[]> {
+export const fetchPodcastsBySlugs = cache(async (slugs: string[]): Promise<StrapiPodcast[]> => {
     if (slugs.length === 0) return [];
     if (slugs.length > MAX_SLUGS) {
         throw new Error(
@@ -638,7 +639,7 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
         },
     );
     return res.data ?? [];
-}
+});
 
 /**
  * Retrieve articles for the given slugs, batching requests when the input length exceeds the maximum allowed per request.
@@ -646,7 +647,7 @@ export async function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodca
  * @param slugs - Array of article slugs to fetch
  * @returns An array of articles whose slugs are included in `slugs` (may be returned in an implementation-defined order)
  */
-export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<StrapiArticle[]> {
+export const fetchArticlesBySlugsBatched = cache(async (slugs: string[]): Promise<StrapiArticle[]> => {
     if (slugs.length === 0) return [];
     if (slugs.length <= MAX_SLUGS) {
         return fetchArticlesBySlugs(slugs);
@@ -660,7 +661,7 @@ export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<Stra
     }
 
     return batches.flat();
-}
+});
 
 /**
  * Fetches podcasts matching the given slugs and batches requests when the list exceeds MAX_SLUGS.
@@ -668,7 +669,7 @@ export async function fetchArticlesBySlugsBatched(slugs: string[]): Promise<Stra
  * @param slugs - Array of podcast slugs to fetch
  * @returns An array of matching StrapiPodcast objects; returns an empty array if `slugs` is empty or no items are found
  */
-export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<StrapiPodcast[]> {
+export const fetchPodcastsBySlugsBatched = cache(async (slugs: string[]): Promise<StrapiPodcast[]> => {
     if (slugs.length === 0) return [];
     if (slugs.length <= MAX_SLUGS) {
         return fetchPodcastsBySlugs(slugs);
@@ -682,7 +683,7 @@ export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<Stra
     }
 
     return batches.flat();
-}
+});
 
 /**
  * Fetches a paginated list of published podcasts from Strapi.
@@ -697,7 +698,7 @@ export async function fetchPodcastsBySlugsBatched(slugs: string[]): Promise<Stra
  *   - `tags`: Optional cache/tracing tags to attach to the fetch request.
  * @returns A PaginatedResult of StrapiPodcast containing the page's items, pagination metadata, and `hasNextPage`.
  */
-export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> {
+export const fetchPodcastsPage = cache(async (options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> => {
     const page = Math.max(1, Math.floor(options.page ?? 1));
     const pageSize = Math.max(1, Math.min(200, Math.floor(options.pageSize ?? 20)));
 
@@ -726,4 +727,4 @@ export async function fetchPodcastsPage(options: FetchPageOptions = {}): Promise
     );
 
     return toPaginatedResult(res, page, pageSize);
-}
+});
