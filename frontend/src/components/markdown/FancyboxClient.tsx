@@ -7,6 +7,13 @@ type FancyboxClientProps = {
     className?: string;
 };
 
+/**
+ * Wraps children in a container and initializes Fancybox for any descendants using `data-fancybox="article-gallery"`.
+ *
+ * @param children - Content rendered inside the Fancybox-enabled wrapper
+ * @param className - Optional CSS class applied to the wrapper div
+ * @returns A div element containing `children` that is bound to Fancybox for gallery elements
+ */
 export function FancyboxClient({children, className}: FancyboxClientProps) {
     const ref = useRef<HTMLDivElement | null>(null);
 
@@ -38,5 +45,4 @@ export function FancyboxClient({children, className}: FancyboxClientProps) {
         </div>
     );
 }
-
 

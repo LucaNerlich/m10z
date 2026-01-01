@@ -17,11 +17,14 @@ type ArticleDetailProps = {
 };
 
 /**
- * Render an article detail page with image, metadata, content, and structured data.
+ * Render the article detail view using the provided article data.
  *
- * @param slug - The article slug used to fetch article data
- * @param initialArticle - Optional initial server-side article data used to hydrate the client fetch
- * @returns The article detail element including loading and error states
+ * Renders the article element with an optimized or fallback image, content metadata (published date, reading time, authors, categories),
+ * the article title and optional description, the rendered Markdown content, an optional YouTube section, and embedded JSON-LD.
+ *
+ * @param slug - The article slug
+ * @param article - Server-provided article data to render; if `null` or `undefined`, the component returns `null`
+ * @returns The article element populated with image, metadata, content, and structured JSON-LD, or `null` if `article` is missing
  */
 export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProps) {
     const article = initialArticle;
