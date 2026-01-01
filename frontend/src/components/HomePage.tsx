@@ -155,32 +155,36 @@ export async function HomePage({page}: {page: number}) {
                                         const bannerUnoptimized = typeof bannerSrc === 'string';
 
                                         return (
-                                            <>
-                                    <Image
-                                        src={coverSrc}
-                                        width={200}
-                                        height={200}
-                                        sizes="200px"
-                                        quality={60}
-                                        unoptimized={coverUnoptimized}
-                                        placeholder={coverPlaceholder}
-                                        blurDataURL={coverBlurDataUrl || undefined}
-                                        alt={item.title || ''}
-                                        className={styles.cover}
-                                    />
-                                    <Image
-                                        src={bannerSrc}
-                                        width={800}
-                                        height={450}
-                                        sizes="(max-width: 900px) 100vw, 800px"
-                                        quality={60}
-                                        unoptimized={bannerUnoptimized}
-                                        placeholder={bannerPlaceholder}
-                                        blurDataURL={bannerBlurDataUrl || coverBlurDataUrl || undefined}
-                                        alt={item.title || ''}
-                                        className={styles.banner}
-                                    />
-                                            </>
+                                            <Link
+                                                href={item.href}
+                                                className={styles.mediaLink}
+                                                aria-label={`${item.type === 'article' ? 'Artikel' : 'Podcast'} öffnen: ${item.title}`}
+                                            >
+                                                <Image
+                                                    src={coverSrc}
+                                                    width={200}
+                                                    height={200}
+                                                    sizes="200px"
+                                                    quality={60}
+                                                    unoptimized={coverUnoptimized}
+                                                    placeholder={coverPlaceholder}
+                                                    blurDataURL={coverBlurDataUrl || undefined}
+                                                    alt={item.title || ''}
+                                                    className={styles.cover}
+                                                />
+                                                <Image
+                                                    src={bannerSrc}
+                                                    width={800}
+                                                    height={450}
+                                                    sizes="(max-width: 900px) 100vw, 800px"
+                                                    quality={60}
+                                                    unoptimized={bannerUnoptimized}
+                                                    placeholder={bannerPlaceholder}
+                                                    blurDataURL={bannerBlurDataUrl || coverBlurDataUrl || undefined}
+                                                    alt={item.title || ''}
+                                                    className={styles.banner}
+                                                />
+                                            </Link>
                                         );
                                     })()}
                                 </div>

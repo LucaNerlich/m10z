@@ -112,6 +112,18 @@
     overflow: hidden;
 }
 
+.mediaLink {
+    position: absolute;
+    inset: 0;
+    display: block;
+    color: inherit;
+}
+
+.mediaLink:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
 .cover {
     position: absolute;
     top: 0;
