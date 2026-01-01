@@ -5,6 +5,7 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {type StrapiAuthor, type StrapiMediaRef} from '@/src/lib/rss/media';
 import {CACHE_REVALIDATE_DEFAULT, CACHE_REVALIDATE_CONTENT_PAGE} from '@/src/lib/cache/constants';
+import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
 export type {StrapiMediaRef};
 
@@ -98,6 +99,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
     const timeout = options.timeout ?? 30000; // Default 30 seconds
     const url = new URL(pathWithQuery, STRAPI_URL);
     const urlString = url.toString();
+    const startedAt = Date.now();
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
@@ -119,9 +121,27 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
         }
 
-        return (await res.json()) as T;
+        const body = (await res.json()) as T;
+
+        const durationMs = Date.now() - startedAt;
+        if (durationMs >= 1500) {
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'fetch',
+                name: 'strapi.fetchJson',
+                ok: true,
+                durationMs,
+                detail: {
+                    path: url.pathname,
+                    tagCount: options.tags.length,
+                },
+            });
+        }
+
+        return body;
     } catch (error: unknown) {
         clearTimeout(timeoutId);
+        const durationMs = Date.now() - startedAt;
 
         // Check if this is an abort error (timeout)
         if (error instanceof Error && error.name === 'AbortError') {
@@ -136,6 +156,20 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
                     context: options.context,
                 }),
             );
+
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'fetch',
+                name: 'strapi.fetchJson',
+                ok: false,
+                durationMs,
+                detail: {
+                    path: url.pathname,
+                    error: 'TIMEOUT',
+                    timeoutMs: timeout,
+                    tagCount: options.tags.length,
+                },
+            });
             throw timeoutError;
         }
 
@@ -169,7 +203,37 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
 
             console.error(JSON.stringify(socketErrorInfo));
 
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'fetch',
+                name: 'strapi.fetchJson',
+                ok: false,
+                durationMs,
+                detail: {
+                    path: url.pathname,
+                    error: errorCode || 'UNKNOWN_SOCKET_ERROR',
+                    tagCount: options.tags.length,
+                },
+            });
+
             throw new Error(`Strapi connection error (${errorCode}): ${err.message}`);
+        }
+
+        // Record unexpected errors (keep details minimal; don't leak bodies/URLs with query params)
+        if (error instanceof Error) {
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'fetch',
+                name: 'strapi.fetchJson',
+                ok: false,
+                durationMs,
+                detail: {
+                    path: url.pathname,
+                    error: 'ERROR',
+                    message: error.message,
+                    tagCount: options.tags.length,
+                },
+            });
         }
 
         // Re-throw other errors as-is

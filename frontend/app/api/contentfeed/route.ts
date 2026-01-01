@@ -3,6 +3,7 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate, sortByDateDesc, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
+import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
 type FeedItem =
     | {
@@ -55,6 +56,7 @@ export async function GET(request: Request) {
     const {searchParams} = new URL(request.url);
     const page = Math.max(1, Math.floor(Number(searchParams.get('page')) || 1));
     const pageSize = Math.max(1, Math.min(100, Math.floor(Number(searchParams.get('pageSize')) || 10)));
+    const startedAt = Date.now();
 
     try {
         // Fetch articles and podcasts in parallel
@@ -128,6 +130,23 @@ export async function GET(request: Request) {
             hasNextPage,
         };
 
+        const durationMs = Date.now() - startedAt;
+        if (durationMs >= 500) {
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'route',
+                name: 'api.contentfeed',
+                ok: true,
+                durationMs,
+                detail: {
+                    page,
+                    pageSize,
+                    total: response.pagination.total,
+                    returned: response.items.length,
+                },
+            });
+        }
+
         return Response.json(response, {
             headers: {
                 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
@@ -135,6 +154,19 @@ export async function GET(request: Request) {
         });
     } catch (error) {
         console.error('Error fetching content feed:', error);
+
+        recordDiagnosticEvent({
+            ts: Date.now(),
+            kind: 'route',
+            name: 'api.contentfeed',
+            ok: false,
+            durationMs: Date.now() - startedAt,
+            detail: {
+                page,
+                pageSize,
+            },
+        });
+
         return Response.json({error: 'Failed to fetch content feed'}, {status: 500});
     }
 }

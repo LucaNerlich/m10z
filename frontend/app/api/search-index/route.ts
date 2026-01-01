@@ -6,6 +6,7 @@ import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '@/
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {CACHE_REVALIDATE_SEARCH} from '@/src/lib/cache/constants';
+import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
 type SearchIndexCache = {
     key: string;
@@ -239,12 +240,24 @@ function getClientIp(request: Request): string {
 export async function GET(request: Request) {
     const {searchParams} = new URL(request.url);
     const query = searchParams.get('q');
+    const startedAt = Date.now();
 
     // If no query parameter, return the full index (existing behavior)
     if (!query) {
         try {
             const content = await loadSearchIndex();
             const expiresDate = new Date(Date.now() + 60000).toUTCString();
+            const durationMs = Date.now() - startedAt;
+            if (durationMs >= 500) {
+                recordDiagnosticEvent({
+                    ts: Date.now(),
+                    kind: 'route',
+                    name: 'api.search-index.full',
+                    ok: true,
+                    durationMs,
+                    detail: {total: content.total},
+                });
+            }
             return NextResponse.json(content, {
                 headers: {
                     'Cache-Control': 'public, max-age=60',
@@ -254,13 +267,37 @@ export async function GET(request: Request) {
         } catch (error) {
             if (error instanceof FetchError) {
                 console.error('[search-index] Failed to fetch search index:', error.message, error.stack);
+                recordDiagnosticEvent({
+                    ts: Date.now(),
+                    kind: 'route',
+                    name: 'api.search-index.full',
+                    ok: false,
+                    durationMs: Date.now() - startedAt,
+                    detail: {error: 'FETCH'},
+                });
                 return NextResponse.json({error: 'Unable to fetch search index'}, {status: 502});
             }
             if (error instanceof ValidationError) {
                 console.error('[search-index] Malformed search index:', error.message, error.stack);
+                recordDiagnosticEvent({
+                    ts: Date.now(),
+                    kind: 'route',
+                    name: 'api.search-index.full',
+                    ok: false,
+                    durationMs: Date.now() - startedAt,
+                    detail: {error: 'VALIDATION'},
+                });
                 return NextResponse.json({error: 'Internal server error'}, {status: 500});
             }
             console.error('[search-index] Unexpected error while fetching search index:', error);
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'route',
+                name: 'api.search-index.full',
+                ok: false,
+                durationMs: Date.now() - startedAt,
+                detail: {error: 'ERROR'},
+            });
             return NextResponse.json({error: 'Internal server error'}, {status: 500});
         }
     }
@@ -315,6 +352,21 @@ export async function GET(request: Request) {
             score: match.score ?? null,
         }));
 
+        const durationMs = Date.now() - startedAt;
+        if (durationMs >= 250) {
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'route',
+                name: 'api.search-index.query',
+                ok: true,
+                durationMs,
+                detail: {
+                    qLen: trimmedQuery.length,
+                    results: results.length,
+                },
+            });
+        }
+
         return NextResponse.json(
             {
                 results,
@@ -331,13 +383,37 @@ export async function GET(request: Request) {
     } catch (error) {
         if (error instanceof FetchError) {
             console.error('[search-index] Failed to fetch search index during search:', error.message, error.stack);
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'route',
+                name: 'api.search-index.query',
+                ok: false,
+                durationMs: Date.now() - startedAt,
+                detail: {error: 'FETCH'},
+            });
             return NextResponse.json({error: 'Unable to fetch search index'}, {status: 502});
         }
         if (error instanceof ValidationError) {
             console.error('[search-index] Malformed search index during search:', error.message, error.stack);
+            recordDiagnosticEvent({
+                ts: Date.now(),
+                kind: 'route',
+                name: 'api.search-index.query',
+                ok: false,
+                durationMs: Date.now() - startedAt,
+                detail: {error: 'VALIDATION'},
+            });
             return NextResponse.json({error: 'Internal server error'}, {status: 500});
         }
         console.error('[search-index] Unexpected error during search:', error);
+        recordDiagnosticEvent({
+            ts: Date.now(),
+            kind: 'route',
+            name: 'api.search-index.query',
+            ok: false,
+            durationMs: Date.now() - startedAt,
+            detail: {error: 'ERROR'},
+        });
         return NextResponse.json({error: 'Internal server error'}, {status: 500});
     }
 }

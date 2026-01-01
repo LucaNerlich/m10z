@@ -1,14 +1,20 @@
 import type {NextConfig} from 'next';
 import {getRemotePatterns} from './src/lib/imageHostnames';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig: NextConfig = {
-    logging: {
-        fetches: {
-            hmrRefreshes: true,
-            fullUrl: true,
-        },
-        incomingRequests: true,
-    },
+    ...(isProd
+        ? {}
+        : {
+              logging: {
+                  fetches: {
+                      hmrRefreshes: true,
+                      fullUrl: true,
+                  },
+                  incomingRequests: true,
+              },
+          }),
     compiler: {
         // removeConsole: process.env.NODE_ENV === 'production',
     },

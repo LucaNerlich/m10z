@@ -162,24 +162,41 @@ export function HomePage() {
                         return (
                             <Card key={anchor} id={anchor}>
                                 <div className={styles.media}>
+                                    {(() => {
+                                        const coverSrc = coverUrl ?? placeholderCover;
+                                        const bannerSrc = bannerUrl ?? coverUrl ?? placeholderCover;
+                                        const coverUnoptimized = typeof coverSrc === 'string';
+                                        const bannerUnoptimized = typeof bannerSrc === 'string';
+
+                                        return (
+                                            <>
                                     <Image
-                                        src={coverUrl ?? placeholderCover}
+                                        src={coverSrc}
                                         width={200}
                                         height={200}
+                                        sizes="200px"
+                                        quality={60}
+                                        unoptimized={coverUnoptimized}
                                         placeholder={coverPlaceholder}
                                         blurDataURL={coverBlurDataUrl || undefined}
                                         alt={item.title || ''}
                                         className={styles.cover}
                                     />
                                     <Image
-                                        src={bannerUrl ?? coverUrl ?? placeholderCover}
+                                        src={bannerSrc}
                                         width={800}
                                         height={450}
+                                        sizes="(max-width: 900px) 100vw, 800px"
+                                        quality={60}
+                                        unoptimized={bannerUnoptimized}
                                         placeholder={bannerPlaceholder}
                                         blurDataURL={bannerBlurDataUrl || coverBlurDataUrl || undefined}
                                         alt={item.title || ''}
                                         className={styles.banner}
                                     />
+                                            </>
+                                        );
+                                    })()}
                                 </div>
                                 <div className={styles.cardBody}>
                                     <div className={styles.metaRow}>
