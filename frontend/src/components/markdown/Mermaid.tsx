@@ -14,23 +14,38 @@ export type MermaidProps = {
  *
  * This component initializes Mermaid on first render and renders diagrams
  * from markdown code blocks with `language-mermaid` or `language-mermaidjs`.
+ * The diagram is wrapped in a Fancybox link so it can be opened in a lightbox for better viewing.
  *
  * @param chart - The Mermaid diagram source code
  * @param className - Optional CSS class(es) to add to the container
- * @returns A React element containing the rendered Mermaid diagram
+ * @returns A React element containing the rendered Mermaid diagram wrapped in a Fancybox link
  */
 export function Mermaid({chart, className}: MermaidProps) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const linkRef = useRef<HTMLAnchorElement>(null);
     const [error, setError] = useState<string | null>(null);
+    const [dataUrl, setDataUrl] = useState<string | null>(null);
     const renderedChartRef = useRef<string>('');
 
     useEffect(() => {
-        // Initialize Mermaid with default configuration
+        // Initialize Mermaid with configuration optimized for readability
         mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
             securityLevel: 'loose',
             fontFamily: 'inherit',
+            fontSize: 16,
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis',
+            },
+            sequence: {
+                useMaxWidth: false,
+            },
+            gantt: {
+                useMaxWidth: false,
+            },
         });
     }, []);
 
@@ -40,11 +55,14 @@ export function Mermaid({chart, className}: MermaidProps) {
         const trimmedChart = chart.trim();
 
         // Skip if this chart was already rendered
-        if (trimmedChart === renderedChartRef.current && !error) return;
+        if (trimmedChart === renderedChartRef.current && !error && dataUrl) return;
 
         // Reset error state when chart changes
         if (error) {
             setError(null);
+        }
+        if (dataUrl) {
+            setDataUrl(null);
         }
 
         if (!trimmedChart) {
@@ -59,8 +77,15 @@ export function Mermaid({chart, className}: MermaidProps) {
             .render(chartId, trimmedChart)
             .then(({svg}) => {
                 if (containerRef.current) {
+                    // Create a preview SVG for the container
                     containerRef.current.innerHTML = svg;
                     renderedChartRef.current = trimmedChart;
+
+                    // Convert SVG to data URL for Fancybox
+                    // Encode the SVG as a data URL so Fancybox can display it
+                    const encodedSvg = encodeURIComponent(svg);
+                    const url = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
+                    setDataUrl(url);
                 }
             })
             .catch((err) => {
@@ -68,7 +93,8 @@ export function Mermaid({chart, className}: MermaidProps) {
                 setError(`Failed to render Mermaid diagram: ${errorMessage}`);
                 console.error('Mermaid rendering error:', err);
             });
-    }, [chart, error]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chart]);
 
     if (error) {
         return (
@@ -83,11 +109,21 @@ export function Mermaid({chart, className}: MermaidProps) {
     }
 
     return (
-        <div
-            ref={containerRef}
-            className={`${styles.container} ${className || ''}`}
-            aria-label="Mermaid diagram"
-        />
+        <a
+            ref={linkRef}
+            href={dataUrl || '#'}
+            data-fancybox="article-gallery"
+            data-type="image"
+            aria-label="View Mermaid diagram in full size"
+            className={`${styles.link} ${className || ''}`}
+        >
+            <div
+                ref={containerRef}
+                className={styles.container}
+                aria-label="Mermaid diagram preview"
+            />
+            <span className={styles.hint}>Click to view full size</span>
+        </a>
     );
 }
 
