@@ -29,16 +29,19 @@ export default function YoutubeEmbed(props: Readonly<YoutubeEmbedProps>): React.
     if (!embedUrl) return <></>;
 
     return (
-        <div>
-            <iframe
-                width={props.width ?? 560}
-                height={props.height ?? 315}
-                src={embedUrl}
-                title={props.title ?? 'YouTube video player'}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-            />
-        </div>
+        <>
+            {props.title && <h2>{props.title}</h2>}
+            <div>
+                <iframe
+                    width={props.width ?? 560}
+                    height={props.height ?? 315}
+                    src={embedUrl}
+                    title={props.title ?? 'YouTube video player'}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                />
+            </div>
+        </>
     );
 }
