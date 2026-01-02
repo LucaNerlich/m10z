@@ -37,7 +37,7 @@ export default function YoutubeEmbed(props: Readonly<YoutubeEmbedProps>): React.
                     height={props.height ?? 315}
                     src={embedUrl}
                     title={props.title ?? 'YouTube video player'}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen
                 />

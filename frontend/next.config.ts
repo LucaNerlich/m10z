@@ -94,6 +94,9 @@ const nextConfig: NextConfig = {
             ]).join(' ')}`,
             "style-src 'self' 'unsafe-inline'",
             "font-src 'self'",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
         ];
 
         const csp = cspDirectives.join('; ');
