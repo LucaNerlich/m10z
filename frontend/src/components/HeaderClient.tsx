@@ -163,6 +163,7 @@ export default function HeaderClient({
                 aria-expanded={isMenuOpen}
                 aria-controls="header-menu"
                 aria-label="Menü öffnen"
+                data-umami-event="header-menu-toggle"
                 onClick={toggleMenu}
                 onKeyDown={handleBurgerKeyDown}
             >

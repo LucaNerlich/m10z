@@ -1,6 +1,7 @@
 import React from 'react';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
 import {SafeImage} from '@/src/components/SafeImage';
+import {umamiEventId} from '@/src/lib/analytics/umami';
 
 export type ImageProps = React.ComponentProps<'img'>;
 
@@ -24,6 +25,7 @@ export function Image({src, alt = '', ...props}: ImageProps) {
             data-fancybox="article-gallery"
             aria-label={`View image: ${alt || 'Gallery image'}`}
             style={{display: 'inline-block', width: '100%'}}
+            data-umami-event={umamiEventId(['article', 'image', 'open'])}
         >
             <SafeImage
                 src={url}

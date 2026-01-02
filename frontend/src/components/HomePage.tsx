@@ -17,6 +17,7 @@ import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import styles from '@/app/page.module.css';
 import placeholderCover from '@/public/images/m10z.jpg';
+import {umamiEventId} from '@/src/lib/analytics/umami';
 
 const PAGE_SIZE = 10;
 const MAX_PAGE = 50;
@@ -106,7 +107,11 @@ export async function HomePage({page}: {page: number}) {
                             const anchor = `${item.type}-${item.slug}`;
                             return (
                                 <li key={anchor} className={styles.tocEntry}>
-                                    <a href={`#${anchor}`} className={styles.tocLink}>
+                                    <a
+                                        href={`#${anchor}`}
+                                        className={styles.tocLink}
+                                        data-umami-event={umamiEventId(['home', 'toc', item.type, item.slug])}
+                                    >
                                         <div className={styles.tocMetadata}>
                                             <Tag className={styles.tocTag}>
                                                 {item.type === 'article' ? 'Artikel' : 'Podcast'}

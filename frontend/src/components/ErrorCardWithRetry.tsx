@@ -24,6 +24,7 @@ export function ErrorCardWithRetry({message, onRetry, className}: ErrorCardWithR
                     type="button"
                     onClick={handleRetry}
                     style={{marginTop: '1rem', padding: '0.5rem 1rem'}}
+                    data-umami-event="error-retry"
                 >
                     Erneut versuchen
                 </button>

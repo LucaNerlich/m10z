@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import {routes} from '@/src/lib/routes';
+import {umamiEventId, umamiExternalLinkEvent} from '@/src/lib/analytics/umami';
 
 export type AnchorProps = React.ComponentProps<'a'>;
 
@@ -99,6 +100,16 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
     if (!isInternal && !isAnchorLink) {
         linkProps.target = '_blank';
         linkProps.rel = 'noopener noreferrer';
+    }
+
+    // Add Umami events for non-page links (external + in-page anchors), unless explicitly provided.
+    const existingUmamiEvent = (props as Record<string, unknown>)['data-umami-event'];
+    if (existingUmamiEvent == null) {
+        if (isAnchorLink) {
+            linkProps['data-umami-event'] = umamiEventId(['anchor', href.replace(/^#/, '') || 'link']);
+        } else if (!isInternal) {
+            linkProps['data-umami-event'] = umamiExternalLinkEvent(processedHref, 'outbound');
+        }
     }
 
     // Forward aria-* and other anchor attributes - Link will pass them to <a>

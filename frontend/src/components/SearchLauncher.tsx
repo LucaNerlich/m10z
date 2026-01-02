@@ -39,6 +39,7 @@ export function SearchLauncher(): React.ReactElement {
                 onClick={() => setIsOpen(true)}
                 aria-haspopup="dialog"
                 aria-expanded={isOpen}
+                data-umami-event="search-open"
             >
                 <span className={styles.searchButtonLabel}>Suche</span>
                 <span className={styles.searchShortcut}>{shortcutLabel}</span>

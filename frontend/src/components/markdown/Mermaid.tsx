@@ -3,6 +3,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import mermaid from 'mermaid';
 import styles from './Mermaid.module.css';
+import {umamiEventId} from '@/src/lib/analytics/umami';
 
 export type MermaidProps = {
     chart: string;
@@ -116,6 +117,7 @@ export function Mermaid({chart, className}: MermaidProps) {
             data-type="image"
             aria-label="View Mermaid diagram in full size"
             className={`${styles.link} ${className || ''}`}
+            data-umami-event={umamiEventId(['article', 'mermaid', 'open'])}
         >
             <div
                 ref={containerRef}

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import FontPicker from './FontPicker';
 import ThemeSelector from './ThemeSelector';
 import {routes} from '@/src/lib/routes';
+import {umamiEventId} from '@/src/lib/analytics/umami';
 
 type FooterLink = {label: string; href: string; external?: boolean};
 type FooterSection = {title: string; links: FooterLink[]};
@@ -59,6 +60,7 @@ export default function Footer() {
                                             href={link.href}
                                             target="_blank"
                                             rel="noreferrer noopener"
+                                            data-umami-event={umamiEventId(['footer', section.title, link.label])}
                                         >
                                             {link.label}
                                         </a>

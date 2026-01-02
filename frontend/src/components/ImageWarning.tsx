@@ -1,4 +1,5 @@
 import styles from './ImageWarning.module.css';
+import {umamiExternalLinkEvent} from '@/src/lib/analytics/umami';
 
 type ImageWarningProps = {
     src: string;
@@ -45,7 +46,13 @@ export function ImageWarning({src, alt}: ImageWarningProps) {
                     )}
                     <p className={styles.url}>
                         {isSafe ? (
-                            <a href={src} target="_blank" rel="noopener noreferrer" className={styles.link}>
+                            <a
+                                href={src}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={styles.link}
+                                data-umami-event={umamiExternalLinkEvent(src, 'image-warning')}
+                            >
                                 {src}
                             </a>
                         ) : (

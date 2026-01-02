@@ -6,6 +6,7 @@ import Image from 'next/image';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {type SearchRecord} from '@/src/lib/search/types';
+import {umamiEventId} from '@/src/lib/analytics/umami';
 
 import {Tag} from './Tag';
 import styles from './SearchModal.module.css';
@@ -201,7 +202,13 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         aria-activedescendant={activeIndex >= 0 && results.length > 0 ? `search-result-${activeIndex}` : undefined}
                         aria-expanded={results.length > 0}
                     />
-                    <button ref={closeButtonRef} type="button" className={styles.closeButton} onClick={onClose}>
+                    <button
+                        ref={closeButtonRef}
+                        type="button"
+                        className={styles.closeButton}
+                        onClick={onClose}
+                        data-umami-event="search-close"
+                    >
                         Esc
                     </button>
                 </div>
@@ -222,6 +229,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                             onClick={() => selectResult(item)}
                             role="option"
                             aria-selected={idx === activeIndex}
+                            data-umami-event={umamiEventId(['search', 'select', item.type])}
                         >
                             <div className={styles.resultContent}>
                                 {item.coverImageUrl ? (() => {

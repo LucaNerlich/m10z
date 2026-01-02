@@ -24,7 +24,7 @@ export default function Error({
                 </p>
 
                 <div className={styles.actions}>
-                    <button type="button" className={styles.primaryButton} onClick={reset}>
+                    <button type="button" className={styles.primaryButton} onClick={reset} data-umami-event="error-reset">
                         Neu laden
                     </button>
                     <Link className={styles.secondaryLink} href="/">
