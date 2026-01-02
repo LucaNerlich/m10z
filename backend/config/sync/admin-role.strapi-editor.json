@@ -6,6 +6,63 @@
   "locale": null,
   "permissions": [
     {
+      "documentId": "yo4cxkhn4g3ftyfqgzz7myvs",
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::about.about",
+      "properties": {
+        "fields": [
+          "name",
+          "alternateName",
+          "logo",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "pqt687pzm7ea5g8r9yh16s3j",
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::about.about",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "fj8k1m5q9f29bm90h39i4z7r",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::about.about",
+      "properties": {
+        "fields": [
+          "name",
+          "alternateName",
+          "logo",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "jcanjh76eusgf0uhn6kgqsie",
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::about.about",
+      "properties": {
+        "fields": [
+          "name",
+          "alternateName",
+          "logo",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
       "documentId": "hfnxc7xy1myyuthpvep7qy0q",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
@@ -18,15 +75,6 @@
           "channel.image"
         ]
       },
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "u00uokivf8abyul2lmoxy9tr",
-      "action": "plugin::content-manager.explorer.delete",
-      "actionParameters": {},
-      "subject": "api::article-feed.article-feed",
-      "properties": {},
       "conditions": [],
       "locale": null
     },
@@ -175,15 +223,6 @@
           "episodeFooter"
         ]
       },
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "v646cd4o5fwfvqgcrqbr1vbg",
-      "action": "plugin::content-manager.explorer.delete",
-      "actionParameters": {},
-      "subject": "api::audio-feed.audio-feed",
-      "properties": {},
       "conditions": [],
       "locale": null
     },
@@ -395,15 +434,6 @@
       "locale": null
     },
     {
-      "documentId": "y5x9v6stdmg8ajqcb2pvlaq9",
-      "action": "plugin::content-manager.explorer.delete",
-      "actionParameters": {},
-      "subject": "api::imprint.imprint",
-      "properties": {},
-      "conditions": [],
-      "locale": null
-    },
-    {
       "documentId": "j6idqx6p6tiqzg1gdwxtxl4f",
       "action": "plugin::content-manager.explorer.publish",
       "actionParameters": {},
@@ -547,15 +577,6 @@
           "content"
         ]
       },
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "xan9mw6ua6pmkh9lg051zjlw",
-      "action": "plugin::content-manager.explorer.delete",
-      "actionParameters": {},
-      "subject": "api::privacy.privacy",
-      "properties": {},
       "conditions": [],
       "locale": null
     },
