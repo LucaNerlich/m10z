@@ -71,7 +71,7 @@ const nextConfig: NextConfig = {
         const cspDirectives = [
             "default-src 'self'",
             // Allow inline scripts to support Next.js bootstrapping and inline JSON-LD.
-            "script-src 'self' 'unsafe-inline' https://umami.lucanerlich.com https://www.youtube.com https://s.ytimg.com",
+            "script-src 'self' 'unsafe-inline' https://umami.m10z.de https://www.youtube.com https://s.ytimg.com",
             "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com",
             `img-src ${unique([
                 "'self'",
@@ -85,7 +85,7 @@ const nextConfig: NextConfig = {
                 'https://i.ytimg.com',
                 'https://ytimg.com',
             ]).join(' ')}`,
-            "connect-src 'self' https://umami.lucanerlich.com https://*.googlevideo.com",
+            "connect-src 'self' https://umami.m10z.de https://*.googlevideo.com",
             `media-src ${unique([
                 "'self'",
                 // Allow media from configured Strapi origin (e.g. http://localhost:1337 in local prod-like setups).

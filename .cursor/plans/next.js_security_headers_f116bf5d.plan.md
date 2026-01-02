@@ -25,10 +25,10 @@ todos:
 - Add headers:
   - `Content-Security-Policy`: join the directives you specified into a single-line CSP value:
     - `default-src 'self'`
-    - `script-src 'self' https://umami.lucanerlich.com https://www.youtube.com https://s.ytimg.com`
+    - `script-src 'self' https://umami.m10z.de https://www.youtube.com https://s.ytimg.com`
     - `frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com`
     - `img-src 'self' https://i.ytimg.com https://ytimg.com https://cdn.akamai.steamstatic.com https://cms.m10z.de https://image.api.playstation.com`
-    - `connect-src 'self' https://umami.lucanerlich.com https://*.googlevideo.com`
+    - `connect-src 'self' https://umami.m10z.de https://*.googlevideo.com`
     - `media-src 'self' https://*.googlevideo.com`
     - `style-src 'self' 'unsafe-inline'`
     - `font-src 'self'`

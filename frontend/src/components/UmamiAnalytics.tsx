@@ -6,5 +6,5 @@ export default function UmamiAnalytics(): React.ReactElement {
     if (!websiteId) {
         return <></>;
     }
-    return <Script async src="https://umami.lucanerlich.com/script.js" data-website-id={websiteId} />;
+    return <Script async src="https://umami.m10z.de/script.js" data-website-id={websiteId} />;
 }
