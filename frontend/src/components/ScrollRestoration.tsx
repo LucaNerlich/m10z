@@ -15,9 +15,13 @@ export function ScrollRestoration(): null {
 
     useEffect(() => {
         // Scroll to top when route changes
-        window.scrollTo({
-            top: 0,
-            behavior: 'instant',
+        // Use requestAnimationFrame to defer scrolling until after the browser paint cycle
+        // This ensures the sticky header's position is recalculated correctly after the new page DOM is rendered
+        requestAnimationFrame(() => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'instant',
+            });
         });
     }, [pathname]);
 
