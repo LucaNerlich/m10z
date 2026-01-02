@@ -30,8 +30,8 @@ const sections: FooterSection[] = [
     {
         title: 'Feeds',
         links: [
-            {label: 'Audio Feed', href: routes.audioFeed, external: true},
-            {label: 'Article Feed', href: routes.articleFeed, external: true},
+            {label: 'Audio-Feed', href: routes.audioFeed, external: true},
+            {label: 'Artikel-Feed', href: routes.articleFeed, external: true},
         ],
     },
     {
