@@ -207,7 +207,6 @@
       ],
       "list": [
         "title",
-        "updatedAt",
         "avatar",
         "description"
       ]
