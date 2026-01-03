@@ -11,6 +11,11 @@ export type EffectiveTheme = 'light' | 'night' | 'dark' | 'paper' | 'hacker';
 
 const THEME_OPTIONS: Theme[] = ['system', 'light', 'night', 'dark', 'paper', 'hacker'];
 
+/**
+ * Determine the current system color scheme preference.
+ *
+ * @returns `'dark'` if the system prefers a dark color scheme, `'light'` otherwise (`'light'` in non-browser environments).
+ */
 export function getSystemTheme(): 'light' | 'dark' {
     if (typeof window === 'undefined') return 'light';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -39,4 +44,3 @@ export function applyTheme(theme: Theme): void {
     if (typeof document === 'undefined') return;
     document.documentElement.dataset.theme = resolveEffectiveTheme(theme);
 }
-
