@@ -52,7 +52,7 @@ todos:
       - task1-verify-no-stale-refs
   - id: task2-manual-spot-check
     content: Browser spot-check key pages in each theme for readability, borders, and code highlighting after adjustments.
-    status: in_progress
+    status: completed
     dependencies:
       - task2-muted-text
       - task2-borders

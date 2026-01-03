@@ -96,4 +96,28 @@
     --code-function-hacker: oklch(0.8 0.2 150);
     --code-number-hacker: oklch(0.7 0.2 150);
     --code-operator-hacker: oklch(0.62 0.18 150);
+
+    /* Rainbow theme tokens - bright accent on a light base */
+    --color-background-rainbow: oklch(0.99 0.01 285);
+    --color-surface-rainbow: oklch(0.975 0.015 285);
+    --color-surface-strong-rainbow: oklch(0.94 0.02 285);
+    --color-border-rainbow: oklch(0.84 0.03 285);
+    --color-text-rainbow: oklch(0.16 0.03 255);
+    --color-text-muted-rainbow: oklch(0.36 0.02 250);
+    --color-link-rainbow: oklch(0.55 0.2 250);
+    --color-primary-rainbow: oklch(0.7 0.22 330);
+    --color-primary-strong-rainbow: oklch(0.62 0.24 330);
+    --color-primary-soft-rainbow: oklch(0.85 0.12 330);
+    --color-secondary-rainbow: oklch(0.92 0.03 150);
+    --color-secondary-strong-rainbow: oklch(0.85 0.05 150);
+    --shadow-soft-rainbow: 0 14px 40px -26px oklch(0.6 0.2 300 / 0.18);
+    /* Code syntax highlighting tokens - rainbow theme */
+    --code-bg-rainbow: oklch(0.96 0.02 285);
+    --code-text-rainbow: oklch(0.16 0.03 255);
+    --code-keyword-rainbow: oklch(0.48 0.2 300);
+    --code-string-rainbow: oklch(0.4 0.16 150);
+    --code-comment-rainbow: oklch(0.45 0.02 250);
+    --code-function-rainbow: oklch(0.45 0.18 240);
+    --code-number-rainbow: oklch(0.5 0.16 50);
+    --code-operator-rainbow: oklch(0.4 0.12 20);
 }

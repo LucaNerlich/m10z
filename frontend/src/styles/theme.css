@@ -227,3 +227,29 @@
     --code-number: var(--code-number-hacker);
     --code-operator: var(--code-operator-hacker);
 }
+
+:root[data-theme='rainbow'] {
+    color-scheme: light;
+    --color-background: var(--color-background-rainbow);
+    --color-surface: var(--color-surface-rainbow);
+    --color-surface-strong: var(--color-surface-strong-rainbow);
+    --color-border: var(--color-border-rainbow);
+    --color-text: var(--color-text-rainbow);
+    --color-text-muted: var(--color-text-muted-rainbow);
+    --color-link: var(--color-link-rainbow);
+    --color-primary: var(--color-primary-rainbow);
+    --color-primary-strong: var(--color-primary-strong-rainbow);
+    --color-primary-soft: var(--color-primary-soft-rainbow);
+    --color-secondary: var(--color-secondary-rainbow);
+    --color-secondary-strong: var(--color-secondary-strong-rainbow);
+    --shadow-soft: var(--shadow-soft-rainbow);
+    /* Code syntax highlighting tokens - rainbow theme */
+    --code-bg: var(--code-bg-rainbow);
+    --code-text: var(--code-text-rainbow);
+    --code-keyword: var(--code-keyword-rainbow);
+    --code-string: var(--code-string-rainbow);
+    --code-comment: var(--code-comment-rainbow);
+    --code-function: var(--code-function-rainbow);
+    --code-number: var(--code-number-rainbow);
+    --code-operator: var(--code-operator-rainbow);
+}
