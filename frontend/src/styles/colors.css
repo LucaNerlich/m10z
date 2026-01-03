@@ -4,11 +4,11 @@
     --color-primary-soft: oklch(0.81 0.11 45.092);
     --color-on-primary: oklch(0.99 0.01 96);
     /* Secondary color - greyish, adapts to light/dark mode */
-    --color-secondary-light: oklch(0.92 0.005 250);
-    --color-secondary-dark: oklch(0.25 0.01 250);
+    --color-secondary-light: oklch(0.92 0.02 250);
+    --color-secondary-night: oklch(0.25 0.02 250);
     --color-secondary: var(--color-secondary-light);
-    --color-secondary-strong-light: oklch(0.85 0.008 250);
-    --color-secondary-strong-dark: oklch(0.3 0.01 250);
+    --color-secondary-strong-light: oklch(0.85 0.025 250);
+    --color-secondary-strong-night: oklch(0.3 0.025 250);
     --color-secondary-strong: var(--color-secondary-strong-light);
 
     /* Code syntax highlighting tokens - light theme (default) */
@@ -16,70 +16,70 @@
     --code-text: oklch(0.16 0.03 255);
     --code-keyword: oklch(0.45 0.15 280);
     --code-string: oklch(0.35 0.12 200);
-    --code-comment: oklch(0.5 0.01 250);
+    --code-comment: oklch(0.45 0.015 250);
     --code-function: oklch(0.4 0.15 240);
     --code-number: oklch(0.45 0.12 50);
-    --code-operator: oklch(0.4 0.1 20);
+    --code-operator: oklch(0.32 0.06 20);
 
+    /* Code syntax highlighting tokens - night theme */
+    --code-bg-night: oklch(0.15 0.02 255);
+    --code-text-night: oklch(0.92 0.01 260);
+    --code-keyword-night: oklch(0.72 0.16 280);
+    --code-string-night: oklch(0.78 0.13 150);
+    --code-comment-night: oklch(0.68 0.02 250);
+    --code-function-night: oklch(0.74 0.16 240);
+    --code-number-night: oklch(0.8 0.12 50);
+    --code-operator-night: oklch(0.78 0.06 20);
+
+    /* Dark theme tokens - base #222222 */
+    --color-background-dark: oklch(0.2 0 0);
+    --color-surface-dark: oklch(0.24 0 0);
+    --color-surface-strong-dark: oklch(0.28 0 0);
+    --color-border-dark: oklch(0.38 0 0);
+    --color-text-dark: oklch(0.92 0 0);
+    --color-text-muted-dark: oklch(0.7 0 0);
+    --color-link-dark: var(--color-primary-soft);
+    --color-secondary-dark: oklch(0.3 0.02 250);
+    --color-secondary-strong-dark: oklch(0.35 0.025 250);
+    --shadow-soft-dark: 0 16px 50px -24px rgba(0, 0, 0, 0.8);
     /* Code syntax highlighting tokens - dark theme */
-    --code-bg-dark: oklch(0.15 0.02 255);
-    --code-text-dark: oklch(0.92 0.01 260);
-    --code-keyword-dark: oklch(0.7 0.15 280);
-    --code-string-dark: oklch(0.75 0.12 150);
-    --code-comment-dark: oklch(0.6 0.01 250);
-    --code-function-dark: oklch(0.7 0.15 240);
-    --code-number-dark: oklch(0.75 0.12 50);
-    --code-operator-dark: oklch(0.7 0.1 20);
-
-    /* Grey theme tokens - base #222222 */
-    --color-background-grey: oklch(0.2 0 0);
-    --color-surface-grey: oklch(0.24 0 0);
-    --color-surface-strong-grey: oklch(0.28 0 0);
-    --color-border-grey: oklch(0.35 0 0);
-    --color-text-grey: oklch(0.92 0 0);
-    --color-text-muted-grey: oklch(0.65 0 0);
-    --color-link-grey: var(--color-primary-soft);
-    --color-secondary-grey: oklch(0.3 0.005 250);
-    --color-secondary-strong-grey: oklch(0.35 0.005 250);
-    --shadow-soft-grey: 0 16px 50px -24px rgba(0, 0, 0, 0.8);
-    /* Code syntax highlighting tokens - grey theme */
-    --code-bg-grey: oklch(0.22 0 0);
-    --code-text-grey: oklch(0.9 0 0);
-    --code-keyword-grey: oklch(0.75 0.1 280);
-    --code-string-grey: oklch(0.7 0.1 150);
-    --code-comment-grey: oklch(0.55 0 0);
-    --code-function-grey: oklch(0.75 0.1 240);
-    --code-number-grey: oklch(0.7 0.1 50);
-    --code-operator-grey: oklch(0.7 0.08 20);
+    --code-bg-dark: oklch(0.22 0 0);
+    --code-text-dark: oklch(0.9 0 0);
+    --code-keyword-dark: oklch(0.8 0.12 280);
+    --code-string-dark: oklch(0.78 0.11 150);
+    --code-comment-dark: oklch(0.65 0 0);
+    --code-function-dark: oklch(0.82 0.12 240);
+    --code-number-dark: oklch(0.78 0.12 50);
+    --code-operator-dark: oklch(0.75 0.06 20);
 
     /* Paper theme tokens - paper/e-ink inspired */
     --color-background-paper: oklch(0.97 0.005 85);
     --color-surface-paper: oklch(0.98 0.005 85);
     --color-surface-strong-paper: oklch(0.99 0.005 85);
-    --color-border-paper: oklch(0.9 0.008 85);
+    --color-border-paper: oklch(0.85 0.01 85);
     --color-text-paper: oklch(0.15 0.01 85);
-    --color-text-muted-paper: oklch(0.4 0.008 85);
+    --color-text-muted-paper: oklch(0.33 0.01 85);
     --color-link-paper: var(--color-primary-strong);
-    --color-secondary-paper: oklch(0.95 0.005 85);
-    --color-secondary-strong-paper: oklch(0.88 0.008 85);
+    --color-secondary-paper: oklch(0.95 0.02 85);
+    --color-secondary-strong-paper: oklch(0.88 0.025 85);
     --shadow-soft-paper: 0 14px 40px -26px rgba(0, 10, 30, 0.1);
     /* Code syntax highlighting tokens - paper theme */
     --code-bg-paper: oklch(0.94 0.005 85);
     --code-text-paper: oklch(0.2 0.01 85);
-    --code-keyword-paper: oklch(0.35 0.12 280);
-    --code-string-paper: oklch(0.3 0.1 200);
-    --code-comment-paper: oklch(0.45 0.008 85);
-    --code-function-paper: oklch(0.35 0.12 240);
-    --code-number-paper: oklch(0.4 0.1 50);
-    --code-operator-paper: oklch(0.35 0.08 20);
+    --code-keyword-paper: oklch(0.33 0.13 280);
+    --code-string-paper: oklch(0.28 0.11 200);
+    --code-comment-paper: oklch(0.4 0.01 85);
+    --code-function-paper: oklch(0.33 0.13 240);
+    --code-number-paper: oklch(0.35 0.12 50);
+    --code-operator-paper: oklch(0.3 0.08 20);
 
     /* Hacker theme tokens - terminal green on black */
     --color-background-hacker: oklch(0.08 0 0);
     --color-surface-hacker: oklch(0.1 0 0);
     --color-surface-strong-hacker: oklch(0.12 0 0);
-    --color-border-hacker: oklch(0.25 0.15 150);
+    --color-border-hacker: oklch(0.32 0.18 150);
     --color-text-hacker: oklch(0.7 0.2 150);
-    --color-text-muted-hacker: oklch(0.5 0.15 150);
+    --color-text-muted-hacker: oklch(0.55 0.15 150);
     --color-link-hacker: oklch(0.75 0.25 150);
     --color-primary-hacker: oklch(0.7 0.2 150);
     --color-primary-strong-hacker: oklch(0.65 0.25 150);
@@ -92,8 +92,8 @@
     --code-text-hacker: oklch(0.7 0.2 150);
     --code-keyword-hacker: oklch(0.75 0.25 150);
     --code-string-hacker: oklch(0.65 0.2 150);
-    --code-comment-hacker: oklch(0.5 0.15 150);
+    --code-comment-hacker: oklch(0.55 0.15 150);
     --code-function-hacker: oklch(0.8 0.2 150);
     --code-number-hacker: oklch(0.7 0.2 150);
-    --code-operator-hacker: oklch(0.75 0.2 150);
+    --code-operator-hacker: oklch(0.62 0.18 150);
 }

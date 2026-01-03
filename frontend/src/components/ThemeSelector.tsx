@@ -15,7 +15,7 @@ const THEME_OPTIONS: ThemeOption[] = [
     {id: 'system', displayName: 'System'},
     {id: 'light', displayName: 'Light'},
     {id: 'dark', displayName: 'Dark'},
-    {id: 'grey', displayName: 'Grey'},
+    {id: 'night', displayName: 'Night'},
     {id: 'paper', displayName: 'Paper'},
     {id: 'hacker', displayName: 'Hacker'},
 ];

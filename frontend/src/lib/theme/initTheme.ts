@@ -6,10 +6,10 @@
 
 export const STORAGE_KEY = 'm10z-theme';
 
-export type Theme = 'system' | 'light' | 'dark' | 'grey' | 'paper' | 'hacker';
-export type EffectiveTheme = 'light' | 'dark' | 'grey' | 'paper' | 'hacker';
+export type Theme = 'system' | 'light' | 'night' | 'dark' | 'paper' | 'hacker';
+export type EffectiveTheme = 'light' | 'night' | 'dark' | 'paper' | 'hacker';
 
-const THEME_OPTIONS: Theme[] = ['system', 'light', 'dark', 'grey', 'paper', 'hacker'];
+const THEME_OPTIONS: Theme[] = ['system', 'light', 'night', 'dark', 'paper', 'hacker'];
 
 export function getSystemTheme(): 'light' | 'dark' {
     if (typeof window === 'undefined') return 'light';
