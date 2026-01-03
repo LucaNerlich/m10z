@@ -247,14 +247,6 @@ export async function wordCountMiddleware(
         ) {
             const data = context.params?.data;
             if (data) {
-                // Skip word count calculation if wordCount is already explicitly set in the data
-                // This prevents the middleware from overwriting wordCount when it's being set directly
-                // (e.g., by the cronjob or manual updates)
-                if (data.wordCount !== undefined && data.wordCount !== null) {
-                    // WordCount is already set, skip calculation
-                    return next();
-                }
-
                 // Get strapi instance from context
                 const strapiInstance = context.params?.strapi || strapi;
                 // Determine contentType based on uid
