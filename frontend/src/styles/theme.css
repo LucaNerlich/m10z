@@ -253,3 +253,29 @@
     --code-number: var(--code-number-rainbow);
     --code-operator: var(--code-operator-rainbow);
 }
+
+:root[data-theme='oled'] {
+    color-scheme: dark;
+    --color-background: var(--color-background-oled);
+    --color-surface: var(--color-surface-oled);
+    --color-surface-strong: var(--color-surface-strong-oled);
+    --color-border: var(--color-border-oled);
+    --color-text: var(--color-text-oled);
+    --color-text-muted: var(--color-text-muted-oled);
+    --color-link: var(--color-link-oled);
+    --color-primary: var(--color-primary-oled);
+    --color-primary-strong: var(--color-primary-strong-oled);
+    --color-primary-soft: var(--color-primary-soft-oled);
+    --color-secondary: var(--color-secondary-oled);
+    --color-secondary-strong: var(--color-secondary-strong-oled);
+    --shadow-soft: var(--shadow-soft-oled);
+    /* Code syntax highlighting tokens - oled theme */
+    --code-bg: var(--code-bg-oled);
+    --code-text: var(--code-text-oled);
+    --code-keyword: var(--code-keyword-oled);
+    --code-string: var(--code-string-oled);
+    --code-comment: var(--code-comment-oled);
+    --code-function: var(--code-function-oled);
+    --code-number: var(--code-number-oled);
+    --code-operator: var(--code-operator-oled);
+}

@@ -19,6 +19,7 @@ const THEME_OPTIONS: ThemeOption[] = [
     {id: 'paper', displayName: 'Paper'},
     {id: 'hacker', displayName: 'Hacker'},
     {id: 'rainbow', displayName: 'Rainbow'},
+    {id: 'oled', displayName: 'OLED'},
 ];
 
 const DEFAULT_THEME: Theme = 'system';
