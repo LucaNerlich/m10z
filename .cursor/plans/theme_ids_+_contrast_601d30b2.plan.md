@@ -47,12 +47,12 @@ todos:
       - task1-verify-no-stale-refs
   - id: task2-code-highlighting
     content: Refine code token colors across themes for contrast/differentiation while keeping hacker monochrome-green feel.
-    status: in_progress
+    status: completed
     dependencies:
       - task1-verify-no-stale-refs
   - id: task2-manual-spot-check
     content: Browser spot-check key pages in each theme for readability, borders, and code highlighting after adjustments.
-    status: pending
+    status: in_progress
     dependencies:
       - task2-muted-text
       - task2-borders
