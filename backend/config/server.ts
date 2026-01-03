@@ -53,18 +53,18 @@ export default ({env}) => ({
     cron: {
         enabled: true,
         tasks: {
-            // Generate blurhash for images missing it - runs every hour
+            // Generate blurhash for images missing it - runs once nightly
             generateMissingBlurhashes: {
                 task: generateMissingBlurhashes,
                 options: {
-                    rule: '0 * * * *', // Run every hour at minute 0
+                    rule: '0 3 * * *', // Run nightly at 03:00 (server local time)
                 },
             },
-            // Generate wordCount for articles and podcasts missing it - runs every hour
+            // Generate wordCount for articles and podcasts missing it - runs once nightly
             generateMissingWordCounts: {
                 task: generateMissingWordCounts,
                 options: {
-                    rule: '0 * * * *', // Run every hour at minute 0
+                    rule: '15 3 * * *', // Run nightly at 03:15 (server local time)
                 },
             },
         },
