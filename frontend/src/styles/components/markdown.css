@@ -171,6 +171,12 @@
     margin-bottom: 0;
 }
 
+.markdown-content ul,
+.markdown-content ol {
+    margin-bottom: 1.5rem;
+}
+
+
 /* Image spacing in markdown content */
 .markdown-content img {
     margin: 1.5rem 0;
