@@ -3,9 +3,9 @@
     --color-background-light: oklch(0.99 0.002 250);
     --color-surface-light: oklch(0.975 0.004 250);
     --color-surface-strong-light: oklch(0.94 0.006 250);
-    --color-border-light: oklch(0.88 0.008 250);
+    --color-border-light: oklch(0.84 0.01 250);
     --color-text-light: oklch(0.16 0.03 255);
-    --color-text-muted-light: oklch(0.42 0.015 250);
+    --color-text-muted-light: oklch(0.36 0.02 250);
     --color-link-light: var(--color-primary-strong);
     --shadow-soft-light: 0 14px 40px -26px rgba(0, 10, 30, 0.22);
     /* Code syntax highlighting tokens - light mode (reference base variables from colors.css) */
@@ -13,29 +13,29 @@
     --code-text-light: oklch(0.16 0.03 255);
     --code-keyword-light: oklch(0.45 0.15 280);
     --code-string-light: oklch(0.35 0.12 200);
-    --code-comment-light: oklch(0.5 0.01 250);
+    --code-comment-light: oklch(0.45 0.015 250);
     --code-function-light: oklch(0.4 0.15 240);
     --code-number-light: oklch(0.45 0.12 50);
-    --code-operator-light: oklch(0.4 0.1 20);
+    --code-operator-light: oklch(0.32 0.06 20);
 
-    /* Dark mode tokens derived from the same primary hue */
-    --color-background-dark: oklch(0.13 0.03 255);
-    --color-surface-dark: oklch(0.16 0.03 255);
-    --color-surface-strong-dark: oklch(0.2 0.03 255);
-    --color-border-dark: oklch(0.28 0.02 255);
-    --color-text-dark: oklch(0.95 0.01 260);
-    --color-text-muted-dark: oklch(0.75 0.015 260);
-    --color-link-dark: var(--color-primary-soft);
-    --shadow-soft-dark: 0 16px 50px -24px rgba(0, 0, 0, 0.6);
-    /* Code syntax highlighting tokens - dark mode (reference base variables from colors.css) */
-    --code-bg-dark: oklch(0.15 0.02 255);
-    --code-text-dark: oklch(0.92 0.01 260);
-    --code-keyword-dark: oklch(0.7 0.15 280);
-    --code-string-dark: oklch(0.75 0.12 150);
-    --code-comment-dark: oklch(0.6 0.01 250);
-    --code-function-dark: oklch(0.7 0.15 240);
-    --code-number-dark: oklch(0.75 0.12 50);
-    --code-operator-dark: oklch(0.7 0.1 20);
+    /* Night mode tokens derived from the same primary hue */
+    --color-background-night: oklch(0.13 0.03 255);
+    --color-surface-night: oklch(0.16 0.03 255);
+    --color-surface-strong-night: oklch(0.2 0.03 255);
+    --color-border-night: oklch(0.32 0.02 255);
+    --color-text-night: oklch(0.95 0.01 260);
+    --color-text-muted-night: oklch(0.78 0.015 260);
+    --color-link-night: var(--color-primary-soft);
+    --shadow-soft-night: 0 16px 50px -24px rgba(0, 0, 0, 0.6);
+    /* Code syntax highlighting tokens - night mode (reference base variables from colors.css) */
+    --code-bg-night: oklch(0.15 0.02 255);
+    --code-text-night: oklch(0.92 0.01 260);
+    --code-keyword-night: oklch(0.72 0.16 280);
+    --code-string-night: oklch(0.78 0.13 150);
+    --code-comment-night: oklch(0.68 0.02 250);
+    --code-function-night: oklch(0.74 0.16 240);
+    --code-number-night: oklch(0.8 0.12 50);
+    --code-operator-night: oklch(0.78 0.06 20);
 
     /* Default to light mode */
     color-scheme: light;
@@ -133,6 +133,29 @@
     --code-operator: var(--code-operator-light);
 }
 
+:root[data-theme='night'] {
+    color-scheme: dark;
+    --color-background: var(--color-background-night);
+    --color-surface: var(--color-surface-night);
+    --color-surface-strong: var(--color-surface-strong-night);
+    --color-border: var(--color-border-night);
+    --color-text: var(--color-text-night);
+    --color-text-muted: var(--color-text-muted-night);
+    --color-link: var(--color-link-night);
+    --color-secondary: var(--color-secondary-night);
+    --color-secondary-strong: var(--color-secondary-strong-night);
+    --shadow-soft: var(--shadow-soft-night);
+    /* Code syntax highlighting tokens - night theme */
+    --code-bg: var(--code-bg-night);
+    --code-text: var(--code-text-night);
+    --code-keyword: var(--code-keyword-night);
+    --code-string: var(--code-string-night);
+    --code-comment: var(--code-comment-night);
+    --code-function: var(--code-function-night);
+    --code-number: var(--code-number-night);
+    --code-operator: var(--code-operator-night);
+}
+
 :root[data-theme='dark'] {
     color-scheme: dark;
     --color-background: var(--color-background-dark);
@@ -154,29 +177,6 @@
     --code-function: var(--code-function-dark);
     --code-number: var(--code-number-dark);
     --code-operator: var(--code-operator-dark);
-}
-
-:root[data-theme='grey'] {
-    color-scheme: dark;
-    --color-background: var(--color-background-grey);
-    --color-surface: var(--color-surface-grey);
-    --color-surface-strong: var(--color-surface-strong-grey);
-    --color-border: var(--color-border-grey);
-    --color-text: var(--color-text-grey);
-    --color-text-muted: var(--color-text-muted-grey);
-    --color-link: var(--color-link-grey);
-    --color-secondary: var(--color-secondary-grey);
-    --color-secondary-strong: var(--color-secondary-strong-grey);
-    --shadow-soft: var(--shadow-soft-grey);
-    /* Code syntax highlighting tokens - grey theme */
-    --code-bg: var(--code-bg-grey);
-    --code-text: var(--code-text-grey);
-    --code-keyword: var(--code-keyword-grey);
-    --code-string: var(--code-string-grey);
-    --code-comment: var(--code-comment-grey);
-    --code-function: var(--code-function-grey);
-    --code-number: var(--code-number-grey);
-    --code-operator: var(--code-operator-grey);
 }
 
 :root[data-theme='paper'] {
