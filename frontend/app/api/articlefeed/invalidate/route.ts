@@ -33,6 +33,8 @@ export async function POST(request: Request) {
     // Categories show article counts, so invalidate category pages too
     revalidateTag('strapi:category', 'max');
     revalidateTag('strapi:category:list', 'max');
+    // Invalidate homepage cache tag (homepage uses HOME_ARTICLE_TAGS which includes 'page:home'). This dual-tagging approach allows granular invalidation.
+    revalidateTag('page:home', 'max');
     revalidatePath('/rss.xml');
     revalidatePath(routes.home, 'page');
     revalidatePath(routes.articles, 'page');
