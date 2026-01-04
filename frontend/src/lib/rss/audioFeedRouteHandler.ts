@@ -47,6 +47,32 @@ type CachedFeed = {
 let cachedFeed: CachedFeed | null = null;
 let inflight: Promise<CachedFeed> | null = null;
 let schedulerStarted = false;
+let schedulerTimer: ReturnType<typeof setInterval> | null = null;
+
+// `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare const module: any;
+
+/**
+ * Stops the background feed refresh scheduler (if running).
+ *
+ * This is mainly useful for local development/HMR and for operational tooling (deployments/tests).
+ * In production the scheduler is expected to run continuously.
+ */
+export function stopScheduler() {
+    if (schedulerTimer) {
+        clearInterval(schedulerTimer);
+        schedulerTimer = null;
+    }
+    schedulerStarted = false;
+}
+
+export function getSchedulerState() {
+    return {
+        schedulerStarted,
+        hasTimer: schedulerTimer !== null,
+    };
+}
 
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
@@ -236,8 +262,13 @@ async function refreshFeed(): Promise<CachedFeed> {
 
     inflight = (async () => {
         const startedAt = Date.now();
+        const memStart = process.memoryUsage();
         const built = await getCachedAudioFeed();
+        const memEnd = process.memoryUsage();
         const durationMs = Date.now() - startedAt;
+        const memoryUsedMB = Math.round((memEnd.heapUsed / (1024 * 1024)) * 100) / 100;
+        const memoryDeltaMB =
+            Math.round(((memEnd.heapUsed - memStart.heapUsed) / (1024 * 1024)) * 100) / 100;
         const next: CachedFeed = {
             xml: built.xml,
             etag: built.etag,
@@ -257,7 +288,7 @@ async function refreshFeed(): Promise<CachedFeed> {
                 name: 'feed.audio.build',
                 ok: true,
                 durationMs,
-                detail: {episodes: built.episodeCount},
+                detail: {episodes: built.episodeCount, memoryUsedMB, memoryDeltaMB},
             });
         }
 
@@ -275,12 +306,12 @@ function ensureScheduler() {
     schedulerStarted = true;
     // Kick off an initial refresh in the background.
     void refreshFeed().catch(() => undefined);
-    const timer = setInterval(() => {
+    schedulerTimer = setInterval(() => {
         void refreshFeed().catch(() => undefined);
     }, FEED_REGENERATE_MS);
     // Don't keep the process alive just for the timer.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (timer as any).unref?.();
+    (schedulerTimer as any).unref?.();
 }
 
 export async function buildAudioFeedResponse(request: Request): Promise<Response> {
@@ -355,4 +386,10 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
             }),
         });
     }
+}
+
+if (typeof module !== 'undefined' && module.hot) {
+    module.hot.dispose(() => {
+        stopScheduler();
+    });
 }

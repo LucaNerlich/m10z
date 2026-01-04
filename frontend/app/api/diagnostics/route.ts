@@ -30,6 +30,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
         now: Date.now(),
         events: getRecentDiagnosticEvents(),
+        memory: process.memoryUsage(),
     });
 }
 

@@ -4,6 +4,13 @@ export type DiagnosticEvent = {
     name: string;
     ok: boolean;
     durationMs: number;
+    /**
+     * Optional event-specific detail payload.
+     *
+     * This may include memory-related numeric fields (in MB) such as:
+     * - `memoryUsedMB`: heap used at the end of an operation (derived from `process.memoryUsage().heapUsed`).
+     * - `memoryDeltaMB`: heapUsed delta across an operation (end - start).
+     */
     detail?: Record<string, unknown>;
 };
 
