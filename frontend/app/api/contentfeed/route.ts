@@ -2,15 +2,12 @@ import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {buildContentFeed, type ContentFeedResponse} from '@/src/lib/contentFeed';
 
 /**
- * Server-side merged content feed API route.
+ * Serve a merged, paginated content feed of articles and podcasts.
  *
- * Fetches articles and podcasts from Strapi, merges them by published date,
- * and returns the requested page. This eliminates expensive client-side
- * merging and reduces data transfer.
+ * Accepts `page` and `pageSize` query parameters to select the page (defaults: page=1, pageSize=10; pageSize capped at 100). On success returns the combined feed JSON and sets caching headers; on failure returns a 500 JSON error payload.
  *
- * Query parameters:
- * - page: Page number (default: 1)
- * - pageSize: Items per page (default: 10, max: 100)
+ * @param request - Incoming request whose URL query may include `page` and `pageSize`
+ * @returns The combined content feed JSON on success, or `{ error: 'Failed to fetch content feed' }` with status 500 on failure
  */
 export async function GET(request: Request) {
     const {searchParams} = new URL(request.url);
@@ -19,7 +16,7 @@ export async function GET(request: Request) {
     const startedAt = Date.now();
 
     try {
-        const response: ContentFeedResponse = await buildContentFeed(page, pageSize);
+        const response: ContentFeedResponse = await buildContentFeed(page, pageSize, {tags: ['page:home']});
 
         const durationMs = Date.now() - startedAt;
         if (durationMs >= 500) {
@@ -61,5 +58,4 @@ export async function GET(request: Request) {
         return Response.json({error: 'Failed to fetch content feed'}, {status: 500});
     }
 }
-
 
