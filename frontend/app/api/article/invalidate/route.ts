@@ -3,6 +3,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {routes} from '@/src/lib/routes';
+import {getClientIp} from '@/src/lib/net/getClientIp';
 
 /**
  * Extracts the client's IP address from the request headers.
@@ -12,12 +13,6 @@ import {routes} from '@/src/lib/routes';
  * @param request - The incoming Request whose headers will be read
  * @returns The resolved client IP address or `'unknown'` when not available
  */
-function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
-}
-
 /**
  * Handle POST requests to invalidate article-related cache tags and paths.
  *

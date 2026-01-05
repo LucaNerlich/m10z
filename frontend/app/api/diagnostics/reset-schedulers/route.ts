@@ -4,12 +4,7 @@ import {stopScheduler as stopAudioScheduler, getSchedulerState as getAudioSchedu
 import {stopScheduler as stopArticleScheduler, getSchedulerState as getArticleSchedulerState} from '@/src/lib/rss/articleFeedRouteHandler';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
-
-function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
-}
+import {getClientIp} from '@/src/lib/net/getClientIp';
 
 /**
  * Auth: requires `DIAGNOSTICS_TOKEN` (same as `/api/diagnostics`).

@@ -3,13 +3,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {routes} from '@/src/lib/routes';
-
-function getClientIp(request: Request): string {
-    // Best-effort; behind a proxy you may want to rely on platform-provided headers.
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
-}
+import {getClientIp} from '@/src/lib/net/getClientIp';
 
 export async function POST(request: Request) {
     const expected = process.env.FEED_INVALIDATION_TOKEN ?? null;

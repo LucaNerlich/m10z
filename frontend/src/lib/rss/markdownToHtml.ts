@@ -11,10 +11,19 @@ import createDOMPurify from 'dompurify';
  * Reference: [marked](https://github.com/markedjs/marked)
  */
 
-const window = new JSDOM('').window;
-// DOMPurify's TS types expect a WindowLike. JSDOM's window is compatible at runtime.
-// Cast to avoid type mismatch between DOMPurify and JSDOM type definitions.
-const DOMPurify = createDOMPurify(window as any);
+/**
+ * IMPORTANT: this module is used in long-lived feed schedulers.
+ *
+ * JSDOM windows should not be kept around indefinitely (resource accumulation / retained memory).
+ * We therefore create a fresh JSDOM instance per conversion and always `close()` it in a finally block.
+ */
+
+let jsdomWindowsCreated = 0;
+let jsdomWindowsClosed = 0;
+let domPurifyInstancesCreated = 0;
+let conversions = 0;
+let lastConversionAtMs: number | null = null;
+let lastErrorAtMs: number | null = null;
 
 const ALLOWED_TAGS = [
     'a',
@@ -51,21 +60,89 @@ const ALLOWED_ATTR = [
     'width',
 ];
 
+/**
+ * Convert Markdown to sanitized HTML suitable for RSS descriptions.
+ *
+ * @param markdownText - The Markdown source to convert
+ * @returns The sanitized HTML string produced from `markdownText`; returns an empty string if `markdownText` is falsy
+ */
 export function markdownToHtml(markdownText: string): string {
     if (!markdownText) return '';
 
-    // Marked output can include HTML; we sanitize after conversion.
-    const rawHtml = marked.parse(markdownText, {
-        gfm: true,
-        breaks: true,
-    }) as string;
+    conversions += 1;
+    lastConversionAtMs = Date.now();
 
-    return DOMPurify.sanitize(rawHtml, {
-        ALLOWED_TAGS,
-        ALLOWED_ATTR,
-        // Disallow data: and javascript: URLs; allow http(s) + mailto.
-        ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
-    });
+    const dom = new JSDOM('');
+    jsdomWindowsCreated += 1;
+    const window = dom.window;
+
+    // DOMPurify's TS types expect a WindowLike. JSDOM's window is compatible at runtime.
+    // Cast to avoid type mismatch between DOMPurify and JSDOM type definitions.
+    const DOMPurify = createDOMPurify(window as any);
+    domPurifyInstancesCreated += 1;
+
+    try {
+        // Marked output can include HTML; we sanitize after conversion.
+        const rawHtml = marked.parse(markdownText, {
+            gfm: true,
+            breaks: true,
+        }) as string;
+
+        return DOMPurify.sanitize(rawHtml, {
+            ALLOWED_TAGS,
+            ALLOWED_ATTR,
+            // Disallow data: and javascript: URLs; allow http(s) + mailto.
+            ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
+        });
+    } catch (err) {
+        lastErrorAtMs = Date.now();
+        throw err;
+    } finally {
+        try {
+            window.close();
+            jsdomWindowsClosed += 1;
+        } catch {
+            // ignore
+        }
+    }
 }
 
+/**
+ * Return a snapshot of internal telemetry and configuration for the Markdown-to-HTML converter.
+ *
+ * @returns An object containing:
+ * - `conversions`: total number of conversions performed
+ * - `lastConversionAtMs`: timestamp (ms) of the last successful conversion, or `undefined` if none
+ * - `lastErrorAtMs`: timestamp (ms) of the last error during conversion, or `undefined` if none
+ * - `jsdom.windowsCreated`: number of JSDOM windows created
+ * - `jsdom.windowsClosed`: number of JSDOM windows closed
+ * - `domPurify.instancesCreated`: number of DOMPurify instances created
+ * - `marked.options`: the `gfm` and `breaks` options used for `marked`
+ * - `sanitizer.allowedTagsCount`: number of allowed HTML tags in the sanitizer
+ * - `sanitizer.allowedAttrCount`: number of allowed attributes in the sanitizer
+ */
+export function getMarkdownToHtmlState() {
+    return {
+        conversions,
+        lastConversionAtMs,
+        lastErrorAtMs,
+        jsdom: {
+            windowsCreated: jsdomWindowsCreated,
+            windowsClosed: jsdomWindowsClosed,
+        },
+        domPurify: {
+            instancesCreated: domPurifyInstancesCreated,
+        },
+        marked: {
+            options: {
+                gfm: true,
+                breaks: true,
+            },
+        },
+        sanitizer: {
+            allowedTagsCount: ALLOWED_TAGS.length,
+            allowedAttrCount: ALLOWED_ATTR.length,
+        },
+    };
+}
 

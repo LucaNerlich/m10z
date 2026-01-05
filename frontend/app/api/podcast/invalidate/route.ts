@@ -3,18 +3,7 @@ import {revalidatePath, revalidateTag} from 'next/cache';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {routes} from '@/src/lib/routes';
-
-/**
- * Determine the client's IP address from request headers.
- *
- * @param request - The incoming request whose headers are inspected
- * @returns The first IP from `x-forwarded-for` if present, otherwise the `x-real-ip` value, or the string `'unknown'` if neither header provides an IP
- */
-function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
-}
+import {getClientIp} from '@/src/lib/net/getClientIp';
 
 /**
  * Handle POST requests to invalidate podcast-related cache tags and pages.

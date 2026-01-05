@@ -4,11 +4,15 @@ import path from 'node:path';
 
 import {
     type AudioFeedConfig,
+    type AudioFeedTiming,
+    type AudioFeedMarkdownConverter,
     generateAudioFeedXml,
     type StrapiAudioFeedSingle,
     type StrapiPodcast,
 } from '@/src/lib/rss/audiofeed';
+import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {sha256Hex} from '@/src/lib/rss/xml';
+import {getClientIp} from '@/src/lib/net/getClientIp';
 import {
     buildRssHeaders,
     fallbackFeedXml,
@@ -48,6 +52,39 @@ let cachedFeed: CachedFeed | null = null;
 let inflight: Promise<CachedFeed> | null = null;
 let schedulerStarted = false;
 let schedulerTimer: ReturnType<typeof setInterval> | null = null;
+let warmupStarted = false;
+
+// Runtime health tracking (long-lived scheduler)
+let schedulerStartedAtMs: number | null = null;
+let initialBuildDurationMs: number | null = null;
+const buildDurationsMs: number[] = [];
+const BUILD_HISTORY_LIMIT = 20;
+const SLOW_BUILD_WINDOW = 3;
+const SLOW_BUILD_MULTIPLIER = 2;
+
+type LastBuildTiming = {
+    episodeCount: number;
+    renderedEpisodeCount: number;
+    timing: AudioFeedTiming;
+    avgPerEpisodeMs: {
+        markdownConversionMs: number;
+        guidGenerationMs: number;
+        fileMetadataMs: number;
+        enclosureMs: number;
+    };
+    markdownCache?: {hits: number; misses: number; size: number};
+};
+
+let lastBuildTiming: LastBuildTiming | null = null;
+
+/**
+ * Reset the in-memory audio feed state for diagnostics and restart the scheduler.
+ *
+ * @param reason - The reason for the reset; currently `"manual"` is used for user-initiated diagnostics resets
+ */
+export function resetAudioFeedStateForDiagnostics(reason: 'manual' = 'manual') {
+    resetAudioFeedState(reason);
+}
 
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,8 +102,14 @@ export function stopScheduler() {
         schedulerTimer = null;
     }
     schedulerStarted = false;
+    schedulerStartedAtMs = null;
 }
 
+/**
+ * Gets current scheduler state for the audio feed.
+ *
+ * @returns An object with `schedulerStarted` — `true` if the scheduler was started, and `hasTimer` — `true` if a periodic timer is currently active.
+ */
 export function getSchedulerState() {
     return {
         schedulerStarted,
@@ -74,10 +117,81 @@ export function getSchedulerState() {
     };
 }
 
-function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
+/**
+ * Provides runtime diagnostics and health metrics for the audio feed scheduler and recent builds.
+ *
+ * @returns An object containing:
+ *  - `schedulerStarted` and `hasTimer` indicating scheduler state,
+ *  - `schedulerStartedAtMs` and `uptimeMs` for uptime tracking,
+ *  - `initialBuildDurationMs`, `buildCount`, and `recentBuildDurationsMs` for build timing history,
+ *  - `trend` describing build-duration trend (`increasing`, `decreasing`, `stable`, or `unknown`),
+ *  - `threshold` with `window`, `multiplier`, `thresholdMs`, and `wouldTrigger` showing the slow-build reset threshold and whether it would currently trigger,
+ *  - `lastBuildTiming` with detailed timing and optional markdown cache metrics for the most recent build.
+ */
+export function getAudioFeedRuntimeState() {
+    const now = Date.now();
+    const uptimeMs = schedulerStartedAtMs ? now - schedulerStartedAtMs : 0;
+    const last3 = buildDurationsMs.slice(-SLOW_BUILD_WINDOW);
+    const hasEnough = last3.length === SLOW_BUILD_WINDOW && initialBuildDurationMs !== null;
+    const thresholdMs = initialBuildDurationMs ? initialBuildDurationMs * SLOW_BUILD_MULTIPLIER : null;
+    const wouldTrigger =
+        hasEnough && thresholdMs !== null ? last3.every((d) => d > thresholdMs) : false;
+
+    const trend =
+        buildDurationsMs.length >= 5
+            ? (() => {
+                  const first = buildDurationsMs[0] ?? 0;
+                  const last = buildDurationsMs[buildDurationsMs.length - 1] ?? 0;
+                  if (first <= 0) return 'unknown';
+                  const ratio = last / first;
+                  if (ratio >= 1.25) return 'increasing';
+                  if (ratio <= 0.85) return 'decreasing';
+                  return 'stable';
+              })()
+            : 'unknown';
+
+    return {
+        schedulerStarted,
+        hasTimer: schedulerTimer !== null,
+        schedulerStartedAtMs,
+        uptimeMs,
+        initialBuildDurationMs,
+        buildCount: buildDurationsMs.length,
+        recentBuildDurationsMs: buildDurationsMs.slice(),
+        trend,
+        threshold: {
+            window: SLOW_BUILD_WINDOW,
+            multiplier: SLOW_BUILD_MULTIPLIER,
+            thresholdMs,
+            wouldTrigger,
+        },
+        lastBuildTiming,
+    };
+}
+
+/**
+ * Warm the feed once per process/module load:
+ * - Load any persisted feed from disk into memory immediately (best-effort)
+ * - Kick off one build in the background (best-effort)
+ *
+ * This reduces chances of serving a fallback or stale content during local testing.
+ */
+function ensureWarmup() {
+    if (warmupStarted) return;
+    warmupStarted = true;
+    void (async () => {
+        try {
+            const disk = await readFeedFromDisk();
+            if (disk) cachedFeed = disk;
+        } catch {
+            // ignore
+        }
+        try {
+            await refreshFeed();
+        } catch {
+            // ignore
+        }
+    })();
 }
 
 async function ensureFeedDir() {
@@ -132,12 +246,13 @@ async function readFeedFromDisk(): Promise<CachedFeed | null> {
 
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
     if (!STRAPI_URL) throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
+    const revalidate = process.env.NODE_ENV === 'production' ? CACHE_REVALIDATE_DEFAULT : 0;
     return await fetchStrapiJsonCore<T>({
         strapiBaseUrl: STRAPI_URL,
         apiPathWithQuery: pathWithQuery,
         token: STRAPI_TOKEN,
         tags: ['feed:audio', 'strapi:podcast', 'strapi:audio-feed'],
-        revalidate: CACHE_REVALIDATE_DEFAULT,
+        revalidate,
         timeoutMs: 30_000,
     });
 }
@@ -236,26 +351,78 @@ function getAudioFeedDefaults(): AudioFeedConfig {
     };
 }
 
+/**
+ * Builds the audio feed XML and its metadata by fetching channel and episode data, rendering episode markdown, and computing an ETag.
+ *
+ * The function performs a single in-memory build: it fetches the channel and episode records, converts episode markdown to HTML using a per-build cache, generates the feed XML, computes a content-tied ETag, and updates runtime build timing and markdown-cache metrics exposed via `lastBuildTiming`.
+ *
+ * @returns An object with:
+ * - `xml` — The generated RSS feed XML string.
+ * - `etag` — A strong ETag value representing the feed content and seed.
+ * - `lastModified` — The feed's last-modified timestamp as produced by the feed generator.
+ * - `episodeCount` — The total number of episodes fetched from Strapi.
+ */
 async function getCachedAudioFeed() {
     const [feed, episodes] = await Promise.all([fetchAudioFeedSingle(), fetchAllPodcasts()]);
     const cfg = getAudioFeedDefaults();
-    const {xml, etagSeed, lastModified} = generateAudioFeedXml({
+
+    // Per-build markdown cache (cleared every rebuild, reused only within a single build)
+    const markdownCache = new Map<string, string>();
+    let markdownCacheHits = 0;
+    let markdownCacheMisses = 0;
+
+    const markdownConverter: AudioFeedMarkdownConverter = ({episodeId, kind, markdownText}) => {
+        if (!markdownText) return '';
+        const key = `${episodeId}:${kind}:${sha256Hex(markdownText)}`;
+        const hit = markdownCache.get(key);
+        if (hit !== undefined) {
+            markdownCacheHits += 1;
+            return hit;
+        }
+        markdownCacheMisses += 1;
+        const html = markdownToHtml(markdownText);
+        markdownCache.set(key, html);
+        return html;
+    };
+
+    const {xml, etagSeed, lastModified, timing, renderedEpisodeCount} = generateAudioFeedXml({
         cfg,
         channel: feed.channel,
         episodeFooter: feed.episodeFooter,
         episodes,
+        markdownConverter,
     });
 
     // Strong-ish ETag tied to latest publish + count (same across instances).
     // Include XML content to ensure content-only changes update the ETag.
     const etag = `"${sha256Hex(`${etagSeed}:${sha256Hex(xml)}`)}"`;
+
+    // Store timing for diagnostics consumers (average-per-episode semantics)
+    const avgPerEpisodeMs = {
+        markdownConversionMs: timing.markdownConversion.avgMs,
+        guidGenerationMs: timing.guidGeneration.avgMs,
+        fileMetadataMs: timing.fileMetadata.avgMs,
+        enclosureMs: timing.enclosure.avgMs,
+    };
+    lastBuildTiming = {
+        episodeCount: episodes.length,
+        renderedEpisodeCount,
+        timing,
+        avgPerEpisodeMs,
+        markdownCache: {hits: markdownCacheHits, misses: markdownCacheMisses, size: markdownCache.size},
+    };
     return {xml, etag, lastModified, episodeCount: episodes.length};
 }
 
+/**
+ * Refreshes the audio feed cache by rebuilding the feed and persisting the result to disk.
+ *
+ * Coalesces concurrent callers so only one build runs at a time, updates the in-memory `cachedFeed`,
+ * records build diagnostics and timing, and may schedule a state reset if recent builds are repeatedly slow.
+ *
+ * @returns The refreshed `CachedFeed` containing `xml`, `etag`, `lastModified`, `builtAtMs`, and `episodeCount`.
+ */
 async function refreshFeed(): Promise<CachedFeed> {
-    const now = Date.now();
-    const ttlMs = FEED_REGENERATE_MS;
-
     if (inflight) {
         return inflight;
     }
@@ -281,6 +448,21 @@ async function refreshFeed(): Promise<CachedFeed> {
         // Best-effort persist so future requests can serve without rebuild.
         await writeFeedToDisk(next);
 
+        // Update health tracking (successful builds only)
+        if (initialBuildDurationMs === null) {
+            initialBuildDurationMs = durationMs;
+        }
+        buildDurationsMs.push(durationMs);
+        if (buildDurationsMs.length > BUILD_HISTORY_LIMIT) {
+            buildDurationsMs.splice(0, buildDurationsMs.length - BUILD_HISTORY_LIMIT);
+        }
+
+        // Threshold check: if last 3 builds exceed 2x initial build time, schedule a reset.
+        const thresholdMs = initialBuildDurationMs * SLOW_BUILD_MULTIPLIER;
+        const last3 = buildDurationsMs.slice(-SLOW_BUILD_WINDOW);
+        const shouldReset =
+            last3.length === SLOW_BUILD_WINDOW && last3.every((d) => d > thresholdMs);
+
         if (durationMs >= 500) {
             recordDiagnosticEvent({
                 ts: Date.now(),
@@ -288,7 +470,36 @@ async function refreshFeed(): Promise<CachedFeed> {
                 name: 'feed.audio.build',
                 ok: true,
                 durationMs,
-                detail: {episodes: built.episodeCount, memoryUsedMB, memoryDeltaMB},
+                detail: {
+                    episodes: built.episodeCount,
+                    memoryUsedMB,
+                    memoryDeltaMB,
+                    ...(lastBuildTiming
+                        ? {
+                              markdownConversionMs: lastBuildTiming.avgPerEpisodeMs.markdownConversionMs,
+                              guidGenerationMs: lastBuildTiming.avgPerEpisodeMs.guidGenerationMs,
+                              fileMetadataMs: lastBuildTiming.avgPerEpisodeMs.fileMetadataMs,
+                              enclosureMs: lastBuildTiming.avgPerEpisodeMs.enclosureMs,
+                              timing: lastBuildTiming.timing,
+                              renderedEpisodeCount: lastBuildTiming.renderedEpisodeCount,
+                              markdownCache: lastBuildTiming.markdownCache,
+                          }
+                        : {}),
+                    reset: shouldReset
+                        ? {scheduled: true, reason: 'slow_build', last3, thresholdMs, multiplier: SLOW_BUILD_MULTIPLIER}
+                        : {scheduled: false},
+                },
+            });
+        }
+
+        if (shouldReset) {
+            // Avoid resetting synchronously inside the build path; schedule after current stack.
+            queueMicrotask(() => {
+                try {
+                    resetAudioFeedState('slow_build');
+                } catch {
+                    // ignore
+                }
             });
         }
 
@@ -301,9 +512,41 @@ async function refreshFeed(): Promise<CachedFeed> {
     return inflight;
 }
 
+/**
+ * Clears in-memory audio feed state, records a diagnostic reset event, and restarts the background scheduler.
+ *
+ * @param reason - Reason for the reset: `slow_build` when the build cadence is deemed too slow, or `manual` for an explicit/manual reset.
+ */
+function resetAudioFeedState(reason: 'slow_build' | 'manual') {
+    cachedFeed = null;
+    inflight = null;
+    initialBuildDurationMs = null;
+    buildDurationsMs.splice(0, buildDurationsMs.length);
+    lastBuildTiming = null;
+
+    recordDiagnosticEvent({
+        ts: Date.now(),
+        kind: 'route',
+        name: 'feed.audio.reset',
+        ok: true,
+        durationMs: 0,
+        detail: {reason},
+    });
+
+    // Restart scheduler to ensure a clean interval loop (best-effort).
+    stopScheduler();
+    ensureScheduler();
+}
+
+/**
+ * Starts the background scheduler that periodically refreshes the audio feed.
+ *
+ * If the scheduler is already running this is a no-op. When started, it triggers an initial refresh in the background and schedules recurring refreshes every `FEED_REGENERATE_MS`; the underlying timer is unref'd so it does not keep the process alive.
+ */
 function ensureScheduler() {
     if (schedulerStarted) return;
     schedulerStarted = true;
+    schedulerStartedAtMs = Date.now();
     // Kick off an initial refresh in the background.
     void refreshFeed().catch(() => undefined);
     schedulerTimer = setInterval(() => {
@@ -315,6 +558,7 @@ function ensureScheduler() {
 }
 
 export async function buildAudioFeedResponse(request: Request): Promise<Response> {
+    ensureWarmup();
     ensureScheduler();
 
     // Prevent self-DoS: feeds are attractive to spam and can be expensive to build.
@@ -349,7 +593,9 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
         // Prefer on-disk cached feed (fast, no rebuild). Fall back to refresh on cache miss/staleness.
         const now = Date.now();
         const disk = await readFeedFromDisk();
-        const freshEnough = disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
+        // In development, avoid serving potentially stale disk caches from previous runs.
+        const allowDiskFreshness = process.env.NODE_ENV === 'production';
+        const freshEnough = allowDiskFreshness && disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
         const feed = disk && freshEnough ? disk : await refreshFeed();
 
         // Encourage clients to revalidate on every request; server-side fetch remains cached by tags.
@@ -364,6 +610,19 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
 
         return new Response(feed.xml, {headers});
     } catch (err) {
+        // Prefer serving a cached (possibly stale) feed over an empty fallback when available.
+        const stale = cachedFeed ?? (await readFeedFromDisk().catch(() => null));
+        if (stale) {
+            const headers = buildRssHeaders({
+                etag: stale.etag,
+                lastModified: stale.lastModified,
+                cacheControl: 'no-store',
+            });
+            const maybe304 = maybeReturn304(request, stale.etag, headers);
+            if (maybe304) return maybe304;
+            return new Response(stale.xml, {headers});
+        }
+
         const fallback = fallbackFeedXml({
             title: 'M10Z Podcasts',
             link: SITE_URL,
@@ -377,6 +636,14 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
             name: 'feed.audio.serve',
             ok: false,
             durationMs: 0,
+            detail:
+                err instanceof Error
+                    ? {
+                          // Keep error reporting non-sensitive: message should not include secrets.
+                          errorName: err.name,
+                          errorMessage: err.message,
+                      }
+                    : {errorName: 'UnknownError'},
         });
 
         return new Response(fallback, {
