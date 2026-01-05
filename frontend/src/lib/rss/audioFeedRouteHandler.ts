@@ -4,10 +4,13 @@ import path from 'node:path';
 
 import {
     type AudioFeedConfig,
+    type AudioFeedTiming,
+    type AudioFeedMarkdownConverter,
     generateAudioFeedXml,
     type StrapiAudioFeedSingle,
     type StrapiPodcast,
 } from '@/src/lib/rss/audiofeed';
+import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {
     buildRssHeaders,
@@ -49,6 +52,33 @@ let inflight: Promise<CachedFeed> | null = null;
 let schedulerStarted = false;
 let schedulerTimer: ReturnType<typeof setInterval> | null = null;
 
+// Runtime health tracking (long-lived scheduler)
+let schedulerStartedAtMs: number | null = null;
+let initialBuildDurationMs: number | null = null;
+const buildDurationsMs: number[] = [];
+const BUILD_HISTORY_LIMIT = 20;
+const SLOW_BUILD_WINDOW = 3;
+const SLOW_BUILD_MULTIPLIER = 2;
+
+type LastBuildTiming = {
+    episodeCount: number;
+    renderedEpisodeCount: number;
+    timing: AudioFeedTiming;
+    avgPerEpisodeMs: {
+        markdownConversionMs: number;
+        guidGenerationMs: number;
+        fileMetadataMs: number;
+        enclosureMs: number;
+    };
+    markdownCache?: {hits: number; misses: number; size: number};
+};
+
+let lastBuildTiming: LastBuildTiming | null = null;
+
+export function resetAudioFeedStateForDiagnostics(reason: 'manual' = 'manual') {
+    resetAudioFeedState(reason);
+}
+
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const module: any;
@@ -65,12 +95,54 @@ export function stopScheduler() {
         schedulerTimer = null;
     }
     schedulerStarted = false;
+    schedulerStartedAtMs = null;
 }
 
 export function getSchedulerState() {
     return {
         schedulerStarted,
         hasTimer: schedulerTimer !== null,
+    };
+}
+
+export function getAudioFeedRuntimeState() {
+    const now = Date.now();
+    const uptimeMs = schedulerStartedAtMs ? now - schedulerStartedAtMs : 0;
+    const last3 = buildDurationsMs.slice(-SLOW_BUILD_WINDOW);
+    const hasEnough = last3.length === SLOW_BUILD_WINDOW && initialBuildDurationMs !== null;
+    const thresholdMs = initialBuildDurationMs ? initialBuildDurationMs * SLOW_BUILD_MULTIPLIER : null;
+    const wouldTrigger =
+        hasEnough && thresholdMs !== null ? last3.every((d) => d > thresholdMs) : false;
+
+    const trend =
+        buildDurationsMs.length >= 5
+            ? (() => {
+                  const first = buildDurationsMs[0] ?? 0;
+                  const last = buildDurationsMs[buildDurationsMs.length - 1] ?? 0;
+                  if (first <= 0) return 'unknown';
+                  const ratio = last / first;
+                  if (ratio >= 1.25) return 'increasing';
+                  if (ratio <= 0.85) return 'decreasing';
+                  return 'stable';
+              })()
+            : 'unknown';
+
+    return {
+        schedulerStarted,
+        hasTimer: schedulerTimer !== null,
+        schedulerStartedAtMs,
+        uptimeMs,
+        initialBuildDurationMs,
+        buildCount: buildDurationsMs.length,
+        recentBuildDurationsMs: buildDurationsMs.slice(),
+        trend,
+        threshold: {
+            window: SLOW_BUILD_WINDOW,
+            multiplier: SLOW_BUILD_MULTIPLIER,
+            thresholdMs,
+            wouldTrigger,
+        },
+        lastBuildTiming,
     };
 }
 
@@ -239,23 +311,56 @@ function getAudioFeedDefaults(): AudioFeedConfig {
 async function getCachedAudioFeed() {
     const [feed, episodes] = await Promise.all([fetchAudioFeedSingle(), fetchAllPodcasts()]);
     const cfg = getAudioFeedDefaults();
-    const {xml, etagSeed, lastModified} = generateAudioFeedXml({
+
+    // Per-build markdown cache (cleared every rebuild, reused only within a single build)
+    const markdownCache = new Map<string, string>();
+    let markdownCacheHits = 0;
+    let markdownCacheMisses = 0;
+
+    const markdownConverter: AudioFeedMarkdownConverter = ({episodeId, kind, markdownText}) => {
+        if (!markdownText) return '';
+        const key = `${episodeId}:${kind}:${sha256Hex(markdownText)}`;
+        const hit = markdownCache.get(key);
+        if (hit !== undefined) {
+            markdownCacheHits += 1;
+            return hit;
+        }
+        markdownCacheMisses += 1;
+        const html = markdownToHtml(markdownText);
+        markdownCache.set(key, html);
+        return html;
+    };
+
+    const {xml, etagSeed, lastModified, timing, renderedEpisodeCount} = generateAudioFeedXml({
         cfg,
         channel: feed.channel,
         episodeFooter: feed.episodeFooter,
         episodes,
+        markdownConverter,
     });
 
     // Strong-ish ETag tied to latest publish + count (same across instances).
     // Include XML content to ensure content-only changes update the ETag.
     const etag = `"${sha256Hex(`${etagSeed}:${sha256Hex(xml)}`)}"`;
+
+    // Store timing for diagnostics consumers (average-per-episode semantics)
+    const avgPerEpisodeMs = {
+        markdownConversionMs: timing.markdownConversion.avgMs,
+        guidGenerationMs: timing.guidGeneration.avgMs,
+        fileMetadataMs: timing.fileMetadata.avgMs,
+        enclosureMs: timing.enclosure.avgMs,
+    };
+    lastBuildTiming = {
+        episodeCount: episodes.length,
+        renderedEpisodeCount,
+        timing,
+        avgPerEpisodeMs,
+        markdownCache: {hits: markdownCacheHits, misses: markdownCacheMisses, size: markdownCache.size},
+    };
     return {xml, etag, lastModified, episodeCount: episodes.length};
 }
 
 async function refreshFeed(): Promise<CachedFeed> {
-    const now = Date.now();
-    const ttlMs = FEED_REGENERATE_MS;
-
     if (inflight) {
         return inflight;
     }
@@ -281,6 +386,21 @@ async function refreshFeed(): Promise<CachedFeed> {
         // Best-effort persist so future requests can serve without rebuild.
         await writeFeedToDisk(next);
 
+        // Update health tracking (successful builds only)
+        if (initialBuildDurationMs === null) {
+            initialBuildDurationMs = durationMs;
+        }
+        buildDurationsMs.push(durationMs);
+        if (buildDurationsMs.length > BUILD_HISTORY_LIMIT) {
+            buildDurationsMs.splice(0, buildDurationsMs.length - BUILD_HISTORY_LIMIT);
+        }
+
+        // Threshold check: if last 3 builds exceed 2x initial build time, schedule a reset.
+        const thresholdMs = initialBuildDurationMs * SLOW_BUILD_MULTIPLIER;
+        const last3 = buildDurationsMs.slice(-SLOW_BUILD_WINDOW);
+        const shouldReset =
+            last3.length === SLOW_BUILD_WINDOW && last3.every((d) => d > thresholdMs);
+
         if (durationMs >= 500) {
             recordDiagnosticEvent({
                 ts: Date.now(),
@@ -288,7 +408,36 @@ async function refreshFeed(): Promise<CachedFeed> {
                 name: 'feed.audio.build',
                 ok: true,
                 durationMs,
-                detail: {episodes: built.episodeCount, memoryUsedMB, memoryDeltaMB},
+                detail: {
+                    episodes: built.episodeCount,
+                    memoryUsedMB,
+                    memoryDeltaMB,
+                    ...(lastBuildTiming
+                        ? {
+                              markdownConversionMs: lastBuildTiming.avgPerEpisodeMs.markdownConversionMs,
+                              guidGenerationMs: lastBuildTiming.avgPerEpisodeMs.guidGenerationMs,
+                              fileMetadataMs: lastBuildTiming.avgPerEpisodeMs.fileMetadataMs,
+                              enclosureMs: lastBuildTiming.avgPerEpisodeMs.enclosureMs,
+                              timing: lastBuildTiming.timing,
+                              renderedEpisodeCount: lastBuildTiming.renderedEpisodeCount,
+                              markdownCache: lastBuildTiming.markdownCache,
+                          }
+                        : {}),
+                    reset: shouldReset
+                        ? {scheduled: true, reason: 'slow_build', last3, thresholdMs, multiplier: SLOW_BUILD_MULTIPLIER}
+                        : {scheduled: false},
+                },
+            });
+        }
+
+        if (shouldReset) {
+            // Avoid resetting synchronously inside the build path; schedule after current stack.
+            queueMicrotask(() => {
+                try {
+                    resetAudioFeedState('slow_build');
+                } catch {
+                    // ignore
+                }
             });
         }
 
@@ -301,9 +450,31 @@ async function refreshFeed(): Promise<CachedFeed> {
     return inflight;
 }
 
+function resetAudioFeedState(reason: 'slow_build' | 'manual') {
+    cachedFeed = null;
+    inflight = null;
+    initialBuildDurationMs = null;
+    buildDurationsMs.splice(0, buildDurationsMs.length);
+    lastBuildTiming = null;
+
+    recordDiagnosticEvent({
+        ts: Date.now(),
+        kind: 'route',
+        name: 'feed.audio.reset',
+        ok: true,
+        durationMs: 0,
+        detail: {reason},
+    });
+
+    // Restart scheduler to ensure a clean interval loop (best-effort).
+    stopScheduler();
+    ensureScheduler();
+}
+
 function ensureScheduler() {
     if (schedulerStarted) return;
     schedulerStarted = true;
+    schedulerStartedAtMs = Date.now();
     // Kick off an initial refresh in the background.
     void refreshFeed().catch(() => undefined);
     schedulerTimer = setInterval(() => {

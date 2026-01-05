@@ -1,9 +1,9 @@
 import {NextResponse} from 'next/server';
+
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
-import {getRecentDiagnosticEvents} from '@/src/lib/diagnostics/runtimeDiagnostics';
+import {getMarkdownToHtmlState} from '@/src/lib/rss/markdownToHtml';
 import {getAudioFeedRuntimeState} from '@/src/lib/rss/audioFeedRouteHandler';
-import {getSchedulerState as getArticleFeedSchedulerState} from '@/src/lib/rss/articleFeedRouteHandler';
 
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     }
 
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`diag:${ip}`, {windowMs: 60_000, max: 30});
+    const rl = checkRateLimit(`diag-library-state:${ip}`, {windowMs: 60_000, max: 30});
     if (!rl.ok) {
         return new NextResponse('Too Many Requests', {
             status: 429,
@@ -31,12 +31,9 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
         now: Date.now(),
-        events: getRecentDiagnosticEvents(),
         memory: process.memoryUsage(),
-        schedulers: {
-            audioFeed: getAudioFeedRuntimeState(),
-            articleFeed: getArticleFeedSchedulerState(),
-        },
+        markdownToHtml: getMarkdownToHtmlState(),
+        audioFeed: getAudioFeedRuntimeState(),
     });
 }
 
