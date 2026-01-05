@@ -8,6 +8,7 @@
     --color-text-muted-light: oklch(0.36 0.02 250);
     --color-link-light: var(--color-primary-strong);
     --shadow-soft-light: 0 14px 40px -26px rgba(0, 10, 30, 0.22);
+
     /* Code syntax highlighting tokens - light mode (reference base variables from colors.css) */
     --code-bg-light: oklch(0.96 0.005 250);
     --code-text-light: oklch(0.16 0.03 255);
@@ -27,6 +28,7 @@
     --color-text-muted-night: oklch(0.78 0.015 260);
     --color-link-night: var(--color-primary-soft);
     --shadow-soft-night: 0 16px 50px -24px rgba(0, 0, 0, 0.6);
+
     /* Code syntax highlighting tokens - night mode (reference base variables from colors.css) */
     --code-bg-night: oklch(0.15 0.02 255);
     --code-text-night: oklch(0.92 0.01 260);
@@ -49,6 +51,7 @@
     --color-secondary: var(--color-secondary-light);
     --color-secondary-strong: var(--color-secondary-strong-light);
     --shadow-soft: var(--shadow-soft-light);
+
     /* Code syntax highlighting tokens - default to light */
     --code-bg: var(--code-bg-light);
     --code-text: var(--code-text-light);
@@ -191,6 +194,7 @@
     --color-secondary: var(--color-secondary-paper);
     --color-secondary-strong: var(--color-secondary-strong-paper);
     --shadow-soft: var(--shadow-soft-paper);
+
     /* Code syntax highlighting tokens - paper theme */
     --code-bg: var(--code-bg-paper);
     --code-text: var(--code-text-paper);
@@ -217,6 +221,7 @@
     --color-secondary: var(--color-secondary-hacker);
     --color-secondary-strong: var(--color-secondary-strong-hacker);
     --shadow-soft: var(--shadow-soft-hacker);
+
     /* Code syntax highlighting tokens - hacker theme */
     --code-bg: var(--code-bg-hacker);
     --code-text: var(--code-text-hacker);
@@ -243,6 +248,7 @@
     --color-secondary: var(--color-secondary-rainbow);
     --color-secondary-strong: var(--color-secondary-strong-rainbow);
     --shadow-soft: var(--shadow-soft-rainbow);
+
     /* Code syntax highlighting tokens - rainbow theme */
     --code-bg: var(--code-bg-rainbow);
     --code-text: var(--code-text-rainbow);
@@ -269,6 +275,7 @@
     --color-secondary: var(--color-secondary-oled);
     --color-secondary-strong: var(--color-secondary-strong-oled);
     --shadow-soft: var(--shadow-soft-oled);
+
     /* Code syntax highlighting tokens - oled theme */
     --code-bg: var(--code-bg-oled);
     --code-text: var(--code-text-oled);

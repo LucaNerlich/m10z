@@ -53,7 +53,12 @@ export function Markdown({markdown, className}: MarkdownProps) {
         <FancyboxClient className={containerClassName}>
             <ReactMarkdown
                 remarkPlugins={[remarkBreaks, remarkGfm, remarkSmartypants]}
-                remarkRehypeOptions={{clobberPrefix: ''}}
+                remarkRehypeOptions={
+                    {
+                        clobberPrefix: '',
+                        footnoteLabel: 'Fußnoten',
+                    }
+                }
                 rehypePlugins={[
                     rehypeSlug,
                     [rehypeExternalLinks, {target: '_blank', rel: ['noopener', 'noreferrer']}],
