@@ -42,6 +42,17 @@ export interface ContentFeedOptions {
     tags?: string[];
 }
 
+/**
+ * Builds a paginated combined feed of articles and podcasts, optionally filtered by tags.
+ *
+ * Normalizes and clamps `page` and `pageSize`, fetches a buffered set of articles and podcasts,
+ * merges and sorts them by published date, and returns the slice corresponding to the requested page.
+ *
+ * @param page - 1-based page index (values less than 1 are treated as 1)
+ * @param pageSize - number of items per page (clamped to the range 1–100)
+ * @param options - optional feed options; `options.tags` can include additional tags to filter the fetched content
+ * @returns The paginated feed response containing `items`, `pagination` (page, pageSize, total, pageCount), and `hasNextPage`
+ */
 export async function buildContentFeed(
     page: number,
     pageSize: number,
@@ -117,5 +128,4 @@ export async function buildContentFeed(
         hasNextPage,
     };
 }
-
 
