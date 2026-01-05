@@ -219,6 +219,7 @@
 /* Image spacing in markdown content */
 .markdown-content img {
     margin: 1.5rem 0;
+    border-radius: var(--border-radius);
 }
 
 /* Desktop image constraints for markdown content */
