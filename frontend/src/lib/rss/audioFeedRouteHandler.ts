@@ -75,6 +75,11 @@ type LastBuildTiming = {
 
 let lastBuildTiming: LastBuildTiming | null = null;
 
+/**
+ * Reset the in-memory audio feed state for diagnostics and restart the scheduler.
+ *
+ * @param reason - The reason for the reset; currently `"manual"` is used for user-initiated diagnostics resets
+ */
 export function resetAudioFeedStateForDiagnostics(reason: 'manual' = 'manual') {
     resetAudioFeedState(reason);
 }
@@ -98,6 +103,11 @@ export function stopScheduler() {
     schedulerStartedAtMs = null;
 }
 
+/**
+ * Gets current scheduler state for the audio feed.
+ *
+ * @returns An object with `schedulerStarted` — `true` if the scheduler was started, and `hasTimer` — `true` if a periodic timer is currently active.
+ */
 export function getSchedulerState() {
     return {
         schedulerStarted,
@@ -105,6 +115,17 @@ export function getSchedulerState() {
     };
 }
 
+/**
+ * Provides runtime diagnostics and health metrics for the audio feed scheduler and recent builds.
+ *
+ * @returns An object containing:
+ *  - `schedulerStarted` and `hasTimer` indicating scheduler state,
+ *  - `schedulerStartedAtMs` and `uptimeMs` for uptime tracking,
+ *  - `initialBuildDurationMs`, `buildCount`, and `recentBuildDurationsMs` for build timing history,
+ *  - `trend` describing build-duration trend (`increasing`, `decreasing`, `stable`, or `unknown`),
+ *  - `threshold` with `window`, `multiplier`, `thresholdMs`, and `wouldTrigger` showing the slow-build reset threshold and whether it would currently trigger,
+ *  - `lastBuildTiming` with detailed timing and optional markdown cache metrics for the most recent build.
+ */
 export function getAudioFeedRuntimeState() {
     const now = Date.now();
     const uptimeMs = schedulerStartedAtMs ? now - schedulerStartedAtMs : 0;
@@ -146,6 +167,12 @@ export function getAudioFeedRuntimeState() {
     };
 }
 
+/**
+ * Determine the client's IP address from common proxy headers on the given request.
+ *
+ * @param request - The incoming Request whose headers will be inspected for `x-forwarded-for` and `x-real-ip`
+ * @returns The first IP from `x-forwarded-for` or the value of `x-real-ip` if present, `"unknown"` otherwise
+ */
 function getClientIp(request: Request): string {
     const xff = request.headers.get('x-forwarded-for');
     if (xff) return xff.split(',')[0]?.trim() || 'unknown';
@@ -308,6 +335,17 @@ function getAudioFeedDefaults(): AudioFeedConfig {
     };
 }
 
+/**
+ * Builds the audio feed XML and its metadata by fetching channel and episode data, rendering episode markdown, and computing an ETag.
+ *
+ * The function performs a single in-memory build: it fetches the channel and episode records, converts episode markdown to HTML using a per-build cache, generates the feed XML, computes a content-tied ETag, and updates runtime build timing and markdown-cache metrics exposed via `lastBuildTiming`.
+ *
+ * @returns An object with:
+ * - `xml` — The generated RSS feed XML string.
+ * - `etag` — A strong ETag value representing the feed content and seed.
+ * - `lastModified` — The feed's last-modified timestamp as produced by the feed generator.
+ * - `episodeCount` — The total number of episodes fetched from Strapi.
+ */
 async function getCachedAudioFeed() {
     const [feed, episodes] = await Promise.all([fetchAudioFeedSingle(), fetchAllPodcasts()]);
     const cfg = getAudioFeedDefaults();
@@ -360,6 +398,14 @@ async function getCachedAudioFeed() {
     return {xml, etag, lastModified, episodeCount: episodes.length};
 }
 
+/**
+ * Refreshes the audio feed cache by rebuilding the feed and persisting the result to disk.
+ *
+ * Coalesces concurrent callers so only one build runs at a time, updates the in-memory `cachedFeed`,
+ * records build diagnostics and timing, and may schedule a state reset if recent builds are repeatedly slow.
+ *
+ * @returns The refreshed `CachedFeed` containing `xml`, `etag`, `lastModified`, `builtAtMs`, and `episodeCount`.
+ */
 async function refreshFeed(): Promise<CachedFeed> {
     if (inflight) {
         return inflight;
@@ -450,6 +496,11 @@ async function refreshFeed(): Promise<CachedFeed> {
     return inflight;
 }
 
+/**
+ * Clears in-memory audio feed state, records a diagnostic reset event, and restarts the background scheduler.
+ *
+ * @param reason - Reason for the reset: `slow_build` when the build cadence is deemed too slow, or `manual` for an explicit/manual reset.
+ */
 function resetAudioFeedState(reason: 'slow_build' | 'manual') {
     cachedFeed = null;
     inflight = null;
@@ -471,6 +522,11 @@ function resetAudioFeedState(reason: 'slow_build' | 'manual') {
     ensureScheduler();
 }
 
+/**
+ * Starts the background scheduler that periodically refreshes the audio feed.
+ *
+ * If the scheduler is already running this is a no-op. When started, it triggers an initial refresh in the background and schedules recurring refreshes every `FEED_REGENERATE_MS`; the underlying timer is unref'd so it does not keep the process alive.
+ */
 function ensureScheduler() {
     if (schedulerStarted) return;
     schedulerStarted = true;

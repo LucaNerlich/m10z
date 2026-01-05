@@ -74,6 +74,11 @@ export type AudioFeedMarkdownConverter = (args: {
     markdownText: string;
 }) => string;
 
+/**
+ * Get the current timestamp in milliseconds, preferring high-resolution timers when available.
+ *
+ * @returns The current time in milliseconds — uses `performance.now()` if available, otherwise `Date.now()`.
+ */
 function nowMs(): number {
     // Prefer high-resolution timers when available.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,6 +87,16 @@ function nowMs(): number {
     return Date.now();
 }
 
+/**
+ * Creates a timing aggregator for per-operation performance measurements.
+ *
+ * The returned collector accumulates counts and durations for each TimingOp and the summarize method
+ * produces a TimingSummary for each operation with millisecond values rounded to three decimals.
+ *
+ * @returns An object containing:
+ *  - `collector`: a AudioFeedTimingCollector with `record(op, durationMs)` which adds one sample for `op`. `durationMs` is clamped to 0 if non-finite or negative before accumulation; count, totalMs, minMs, and maxMs are updated accordingly.
+ *  - `summarize()`: returns an AudioFeedTiming mapping each TimingOp to a TimingSummary `{ count, totalMs, minMs, maxMs, avgMs }`. `totalMs`, `minMs`, `maxMs`, and `avgMs` are rounded to three decimal places; when `count` is 0, min/max/avg are `0`.
+ */
 function createTimingAggregator(): {
     collector: AudioFeedTimingCollector;
     summarize(): AudioFeedTiming;
@@ -124,6 +139,16 @@ function createTimingAggregator(): {
     };
 }
 
+/**
+ * Normalize a Strapi media object's size into bytes.
+ *
+ * If `media.sizeInBytes` is a finite number, it is floored and clamped to zero.
+ * Otherwise, if `media.size` is a finite number, it is interpreted as kilobytes
+ * (Strapi upload plugin convention) and converted to bytes, then floored and clamped to zero.
+ *
+ * @param media - The Strapi media object whose size should be normalized.
+ * @returns The size in bytes as an integer (>= 0), or `undefined` if no valid size is available.
+ */
 export function normalizeEnclosureLengthBytes(media: StrapiMedia): number | undefined {
     if (typeof media.sizeInBytes === 'number' && Number.isFinite(media.sizeInBytes)) {
         return Math.max(0, Math.floor(media.sizeInBytes));
@@ -264,17 +289,24 @@ function renderItem(
 }
 
 /**
- * Generate the complete RSS/Atom XML for an audio podcast feed and return caching metadata.
+ * Produce the complete RSS/Atom XML for an audio podcast feed and return related caching and timing metadata.
  *
- * Filters the provided episodes to published ones, orders them by effective publish date (newest first),
- * renders the channel header and each episode item, and produces the final RSS XML string together with
- * an ETag seed and the latest published date for Last-Modified usage.
+ * Filters and orders the provided episodes, renders the channel header and episode items, and returns the
+ * assembled XML plus ETag seed, last-modified date, timing summary, and the count of successfully rendered items.
  *
- * @returns An object with:
- *  - `xml`: the complete RSS/Atom feed XML as a string,
- *  - `etagSeed`: a seed string in the form `"<count>:<ISO date>"` or `"<count>:none"` when no publish date exists,
- *  - `lastModified`: the Date of the latest published episode or `null` if none
- * @param args
+ * @param args - Function inputs
+ * @param args.cfg - Feed configuration (site URL, TTL, iTunes settings, etc.)
+ * @param args.channel - Channel metadata for the feed
+ * @param args.episodeFooter - Optional footer content appended to each episode's description
+ * @param args.episodes - Array of episode objects to include in the feed
+ * @param args.timings - Optional timing collector that will receive per-operation timing samples
+ * @param args.markdownConverter - Optional converter to transform episode markdown (`shownotes`/`footer`) into HTML
+ * @returns An object containing:
+ *  - `xml`: the complete RSS/Atom feed XML string
+ *  - `etagSeed`: a seed string in the form `"<count>:<ISO date>"` where `<count>` is the total episodes considered and `<ISO date>` is the latest published date or `"none"`
+ *  - `lastModified`: the Date of the latest published episode, or `null` if none are published
+ *  - `timing`: aggregated per-operation timing summaries for markdown conversion, GUID generation, file metadata and enclosure processing
+ *  - `renderedEpisodeCount`: the number of episodes successfully rendered into feed items
  */
 export function generateAudioFeedXml(args: {
     cfg: AudioFeedConfig;
@@ -339,4 +371,3 @@ export function generateAudioFeedXml(args: {
         renderedEpisodeCount,
     };
 }
-
