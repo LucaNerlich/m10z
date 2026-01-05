@@ -67,7 +67,7 @@ function hasNextPage(currentPage: number, totalItems: number): boolean {
 export async function HomePage({page}: {page: number}) {
     let data;
     try {
-        data = await buildContentFeed(page, PAGE_SIZE);
+        data = await buildContentFeed(page, PAGE_SIZE, {tags: ['page:home']});
     } catch {
         return (
             <div className={styles.page}>

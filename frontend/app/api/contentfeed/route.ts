@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     const startedAt = Date.now();
 
     try {
-        const response: ContentFeedResponse = await buildContentFeed(page, pageSize);
+        const response: ContentFeedResponse = await buildContentFeed(page, pageSize, {tags: ['page:home']});
 
         const durationMs = Date.now() - startedAt;
         if (durationMs >= 500) {

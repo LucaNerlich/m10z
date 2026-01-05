@@ -38,7 +38,15 @@ export type ContentFeedResponse = {
     hasNextPage: boolean;
 };
 
-export async function buildContentFeed(page: number, pageSize: number): Promise<ContentFeedResponse> {
+export interface ContentFeedOptions {
+    tags?: string[];
+}
+
+export async function buildContentFeed(
+    page: number,
+    pageSize: number,
+    options: ContentFeedOptions = {},
+): Promise<ContentFeedResponse> {
     const safePage = Math.max(1, Math.floor(page || 1));
     const safePageSize = Math.max(1, Math.min(100, Math.floor(pageSize || 10)));
 
@@ -46,9 +54,13 @@ export async function buildContentFeed(page: number, pageSize: number): Promise<
     // Since items are merged, we fetch a larger buffer to ensure we have enough after merging.
     const fetchSize = Math.min(safePageSize * 2, 200);
 
+    const extraTags = options.tags ?? [];
+    const articleTags = Array.from(new Set(['strapi:article', 'strapi:article:list:page', ...extraTags]));
+    const podcastTags = Array.from(new Set(['strapi:podcast', 'strapi:podcast:list:page', ...extraTags]));
+
     const [articlesResult, podcastsResult] = await Promise.all([
-        fetchArticlesPage({page: 1, pageSize: fetchSize}),
-        fetchPodcastsPage({page: 1, pageSize: fetchSize}),
+        fetchArticlesPage({page: 1, pageSize: fetchSize, tags: articleTags}),
+        fetchPodcastsPage({page: 1, pageSize: fetchSize, tags: podcastTags}),
     ]);
 
     const articleItems: FeedItem[] = articlesResult.items.map((article) => {
