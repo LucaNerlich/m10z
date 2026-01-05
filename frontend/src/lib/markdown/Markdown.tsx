@@ -53,6 +53,7 @@ export function Markdown({markdown, className}: MarkdownProps) {
         <FancyboxClient className={containerClassName}>
             <ReactMarkdown
                 remarkPlugins={[remarkBreaks, remarkGfm, remarkSmartypants]}
+                remarkRehypeOptions={{clobberPrefix: ''}}
                 rehypePlugins={[
                     rehypeSlug,
                     [rehypeExternalLinks, {target: '_blank', rel: ['noopener', 'noreferrer']}],
@@ -64,7 +65,7 @@ export function Markdown({markdown, className}: MarkdownProps) {
                         {
                             ...defaultSchema,
                             // clobberPrefix defaults to 'user-content-' for security against DOM clobbering
-                            clobberPrefix: 'uc-',
+                            clobberPrefix: '',
                             tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark'],
                             // No additional attributes allowed for these tags to prevent XSS
                             attributes: {

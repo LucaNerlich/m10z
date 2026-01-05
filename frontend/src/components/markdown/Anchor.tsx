@@ -21,11 +21,27 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
         );
     }
 
+    // For in-page anchors (href starting with "#"), render a plain <a>.
+    // Using Next.js <Link> for hash-only navigation can cause scroll-to-top behavior
+    // and prevents native "jump to element" scrolling (e.g. GFM footnotes).
+    if (href.startsWith('#')) {
+        const existingUmamiEvent = (props as Record<string, unknown>)['data-umami-event'];
+        const umamiProps =
+            existingUmamiEvent == null
+                ? {'data-umami-event': umamiEventId(['anchor', href.replace(/^#/, '') || 'link'])}
+                : {};
+
+        return (
+            <a href={href} className={className} id={id} {...umamiProps} {...props}>
+                {children}
+            </a>
+        );
+    }
+
     // Secure same-site detection using URL origin comparison
     // This prevents protocol/case/trailing-slash/subdomain/protocol-relative URL attacks
     let processedHref = href;
     let isInternal = false;
-    const isAnchorLink = href.startsWith('#');
 
     // Get site origin for comparison (normalized, no trailing slash)
     const siteOrigin = (() => {
@@ -36,11 +52,7 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
         }
     })();
 
-    // Handle anchor links (treat as external for security attributes, but keep href)
-    if (isAnchorLink) {
-        isInternal = false;
-        processedHref = href;
-    } else if (href.startsWith('/')) {
+    if (href.startsWith('/')) {
         // Relative path - treat as internal
         isInternal = true;
         // Normalize trailing slash (remove for consistency, except root)
@@ -97,17 +109,15 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
     }
 
     // Add security attributes for external links (but not anchor links)
-    if (!isInternal && !isAnchorLink) {
+    if (!isInternal) {
         linkProps.target = '_blank';
         linkProps.rel = 'noopener noreferrer';
     }
 
-    // Add Umami events for non-page links (external + in-page anchors), unless explicitly provided.
+    // Add Umami events for non-page links (external), unless explicitly provided.
     const existingUmamiEvent = (props as Record<string, unknown>)['data-umami-event'];
     if (existingUmamiEvent == null) {
-        if (isAnchorLink) {
-            linkProps['data-umami-event'] = umamiEventId(['anchor', href.replace(/^#/, '') || 'link']);
-        } else if (!isInternal) {
+        if (!isInternal) {
             linkProps['data-umami-event'] = umamiExternalLinkEvent(processedHref, 'outbound');
         }
     }
