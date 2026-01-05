@@ -176,6 +176,11 @@
     margin-bottom: 1.5rem;
 }
 
+.markdown-content li > ul,
+.markdown-content li > ol {
+    margin-bottom: 0;
+}
+
 
 /* Image spacing in markdown content */
 .markdown-content img {
@@ -187,7 +192,6 @@
     .markdown-content a[data-fancybox] {
         display: block;
         max-width: 800px;
-        margin: 1.5rem auto;
     }
 
     .markdown-content a[data-fancybox] img {
