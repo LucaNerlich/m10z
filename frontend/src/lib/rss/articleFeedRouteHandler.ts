@@ -19,6 +19,7 @@ import {
 } from '@/src/lib/strapiContent';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
+import {getClientIp} from '@/src/lib/net/getClientIp';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -43,6 +44,7 @@ let cachedFeed: CachedFeed | null = null;
 let inflight: Promise<CachedFeed> | null = null;
 let schedulerStarted = false;
 let schedulerTimer: ReturnType<typeof setInterval> | null = null;
+let warmupStarted = false;
 
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,12 +69,6 @@ export function getSchedulerState() {
         schedulerStarted,
         hasTimer: schedulerTimer !== null,
     };
-}
-
-function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
 }
 
 async function ensureFeedDir() {
@@ -123,14 +119,40 @@ async function readFeedFromDisk(): Promise<CachedFeed | null> {
     }
 }
 
+/**
+ * Warm the feed once per process/module load:
+ * - Load any persisted feed from disk into memory immediately (best-effort)
+ * - Kick off one build in the background (best-effort)
+ *
+ * This reduces chances of serving a fallback or stale content during local testing.
+ */
+function ensureWarmup() {
+    if (warmupStarted) return;
+    warmupStarted = true;
+    void (async () => {
+        try {
+            const disk = await readFeedFromDisk();
+            if (disk) cachedFeed = disk;
+        } catch {
+            // ignore
+        }
+        try {
+            await refreshFeed();
+        } catch {
+            // ignore
+        }
+    })();
+}
+
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
     if (!STRAPI_URL) throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
+    const revalidate = process.env.NODE_ENV === 'production' ? CACHE_REVALIDATE_DEFAULT : 0;
     return await fetchStrapiJsonCore<T>({
         strapiBaseUrl: STRAPI_URL,
         apiPathWithQuery: pathWithQuery,
         token: STRAPI_TOKEN,
         tags: ['feed:article', 'strapi:article', 'strapi:article-feed'],
-        revalidate: CACHE_REVALIDATE_DEFAULT,
+        revalidate,
         timeoutMs: 30_000,
     });
 }
@@ -284,6 +306,7 @@ function ensureScheduler() {
 }
 
 export async function buildArticleFeedResponse(request: Request): Promise<Response> {
+    ensureWarmup();
     ensureScheduler();
 
     const ip = getClientIp(request);
@@ -316,7 +339,9 @@ export async function buildArticleFeedResponse(request: Request): Promise<Respon
     try {
         const now = Date.now();
         const disk = await readFeedFromDisk();
-        const freshEnough = disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
+        // In development, avoid serving potentially stale disk caches from previous runs.
+        const allowDiskFreshness = process.env.NODE_ENV === 'production';
+        const freshEnough = allowDiskFreshness && disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
         const feed = disk && freshEnough ? disk : await refreshFeed();
 
         // Encourage clients to revalidate on every request; server-side fetch remains cached by tags.
@@ -329,7 +354,20 @@ export async function buildArticleFeedResponse(request: Request): Promise<Respon
         if (maybe304) return maybe304;
 
         return new Response(feed.xml, {headers});
-    } catch {
+    } catch (err) {
+        // Prefer serving a cached (possibly stale) feed over an empty fallback when available.
+        const stale = cachedFeed ?? (await readFeedFromDisk().catch(() => null));
+        if (stale) {
+            const headers = buildRssHeaders({
+                etag: stale.etag,
+                lastModified: stale.lastModified,
+                cacheControl: 'no-store',
+            });
+            const maybe304 = maybeReturn304(request, stale.etag, headers);
+            if (maybe304) return maybe304;
+            return new Response(stale.xml, {headers});
+        }
+
         const fallback = fallbackFeedXml({
             title: 'M10Z Artikel',
             link: SITE_URL,
@@ -343,6 +381,13 @@ export async function buildArticleFeedResponse(request: Request): Promise<Respon
             name: 'feed.article.serve',
             ok: false,
             durationMs: 0,
+            detail:
+                err instanceof Error
+                    ? {
+                          errorName: err.name,
+                          errorMessage: err.message,
+                      }
+                    : {errorName: 'UnknownError'},
         });
 
         return new Response(fallback, {

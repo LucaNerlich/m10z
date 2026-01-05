@@ -12,6 +12,7 @@ import {
 } from '@/src/lib/rss/audiofeed';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {sha256Hex} from '@/src/lib/rss/xml';
+import {getClientIp} from '@/src/lib/net/getClientIp';
 import {
     buildRssHeaders,
     fallbackFeedXml,
@@ -51,6 +52,7 @@ let cachedFeed: CachedFeed | null = null;
 let inflight: Promise<CachedFeed> | null = null;
 let schedulerStarted = false;
 let schedulerTimer: ReturnType<typeof setInterval> | null = null;
+let warmupStarted = false;
 
 // Runtime health tracking (long-lived scheduler)
 let schedulerStartedAtMs: number | null = null;
@@ -168,15 +170,28 @@ export function getAudioFeedRuntimeState() {
 }
 
 /**
- * Determine the client's IP address from common proxy headers on the given request.
+ * Warm the feed once per process/module load:
+ * - Load any persisted feed from disk into memory immediately (best-effort)
+ * - Kick off one build in the background (best-effort)
  *
- * @param request - The incoming Request whose headers will be inspected for `x-forwarded-for` and `x-real-ip`
- * @returns The first IP from `x-forwarded-for` or the value of `x-real-ip` if present, `"unknown"` otherwise
+ * This reduces chances of serving a fallback or stale content during local testing.
  */
-function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
+function ensureWarmup() {
+    if (warmupStarted) return;
+    warmupStarted = true;
+    void (async () => {
+        try {
+            const disk = await readFeedFromDisk();
+            if (disk) cachedFeed = disk;
+        } catch {
+            // ignore
+        }
+        try {
+            await refreshFeed();
+        } catch {
+            // ignore
+        }
+    })();
 }
 
 async function ensureFeedDir() {
@@ -231,12 +246,13 @@ async function readFeedFromDisk(): Promise<CachedFeed | null> {
 
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
     if (!STRAPI_URL) throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
+    const revalidate = process.env.NODE_ENV === 'production' ? CACHE_REVALIDATE_DEFAULT : 0;
     return await fetchStrapiJsonCore<T>({
         strapiBaseUrl: STRAPI_URL,
         apiPathWithQuery: pathWithQuery,
         token: STRAPI_TOKEN,
         tags: ['feed:audio', 'strapi:podcast', 'strapi:audio-feed'],
-        revalidate: CACHE_REVALIDATE_DEFAULT,
+        revalidate,
         timeoutMs: 30_000,
     });
 }
@@ -542,6 +558,7 @@ function ensureScheduler() {
 }
 
 export async function buildAudioFeedResponse(request: Request): Promise<Response> {
+    ensureWarmup();
     ensureScheduler();
 
     // Prevent self-DoS: feeds are attractive to spam and can be expensive to build.
@@ -576,7 +593,9 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
         // Prefer on-disk cached feed (fast, no rebuild). Fall back to refresh on cache miss/staleness.
         const now = Date.now();
         const disk = await readFeedFromDisk();
-        const freshEnough = disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
+        // In development, avoid serving potentially stale disk caches from previous runs.
+        const allowDiskFreshness = process.env.NODE_ENV === 'production';
+        const freshEnough = allowDiskFreshness && disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
         const feed = disk && freshEnough ? disk : await refreshFeed();
 
         // Encourage clients to revalidate on every request; server-side fetch remains cached by tags.
@@ -591,6 +610,19 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
 
         return new Response(feed.xml, {headers});
     } catch (err) {
+        // Prefer serving a cached (possibly stale) feed over an empty fallback when available.
+        const stale = cachedFeed ?? (await readFeedFromDisk().catch(() => null));
+        if (stale) {
+            const headers = buildRssHeaders({
+                etag: stale.etag,
+                lastModified: stale.lastModified,
+                cacheControl: 'no-store',
+            });
+            const maybe304 = maybeReturn304(request, stale.etag, headers);
+            if (maybe304) return maybe304;
+            return new Response(stale.xml, {headers});
+        }
+
         const fallback = fallbackFeedXml({
             title: 'M10Z Podcasts',
             link: SITE_URL,
@@ -604,6 +636,14 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
             name: 'feed.audio.serve',
             ok: false,
             durationMs: 0,
+            detail:
+                err instanceof Error
+                    ? {
+                          // Keep error reporting non-sensitive: message should not include secrets.
+                          errorName: err.name,
+                          errorMessage: err.message,
+                      }
+                    : {errorName: 'UnknownError'},
         });
 
         return new Response(fallback, {

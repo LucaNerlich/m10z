@@ -4,18 +4,7 @@ import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {getRecentDiagnosticEvents} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getAudioFeedRuntimeState} from '@/src/lib/rss/audioFeedRouteHandler';
 import {getSchedulerState as getArticleFeedSchedulerState} from '@/src/lib/rss/articleFeedRouteHandler';
-
-/**
- * Extracts the client's IP address from request headers, preferring `x-forwarded-for`.
- *
- * @param request - Incoming Request; checks the `x-forwarded-for` header first (uses the first comma-separated entry), then `x-real-ip`.
- * @returns The client's IP address as a string, or `'unknown'` if no relevant headers are present.
- */
-function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
-}
+import {getClientIp} from '@/src/lib/net/getClientIp';
 
 /**
  * Handle GET requests to the diagnostics endpoint and return runtime diagnostics when authorized.

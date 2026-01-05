@@ -7,6 +7,7 @@ import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {CACHE_REVALIDATE_SEARCH} from '@/src/lib/cache/constants';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
+import {getClientIp} from '@/src/lib/net/getClientIp';
 
 type SearchIndexCache = {
     key: string;
@@ -202,12 +203,6 @@ function getCachedFuse(index: SearchIndexFile): Fuse<SearchRecord> {
     const fuse = buildFuse(index.records);
     fuseCache = {key, fuse, recordCount: index.records.length, builtAtMs: now};
     return fuse;
-}
-
-function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
-    if (xff) return xff.split(',')[0]?.trim() || 'unknown';
-    return request.headers.get('x-real-ip') ?? 'unknown';
 }
 
 /**
