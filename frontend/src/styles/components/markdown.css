@@ -67,6 +67,40 @@
     padding-top: 1rem;
 }
 
+.markdown-content h1 {
+    font-size: 2.25rem;
+}
+
+.markdown-content h2 {
+    font-size: 2rem;
+}
+
+.markdown-content h3 {
+    font-size: 1.75rem;
+}
+
+.markdown-content h4 {
+    font-size: 1.5rem;
+}
+
+.markdown-content h5 {
+    font-size: 1.25rem;
+}
+
+.markdown-content h6 {
+    font-size: 1.15rem;
+}
+
+.markdown-content h4 {
+    font-size: 1.5rem;
+}
+
+.markdown-content p {
+    /* 16px */
+    font-size: 1rem;
+}
+
+
 /* Remove padding-top from the first heading */
 .markdown-content > h1:first-child,
 .markdown-content > h2:first-child,
