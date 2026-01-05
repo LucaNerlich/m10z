@@ -4,6 +4,7 @@
 @import "theme.css";
 @import "typography.css";
 @import "components/markdown.css";
+@import "components/fancybox.css";
 
 html {
     scroll-behavior: smooth;

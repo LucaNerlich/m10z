@@ -1,0 +1,3 @@
+.fancybox__slide div.f-panzoom__viewport > img {
+    border-radius: var(--border-radius);
+}
