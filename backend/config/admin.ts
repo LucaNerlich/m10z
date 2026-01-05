@@ -32,4 +32,7 @@ export default ({env}) => ({
     watchIgnoreFiles: [
         '**/config/sync/**',
     ],
+    preview: {
+        enabled: false,
+    },
 });
