@@ -17,6 +17,7 @@ const secondaryLinks = [
     {label: 'Kategorien', href: routes.categories},
     {label: 'Team', href: routes.authors},
     {label: 'Über uns', href: routes.about},
+    {label: 'Forum 🔗', href: 'https://forum.m10z.de'},
 ] as const;
 
 /**
