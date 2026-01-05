@@ -60,6 +60,12 @@ const ALLOWED_ATTR = [
     'width',
 ];
 
+/**
+ * Convert Markdown to sanitized HTML suitable for RSS descriptions.
+ *
+ * @param markdownText - The Markdown source to convert
+ * @returns The sanitized HTML string produced from `markdownText`; returns an empty string if `markdownText` is falsy
+ */
 export function markdownToHtml(markdownText: string): string {
     if (!markdownText) return '';
 
@@ -101,6 +107,20 @@ export function markdownToHtml(markdownText: string): string {
     }
 }
 
+/**
+ * Return a snapshot of internal telemetry and configuration for the Markdown-to-HTML converter.
+ *
+ * @returns An object containing:
+ * - `conversions`: total number of conversions performed
+ * - `lastConversionAtMs`: timestamp (ms) of the last successful conversion, or `undefined` if none
+ * - `lastErrorAtMs`: timestamp (ms) of the last error during conversion, or `undefined` if none
+ * - `jsdom.windowsCreated`: number of JSDOM windows created
+ * - `jsdom.windowsClosed`: number of JSDOM windows closed
+ * - `domPurify.instancesCreated`: number of DOMPurify instances created
+ * - `marked.options`: the `gfm` and `breaks` options used for `marked`
+ * - `sanitizer.allowedTagsCount`: number of allowed HTML tags in the sanitizer
+ * - `sanitizer.allowedAttrCount`: number of allowed attributes in the sanitizer
+ */
 export function getMarkdownToHtmlState() {
     return {
         conversions,
@@ -125,5 +145,4 @@ export function getMarkdownToHtmlState() {
         },
     };
 }
-
 
