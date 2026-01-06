@@ -7,6 +7,7 @@ import rehypeExternalLinks from 'rehype-external-links';
 import rehypeSlug from 'rehype-slug';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, {defaultSchema} from 'rehype-sanitize';
+import rehypeUnwrapImages from 'rehype-unwrap-images';
 import {Code} from '@/src/components/markdown/Code';
 import {Heading} from '@/src/components/markdown/Heading';
 import {Image} from '@/src/components/markdown/Image';
@@ -72,16 +73,22 @@ export function Markdown({markdown, className}: MarkdownProps) {
                             // clobberPrefix defaults to 'user-content-' for security against DOM clobbering
                             clobberPrefix: '',
                             tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark'],
-                            // No additional attributes allowed for these tags to prevent XSS
+                            // Allow data-* attributes for Fancybox and analytics
                             attributes: {
                                 ...defaultSchema.attributes,
                                 ins: [],
                                 sup: [],
                                 sub: [],
                                 mark: [],
+                                a: [
+                                    ...(defaultSchema.attributes?.a || []),
+                                    ['data*', /^data-/],
+                                ],
                             },
                         },
                     ],
+                    // Unwrap images from <p> tags for proper styling
+                    rehypeUnwrapImages,
                 ]}
                 components={{
                     h1: Heading,
