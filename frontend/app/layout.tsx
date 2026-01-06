@@ -1,5 +1,4 @@
 import '../src/styles/global.css';
-import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import Header from '@/src/components/Header';
 import Footer from '@/src/components/Footer';
 import UmamiAnalytics from '@/src/components/UmamiAnalytics';

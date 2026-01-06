@@ -1,5 +1,6 @@
 'use client';
 
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import {useEffect, useRef, type ReactNode} from 'react';
 
 type FancyboxClientProps = {

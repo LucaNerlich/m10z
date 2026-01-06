@@ -1,7 +1,10 @@
+'use client';
+
 import React from 'react';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
 import {SafeImage} from '@/src/components/SafeImage';
 import {umamiEventId} from '@/src/lib/analytics/umami';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 export type ImageProps = React.ComponentProps<'img'>;
 
@@ -26,6 +29,7 @@ export function Image({src, alt = '', ...props}: ImageProps) {
             aria-label={`View image: ${alt || 'Gallery image'}`}
             style={{display: 'inline-block', width: '100%'}}
             data-umami-event={umamiEventId(['article', 'image', 'open'])}
+            onClick={(e) => e.preventDefault()}
         >
             <SafeImage
                 src={url}
