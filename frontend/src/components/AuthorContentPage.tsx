@@ -16,7 +16,7 @@ import {parseCategoryParam, parsePageParam} from '@/src/lib/params';
 import {absoluteRoute} from '@/src/lib/routes';
 import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
-import {fetchAuthorBySlug, type PaginatedResult} from '@/src/lib/strapiContent';
+import {fetchAuthorBySlug, fetchCategoryBySlug, type PaginatedResult} from '@/src/lib/strapiContent';
 import styles from './AuthorContentPage.module.css';
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -101,6 +101,9 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
     const sp = await Promise.resolve(props.searchParams ?? {});
     const page = parsePageParam(sp);
     const categorySlug = parseCategoryParam(sp);
+    const category = categorySlug ? await fetchCategoryBySlug(categorySlug) : null;
+    const fetchedCategoryTitle = category?.base?.title ?? null;
+    const categoryLabel = props.categoryFilterLabel ?? fetchedCategoryTitle ?? categorySlug;
 
     const author = await fetchAuthorBySlug(slug);
     if (!author) return notFound();
@@ -130,9 +133,9 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
                     <div className={styles.filterRow}>
                         <Link
                             href={`/kategorien/${encodeURIComponent(categorySlug)}`}
-                            aria-label={`Kategorie anzeigen: ${categorySlug}`}
+                            aria-label={`Kategorie anzeigen: ${categoryLabel}`}
                         >
-                            <Tag>{props.categoryFilterLabel ?? categorySlug}</Tag>
+                            <Tag>{categoryLabel}</Tag>
                         </Link>
                         <Link href={`/team/${slug}/${props.sectionPath}`}>Filter entfernen</Link>
                     </div>
