@@ -30,8 +30,6 @@ export function Image({src, alt = '', ...props}: ImageProps) {
             aria-label={`View image: ${alt || 'Gallery image'}`}
             style={{display: 'inline-block', width: '100%'}}
             data-umami-event={umamiEventId(['article', 'image', 'open'])}
-            // let fancybox handle the link click
-            onClick={(e) => e.preventDefault()}
         >
             <SafeImage
                 src={url}
