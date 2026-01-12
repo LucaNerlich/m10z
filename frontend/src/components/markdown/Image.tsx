@@ -21,6 +21,13 @@ export function Image({src, alt = '', ...props}: ImageProps) {
 
     const url = /^https?:\/\//i.test(src) ? src : toAbsoluteUrl(src);
 
+    const handleTouch = (e: React.TouchEvent<HTMLAnchorElement>) => {
+        // Prevent mobile browsers from following the link on touch
+        // This allows Fancybox's event delegation to handle the interaction
+        e.preventDefault();
+        // Note: We do NOT call e.stopPropagation() - the event must bubble to FancyboxClient
+    };
+
     // Use sensible defaults; Next/Image needs concrete dimensions.
     // SafeImage handles unauthorized external domains gracefully.
     return (
@@ -28,8 +35,16 @@ export function Image({src, alt = '', ...props}: ImageProps) {
             href={url}
             data-fancybox="article-gallery"
             aria-label={`View image: ${alt || 'Gallery image'}`}
-            style={{display: 'inline-block', width: '100%'}}
+            style={{
+                display: 'inline-block',
+                width: '100%',
+                cursor: 'pointer',
+                // Prevent iOS from showing tap highlight
+                WebkitTapHighlightColor: 'transparent',
+            }}
             data-umami-event={umamiEventId(['article', 'image', 'open'])}
+            onTouchStart={handleTouch}
+            onTouchEnd={handleTouch}
         >
             <SafeImage
                 src={url}
