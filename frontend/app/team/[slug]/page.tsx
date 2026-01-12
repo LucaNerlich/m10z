@@ -114,13 +114,15 @@ export default async function AuthorPage({params}: PageProps) {
 
     const articleTotal = articlesPage?.pagination.total ?? stats.articles.total;
     const podcastTotal = podcastsPage?.pagination.total ?? stats.podcasts.total;
+    const shouldRenderArticleSection = articleTotal > 0 && (sortedArticles.length > 0 || stats.articles.categories.length > 0);
+    const shouldRenderPodcastSection = sortedPodcasts.length > 0;
 
     return (
         <main data-list-page>
             <AuthorHeader author={author} />
             <AuthorNav authorSlug={slug} activeSection="overview" />
 
-            {articleTotal > 0 ? (
+            {shouldRenderArticleSection ? (
                 <Section title={`Artikel (${articleTotal})`}>
                     <div className={styles.summaryRow}>
                         {stats.articles.categories.slice(0, 6).map((c) => (
@@ -143,13 +145,13 @@ export default async function AuthorPage({params}: PageProps) {
                             ))}
                         </ContentGrid>
                     ) : (
-                        <EmptyState message="Keine Artikel von diesem Autor gefunden." />
+                        <EmptyState message="Artikel konnten gerade nicht geladen werden. Bitte später erneut versuchen." />
                     )}
                 </Section>
             ) : null}
 
-            {podcastTotal > 0 ? (
-                <Section title={`Podcasts (${podcastTotal})`}>
+            {shouldRenderPodcastSection ? (
+                <Section title={`Podcasts (${sortedPodcasts.length})`}>
                     <div className={styles.summaryRow}>
                         {stats.podcasts.categories.slice(0, 6).map((c) => (
                             <Link
@@ -164,15 +166,11 @@ export default async function AuthorPage({params}: PageProps) {
                             <Link href={`/team/${slug}/podcasts`}>Alle ansehen</Link>
                         </div>
                     </div>
-                    {sortedPodcasts.length > 0 ? (
-                        <ContentGrid gap="comfortable">
-                            {sortedPodcasts.map((podcast) => (
-                                <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false} showCategories={true} />
-                            ))}
-                        </ContentGrid>
-                    ) : (
-                        <EmptyState message="Keine Podcasts von diesem Autor gefunden." />
-                    )}
+                    <ContentGrid gap="comfortable">
+                        {sortedPodcasts.map((podcast) => (
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false} showCategories={true} />
+                        ))}
+                    </ContentGrid>
                 </Section>
             ) : null}
 

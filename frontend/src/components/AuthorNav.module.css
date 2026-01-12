@@ -12,10 +12,16 @@
     border-bottom: 1px solid var(--color-border);
     margin-bottom: 1rem;
     -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none; /* IE 10+ */
+    scrollbar-width: none; /* Firefox */
 
     @media (max-width: 768px) {
         justify-content: center;
     }
+}
+
+.inner::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/WebKit */
 }
 
 .link {

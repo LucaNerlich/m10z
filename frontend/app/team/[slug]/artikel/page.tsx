@@ -16,26 +16,12 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {fetchArticlesByAuthorPaginated, fetchAuthorBySlug} from '@/src/lib/strapiContent';
+import {parseCategoryParam, parsePageParam} from '@/src/lib/params';
 
 type PageProps = {
     params: Promise<{slug: string}>;
     searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
 };
-
-function parsePageParam(searchParams: Record<string, string | string[] | undefined>): number {
-    const raw = searchParams.page;
-    const rawString = Array.isArray(raw) ? raw[0] : raw;
-    const parsed = Number(rawString);
-    if (!Number.isFinite(parsed) || parsed < 1) return 1;
-    return Math.max(1, Math.floor(parsed));
-}
-
-function parseCategoryParam(searchParams: Record<string, string | string[] | undefined>): string | null {
-    const raw = searchParams.category;
-    const rawString = Array.isArray(raw) ? raw[0] : raw;
-    if (!rawString) return null;
-    return validateSlugSafe(rawString);
-}
 
 export async function generateMetadata({params, searchParams}: PageProps): Promise<Metadata> {
     const {slug: rawSlug} = await params;
@@ -141,7 +127,7 @@ export default async function AuthorArticlesPage({params, searchParams}: PagePro
                             message={
                                 categorySlug
                                     ? 'Keine Artikel in dieser Kategorie von diesem Autor gefunden.'
-                                    : 'Keine Artikel von diesem Autor gefunden.'
+                                    : 'Keine Artikel von dieser*m Autor*in gefunden.'
                             }
                         />
                         {categorySlug ? (
