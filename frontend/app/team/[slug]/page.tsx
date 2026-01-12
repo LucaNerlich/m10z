@@ -1,7 +1,7 @@
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
-import {fetchArticlesBySlugsBatched, fetchAuthorBySlug, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
+import {fetchArticlesByAuthorPaginated, fetchAuthorBySlug, fetchPodcastsByAuthorPaginated} from '@/src/lib/strapiContent';
 import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
@@ -14,6 +14,11 @@ import {AuthorHeader} from '@/src/components/AuthorHeader';
 import {Section} from '@/src/components/Section';
 import {EmptyState} from '@/src/components/EmptyState';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
+import {AuthorNav} from '@/src/components/AuthorNav';
+import Link from 'next/link';
+import {Tag} from '@/src/components/Tag';
+import {computeAuthorContentStats} from '@/src/lib/authorContentStats';
+import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -80,60 +85,96 @@ export default async function AuthorPage({params}: PageProps) {
     const author = await fetchAuthorBySlug(slug);
     if (!author) return notFound();
 
-    const articleSlugs = author.articles?.map((a) => a.slug).filter(Boolean) ?? [];
-    const podcastSlugs = author.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
+    // Fetch a limited page for previews + category signal; totals come from pagination meta.
+    const previewFetchPageSize = 20;
+    const previewRenderLimit = 4;
 
     const [articlesResult, podcastsResult] = await Promise.allSettled([
-        fetchArticlesBySlugsBatched(articleSlugs),
-        fetchPodcastsBySlugsBatched(podcastSlugs),
+        fetchArticlesByAuthorPaginated(slug, 1, previewFetchPageSize),
+        fetchPodcastsByAuthorPaginated(slug, 1, previewFetchPageSize),
     ]);
 
-    let articles: Awaited<ReturnType<typeof fetchArticlesBySlugsBatched>> = [];
-    let podcasts: Awaited<ReturnType<typeof fetchPodcastsBySlugsBatched>> = [];
+    const articlesPage = articlesResult.status === 'fulfilled' ? articlesResult.value : null;
+    const podcastsPage = podcastsResult.status === 'fulfilled' ? podcastsResult.value : null;
 
-    if (articlesResult.status === 'fulfilled') {
-        articles = articlesResult.value;
-    } else {
+    if (articlesResult.status === 'rejected') {
         console.error('Failed to fetch articles for author:', articlesResult.reason);
     }
-
-    if (podcastsResult.status === 'fulfilled') {
-        podcasts = podcastsResult.value;
-    } else {
+    if (podcastsResult.status === 'rejected') {
         console.error('Failed to fetch podcasts for author:', podcastsResult.reason);
     }
 
-    // Sort by date descending
-    const sortedArticles = sortByDateDesc(articles);
-    const sortedPodcasts = sortByDateDesc(podcasts);
+    // Category counts should reflect ALL author content (not just the preview page).
+    const allAuthorArticles = (author.articles ?? []).filter((a) => Boolean(a.publishedAt));
+    const allAuthorPodcasts = (author.podcasts ?? []).filter((p) => Boolean(p.publishedAt));
+    const stats = computeAuthorContentStats(allAuthorArticles, allAuthorPodcasts);
+
+    const sortedArticles = sortByDateDesc(articlesPage?.items ?? []).slice(0, previewRenderLimit);
+    const sortedPodcasts = sortByDateDesc(podcastsPage?.items ?? []).slice(0, previewRenderLimit);
+
+    const articleTotal = articlesPage?.pagination.total ?? stats.articles.total;
+    const podcastTotal = podcastsPage?.pagination.total ?? stats.podcasts.total;
+    const shouldRenderArticleSection = articleTotal > 0 && (sortedArticles.length > 0 || stats.articles.categories.length > 0);
+    const shouldRenderPodcastSection = sortedPodcasts.length > 0;
 
     return (
         <main data-list-page>
             <AuthorHeader author={author} />
+            <AuthorNav authorSlug={slug} activeSection="overview" />
 
-            {sortedArticles.length > 0 ? (
-                <Section title={`Artikel (${sortedArticles.length})`}>
-                    <ContentGrid gap="comfortable">
-                        {sortedArticles.map((article) => (
-                            <ArticleCard key={article.slug} article={article} showAuthors={false}
-                                         showCategories={true} />
+            {shouldRenderArticleSection ? (
+                <Section title={`Artikel (${articleTotal})`}>
+                    <div className={styles.summaryRow}>
+                        {stats.articles.categories.slice(0, 6).map((c) => (
+                            <Link
+                                key={c.slug}
+                                href={`/team/${slug}/artikel?category=${encodeURIComponent(c.slug)}`}
+                                className={styles.categoryLink}
+                            >
+                                <Tag>{c.title} ({c.count})</Tag>
+                            </Link>
                         ))}
-                    </ContentGrid>
+                        <div className={styles.viewAll}>
+                            <Link href={`/team/${slug}/artikel`}>Alle ansehen</Link>
+                        </div>
+                    </div>
+                    {sortedArticles.length > 0 ? (
+                        <ContentGrid gap="comfortable">
+                            {sortedArticles.map((article) => (
+                                <ArticleCard key={article.slug} article={article} showAuthors={false} showCategories={true} />
+                            ))}
+                        </ContentGrid>
+                    ) : (
+                        <EmptyState message="Artikel konnten gerade nicht geladen werden. Bitte später erneut versuchen." />
+                    )}
                 </Section>
             ) : null}
 
-            {sortedPodcasts.length > 0 ? (
+            {shouldRenderPodcastSection ? (
                 <Section title={`Podcasts (${sortedPodcasts.length})`}>
+                    <div className={styles.summaryRow}>
+                        {stats.podcasts.categories.slice(0, 6).map((c) => (
+                            <Link
+                                key={c.slug}
+                                href={`/team/${slug}/podcasts?category=${encodeURIComponent(c.slug)}`}
+                                className={styles.categoryLink}
+                            >
+                                <Tag>{c.title} ({c.count})</Tag>
+                            </Link>
+                        ))}
+                        <div className={styles.viewAll}>
+                            <Link href={`/team/${slug}/podcasts`}>Alle ansehen</Link>
+                        </div>
+                    </div>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
-                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false}
-                                         showCategories={true} />
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false} showCategories={true} />
                         ))}
                     </ContentGrid>
                 </Section>
             ) : null}
 
-            {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
+            {articleTotal === 0 && podcastTotal === 0 ? (
                 <EmptyState message="Keine Inhalte von diesem Autor gefunden." />
             ) : null}
         </main>

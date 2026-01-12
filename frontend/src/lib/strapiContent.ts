@@ -3,7 +3,7 @@ import {cache} from 'react';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {type StrapiAuthor, type StrapiMediaRef} from '@/src/lib/rss/media';
+import {type StrapiAuthor, type StrapiMediaRef, type StrapiCategoryRef} from '@/src/lib/rss/media';
 import {CACHE_REVALIDATE_DEFAULT, CACHE_REVALIDATE_CONTENT_PAGE} from '@/src/lib/cache/constants';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
@@ -38,6 +38,14 @@ export const populateBaseMedia = {
 export const populateAuthorAvatar = {
     populate: {avatar: populateMedia},
     fields: AUTHOR_FIELDS,
+};
+const populateCategoryForStats = {
+    populate: {
+        base: {
+            fields: ['title'] as const,
+        },
+    },
+    fields: ['slug'] as const,
 };
 export const populateCategoryBase = {
     populate: {
@@ -75,6 +83,36 @@ export type PaginatedResult<T> = {
     pagination: PaginationMeta;
     hasNextPage: boolean;
 };
+
+function buildAuthorPageTags(args: {
+    contentType: 'article' | 'podcast';
+    authorSlug: string;
+    categorySlug?: string;
+}): string[] {
+    const {contentType, authorSlug, categorySlug} = args;
+
+    const baseTypeTag = `strapi:${contentType}`;
+    const baseListTag = `strapi:${contentType}:list`;
+
+    // Ensure author pages invalidate when the author itself changes.
+    const authorTags = ['strapi:author', `strapi:author:${authorSlug}`];
+
+    const tags: string[] = [
+        baseTypeTag,
+        baseListTag,
+        ...authorTags,
+        `strapi:${contentType}:list:author:${authorSlug}`,
+        `strapi:${contentType}:list:author:${authorSlug}:page`,
+    ];
+
+    if (categorySlug) {
+        tags.push('strapi:category', `strapi:category:${categorySlug}`);
+        tags.push(`strapi:${contentType}:list:author:${authorSlug}:category:${categorySlug}`);
+        tags.push(`strapi:${contentType}:list:author:${authorSlug}:category:${categorySlug}:page`);
+    }
+
+    return tags;
+}
 
 type FetchListOptions = {
     limit?: number;
@@ -405,11 +443,13 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
         slug: string;
         publishedAt?: string | null;
         base: {title: string; date?: string | null};
+        categories?: StrapiCategoryRef[];
     }>;
     podcasts?: Array<{
         slug: string;
         publishedAt?: string | null;
         base: {title: string; date?: string | null};
+        categories?: StrapiCategoryRef[];
     }>;
 };
 
@@ -477,8 +517,20 @@ export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAutho
             filters: {slug: {$eq: slug}},
             populate: {
                 avatar: true,
-                articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
-                podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                articles: {
+                    populate: {
+                        base: {fields: ['title', 'date']},
+                        categories: populateCategoryForStats,
+                    },
+                    fields: ['slug', 'publishedAt'],
+                },
+                podcasts: {
+                    populate: {
+                        base: {fields: ['title', 'date']},
+                        categories: populateCategoryForStats,
+                    },
+                    fields: ['slug', 'publishedAt'],
+                },
             },
             fields: ['slug', 'title', 'description'],
             pagination: {pageSize: 1},
@@ -792,3 +844,117 @@ export const fetchPodcastsPage = cache(async (options: FetchPageOptions = {}): P
 
     return toPaginatedResult(res, page, pageSize);
 });
+
+/**
+ * Fetch a paginated list of published articles for a given author (optionally filtered by category).
+ *
+ * Uses Strapi filter syntax equivalent to `filters[authors][slug][$eq]=<authorSlug>` plus standard pagination parameters.
+ *
+ * @param authorSlug - Author slug to filter by
+ * @param page - Page number (minimum 1)
+ * @param pageSize - Items per page (clamped to 1–200)
+ * @param categorySlug - Optional category slug to additionally filter by
+ * @returns PaginatedResult of StrapiArticle for the requested page
+ */
+export const fetchArticlesByAuthorPaginated = cache(
+    async (authorSlug: string, page: number, pageSize: number, categorySlug?: string): Promise<PaginatedResult<StrapiArticle>> => {
+        const safePage = Math.max(1, Math.floor(page));
+        const safePageSize = Math.max(1, Math.min(200, Math.floor(pageSize)));
+
+        const query = qs.stringify(
+            {
+                sort: ['base.date:desc'],
+                status: 'published',
+                filters: {
+                    authors: {slug: {$eq: authorSlug}},
+                    ...(categorySlug ? {categories: {slug: {$eq: categorySlug}}} : {}),
+                },
+                pagination: {pageSize: safePageSize, page: safePage},
+                populate: {
+                    base: populateBaseMedia,
+                    categories: populateCategoryBase,
+                    youtube: true,
+                },
+                fields: ['slug', 'wordCount', 'publishedAt'],
+            },
+            {encodeValuesOnly: true},
+        );
+
+        const res = await fetchJson<{data: StrapiArticle[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
+            `/api/articles?${query}`,
+            {
+                tags: buildAuthorPageTags({contentType: 'article', authorSlug, categorySlug}),
+                revalidate: CACHE_REVALIDATE_DEFAULT,
+                context: {
+                    slug: authorSlug,
+                    contentType: 'article',
+                    populateOptions: {
+                        base: populateBaseMedia,
+                        categories: populateCategoryBase,
+                        youtube: true,
+                    },
+                },
+            },
+        );
+
+        return toPaginatedResult(res, safePage, safePageSize);
+    },
+);
+
+/**
+ * Fetch a paginated list of published podcasts for a given author (optionally filtered by category).
+ *
+ * Uses Strapi filter syntax equivalent to `filters[authors][slug][$eq]=<authorSlug>` plus standard pagination parameters.
+ *
+ * @param authorSlug - Author slug to filter by
+ * @param page - Page number (minimum 1)
+ * @param pageSize - Items per page (clamped to 1–200)
+ * @param categorySlug - Optional category slug to additionally filter by
+ * @returns PaginatedResult of StrapiPodcast for the requested page
+ */
+export const fetchPodcastsByAuthorPaginated = cache(
+    async (authorSlug: string, page: number, pageSize: number, categorySlug?: string): Promise<PaginatedResult<StrapiPodcast>> => {
+        const safePage = Math.max(1, Math.floor(page));
+        const safePageSize = Math.max(1, Math.min(200, Math.floor(pageSize)));
+
+        const query = qs.stringify(
+            {
+                sort: ['base.date:desc'],
+                status: 'published',
+                filters: {
+                    authors: {slug: {$eq: authorSlug}},
+                    ...(categorySlug ? {categories: {slug: {$eq: categorySlug}}} : {}),
+                },
+                pagination: {pageSize: safePageSize, page: safePage},
+                populate: {
+                    base: populateBaseMedia,
+                    categories: populateCategoryBase,
+                    youtube: {fields: ['title', 'url']},
+                    file: {populate: '*'},
+                },
+                fields: ['slug', 'duration', 'wordCount', 'publishedAt'],
+            },
+            {encodeValuesOnly: true},
+        );
+
+        const res = await fetchJson<{data: StrapiPodcast[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
+            `/api/podcasts?${query}`,
+            {
+                tags: buildAuthorPageTags({contentType: 'podcast', authorSlug, categorySlug}),
+                revalidate: CACHE_REVALIDATE_DEFAULT,
+                context: {
+                    slug: authorSlug,
+                    contentType: 'podcast',
+                    populateOptions: {
+                        base: populateBaseMedia,
+                        categories: populateCategoryBase,
+                        youtube: {fields: ['title', 'url']},
+                        file: {populate: '*'},
+                    },
+                },
+            },
+        );
+
+        return toPaginatedResult(res, safePage, safePageSize);
+    },
+);
