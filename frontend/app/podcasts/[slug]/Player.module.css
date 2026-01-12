@@ -5,4 +5,17 @@
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-soft);
+
+    audio {
+        min-height: 50px;
+        height: auto;
+
+        /* firefox specific ix to remove extra height */
+        @-moz-document url-prefix() {
+            min-height: 0;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+        }
+    }
 }

@@ -16,13 +16,15 @@ export function PodcastPlayer({src}: PlayerProps) {
     const playerProps: ReactPlayerProps = {
         src: src,
         width: '100%',
-        height: '50px',
+        height: 'auto',
         controls: true,
     };
 
     return (
         <div className={styles.player}>
-            <ReactPlayer {...playerProps} />
+            <ReactPlayer {...playerProps}
+                         controls
+                         preload="metadata" />
         </div>
     );
 }
