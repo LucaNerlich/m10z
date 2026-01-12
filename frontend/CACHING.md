@@ -29,6 +29,20 @@ Content-type tags follow the pattern `strapi:{content-type}` and may include add
 
 Similar patterns apply to podcasts (`strapi:podcast`), authors (`strapi:author`), and categories (`strapi:category`).
 
+### Author Section Pages (Paginated)
+
+Author section pages under `/team/{authorSlug}` use author-qualified list tags in addition to the base content tags:
+
+- **Articles by author**: `strapi:article:list:author:{authorSlug}` and `strapi:article:list:author:{authorSlug}:page`
+- **Podcasts by author**: `strapi:podcast:list:author:{authorSlug}` and `strapi:podcast:list:author:{authorSlug}:page`
+
+When a category filter is applied (e.g. `/team/{authorSlug}/artikel?category={categorySlug}`), additional tags are attached:
+
+- **Filtered articles by author+category**: `strapi:article:list:author:{authorSlug}:category:{categorySlug}` and `strapi:article:list:author:{authorSlug}:category:{categorySlug}:page`
+- **Filtered podcasts by author+category**: `strapi:podcast:list:author:{authorSlug}:category:{categorySlug}` and `strapi:podcast:list:author:{authorSlug}:category:{categorySlug}:page`
+
+These requests also include base tags (`strapi:article` / `strapi:podcast`), author tags (`strapi:author:{authorSlug}`), and (when filtered) category tags (`strapi:category:{categorySlug}`) so existing invalidation endpoints continue to work.
+
 ## Tag Usage
 
 ### Content Pages
