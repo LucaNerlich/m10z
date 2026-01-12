@@ -104,7 +104,10 @@ export default async function AuthorPage({params}: PageProps) {
         console.error('Failed to fetch podcasts for author:', podcastsResult.reason);
     }
 
-    const stats = computeAuthorContentStats(articlesPage?.items ?? [], podcastsPage?.items ?? []);
+    // Category counts should reflect ALL author content (not just the preview page).
+    const allAuthorArticles = (author.articles ?? []).filter((a) => Boolean(a.publishedAt));
+    const allAuthorPodcasts = (author.podcasts ?? []).filter((p) => Boolean(p.publishedAt));
+    const stats = computeAuthorContentStats(allAuthorArticles, allAuthorPodcasts);
 
     const sortedArticles = sortByDateDesc(articlesPage?.items ?? []).slice(0, previewRenderLimit);
     const sortedPodcasts = sortByDateDesc(podcastsPage?.items ?? []).slice(0, previewRenderLimit);

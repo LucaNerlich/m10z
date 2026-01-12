@@ -3,7 +3,7 @@ import {cache} from 'react';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {type StrapiAuthor, type StrapiMediaRef} from '@/src/lib/rss/media';
+import {type StrapiAuthor, type StrapiMediaRef, type StrapiCategoryRef} from '@/src/lib/rss/media';
 import {CACHE_REVALIDATE_DEFAULT, CACHE_REVALIDATE_CONTENT_PAGE} from '@/src/lib/cache/constants';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
@@ -38,6 +38,14 @@ export const populateBaseMedia = {
 export const populateAuthorAvatar = {
     populate: {avatar: populateMedia},
     fields: AUTHOR_FIELDS,
+};
+const populateCategoryForStats = {
+    populate: {
+        base: {
+            fields: ['title'] as const,
+        },
+    },
+    fields: ['slug'] as const,
 };
 export const populateCategoryBase = {
     populate: {
@@ -435,11 +443,13 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
         slug: string;
         publishedAt?: string | null;
         base: {title: string; date?: string | null};
+        categories?: StrapiCategoryRef[];
     }>;
     podcasts?: Array<{
         slug: string;
         publishedAt?: string | null;
         base: {title: string; date?: string | null};
+        categories?: StrapiCategoryRef[];
     }>;
 };
 
@@ -507,8 +517,20 @@ export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAutho
             filters: {slug: {$eq: slug}},
             populate: {
                 avatar: true,
-                articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
-                podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                articles: {
+                    populate: {
+                        base: {fields: ['title', 'date']},
+                        categories: populateCategoryForStats,
+                    },
+                    fields: ['slug', 'publishedAt'],
+                },
+                podcasts: {
+                    populate: {
+                        base: {fields: ['title', 'date']},
+                        categories: populateCategoryForStats,
+                    },
+                    fields: ['slug', 'publishedAt'],
+                },
             },
             fields: ['slug', 'title', 'description'],
             pagination: {pageSize: 1},

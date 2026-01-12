@@ -1,5 +1,4 @@
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
-import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
+import {type StrapiCategoryRef} from '@/src/lib/rss/media';
 import {type PaginatedResult} from '@/src/lib/strapiContent';
 
 export type CategoryCount = {
@@ -19,12 +18,16 @@ export type AuthorContentStats = {
     };
 };
 
+type ItemWithCategories = {
+    categories?: StrapiCategoryRef[] | null;
+};
+
 function isPaginatedResult<T>(value: unknown): value is PaginatedResult<T> {
     if (!value || typeof value !== 'object') return false;
     return 'items' in value && 'pagination' in value;
 }
 
-function computeCategoryCounts(items: Array<StrapiArticle | StrapiPodcast>): CategoryCount[] {
+function computeCategoryCounts(items: ItemWithCategories[]): CategoryCount[] {
     const map = new Map<string, {slug: string; title: string; count: number}>();
 
     for (const item of items) {
@@ -47,10 +50,8 @@ function computeCategoryCounts(items: Array<StrapiArticle | StrapiPodcast>): Cat
     });
 }
 
-function normalizeInput<T extends StrapiArticle | StrapiPodcast>(
-    input: PaginatedResult<T> | T[],
-): {items: T[]; total: number} {
-    if (isPaginatedResult<T>(input)) {
+function normalizeInput(input: PaginatedResult<ItemWithCategories> | ItemWithCategories[]): {items: ItemWithCategories[]; total: number} {
+    if (isPaginatedResult<ItemWithCategories>(input)) {
         return {items: input.items, total: input.pagination.total};
     }
     return {items: input, total: input.length};
@@ -62,8 +63,8 @@ function normalizeInput<T extends StrapiArticle | StrapiPodcast>(
  * Accepts either full arrays, or PaginatedResult values (in which case `total` is taken from pagination meta).
  */
 export function computeAuthorContentStats(
-    articles: PaginatedResult<StrapiArticle> | StrapiArticle[],
-    podcasts: PaginatedResult<StrapiPodcast> | StrapiPodcast[],
+    articles: PaginatedResult<ItemWithCategories> | ItemWithCategories[],
+    podcasts: PaginatedResult<ItemWithCategories> | ItemWithCategories[],
 ): AuthorContentStats {
     const a = normalizeInput(articles);
     const p = normalizeInput(podcasts);
