@@ -12,6 +12,10 @@
     border-bottom: 1px solid var(--color-border);
     margin-bottom: 1rem;
     -webkit-overflow-scrolling: touch;
+
+    @media (max-width: 768px) {
+        justify-content: center;
+    }
 }
 
 .link {

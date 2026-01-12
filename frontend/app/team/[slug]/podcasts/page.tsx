@@ -9,6 +9,7 @@ import {EmptyState} from '@/src/components/EmptyState';
 import {Pagination} from '@/src/components/Pagination';
 import {PodcastCard} from '@/src/components/PodcastCard';
 import {Section} from '@/src/components/Section';
+import {Tag} from '@/src/components/Tag';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {absoluteRoute} from '@/src/lib/routes';
@@ -118,7 +119,15 @@ export default async function AuthorPodcastsPage({params, searchParams}: PagePro
             <AuthorHeader author={author} />
             <AuthorNav authorSlug={slug} activeSection="podcasts" />
 
-            <Section title={categorySlug ? `Podcasts (Kategorie: ${categorySlug})` : 'Podcasts'}>
+            <Section title="Podcasts">
+                {categorySlug ? (
+                    <div style={{display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap', marginBottom: 14}}>
+                        <Link href={`/kategorien/${encodeURIComponent(categorySlug)}`} aria-label={`Kategorie anzeigen: ${categorySlug}`}>
+                            <Tag>{categorySlug}</Tag>
+                        </Link>
+                        <Link href={`/team/${slug}/podcasts`}>Filter entfernen</Link>
+                    </div>
+                ) : null}
                 {isOutOfRange ? (
                     <div>
                         <EmptyState message="Diese Seite existiert nicht." />
