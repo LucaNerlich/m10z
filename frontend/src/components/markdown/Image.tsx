@@ -1,59 +1,34 @@
 'use client';
 
-import React, {useRef} from 'react';
+import React from 'react';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
-import {SafeImage} from '@/src/components/SafeImage';
-import {umamiEventId} from '@/src/lib/analytics/umami';
+import {isImageHostnameAllowed} from '@/src/lib/imageUtils';
+import {GalleryImage} from './GalleryImage';
+import {PlainImage} from './PlainImage';
 
 export type ImageProps = React.ComponentProps<'img'>;
 
 /**
- * Render an image suitable for markdown with Fancybox gallery support.
+ * Route markdown images between gallery-enabled and plain display.
+ *
+ * - Authorized image hostnames (as defined in imageUtils.ts) use GalleryImage,
+ *   which integrates with Fancybox via data-fancybox attributes.
+ * - External/unauthorized hostnames use PlainImage, a simple SafeImage wrapper
+ *   without any Fancybox behavior.
  *
  * @param src - Image source URL or path; if missing or not a string, the component returns `null`
- * @param alt - Alternate text for the image and for the link's aria-label (defaults to an empty string)
- * @returns The anchor-wrapped image element configured for gallery viewing, or `null` when `src` is invalid
+ * @param alt - Alternate text for the image (defaults to an empty string)
  */
-export function Image({src, alt = '', ...props}: ImageProps) {
-    const linkRef = useRef<HTMLAnchorElement>(null);
-
+export function Image({src, alt = ''}: ImageProps) {
     if (!src || typeof src !== 'string') return null;
 
     const url = /^https?:\/\//i.test(src) ? src : toAbsoluteUrl(src);
 
-    const handleTouch = (e: React.TouchEvent<HTMLAnchorElement>) => {
-        // Prevent mobile browsers from following the link on touch
-        // This allows Fancybox's event delegation to handle the interaction
-        e.preventDefault();
-        // Note: We do NOT call e.stopPropagation() - the event must bubble to FancyboxClient
-    };
+    const isAllowed = isImageHostnameAllowed(url);
 
-    // Use sensible defaults; Next/Image needs concrete dimensions.
-    // SafeImage handles unauthorized external domains gracefully.
-    return (
-        <a
-            href={url}
-            data-fancybox="article-gallery"
-            aria-label={`View image: ${alt || 'Gallery image'}`}
-            style={{
-                display: 'inline-block',
-                width: '100%',
-                cursor: 'pointer',
-                // Prevent iOS from showing tap highlight
-                WebkitTapHighlightColor: 'transparent',
-            }}
-            data-umami-event={umamiEventId(['article', 'image', 'open'])}
-            onTouchStart={handleTouch}
-            onTouchEnd={handleTouch}
-        >
-            <SafeImage
-                src={url}
-                alt={alt}
-                width={1200}
-                height={675}
-                sizes="100vw"
-                style={{height: 'auto', width: '100%'}}
-            />
-        </a>
-    );
+    if (isAllowed) {
+        return <GalleryImage src={url} alt={alt} />;
+    }
+
+    return <PlainImage src={url} alt={alt} />;
 }
