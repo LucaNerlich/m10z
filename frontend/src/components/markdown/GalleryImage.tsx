@@ -34,25 +34,12 @@ export function GalleryImage({src, alt = '', style, ...props}: GalleryImageProps
         ...style,
     };
 
-    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        // Prevent default navigation - let Fancybox handle opening the lightbox
-        e.preventDefault();
-    };
-
-    const handleTouchStart = (e: React.TouchEvent<HTMLAnchorElement>) => {
-        // Prevent default navigation on mobile - let Fancybox handle opening the lightbox
-        e.preventDefault();
-    };
-
     return (
         <a
             href={url}
             data-fancybox="article-gallery"
             aria-label={`View image: ${alt || 'Gallery image'}`}
             style={combinedStyle}
-            data-umami-event={umamiEventId(['article', 'image', 'open'])}
-            onClick={handleClick}
-            onTouchStart={handleTouchStart}
         >
             <Image
                 src={url}
