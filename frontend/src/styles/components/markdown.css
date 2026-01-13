@@ -220,6 +220,8 @@
 .markdown-content img {
     margin: 1.5rem 0;
     border-radius: var(--border-radius);
+    width: 100%;
+    height: auto;
 }
 
 /* Desktop image constraints for markdown content */

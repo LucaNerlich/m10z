@@ -2,6 +2,7 @@
 
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import {useEffect, useRef, type ReactNode} from 'react';
+import {Fancybox} from '@fancyapps/ui';
 
 type FancyboxClientProps = {
     children: ReactNode;
@@ -18,30 +19,20 @@ type FancyboxApi = {
 
 export function FancyboxClient({children, className}: FancyboxClientProps) {
     const ref = useRef<HTMLDivElement | null>(null);
-    const fancyboxRef = useRef<FancyboxApi | null>(null);
 
     useEffect(() => {
         if (!ref.current) return;
 
-        let isMounted = true;
         const el = ref.current;
 
-        const cleanupPromise = import('@fancyapps/ui/dist/fancybox/').then(({Fancybox}) => {
-            if (!isMounted) return;
-            fancyboxRef.current = Fancybox as unknown as FancyboxApi;
-            Fancybox.bind(el, '[data-fancybox="article-gallery"]');
-        });
+        // Bind Fancybox eagerly on mount so it can intercept the first tap/click,
+        // especially on mobile browsers where navigation can happen quickly.
+        const fb = Fancybox as unknown as FancyboxApi;
+        fb.bind(el, '[data-fancybox="article-gallery"]');
 
         return () => {
-            isMounted = false;
-            cleanupPromise.finally(() => {
-                const fb = fancyboxRef.current;
-                if (fb) {
-                    fb.unbind(el);
-                    fb.close();
-                }
-                fancyboxRef.current = null;
-            });
+            fb.unbind(el);
+            fb.close();
         };
     }, []);
 
