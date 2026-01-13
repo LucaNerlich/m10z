@@ -40,7 +40,7 @@ export default async function TeamPage() {
             {authors.length === 0 ? (
                 <p>Keine Autoren gefunden.</p>
             ) : (
-                <ContentGrid gap="comfortable">
+                <ContentGrid gap="comfortable" mobileColumns={2}>
                     {authors.map((author) => {
                         const articleCount = author.articles?.filter((a) => a.publishedAt).length ?? 0;
                         const podcastCount = author.podcasts?.filter((p) => p.publishedAt).length ?? 0;

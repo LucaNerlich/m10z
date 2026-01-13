@@ -76,16 +76,20 @@
 
 @media (max-width: 640px) {
     .card {
-        padding: 16px;
+        padding: 12px;
     }
 
     .avatar {
-        width: 56px;
-        height: 56px;
+        width: 48px;
+        height: 48px;
     }
 
     .cardTitle {
         font-size: 1rem;
+    }
+
+    .description {
+        -webkit-line-clamp: 2;
     }
 }
 
