@@ -7,12 +7,15 @@ import {SearchModal} from './SearchModal';
 
 const shortcutKeySearch = 'K';
 
+// Hoist RegExp pattern to module scope
+const REGEX_APPLE_PLATFORM = /Mac|iPhone|iPad|iPod/;
+
 export function SearchLauncher(): React.ReactElement {
     const [isOpen, setIsOpen] = useState(false);
     const [isMac, setIsMac] = useState(false);
 
     useEffect(() => {
-        setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+        setIsMac(REGEX_APPLE_PLATFORM.test(navigator.platform));
     }, []);
 
     const shortcutLabel = isMac ? 'Cmd+' + shortcutKeySearch : 'Ctrl+' + shortcutKeySearch;

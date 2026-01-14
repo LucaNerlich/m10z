@@ -3,7 +3,7 @@
 import {type KeyboardEvent, type MouseEvent, useEffect, useId, useMemo, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
-import {BookIcon, UserIcon, MusicNoteIcon} from '@phosphor-icons/react';
+import {BookIcon, UserIcon, MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {type SearchRecord} from '@/src/lib/search/types';
@@ -32,15 +32,20 @@ const TYPE_ICON: Record<SearchRecord['type'], typeof BookIcon> = {
     category: BookIcon,
 };
 
+// Hoist RegExp patterns to module scope
+const REGEX_HTTP_PROTOCOL = /^https?:\/\//i;
+const REGEX_LOCALHOST = /^localhost(?::\d+)?/i;
+const REGEX_127_0_0_1 = /^127\.0\.0\.1(?::\d+)?/i;
+
 function normalizeImageUrl(url: string | null | undefined): string | null {
     if (!url) return null;
 
     // If URL already has a protocol, return as-is
-    if (/^https?:\/\//i.test(url)) return url;
+    if (REGEX_HTTP_PROTOCOL.test(url)) return url;
 
     // If URL starts with localhost or 127.0.0.1 without protocol, prepend http://
     // This handles cases like "localhost:1337/path" or "127.0.0.1:1337/path"
-    if (/^localhost(?::\d+)?/i.test(url) || /^127\.0\.0\.1(?::\d+)?/i.test(url)) {
+    if (REGEX_LOCALHOST.test(url) || REGEX_127_0_0_1.test(url)) {
         return `http://${url}`;
     }
 

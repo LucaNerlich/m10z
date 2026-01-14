@@ -11,6 +11,9 @@ import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/artikel/[slug]/page.module.css';
 
+// Hoist RegExp pattern to module scope
+const REGEX_LT_ESCAPE = /</g;
+
 type ArticleDetailProps = {
     slug: string;
     article: StrapiArticle | null;
@@ -54,7 +57,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+                    __html: JSON.stringify(jsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
                 }}
             />
 

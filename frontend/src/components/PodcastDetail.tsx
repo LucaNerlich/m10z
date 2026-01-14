@@ -16,6 +16,9 @@ import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/podcasts/[slug]/page.module.css';
 
+// Hoist RegExp pattern to module scope
+const REGEX_LT_ESCAPE = /</g;
+
 type PodcastDetailProps = {
     slug: string;
     podcast: StrapiPodcast | null;
@@ -57,7 +60,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+                    __html: JSON.stringify(jsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
                 }}
             />
 
