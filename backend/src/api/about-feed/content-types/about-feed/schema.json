@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "about_feeds",
+  "info": {
+    "singularName": "about-feed",
+    "pluralName": "about-feeds",
+    "displayName": "Über Feeds"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Unsere Feeds",
+      "required": true
+    },
+    "content": {
+      "type": "richtext"
+    }
+  }
+}

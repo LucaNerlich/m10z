@@ -22,6 +22,7 @@ export const routes = {
     author: (slug: string) => `/team/${slug}`,
     audioFeed: '/audiofeed.xml',
     articleFeed: '/rss.xml',
+    feeds: '/feeds',
     forum: 'https://forum.m10z.de',
     discord: 'https://discord.gg/G5ngm7S6wF',
     youtube: 'https://www.youtube.com/@M10Z_TV',
