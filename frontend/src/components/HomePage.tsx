@@ -1,17 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import {BookIcon, MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
 
 import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
-import {FeedSkeleton} from '@/src/components/FeedSkeleton';
 import {buildContentFeed} from '@/src/lib/contentFeed';
 import {
-    getOptimalMediaFormat,
     mediaUrlToAbsolute,
-    pickBannerMedia,
-    pickCoverMedia,
-    type StrapiMedia,
 } from '@/src/lib/rss/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
@@ -113,7 +109,10 @@ export async function HomePage({page}: {page: number}) {
                                         data-umami-event={umamiEventId(['home', 'toc', item.type, item.slug])}
                                     >
                                         <div className={styles.tocMetadata}>
-                                            <Tag className={styles.tocTag}>
+                                            <Tag
+                                                className={styles.tocTag}
+                                                icon={item.type === 'article' ? <BookIcon size={14} /> : <MusicNoteIcon size={14} />}
+                                            >
                                                 {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                             </Tag>
                                             {item.publishedAt ? (
@@ -195,17 +194,20 @@ export async function HomePage({page}: {page: number}) {
                                 </div>
                                 <div className={styles.cardBody}>
                                     <div className={styles.metaRow}>
-                                        <Tag className={styles.metaTag}>
+                                        <Tag
+                                            className={styles.metaTag}
+                                            icon={item.type === 'article' ? <BookIcon size={14} /> : <MusicNoteIcon size={14} />}
+                                        >
                                             {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                         </Tag>
                                         {item.type === 'article' && item.wordCount != null ? (
                                             <span className={styles.readingTime}>
-                                                📖&nbsp;{calculateReadingTime(item.wordCount)}
+                                                {calculateReadingTime(item.wordCount)}
                                             </span>
                                         ) : null}
                                         {item.type === 'podcast' && item.duration != null ? (
                                             <span className={styles.readingTime}>
-                                                🎶&nbsp;{formatDuration(item.duration)}
+                                               {formatDuration(item.duration)}
                                             </span>
                                         ) : null}
                                         <time className={styles.date}>{formatDateShort(item.publishedAt)}</time>

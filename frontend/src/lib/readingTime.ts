@@ -27,7 +27,7 @@ export function calculateReadingTime(
         }
 
         // Return "X min read" for all other cases
-        return `${minutes} Min. Lesezeit`;
+        return `~${minutes} Min. Lesezeit`;
     }
 
     // Handle markdown string (backward compatibility)
@@ -105,5 +105,5 @@ export function calculateReadingTime(
     }
 
     // Return "X min read" for all other cases
-    return `${minutes} Min. Lesezeit`;
+    return `~${minutes} Min. Lesezeit`;
 }

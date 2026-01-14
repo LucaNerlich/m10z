@@ -14,9 +14,9 @@ const primaryLinks = [
 ] as const;
 
 const secondaryLinks = [
-    {label: 'Kategorien', href: routes.categories},
-    {label: 'Team', href: routes.authors},
-    {label: 'Über uns', href: routes.about},
+    {label: 'Kategorien & Formate', href: routes.categories},
+    {label: 'AutorInnen', href: routes.authors},
+    {label: 'Über Uns', href: routes.about},
     {label: 'RSS-Feeds', href: '/feeds'},
     {label: 'Forum 🔗', href: 'https://forum.m10z.de'},
 ] as const;

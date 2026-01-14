@@ -3,6 +3,7 @@
 import {type KeyboardEvent, type MouseEvent, useEffect, useId, useMemo, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
+import {BookIcon, UserIcon, MusicNoteIcon} from '@phosphor-icons/react';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {type SearchRecord} from '@/src/lib/search/types';
@@ -20,8 +21,15 @@ type ResultItem = SearchRecord & {score?: number | null};
 const TYPE_LABEL: Record<SearchRecord['type'], string> = {
     article: 'Artikel',
     podcast: 'Podcast',
-    author: 'Autor-In',
+    author: 'AutorIn',
     category: 'Kategorie',
+};
+
+const TYPE_ICON: Record<SearchRecord['type'], typeof BookIcon> = {
+    article: BookIcon,
+    podcast: MusicNoteIcon,
+    author: UserIcon,
+    category: BookIcon,
 };
 
 function normalizeImageUrl(url: string | null | undefined): string | null {
@@ -250,7 +258,14 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                                 })() : null}
                                 <div className={styles.resultText}>
                                     <div className={styles.resultHeader}>
-                                        <Tag className={styles.typeBadge}>{TYPE_LABEL[item.type]}</Tag>
+                                        {(() => {
+                                            const IconComponent = TYPE_ICON[item.type];
+                                            return (
+                                                <Tag className={styles.typeBadge} icon={<IconComponent size={14} />}>
+                                                    {TYPE_LABEL[item.type]}
+                                                </Tag>
+                                            );
+                                        })()}
                                         <span className={styles.title}>{item.title}</span>
                                     </div>
                                     {item.description ? <p className={styles.description}>{item.description}</p> : null}

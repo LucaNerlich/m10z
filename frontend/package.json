@@ -9,6 +9,7 @@
     },
     "dependencies": {
         "@fancyapps/ui": "^6.1.7",
+        "@phosphor-icons/react": "^2.1.10",
         "blurhash": "^2.0.5",
         "dompurify": "^3.3.1",
         "fuse.js": "^7.1.0",

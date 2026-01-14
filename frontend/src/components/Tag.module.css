@@ -1,6 +1,7 @@
 .tag {
     display: inline-flex;
     align-items: center;
+    gap: 4px;
     padding: 2px 8px;
     border-radius: 999px;
     background: var(--color-secondary);
@@ -11,3 +12,14 @@
     text-decoration: none;
 }
 
+.icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 2px;
+}
+
+.icon svg {
+    width: 14px;
+    height: 14px;
+}

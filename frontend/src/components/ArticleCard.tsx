@@ -74,7 +74,7 @@ export function ArticleCard({
                         {formattedDate}
                     </time>
                     {readingTime ? (
-                        <span className={styles.readingTime}>📖&nbsp;{readingTime}</span>
+                        <span className={styles.readingTime}>{readingTime}</span>
                     ) : null}
                 </div>
                 <h2 className={styles.cardTitle}>
