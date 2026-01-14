@@ -1,6 +1,6 @@
 import {type Metadata} from 'next';
 import {Markdown} from '@/src/lib/markdown/Markdown';
-import {getFeeds} from '@/src/lib/strapi';
+import {getFeedsInfo} from '@/src/lib/strapi';
 import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 
@@ -30,11 +30,10 @@ export const metadata: Metadata = {
 };
 
 export default async function FeedsPage() {
-    const feeds = await getFeeds({
+    const feeds = await getFeedsInfo({
         tags: ['feeds', 'strapi:feeds'],
     });
 
-    console.log(feeds);
 
     return (
         <main data-list-page>

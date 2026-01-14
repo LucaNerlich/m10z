@@ -47,7 +47,7 @@ export interface StrapiAbout {
     publishedAt: string | null;
 }
 
-export interface StrapiFeeds {
+export interface StrapiFeedsInfo {
     id: number;
     documentId: string;
     title: string;
@@ -178,7 +178,10 @@ async function getLegalDocWithFallback(
         documentId: `fallback-${kind}`,
         title: kind === 'imprint' ? 'Impressum' : 'Datenschutz',
         content:
-            'Hier findest du unsere Feeds:\n\n- Artikel: `/rss.xml`\n- Podcasts: `/audiofeed.xml`\n',
+            'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
+            + '- Artikel-Feed: `/rss.xml`\n'
+            + '- Podcast-Feed: `/audiofeed.xml`\n\n'
+            + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
         createdAt: nowIso,
         updatedAt: nowIso,
         publishedAt: null,
@@ -248,7 +251,10 @@ async function getAboutWithFallback(
         name: 'Über Uns',
         alternateName: null,
         content:
-            'Hier findest du unsere Feeds:\n\n- Artikel: `/rss.xml`\n- Podcasts: `/audiofeed.xml`\n',
+            'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
+            + '- Artikel-Feed: `/rss.xml`\n'
+            + '- Podcast-Feed: `/audiofeed.xml`\n\n'
+            + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
         logo: null,
         createdAt: nowIso,
         updatedAt: nowIso,
@@ -283,14 +289,14 @@ export async function getAbout(options: FetchStrapiOptions = {}) {
 }
 
 /**
- * Asserts that a value conforms to the StrapiFeeds structure.
+ * Asserts that a value conforms to the StrapiFeedsInfo structure.
  *
  * @param data - The value to validate.
  * @throws Error if `data` is not an object, if `title` is not a non-empty string, or if `content` is not a string.
  */
-function assertIsFeeds(data: unknown): asserts data is StrapiFeeds {
+function assertIsFeeds(data: unknown): asserts data is StrapiFeedsInfo {
     if (!data || typeof data !== 'object') throw new Error('Invalid Strapi data');
-    const d = data as Partial<StrapiFeeds>;
+    const d = data as Partial<StrapiFeedsInfo>;
 
     if (typeof d.title !== 'string' || d.title.length === 0) {
         throw new Error('Invalid Strapi feeds: missing title');
@@ -298,28 +304,31 @@ function assertIsFeeds(data: unknown): asserts data is StrapiFeeds {
 }
 
 /**
- * Fetches the site's feeds tutorial content from Strapi and falls back to a local placeholder if fetching or validation fails.
+ * Fetches the site's feeds explainer content from Strapi and falls back to a local placeholder if fetching or validation fails.
  *
  * @param options - Optional fetch options (e.g., `revalidateSeconds`, `tags`) to control caching and ISR behavior.
- * @returns The fetched `StrapiFeeds` data, or a predefined fallback `StrapiFeeds` if retrieval or runtime validation fails.
+ * @returns The fetched `StrapiFeedsInfo` data, or a predefined fallback `StrapiFeedsInfo` if retrieval or runtime validation fails.
  */
-async function getFeedsWithFallback(
+async function getFeedsInfoWithFallback(
     options: FetchStrapiOptions = {},
-): Promise<StrapiFeeds> {
+): Promise<StrapiFeedsInfo> {
     const nowIso = new Date().toISOString();
-    const fallback: StrapiFeeds = {
+    const fallback: StrapiFeedsInfo = {
         id: -1,
         documentId: 'fallback-feeds',
         title: 'RSS-Feeds',
         content:
-            'Hier findest du unsere Feeds:\n\n- Artikel: `/rss.xml`\n- Podcasts: `/audiofeed.xml`\n',
+            'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
+            + '- Artikel-Feed: `/rss.xml`\n'
+            + '- Podcast-Feed: `/audiofeed.xml`\n\n'
+            + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
         createdAt: nowIso,
         updatedAt: nowIso,
         publishedAt: null,
     };
 
     try {
-        const res = await fetchStrapiSingle<StrapiFeeds>('about-feed', '', options);
+        const res = await fetchStrapiSingle<StrapiFeedsInfo>('about-feed', '', options);
         assertIsFeeds(res.data);
         return {
             ...res.data,
@@ -333,14 +342,15 @@ async function getFeedsWithFallback(
 }
 
 /**
- * Loads the site's feeds tutorial content from Strapi, falling back to a safe default if the fetch fails.
+ * Loads the site's feeds explainer content from Strapi, falling back to a safe default if the fetch fails.
  *
  * @param options - Optional fetch options (e.g., cache revalidation seconds and cache tags)
- * @returns The site's feeds tutorial content as a `StrapiFeeds` object; a fallback `StrapiFeeds` if the remote fetch fails
+ * @returns The site's feeds tutorial content as a `StrapiFeedsInfo` object; a fallback `StrapiFeedsInfo` if the remote fetch fails
  */
-export async function getFeeds(options: FetchStrapiOptions = {}) {
-    return getFeedsWithFallback({
+export async function getFeedsInfo(options: FetchStrapiOptions = {}) {
+    return getFeedsInfoWithFallback({
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
 }
+
