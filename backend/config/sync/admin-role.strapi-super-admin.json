@@ -6,6 +6,66 @@
   "locale": null,
   "permissions": [
     {
+      "documentId": "w5mqsyjyn3spbsp18x6uwclf",
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::about-feed.about-feed",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "bo1wfvnlrxy44kl4g4t3g2gs",
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::about-feed.about-feed",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "oix7uvu1bc8rmvwlv1f6n6bf",
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::about-feed.about-feed",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "me5xwx0dv4gvx8ddr81v725g",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::about-feed.about-feed",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "ytr7mkpjqvkxblnxws9t7ej0",
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::about-feed.about-feed",
+      "properties": {
+        "fields": [
+          "title",
+          "content"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
       "documentId": "mtxmr40mndy223wbc4lij4r3",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},

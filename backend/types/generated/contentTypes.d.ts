@@ -445,6 +445,37 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
     };
 }
 
+export interface ApiAboutFeedAboutFeed extends Struct.SingleTypeSchema {
+    collectionName: 'about_feeds';
+    info: {
+        displayName: '\u00DCber Feeds';
+        pluralName: 'about-feeds';
+        singularName: 'about-feed';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        content: Schema.Attribute.RichText;
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::about-feed.about-feed'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        title: Schema.Attribute.String &
+            Schema.Attribute.Required &
+            Schema.Attribute.DefaultTo<'Unsere Feeds'>;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
 export interface ApiAboutAbout extends Struct.SingleTypeSchema {
     collectionName: 'abouts';
     info: {
@@ -1342,6 +1373,7 @@ declare module '@strapi/strapi' {
             'admin::transfer-token': AdminTransferToken;
             'admin::transfer-token-permission': AdminTransferTokenPermission;
             'admin::user': AdminUser;
+            'api::about-feed.about-feed': ApiAboutFeedAboutFeed;
             'api::about.about': ApiAboutAbout;
             'api::article-feed.article-feed': ApiArticleFeedArticleFeed;
             'api::article.article': ApiArticleArticle;
