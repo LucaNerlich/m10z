@@ -8,6 +8,34 @@ import {parseFile} from 'music-metadata';
 import {existsSync} from 'fs';
 import {resolve} from 'path';
 
+function normalizeFileIdentity(file: any): string | null {
+    if (!file) return null;
+    if (typeof file === 'string' || typeof file === 'number') {
+        return String(file);
+    }
+    if (file.documentId) return String(file.documentId);
+    if (file.id) return String(file.id);
+    if (file.url) return `url:${file.url}`;
+    return null;
+}
+
+async function getExistingPodcastFileIdentity(
+    strapi: any,
+    documentId?: string | number,
+): Promise<string | null> {
+    if (!documentId) return null;
+    try {
+        const podcast = await strapi.documents('api::podcast.podcast').findOne({
+            documentId,
+            populate: ['file'],
+        });
+        return normalizeFileIdentity(podcast?.file);
+    } catch (error) {
+        strapi.log.warn('Failed to load podcast for duration comparison:', error);
+        return null;
+    }
+}
+
 /**
  * Extracts audio duration from the podcast file referenced by `data.file` and sets `data.duration` to the rounded number of seconds.
  *
@@ -94,7 +122,7 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
         if (duration && typeof duration === 'number' && duration > 0) {
             // Convert to integer seconds and set in data
             data.duration = Math.round(duration);
-            strapi.log.debug(`Extracted duration: ${data.duration} seconds for file: ${fileUrl}`);
+            strapi.log.info(`Extracted duration: ${data.duration} seconds for file: ${fileUrl}`);
         } else {
             strapi.log.warn(`Duration not found in metadata for file: ${fileUrl}`);
         }
@@ -125,9 +153,30 @@ export async function durationMiddleware(
             const data = context.params?.data;
             if (data?.file) {
                 const strapiInstance = context.params?.strapi;
-                if (strapiInstance) {
-                    await extractDuration(strapiInstance, data);
+                if (context.action === 'update') {
+                    const documentId =
+                        context.params?.documentId ||
+                        context.params?.where?.documentId ||
+                        context.params?.where?.id ||
+                        data?.documentId ||
+                        data?.id;
+                    const existingIdentity = await getExistingPodcastFileIdentity(
+                        strapiInstance,
+                        documentId,
+                    );
+                    const incomingIdentity = normalizeFileIdentity(data.file);
+                    if (
+                        existingIdentity &&
+                        incomingIdentity &&
+                        existingIdentity === incomingIdentity
+                    ) {
+                        strapi.log.info(
+                            `Skipping duration recalculation (file unchanged) for podcast: ${documentId}`,
+                        );
+                        return next();
+                    }
                 }
+                await extractDuration(strapiInstance, data);
             }
         } catch (error) {
             // Log error but don't block the operation
