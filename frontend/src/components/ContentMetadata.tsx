@@ -33,25 +33,23 @@ export function ContentMetadata({
 
     return (
         <div className={styles.metaRow}>
-            <div className={styles.metaDates}>
-                {publishedDate ? (
-                    <time dateTime={publishedDate} className={styles.publishedDate}>
-                        {formatDateShort(publishedDate)}
-                    </time>
-                ) : null}
-                {readingTime ? (
-                    <span className={styles.readingTime}>📖&nbsp;{readingTime}</span>
-                ) : null}
-                {duration ? (
-                    <time dateTime={formatIso8601Duration(duration)} className={styles.duration}>
-                        🎶&nbsp;{formatDuration(duration)}
-                    </time>
-                ) : null}
-            </div>
-            {authors && authors.length > 0 ? <ContentAuthors authors={authors} /> : null}
             {categories && categories.length > 0 ? (
                 <CategoryList categories={categories} />
             ) : null}
+            {readingTime ? (
+                <span className={styles.readingTime}>📖&nbsp;{readingTime}</span>
+            ) : null}
+            {duration ? (
+                <time dateTime={formatIso8601Duration(duration)} className={styles.duration}>
+                    🎶&nbsp;{formatDuration(duration)}
+                </time>
+            ) : null}
+            {publishedDate ? (
+                <time dateTime={publishedDate} className={styles.publishedDate}>
+                    {formatDateShort(publishedDate)}
+                </time>
+            ) : null}
+            {authors && authors.length > 0 ? <ContentAuthors authors={authors} /> : null}
         </div>
     );
 }
