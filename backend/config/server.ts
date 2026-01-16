@@ -1,6 +1,7 @@
 import {type Server} from 'http';
 import {generateMissingBlurhashes} from '../src/cron/blurhash';
 import {generateMissingWordCounts} from '../src/cron/wordcount';
+import {publishScheduledContent} from '../src/cron/publishScheduled';
 
 /**
  * Configures HTTP server timeout settings to prevent premature socket closure
@@ -65,6 +66,14 @@ export default ({env}) => ({
                 task: generateMissingWordCounts,
                 options: {
                     rule: '15 3 * * *', // Run nightly at 03:15 (server local time)
+                },
+            },
+            // Publish scheduled articles and podcasts - runs every 15 minutes
+            publishScheduledContent: {
+                task: publishScheduledContent,
+                options: {
+                    // rule: '*/15 * * * *', // Run every 15 minutes
+                    rule: '* * * * *', // Run every 15 minutes
                 },
             },
         },
