@@ -241,11 +241,30 @@
 }
 
 @media (min-width: 768px) {
+    .inner {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        column-gap: 12px;
+    }
+
     .burgerShortcut {
         display: inline-block;
     }
+
     .centerNav {
         display: inline-flex;
+    }
+
+    .logo {
+        justify-self: start;
+    }
+
+    .centerNav {
+        justify-self: center;
+    }
+
+    .actions {
+        justify-self: end;
     }
 
     .mobileOnly {
