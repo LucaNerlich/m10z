@@ -12,7 +12,7 @@ export type PlainImageProps = React.ComponentProps<'img'>;
  * This component intentionally does not include any Fancybox attributes or
  * gallery behavior. It is used for external or unauthorized image domains.
  */
-export function PlainImage({src, alt = ''}: PlainImageProps) {
+export function PlainImage({src, alt = '', title}: PlainImageProps) {
     if (!src || typeof src !== 'string') return null;
 
     const url = /^https?:\/\//i.test(src) ? src : toAbsoluteUrl(src);
@@ -21,6 +21,7 @@ export function PlainImage({src, alt = ''}: PlainImageProps) {
         <SafeImage
             src={url}
             alt={alt}
+            title={title}
             width={1200}
             height={675}
             sizes="100vw"

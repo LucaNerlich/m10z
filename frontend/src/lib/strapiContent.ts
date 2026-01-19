@@ -18,7 +18,7 @@ if (!STRAPI_URL) {
 const MAX_SLUGS = 150;
 
 // Reusable populate configurations to reduce duplication and query string length
-export const MEDIA_FIELDS = ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats'] as const;
+export const MEDIA_FIELDS = ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats'] as const;
 const BASE_FIELDS = ['title', 'description', 'date'] as const;
 const AUTHOR_FIELDS = ['title', 'slug', 'description'] as const;
 const CATEGORY_BASE_FIELDS = ['title', 'description'] as const;
@@ -561,8 +561,8 @@ export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCat
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },
@@ -586,8 +586,8 @@ export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCat
                 populateOptions: {
                     base: {
                         populate: {
-                            cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                            banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                            cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                            banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
                         },
                         fields: ['title', 'description', 'date'],
                     },
@@ -615,8 +615,8 @@ export const fetchCategoriesWithContent = cache(async (options: FetchListOptions
             populate: {
                 base: {
                     populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'formats']},
+                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
                     },
                     fields: ['title', 'description', 'date'],
                 },

@@ -149,6 +149,11 @@ export async function HomePage({page}: {page: number}) {
                         const coverPlaceholder = coverBlurDataUrl ? 'blur' : coverUrl ? 'empty' : 'blur';
                         const bannerPlaceholder = bannerBlurDataUrl ? 'blur' : bannerUrl || coverUrl ? 'empty' : 'blur';
 
+                        const coverAlt = item.cover?.alternativeText ?? item.title;
+                        const coverTitle = item.cover?.caption ?? undefined;
+                        const bannerAlt = item.banner?.alternativeText ?? item.title;
+                        const bannerTitle = item.banner?.caption ?? undefined;
+
                         return (
                             <Card key={anchor} id={anchor}>
                                 <div className={styles.media}>
@@ -173,7 +178,8 @@ export async function HomePage({page}: {page: number}) {
                                                     unoptimized={coverUnoptimized}
                                                     placeholder={coverPlaceholder}
                                                     blurDataURL={coverBlurDataUrl || undefined}
-                                                    alt={item.title || ''}
+                                                    alt={coverAlt || ''}
+                                                    title={coverTitle}
                                                     className={styles.cover}
                                                 />
                                                 <Image
@@ -185,7 +191,8 @@ export async function HomePage({page}: {page: number}) {
                                                     unoptimized={bannerUnoptimized}
                                                     placeholder={bannerPlaceholder}
                                                     blurDataURL={bannerBlurDataUrl || coverBlurDataUrl || undefined}
-                                                    alt={item.title || ''}
+                                                    alt={bannerAlt || ''}
+                                                    title={bannerTitle}
                                                     className={styles.banner}
                                                 />
                                             </Link>

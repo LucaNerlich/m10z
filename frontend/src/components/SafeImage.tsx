@@ -12,6 +12,7 @@ type SafeImageProps = {
     height?: number;
     sizes?: string;
     style?: React.CSSProperties;
+    title?: string;
 };
 
 /**
@@ -19,7 +20,7 @@ type SafeImageProps = {
  * If the image hostname is not allowed, displays a warning component instead of crashing.
  * Also handles runtime loading errors gracefully.
  */
-export function SafeImage({src, alt = '', width = 1200, height = 675, sizes = '100vw', style}: SafeImageProps) {
+export function SafeImage({src, alt = '', width = 1200, height = 675, sizes = '100vw', style, title}: SafeImageProps) {
     const [hasError, setHasError] = useState(false);
 
     // Check if hostname is allowed before rendering
@@ -37,6 +38,7 @@ export function SafeImage({src, alt = '', width = 1200, height = 675, sizes = '1
         <Image
             src={src}
             alt={alt}
+            title={title}
             width={width}
             height={height}
             sizes={sizes}

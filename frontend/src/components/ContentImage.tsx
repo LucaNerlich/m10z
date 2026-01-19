@@ -9,6 +9,7 @@ type CoverImageProps = {
     className?: string;
     placeholder?: 'blur' | 'empty';
     blurhash?: string | null; // Base64 data URL from backend (e.g., "data:image/png;base64,...")
+    title?: string;
 };
 
 /**
@@ -33,6 +34,7 @@ export function ContentImage({
     className,
     placeholder = 'empty',
     blurhash,
+    title,
 }: CoverImageProps) {
     // Use blurhash directly as blurDataURL if provided and placeholder is 'blur'
     const imagePlaceholder = blurhash && placeholder === 'blur' ? 'blur' : placeholder;
@@ -43,6 +45,7 @@ export function ContentImage({
             <Image
                 src={src}
                 alt={alt}
+                title={title}
                 width={width}
                 height={height}
                 placeholder={imagePlaceholder}

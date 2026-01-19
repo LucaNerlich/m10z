@@ -6,7 +6,9 @@ import {toAbsoluteUrl} from '@/src/lib/strapi';
 import {umamiEventId} from '@/src/lib/analytics/umami';
 import {isImageHostnameAllowed} from '@/src/lib/imageUtils';
 
-export type GalleryImageProps = React.ComponentProps<typeof Image>;
+export type GalleryImageProps = React.ComponentProps<typeof Image> & {
+    caption?: string;
+};
 
 /**
  * Render an image suitable for markdown with Fancybox gallery support.
@@ -15,7 +17,7 @@ export type GalleryImageProps = React.ComponentProps<typeof Image>;
  * routed to this component. It uses the regular Next.js Image component
  * directly for optimized loading and Fancybox lightbox integration.
  */
-export function GalleryImage({src, alt = '', style, ...props}: GalleryImageProps) {
+export function GalleryImage({src, alt = '', style, caption, ...props}: GalleryImageProps) {
     if (!src || typeof src !== 'string') return null;
 
     const url = /^https?:\/\//i.test(src) ? src : toAbsoluteUrl(src);
@@ -34,20 +36,26 @@ export function GalleryImage({src, alt = '', style, ...props}: GalleryImageProps
         ...style,
     };
 
+    const ariaLabel = caption ? `View image: ${alt || caption}` : `View image: ${alt || 'Gallery image'}`;
+
+    const {title, ...restProps} = props;
+
     return (
         <a
             href={url}
             data-fancybox="article-gallery"
-            aria-label={`View image: ${alt || 'Gallery image'}`}
+            aria-label={ariaLabel}
+            data-caption={caption}
             style={combinedStyle}
         >
             <Image
                 src={url}
                 alt={alt}
+                title={caption ?? title}
                 width={props.width ?? 1200}
                 height={props.height ?? 675}
                 sizes={props.sizes ?? '100vw'}
-                {...props}
+                {...restProps}
             />
         </a>
     );

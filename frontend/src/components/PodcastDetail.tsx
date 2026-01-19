@@ -53,6 +53,8 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const imageHeight = optimizedMedia?.height ?? fallbackHeight;
     const blurhash = optimizedMedia?.blurhash ?? null;
     const placeholder = blurhash ? 'blur' : 'empty';
+    const imageAlt = optimizedMedia?.alternativeText ?? podcast.base.title;
+    const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generatePodcastJsonLd(podcast);
 
     return (
@@ -66,7 +68,8 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
 
             <ContentImage
                 src={imageSrc}
-                alt={podcast.base.title}
+                alt={imageAlt}
+                title={imageTitle}
                 width={imageWidth}
                 height={imageHeight}
                 placeholder={placeholder}

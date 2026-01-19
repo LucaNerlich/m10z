@@ -50,6 +50,8 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const imageHeight = optimizedMedia?.height ?? fallbackHeight;
     const blurhash = optimizedMedia?.blurhash ?? null;
     const placeholder = blurhash ? 'blur' : 'empty';
+    const imageAlt = optimizedMedia?.alternativeText ?? article.base.title;
+    const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generateArticleJsonLd(article);
 
     return (
@@ -63,7 +65,8 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
 
             <ContentImage
                 src={imageSrc}
-                alt={article.base.title}
+                alt={imageAlt}
+                title={imageTitle}
                 width={imageWidth}
                 height={imageHeight}
                 placeholder={placeholder}

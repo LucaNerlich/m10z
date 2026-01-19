@@ -62,7 +62,8 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
     const imageSrc = imageUrl ?? placeholderCover;
     const imageWidth = optimizedMedia?.width ?? 400;
     const imageHeight = optimizedMedia?.height ?? 225;
-    const imageAlt = category.base?.cover?.alternativeText ?? title;
+    const imageAlt = optimizedMedia?.alternativeText ?? title;
+    const imageTitle = optimizedMedia?.caption ?? undefined;
     const placeholder = blurhash ? 'blur' : 'empty';
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
@@ -74,6 +75,7 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
                     <ContentImage
                         src={imageSrc}
                         alt={imageAlt}
+                        title={imageTitle}
                         width={imageWidth}
                         height={imageHeight}
                         placeholder={placeholder}
