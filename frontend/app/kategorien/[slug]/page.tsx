@@ -155,7 +155,8 @@ export default async function CategoryDetailPage({params}: PageProps) {
             </header>
 
             {sortedArticles.length > 0 ? (
-                <section title={`Artikel (${sortedArticles.length})`}>
+                <section>
+                    <h2>{`Artikel (${sortedArticles.length})`}</h2>
                     <ContentGrid gap="comfortable">
                         {sortedArticles.map((article) => (
                             <ArticleCard key={article.slug} article={article} showAuthors={true}
@@ -166,7 +167,8 @@ export default async function CategoryDetailPage({params}: PageProps) {
             ) : null}
 
             {sortedPodcasts.length > 0 ? (
-                <section title={`Podcasts (${sortedPodcasts.length})`}>
+                <section>
+                    <h2>{`Podcasts (${sortedArticles.length})`}</h2>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
                             <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true}

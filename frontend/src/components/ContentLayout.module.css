@@ -8,6 +8,13 @@
 main:has([data-homepage]) .layout,
 main:has([data-list-page]) .layout {
     max-width: 1200px;
+
+    & section + section,
+    & [data-list-page] + [data-list-page],
+    & [data-list-page] + section,
+    & section + [data-list-page] {
+        margin-top: 1rem;
+    }
 }
 
 .container {

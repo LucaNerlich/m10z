@@ -127,7 +127,8 @@ export default async function AuthorPage({params}: PageProps) {
             <AuthorNav authorSlug={slug} activeSection="overview" />
 
             {shouldRenderArticleSection ? (
-                <section title={`Artikel (${articleTotal})`}>
+                <section>
+                    <h2>{`Artikel (${sortedArticles.length})`}</h2>
                     <div className={styles.summaryRow}>
                         {stats.articles.categories.slice(0, 6).map((c) => (
                             <Link
@@ -157,7 +158,8 @@ export default async function AuthorPage({params}: PageProps) {
             ) : null}
 
             {shouldRenderPodcastSection ? (
-                <section title={`Podcasts (${sortedPodcasts.length})`}>
+                <section>
+                    <h2>{`Podcasts (${sortedArticles.length})`}</h2>
                     <div className={styles.summaryRow}>
                         {stats.podcasts.categories.slice(0, 6).map((c) => (
                             <Link
