@@ -1,7 +1,6 @@
 import {fetchArticlesPage} from '@/src/lib/strapiContent';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
-import {ArticleListSkeleton} from '@/src/components/ArticleListSkeleton';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
 
@@ -27,8 +26,8 @@ function parsePageParam(searchParams: Record<string, string | string[] | undefin
  * @returns A JSX element representing the article list page
  */
 export async function ArticleListPage({
-    searchParams,
-}: {
+                                          searchParams,
+                                      }: {
     searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
 }) {
     const sp = await Promise.resolve(searchParams ?? {});

@@ -4,8 +4,8 @@ import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@
 import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentImage} from '@/src/components/ContentImage';
-import {Section} from '@/src/components/Section';
-import {ContentLayout} from '@/app/ContentLayout';
+
+import {ContentLayout} from '@/src/components/ContentLayout';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import placeholderCover from '@/public/images/m10z.jpg';
 
@@ -117,12 +117,12 @@ export default async function AboutUsPage() {
                         height={imageHeight}
                         placeholder={placeholder}
                     />
-                    <Section>
+                    <section>
                         <h1>{about.name}</h1>
                         {about.alternateName ? (
                             <p>{about.alternateName}</p>
                         ) : null}
-                    </Section>
+                    </section>
 
                     <Markdown markdown={about.content} />
                 </ContentLayout>

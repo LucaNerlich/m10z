@@ -1,7 +1,6 @@
 import {fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {PodcastCard} from '@/src/components/PodcastCard';
-import {PodcastListSkeleton} from '@/src/components/PodcastListSkeleton';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
 
@@ -29,8 +28,8 @@ function parsePageParam(searchParams: Record<string, string | string[] | undefin
  * @returns The page's JSX: either a loading skeleton, an error panel with retry, an empty-state message, or a grid of podcast cards.
  */
 export async function PodcastListPage({
-    searchParams,
-}: {
+                                          searchParams,
+                                      }: {
     searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
 }) {
     const sp = await Promise.resolve(searchParams ?? {});

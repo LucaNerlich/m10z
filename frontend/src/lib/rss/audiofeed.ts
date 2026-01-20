@@ -322,13 +322,13 @@ export function generateAudioFeedXml(args: {
     const externalCollector = args.timings;
     const timingCollector: AudioFeedTimingCollector = externalCollector
         ? {
-              record(op, durationMs) {
-                  // Always feed the internal aggregator so `timing: aggregator.summarize()` is accurate,
-                  // even when callers provide a separate collector.
-                  internalCollector.record(op, durationMs);
-                  externalCollector.record(op, durationMs);
-              },
-          }
+            record(op, durationMs) {
+                // Always feed the internal aggregator so `timing: aggregator.summarize()` is accurate,
+                // even when callers provide a separate collector.
+                internalCollector.record(op, durationMs);
+                externalCollector.record(op, durationMs);
+            },
+        }
         : internalCollector;
 
     const channelImage = normalizeStrapiMedia(channel.image);

@@ -4,8 +4,8 @@ import path from 'node:path';
 
 import {
     type AudioFeedConfig,
-    type AudioFeedTiming,
     type AudioFeedMarkdownConverter,
+    type AudioFeedTiming,
     generateAudioFeedXml,
     type StrapiAudioFeedSingle,
     type StrapiPodcast,
@@ -20,12 +20,7 @@ import {
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {
-    populateBaseMedia,
-    populateAuthorAvatar,
-    populateCategoryBase,
-    MEDIA_FIELDS,
-} from '@/src/lib/strapiContent';
+import {MEDIA_FIELDS, populateAuthorAvatar, populateBaseMedia, populateCategoryBase} from '@/src/lib/strapiContent';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
@@ -140,14 +135,14 @@ export function getAudioFeedRuntimeState() {
     const trend =
         buildDurationsMs.length >= 5
             ? (() => {
-                  const first = buildDurationsMs[0] ?? 0;
-                  const last = buildDurationsMs[buildDurationsMs.length - 1] ?? 0;
-                  if (first <= 0) return 'unknown';
-                  const ratio = last / first;
-                  if (ratio >= 1.25) return 'increasing';
-                  if (ratio <= 0.85) return 'decreasing';
-                  return 'stable';
-              })()
+                const first = buildDurationsMs[0] ?? 0;
+                const last = buildDurationsMs[buildDurationsMs.length - 1] ?? 0;
+                if (first <= 0) return 'unknown';
+                const ratio = last / first;
+                if (ratio >= 1.25) return 'increasing';
+                if (ratio <= 0.85) return 'decreasing';
+                return 'stable';
+            })()
             : 'unknown';
 
     return {
@@ -476,14 +471,14 @@ async function refreshFeed(): Promise<CachedFeed> {
                     memoryDeltaMB,
                     ...(lastBuildTiming
                         ? {
-                              markdownConversionMs: lastBuildTiming.avgPerEpisodeMs.markdownConversionMs,
-                              guidGenerationMs: lastBuildTiming.avgPerEpisodeMs.guidGenerationMs,
-                              fileMetadataMs: lastBuildTiming.avgPerEpisodeMs.fileMetadataMs,
-                              enclosureMs: lastBuildTiming.avgPerEpisodeMs.enclosureMs,
-                              timing: lastBuildTiming.timing,
-                              renderedEpisodeCount: lastBuildTiming.renderedEpisodeCount,
-                              markdownCache: lastBuildTiming.markdownCache,
-                          }
+                            markdownConversionMs: lastBuildTiming.avgPerEpisodeMs.markdownConversionMs,
+                            guidGenerationMs: lastBuildTiming.avgPerEpisodeMs.guidGenerationMs,
+                            fileMetadataMs: lastBuildTiming.avgPerEpisodeMs.fileMetadataMs,
+                            enclosureMs: lastBuildTiming.avgPerEpisodeMs.enclosureMs,
+                            timing: lastBuildTiming.timing,
+                            renderedEpisodeCount: lastBuildTiming.renderedEpisodeCount,
+                            markdownCache: lastBuildTiming.markdownCache,
+                        }
                         : {}),
                     reset: shouldReset
                         ? {scheduled: true, reason: 'slow_build', last3, thresholdMs, multiplier: SLOW_BUILD_MULTIPLIER}
@@ -639,10 +634,10 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
             detail:
                 err instanceof Error
                     ? {
-                          // Keep error reporting non-sensitive: message should not include secrets.
-                          errorName: err.name,
-                          errorMessage: err.message,
-                      }
+                        // Keep error reporting non-sensitive: message should not include secrets.
+                        errorName: err.name,
+                        errorMessage: err.message,
+                    }
                     : {errorName: 'UnknownError'},
         });
 

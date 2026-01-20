@@ -1,5 +1,3 @@
-import {Section} from './Section';
-
 type ErrorCardWithRetryProps = {
     message: string;
     onRetry?: () => void;
@@ -18,7 +16,7 @@ export function ErrorCardWithRetry({message, onRetry, className}: ErrorCardWithR
 
     return (
         <div className={className}>
-            <Section>
+            <section>
                 <p>{message}</p>
                 <button
                     type="button"
@@ -28,7 +26,7 @@ export function ErrorCardWithRetry({message, onRetry, className}: ErrorCardWithR
                 >
                     Erneut versuchen
                 </button>
-            </Section>
+            </section>
         </div>
     );
 }

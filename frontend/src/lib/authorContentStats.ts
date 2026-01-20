@@ -50,7 +50,10 @@ function computeCategoryCounts(items: ItemWithCategories[]): CategoryCount[] {
     });
 }
 
-function normalizeInput(input: PaginatedResult<ItemWithCategories> | ItemWithCategories[]): {items: ItemWithCategories[]; total: number} {
+function normalizeInput(input: PaginatedResult<ItemWithCategories> | ItemWithCategories[]): {
+    items: ItemWithCategories[];
+    total: number
+} {
     if (isPaginatedResult<ItemWithCategories>(input)) {
         return {items: input.items, total: input.pagination.total};
     }

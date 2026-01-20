@@ -37,17 +37,17 @@ export async function fetchStrapiJson<T>({
             signal: controller.signal,
             ...(revalidate === 0
                 ? {
-                      // In Next.js, `cache: 'no-store'` is the most reliable way to bypass fetch caching.
-                      // We still include tags for observability, but omit `revalidate` since caching is disabled.
-                      cache: 'no-store',
-                      next: {tags},
-                  }
+                    // In Next.js, `cache: 'no-store'` is the most reliable way to bypass fetch caching.
+                    // We still include tags for observability, but omit `revalidate` since caching is disabled.
+                    cache: 'no-store',
+                    next: {tags},
+                }
                 : {
-                      next: {
-                          tags,
-                          revalidate,
-                      },
-                  }),
+                    next: {
+                        tags,
+                        revalidate,
+                    },
+                }),
         });
 
         if (!res.ok) {

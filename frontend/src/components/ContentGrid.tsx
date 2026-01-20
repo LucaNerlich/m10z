@@ -19,7 +19,7 @@ export function ContentGrid({children, gap = 'comfortable', mobileColumns = 1, c
         styles.grid,
         styles[`gap${gap.charAt(0).toUpperCase() + gap.slice(1)}`],
         mobileColumns === 2 ? styles.mobileTwo : undefined,
-        className
+        className,
     ]
         .filter(Boolean)
         .join(' ');

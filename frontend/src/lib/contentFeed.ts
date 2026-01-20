@@ -4,28 +4,28 @@ import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/
 
 type FeedItem =
     | {
-          type: 'article';
-          slug: string;
-          title: string;
-          description?: string | null;
-          publishedAt?: string | null;
-          cover?: any;
-          banner?: any;
-          wordCount?: number | null;
-          href: string;
-      }
+    type: 'article';
+    slug: string;
+    title: string;
+    description?: string | null;
+    publishedAt?: string | null;
+    cover?: any;
+    banner?: any;
+    wordCount?: number | null;
+    href: string;
+}
     | {
-          type: 'podcast';
-          slug: string;
-          title: string;
-          description?: string | null;
-          publishedAt?: string | null;
-          cover?: any;
-          banner?: any;
-          wordCount?: number | null;
-          duration?: number | null;
-          href: string;
-      };
+    type: 'podcast';
+    slug: string;
+    title: string;
+    description?: string | null;
+    publishedAt?: string | null;
+    cover?: any;
+    banner?: any;
+    wordCount?: number | null;
+    duration?: number | null;
+    href: string;
+};
 
 export type ContentFeedResponse = {
     items: FeedItem[];

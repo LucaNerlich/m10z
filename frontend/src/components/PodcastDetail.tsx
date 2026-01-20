@@ -8,7 +8,7 @@ import {
 } from '@/src/lib/rss/media';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
-import {Section} from '@/src/components/Section';
+
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
@@ -75,7 +75,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                 placeholder={placeholder}
                 blurhash={blurhash}
             />
-            <Section className={styles.header}>
+            <section className={styles.header}>
                 <ContentMetadata
                     publishedDate={published}
                     duration={podcast.duration}
@@ -86,7 +86,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                 {podcast.base.description ? (
                     <p className={styles.description}>{podcast.base.description}</p>
                 ) : null}
-            </Section>
+            </section>
 
             {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
 

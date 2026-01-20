@@ -12,14 +12,14 @@ type PaginationProps = {
 };
 
 export function Pagination({
-    currentPage,
-    totalPages,
-    onPrevious,
-    onNext,
-    className,
-    previousHref,
-    nextHref,
-}: PaginationProps) {
+                               currentPage,
+                               totalPages,
+                               onPrevious,
+                               onNext,
+                               className,
+                               previousHref,
+                               nextHref,
+                           }: PaginationProps) {
     const classes = [styles.pagination, className].filter(Boolean).join(' ');
     const isFirstPage = currentPage === 1;
     const isLastPage = currentPage >= totalPages;

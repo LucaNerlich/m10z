@@ -1,7 +1,11 @@
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
-import {fetchArticlesByAuthorPaginated, fetchAuthorBySlug, fetchPodcastsByAuthorPaginated} from '@/src/lib/strapiContent';
+import {
+    fetchArticlesByAuthorPaginated,
+    fetchAuthorBySlug,
+    fetchPodcastsByAuthorPaginated,
+} from '@/src/lib/strapiContent';
 import {getOptimalMediaFormat} from '@/src/lib/rss/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
@@ -11,7 +15,7 @@ import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
 import {AuthorHeader} from '@/src/components/AuthorHeader';
-import {Section} from '@/src/components/Section';
+
 import {EmptyState} from '@/src/components/EmptyState';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import {AuthorNav} from '@/src/components/AuthorNav';
@@ -123,7 +127,7 @@ export default async function AuthorPage({params}: PageProps) {
             <AuthorNav authorSlug={slug} activeSection="overview" />
 
             {shouldRenderArticleSection ? (
-                <Section title={`Artikel (${articleTotal})`}>
+                <section title={`Artikel (${articleTotal})`}>
                     <div className={styles.summaryRow}>
                         {stats.articles.categories.slice(0, 6).map((c) => (
                             <Link
@@ -141,17 +145,19 @@ export default async function AuthorPage({params}: PageProps) {
                     {sortedArticles.length > 0 ? (
                         <ContentGrid gap="comfortable">
                             {sortedArticles.map((article) => (
-                                <ArticleCard key={article.slug} article={article} showAuthors={false} showCategories={true} />
+                                <ArticleCard key={article.slug} article={article} showAuthors={false}
+                                             showCategories={true} />
                             ))}
                         </ContentGrid>
                     ) : (
-                        <EmptyState message="Artikel konnten gerade nicht geladen werden. Bitte später erneut versuchen." />
+                        <EmptyState
+                            message="Artikel konnten gerade nicht geladen werden. Bitte später erneut versuchen." />
                     )}
-                </Section>
+                </section>
             ) : null}
 
             {shouldRenderPodcastSection ? (
-                <Section title={`Podcasts (${sortedPodcasts.length})`}>
+                <section title={`Podcasts (${sortedPodcasts.length})`}>
                     <div className={styles.summaryRow}>
                         {stats.podcasts.categories.slice(0, 6).map((c) => (
                             <Link
@@ -168,10 +174,11 @@ export default async function AuthorPage({params}: PageProps) {
                     </div>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
-                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false} showCategories={true} />
+                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false}
+                                         showCategories={true} />
                         ))}
                     </ContentGrid>
-                </Section>
+                </section>
             ) : null}
 
             {articleTotal === 0 && podcastTotal === 0 ? (

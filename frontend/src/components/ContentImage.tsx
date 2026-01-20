@@ -27,15 +27,15 @@ type CoverImageProps = {
  * @returns A cover image container with the image
  */
 export function ContentImage({
-    src,
-    alt,
-    width,
-    height,
-    className,
-    placeholder = 'empty',
-    blurhash,
-    title,
-}: CoverImageProps) {
+                                 src,
+                                 alt,
+                                 width,
+                                 height,
+                                 className,
+                                 placeholder = 'empty',
+                                 blurhash,
+                                 title,
+                             }: CoverImageProps) {
     // Use blurhash directly as blurDataURL if provided and placeholder is 'blur'
     const imagePlaceholder = blurhash && placeholder === 'blur' ? 'blur' : placeholder;
     const blurDataUrlProp = blurhash && placeholder === 'blur' ? {blurDataURL: blurhash} : {};

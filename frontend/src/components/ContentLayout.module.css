@@ -1,8 +1,7 @@
 .layout {
     max-width: 740px;
     margin: 0 auto;
-    padding: 0 20px;
-    padding-top: 1rem;
+    padding: 1rem 20px 0;
     width: 100%;
 }
 
@@ -13,6 +12,12 @@ main:has([data-list-page]) .layout {
 
 .container {
     width: 100%;
+
+    @media (max-width: 767px) {
+        article section {
+            padding: 0 0.5rem;
+        }
+    }
 }
 
 .withSidebar {

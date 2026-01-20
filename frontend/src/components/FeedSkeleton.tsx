@@ -13,7 +13,8 @@ export function FeedSkeleton() {
                             <div className={styles.tocLink}>
                                 <div className={styles.tocMetadata}>
                                     <div className={`${cardStyles.loadingPill} ${styles.tocTagPlaceholder}`} />
-                                    <div className={`${cardStyles.loadingBar} ${cardStyles.xshort} ${styles.tocDatePlaceholder}`} />
+                                    <div
+                                        className={`${cardStyles.loadingBar} ${cardStyles.xshort} ${styles.tocDatePlaceholder}`} />
                                 </div>
                                 <div className={`${cardStyles.loadingBar} ${styles.tocLabelPlaceholder}`} />
                             </div>

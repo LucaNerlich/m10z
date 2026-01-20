@@ -51,7 +51,8 @@ export function Code({className = '', children, inline = false, ...props}: CodeP
     return (
         <Highlight code={codeString.trim()} language={language}>
             {({className: highlightClassName, style, tokens, getLineProps, getTokenProps}) => (
-                <pre className={`${styles.pre} ${highlightClassName || ''}`} style={style} {...(preProps as React.ComponentProps<'pre'>)}>
+                <pre className={`${styles.pre} ${highlightClassName || ''}`}
+                     style={style} {...(preProps as React.ComponentProps<'pre'>)}>
                     <code className={styles.code}>
                         {tokens.map((line, i) => (
                             <div key={i} {...getLineProps({line})}>

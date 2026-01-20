@@ -3,8 +3,8 @@ import {cache} from 'react';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {type StrapiAuthor, type StrapiMediaRef, type StrapiCategoryRef} from '@/src/lib/rss/media';
-import {CACHE_REVALIDATE_DEFAULT, CACHE_REVALIDATE_CONTENT_PAGE} from '@/src/lib/cache/constants';
+import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/rss/media';
+import {CACHE_REVALIDATE_CONTENT_PAGE, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
 export type {StrapiMediaRef};

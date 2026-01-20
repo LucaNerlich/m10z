@@ -159,5 +159,5 @@ export function stringifyJsonLd(jsonLd: unknown): string {
     // Use serialize-javascript for safe serialization (handles XSS protection)
     // For JSON-LD, we want JSON format, so we use serialize with isJSON: true
     // This produces JSON-compatible output while maintaining security
-    return serialize(cleaned, { isJSON: true });
+    return serialize(cleaned, {isJSON: true});
 }

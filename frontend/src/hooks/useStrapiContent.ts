@@ -8,8 +8,8 @@ import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {
     type PaginatedResult,
     type PaginationMeta,
-    populateBaseMedia,
     populateAuthorAvatar,
+    populateBaseMedia,
     populateCategoryBase,
 } from '@/src/lib/strapiContent';
 
@@ -117,7 +117,10 @@ export function useArticlesList(page: number = 1, pageSize: number = 20) {
     );
 
     const url = `${STRAPI_URL}/api/articles?${query}`;
-    const {data, error, isLoading, isValidating} = useSWR<{data: StrapiArticle[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
+    const {data, error, isLoading, isValidating} = useSWR<{
+        data: StrapiArticle[];
+        meta?: {pagination?: Partial<PaginationMeta>}
+    }>(
         url,
         fetcher,
     );
@@ -146,19 +149,22 @@ export function usePodcastsList(page: number = 1, pageSize: number = 20) {
             sort: ['base.date:desc'],
             status: 'published',
             pagination: {pageSize: normalizedPageSize, page: normalizedPage},
-                populate: {
-                    base: populateBaseMedia,
-                    categories: populateCategoryBase,
-                    youtube: {fields: ['title', 'url']},
-                    file: {populate: '*'},
-                },
+            populate: {
+                base: populateBaseMedia,
+                categories: populateCategoryBase,
+                youtube: {fields: ['title', 'url']},
+                file: {populate: '*'},
+            },
             fields: ['slug', 'duration', 'wordCount', 'publishedAt'],
         },
         {encodeValuesOnly: true},
     );
 
     const url = `${STRAPI_URL}/api/podcasts?${query}`;
-    const {data, error, isLoading, isValidating} = useSWR<{data: StrapiPodcast[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
+    const {data, error, isLoading, isValidating} = useSWR<{
+        data: StrapiPodcast[];
+        meta?: {pagination?: Partial<PaginationMeta>}
+    }>(
         url,
         fetcher,
     );
@@ -183,20 +189,20 @@ export function useArticle(slug: string | null | undefined, initialData?: Strapi
 
     const query = shouldFetch
         ? qs.stringify(
-              {
-                  filters: {slug: {$eq: slug}},
-                  status: 'published',
-                  populate: {
-                      base: populateBaseMedia,
-                      authors: populateAuthorAvatar,
-                      categories: populateCategoryBase,
-                      youtube: true,
-                  },
-                  fields: ['slug', 'content', 'wordCount', 'publishedAt'],
-                  pagination: {pageSize: 1},
-              },
-              {encodeValuesOnly: true},
-          )
+            {
+                filters: {slug: {$eq: slug}},
+                status: 'published',
+                populate: {
+                    base: populateBaseMedia,
+                    authors: populateAuthorAvatar,
+                    categories: populateCategoryBase,
+                    youtube: true,
+                },
+                fields: ['slug', 'content', 'wordCount', 'publishedAt'],
+                pagination: {pageSize: 1},
+            },
+            {encodeValuesOnly: true},
+        )
         : null;
 
     const url = query ? `${STRAPI_URL}/api/articles?${query}` : null;
@@ -228,21 +234,21 @@ export function usePodcast(slug: string | null | undefined, initialData?: Strapi
 
     const query = shouldFetch
         ? qs.stringify(
-              {
-                  filters: {slug: {$eq: slug}},
-                  status: 'published',
-                  populate: {
-                      base: populateBaseMedia,
-                      authors: populateAuthorAvatar,
-                      categories: populateCategoryBase,
-                      youtube: {fields: ['title', 'url']},
-                      file: {populate: '*'},
-                  },
-                  fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt'],
-                  pagination: {pageSize: 1},
-              },
-              {encodeValuesOnly: true},
-          )
+            {
+                filters: {slug: {$eq: slug}},
+                status: 'published',
+                populate: {
+                    base: populateBaseMedia,
+                    authors: populateAuthorAvatar,
+                    categories: populateCategoryBase,
+                    youtube: {fields: ['title', 'url']},
+                    file: {populate: '*'},
+                },
+                fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt'],
+                pagination: {pageSize: 1},
+            },
+            {encodeValuesOnly: true},
+        )
         : null;
 
     const url = query ? `${STRAPI_URL}/api/podcasts?${query}` : null;
@@ -264,28 +270,28 @@ export function usePodcast(slug: string | null | undefined, initialData?: Strapi
 
 type FeedItem =
     | {
-          type: 'article';
-          slug: string;
-          title: string;
-          description?: string | null;
-          publishedAt?: string | null;
-          cover?: any;
-          banner?: any;
-          wordCount?: number | null;
-          href: string;
-      }
+    type: 'article';
+    slug: string;
+    title: string;
+    description?: string | null;
+    publishedAt?: string | null;
+    cover?: any;
+    banner?: any;
+    wordCount?: number | null;
+    href: string;
+}
     | {
-          type: 'podcast';
-          slug: string;
-          title: string;
-          description?: string | null;
-          publishedAt?: string | null;
-          cover?: any;
-          banner?: any;
-          wordCount?: number | null;
-          duration?: number | null;
-          href: string;
-      };
+    type: 'podcast';
+    slug: string;
+    title: string;
+    description?: string | null;
+    publishedAt?: string | null;
+    cover?: any;
+    banner?: any;
+    wordCount?: number | null;
+    duration?: number | null;
+    href: string;
+};
 
 type ContentFeedResult = {
     items: FeedItem[];

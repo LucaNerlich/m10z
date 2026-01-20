@@ -18,12 +18,12 @@ type LoadingPlaceholderProps = {
  * @param className - Optional CSS class for the wrapper element
  */
 export function LoadingPlaceholder({
-    isLoading,
-    hasData,
-    message,
-    children,
-    className,
-}: LoadingPlaceholderProps) {
+                                       isLoading,
+                                       hasData,
+                                       message,
+                                       children,
+                                       className,
+                                   }: LoadingPlaceholderProps) {
     // Only show loading if we're loading and don't have data yet
     if (!isLoading || hasData) {
         return null;

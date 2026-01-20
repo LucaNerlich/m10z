@@ -46,7 +46,8 @@ export function PodcastCard({
     return (
         <article className={cardClasses}>
             <div className={styles.media}>
-                <Link href={podcastUrl} className={styles.mediaLink} aria-label={`Podcast-Cover anzeigen: ${podcast.base.title}`}>
+                <Link href={podcastUrl} className={styles.mediaLink}
+                      aria-label={`Podcast-Cover anzeigen: ${podcast.base.title}`}>
                     <Image
                         src={imageUrl ?? placeholderCover}
                         alt={podcast.base.title}

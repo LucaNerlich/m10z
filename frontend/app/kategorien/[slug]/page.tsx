@@ -9,7 +9,7 @@ import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
-import {Section} from '@/src/components/Section';
+
 import {EmptyState} from '@/src/components/EmptyState';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
@@ -155,25 +155,25 @@ export default async function CategoryDetailPage({params}: PageProps) {
             </header>
 
             {sortedArticles.length > 0 ? (
-                <Section title={`Artikel (${sortedArticles.length})`}>
+                <section title={`Artikel (${sortedArticles.length})`}>
                     <ContentGrid gap="comfortable">
                         {sortedArticles.map((article) => (
                             <ArticleCard key={article.slug} article={article} showAuthors={true}
                                          showCategories={false} />
                         ))}
                     </ContentGrid>
-                </Section>
+                </section>
             ) : null}
 
             {sortedPodcasts.length > 0 ? (
-                <Section title={`Podcasts (${sortedPodcasts.length})`}>
+                <section title={`Podcasts (${sortedPodcasts.length})`}>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
                             <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true}
                                          showCategories={false} />
                         ))}
                     </ContentGrid>
-                </Section>
+                </section>
             ) : null}
 
             {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (

@@ -3,7 +3,7 @@ import Header from '@/src/components/Header';
 import Footer from '@/src/components/Footer';
 import UmamiAnalytics from '@/src/components/UmamiAnalytics';
 import {ScrollRestoration} from '@/src/components/ScrollRestoration';
-import {ContentLayout} from '@/app/ContentLayout';
+import {ContentLayout} from '@/src/components/ContentLayout';
 import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
 import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';

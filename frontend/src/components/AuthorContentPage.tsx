@@ -8,7 +8,7 @@ import {AuthorNav, type AuthorSection} from '@/src/components/AuthorNav';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {EmptyState} from '@/src/components/EmptyState';
 import {Pagination} from '@/src/components/Pagination';
-import {Section} from '@/src/components/Section';
+
 import {Tag} from '@/src/components/Tag';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
@@ -66,11 +66,11 @@ export async function generateAuthorContentMetadata(args: {
         },
         ...(categorySlug
             ? {
-                  robots: {
-                      index: false,
-                      follow: true,
-                  },
-              }
+                robots: {
+                    index: false,
+                    follow: true,
+                },
+            }
             : {}),
     };
 }
@@ -128,7 +128,7 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
             <AuthorHeader author={author} />
             <AuthorNav authorSlug={slug} activeSection={props.activeSection} />
 
-            <Section title={props.sectionLabel}>
+            <section title={props.sectionLabel}>
                 {categorySlug ? (
                     <div className={styles.filterRow}>
                         <Link
@@ -155,7 +155,8 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
                         />
                         {categorySlug ? (
                             <p>
-                                <Link href={`/team/${slug}/${props.sectionPath}`}>Alle {props.sectionLabel} anzeigen</Link>
+                                <Link
+                                    href={`/team/${slug}/${props.sectionPath}`}>Alle {props.sectionLabel} anzeigen</Link>
                             </p>
                         ) : null}
                     </div>
@@ -172,7 +173,7 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
                         ) : null}
                     </>
                 )}
-            </Section>
+            </section>
         </main>
     );
 }

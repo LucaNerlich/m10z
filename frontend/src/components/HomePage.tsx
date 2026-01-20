@@ -6,9 +6,7 @@ import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
 import {buildContentFeed} from '@/src/lib/contentFeed';
-import {
-    mediaUrlToAbsolute,
-} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute} from '@/src/lib/rss/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import styles from '@/app/page.module.css';
@@ -111,7 +109,8 @@ export async function HomePage({page}: {page: number}) {
                                         <div className={styles.tocMetadata}>
                                             <Tag
                                                 className={styles.tocTag}
-                                                icon={item.type === 'article' ? <BookIcon size={14} /> : <MusicNoteIcon size={14} />}
+                                                icon={item.type === 'article' ? <BookIcon size={14} /> :
+                                                    <MusicNoteIcon size={14} />}
                                             >
                                                 {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                             </Tag>
@@ -120,7 +119,8 @@ export async function HomePage({page}: {page: number}) {
                                                     {formatDateShort(item.publishedAt)}
                                                 </time>
                                             ) : (
-                                                <span className={styles.tocDate}>{formatDateShort(item.publishedAt)}</span>
+                                                <span
+                                                    className={styles.tocDate}>{formatDateShort(item.publishedAt)}</span>
                                             )}
                                         </div>
                                         <h3 className={styles.tocLabel}>{item.title}</h3>
@@ -203,7 +203,8 @@ export async function HomePage({page}: {page: number}) {
                                     <div className={styles.metaRow}>
                                         <Tag
                                             className={styles.metaTag}
-                                            icon={item.type === 'article' ? <BookIcon size={14} /> : <MusicNoteIcon size={14} />}
+                                            icon={item.type === 'article' ? <BookIcon size={14} /> :
+                                                <MusicNoteIcon size={14} />}
                                         >
                                             {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                         </Tag>

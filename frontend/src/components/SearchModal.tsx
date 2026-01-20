@@ -3,7 +3,7 @@
 import {type KeyboardEvent, type MouseEvent, useEffect, useId, useMemo, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
-import {BookIcon, UserIcon, MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
+import {BookIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {type SearchRecord} from '@/src/lib/search/types';
@@ -90,8 +90,8 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
             // Get all tabbable elements: input, close button, and result buttons
             const tabbableElements = Array.from(
                 modalRef.current.querySelectorAll<HTMLElement>(
-                    'input, button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-                )
+                    'input, button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+                ),
             ).filter((el) => !el.hasAttribute('disabled'));
 
             if (tabbableElements.length === 0) return;
@@ -105,7 +105,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
 
             // Get result buttons (exclude input and close button)
             const resultButtons = tabbableElements.filter(
-                (el) => el !== inputRef.current && el !== closeButtonRef.current
+                (el) => el !== inputRef.current && el !== closeButtonRef.current,
             );
 
             event.preventDefault();

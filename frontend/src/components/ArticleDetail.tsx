@@ -4,7 +4,7 @@ import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from 
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
-import {Section} from '@/src/components/Section';
+
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
@@ -72,7 +72,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                 placeholder={placeholder}
                 blurhash={blurhash}
             />
-            <Section className={styles.header}>
+            <section className={styles.header}>
                 <ContentMetadata
                     publishedDate={published}
                     readingTime={readingTime}
@@ -83,7 +83,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                 {article.base.description ? (
                     <p className={styles.description}>{article.base.description}</p>
                 ) : null}
-            </Section>
+            </section>
 
             <Markdown markdown={article.content ?? ''} />
 

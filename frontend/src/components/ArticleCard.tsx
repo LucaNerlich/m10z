@@ -46,7 +46,7 @@ export function ArticleCard({
     const effectiveDate = getEffectiveDate(article);
     const formattedDate = formatDateShort(effectiveDate);
     const articleUrl = routes.article(article.slug);
-    
+
     // Use wordCount for reading time calculation (no fallback to content)
     const readingTime = article.wordCount != null ? calculateReadingTime(article.wordCount) : null;
     const effectiveDescription = article.base.description || article.categories?.[0]?.base?.description;
@@ -56,7 +56,8 @@ export function ArticleCard({
     return (
         <article className={cardClasses}>
             <div className={styles.media}>
-                <Link href={articleUrl} className={styles.mediaLink} aria-label={`Artikelbild anzeigen: ${article.base.title}`}>
+                <Link href={articleUrl} className={styles.mediaLink}
+                      aria-label={`Artikelbild anzeigen: ${article.base.title}`}>
                     <Image
                         src={imageUrl ?? placeholderCover}
                         alt={article.base.title}

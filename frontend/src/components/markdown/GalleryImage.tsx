@@ -3,7 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import {toAbsoluteUrl} from '@/src/lib/strapi';
-import {umamiEventId} from '@/src/lib/analytics/umami';
 import {isImageHostnameAllowed} from '@/src/lib/imageUtils';
 
 export type GalleryImageProps = React.ComponentProps<typeof Image> & {

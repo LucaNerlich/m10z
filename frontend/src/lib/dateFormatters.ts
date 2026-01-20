@@ -58,7 +58,7 @@ function formatGermanDateFull(dateObj: Date): string {
     const year = dateObj.getUTCFullYear();
     const month = dateObj.getUTCMonth(); // 0-11
     const day = dateObj.getUTCDate();
-    
+
     return `${day}. ${GERMAN_MONTHS_FULL[month]} ${year}`;
 }
 
@@ -73,7 +73,7 @@ function formatGermanDateShort(dateObj: Date): string {
     const year = dateObj.getUTCFullYear();
     const month = dateObj.getUTCMonth(); // 0-11
     const day = dateObj.getUTCDate();
-    
+
     return `${day}. ${GERMAN_MONTHS_SHORT[month]} ${year}`;
 }
 
@@ -100,7 +100,7 @@ function parseDateAsUtcDateOnly(date: string): Date {
     const dateMatch = date.match(/^(\d{4}-\d{2}-\d{2})(?:T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?Z?)?/);
     if (dateMatch) {
         const [year, month, day] = dateMatch[1].split('-').map(Number);
-        
+
         // If we have a time component, check if it's late in the day UTC (20:00-23:59)
         // This typically indicates a date entered at midnight local time in a timezone ahead of UTC
         // In such cases, we should interpret it as the next calendar day
@@ -115,7 +115,7 @@ function parseDateAsUtcDateOnly(date: string): Date {
                 return adjustedDate;
             }
         }
-        
+
         // Parse as UTC date to avoid timezone shifts
         // This ensures "2024-12-25" always displays as December 25th regardless of timezone
         return new Date(Date.UTC(year, month - 1, day));

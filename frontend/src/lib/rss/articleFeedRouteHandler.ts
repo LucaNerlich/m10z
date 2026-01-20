@@ -11,12 +11,7 @@ import {
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {
-    populateBaseMedia,
-    populateAuthorAvatar,
-    populateCategoryBase,
-    MEDIA_FIELDS,
-} from '@/src/lib/strapiContent';
+import {MEDIA_FIELDS, populateAuthorAvatar, populateBaseMedia, populateCategoryBase} from '@/src/lib/strapiContent';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
@@ -384,9 +379,9 @@ export async function buildArticleFeedResponse(request: Request): Promise<Respon
             detail:
                 err instanceof Error
                     ? {
-                          errorName: err.name,
-                          errorMessage: err.message,
-                      }
+                        errorName: err.name,
+                        errorMessage: err.message,
+                    }
                     : {errorName: 'UnknownError'},
         });
 
