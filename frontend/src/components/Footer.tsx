@@ -15,8 +15,8 @@ const sections: FooterSection[] = [
         links: [
             {label: 'Artikel', href: routes.articles},
             {label: 'Podcasts', href: routes.podcasts},
-            {label: 'Kategorien', href: routes.categories},
-            {label: 'Team', href: routes.authors},
+            {label: 'Kategorien & Formate', href: routes.categories},
+            {label: 'AutorInnen', href: routes.authors},
             {label: 'Über uns', href: routes.about},
         ],
     },
