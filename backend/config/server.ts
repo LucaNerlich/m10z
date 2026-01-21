@@ -50,6 +50,9 @@ export default ({env}) => ({
             // Timeout properties are set on the server instance in src/index.ts
         },
     },
+    logger: {
+        level: process.env.LOG_LEVEL || 'http',
+    },
     cron: {
         enabled: true,
         tasks: {
