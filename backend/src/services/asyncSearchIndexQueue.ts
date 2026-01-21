@@ -42,15 +42,22 @@ async function runRebuild(strapi: StrapiLike): Promise<void> {
     pendingRebuild = false;
     strapi.log.info('Search index rebuild started.');
 
+    let succeeded = true;
+    let rebuildError: unknown;
     try {
         await buildAndPersistSearchIndex(strapi as any);
         await invalidateNext('search-index');
         await invalidateNext('sitemap');
     } catch (err) {
-        strapi.log.warn('Search index rebuild failed.', err);
+        succeeded = false;
+        rebuildError = err;
     } finally {
         isRunning = false;
-        strapi.log.info('Search index rebuild completed.');
+        if (succeeded) {
+            strapi.log.info('Search index rebuild completed.');
+        } else {
+            strapi.log.warn('Search index rebuild failed.', rebuildError);
+        }
         if (pendingRebuild) {
             scheduleDebouncedRun(strapi);
         }

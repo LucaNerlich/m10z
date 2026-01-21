@@ -53,7 +53,14 @@ export async function cacheInvalidationMiddleware(
 
     // Rebuild search index
     if (rebuildActions.has(context.action) && searchTargets.has(context.uid)) {
-        queueSearchIndexRebuild(strapiInstance);
+        if (strapiInstance) {
+            queueSearchIndexRebuild(strapiInstance);
+        } else {
+            console.warn('[cacheInvalidation] Missing strapiInstance for search index rebuild', {
+                action: context.action,
+                uid: context.uid,
+            });
+        }
     }
 
     return result;
