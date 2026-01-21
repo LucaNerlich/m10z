@@ -51,8 +51,9 @@ export default ({env}) => ({
         },
     },
     logger: {
+        // https://docs.strapi.io/cms/migration/v4-to-v5/breaking-changes/server-default-log-level#manual-migration
         config: {
-            level: process.env.LOG_LEVEL || 'http',
+            level: env('LOG_LEVEL', 'debug'),
         },
     },
     cron: {

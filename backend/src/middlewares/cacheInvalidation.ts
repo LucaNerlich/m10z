@@ -46,9 +46,23 @@ export async function cacheInvalidationMiddleware(
 
     // Invalidate Content
     if (context.action === 'publish' && publishTargets.has(context.uid)) {
-        queueCacheInvalidation(publishTargets.get(context.uid)!, strapiInstance);
+        if (strapiInstance) {
+            queueCacheInvalidation(publishTargets.get(context.uid)!, strapiInstance);
+        } else {
+            console.warn('[cacheInvalidation] Missing strapiInstance for cache invalidation', {
+                action: context.action,
+                uid: context.uid,
+            });
+        }
     } else if (context.action === 'update' && updateTargets.has(context.uid)) {
-        queueCacheInvalidation(updateTargets.get(context.uid)!, strapiInstance);
+        if (strapiInstance) {
+            queueCacheInvalidation(updateTargets.get(context.uid)!, strapiInstance);
+        } else {
+            console.warn('[cacheInvalidation] Missing strapiInstance for cache invalidation', {
+                action: context.action,
+                uid: context.uid,
+            });
+        }
     }
 
     // Rebuild search index

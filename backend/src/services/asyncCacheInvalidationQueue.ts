@@ -63,6 +63,9 @@ export function queueCacheInvalidation(
     strapi: StrapiLike | undefined | null,
 ): void {
     if (!strapi) {
+        console.warn('[cacheInvalidation] Missing strapiInstance for cache invalidation', {
+            target,
+        });
         return;
     }
 
