@@ -1,4 +1,3 @@
-import {buildAndPersistSearchIndex} from './services/searchIndexBuilder';
 import {wordCountMiddleware} from './middlewares/wordCount';
 import {durationMiddleware} from './middlewares/duration';
 import {cacheInvalidationMiddleware} from './middlewares/cacheInvalidation';
@@ -115,15 +114,6 @@ export default {
         } catch (err) {
             // Log error but don't fail bootstrap - column might already exist or DB might not be ready
             strapi.log.warn('Failed to add blurhash column (may already exist):', err);
-        }
-
-        try {
-            await buildAndPersistSearchIndex(strapi);
-            // eslint-disable-next-line no-console
-            console.log('Search index bootstrap completed');
-        } catch (err) {
-            // eslint-disable-next-line no-console
-            console.warn('Search index bootstrap failed (will rebuild on next publish)', err);
         }
 
         // Set up database connection pool monitoring

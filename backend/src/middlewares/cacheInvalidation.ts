@@ -5,7 +5,7 @@
  */
 
 import {invalidateNext} from '../utils/invalidateNextCache';
-import {buildAndPersistSearchIndex} from '../services/searchIndexBuilder';
+import {queueSearchIndexRebuild} from '../services/asyncSearchIndexQueue';
 
 const publishTargets = new Map<string, 'articlefeed' | 'audiofeed'>([
     ['api::article.article', 'articlefeed'],
@@ -53,17 +53,13 @@ export async function cacheInvalidationMiddleware(
 
     // Rebuild search index
     if (rebuildActions.has(context.action) && searchTargets.has(context.uid)) {
-        try {
-            if (strapiInstance) {
-                await buildAndPersistSearchIndex(strapiInstance);
-                await invalidateNext('search-index');
-
-                // Invalidate Sitemap
-                await invalidateNext('sitemap');
-            }
-        } catch (err) {
-            // eslint-disable-next-line no-console
-            console.warn('Failed to rebuild search index', err);
+        if (strapiInstance) {
+            queueSearchIndexRebuild(strapiInstance);
+        } else {
+            console.warn('[cacheInvalidation] Missing strapiInstance for search index rebuild', {
+                action: context.action,
+                uid: context.uid,
+            });
         }
     }
 
