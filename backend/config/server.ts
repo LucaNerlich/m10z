@@ -51,7 +51,9 @@ export default ({env}) => ({
         },
     },
     logger: {
-        level: process.env.LOG_LEVEL || 'http',
+        config: {
+            level: process.env.LOG_LEVEL || 'http',
+        },
     },
     cron: {
         enabled: true,
