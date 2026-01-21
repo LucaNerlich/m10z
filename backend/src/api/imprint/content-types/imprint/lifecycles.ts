@@ -1,8 +1,8 @@
-import {invalidateNext} from '../../../../utils/invalidateNextCache';
+import {queueCacheInvalidation} from '../../../../services/asyncCacheInvalidationQueue';
 
 export default {
     async afterUpdate(_event: any) {
-        await invalidateNext('legal');
+        queueCacheInvalidation('legal', strapi);
     },
 };
 

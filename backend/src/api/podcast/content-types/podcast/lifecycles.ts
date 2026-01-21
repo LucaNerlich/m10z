@@ -1,14 +1,14 @@
-import {invalidateNext} from '../../../../utils/invalidateNextCache';
+import {queueCacheInvalidation} from '../../../../services/asyncCacheInvalidationQueue';
 
 export default {
     async afterUpdate(_event: any) {
-        await invalidateNext('podcast');
+        queueCacheInvalidation('podcast', strapi);
     },
     async afterCreate(_event: any) {
-        await invalidateNext('podcast');
+        queueCacheInvalidation('podcast', strapi);
     },
     async afterDelete(_event: any) {
-        await invalidateNext('podcast');
+        queueCacheInvalidation('podcast', strapi);
     },
 };
 

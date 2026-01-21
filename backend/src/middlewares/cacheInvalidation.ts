@@ -4,7 +4,7 @@
  * Invalidates Next.js caches and rebuilds search index after successful mutations.
  */
 
-import {invalidateNext} from '../utils/invalidateNextCache';
+import {queueCacheInvalidation} from '../services/asyncCacheInvalidationQueue';
 import {queueSearchIndexRebuild} from '../services/asyncSearchIndexQueue';
 
 const publishTargets = new Map<string, 'articlefeed' | 'audiofeed'>([
@@ -46,9 +46,23 @@ export async function cacheInvalidationMiddleware(
 
     // Invalidate Content
     if (context.action === 'publish' && publishTargets.has(context.uid)) {
-        await invalidateNext(publishTargets.get(context.uid)!);
+        if (strapiInstance) {
+            queueCacheInvalidation(publishTargets.get(context.uid)!, strapiInstance);
+        } else {
+            console.warn('[cacheInvalidation] Missing strapiInstance for cache invalidation', {
+                action: context.action,
+                uid: context.uid,
+            });
+        }
     } else if (context.action === 'update' && updateTargets.has(context.uid)) {
-        await invalidateNext(updateTargets.get(context.uid)!);
+        if (strapiInstance) {
+            queueCacheInvalidation(updateTargets.get(context.uid)!, strapiInstance);
+        } else {
+            console.warn('[cacheInvalidation] Missing strapiInstance for cache invalidation', {
+                action: context.action,
+                uid: context.uid,
+            });
+        }
     }
 
     // Rebuild search index

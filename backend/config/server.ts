@@ -50,6 +50,12 @@ export default ({env}) => ({
             // Timeout properties are set on the server instance in src/index.ts
         },
     },
+    logger: {
+        // https://docs.strapi.io/cms/migration/v4-to-v5/breaking-changes/server-default-log-level#manual-migration
+        config: {
+            level: env('LOG_LEVEL', 'debug'),
+        },
+    },
     cron: {
         enabled: true,
         tasks: {
