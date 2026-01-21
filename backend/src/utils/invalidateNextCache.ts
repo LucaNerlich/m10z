@@ -7,7 +7,7 @@
  * - Fails open: never blocks Strapi write path if Next is unreachable.
  */
 
-type InvalidateTarget =
+export type InvalidateTarget =
     'audiofeed'
     | 'articlefeed'
     | 'legal'
