@@ -42,7 +42,8 @@ export function Markdown({markdown, className}: MarkdownProps) {
     // Inserted text: ++text++ -> <ins>text</ins>
     normalized = normalized.replace(/\+\+([^+\n]+)\+\+/g, '<ins>$1</ins>');
     // Superscript: ^text^ -> <sup>text</sup>
-    normalized = normalized.replace(/\^([^\^\n]+)\^/g, '<sup>$1</sup>');
+    // Use negative lookbehind to avoid matching footnote references [^...]
+    normalized = normalized.replace(/(?<!\[)\^([^\^\n]+)\^/g, '<sup>$1</sup>');
     // Subscript: ~text~ -> <sub>text</sub>
     // Use negative lookbehind/lookahead to avoid collision with GFM strikethrough (~~text~~)
     // Only match single tildes that are not part of double-tildes
@@ -72,7 +73,7 @@ export function Markdown({markdown, className}: MarkdownProps) {
                             ...defaultSchema,
                             // clobberPrefix defaults to 'user-content-' for security against DOM clobbering
                             clobberPrefix: '',
-                            tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark'],
+                            tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark', 'section'],
                             // Allow data-* attributes for Fancybox and analytics
                             attributes: {
                                 ...defaultSchema.attributes,
@@ -80,9 +81,15 @@ export function Markdown({markdown, className}: MarkdownProps) {
                                 sup: [],
                                 sub: [],
                                 mark: [],
+                                section: ['class'],
                                 a: [
                                     ...(defaultSchema.attributes?.a || []),
+                                    'id',
                                     ['data*', /^data-/],
+                                ],
+                                li: [
+                                    ...(defaultSchema.attributes?.li || []),
+                                    'id',
                                 ],
                             },
                         },
