@@ -168,7 +168,7 @@ export default async function CategoryDetailPage({params}: PageProps) {
 
             {sortedPodcasts.length > 0 ? (
                 <section>
-                    <h2>{`Podcasts (${sortedArticles.length})`}</h2>
+                    <h2>{`Podcasts (${sortedPodcasts.length})`}</h2>
                     <ContentGrid gap="comfortable">
                         {sortedPodcasts.map((podcast) => (
                             <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true}
