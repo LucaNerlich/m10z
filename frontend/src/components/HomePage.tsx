@@ -215,7 +215,7 @@ export async function HomePage({page}: {page: number}) {
                                         ) : null}
                                         {item.type === 'podcast' && item.duration != null ? (
                                             <span className={styles.readingTime}>
-                                               {formatDuration(item.duration)}
+                                               🎶&nbsp;{formatDuration(item.duration)}
                                             </span>
                                         ) : null}
                                         <time className={styles.date}>{formatDateShort(item.publishedAt)}</time>
