@@ -1,6 +1,7 @@
 import {type Server} from 'http';
 import {generateMissingBlurhashes} from '../src/cron/blurhash';
 import {generateMissingWordCounts} from '../src/cron/wordcount';
+import {rebuildSearchIndex} from '../src/cron/searchIndex';
 
 /**
  * Configures HTTP server timeout settings to prevent premature socket closure
@@ -71,6 +72,13 @@ export default ({env}) => ({
                 task: generateMissingWordCounts,
                 options: {
                     rule: '15 3 * * *', // Run nightly at 03:15 (server local time)
+                },
+            },
+            // Rebuild search index - runs once nightly
+            rebuildSearchIndex: {
+                task: rebuildSearchIndex,
+                options: {
+                    rule: '30 3 * * *', // Run nightly at 03:30 (server local time)
                 },
             },
         },
