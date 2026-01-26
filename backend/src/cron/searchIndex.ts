@@ -19,7 +19,10 @@ export async function rebuildSearchIndex({strapi}: {strapi: any}): Promise<void>
     try {
         strapi.log.info('Starting nightly search index rebuild...');
 
-        await buildAndPersistSearchIndex(strapi);
+        const {metrics} = await buildAndPersistSearchIndex(strapi);
+        strapi.log.info(
+            `searchIndexSummary source=cron articles=${metrics.counts.articles} podcasts=${metrics.counts.podcasts} authors=${metrics.counts.authors} categories=${metrics.counts.categories} total=${metrics.counts.total} buildMs=${metrics.buildMs} fetchMs=${metrics.fetchMs.total} processingMs=${metrics.processingMs} payloadBytes=${metrics.payloadBytes} payloadKb=${metrics.payloadKb}`,
+        );
 
         strapi.log.info('Search index rebuild completed successfully');
 

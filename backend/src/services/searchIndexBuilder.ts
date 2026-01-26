@@ -1,11 +1,4 @@
-import {JSDOM} from 'jsdom';
-import createDOMPurify from 'dompurify';
-import {marked} from 'marked';
-
-const window = new JSDOM('').window;
-// DOMPurify's TS types expect a WindowLike. JSDOM's window is compatible at runtime.
-// Cast to avoid type mismatch between DOMPurify and JSDOM type definitions.
-const DOMPurify = createDOMPurify(window as any);
+import markdownToTxt from 'markdown-to-txt';
 
 type Strapi = {
     documents: (
@@ -15,6 +8,9 @@ type Strapi = {
         findFirst?: (params?: Record<string, unknown>) => Promise<any>;
         update: (params: {documentId: string | number; data: Record<string, unknown>}) => Promise<any>;
         create: (params: {data: Record<string, unknown>}) => Promise<any>;
+    };
+    log: {
+        info: (message: string) => void;
     };
 };
 
@@ -38,6 +34,31 @@ type SearchIndexFile = {
     generatedAt: string;
     total: number;
     records: SearchRecord[];
+};
+
+type SearchIndexMetrics = {
+    buildMs: number;
+    fetchMs: {
+        articles: number;
+        podcasts: number;
+        authors: number;
+        categories: number;
+        total: number;
+    };
+    processingMs: number;
+    counts: {
+        articles: number;
+        podcasts: number;
+        authors: number;
+        categories: number;
+        total: number;
+    };
+    payloadBytes?: number;
+    payloadKb?: number;
+};
+
+type PlainTextMetrics = {
+    addProcessingMs: (ms: number) => void;
 };
 
 const PAGE_SIZE = 100;
@@ -69,38 +90,18 @@ function effectiveDate(raw: any): string | null {
     return safeText(raw?.publishedAt) ?? null;
 }
 
-function toPlainText(value: unknown): string | undefined {
+function toPlainText(value: unknown, metrics?: PlainTextMetrics): string | undefined {
     if (typeof value !== 'string') return undefined;
 
-    let html: string;
-
-    // Check if content is markdown (contains markdown syntax) or already HTML
-    // Convert markdown to HTML first, then sanitize
-    try {
-        // Try parsing as markdown first (marked.parse handles both markdown and HTML)
-        // If it's already HTML, marked will pass it through mostly unchanged
-        html = marked.parse(value, {
-            gfm: true,
-            breaks: true,
-        }) as string;
-    } catch {
-        // If parsing fails, treat as plain HTML
-        html = value;
+    const startedAt = metrics ? Date.now() : 0;
+    const converted = markdownToTxt(value);
+    if (metrics) {
+        metrics.addProcessingMs(Date.now() - startedAt);
     }
 
-    // Sanitize HTML using DOMPurify to prevent XSS and safely extract text content
-    // Strip all HTML tags and attributes, only keep text content
-    const sanitized = DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: [],
-        ALLOWED_ATTR: [],
-        KEEP_CONTENT: true,
-    });
-
-    // Normalize whitespace and trim
-    const text = sanitized.replace(/\s+/g, ' ').trim();
+    const text = converted.replace(/\s+/g, ' ').trim();
     if (text.length === 0) return undefined;
 
-    // Cap to avoid oversized records
     const maxLen = getMaxLen();
     return text.slice(0, maxLen);
 }
@@ -199,14 +200,14 @@ async function fetchAllDocuments<T>(
     return items;
 }
 
-function normalizeArticle(raw: any, strapiUrl?: string): SearchRecord | null {
+function normalizeArticle(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
     const article = unwrapEntry(raw);
     const slug = safeText(article?.slug);
     const title = sanitizeText(article?.base?.title);
     if (!slug || !title) return null;
 
     const description = sanitizeText(article?.base?.description) ?? null;
-    const content = toPlainText(article?.content) ?? null;
+    const content = toPlainText(article?.content, metrics) ?? null;
     const categories: string[] =
         article?.categories
             ?.map((c: any) => unwrapEntry(c))
@@ -233,14 +234,14 @@ function normalizeArticle(raw: any, strapiUrl?: string): SearchRecord | null {
     };
 }
 
-function normalizePodcast(raw: any, strapiUrl?: string): SearchRecord | null {
+function normalizePodcast(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
     const podcast = unwrapEntry(raw);
     const slug = safeText(podcast?.slug);
     const title = sanitizeText(podcast?.base?.title);
     if (!slug || !title) return null;
 
     const description = sanitizeText(podcast?.base?.description) ?? null;
-    const content = toPlainText(podcast?.shownotes) ?? null;
+    const content = toPlainText(podcast?.shownotes, metrics) ?? null;
     const categories: string[] =
         podcast?.categories
             ?.map((c: any) => unwrapEntry(c))
@@ -307,11 +308,12 @@ function normalizeCategory(raw: any, strapiUrl?: string): SearchRecord | null {
     };
 }
 
-async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
+async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> {
     const strapiUrl = process.env.BASE_DOMAIN;
+    const buildStartedAt = Date.now();
 
-    const [articlesRaw, podcastsRaw, authorsRaw, categoriesRaw] = await Promise.all([
-        fetchAllDocuments(
+    const articlesStartedAt = Date.now();
+    const articlesPromise = fetchAllDocuments(
             strapi,
             'api::article.article',
             {
@@ -325,53 +327,104 @@ async function buildIndex(strapi: Strapi): Promise<SearchIndexFile> {
                 },
                 fields: ['slug', 'publishedAt', 'content'],
             },
-        ),
-        fetchAllDocuments(
-            strapi,
-            'api::podcast.podcast',
-            {
-                populate: {
-                    base: {populate: ['cover'], fields: ['title', 'description', 'date']},
-                    categories: {
-                        populate: {base: {populate: ['cover'], fields: ['title']}},
-                        fields: ['slug'],
-                    },
-                    authors: {fields: ['title', 'slug']},
+        )
+        .then((items) => ({items, ms: Date.now() - articlesStartedAt}));
+
+    const podcastsStartedAt = Date.now();
+    const podcastsPromise = fetchAllDocuments(
+        strapi,
+        'api::podcast.podcast',
+        {
+            populate: {
+                base: {populate: ['cover'], fields: ['title', 'description', 'date']},
+                categories: {
+                    populate: {base: {populate: ['cover'], fields: ['title']}},
+                    fields: ['slug'],
                 },
-                fields: ['slug', 'publishedAt', 'shownotes'],
+                authors: {fields: ['title', 'slug']},
             },
-        ),
-        fetchAllDocuments(
-            strapi,
-            'api::author.author',
-            {
-                populate: ['avatar'],
-                fields: ['slug', 'title', 'description'],
-            },
-        ),
-        fetchAllDocuments(
-            strapi,
-            'api::category.category',
-            {
-                populate: {base: {populate: ['cover'], fields: ['title', 'description']}},
-                fields: ['slug'],
-            },
-        ),
-    ]);
+            fields: ['slug', 'publishedAt', 'shownotes'],
+        },
+    ).then((items) => ({items, ms: Date.now() - podcastsStartedAt}));
+
+    const authorsStartedAt = Date.now();
+    const authorsPromise = fetchAllDocuments(
+        strapi,
+        'api::author.author',
+        {
+            populate: ['avatar'],
+            fields: ['slug', 'title', 'description'],
+        },
+    ).then((items) => ({items, ms: Date.now() - authorsStartedAt}));
+
+    const categoriesStartedAt = Date.now();
+    const categoriesPromise = fetchAllDocuments(
+        strapi,
+        'api::category.category',
+        {
+            populate: {base: {populate: ['cover'], fields: ['title', 'description']}},
+            fields: ['slug'],
+        },
+    ).then((items) => ({items, ms: Date.now() - categoriesStartedAt}));
+
+    const [
+        {items: articlesRaw, ms: articlesFetchMs},
+        {items: podcastsRaw, ms: podcastsFetchMs},
+        {items: authorsRaw, ms: authorsFetchMs},
+        {items: categoriesRaw, ms: categoriesFetchMs},
+    ] = await Promise.all([articlesPromise, podcastsPromise, authorsPromise, categoriesPromise]);
+
+    strapi.log.info(`searchIndexFetch type=article count=${articlesRaw.length} fetchMs=${articlesFetchMs}`);
+    strapi.log.info(`searchIndexFetch type=podcast count=${podcastsRaw.length} fetchMs=${podcastsFetchMs}`);
+    strapi.log.info(`searchIndexFetch type=author count=${authorsRaw.length} fetchMs=${authorsFetchMs}`);
+    strapi.log.info(`searchIndexFetch type=category count=${categoriesRaw.length} fetchMs=${categoriesFetchMs}`);
+
+    let processingMs = 0;
+    const textMetrics: PlainTextMetrics = {
+        addProcessingMs: (ms) => {
+            processingMs += ms;
+        },
+    };
 
     const records: SearchRecord[] = [
-        ...articlesRaw.map((raw) => normalizeArticle(raw, strapiUrl)),
-        ...podcastsRaw.map((raw) => normalizePodcast(raw, strapiUrl)),
+        ...articlesRaw.map((raw) => normalizeArticle(raw, strapiUrl, textMetrics)),
+        ...podcastsRaw.map((raw) => normalizePodcast(raw, strapiUrl, textMetrics)),
         ...authorsRaw.map((raw) => normalizeAuthor(raw, strapiUrl)),
         ...categoriesRaw.map((raw) => normalizeCategory(raw, strapiUrl)),
     ].filter(Boolean) as SearchRecord[];
 
-    return {
+    const index = {
         version: 0,
         generatedAt: new Date().toISOString(),
         total: records.length,
         records,
     };
+
+    const fetchTotalMs = articlesFetchMs + podcastsFetchMs + authorsFetchMs + categoriesFetchMs;
+    const metrics: SearchIndexMetrics = {
+        buildMs: Date.now() - buildStartedAt,
+        fetchMs: {
+            articles: articlesFetchMs,
+            podcasts: podcastsFetchMs,
+            authors: authorsFetchMs,
+            categories: categoriesFetchMs,
+            total: fetchTotalMs,
+        },
+        processingMs,
+        counts: {
+            articles: articlesRaw.length,
+            podcasts: podcastsRaw.length,
+            authors: authorsRaw.length,
+            categories: categoriesRaw.length,
+            total: records.length,
+        },
+    };
+
+    strapi.log.info(
+        `searchIndexBuild totalMs=${metrics.buildMs} fetchMs=${metrics.fetchMs.total} processingMs=${metrics.processingMs} records=${metrics.counts.total}`,
+    );
+
+    return {index, metrics};
 }
 
 async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<SearchIndexFile> {
@@ -404,8 +457,14 @@ async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<Search
     return payload;
 }
 
-export async function buildAndPersistSearchIndex(strapi: Strapi): Promise<SearchIndexFile> {
-    const index = await buildIndex(strapi);
-    return await saveIndex(strapi, index);
+export async function buildAndPersistSearchIndex(
+    strapi: Strapi,
+): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> {
+    const {index, metrics} = await buildIndex(strapi);
+    const saved = await saveIndex(strapi, index);
+    const payloadBytes = Buffer.byteLength(JSON.stringify(saved), 'utf8');
+    metrics.payloadBytes = payloadBytes;
+    metrics.payloadKb = Number((payloadBytes / 1024).toFixed(2));
+    return {index: saved, metrics};
 }
 
