@@ -6,7 +6,7 @@
   "locale": null,
   "permissions": [
     {
-      "documentId": "ml3rb1od5ttheqdrn1itfycf",
+      "documentId": "ov3d2ru0mw9a3mgxp9hg6m7s",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",
@@ -20,7 +20,7 @@
       "locale": null
     },
     {
-      "documentId": "thxbibrp1mibnji9pwgj5ysr",
+      "documentId": "eowl4xprr01oweibnl8wkodg",
       "action": "plugin::content-manager.explorer.publish",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",
@@ -29,7 +29,7 @@
       "locale": null
     },
     {
-      "documentId": "n0yzygolklohy82uwtkaiykt",
+      "documentId": "tfl847s84zsx15wuigh6pa7w",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",
@@ -43,7 +43,7 @@
       "locale": null
     },
     {
-      "documentId": "haz2rj9jixmgocb4byvxc8vz",
+      "documentId": "g1muwgtcoagl5jxui05hg7m8",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",
@@ -335,15 +335,6 @@
           "articles"
         ]
       },
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "twdujd5hvhxfyi7270rs6nxd",
-      "action": "plugin::content-manager.explorer.delete",
-      "actionParameters": {},
-      "subject": "api::author.author",
-      "properties": {},
       "conditions": [],
       "locale": null
     },

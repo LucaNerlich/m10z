@@ -45,7 +45,7 @@ async function runRebuild(strapi: StrapiLike): Promise<void> {
     let succeeded = true;
     let rebuildError: unknown;
     try {
-        const {metrics} = await buildAndPersistSearchIndex(strapi as any);
+        const {metrics} = await buildAndPersistSearchIndex(strapi as any, {source: 'queue'});
         strapi.log.info(
             `searchIndexSummary source=queue articles=${metrics.counts.articles} podcasts=${metrics.counts.podcasts} authors=${metrics.counts.authors} categories=${metrics.counts.categories} total=${metrics.counts.total} buildMs=${metrics.buildMs} fetchMs=${metrics.fetchMs.total} processingMs=${metrics.processingMs} payloadBytes=${metrics.payloadBytes} payloadKb=${metrics.payloadKb}`,
         );

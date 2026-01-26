@@ -57,9 +57,20 @@ type SearchIndexMetrics = {
     payloadKb?: number;
 };
 
+type SearchIndexMetricsSnapshot = SearchIndexMetrics & {
+    updatedAt: string;
+    source?: 'cron' | 'queue' | 'manual';
+};
+
 type PlainTextMetrics = {
     addProcessingMs: (ms: number) => void;
 };
+
+let lastMetrics: SearchIndexMetricsSnapshot | null = null;
+
+export function getLastSearchIndexMetrics(): SearchIndexMetricsSnapshot | null {
+    return lastMetrics;
+}
 
 const PAGE_SIZE = 100;
 const DEFAULT_MAX_LEN = 5000;
@@ -459,12 +470,18 @@ async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<Search
 
 export async function buildAndPersistSearchIndex(
     strapi: Strapi,
+    options?: {source?: 'cron' | 'queue' | 'manual'},
 ): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> {
     const {index, metrics} = await buildIndex(strapi);
     const saved = await saveIndex(strapi, index);
     const payloadBytes = Buffer.byteLength(JSON.stringify(saved), 'utf8');
     metrics.payloadBytes = payloadBytes;
     metrics.payloadKb = Number((payloadBytes / 1024).toFixed(2));
+    lastMetrics = {
+        ...metrics,
+        updatedAt: new Date().toISOString(),
+        source: options?.source,
+    };
     return {index: saved, metrics};
 }
 
