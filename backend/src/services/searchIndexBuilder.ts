@@ -62,15 +62,82 @@ type SearchIndexMetricsSnapshot = SearchIndexMetrics & {
     source?: 'cron' | 'queue' | 'manual';
 };
 
+export type SearchIndexMetricsHistoryEntry = SearchIndexMetricsSnapshot;
+
+const MAX_METRICS_ENTRIES = 1000;
+const METRICS_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+let metricsHistory: SearchIndexMetricsSnapshot[] = [];
+
+function cleanupMetricsHistory(now: number = Date.now()): void {
+    const cutoff = now - METRICS_MAX_AGE_MS;
+
+    metricsHistory = metricsHistory.filter((entry) => {
+        const ts = Date.parse(entry.updatedAt);
+        if (Number.isNaN(ts)) return false;
+        return ts >= cutoff;
+    });
+
+    if (metricsHistory.length > MAX_METRICS_ENTRIES) {
+        metricsHistory = metricsHistory.slice(0, MAX_METRICS_ENTRIES);
+    }
+}
+
+export function getLastSearchIndexMetrics(): SearchIndexMetricsSnapshot | null {
+    return metricsHistory[0] ?? null;
+}
+
+export function getAllSearchIndexMetrics(): SearchIndexMetricsHistoryEntry[] {
+    return [...metricsHistory];
+}
+
+/**
+ * Returns historical search index metrics from in-memory history.
+ *
+ * - History is stored most-recent-first (index 0 is latest).
+ * - `limit` controls the maximum number of entries (default 30, capped at MAX_METRICS_ENTRIES).
+ * - `from` / `to` are optional ISO date strings used as inclusive bounds on `updatedAt`.
+ *   Invalid date strings are ignored.
+ */
+export function getHistoricalSearchIndexMetrics(
+    limit = 30,
+    from?: string,
+    to?: string,
+): SearchIndexMetricsHistoryEntry[] {
+    let fromTs: number | null = null;
+    let toTs: number | null = null;
+
+    if (from) {
+        const parsed = Date.parse(from);
+        if (!Number.isNaN(parsed)) fromTs = parsed;
+    }
+
+    if (to) {
+        const parsed = Date.parse(to);
+        if (!Number.isNaN(parsed)) toTs = parsed;
+    }
+
+    let normalizedLimit = Number(limit);
+    if (!Number.isFinite(normalizedLimit) || normalizedLimit <= 0) {
+        normalizedLimit = 30;
+    }
+    if (normalizedLimit > MAX_METRICS_ENTRIES) {
+        normalizedLimit = MAX_METRICS_ENTRIES;
+    }
+
+    const filtered = metricsHistory.filter((entry) => {
+        const ts = Date.parse(entry.updatedAt);
+        if (Number.isNaN(ts)) return false;
+        if (fromTs !== null && ts < fromTs) return false;
+        if (toTs !== null && ts > toTs) return false;
+        return true;
+    });
+
+    return filtered.slice(0, normalizedLimit);
+}
 type PlainTextMetrics = {
     addProcessingMs: (ms: number) => void;
 };
-
-let lastMetrics: SearchIndexMetricsSnapshot | null = null;
-
-export function getLastSearchIndexMetrics(): SearchIndexMetricsSnapshot | null {
-    return lastMetrics;
-}
 
 const PAGE_SIZE = 100;
 const DEFAULT_MAX_LEN = 5000;
@@ -477,11 +544,19 @@ export async function buildAndPersistSearchIndex(
     const payloadBytes = Buffer.byteLength(JSON.stringify(saved), 'utf8');
     metrics.payloadBytes = payloadBytes;
     metrics.payloadKb = Number((payloadBytes / 1024).toFixed(2));
-    lastMetrics = {
+
+    const snapshot: SearchIndexMetricsSnapshot = {
         ...metrics,
         updatedAt: new Date().toISOString(),
         source: options?.source,
     };
+
+    // Clean up old metrics before adding the new snapshot to keep memory bounded.
+    cleanupMetricsHistory();
+    metricsHistory.unshift(snapshot);
+    if (metricsHistory.length > MAX_METRICS_ENTRIES) {
+        metricsHistory = metricsHistory.slice(0, MAX_METRICS_ENTRIES);
+    }
+
     return {index: saved, metrics};
 }
-
