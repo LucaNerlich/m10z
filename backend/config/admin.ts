@@ -1,4 +1,7 @@
-export default ({env}) => ({
+export default ({env}) => {
+    const clientUrl = env('CLIENT_URL');
+
+    return {
     auth: {
         secret: env('ADMIN_JWT_SECRET'),
         sessions: {
@@ -32,7 +35,38 @@ export default ({env}) => ({
     watchIgnoreFiles: [
         '**/config/sync/**',
     ],
-    preview: {
-        enabled: false,
-    },
-});
+        preview: {
+            enabled: true,
+            config: {
+                allowedOrigins: [clientUrl, 'https://m10z.de', 'http://localhost:3000'].filter(Boolean),
+                async handler(uid, {documentId, locale, status}) {
+                    if (!clientUrl) return null;
+                    if (!documentId) return null;
+
+                    const document = await strapi.documents(uid).findOne({documentId});
+                    const slug = document?.slug;
+                    if (!slug) return null;
+
+                    let route: string | null = null;
+                    if (uid === 'api::article.article') {
+                        route = `/preview/artikel/${slug}`;
+                    }
+                    if (uid === 'api::podcast.podcast') {
+                        route = `/preview/podcasts/${slug}`;
+                    }
+                    if (!route) return null;
+
+                    const secret = env('STRAPI_PREVIEW_SECRET');
+                    if (!secret) return null;
+
+                    const previewStatus = status === 'published' ? 'published' : 'draft';
+                    const query = new URLSearchParams({
+                        secret,
+                        status: previewStatus,
+                    });
+                    return `${clientUrl}${route}?${query.toString()}`;
+                },
+            },
+        },
+    };
+};

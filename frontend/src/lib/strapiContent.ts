@@ -71,6 +71,13 @@ type FetchOptions = {
     };
 };
 
+type StrapiFetchInit = RequestInit & {
+    next?: {
+        tags: string[];
+        revalidate?: number;
+    };
+};
+
 export type PaginationMeta = {
     page: number;
     pageSize: number;
@@ -133,7 +140,12 @@ type FetchPageOptions = {
  * @returns The parsed response body typed as `T`
  * @throws Error when the request times out, when a socket/connection error occurs, or when the HTTP response status is not OK
  */
-async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
+async function performStrapiFetch<T>(
+    pathWithQuery: string,
+    options: FetchOptions,
+    init: StrapiFetchInit,
+    diagnosticName: string,
+): Promise<T> {
     const timeout = options.timeout ?? 30000; // Default 30 seconds
     const url = new URL(pathWithQuery, STRAPI_URL);
     const urlString = url.toString();
@@ -147,10 +159,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
     try {
         const res = await fetch(urlString, {
             signal: controller.signal,
-            next: {
-                tags: options.tags,
-                revalidate: options.revalidate,
-            },
+            ...init,
         });
 
         clearTimeout(timeoutId);
@@ -166,7 +175,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',
-                name: 'strapi.fetchJson',
+                name: diagnosticName,
                 ok: true,
                 durationMs,
                 detail: {
@@ -198,7 +207,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',
-                name: 'strapi.fetchJson',
+                name: diagnosticName,
                 ok: false,
                 durationMs,
                 detail: {
@@ -244,7 +253,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',
-                name: 'strapi.fetchJson',
+                name: diagnosticName,
                 ok: false,
                 durationMs,
                 detail: {
@@ -262,7 +271,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',
-                name: 'strapi.fetchJson',
+                name: diagnosticName,
                 ok: false,
                 durationMs,
                 detail: {
@@ -277,6 +286,32 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
         // Re-throw other errors as-is
         throw error;
     }
+}
+
+async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
+    return performStrapiFetch(
+        pathWithQuery,
+        options,
+        {
+            next: {
+                tags: options.tags,
+                revalidate: options.revalidate,
+            },
+        },
+        'strapi.fetchJson',
+    );
+}
+
+/**
+ * Fetches JSON from the Strapi API without caching (preview/draft reads).
+ *
+ * @param pathWithQuery - API path and query string (resolved against the configured STRAPI_URL)
+ * @param options - Request options: cache `tags`, `timeout` in milliseconds, and optional `context` used for logging
+ * @returns The parsed response body typed as `T`
+ * @throws Error when the request times out, when a socket/connection error occurs, or when the HTTP response status is not OK
+ */
+async function fetchJsonNoStore<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
+    return performStrapiFetch(pathWithQuery, options, {cache: 'no-store'}, 'strapi.fetchJsonNoStore');
 }
 
 /**
@@ -372,6 +407,54 @@ export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArti
     return res.data?.[0] ?? null;
 });
 
+type PreviewStatus = 'draft' | 'published';
+
+/**
+ * Fetches a draft or published article by slug for preview (no caching).
+ *
+ * @param slug - The article's slug to look up
+ * @param status - Preview status to request ('draft' or 'published')
+ * @returns The matching `StrapiArticle` if found, `null` otherwise
+ */
+export async function fetchArticleBySlugForPreview(
+    slug: string,
+    status: PreviewStatus = 'draft',
+): Promise<StrapiArticle | null> {
+    const query = qs.stringify(
+        {
+            filters: {slug: {$eq: slug}},
+            status,
+            populate: {
+                base: populateBaseMedia,
+                authors: populateAuthorAvatar,
+                categories: populateCategoryBase,
+                youtube: true,
+            },
+            fields: ['slug', 'content', 'wordCount', 'publishedAt'],
+            pagination: {pageSize: 1},
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJsonNoStore<{data: StrapiArticle[]}>(
+        `/api/articles?${query}`,
+        {
+            tags: [],
+            context: {
+                slug,
+                contentType: 'article',
+                populateOptions: {
+                    base: populateBaseMedia,
+                    authors: populateAuthorAvatar,
+                    categories: populateCategoryBase,
+                    youtube: true,
+                },
+            },
+        },
+    );
+    return res.data?.[0] ?? null;
+}
+
 /**
  * Fetches a published podcast identified by its slug and returns it with related media, authors, categories, YouTube info, and file populated.
  *
@@ -416,6 +499,54 @@ export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodc
     );
     return res.data?.[0] ?? null;
 });
+
+/**
+ * Fetches a draft or published podcast identified by its slug for preview (no caching).
+ *
+ * @param slug - The podcast's slug to search for
+ * @param status - Preview status to request ('draft' or 'published')
+ * @returns The matching `StrapiPodcast` with populated relations, or `null` if no matching podcast exists
+ */
+export async function fetchPodcastBySlugForPreview(
+    slug: string,
+    status: PreviewStatus = 'draft',
+): Promise<StrapiPodcast | null> {
+    const query = qs.stringify(
+        {
+            filters: {slug: {$eq: slug}},
+            status,
+            populate: {
+                base: populateBaseMedia,
+                authors: populateAuthorAvatar,
+                categories: populateCategoryBase,
+                youtube: {fields: ['title', 'url']},
+                file: {populate: '*'},
+            },
+            fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt'],
+            pagination: {pageSize: 1},
+        },
+        {encodeValuesOnly: true},
+    );
+
+    const res = await fetchJsonNoStore<{data: StrapiPodcast[]}>(
+        `/api/podcasts?${query}`,
+        {
+            tags: [],
+            context: {
+                slug,
+                contentType: 'podcast',
+                populateOptions: {
+                    base: populateBaseMedia,
+                    authors: populateAuthorAvatar,
+                    categories: populateCategoryBase,
+                    youtube: {fields: ['title', 'url']},
+                    file: {populate: '*'},
+                },
+            },
+        },
+    );
+    return res.data?.[0] ?? null;
+}
 
 export type StrapiCategoryWithContent = {
     id: number;
