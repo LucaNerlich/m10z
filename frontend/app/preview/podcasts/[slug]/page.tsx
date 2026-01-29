@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 type PageProps = {
     params: Promise<{slug: string}>;
-    searchParams: Promise<{secret?: string}>;
+    searchParams: Promise<{secret?: string; status?: string}>;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,14 +29,15 @@ export default async function PodcastPreviewPage({params, searchParams}: PagePro
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
-    const {secret} = await searchParams;
+    const {secret, status} = await searchParams;
     const expected = process.env.STRAPI_PREVIEW_SECRET ?? null;
     if (!verifySecret(secret ?? null, expected)) {
         return notFound();
     }
 
     try {
-        const podcast = await fetchPodcastBySlugForPreview(slug);
+        const previewStatus = status === 'published' ? 'published' : 'draft';
+        const podcast = await fetchPodcastBySlugForPreview(slug, previewStatus);
         if (!podcast) return notFound();
 
         return (
@@ -50,7 +51,7 @@ export default async function PodcastPreviewPage({params, searchParams}: PagePro
 
         if (isTimeoutOrSocketError(error)) {
             console.error(`Socket/timeout error fetching preview podcast for slug "${slug}":`, errorMessage);
-            return notFound();
+            throw error instanceof Error ? error : new Error('Service unavailable');
         }
 
         if (errorMessage.includes('404') || errorMessage.includes('not found')) {

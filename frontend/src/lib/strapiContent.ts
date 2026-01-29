@@ -71,6 +71,13 @@ type FetchOptions = {
     };
 };
 
+type StrapiFetchInit = RequestInit & {
+    next?: {
+        tags: string[];
+        revalidate?: number;
+    };
+};
+
 export type PaginationMeta = {
     page: number;
     pageSize: number;
@@ -133,7 +140,12 @@ type FetchPageOptions = {
  * @returns The parsed response body typed as `T`
  * @throws Error when the request times out, when a socket/connection error occurs, or when the HTTP response status is not OK
  */
-async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
+async function performStrapiFetch<T>(
+    pathWithQuery: string,
+    options: FetchOptions,
+    init: StrapiFetchInit,
+    diagnosticName: string,
+): Promise<T> {
     const timeout = options.timeout ?? 30000; // Default 30 seconds
     const url = new URL(pathWithQuery, STRAPI_URL);
     const urlString = url.toString();
@@ -147,10 +159,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
     try {
         const res = await fetch(urlString, {
             signal: controller.signal,
-            next: {
-                tags: options.tags,
-                revalidate: options.revalidate,
-            },
+            ...init,
         });
 
         clearTimeout(timeoutId);
@@ -166,7 +175,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',
-                name: 'strapi.fetchJson',
+                name: diagnosticName,
                 ok: true,
                 durationMs,
                 detail: {
@@ -198,7 +207,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',
-                name: 'strapi.fetchJson',
+                name: diagnosticName,
                 ok: false,
                 durationMs,
                 detail: {
@@ -244,7 +253,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',
-                name: 'strapi.fetchJson',
+                name: diagnosticName,
                 ok: false,
                 durationMs,
                 detail: {
@@ -262,7 +271,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
             recordDiagnosticEvent({
                 ts: Date.now(),
                 kind: 'fetch',
-                name: 'strapi.fetchJson',
+                name: diagnosticName,
                 ok: false,
                 durationMs,
                 detail: {
@@ -279,6 +288,20 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
     }
 }
 
+async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
+    return performStrapiFetch(
+        pathWithQuery,
+        options,
+        {
+            next: {
+                tags: options.tags,
+                revalidate: options.revalidate,
+            },
+        },
+        'strapi.fetchJson',
+    );
+}
+
 /**
  * Fetches JSON from the Strapi API without caching (preview/draft reads).
  *
@@ -288,146 +311,7 @@ async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promi
  * @throws Error when the request times out, when a socket/connection error occurs, or when the HTTP response status is not OK
  */
 async function fetchJsonNoStore<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
-    const timeout = options.timeout ?? 30000; // Default 30 seconds
-    const url = new URL(pathWithQuery, STRAPI_URL);
-    const urlString = url.toString();
-    const startedAt = Date.now();
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-        controller.abort();
-    }, timeout);
-
-    try {
-        const res = await fetch(urlString, {
-            signal: controller.signal,
-            cache: 'no-store',
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!res.ok) {
-            throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
-        }
-
-        const body = (await res.json()) as T;
-
-        const durationMs = Date.now() - startedAt;
-        if (durationMs >= 800) {
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'fetch',
-                name: 'strapi.fetchJsonNoStore',
-                ok: true,
-                durationMs,
-                detail: {
-                    path: url.pathname,
-                    tagCount: options.tags.length,
-                },
-            });
-        }
-
-        return body;
-    } catch (error: unknown) {
-        clearTimeout(timeoutId);
-        const durationMs = Date.now() - startedAt;
-
-        // Check if this is an abort error (timeout)
-        if (error instanceof Error && error.name === 'AbortError') {
-            const timeoutError = new Error(`Strapi request timed out after ${timeout}ms: ${urlString}`);
-            console.error(
-                JSON.stringify({
-                    error: 'Request timeout',
-                    errorCode: 'TIMEOUT',
-                    timeout: true,
-                    timeoutMs: timeout,
-                    url: urlString,
-                    context: options.context,
-                }),
-            );
-
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'fetch',
-                name: 'strapi.fetchJsonNoStore',
-                ok: false,
-                durationMs,
-                detail: {
-                    path: url.pathname,
-                    error: 'TIMEOUT',
-                    timeoutMs: timeout,
-                    tagCount: options.tags.length,
-                },
-            });
-            throw timeoutError;
-        }
-
-        // Check for socket errors (UND_ERR_SOCKET from undici)
-        const err = error as Error & {
-            code?: string;
-            cause?: Error & {
-                code?: string;
-                bytesRead?: number;
-                bytesWritten?: number;
-                localAddress?: string;
-                remoteAddress?: string;
-            };
-        };
-
-        const errorCode = err.code || err.cause?.code;
-        const isSocketError = errorCode === 'UND_ERR_SOCKET' || errorCode === 'ECONNRESET' || errorCode === 'ECONNREFUSED';
-
-        if (isSocketError) {
-            const socketErrorInfo = {
-                error: err.message,
-                errorCode: errorCode || 'UNKNOWN_SOCKET_ERROR',
-                bytesRead: err.cause?.bytesRead,
-                bytesWritten: err.cause?.bytesWritten,
-                localAddress: err.cause?.localAddress,
-                remoteAddress: err.cause?.remoteAddress,
-                timeout: false,
-                url: urlString,
-                context: options.context,
-            };
-
-            console.error(JSON.stringify(socketErrorInfo));
-
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'fetch',
-                name: 'strapi.fetchJsonNoStore',
-                ok: false,
-                durationMs,
-                detail: {
-                    path: url.pathname,
-                    error: errorCode || 'UNKNOWN_SOCKET_ERROR',
-                    tagCount: options.tags.length,
-                },
-            });
-
-            throw new Error(`Strapi connection error (${errorCode}): ${err.message}`);
-        }
-
-        // Record unexpected errors (keep details minimal; don't leak bodies/URLs with query params)
-        if (error instanceof Error) {
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'fetch',
-                name: 'strapi.fetchJsonNoStore',
-                ok: false,
-                durationMs,
-                detail: {
-                    path: url.pathname,
-                    error: 'ERROR',
-                    message: error.message,
-                    tagCount: options.tags.length,
-                },
-            });
-        }
-
-        // Re-throw other errors as-is
-        throw error;
-    }
+    return performStrapiFetch(pathWithQuery, options, {cache: 'no-store'}, 'strapi.fetchJsonNoStore');
 }
 
 /**
@@ -523,17 +407,23 @@ export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArti
     return res.data?.[0] ?? null;
 });
 
+type PreviewStatus = 'draft' | 'published';
+
 /**
- * Fetches a draft article by slug for preview (no caching).
+ * Fetches a draft or published article by slug for preview (no caching).
  *
  * @param slug - The article's slug to look up
+ * @param status - Preview status to request ('draft' or 'published')
  * @returns The matching `StrapiArticle` if found, `null` otherwise
  */
-export async function fetchArticleBySlugForPreview(slug: string): Promise<StrapiArticle | null> {
+export async function fetchArticleBySlugForPreview(
+    slug: string,
+    status: PreviewStatus = 'draft',
+): Promise<StrapiArticle | null> {
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
-            status: 'draft',
+            status,
             populate: {
                 base: populateBaseMedia,
                 authors: populateAuthorAvatar,
@@ -611,16 +501,20 @@ export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodc
 });
 
 /**
- * Fetches a draft podcast identified by its slug for preview (no caching).
+ * Fetches a draft or published podcast identified by its slug for preview (no caching).
  *
  * @param slug - The podcast's slug to search for
- * @returns The matching `StrapiPodcast` with populated relations, or `null` if no draft podcast matches the slug
+ * @param status - Preview status to request ('draft' or 'published')
+ * @returns The matching `StrapiPodcast` with populated relations, or `null` if no matching podcast exists
  */
-export async function fetchPodcastBySlugForPreview(slug: string): Promise<StrapiPodcast | null> {
+export async function fetchPodcastBySlugForPreview(
+    slug: string,
+    status: PreviewStatus = 'draft',
+): Promise<StrapiPodcast | null> {
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
-            status: 'draft',
+            status,
             populate: {
                 base: populateBaseMedia,
                 authors: populateAuthorAvatar,

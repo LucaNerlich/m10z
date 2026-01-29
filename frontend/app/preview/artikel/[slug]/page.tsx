@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 type PageProps = {
     params: Promise<{slug: string}>;
-    searchParams: Promise<{secret?: string}>;
+    searchParams: Promise<{secret?: string; status?: string}>;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,14 +29,15 @@ export default async function ArticlePreviewPage({params, searchParams}: PagePro
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
-    const {secret} = await searchParams;
+    const {secret, status} = await searchParams;
     const expected = process.env.STRAPI_PREVIEW_SECRET ?? null;
     if (!verifySecret(secret ?? null, expected)) {
         return notFound();
     }
 
     try {
-        const article = await fetchArticleBySlugForPreview(slug);
+        const previewStatus = status === 'published' ? 'published' : 'draft';
+        const article = await fetchArticleBySlugForPreview(slug, previewStatus);
         if (!article) return notFound();
 
         return (
