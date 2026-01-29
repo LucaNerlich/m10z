@@ -42,7 +42,7 @@ export default async function ArticlePreviewPage({params, searchParams}: PagePro
 
         return (
             <>
-                <PreviewBanner />
+                <PreviewBanner status={previewStatus} />
                 <ArticleDetail slug={slug} article={article} />
             </>
         );

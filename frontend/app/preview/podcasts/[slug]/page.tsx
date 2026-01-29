@@ -42,7 +42,7 @@ export default async function PodcastPreviewPage({params, searchParams}: PagePro
 
         return (
             <>
-                <PreviewBanner />
+                <PreviewBanner status={previewStatus} />
                 <PodcastDetail slug={slug} podcast={podcast} />
             </>
         );
