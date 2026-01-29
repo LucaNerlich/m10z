@@ -34,26 +34,28 @@ export default ({env}) => ({
     ],
     preview: {
         enabled: true,
-        allowedOrigins: ['https://m10z.de', 'http://localhost:3000'],
-        async handler(uid, {documentId}) {
-            if (!documentId) return null;
+        config: {
+            allowedOrigins: [env('CLIENT_URL'), 'https://m10z.de', 'http://localhost:3000'],
+            async handler(uid, {documentId, locale, status}) {
+                if (!documentId) return null;
 
-            const document = await strapi.documents(uid).findOne({documentId});
-            const slug = document?.slug;
-            if (!slug) return null;
+                const document = await strapi.documents(uid).findOne({documentId});
+                const slug = document?.slug;
+                if (!slug) return null;
 
-            let route: string | null = null;
-            if (uid === 'api::article.article') {
-                route = `/preview/artikel/${slug}`;
-            }
-            if (uid === 'api::podcast.podcast') {
-                route = `/preview/podcasts/${slug}`;
-            }
-            if (!route) return null;
+                let route: string | null = null;
+                if (uid === 'api::article.article') {
+                    route = `/preview/artikel/${slug}`;
+                }
+                if (uid === 'api::podcast.podcast') {
+                    route = `/preview/podcasts/${slug}`;
+                }
+                if (!route) return null;
 
-            const secret = env('STRAPI_PREVIEW_SECRET');
-            if (!secret) return null;
-            return `${route}?secret=${encodeURIComponent(secret)}`;
+                const secret = env('STRAPI_PREVIEW_SECRET');
+                if (!secret) return null;
+                return `${env('CLIENT_URL')}${route}?secret=${encodeURIComponent(secret)}`;
+            },
         },
     },
 });
