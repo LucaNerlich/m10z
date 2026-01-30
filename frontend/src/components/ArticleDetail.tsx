@@ -9,7 +9,9 @@ import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import placeholderCover from '@/public/images/m10z.jpg';
-import styles from '@/app/artikel/[slug]/page.module.css';
+import {ContentTOC} from '@/src/components/ContentTOC';
+import {extractHeadlines} from '@/src/lib/extractHeadlines';
+import styles from '@/src/components/ArticleDetail.module.css';
 
 // Hoist RegExp pattern to module scope
 const REGEX_LT_ESCAPE = /</g;
@@ -53,9 +55,11 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const imageAlt = optimizedMedia?.alternativeText ?? article.base.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generateArticleJsonLd(article);
+    const headlines = extractHeadlines(article.content ?? '');
+    const hasToc = headlines.length > 3;
 
     return (
-        <article className={styles.article}>
+        <article className={styles.article} data-has-toc={hasToc ? 'true' : undefined}>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
@@ -85,9 +89,14 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                 ) : null}
             </section>
 
-            <Markdown markdown={article.content ?? ''} />
+            <div className={hasToc ? styles.layoutWithToc : styles.layout}>
+                {hasToc ? <ContentTOC headlines={headlines} /> : null}
+                <div className={styles.content}>
+                    <Markdown markdown={article.content ?? ''} />
 
-            {article.youtube && article.youtube.length > 0 && <YoutubeSection youtube={article.youtube} />}
+                    {article.youtube && article.youtube.length > 0 && <YoutubeSection youtube={article.youtube} />}
+                </div>
+            </div>
         </article>
     );
 }

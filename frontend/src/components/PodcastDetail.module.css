@@ -1,0 +1,58 @@
+.episode {
+    width: 100%;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+.layoutWithToc {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) minmax(0, 740px);
+    gap: 2rem;
+    align-items: start;
+    justify-content: center;
+}
+
+@media (max-width: 767px) {
+    .layoutWithToc {
+        grid-template-columns: 1fr;
+    }
+}
+
+.title {
+    margin: 0 0 1rem;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.description {
+    color: var(--color-text-muted);
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin: 0 0 1.5rem;
+    font-weight: 400;
+}
+
+.content {
+    line-height: 1.7;
+    margin-top: 2.5rem;
+
+    p img {
+        border-radius: var(--border-radius);
+    }
+}
+
+@media (max-width: 640px) {
+    .title {
+        font-size: 1.875rem;
+    }
+
+    .description {
+        font-size: 1.125rem;
+    }
+}

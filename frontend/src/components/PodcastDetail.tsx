@@ -14,7 +14,9 @@ import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
 import placeholderCover from '@/public/images/m10z.jpg';
-import styles from '@/app/podcasts/[slug]/page.module.css';
+import {ContentTOC} from '@/src/components/ContentTOC';
+import {extractHeadlines} from '@/src/lib/extractHeadlines';
+import styles from '@/src/components/PodcastDetail.module.css';
 
 // Hoist RegExp pattern to module scope
 const REGEX_LT_ESCAPE = /</g;
@@ -56,9 +58,12 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const imageAlt = optimizedMedia?.alternativeText ?? podcast.base.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generatePodcastJsonLd(podcast);
+    const shownotes = podcast.shownotes ?? '';
+    const headlines = extractHeadlines(shownotes);
+    const hasToc = headlines.length > 3;
 
     return (
-        <article className={styles.episode}>
+        <article className={styles.episode} data-has-toc={hasToc ? 'true' : undefined}>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
@@ -88,11 +93,16 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                 ) : null}
             </section>
 
-            {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
+            <div className={hasToc ? styles.layoutWithToc : styles.layout}>
+                {hasToc ? <ContentTOC headlines={headlines} /> : null}
+                <div className={styles.content}>
+                    {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
 
-            <Markdown markdown={podcast.shownotes ?? ''} />
+                    <Markdown markdown={shownotes} />
 
-            {podcast.youtube && podcast.youtube.length > 0 && <YoutubeSection youtube={podcast.youtube} />}
+                    {podcast.youtube && podcast.youtube.length > 0 && <YoutubeSection youtube={podcast.youtube} />}
+                </div>
+            </div>
         </article>
     );
 }

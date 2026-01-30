@@ -17,6 +17,10 @@ main:has([data-list-page]) .layout {
     }
 }
 
+main:has([data-has-toc]) .layout {
+    max-width: 1200px;
+}
+
 .container {
     width: 100%;
 
