@@ -312,6 +312,8 @@ function assertIsFeeds(data: unknown): asserts data is StrapiFeedsInfo {
 async function getFeedsInfoWithFallback(
     options: FetchStrapiOptions = {},
 ): Promise<StrapiFeedsInfo> {
+    const feed = `${process.env.NEXT_PUBLIC_DOMAIN}/rss.xml`
+    const audioFeed = `${process.env.NEXT_PUBLIC_DOMAIN}/audiofeed.xml`
     const nowIso = new Date().toISOString();
     const fallback: StrapiFeedsInfo = {
         id: -1,
@@ -319,8 +321,8 @@ async function getFeedsInfoWithFallback(
         title: 'RSS-Feeds',
         content:
             'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
-            + '- Artikel-Feed: `/rss.xml`\n'
-            + '- Podcast-Feed: `/audiofeed.xml`\n\n'
+            + `- Artikel-Feed: \`${feed}\`\n`
+            + `- Podcast-Feed: \`${audioFeed}\`\n\n`
             + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
         createdAt: nowIso,
         updatedAt: nowIso,
