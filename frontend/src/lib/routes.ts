@@ -20,6 +20,7 @@ export const routes = {
     category: (slug: string) => `/kategorien/${slug}`,
     authors: '/team',
     author: (slug: string) => `/team/${slug}`,
+    m12g: '/m12g',
     audioFeed: '/audiofeed.xml',
     articleFeed: '/rss.xml',
     feeds: '/feeds',

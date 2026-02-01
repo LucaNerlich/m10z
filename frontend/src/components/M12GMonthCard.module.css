@@ -1,0 +1,96 @@
+.card {
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    background: var(--color-surface);
+    display: grid;
+    gap: 14px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.forumLink {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--color-text-muted);
+}
+
+.forumLink:hover {
+    color: var(--color-primary);
+}
+
+.gameList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.gameItem,
+.gameWinner {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px 12px;
+    align-items: center;
+}
+
+.gameWinner {
+    background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    border-radius: 10px;
+    padding: 6px 10px;
+}
+
+.gameLink {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.gameLink:hover {
+    color: var(--color-primary);
+}
+
+.voteCount {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.winnerLabel {
+    color: var(--color-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.emptyState {
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .card {
+        padding: 16px;
+    }
+
+    .gameItem,
+    .gameWinner {
+        grid-template-columns: 1fr auto;
+    }
+
+    .winnerLabel {
+        grid-column: 1 / -1;
+    }
+}
