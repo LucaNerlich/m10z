@@ -103,6 +103,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         routes.podcasts,
         routes.categories,
         routes.authors,
+        routes.m12g,
         routes.audioFeed,
         routes.articleFeed,
         routes.about,
