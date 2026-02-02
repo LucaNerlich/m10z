@@ -103,6 +103,16 @@
     gap: 16px;
 }
 
+.contentCard {
+    grid-template-columns: 1fr minmax(240px, 280px);
+}
+
+@media (max-width: 1080px) {
+    .contentCard {
+        grid-template-columns: 1fr;
+    }
+}
+
 .media {
     background: var(--color-surface-strong);
     position: relative;
@@ -110,6 +120,27 @@
     height: 100%;
     aspect-ratio: 1/1;
     overflow: hidden;
+}
+
+.cardBody {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    @media (max-width: 767px) {
+        padding: 4px 16px;
+    }
+}
+
+@media (min-width: 1081px) {
+    .media {
+        order: 2;
+    }
+
+    .cardBody {
+        order: 1;
+    }
 }
 
 .mediaLink {
@@ -156,17 +187,6 @@
 
     .banner {
         display: block;
-    }
-}
-
-.cardBody {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    @media (max-width: 767px) {
-        padding: 4px 16px;
     }
 }
 

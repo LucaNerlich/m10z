@@ -155,7 +155,7 @@ export async function HomePage({page}: {page: number}) {
                         const bannerTitle = item.banner?.caption ?? undefined;
 
                         return (
-                            <Card key={anchor} id={anchor}>
+                            <Card key={anchor} id={anchor} className={styles.contentCard}>
                                 <div className={styles.media}>
                                     {(() => {
                                         const coverSrc = coverUrl ?? placeholderCover;

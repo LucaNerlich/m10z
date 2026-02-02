@@ -25,11 +25,10 @@ isProject: false
 ## Task 1: In-memory metrics history with cleanup
 
 - **Introduce history storage and types**
-- In [`backend/src/services/searchIndexBuilder.ts`](backend/src/services/searchIndexBuilder.ts), replace `let lastMetrics: SearchIndexMetricsSnapshot | null = null` with `let metricsHistory: SearchIndexMetricsSnapshot[] = []`.
+- In `[backend/src/services/searchIndexBuilder.ts](backend/src/services/searchIndexBuilder.ts)`, replace `let lastMetrics: SearchIndexMetricsSnapshot | null = null` with `let metricsHistory: SearchIndexMetricsSnapshot[] = []`.
 - Add and export a new type alias `SearchIndexMetricsHistoryEntry` for history entries, e.g. `export type SearchIndexMetricsHistoryEntry = SearchIndexMetricsSnapshot;`, so consumers can use a stable exported type without exposing internal implementation details.
 - Update `getLastSearchIndexMetrics()` to return the most recent entry from `metricsHistory` (`metricsHistory[0] ?? null`).
 - Add a new exported function `getAllSearchIndexMetrics()` that returns the full history array, preferably as a shallow copy to avoid external mutation (`return [...metricsHistory];`).
-
 - **Add bounded cleanup for metrics history**
 - Define constants near the top of the metrics section:
 - `const MAX_METRICS_ENTRIES = 1000;`
@@ -38,7 +37,6 @@ isProject: false
 - Computes a cutoff timestamp `const cutoff = now - METRICS_MAX_AGE_MS;`.
 - Filters `metricsHistory` to keep only entries whose parsed `updatedAt` is valid and `>= cutoff`.
 - After age filtering, enforces the size cap: if `metricsHistory.length > MAX_METRICS_ENTRIES`, slice the array to `metricsHistory.slice(0, MAX_METRICS_ENTRIES)`.
-
 - **Update metrics write path to use history**
 - In `buildAndPersistSearchIndex()` in the same file:
 - Before adding a new metrics snapshot, call `cleanupMetricsHistory();` so age- and size-based pruning happens first.
@@ -60,9 +58,8 @@ isProject: false
 - Apply a defensive limit: normalize `limit` to a positive integer, defaulting to 30, and cap it at `MAX_METRICS_ENTRIES`.
 - Return the filtered array sliced to the computed `limit`.
 - Add concise code comments documenting that the history is most-recent-first, the meaning of `limit`, `from`, and `to`, and that the function is intended for diagnostics/monitoring only (in-memory, non-persistent).
-
 - **Extend the metrics controller to expose history**
-- In [`backend/src/api/search-index/controllers/search-index.ts`](backend/src/api/search-index/controllers/search-index.ts):
+- In `[backend/src/api/search-index/controllers/search-index.ts](backend/src/api/search-index/controllers/search-index.ts)`:
 - Update imports to include `getHistoricalSearchIndexMetrics` (and optionally `SearchIndexMetricsHistoryEntry` if needed) from the service module.
 - Within the existing `metrics(ctx)` action, after authentication and rate limiting succeed, parse query parameters:
 - `limit`: read from `ctx.request.query.limit` / `ctx.query.limit`, ensure it is a string, parse to a number, require it to be finite and `> 0`, and cap it at 1000.
@@ -81,10 +78,10 @@ isProject: false
 - Never used in file paths, commands, or other dangerous contexts.
 - Parsed and validated defensively with fallbacks and upper bounds to avoid abuse or denial-of-service via huge limits.
 - Handle invalid date strings gracefully in `getHistoricalSearchIndexMetrics()` by ignoring bad bounds rather than throwing.
-
 - **Testing and verification (manual)**
 - After implementation, manually (or via existing tests, if present) verify:
 - Building the search index multiple times produces multiple history entries and `getLastSearchIndexMetrics()` still returns the latest one.
 - The cleanup logic removes entries older than 30 days and caps the array at 1000 entries.
 - The metrics endpoint without query params still returns the original shape, and now includes `history` with default limit 30.
 - The endpoint correctly applies `limit`, `from`, and `to` filters and behaves sensibly with invalid values (e.g. negative limits or malformed dates).
+
