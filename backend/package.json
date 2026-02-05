@@ -11,15 +11,15 @@
         "strapi": "strapi"
     },
     "dependencies": {
-        "@strapi/plugin-users-permissions": "^5.34.0",
-        "@strapi/provider-email-mailgun": "^5.34.0",
-        "@strapi/strapi": "^5.34.0",
-        "@strapi/utils": "^5.34.0",
+        "@strapi/plugin-users-permissions": "^5.35.0",
+        "@strapi/provider-email-mailgun": "^5.35.0",
+        "@strapi/strapi": "^5.35.0",
+        "@strapi/utils": "^5.35.0",
         "blurhash": "^2.0.5",
         "form-data": "^4.0.5",
         "markdown-to-txt": "^2.0.1",
         "marked": "^17.0.1",
-        "music-metadata": "^11.11.1",
+        "music-metadata": "^11.11.2",
         "node-fetch": "^3.3.2",
         "pg": "~8.16.3",
         "react": "^18.3.1",
@@ -30,7 +30,7 @@
         "styled-components": "~6.1.19"
     },
     "devDependencies": {
-        "@types/node": "^22.19.7",
+        "@types/node": "^22.19.8",
         "@types/react": "^18.3.27",
         "@types/react-dom": "^18.3.7",
         "dotenv": "^16.6.1",
