@@ -6,7 +6,7 @@
   "locale": null,
   "permissions": [
     {
-      "documentId": "r7illlip85oeig7gxi69vl8g",
+      "documentId": "w5mqsyjyn3spbsp18x6uwclf",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",
@@ -20,7 +20,7 @@
       "locale": null
     },
     {
-      "documentId": "mu008fuex6zlpnadyrisvbl6",
+      "documentId": "bo1wfvnlrxy44kl4g4t3g2gs",
       "action": "plugin::content-manager.explorer.delete",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",
@@ -29,7 +29,7 @@
       "locale": null
     },
     {
-      "documentId": "d9bf2zbjrt2yxvxaxhq0ah2t",
+      "documentId": "oix7uvu1bc8rmvwlv1f6n6bf",
       "action": "plugin::content-manager.explorer.publish",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",
@@ -38,7 +38,7 @@
       "locale": null
     },
     {
-      "documentId": "a31dmyb8s6mep097ot43xnqg",
+      "documentId": "me5xwx0dv4gvx8ddr81v725g",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",
@@ -52,7 +52,7 @@
       "locale": null
     },
     {
-      "documentId": "knv9jb9wbbs7sq9krgz1j6cg",
+      "documentId": "ytr7mkpjqvkxblnxws9t7ej0",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::about-feed.about-feed",

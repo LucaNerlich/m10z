@@ -6,7 +6,7 @@
   "locale": null,
   "permissions": [
     {
-      "documentId": "nsh4gwcf189pffhtrjssl13v",
+      "documentId": "sth2nxju9jka05oho6wfnv2m",
       "action": "api::about-feed.about-feed.find",
       "locale": null
     },
@@ -76,12 +76,12 @@
       "locale": null
     },
     {
-      "documentId": "wg6dtt73n59voy93qrog5sht",
+      "documentId": "wtp2tc89v5yj2caar3j33xtb",
       "action": "api::search-index.search-index.find",
       "locale": null
     },
     {
-      "documentId": "cis6sc0ryfpnywtivo4i4is5",
+      "documentId": "s1y6uztgr2ghw6o5gv8ml047",
       "action": "api::search-index.search-index.metrics",
       "locale": null
     },

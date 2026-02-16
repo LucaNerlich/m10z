@@ -7,7 +7,7 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "title",
-      "defaultSortBy": "title",
+      "defaultSortBy": "documentId",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -21,7 +21,7 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Titel",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -35,8 +35,8 @@
       },
       "content": {
         "edit": {
-          "label": "content",
-          "description": "",
+          "label": "Content",
+          "description": "Beschreibung der RSS Feeds und deren Verwendung.",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -115,25 +115,25 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "createdAt",
-        "updatedAt"
-      ],
       "edit": [
-        [
-          {
-            "name": "title",
-            "size": 6
-          }
-        ],
         [
           {
             "name": "content",
             "size": 12
           }
+        ],
+        [
+          {
+            "name": "title",
+            "size": 6
+          }
         ]
+      ],
+      "list": [
+        "id",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
       ]
     },
     "uid": "api::about-feed.about-feed"
