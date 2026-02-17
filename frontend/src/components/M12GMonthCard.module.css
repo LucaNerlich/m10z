@@ -4,6 +4,7 @@
     padding: 18px 20px;
     background: var(--color-surface);
     display: grid;
+    grid-template-rows: auto 1fr auto;
     gap: 14px;
 }
 
