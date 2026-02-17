@@ -38,6 +38,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                         return (
                             <li key={`${game.name}-${game.link}`}
                                 className={isWinner ? styles.gameWinner : styles.gameItem}>
+                                {isWinner ? <span className={styles.winnerLabel}>Sieger</span> : null}
                                 <a
                                     className={styles.gameLink}
                                     href={game.link}
@@ -47,7 +48,6 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                                     {game.name}
                                 </a>
                                 <span className={styles.voteCount}>{formatVotes(game.votes)}</span>
-                                {isWinner ? <span className={styles.winnerLabel}>Sieger</span> : null}
                             </li>
                         );
                     })}

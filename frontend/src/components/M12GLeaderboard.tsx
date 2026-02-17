@@ -32,7 +32,6 @@ export function M12GLeaderboard({entries}: M12GLeaderboardProps) {
                 </thead>
                 <tbody>
                     {entries.map((entry, index) => {
-                        const barPercent = maxVotes > 0 ? (entry.totalVotes / maxVotes) * 100 : 0;
                         return (
                             <tr key={entry.name}>
                                 <td className={styles.rank}>{index + 1}</td>
@@ -52,12 +51,12 @@ export function M12GLeaderboard({entries}: M12GLeaderboardProps) {
                                     ) : null}
                                 </td>
                                 <td className={styles.barCell}>
-                                    <div className={styles.barTrack}>
-                                        <div
-                                            className={styles.barFill}
-                                            style={{width: `${barPercent}%`}}
-                                        />
-                                    </div>
+                                    <meter
+                                        className={styles.meter}
+                                        min={0}
+                                        max={maxVotes}
+                                        value={entry.totalVotes}
+                                    />
                                 </td>
                                 <td className={styles.votesCell}>{formatVotes(entry.totalVotes)}</td>
                             </tr>

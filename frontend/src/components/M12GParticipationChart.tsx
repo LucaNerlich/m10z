@@ -21,21 +21,18 @@ export function M12GParticipationChart({months}: M12GParticipationChartProps) {
         <section className={styles.wrapper}>
             <h2 className={styles.heading}>Stimmen pro Monat</h2>
             <div className={styles.chart}>
-                {months.map((month) => {
-                    const barPercent = (month.totalVotes / maxVotes) * 100;
-                    return (
-                        <div key={month.month} className={styles.row}>
-                            <span className={styles.month}>{formatMonth(month.month)}</span>
-                            <div className={styles.barTrack}>
-                                <div
-                                    className={styles.barFill}
-                                    style={{width: `${barPercent}%`}}
-                                />
-                            </div>
-                            <span className={styles.value}>{month.totalVotes}</span>
-                        </div>
-                    );
-                })}
+                {months.map((month) => (
+                    <div key={month.month} className={styles.row}>
+                        <span className={styles.month}>{formatMonth(month.month)}</span>
+                        <meter
+                            className={styles.meter}
+                            min={0}
+                            max={maxVotes}
+                            value={month.totalVotes}
+                        />
+                        <span className={styles.value}>{month.totalVotes}</span>
+                    </div>
+                ))}
             </div>
         </section>
     );

@@ -53,18 +53,22 @@
     gap: 10px;
 }
 
-.gameItem,
-.gameWinner {
+.gameItem {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto;
     gap: 8px 12px;
     align-items: center;
 }
 
 .gameWinner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    align-items: center;
     background: color-mix(in srgb, var(--color-primary) 15%, transparent);
     border-radius: 10px;
     padding: 6px 10px;
+    margin: 0 -10px;
 }
 
 .gameLink {
@@ -83,6 +87,7 @@
 }
 
 .winnerLabel {
+    grid-column: 1 / -1;
     color: var(--color-primary);
     font-size: 0.8rem;
     font-weight: 600;
@@ -98,14 +103,5 @@
 @media (max-width: 640px) {
     .card {
         padding: 16px;
-    }
-
-    .gameItem,
-    .gameWinner {
-        grid-template-columns: 1fr auto;
-    }
-
-    .winnerLabel {
-        grid-column: 1 / -1;
     }
 }

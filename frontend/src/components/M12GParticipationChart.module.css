@@ -30,19 +30,24 @@
     white-space: nowrap;
 }
 
-.barTrack {
-    height: 20px;
-    background: var(--color-border);
-    border-radius: 6px;
-    overflow: hidden;
+.meter {
+    width: 100%;
 }
 
-.barFill {
-    height: 100%;
+.meter::-webkit-meter-bar {
+    background: var(--color-border);
+    border-radius: 6px;
+    border: none;
+}
+
+.meter::-webkit-meter-optimum-value {
     background: var(--color-primary);
     border-radius: 6px;
-    transition: width 0.3s ease;
-    min-width: 4px;
+}
+
+.meter::-moz-meter-bar {
+    background: var(--color-primary);
+    border-radius: 6px;
 }
 
 .value {
@@ -68,7 +73,7 @@
         grid-column: 1 / -1;
     }
 
-    .barTrack {
+    .meter {
         height: 16px;
     }
 }
