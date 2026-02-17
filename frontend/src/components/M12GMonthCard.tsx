@@ -1,5 +1,6 @@
 import styles from './M12GMonthCard.module.css';
 import {type M12GMonthWithWinner} from '@/src/lib/m12g/types';
+import {ChatsCircleIcon} from '@phosphor-icons/react/dist/ssr';
 
 type M12GMonthCardProps = {
     month: M12GMonthWithWinner;
@@ -22,19 +23,10 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
     return (
         <article className={styles.card}>
             <header className={styles.header}>
-                <div>
-                    <h2 className={styles.title}>{formatMonthTitle(month.month)}</h2>
-                    {month.forumThreadUrl ? (
-                        <a
-                            className={styles.forumLink}
-                            href={month.forumThreadUrl}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                        >
-                            Forum-Thread
-                        </a>
-                    ) : null}
-                </div>
+                <h2 className={styles.title}>
+                    {formatMonthTitle(month.month)}
+                    {month.title ? <span className={styles.subtitle}>"{month.title}"</span> : null}
+                </h2>
             </header>
 
             {month.games.length === 0 ? (
@@ -44,7 +36,8 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                     {month.games.map((game) => {
                         const isWinner = month.winner === game;
                         return (
-                            <li key={`${game.name}-${game.link}`} className={isWinner ? styles.gameWinner : styles.gameItem}>
+                            <li key={`${game.name}-${game.link}`}
+                                className={isWinner ? styles.gameWinner : styles.gameItem}>
                                 <a
                                     className={styles.gameLink}
                                     href={game.link}
@@ -60,6 +53,20 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                     })}
                 </ul>
             )}
+
+            {month.forumThreadUrl ? (
+                <footer className={styles.footer}>
+                    <a
+                        className={styles.forumLink}
+                        href={month.forumThreadUrl}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                    >
+                        <ChatsCircleIcon size={18} weight="regular" />
+                        Forum-Thread
+                    </a>
+                </footer>
+            ) : null}
         </article>
     );
 }

@@ -6,6 +6,7 @@ export interface M12GGame {
 
 export interface M12GMonth {
     month: string;
+    title?: string;
     forumThreadUrl?: string;
     games: M12GGame[];
 }

@@ -5,6 +5,7 @@ import {type M12GGame, type M12GMonth, type M12GMonthWithWinner, type M12GOvervi
 
 type Frontmatter = {
     forum?: string;
+    title?: string;
 };
 
 const MONTH_FILE_REGEX = /^\d{4}-\d{2}\.md$/;
@@ -31,6 +32,9 @@ function parseFrontmatter(rawContent: string): {frontmatter: Frontmatter; body: 
         const [, key, value] = match;
         if (key === 'forum') {
             frontmatter.forum = value.trim();
+        }
+        if (key === 'title') {
+            frontmatter.title = value.trim();
         }
     }
 
@@ -77,6 +81,7 @@ async function loadMonthFromFile(filePath: string, monthId: string): Promise<M12
         const month: M12GMonth = {
             month: monthId,
             forumThreadUrl: frontmatter.forum,
+            title: frontmatter.title,
             games,
         };
         return {

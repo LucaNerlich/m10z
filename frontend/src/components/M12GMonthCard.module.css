@@ -9,21 +9,35 @@
 
 .header {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
-    flex-wrap: wrap;
 }
 
 .title {
     margin: 0;
     font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 4px;
 }
 
 .forumLink {
-    display: inline-block;
-    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: var(--color-text-muted);
+    font-size: 0.9rem;
 }
 
 .forumLink:hover {
