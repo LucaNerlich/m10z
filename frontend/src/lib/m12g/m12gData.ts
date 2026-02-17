@@ -87,6 +87,7 @@ async function loadMonthFromFile(filePath: string, monthId: string): Promise<M12
         return {
             ...month,
             winner: computeWinner(games),
+            titleDefender: null,
         };
     } catch {
         return null;
@@ -113,8 +114,22 @@ async function loadM12GMonths(): Promise<M12GMonthWithWinner[]> {
     }
 }
 
+function assignTitleDefenders(months: M12GMonthWithWinner[]): void {
+    const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
+    for (let i = 1; i < chronological.length; i++) {
+        const previousWinner = chronological[i - 1]?.winner;
+        if (!previousWinner) continue;
+        const current = chronological[i];
+        const isNominated = current.games.some((game) => game.name === previousWinner.name);
+        if (isNominated) {
+            current.titleDefender = previousWinner.name;
+        }
+    }
+}
+
 export async function fetchM12GOverview(): Promise<M12GOverview> {
     const months = await loadM12GMonths();
+    assignTitleDefenders(months);
     months.sort((a, b) => b.month.localeCompare(a.month));
     return {months};
 }

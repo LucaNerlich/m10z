@@ -71,6 +71,14 @@
     margin: 0 -10px;
 }
 
+.nameGroup {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
 .gameLink {
     color: var(--color-text);
     font-weight: 500;
@@ -78,6 +86,16 @@
 
 .gameLink:hover {
     color: var(--color-primary);
+}
+
+.titleDefender {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: var(--color-border);
+    border-radius: 999px;
+    padding: 1px 8px;
+    white-space: nowrap;
 }
 
 .voteCount {

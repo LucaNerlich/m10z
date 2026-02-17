@@ -13,6 +13,7 @@ export interface M12GMonth {
 
 export interface M12GMonthWithWinner extends M12GMonth {
     winner: M12GGame | null;
+    titleDefender: string | null;
 }
 
 export interface M12GOverview {
