@@ -42,7 +42,7 @@
           "editable": true
         },
         "list": {
-          "label": "slug",
+          "label": "URL Identifier",
           "searchable": true,
           "sortable": true
         }
@@ -215,12 +215,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "updatedAt",
-        "categories",
-        "youtube"
-      ],
       "edit": [
         [
           {
@@ -270,6 +264,11 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "slug",
+        "updatedAt",
+        "categories"
       ]
     },
     "uid": "api::podcast.podcast"

@@ -12,7 +12,10 @@ function formatMonthTitle(monthId: string): string {
 }
 
 function formatVotes(votes: number): string {
-    return `${votes} ${votes === 1 ? 'Stimme' : 'Stimmen'}`;
+    const pluralRules = new Intl.PluralRules('de-DE');
+    const rule = pluralRules.select(votes);
+    const unit = rule === 'one' ? 'Stimme' : 'Stimmen';
+    return `${votes} ${unit}`;
 }
 
 export function M12GMonthCard({month}: M12GMonthCardProps) {

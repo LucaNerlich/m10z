@@ -49,6 +49,7 @@ function parseGamesFromBody(body: string): M12GGame[] {
         games.push({name: name.trim(), link: link.trim(), votes: Number.isNaN(votes) ? 0 : votes});
     }
 
+    games.sort((a, b) => b.votes - a.votes);
     return games;
 }
 
@@ -65,7 +66,7 @@ function isPastMonth(monthId: string): boolean {
     const now = new Date();
     const cutoff = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
     const cutoffMonth = cutoff.toISOString().slice(0, 7);
-    return monthId < cutoffMonth;
+    return monthId <= cutoffMonth;
 }
 
 async function loadMonthFromFile(filePath: string, monthId: string): Promise<M12GMonthWithWinner | null> {

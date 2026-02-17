@@ -187,13 +187,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "base",
-        "slug",
-        "categories",
-        "updatedAt",
-        "authors"
-      ],
       "edit": [
         [
           {
@@ -233,6 +226,10 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "slug",
+        "updatedAt"
       ]
     },
     "uid": "api::article.article"
