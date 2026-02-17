@@ -18,3 +18,34 @@ export interface M12GMonthWithWinner extends M12GMonth {
 export interface M12GOverview {
     months: M12GMonthWithWinner[];
 }
+
+export interface M12GLeaderboardEntry {
+    name: string;
+    link: string;
+    totalVotes: number;
+    monthsNominated: number;
+    wins: number;
+}
+
+export interface M12GMonthParticipation {
+    month: string;
+    totalVotes: number;
+    gameCount: number;
+}
+
+export interface M12GWinnerEntry {
+    month: string;
+    gameName: string;
+    gameLink: string;
+    votes: number;
+}
+
+export interface M12GStats {
+    totalMonths: number;
+    totalUniqueGames: number;
+    totalVotes: number;
+    avgVotesPerMonth: number;
+    leaderboard: M12GLeaderboardEntry[];
+    winnerTimeline: M12GWinnerEntry[];
+    monthlyParticipation: M12GMonthParticipation[];
+}

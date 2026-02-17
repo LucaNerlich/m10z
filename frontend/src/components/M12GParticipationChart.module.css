@@ -1,0 +1,74 @@
+.wrapper {
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    background: var(--color-surface);
+    margin-top: 0 !important;
+}
+
+.heading {
+    margin: 0 0 14px;
+    font-size: 1.1rem;
+}
+
+.chart {
+    display: grid;
+    gap: 10px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 12px;
+    align-items: center;
+}
+
+.month {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.barTrack {
+    height: 20px;
+    background: var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.barFill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+    min-width: 4px;
+}
+
+.value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+    min-width: 32px;
+    text-align: right;
+}
+
+@media (max-width: 640px) {
+    .wrapper {
+        padding: 16px;
+    }
+
+    .row {
+        grid-template-columns: 1fr auto;
+        gap: 4px 12px;
+    }
+
+    .month {
+        grid-column: 1 / -1;
+    }
+
+    .barTrack {
+        height: 16px;
+    }
+}
