@@ -56,7 +56,7 @@ export default async function M12GPage() {
             >
                 Beta
             </div>
-            <h1>M12G Statistik</h1>
+            <h1>Mindestens 12 Games Statistik</h1>
 
             {months.length === 0 ? (
                 <EmptyState message="Keine M12G-Abstimmungen gefunden." />
