@@ -128,7 +128,7 @@ export default async function AuthorPage({params}: PageProps) {
 
             {shouldRenderArticleSection ? (
                 <section>
-                    <h2>{`Artikel (${sortedArticles.length})`}</h2>
+                    <h2>{`Artikel (${articleTotal})`}</h2>
                     <div className={styles.summaryRow}>
                         {stats.articles.categories.slice(0, 6).map((c) => (
                             <Link
@@ -159,7 +159,7 @@ export default async function AuthorPage({params}: PageProps) {
 
             {shouldRenderPodcastSection ? (
                 <section>
-                    <h2>{`Podcasts (${sortedPodcasts.length})`}</h2>
+                    <h2>{`Podcasts (${podcastTotal})`}</h2>
                     <div className={styles.summaryRow}>
                         {stats.podcasts.categories.slice(0, 6).map((c) => (
                             <Link
