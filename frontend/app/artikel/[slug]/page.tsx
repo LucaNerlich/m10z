@@ -89,29 +89,19 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 export default async function ArticleDetailPage({params}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
-    if (!slug) return notFound();
+    if (!slug) notFound();
 
-    try {
-        const article = await fetchArticleBySlug(slug);
-        if (!article) return notFound();
-
-        return <ArticleDetail slug={slug} article={article} />;
-    } catch (error) {
+    const article = await fetchArticleBySlug(slug).catch((error: unknown) => {
         const errorMessage = getErrorMessage(error);
-
         if (isTimeoutOrSocketError(error)) {
             console.error(`Socket/timeout error fetching article for slug "${slug}":`, errorMessage);
-            // Return 404 for socket/timeout errors to trigger fallback behavior
-            return notFound();
+        } else if (!errorMessage.includes('404') && !errorMessage.includes('not found')) {
+            console.error(`Error fetching article for slug "${slug}":`, errorMessage);
         }
+        return null;
+    });
 
-        // Check if it's a 404 error
-        if (errorMessage.includes('404') || errorMessage.includes('not found')) {
-            return notFound();
-        }
+    if (!article) notFound();
 
-        // Log other errors and return 404
-        console.error(`Error fetching article for slug "${slug}":`, errorMessage);
-        return notFound();
-    }
+    return <ArticleDetail slug={slug} article={article} />;
 }

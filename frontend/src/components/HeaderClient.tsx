@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 
 import styles from './Header.module.css';
 
@@ -12,6 +12,11 @@ type HeaderClientProps = {
 };
 
 const shortcutKeyMenu = 'J';
+
+const REGEX_APPLE_PLATFORM = /Mac|iPhone|iPad|iPod/;
+const subscribeNoop = () => () => {};
+const getIsMac = () => REGEX_APPLE_PLATFORM.test(navigator.platform);
+const getIsMacServer = () => false;
 
 /**
  * Renders a responsive header with a toggleable mobile menu and accessible keyboard interactions.
@@ -27,15 +32,11 @@ export default function HeaderClient({
                                          secondaryLinks,
                                      }: HeaderClientProps): React.ReactElement {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isMac, setIsMac] = useState(false);
+    const isMac = useSyncExternalStore(subscribeNoop, getIsMac, getIsMacServer);
     const pathname = usePathname();
     const menuRef = useRef<HTMLDivElement | null>(null);
     const burgerButtonRef = useRef<HTMLButtonElement | null>(null);
     const prevMenuOpenRef = useRef(false);
-
-    useEffect(() => {
-        setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
-    }, []);
 
     const shortcutLabel = isMac ? 'Cmd+' + shortcutKeyMenu : 'Ctrl+' + shortcutKeyMenu;
 
@@ -64,6 +65,12 @@ export default function HeaderClient({
         }
     };
 
+    const [prevPathname, setPrevPathname] = useState(pathname);
+    if (pathname !== prevPathname) {
+        setPrevPathname(pathname);
+        setIsMenuOpen(false);
+    }
+
     useEffect(() => {
         if (!isMenuOpen) return;
         const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -73,17 +80,13 @@ export default function HeaderClient({
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-        document.addEventListener('touchstart', handleClickOutside);
+        document.addEventListener('touchstart', handleClickOutside, {passive: true});
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.removeEventListener('touchstart', handleClickOutside);
         };
     }, [isMenuOpen]);
-
-    useEffect(() => {
-        closeMenu();
-    }, [pathname]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {

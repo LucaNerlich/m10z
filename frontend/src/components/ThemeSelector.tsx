@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useSyncExternalStore} from 'react';
 
 import {applyTheme, getStoredTheme, STORAGE_KEY, type Theme} from '@/src/lib/theme/initTheme';
 
@@ -23,30 +23,31 @@ const THEME_OPTIONS: ThemeOption[] = [
 ];
 
 const DEFAULT_THEME: Theme = 'system';
+const subscribeNoop = () => () => {};
+const getIsClient = () => true;
+const getIsClientServer = () => false;
 
 export default function ThemeSelector(): React.ReactElement | null {
-    const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
-    const [hydrated, setHydrated] = useState(false);
+    const storedTheme = useSyncExternalStore(subscribeNoop, getStoredTheme, () => DEFAULT_THEME);
+    const [userTheme, setUserTheme] = useState<Theme | null>(null);
+    const theme = userTheme ?? storedTheme;
+    const hydrated = useSyncExternalStore(subscribeNoop, getIsClient, getIsClientServer);
 
     useEffect(() => {
-        const initial = getStoredTheme();
-        setTheme(initial);
-        applyTheme(initial);
-        setHydrated(true);
-    }, []);
-
-    useEffect(() => {
-        if (!hydrated) return;
         applyTheme(theme);
+    }, [theme]);
+
+    useEffect(() => {
+        if (userTheme === null) return;
 
         if (typeof window !== 'undefined' && window.localStorage) {
             try {
-                window.localStorage.setItem(STORAGE_KEY, theme);
+                window.localStorage.setItem(STORAGE_KEY, userTheme);
             } catch (error) {
                 console.warn('Failed to save theme preference to localStorage:', error);
             }
         }
-    }, [theme, hydrated]);
+    }, [userTheme]);
 
     useEffect(() => {
         if (!hydrated || theme !== 'system') return;
@@ -56,18 +57,12 @@ export default function ThemeSelector(): React.ReactElement | null {
             applyTheme('system');
         };
 
-        // Modern browsers
-        if (mediaQuery.addEventListener) {
-            mediaQuery.addEventListener('change', handleChange);
-            return () => mediaQuery.removeEventListener('change', handleChange);
-        }
-        // Fallback for older browsers
-        mediaQuery.addListener(handleChange);
-        return () => mediaQuery.removeListener(handleChange);
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
     }, [theme, hydrated]);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setTheme(e.target.value as Theme);
+        setUserTheme(e.target.value as Theme);
     };
 
     if (!hydrated) {

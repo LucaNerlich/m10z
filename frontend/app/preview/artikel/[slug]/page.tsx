@@ -27,38 +27,32 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ArticlePreviewPage({params, searchParams}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
-    if (!slug) return notFound();
+    if (!slug) notFound();
 
     const {secret, status} = await searchParams;
     const expected = process.env.STRAPI_PREVIEW_SECRET ?? null;
     if (!verifySecret(secret ?? null, expected)) {
-        return notFound();
+        notFound();
     }
 
-    try {
-        const previewStatus = status === 'published' ? 'published' : 'draft';
-        const article = await fetchArticleBySlugForPreview(slug, previewStatus);
-        if (!article) return notFound();
+    const previewStatus = status === 'published' ? 'published' : 'draft';
 
-        return (
-            <>
-                <PreviewBanner status={previewStatus} />
-                <ArticleDetail slug={slug} article={article} />
-            </>
-        );
-    } catch (error) {
+    const article = await fetchArticleBySlugForPreview(slug, previewStatus).catch((error: unknown) => {
         const errorMessage = getErrorMessage(error);
-
         if (isTimeoutOrSocketError(error)) {
             console.error(`Socket/timeout error fetching preview article for slug "${slug}":`, errorMessage);
-            return notFound();
+        } else if (!errorMessage.includes('404') && !errorMessage.includes('not found')) {
+            console.error(`Error fetching preview article for slug "${slug}":`, errorMessage);
         }
+        return null;
+    });
 
-        if (errorMessage.includes('404') || errorMessage.includes('not found')) {
-            return notFound();
-        }
+    if (!article) notFound();
 
-        console.error(`Error fetching preview article for slug "${slug}":`, errorMessage);
-        return notFound();
-    }
+    return (
+        <>
+            <PreviewBanner status={previewStatus} />
+            <ArticleDetail slug={slug} article={article} />
+        </>
+    );
 }

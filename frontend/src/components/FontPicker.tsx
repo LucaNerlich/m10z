@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useSyncExternalStore} from 'react';
 
 import styles from './FontPicker.module.css';
 
@@ -26,6 +26,28 @@ const FONT_OPTIONS: FontOption[] = [
 
 const DEFAULT_FONT = 'poppins';
 
+const subscribeNoop = () => () => {};
+const getIsClient = () => true;
+const getIsClientServer = () => false;
+
+function getStoredFont(): string {
+    if (typeof window === 'undefined') return DEFAULT_FONT;
+
+    let stored: string | null = null;
+    if (window.localStorage) {
+        try {
+            stored = window.localStorage.getItem(STORAGE_KEY);
+        } catch (error) {
+            console.warn('Failed to read font preference from localStorage:', error);
+            stored = null;
+        }
+    }
+    if (!stored && memoryStore.has(STORAGE_KEY)) {
+        stored = memoryStore.get(STORAGE_KEY) || null;
+    }
+    return stored && FONT_OPTIONS.some((option) => option.id === stored) ? stored : DEFAULT_FONT;
+}
+
 function applyFont(fontId: string) {
     if (typeof document === 'undefined') return;
     const fontOption = FONT_OPTIONS.find((option) => option.id === fontId);
@@ -34,64 +56,44 @@ function applyFont(fontId: string) {
     }
 }
 
+function persistFont(fontId: string) {
+    let storageSucceeded = false;
+    if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+            window.localStorage.setItem(STORAGE_KEY, fontId);
+            storageSucceeded = true;
+            memoryStore.delete(STORAGE_KEY);
+        } catch (error) {
+            const isQuotaError = error instanceof DOMException && error.name === 'QuotaExceededError';
+            if (isQuotaError) {
+                console.warn('localStorage quota exceeded, using in-memory store for font preference');
+            } else {
+                console.warn('Failed to save font preference to localStorage:', error);
+            }
+        }
+    }
+    if (!storageSucceeded) {
+        memoryStore.set(STORAGE_KEY, fontId);
+    }
+}
+
 export default function FontPicker(): React.ReactElement | null {
-    const [selectedFont, setSelectedFont] = useState<string>(DEFAULT_FONT);
-    const [hydrated, setHydrated] = useState(false);
+    const storedFont = useSyncExternalStore(subscribeNoop, getStoredFont, () => DEFAULT_FONT);
+    const [userFont, setUserFont] = useState<string | null>(null);
+    const selectedFont = userFont ?? storedFont;
+    const hydrated = useSyncExternalStore(subscribeNoop, getIsClient, getIsClientServer);
 
     useEffect(() => {
-        let stored: string | null = null;
-        if (typeof window !== 'undefined' && window.localStorage) {
-            try {
-                stored = window.localStorage.getItem(STORAGE_KEY);
-            } catch (error) {
-                // localStorage may be disabled or throw security exceptions
-                console.warn('Failed to read font preference from localStorage:', error);
-                stored = null;
-            }
-        }
-        // Fallback to in-memory store if localStorage failed
-        if (!stored && memoryStore.has(STORAGE_KEY)) {
-            stored = memoryStore.get(STORAGE_KEY) || null;
-        }
-        const initial = stored && FONT_OPTIONS.some((option) => option.id === stored) ? stored : DEFAULT_FONT;
-        setSelectedFont(initial);
-        applyFont(initial);
-        setHydrated(true);
-    }, []);
-
-    useEffect(() => {
-        if (!hydrated) return;
-        // Always apply font regardless of storage success/failure
         applyFont(selectedFont);
+    }, [selectedFont]);
 
-        // Attempt to persist to localStorage with fallback to memory store
-        let storageSucceeded = false;
-        if (typeof window !== 'undefined' && window.localStorage) {
-            try {
-                window.localStorage.setItem(STORAGE_KEY, selectedFont);
-                storageSucceeded = true;
-                // Clear memory store if localStorage succeeds
-                memoryStore.delete(STORAGE_KEY);
-            } catch (error) {
-                // Handle quota exceeded or security exceptions
-                const isQuotaError = error instanceof DOMException && error.name === 'QuotaExceededError';
-
-                if (isQuotaError) {
-                    console.warn('localStorage quota exceeded, using in-memory store for font preference');
-                } else {
-                    console.warn('Failed to save font preference to localStorage:', error);
-                }
-            }
-        }
-
-        // Fallback to in-memory store if localStorage failed or unavailable
-        if (!storageSucceeded) {
-            memoryStore.set(STORAGE_KEY, selectedFont);
-        }
-    }, [selectedFont, hydrated]);
+    useEffect(() => {
+        if (userFont === null) return;
+        persistFont(userFont);
+    }, [userFont]);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedFont(e.target.value);
+        setUserFont(e.target.value);
     };
 
     if (!hydrated) {

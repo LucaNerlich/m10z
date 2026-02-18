@@ -1,3 +1,5 @@
+import Script from 'next/script';
+
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {
@@ -59,7 +61,8 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
 
     return (
         <article className={styles.episode}>
-            <script
+            <Script
+                id={`jsonld-podcast-${slug}`}
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
                     __html: JSON.stringify(jsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),

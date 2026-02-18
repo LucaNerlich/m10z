@@ -80,12 +80,16 @@ export default function RootLayout({
             </main>
             <Footer />
             <UmamiAnalytics />
-            <script
+            <Script
+                id="jsonld-organization"
                 type="application/ld+json"
+                strategy="beforeInteractive"
                 dangerouslySetInnerHTML={{__html: stringifyJsonLd(orgJsonLd)}}
             />
-            <script
+            <Script
+                id="jsonld-website"
                 type="application/ld+json"
+                strategy="beforeInteractive"
                 dangerouslySetInnerHTML={{__html: stringifyJsonLd(websiteJsonLd)}}
             />
         </SWRProvider>

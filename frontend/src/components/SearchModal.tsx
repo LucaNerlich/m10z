@@ -152,12 +152,17 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         }
     }, [activeIndex, results.length]);
 
-    // Reset active index when results change
-    useEffect(() => {
+    // Reset active index when results change (derived state during render)
+    const [prevResultsLength, setPrevResultsLength] = useState(results.length);
+    if (results.length !== prevResultsLength) {
+        setPrevResultsLength(results.length);
         if (results.length > 0) {
-            shouldScrollRef.current = false;
             setActiveIndex(0);
         }
+    }
+
+    useEffect(() => {
+        shouldScrollRef.current = false;
     }, [results.length]);
 
     const statusMessage = useMemo(() => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useReducer, useRef} from 'react';
 import mermaid from 'mermaid';
 import styles from './Mermaid.module.css';
 import {umamiEventId} from '@/src/lib/analytics/umami';
@@ -9,6 +9,27 @@ export type MermaidProps = {
     chart: string;
     className?: string;
 };
+
+type MermaidState = {
+    error: string | null;
+    dataUrl: string | null;
+};
+
+type MermaidAction =
+    | {type: 'reset'}
+    | {type: 'error'; message: string}
+    | {type: 'rendered'; dataUrl: string};
+
+function mermaidReducer(state: MermaidState, action: MermaidAction): MermaidState {
+    switch (action.type) {
+        case 'reset':
+            return {error: null, dataUrl: null};
+        case 'error':
+            return {error: action.message, dataUrl: null};
+        case 'rendered':
+            return {error: null, dataUrl: action.dataUrl};
+    }
+}
 
 /**
  * Render a Mermaid diagram from markdown code blocks.
@@ -24,12 +45,10 @@ export type MermaidProps = {
 export function Mermaid({chart, className}: MermaidProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const linkRef = useRef<HTMLAnchorElement>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [dataUrl, setDataUrl] = useState<string | null>(null);
+    const [{error, dataUrl}, dispatch] = useReducer(mermaidReducer, {error: null, dataUrl: null});
     const renderedChartRef = useRef<string>('');
 
     useEffect(() => {
-        // Initialize Mermaid with configuration optimized for readability
         mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
@@ -55,43 +74,30 @@ export function Mermaid({chart, className}: MermaidProps) {
 
         const trimmedChart = chart.trim();
 
-        // Skip if this chart was already rendered
         if (trimmedChart === renderedChartRef.current && !error && dataUrl) return;
 
-        // Reset error state when chart changes
-        if (error) {
-            setError(null);
-        }
-        if (dataUrl) {
-            setDataUrl(null);
-        }
+        dispatch({type: 'reset'});
 
         if (!trimmedChart) {
-            setError('Empty Mermaid diagram');
+            dispatch({type: 'error', message: 'Empty Mermaid diagram'});
             return;
         }
 
         const chartId = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
 
-        // Render the diagram
         mermaid
             .render(chartId, trimmedChart)
             .then(({svg}) => {
                 if (containerRef.current) {
-                    // Create a preview SVG for the container
                     containerRef.current.innerHTML = svg;
                     renderedChartRef.current = trimmedChart;
-
-                    // Convert SVG to data URL for Fancybox
-                    // Encode the SVG as a data URL so Fancybox can display it
                     const encodedSvg = encodeURIComponent(svg);
-                    const url = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
-                    setDataUrl(url);
+                    dispatch({type: 'rendered', dataUrl: `data:image/svg+xml;charset=utf-8,${encodedSvg}`});
                 }
             })
             .catch((err) => {
                 const errorMessage = err instanceof Error ? err.message : String(err);
-                setError(`Failed to render Mermaid diagram: ${errorMessage}`);
+                dispatch({type: 'error', message: `Failed to render Mermaid diagram: ${errorMessage}`});
                 console.error('Mermaid rendering error:', err);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps

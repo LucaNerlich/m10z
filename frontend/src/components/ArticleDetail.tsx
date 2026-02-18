@@ -1,3 +1,5 @@
+import Script from 'next/script';
+
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
@@ -56,7 +58,8 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
 
     return (
         <article className={styles.article}>
-            <script
+            <Script
+                id={`jsonld-article-${slug}`}
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
                     __html: JSON.stringify(jsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),

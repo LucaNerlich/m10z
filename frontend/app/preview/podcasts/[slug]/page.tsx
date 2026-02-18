@@ -27,38 +27,34 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PodcastPreviewPage({params, searchParams}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
-    if (!slug) return notFound();
+    if (!slug) notFound();
 
     const {secret, status} = await searchParams;
     const expected = process.env.STRAPI_PREVIEW_SECRET ?? null;
     if (!verifySecret(secret ?? null, expected)) {
-        return notFound();
+        notFound();
     }
 
-    try {
-        const previewStatus = status === 'published' ? 'published' : 'draft';
-        const podcast = await fetchPodcastBySlugForPreview(slug, previewStatus);
-        if (!podcast) return notFound();
+    const previewStatus = status === 'published' ? 'published' : 'draft';
 
-        return (
-            <>
-                <PreviewBanner status={previewStatus} />
-                <PodcastDetail slug={slug} podcast={podcast} />
-            </>
-        );
-    } catch (error) {
+    const podcast = await fetchPodcastBySlugForPreview(slug, previewStatus).catch((error: unknown) => {
         const errorMessage = getErrorMessage(error);
-
         if (isTimeoutOrSocketError(error)) {
             console.error(`Socket/timeout error fetching preview podcast for slug "${slug}":`, errorMessage);
             throw error instanceof Error ? error : new Error('Service unavailable');
         }
-
-        if (errorMessage.includes('404') || errorMessage.includes('not found')) {
-            return notFound();
+        if (!errorMessage.includes('404') && !errorMessage.includes('not found')) {
+            console.error(`Error fetching preview podcast for slug "${slug}":`, errorMessage);
         }
+        return null;
+    });
 
-        console.error(`Error fetching preview podcast for slug "${slug}":`, errorMessage);
-        return notFound();
-    }
+    if (!podcast) notFound();
+
+    return (
+        <>
+            <PreviewBanner status={previewStatus} />
+            <PodcastDetail slug={slug} podcast={podcast} />
+        </>
+    );
 }
