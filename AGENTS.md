@@ -41,7 +41,8 @@ Before submitting any change:
 
 1. `npx tsc --noEmit` in `frontend/` — must pass with zero errors
 2. `pnpm run build` in `frontend/` — must succeed for code/config changes
-3. Start the dev server to visually verify content/layout changes
+3. `pnpm run build` in `backend/` — must succeed for backend changes
+4. Start the dev server to visually verify content/layout changes
 
 ---
 
@@ -162,7 +163,9 @@ Ranked by impact. Treat CRITICAL rules as mandatory.
 
 - [ ] `npx tsc --noEmit` passes (in `frontend/`)
 - [ ] `pnpm run build` succeeds (in `frontend/`)
+- [ ] `pnpm run build` succeeds (in `backend/`, if backend was changed)
 - [ ] No unrelated files added
 - [ ] Code follows formatting and style conventions above
 - [ ] No secrets or credentials committed
+- [ ] `types/generated/` files in `backend/` are not manually edited
 - [ ] Summary of changes provided
