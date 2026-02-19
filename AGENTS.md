@@ -1,210 +1,151 @@
 # AGENTS.md - M10Z Development Guidelines
 
-This document provides guidelines for AI agents working on the M10Z codebase.
+Guidelines for AI agents working on the M10Z codebase.
 
 ## Project Overview
 
-M10Z (Mindestens 10 Zeichen) is a German gaming and technology blog built with:
-- **Frontend**: Next.js 16, React 19, TypeScript, CSS Modules
-- **Backend**: Strapi CMS (Node.js), PostgreSQL
-- **Package Manager**: pnpm (preferred) or npm 11+
+M10Z (Mindestens 10 Zeichen) is a German gaming/tech blog at m10z.de.
+UI text is German; code and comments are English.
 
-## Project Structure
+- **Frontend**: Next.js 16, React 19, TypeScript, CSS Modules (`frontend/`)
+- **Backend**: Strapi 5 CMS, PostgreSQL (`backend/`)
+- **Legacy**: Docusaurus 3 — retired, do not modify (`legacy/`)
+- **Package manager**: pnpm 10 (preferred). Node.js ^22.
 
+## Build, Run & Verify Commands
+
+### Frontend (`cd frontend`)
+
+```bash
+pnpm install              # Install dependencies
+pnpm run dev              # Dev server on port 3000 (Turbopack)
+pnpm run build            # Production build
+pnpm run start            # Start production server
+pnpm run typecheck        # tsc --noEmit (run BEFORE every submission)
 ```
-m10z/
-├── frontend/          # Next.js 16 application
-│   ├── src/
-│   │   ├── app/       # Next.js App Router pages and API routes
-│   │   ├── components/# React components
-│   │   └── lib/       # Utilities, types, API clients
-│   └── package.json
-├── backend/           # Strapi CMS
-│   ├── src/
-│   │   ├── api/      # Strapi API definitions
-│   │   └── plugins/  # Custom plugins
-│   └── package.json
-├── load-test/         # Load testing scripts
-└── legacy/           # Legacy Docusaurus site
+
+### Backend (`cd backend`)
+
+```bash
+pnpm install
+pnpm run dev              # Strapi dev server on port 1337
+pnpm run build            # Build Strapi admin panel
+pnpm run start            # Start production server
+pnpm run migrate:audio    # Run audio migration script
 ```
+
+### Tests
+
+There are **no automated tests**. Before submitting any change:
+1. `pnpm run typecheck` in `frontend/` — must pass
+2. `pnpm run build` in `frontend/` — must succeed for code/config changes
+3. Start the dev server to visually verify content changes
 
 ---
 
-## Build, Run & Test Commands
+## Code Style
 
-### Frontend
+### Formatting (Prettier — `.prettierrc`)
 
-```bash
-cd frontend
+- 4-space indentation, single quotes, semicolons, LF line endings
+- `bracketSpacing: false`, `jsxSingleQuote: true`, `trailingComma: "es5"`
+- No bracket spacing: `{foo}` not `{ foo }`
 
-# Install dependencies
-pnpm install
+### TypeScript
 
-# Development
-pnpm run dev          # Start Next.js dev server on port 3000
-
-# Build
-pnpm run build        # Production build
-pnpm run start        # Start production server
-
-# Type checking (run before submitting)
-pnpm run typecheck    # TypeScript type check only
-```
-
-### Backend (Strapi)
-
-```bash
-cd backend
-
-# Install dependencies
-pnpm install
-
-# Development
-pnpm run dev          # Start Strapi dev server on port 1337
-pnpm run console      # Open Strapi console
-
-# Build & Run
-pnpm run build        # Build Strapi admin panel
-pnpm run start        # Start production server
-
-# Database migrations
-pnpm run migrate:audio # Run audio migration script
-```
-
-### Running Single Tests
-
-**Note**: There are currently no automated tests in this codebase. Before submitting changes:
-- Always run `pnpm run typecheck` to verify TypeScript types
-- Run a full build with `pnpm run build` for code/config changes
-- Run the dev server to preview content changes
-
----
-
-## Code Style Guidelines
-
-### General Principles
-
-- **TypeScript throughout** - All application code must be TypeScript. Small Node build scripts may use JS.
-- **4-space indentation** - Follow `.editorconfig` (indent_size: 4)
-- **Semicolons** - Use semicolons at the end of statements
-- **Single quotes** - Use single quotes for strings (see `.prettierrc`)
-- **LF line endings** - Use Unix-style line endings
-
-### Formatting (Prettier)
-
-The project uses Prettier with these settings (`.prettierrc`):
-```json
-{
-    "arrowParens": "always",
-    "bracketSpacing": false,
-    "jsxBracketSameLine": true,
-    "jsxSingleQuote": true,
-    "trailingComma": "es5",
-    "tabWidth": 4,
-    "semi": true,
-    "singleQuote": true,
-    "quoteProps": "consistent",
-    "endOfLine": "lf"
-}
-```
-
-### TypeScript Configuration
-
-- **Frontend**: `strict: true` - Full strict mode enabled
-- **Backend**: `strict: false` - Strapi default (relaxed)
-- Use `type` instead of `interface` for props and simple types
-- Use `type` for unions, intersections, and primitives
+- Frontend: `strict: true`. Backend: `strict: false` (Strapi default).
+- Prefer `type` over `interface` for props, unions, intersections, and simple types.
+- Use `import type {Foo}` for type-only imports.
+- Use `===`/`!==` always — never `==`/`!=`.
 
 ### Imports
 
-- **Absolute imports** - Use path aliases (e.g., `@/src/lib/...`)
-- **Named imports** - Prefer named imports: `import {Something} from '...'`
-- **Type imports** - Use `import type {Type}` when only using types
-- **Group order**: External → Internal → Components → Styles/Assets
+Use absolute imports via `@/src/...`. Group order: External → Internal → Components → Styles/Assets.
 
-Example:
 ```typescript
 import Image from 'next/image';
 import Link from 'next/link';
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {routes} from '@/src/lib/routes';
+import {AuthorList} from './AuthorList';
 import styles from './Component.module.css';
 import placeholderCover from '@/public/images/m10z.jpg';
-import {AuthorList} from './AuthorList';
 ```
 
 ### Naming Conventions
 
-- **Components**: PascalCase (e.g., `ArticleCard`, `SearchModal`)
-- **Files**: PascalCase for components (e.g., `ArticleCard.tsx`), camelCase otherwise
-- **Types/Interfaces**: PascalCase with meaningful names (e.g., `StrapiArticle`)
-- **Props**: PascalCase for component props types (e.g., `ArticleCardProps`)
-- **Variables/functions**: camelCase
-- **Constants**: SCREAMING_SNAKE_CASE for config values
+| What              | Convention          | Example                  |
+|-------------------|---------------------|--------------------------|
+| Components/files  | PascalCase          | `ArticleCard.tsx`        |
+| Props types       | PascalCase + Props  | `ArticleCardProps`       |
+| Variables/funcs   | camelCase           | `getEffectiveDate`       |
+| Config constants  | SCREAMING_SNAKE     | `CACHE_REVALIDATE_DEFAULT` |
+| Types             | PascalCase          | `StrapiArticle`          |
 
-### React/Next.js Patterns
+### React / Next.js Patterns
 
-- **Server Components** - Default in App Router; use `'use client'` only when needed
-- **SWR** - Use SWR for client-side data fetching with built-in caching/deduplication
-- **CSS Modules** - Use `.module.css` files for component-scoped styles
-- **Image optimization** - Use Next.js `<Image>` component for all images
+- **Server Components by default** — `'use client'` only when needed (search, theme, SWR).
+- **React Compiler** is enabled (`reactCompiler: true` in `next.config.ts`).
+- **CSS Modules** (`.module.css`) for component styles, CSS custom properties for theming (OKLCH). No Tailwind.
+- **SWR** for client-side data fetching with a global provider.
+- **`<Image>`** — always use Next.js `<Image>` for images.
+- **Markdown**: `react-markdown` + rehype/remark plugins with custom components.
 
 ### Error Handling
 
-- Use try/catch with async/await for API calls
-- Provide meaningful error messages
-- Handle null/undefined states explicitly
-- Use TypeScript's non-null assertion sparingly (prefer proper null checks)
-
-### Performance Guidelines
-
-Follow the Cursor rules in `.cursor/rules/` for performance optimization:
-
-1. **Async/Waterfalls** (CRITICAL) - Avoid sequential awaits; use `Promise.all()` for parallel fetching
-2. **Bundle Size** (CRITICAL) - Use dynamic imports, avoid barrel imports, defer third-party libs
-3. **Server-Side** (HIGH) - Optimize SSR and data fetching patterns
-4. **Client Data** (MEDIUM-HIGH) - Leverage SWR deduplication
-5. **Re-renders** (MEDIUM) - Use `useMemo`, `useCallback`, React.memo appropriately
+- try/catch with async/await for all API calls.
+- Strapi fetch functions must return fallback data if the CMS is unreachable.
+- Handle null/undefined explicitly; avoid non-null assertions.
+- Never expose secrets or sensitive data in error messages or logs.
 
 ---
 
-## Environment Variables
+## Performance Rules (from `.cursor/rules/`)
 
-### Frontend (.env.local)
+These are ranked by impact. Treat CRITICAL rules as mandatory.
 
-```env
-STRAPI_URL=http://localhost:1337
-STRAPI_PREVIEW_SECRET=your_secret_here
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-```
-
-### Backend (.env)
-
-See `backend/.env.example` for required variables:
-- `CLIENT_URL` - Frontend URL
-- `FRONTEND_URL` - Production frontend URL
-- `FEED_INVALIDATION_TOKEN` - Secret for cache invalidation
-- `STRAPI_PREVIEW_SECRET` - Must match frontend
+1. **Async waterfalls** (CRITICAL) — Never use sequential awaits for independent operations. Use `Promise.all()`.
+2. **Bundle size** (CRITICAL) — Avoid barrel-file imports (import directly from source paths). Use `optimizePackageImports` in `next.config.ts` for libraries like `@phosphor-icons/react`. Use dynamic `import()` for heavy/conditional code.
+3. **Server-side** (HIGH) — Use `React.cache()` for deduplication. Batch large slug arrays into chunks of 150.
+4. **Client data** (MEDIUM-HIGH) — Leverage SWR deduplication; avoid redundant fetches.
+5. **Re-renders** (MEDIUM) — Use `useMemo`, `useCallback`, `React.memo` where appropriate.
 
 ---
 
-## Security Guidelines
+## Security Rules (from `.cursor/rules/security-*`)
 
-- Never commit secrets, API keys, or credentials to the repository
-- Use `.env.local` for local development (already gitignored)
-- Validate all user inputs
-- Use parameterized queries for database operations
-- Follow the security rules in `.cursor/rules/security-*`
+- **Never** use raw user input in file paths, commands, or database queries.
+- **Never** hardcode secrets — use environment variables (`.env.local` for frontend, `.env` for backend).
+- **Never** use `eval()`, `new Function()`, or `vm` with dynamic input.
+- Use constant-time comparison for secrets (e.g., `timingSafeEqual`).
+- Validate and sanitize all external input. Use DOMPurify for user-generated HTML.
+- Use HTTPS for all external communication.
+- Use `===`/`!==` exclusively to prevent type coercion.
+- Rate-limit sensitive endpoints (cache invalidation, preview routes).
+- CSP headers and Permissions-Policy are configured in `next.config.ts`.
+
+---
+
+## Architecture Notes
+
+- **Data flow**: Strapi (PostgreSQL) → Next.js REST API fetches → Server-rendered pages with tag-based cache invalidation + time-based fallback.
+- **Cache invalidation**: Strapi middleware POSTs to `/api/*/invalidate` → `revalidateTag()` + `revalidatePath()`.
+- **Cache constants** (`src/lib/cache/constants.ts`): default 3600s, content pages 900s, search 3600s.
+- **Tag naming**: `strapi:{type}`, `strapi:{type}:{slug}`, `feed:{type}`, `page:{name}`, `search-index`.
+- **Routes are German**: `/artikel`, `/podcasts`, `/kategorien`, `/team`, `/impressum`, `/datenschutz`, `/ueber-uns`.
+- **Preview routes**: `/preview/artikel/[slug]`, `/preview/podcasts/[slug]` — use `cache: 'no-store'`.
+- **Connection pooling**: `undici` Agent as global fetch dispatcher via `instrumentation.ts`.
+- **Path alias**: `@/*` maps to `./frontend/*` (e.g., `@/src/lib/strapi`).
+- **Environment variables**: Frontend uses `.env.local` (`STRAPI_URL`, `STRAPI_PREVIEW_SECRET`, `NEXT_PUBLIC_BASE_URL`). Backend uses `.env` (see `backend/.env.example`). Never commit secrets.
 
 ---
 
 ## Submission Checklist
 
-Before submitting changes:
-
-- [ ] Run `pnpm run typecheck` - TypeScript types pass
-- [ ] Run `pnpm run build` - Production build succeeds
+- [ ] `pnpm run typecheck` passes (in `frontend/`)
+- [ ] `pnpm run build` succeeds (in `frontend/`)
 - [ ] No unrelated files added
-- [ ] Follow code style and conventions
-- [ ] Provide a summary of changes
+- [ ] Code follows formatting and style conventions
+- [ ] No secrets or credentials committed
+- [ ] Summary of changes provided
