@@ -33,6 +33,21 @@
     }
 }
 
+/* Grid layout when a table of contents is present */
+.withToc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+}
+
+@media (min-width: 1100px) {
+    .withToc {
+        grid-template-columns: minmax(0, 740px) 220px;
+        gap: 2rem;
+        align-items: start;
+    }
+}
+
 @media (max-width: 640px) {
     .title {
         font-size: 1.875rem;

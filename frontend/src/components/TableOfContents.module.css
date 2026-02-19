@@ -1,0 +1,68 @@
+.nav {
+    position: sticky;
+    top: calc(var(--header-height) + 2rem);
+    max-height: calc(100vh - var(--header-height) - 4rem);
+    overflow-y: auto;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-border);
+}
+
+.title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.75rem;
+}
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.link {
+    display: block;
+    padding: 0.25rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 150ms ease;
+}
+
+.link:hover {
+    color: var(--color-text);
+}
+
+.active {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.active:hover {
+    color: var(--color-primary);
+}
+
+/* Indentation by heading depth.
+   h1 in markdown is demoted to h2, so effective depths are 2-4.
+   depth-2 = flush, depth-3 = indented, depth-4 = double-indented. */
+.depth2 {
+    padding-left: 0;
+}
+
+.depth3 {
+    padding-left: 0.75rem;
+}
+
+.depth4 {
+    padding-left: 1.5rem;
+}
+
+/* Only show on wide desktop viewports */
+@media (max-width: 1099px) {
+    .nav {
+        display: none;
+    }
+}

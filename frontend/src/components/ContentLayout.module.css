@@ -17,6 +17,14 @@ main:has([data-list-page]) .layout {
     }
 }
 
+/* Widen the layout when an article has a table of contents sidebar.
+   Only applies at desktop widths where the TOC is visible. */
+@media (min-width: 1100px) {
+    main:has([data-article-toc]) .layout {
+        max-width: 1000px;
+    }
+}
+
 .container {
     width: 100%;
 
