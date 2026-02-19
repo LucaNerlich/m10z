@@ -4,8 +4,10 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {calculateReadingTime} from '@/src/lib/readingTime';
+import {extractHeadings} from '@/src/lib/markdown/extractHeadings';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
+import {TableOfContents} from '@/src/components/TableOfContents';
 
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
@@ -55,8 +57,11 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const imageAlt = optimizedMedia?.alternativeText ?? article.base.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generateArticleJsonLd(article);
+    const content = article.content ?? '';
+    const headings = extractHeadings(content, 3);
+    const hasToc = headings.length >= 4;
 
-    return (
+    const articleElement = (
         <article className={styles.article}>
             <Script
                 id={`jsonld-article-${slug}`}
@@ -88,9 +93,18 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                 ) : null}
             </section>
 
-            <Markdown markdown={article.content ?? ''} />
+            <Markdown markdown={content} />
 
             {article.youtube && article.youtube.length > 0 && <YoutubeSection youtube={article.youtube} />}
         </article>
+    );
+
+    if (!hasToc) return articleElement;
+
+    return (
+        <div className={styles.withToc} data-article-toc>
+            {articleElement}
+            <TableOfContents headings={headings} />
+        </div>
     );
 }
