@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {type HeadingItem} from '@/src/lib/markdown/extractHeadings';
 
@@ -17,7 +17,7 @@ type TableOfContentsClientProps = {
  */
 export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
     const [activeIndex, setActiveIndex] = useState(-1);
-    const headingEls = useRef<HTMLElement[]>([]);
+    const [headingEls, setHeadingEls] = useState<HTMLElement[]>([]);
 
     useEffect(() => {
         // Find heading elements in the rendered markdown content.
@@ -27,7 +27,7 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
 
         const selectors = [...new Set(headings.map((h) => `h${h.depth}`))].join(', ');
         const elements = Array.from(container.querySelectorAll<HTMLElement>(selectors));
-        headingEls.current = elements;
+        setHeadingEls(elements);
 
         if (elements.length === 0) return;
 
@@ -35,14 +35,18 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
         // of the viewport (below the sticky header, top ~34% of the screen).
         const observer = new IntersectionObserver(
             (entries) => {
-                // Find the topmost visible heading
+                // Find the topmost visible heading (lowest DOM index)
+                let minIdx = Infinity;
                 for (const entry of entries) {
                     if (entry.isIntersecting) {
                         const idx = elements.indexOf(entry.target as HTMLElement);
-                        if (idx !== -1) {
-                            setActiveIndex(idx);
+                        if (idx !== -1 && idx < minIdx) {
+                            minIdx = idx;
                         }
                     }
+                }
+                if (minIdx !== Infinity) {
+                    setActiveIndex(minIdx);
                 }
             },
             {
@@ -66,7 +70,7 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
             <p className={styles.title}>Inhalt</p>
             <ol className={styles.list}>
                 {headings.map((heading, index) => {
-                    const el = headingEls.current[index];
+                    const el = headingEls[index];
                     const href = el?.id ? `#${el.id}` : undefined;
                     const depthClass =
                         heading.depth === 2

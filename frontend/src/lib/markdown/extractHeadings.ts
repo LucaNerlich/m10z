@@ -51,7 +51,7 @@ export function extractHeadings(markdown: string, maxDepth = 3): HeadingItem[] {
             .replace(/\*\*(.+?)\*\*/g, '$1') // bold
             .replace(/__(.+?)__/g, '$1') // bold alt
             .replace(/\*(.+?)\*/g, '$1') // italic
-            .replace(/_(.+?)_/g, '$1') // italic alt
+            .replace(/(?<!\w)_(.+?)_(?!\w)/g, '$1') // italic alt (preserve snake_case)
             .replace(/`(.+?)`/g, '$1') // inline code
             .replace(/~~(.+?)~~/g, '$1') // strikethrough
             .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // links
