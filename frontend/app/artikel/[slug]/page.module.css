@@ -42,7 +42,7 @@
 
 @media (min-width: 1100px) {
     .withToc {
-        grid-template-columns: minmax(0, 740px) 220px;
+        grid-template-columns: minmax(0, 740px) 260px;
         gap: 2rem;
         align-items: start;
     }

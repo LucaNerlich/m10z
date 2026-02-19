@@ -21,7 +21,7 @@ main:has([data-list-page]) .layout {
    Only applies at desktop widths where the TOC is visible. */
 @media (min-width: 1100px) {
     main:has([data-article-toc]) .layout {
-        max-width: 1000px;
+        max-width: 1040px;
     }
 }
 
