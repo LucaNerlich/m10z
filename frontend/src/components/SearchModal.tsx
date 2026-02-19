@@ -3,7 +3,7 @@
 import {type KeyboardEvent, type MouseEvent, useEffect, useId, useMemo, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
-import {BookIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
+import {BookIcon, MusicNoteIcon, UserIcon, FileTextIcon} from '@phosphor-icons/react/dist/ssr';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {type SearchRecord} from '@/src/lib/search/types';
@@ -23,6 +23,7 @@ const TYPE_LABEL: Record<SearchRecord['type'], string> = {
     podcast: 'Podcast',
     author: 'AutorIn',
     category: 'Kategorie',
+    page: 'Seite',
 };
 
 const TYPE_ICON: Record<SearchRecord['type'], typeof BookIcon> = {
@@ -30,6 +31,7 @@ const TYPE_ICON: Record<SearchRecord['type'], typeof BookIcon> = {
     podcast: MusicNoteIcon,
     author: UserIcon,
     category: BookIcon,
+    page: FileTextIcon,
 };
 
 // Hoist RegExp patterns to module scope

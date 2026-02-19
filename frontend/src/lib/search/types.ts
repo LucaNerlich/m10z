@@ -1,4 +1,4 @@
-export type SearchRecordType = 'article' | 'podcast' | 'author' | 'category';
+export type SearchRecordType = 'article' | 'podcast' | 'author' | 'category' | 'page';
 
 export type SearchRecord = {
     id: string;

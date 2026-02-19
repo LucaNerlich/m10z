@@ -3,6 +3,7 @@ import Fuse from 'fuse.js';
 
 import {getStrapiApiBaseUrl} from '@/src/lib/strapi';
 import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '@/src/lib/search/types';
+import {getStaticPageRecords} from '@/src/lib/search/staticPages';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {CACHE_REVALIDATE_SEARCH} from '@/src/lib/cache/constants';
@@ -206,6 +207,22 @@ function getCachedFuse(index: SearchIndexFile): Fuse<SearchRecord> {
 }
 
 /**
+ * Augments the search index with static page records.
+ * These are pages that exist in the app but aren't indexed from Strapi.
+ *
+ * @param index - The search index loaded from Strapi
+ * @returns The augmented index with static page records appended
+ */
+function augmentIndexWithStaticPages(index: SearchIndexFile): SearchIndexFile {
+    const staticRecords = getStaticPageRecords();
+    return {
+        ...index,
+        records: [...index.records, ...staticRecords],
+        total: index.records.length + staticRecords.length,
+    };
+}
+
+/**
  * Handle GET requests for the search-index endpoint, returning either the full index or search results based on the `q` query parameter.
  *
  * Safari-Specific Caching Strategy:
@@ -241,6 +258,7 @@ export async function GET(request: Request) {
     if (!query) {
         try {
             const content = await loadSearchIndex();
+            const augmented = augmentIndexWithStaticPages(content);
             const expiresDate = new Date(Date.now() + 60000).toUTCString();
             const durationMs = Date.now() - startedAt;
             if (durationMs >= 500) {
@@ -250,10 +268,10 @@ export async function GET(request: Request) {
                     name: 'api.search-index.full',
                     ok: true,
                     durationMs,
-                    detail: {total: content.total},
+                    detail: {total: augmented.total},
                 });
             }
-            return NextResponse.json(content, {
+            return NextResponse.json(augmented, {
                 headers: {
                     'Cache-Control': 'public, max-age=60',
                     'Expires': expiresDate,
@@ -328,9 +346,10 @@ export async function GET(request: Request) {
         }
 
         const index = await loadSearchIndex();
+        const augmented = augmentIndexWithStaticPages(index);
         // Generate ETag based on query, index version, and generatedAt timestamp
         // This ensures ETag changes when the index is updated or query changes
-        const etagSeed = `${trimmedQuery}:${index.version}:${index.generatedAt}`;
+        const etagSeed = `${trimmedQuery}:${augmented.version}:${augmented.generatedAt}`;
         const etag = `"${sha256Hex(etagSeed)}"`;
 
         // Check if client has cached version with matching ETag
@@ -345,7 +364,7 @@ export async function GET(request: Request) {
             });
         }
 
-        const fuse = getCachedFuse(index);
+        const fuse = getCachedFuse(augmented);
         const results = fuse.search(trimmedQuery, {limit: 20}).map((match) => ({
             ...match.item,
             score: match.score ?? null,

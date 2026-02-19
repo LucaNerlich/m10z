@@ -14,7 +14,7 @@ type Strapi = {
     };
 };
 
-type SearchRecordType = 'article' | 'podcast' | 'author' | 'category';
+type SearchRecordType = 'article' | 'podcast' | 'author' | 'category' | 'page';
 
 type SearchRecord = {
     id: string;
