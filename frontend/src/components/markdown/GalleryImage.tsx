@@ -53,7 +53,7 @@ export function GalleryImage({src, alt = '', style, caption, ...props}: GalleryI
                 title={caption ?? title}
                 width={props.width ?? 1200}
                 height={props.height ?? 675}
-                sizes={props.sizes ?? '100vw'}
+                sizes={props.sizes ?? '(max-width: 900px) 100vw, 800px'}
                 {...restProps}
             />
         </a>

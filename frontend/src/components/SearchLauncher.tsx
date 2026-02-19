@@ -4,6 +4,7 @@ import {useEffect, useState, useSyncExternalStore} from 'react';
 
 import styles from './Header.module.css';
 import {SearchModal} from './SearchModal';
+import {SWRProvider} from './SWRProvider';
 
 const shortcutKeySearch = 'K';
 
@@ -47,7 +48,11 @@ export function SearchLauncher(): React.ReactElement {
                 <span className={styles.searchButtonLabel}>Suche</span>
                 <span className={styles.searchShortcut}>{shortcutLabel}</span>
             </button>
-            {isOpen ? <SearchModal onClose={() => setIsOpen(false)} /> : null}
+            {isOpen ? (
+                <SWRProvider>
+                    <SearchModal onClose={() => setIsOpen(false)} />
+                </SWRProvider>
+            ) : null}
         </>
     );
 }

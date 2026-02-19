@@ -10,6 +10,7 @@
  */
 
 const GERMAN_LOCALE = 'de-DE';
+const GERMAN_RELATIVE_TIME_FORMATTER = new Intl.RelativeTimeFormat(GERMAN_LOCALE, {numeric: 'auto'});
 
 /**
  * German month names (full).
@@ -200,20 +201,19 @@ export function formatDateRelative(date: string | null | undefined): string {
 
     // Use Intl.RelativeTimeFormat for other relative dates
     try {
-        const rtf = new Intl.RelativeTimeFormat(GERMAN_LOCALE, {numeric: 'auto'});
         const absDiffDays = Math.abs(diffDays);
 
         if (absDiffDays < 7) {
-            return rtf.format(diffDays, 'day');
+            return GERMAN_RELATIVE_TIME_FORMATTER.format(diffDays, 'day');
         } else if (absDiffDays < 30) {
             const diffWeeks = Math.round(diffDays / 7);
-            return rtf.format(diffWeeks, 'week');
+            return GERMAN_RELATIVE_TIME_FORMATTER.format(diffWeeks, 'week');
         } else if (absDiffDays < 365) {
             const diffMonths = Math.round(diffDays / 30);
-            return rtf.format(diffMonths, 'month');
+            return GERMAN_RELATIVE_TIME_FORMATTER.format(diffMonths, 'month');
         } else {
             const diffYears = Math.round(diffDays / 365);
-            return rtf.format(diffYears, 'year');
+            return GERMAN_RELATIVE_TIME_FORMATTER.format(diffYears, 'year');
         }
     } catch {
         // Fallback to short date format if RelativeTimeFormat fails

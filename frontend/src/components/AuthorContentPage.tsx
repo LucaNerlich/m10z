@@ -101,15 +101,19 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
     const sp = await Promise.resolve(props.searchParams ?? {});
     const page = parsePageParam(sp);
     const categorySlug = parseCategoryParam(sp);
-    const category = categorySlug ? await fetchCategoryBySlug(categorySlug) : null;
-    const fetchedCategoryTitle = category?.base?.title ?? null;
-    const categoryLabel = props.categoryFilterLabel ?? fetchedCategoryTitle ?? categorySlug;
+    const pageSize = props.pageSize ?? 12;
 
-    const author = await fetchAuthorBySlug(slug);
+    // Fetch all data in parallel
+    const [category, author, data] = await Promise.all([
+        categorySlug ? fetchCategoryBySlug(categorySlug) : null,
+        fetchAuthorBySlug(slug),
+        props.fetchPage(slug, page, pageSize, categorySlug ?? undefined),
+    ]);
+
     if (!author) return notFound();
 
-    const pageSize = props.pageSize ?? 12;
-    const data = await props.fetchPage(slug, page, pageSize, categorySlug ?? undefined);
+    const fetchedCategoryTitle = category?.base?.title ?? null;
+    const categoryLabel = props.categoryFilterLabel ?? fetchedCategoryTitle ?? categorySlug;
 
     const {page: currentPage, pageCount, total} = data.pagination;
     const isOutOfRange = total > 0 && page > pageCount;

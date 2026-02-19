@@ -160,8 +160,6 @@ export async function HomePage({page}: {page: number}) {
                                     {(() => {
                                         const coverSrc = coverUrl ?? placeholderCover;
                                         const bannerSrc = bannerUrl ?? coverUrl ?? placeholderCover;
-                                        const coverUnoptimized = typeof coverSrc === 'string';
-                                        const bannerUnoptimized = typeof bannerSrc === 'string';
 
                                         return (
                                             <Link
@@ -175,7 +173,6 @@ export async function HomePage({page}: {page: number}) {
                                                     height={200}
                                                     sizes="200px"
                                                     quality={60}
-                                                    unoptimized={coverUnoptimized}
                                                     placeholder={coverPlaceholder}
                                                     blurDataURL={coverBlurDataUrl || undefined}
                                                     alt={coverAlt || ''}
@@ -188,7 +185,6 @@ export async function HomePage({page}: {page: number}) {
                                                     height={450}
                                                     sizes="(max-width: 900px) 100vw, 800px"
                                                     quality={60}
-                                                    unoptimized={bannerUnoptimized}
                                                     placeholder={bannerPlaceholder}
                                                     blurDataURL={bannerBlurDataUrl || coverBlurDataUrl || undefined}
                                                     alt={bannerAlt || ''}

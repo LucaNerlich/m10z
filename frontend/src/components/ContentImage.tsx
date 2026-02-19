@@ -10,6 +10,7 @@ type CoverImageProps = {
     placeholder?: 'blur' | 'empty';
     blurhash?: string | null; // Base64 data URL from backend (e.g., "data:image/png;base64,...")
     title?: string;
+    priority?: boolean;
 };
 
 /**
@@ -24,6 +25,7 @@ type CoverImageProps = {
  * @param className - Optional additional CSS class
  * @param placeholder - Placeholder type ('blur' or 'empty'), defaults to 'empty'
  * @param blurhash - Optional base64 data URL to use as blur placeholder (from backend)
+ * @param priority - If true, the image will be considered high priority and preloaded
  * @returns A cover image container with the image
  */
 export function ContentImage({
@@ -35,6 +37,7 @@ export function ContentImage({
                                  placeholder = 'empty',
                                  blurhash,
                                  title,
+                                 priority = false,
                              }: CoverImageProps) {
     // Use blurhash directly as blurDataURL if provided and placeholder is 'blur'
     const imagePlaceholder = blurhash && placeholder === 'blur' ? 'blur' : placeholder;
@@ -51,6 +54,8 @@ export function ContentImage({
                 placeholder={imagePlaceholder}
                 {...blurDataUrlProp}
                 className={styles.image}
+                priority={priority}
+                loading={priority ? 'eager' : undefined}
             />
         </div>
     );

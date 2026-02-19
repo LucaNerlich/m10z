@@ -116,6 +116,7 @@ export default async function AboutUsPage() {
                         width={imageWidth}
                         height={imageHeight}
                         placeholder={placeholder}
+                        priority={true}
                     />
                     <section>
                         <h1>{about.name}</h1>

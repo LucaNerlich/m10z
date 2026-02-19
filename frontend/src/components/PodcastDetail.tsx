@@ -77,6 +77,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                 height={imageHeight}
                 placeholder={placeholder}
                 blurhash={blurhash}
+                priority={true}
             />
             <section className={styles.header}>
                 <ContentMetadata

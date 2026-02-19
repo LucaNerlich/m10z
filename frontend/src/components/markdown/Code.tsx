@@ -1,9 +1,19 @@
 'use client';
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import {Highlight} from 'prism-react-renderer';
-import {Mermaid} from './Mermaid';
 import styles from './Code.module.css';
+
+// Lazy-load Mermaid component to reduce bundle size
+// Mermaid library is ~2MB and only needed for diagrams
+const Mermaid = dynamic(
+    () => import('./Mermaid').then(mod => ({default: mod.Mermaid})),
+    {
+        loading: () => <pre className={styles.pre}>Loading diagram...</pre>,
+        ssr: false, // Mermaid requires DOM APIs
+    }
+);
 
 export type CodeProps = React.ComponentProps<'code'> & {
     inline?: boolean;

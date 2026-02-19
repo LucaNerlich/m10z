@@ -6,9 +6,10 @@ type M12GLeaderboardProps = {
     entries: M12GLeaderboardEntry[];
 };
 
+const germanPluralRules = new Intl.PluralRules('de-DE');
+
 function formatVotes(votes: number): string {
-    const pluralRules = new Intl.PluralRules('de-DE');
-    const rule = pluralRules.select(votes);
+    const rule = germanPluralRules.select(votes);
     const unit = rule === 'one' ? 'Stimme' : 'Stimmen';
     return `${votes} ${unit}`;
 }

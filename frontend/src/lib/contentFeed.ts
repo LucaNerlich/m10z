@@ -62,8 +62,9 @@ export async function buildContentFeed(
     const safePageSize = Math.max(1, Math.min(100, Math.floor(pageSize || 10)));
 
     // We need to fetch enough items to potentially fill the requested page
-    // Since items are merged, we fetch a larger buffer to ensure we have enough after merging.
-    const fetchSize = Math.min(safePageSize * 2, 200);
+    // Since items are merged, we fetch a small buffer to ensure we have enough after merging.
+    // This reduces over-fetching from 4x to ~1.5x while still providing a safe margin.
+    const fetchSize = Math.min(safePageSize + 5, 200);
 
     const extraTags = options.tags ?? [];
     const articleTags = Array.from(new Set(['strapi:article', 'strapi:article:list:page', ...extraTags]));

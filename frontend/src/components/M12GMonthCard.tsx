@@ -6,15 +6,17 @@ type M12GMonthCardProps = {
     month: M12GMonthWithWinner;
 };
 
+const germanDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: 'numeric'});
+const germanPluralRules = new Intl.PluralRules('de-DE');
+
 function formatMonthTitle(monthId: string): string {
     const parsed = new Date(`${monthId}-01T00:00:00Z`);
     if (Number.isNaN(parsed.getTime())) return monthId;
-    return new Intl.DateTimeFormat('de-DE', {month: 'long', year: 'numeric'}).format(parsed);
+    return germanDateFormatter.format(parsed);
 }
 
 function formatVotes(votes: number): string {
-    const pluralRules = new Intl.PluralRules('de-DE');
-    const rule = pluralRules.select(votes);
+    const rule = germanPluralRules.select(votes);
     const unit = rule === 'one' ? 'Stimme' : 'Stimmen';
     return `${votes} ${unit}`;
 }

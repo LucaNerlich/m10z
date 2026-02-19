@@ -170,7 +170,7 @@ export async function durationMiddleware(
                         incomingIdentity &&
                         existingIdentity === incomingIdentity
                     ) {
-                        strapi.log.info(
+                        strapiInstance.log.info(
                             `Skipping duration recalculation (file unchanged) for podcast: ${documentId}`,
                         );
                         return next();

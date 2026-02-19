@@ -42,12 +42,36 @@ async function runInvalidations(strapi: StrapiLike): Promise<void> {
     strapi.log.info(`Cache invalidation started for ${targets.length} target(s).`);
 
     try {
-        for (const target of targets) {
-            try {
-                await invalidateNext(target);
-            } catch (err) {
-                strapi.log.warn(`Cache invalidation failed for target "${target}".`, err);
-            }
+        // Parallelize invalidations with a concurrency limit
+        const CONCURRENCY_LIMIT = 5;
+        const results = await Promise.allSettled(
+            targets.slice(0, CONCURRENCY_LIMIT).map(target =>
+                invalidateNext(target, strapi.log).catch(err => {
+                    // Error already logged by invalidateNext with retry logic
+                    throw err; // Re-throw to be caught by allSettled
+                })
+            )
+        );
+
+        // Process remaining targets if any (for when we have more than the concurrency limit)
+        for (let i = CONCURRENCY_LIMIT; i < targets.length; i += CONCURRENCY_LIMIT) {
+            const batch = targets.slice(i, i + CONCURRENCY_LIMIT);
+            const batchResults = await Promise.allSettled(
+                batch.map(target =>
+                    invalidateNext(target, strapi.log).catch(err => {
+                        // Error already logged by invalidateNext with retry logic
+                        throw err;
+                    })
+                )
+            );
+            results.push(...batchResults);
+        }
+
+        // Log summary of results
+        const successful = results.filter(r => r.status === 'fulfilled').length;
+        const failed = results.filter(r => r.status === 'rejected').length;
+        if (failed > 0) {
+            strapi.log.warn(`Cache invalidation completed: ${successful} successful, ${failed} failed.`);
         }
     } finally {
         isRunning = false;

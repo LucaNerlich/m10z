@@ -6,10 +6,12 @@ type M12GParticipationChartProps = {
     months: M12GMonthParticipation[];
 };
 
+const germanShortDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: '2-digit'});
+
 function formatMonth(monthId: string): string {
     const parsed = new Date(`${monthId}-01T00:00:00Z`);
     if (Number.isNaN(parsed.getTime())) return monthId;
-    return new Intl.DateTimeFormat('de-DE', {month: 'long', year: '2-digit'}).format(parsed);
+    return germanShortDateFormatter.format(parsed);
 }
 
 export function M12GParticipationChart({months}: M12GParticipationChartProps) {

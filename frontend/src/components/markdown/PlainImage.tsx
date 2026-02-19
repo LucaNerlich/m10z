@@ -24,7 +24,7 @@ export function PlainImage({src, alt = '', title}: PlainImageProps) {
             title={title}
             width={1200}
             height={675}
-            sizes="100vw"
+            sizes="(max-width: 900px) 100vw, 800px"
             style={{height: 'auto', width: '100%'}}
         />
     );

@@ -33,11 +33,11 @@ export default [
     {
         name: 'strapi::body',
         config: {
-            formLimit: '5gb',
-            jsonLimit: '5gb',
-            textLimit: '5gb',
+            formLimit: '2gb',   // 2GB for larger audio/media file uploads
+            jsonLimit: '10mb',  // 10MB for JSON data
+            textLimit: '10mb',  // 10MB for text content
             formidable: {
-                maxFileSize: 5737418240,
+                maxFileSize: 2147483648, // 2GB for larger audio files
             },
         },
     },

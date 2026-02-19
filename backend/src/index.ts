@@ -9,6 +9,38 @@ export default {
      * the Next.js frontend after successful mutations.
      */
     register({strapi}: {strapi: any}) {
+        // Validate required environment variables at startup
+        const requiredEnvVars = [
+            'DATABASE_CLIENT',
+            'DATABASE_HOST',
+            'DATABASE_PORT',
+            'DATABASE_NAME',
+            'DATABASE_USERNAME',
+            'DATABASE_PASSWORD',
+            'ADMIN_JWT_SECRET',
+            'API_TOKEN_SALT',
+            'STRAPI_PREVIEW_SECRET',
+        ];
+
+        const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+        if (missingVars.length > 0) {
+            const errorMsg = `Missing required environment variables: ${missingVars.join(', ')}. Please check your .env file.`;
+            strapi.log.error(errorMsg);
+            throw new Error(errorMsg);
+        }
+
+        // Validate optional but important environment variables
+        const importantVars = [
+            'FEED_INVALIDATION_TOKEN',
+            'DIAGNOSTICS_TOKEN',
+        ];
+
+        const missingImportantVars = importantVars.filter(varName => !process.env[varName]);
+
+        if (missingImportantVars.length > 0) {
+            strapi.log.warn(`Missing optional but recommended environment variables: ${missingImportantVars.join(', ')}`);
+        }
         // Configure HTTP server timeouts to prevent premature socket closure
         // during SSR requests. The server may not be initialized immediately,
         // so we use a timeout to retry if needed.
@@ -193,5 +225,65 @@ export default {
         } catch (err) {
             strapi.log.warn('Failed to set up database pool monitoring', err);
         }
+
+        // Set up graceful shutdown handler
+        const gracefulShutdown = async (signal: string) => {
+            strapi.log.info(`Received ${signal}, starting graceful shutdown...`);
+
+            try {
+                // Stop accepting new requests
+                if (strapi.server?.httpServer) {
+                    strapi.log.info('Closing HTTP server...');
+                    await new Promise<void>((resolve, reject) => {
+                        strapi.server.httpServer.close((err) => {
+                            if (err) {
+                                strapi.log.error('Error closing HTTP server:', err);
+                                reject(err);
+                            } else {
+                                strapi.log.info('HTTP server closed successfully');
+                                resolve();
+                            }
+                        });
+                    });
+                }
+
+                // Wait for pending operations to complete (with timeout)
+                const shutdownTimeout = setTimeout(() => {
+                    strapi.log.warn('Shutdown timeout exceeded, forcing exit');
+                    process.exit(1);
+                }, 30000); // 30 second timeout
+
+                // Clear all intervals and timers
+                clearTimeout(shutdownTimeout);
+
+                // Close database connections
+                if (strapi.db) {
+                    strapi.log.info('Closing database connections...');
+                    await strapi.db.connection.destroy();
+                    strapi.log.info('Database connections closed');
+                }
+
+                strapi.log.info('Graceful shutdown completed');
+                process.exit(0);
+            } catch (error) {
+                strapi.log.error('Error during graceful shutdown:', error);
+                process.exit(1);
+            }
+        };
+
+        // Register shutdown handlers
+        process.once('SIGTERM', () => gracefulShutdown('SIGTERM'));
+        process.once('SIGINT', () => gracefulShutdown('SIGINT'));
+
+        // Handle uncaught exceptions and rejections
+        process.on('uncaughtException', (error) => {
+            strapi.log.error('Uncaught Exception:', error);
+            gracefulShutdown('uncaughtException');
+        });
+
+        process.on('unhandledRejection', (reason, promise) => {
+            strapi.log.error('Unhandled Rejection at:', promise, 'reason:', reason);
+            // Not calling gracefulShutdown here as unhandled rejections are often recoverable
+        });
     },
 };

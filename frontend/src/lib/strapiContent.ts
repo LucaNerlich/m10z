@@ -900,12 +900,14 @@ export const fetchArticlesBySlugsBatched = cache(async (slugs: string[]): Promis
         return fetchArticlesBySlugs(slugs);
     }
 
-    // Batch requests
-    const batches: StrapiArticle[][] = [];
+    // Create batch chunks
+    const chunks: string[][] = [];
     for (let i = 0; i < slugs.length; i += MAX_SLUGS) {
-        const batch = slugs.slice(i, i + MAX_SLUGS);
-        batches.push(await fetchArticlesBySlugs(batch));
+        chunks.push(slugs.slice(i, i + MAX_SLUGS));
     }
+
+    // Fetch all batches in parallel
+    const batches = await Promise.all(chunks.map(chunk => fetchArticlesBySlugs(chunk)));
 
     return batches.flat();
 });
@@ -922,12 +924,14 @@ export const fetchPodcastsBySlugsBatched = cache(async (slugs: string[]): Promis
         return fetchPodcastsBySlugs(slugs);
     }
 
-    // Batch requests
-    const batches: StrapiPodcast[][] = [];
+    // Create batch chunks
+    const chunks: string[][] = [];
     for (let i = 0; i < slugs.length; i += MAX_SLUGS) {
-        const batch = slugs.slice(i, i + MAX_SLUGS);
-        batches.push(await fetchPodcastsBySlugs(batch));
+        chunks.push(slugs.slice(i, i + MAX_SLUGS));
     }
+
+    // Fetch all batches in parallel
+    const batches = await Promise.all(chunks.map(chunk => fetchPodcastsBySlugs(chunk)));
 
     return batches.flat();
 });

@@ -1,4 +1,5 @@
 import qs from 'qs';
+import {cache} from 'react';
 
 import {CACHE_REVALIDATE_DEFAULT} from './cache/constants';
 
@@ -281,12 +282,12 @@ async function getAboutWithFallback(
  * @param options - Optional fetch options (e.g., cache revalidation seconds and cache tags)
  * @returns The site's About content as a `StrapiAbout` object; a fallback `StrapiAbout` if the remote fetch fails
  */
-export async function getAbout(options: FetchStrapiOptions = {}) {
+export const getAbout = cache(async (options: FetchStrapiOptions = {}) => {
     return getAboutWithFallback({
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
-}
+});
 
 /**
  * Asserts that a value conforms to the StrapiFeedsInfo structure.

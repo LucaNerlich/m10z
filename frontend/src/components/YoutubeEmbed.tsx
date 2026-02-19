@@ -40,6 +40,7 @@ export default function YoutubeEmbed(props: Readonly<YoutubeEmbedProps>): React.
                     allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen
+                    loading="lazy"
                 />
             </div>
         </>

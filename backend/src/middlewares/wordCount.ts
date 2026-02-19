@@ -5,6 +5,15 @@
  * and sets it in the data object before save.
  */
 
+import type {
+    DocumentServiceContext,
+    DocumentServiceNext,
+    StrapiInstance,
+    RichTextBlock,
+    ArticleDocument,
+    PodcastDocument,
+} from '../types/middleware';
+
 /**
  * Compute the number of words in markdown or richtext content.
  *
@@ -83,7 +92,9 @@ export function countWords(content: string | null | undefined): number {
  * Extract text content from Strapi richtext field.
  * Handles both string (markdown) and object (Strapi richtext format) formats.
  */
-export function extractTextFromRichtext(richtext: any): string | null | undefined {
+export function extractTextFromRichtext(
+    richtext: string | RichTextBlock | RichTextBlock[] | null | undefined | any
+): string | null | undefined {
     if (!richtext) {
         return null;
     }
@@ -160,8 +171,8 @@ export function extractTextFromRichtext(richtext: any): string | null | undefine
 }
 
 export async function extractWordCount(
-    strapi: any,
-    data: any,
+    strapi: StrapiInstance,
+    data: ArticleDocument | PodcastDocument,
     contentType: 'article' | 'podcast',
 ): Promise<void> {
     try {
@@ -236,21 +247,22 @@ export async function extractWordCount(
  * @returns The value returned by the next middleware
  */
 export async function wordCountMiddleware(
-    context: {uid: string; action: string; params?: any},
-    next: () => Promise<unknown>,
+    context: DocumentServiceContext,
+    next: DocumentServiceNext,
 ): Promise<unknown> {
     try {
         // Only process articles and podcasts for create/update actions
         if (
-            (context.uid === 'api::article.article' || context.uid === 'api::podcast.podcast') &&
+            (context.contentType?.uid === 'api::article.article' ||
+             context.contentType?.uid === 'api::podcast.podcast') &&
             ['create', 'update'].includes(context.action)
         ) {
             const data = context.params?.data;
             if (data) {
                 // Get strapi instance from context
-                const strapiInstance = context.params?.strapi || strapi;
+                const strapiInstance = context.params?.strapi;
                 // Determine contentType based on uid
-                const contentType = context.uid === 'api::article.article' ? 'article' : 'podcast';
+                const contentType = context.contentType?.uid === 'api::article.article' ? 'article' : 'podcast';
                 await extractWordCount(strapiInstance, data, contentType);
             }
         }
