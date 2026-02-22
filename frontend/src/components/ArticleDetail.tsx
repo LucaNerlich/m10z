@@ -89,9 +89,6 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                     categories={article.categories}
                 />
                 <h1 className={styles.title}>{article.base.title}</h1>
-                {article.base.description ? (
-                    <p className={styles.description}>{article.base.description}</p>
-                ) : null}
             </section>
 
             <Markdown markdown={content} />

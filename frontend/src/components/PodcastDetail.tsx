@@ -87,9 +87,6 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                     categories={podcast.categories}
                 />
                 <h1 className={styles.title}>{podcast.base.title}</h1>
-                {podcast.base.description ? (
-                    <p className={styles.description}>{podcast.base.description}</p>
-                ) : null}
             </section>
 
             {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
