@@ -2,6 +2,7 @@ import {type Server} from 'http';
 import {generateMissingBlurhashes} from '../src/cron/blurhash';
 import {generateMissingWordCounts} from '../src/cron/wordcount';
 import {rebuildSearchIndex} from '../src/cron/searchIndex';
+import {publishScheduledEntries} from '../src/cron/scheduledPublish';
 
 /**
  * Configures HTTP server timeout settings to prevent premature socket closure
@@ -79,6 +80,13 @@ export default ({env}) => ({
                 task: rebuildSearchIndex,
                 options: {
                     rule: '30 3 * * *', // Run nightly at 03:30 (server local time)
+                },
+            },
+            // Publish scheduled drafts whose base.date has arrived
+            publishScheduledEntries: {
+                task: publishScheduledEntries,
+                options: {
+                    rule: '*/15 * * * *', // Every 15 minutes
                 },
             },
         },
