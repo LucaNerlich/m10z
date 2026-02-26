@@ -34,51 +34,71 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
 
         for (const {uid, label} of CONTENT_TYPES) {
             try {
-                const documents = await strapi.documents(uid).findMany({
-                    status: 'draft',
-                    hasPublishedVersion: false,
-                    filters: {
-                        base: {
-                            date: {
-                                $notNull: true,
-                                $lte: cutoffDate,
+                let page = 1;
+                let pageDocuments: any[];
+
+                do {
+                    pageDocuments = await strapi.documents(uid).findMany({
+                        status: 'draft',
+                        hasPublishedVersion: false,
+                        filters: {
+                            base: {
+                                date: {
+                                    $notNull: true,
+                                    $lte: cutoffDate,
+                                },
                             },
                         },
-                    },
-                    populate: ['base'],
-                    fields: ['slug'],
-                    pagination: {
-                        page: 1,
-                        pageSize: PAGE_SIZE,
-                    },
-                });
+                        populate: ['base'],
+                        fields: ['slug'],
+                        pagination: {
+                            page,
+                            pageSize: PAGE_SIZE,
+                        },
+                    });
 
-                if (!documents || documents.length === 0) {
-                    strapi.log.debug(`Scheduled publish: no ${label}s to publish`);
-                    continue;
-                }
-
-                strapi.log.info(
-                    `Scheduled publish: found ${documents.length} ${label}(s) to publish`,
-                );
-
-                for (const doc of documents) {
-                    try {
-                        await strapi.documents(uid).publish({
-                            documentId: doc.documentId,
-                        });
-                        totalPublished++;
-                        strapi.log.info(
-                            `Scheduled publish: published ${label} "${doc.slug}" (${doc.documentId})`,
-                        );
-                    } catch (error) {
-                        totalFailed++;
-                        strapi.log.error(
-                            `Scheduled publish: failed to publish ${label} "${doc.slug}" (${doc.documentId}):`,
-                            error,
-                        );
+                    if (!pageDocuments || pageDocuments.length === 0) {
+                        if (page === 1) {
+                            strapi.log.debug(`Scheduled publish: no ${label}s to publish`);
+                        }
+                        break;
                     }
-                }
+
+                    strapi.log.info(
+                        `Scheduled publish: found ${pageDocuments.length} ${label}(s) on page ${page}`,
+                    );
+
+                    const results = await Promise.allSettled(
+                        pageDocuments.map((doc) =>
+                            strapi
+                                .documents(uid)
+                                .publish({documentId: doc.documentId})
+                                .then(() => ({doc, error: null}))
+                                .catch((error: unknown) => {
+                                    throw {doc, error};
+                                }),
+                        ),
+                    );
+
+                    for (const result of results) {
+                        if (result.status === 'fulfilled') {
+                            const {doc} = result.value;
+                            totalPublished++;
+                            strapi.log.info(
+                                `Scheduled publish: published ${label} "${doc.slug}" (${doc.documentId})`,
+                            );
+                        } else {
+                            const {doc, error} = result.reason;
+                            totalFailed++;
+                            strapi.log.error(
+                                `Scheduled publish: failed to publish ${label} "${doc.slug}" (${doc.documentId}):`,
+                                error,
+                            );
+                        }
+                    }
+
+                    page++;
+                } while (pageDocuments.length >= PAGE_SIZE);
             } catch (error) {
                 strapi.log.error(`Scheduled publish: error querying ${label}s:`, error);
             }
