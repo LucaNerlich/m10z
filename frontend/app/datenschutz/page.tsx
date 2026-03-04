@@ -35,9 +35,9 @@ export default async function PrivacyPage() {
     });
 
     return (
-        <main data-list-page>
+        <div data-list-page>
             <h1>{privacy.title}</h1>
             <Markdown markdown={privacy.content} />
-        </main>
+        </div>
     );
 }

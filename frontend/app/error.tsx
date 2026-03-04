@@ -12,7 +12,7 @@ export default function Error({
     reset: () => void;
 }) {
     return (
-        <main className={styles.container}>
+        <div className={styles.container}>
             <section className={styles.panel} aria-labelledby="error-title">
                 <div className={styles.badge}>Oops</div>
                 <h1 id="error-title" className={styles.title}>
@@ -33,6 +33,6 @@ export default function Error({
                     </Link>
                 </div>
             </section>
-        </main>
+        </div>
     );
 }

@@ -87,3 +87,39 @@ export interface WebSite extends JsonLdBase {
     potentialAction?: SearchAction;
 }
 
+export interface BreadcrumbListItem {
+    '@type': 'ListItem';
+    position: number;
+    name: string;
+    item: string;
+}
+
+export interface BreadcrumbList extends JsonLdBase {
+    '@type': 'BreadcrumbList';
+    itemListElement: BreadcrumbListItem[];
+}
+
+export interface CollectionPage extends JsonLdBase {
+    '@type': 'CollectionPage';
+    name: string;
+    description?: string;
+    url: string;
+    mainEntity?: ItemList;
+}
+
+export interface ItemList extends JsonLdBase {
+    '@type': 'ItemList';
+    itemListElement: ItemListItem[];
+}
+
+export interface ItemListItem {
+    '@type': 'ListItem';
+    position: number;
+    url: string;
+}
+
+export interface ProfilePage extends JsonLdBase {
+    '@type': 'ProfilePage';
+    mainEntity: Person;
+}
+

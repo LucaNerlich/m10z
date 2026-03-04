@@ -35,7 +35,7 @@ export function GalleryImage({src, alt = '', style, caption, ...props}: GalleryI
         ...style,
     };
 
-    const ariaLabel = caption ? `View image: ${alt || caption}` : `View image: ${alt || 'Gallery image'}`;
+    const ariaLabel = caption ? `Bild anzeigen: ${alt || caption}` : `Bild anzeigen: ${alt || 'Galeriebild'}`;
 
     const {title, ...restProps} = props;
 

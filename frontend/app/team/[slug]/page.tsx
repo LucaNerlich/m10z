@@ -22,11 +22,29 @@ import {AuthorNav} from '@/src/components/AuthorNav';
 import Link from 'next/link';
 import {Tag} from '@/src/components/Tag';
 import {computeAuthorContentStats} from '@/src/lib/authorContentStats';
+import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
+import {generateAuthorProfileJsonLd} from '@/src/lib/jsonld/author';
+import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
+import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import Script from 'next/script';
 import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
+
+/**
+ * Pre-generate static params for all published authors at build time.
+ * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ */
+export async function generateStaticParams() {
+    try {
+        const entries = await fetchPublishedSlugs('authors', ['sitemap:authors']);
+        return entries.map(({slug}) => ({slug}));
+    } catch {
+        return [];
+    }
+}
 
 /**
  * Generate page metadata (title, description, Open Graph and Twitter cards) for an author page identified by slug.
@@ -121,8 +139,26 @@ export default async function AuthorPage({params}: PageProps) {
     const shouldRenderArticleSection = articleTotal > 0 && (sortedArticles.length > 0 || stats.articles.categories.length > 0);
     const shouldRenderPodcastSection = sortedPodcasts.length > 0;
 
+    const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+        {name: 'Startseite', path: '/'},
+        {name: 'Team', path: '/team'},
+        {name: author.title || 'Autor', path: `/team/${slug}`},
+    ]);
+
+    const profileJsonLd = generateAuthorProfileJsonLd(author);
+
     return (
-        <main data-list-page>
+        <div data-list-page>
+            <Script
+                id={`jsonld-breadcrumb-${slug}`}
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{__html: stringifyJsonLd(breadcrumbJsonLd)}}
+            />
+            <Script
+                id={`jsonld-profile-${slug}`}
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{__html: stringifyJsonLd(profileJsonLd)}}
+            />
             <AuthorHeader author={author} />
             <AuthorNav authorSlug={slug} activeSection="overview" />
 
@@ -186,6 +222,6 @@ export default async function AuthorPage({params}: PageProps) {
             {articleTotal === 0 && podcastTotal === 0 ? (
                 <EmptyState message="Keine Inhalte von diesem Autor gefunden." />
             ) : null}
-        </main>
+        </div>
     );
 }

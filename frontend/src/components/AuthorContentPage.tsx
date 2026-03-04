@@ -128,7 +128,7 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
     };
 
     return (
-        <main data-list-page>
+        <div data-list-page>
             <AuthorHeader author={author} />
             <AuthorNav authorSlug={slug} activeSection={props.activeSection} />
 
@@ -178,7 +178,7 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
                     </>
                 )}
             </section>
-        </main>
+        </div>
     );
 }
 

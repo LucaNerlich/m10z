@@ -39,7 +39,7 @@ export default async function M12GPage() {
     const stats = computeM12GStats(months);
 
     return (
-        <main data-list-page>
+        <div data-list-page>
             <div
                 style={{
                     background: 'var(--color-primary)',
@@ -90,6 +90,6 @@ export default async function M12GPage() {
                     </ContentGrid>
                 </>
             )}
-        </main>
+        </div>
     );
 }

@@ -14,6 +14,7 @@ import {ContentImage} from '@/src/components/ContentImage';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
+import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/podcasts/[slug]/page.module.css';
@@ -58,6 +59,11 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const imageAlt = optimizedMedia?.alternativeText ?? podcast.base.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generatePodcastJsonLd(podcast);
+    const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+        {name: 'Startseite', path: '/'},
+        {name: 'Podcasts', path: '/podcasts'},
+        {name: podcast.base.title, path: `/podcasts/${slug}`},
+    ]);
 
     return (
         <article className={styles.episode}>
@@ -66,6 +72,13 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
                     __html: JSON.stringify(jsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
+                }}
+            />
+            <Script
+                id={`jsonld-breadcrumb-${slug}`}
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(breadcrumbJsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
                 }}
             />
 

@@ -35,9 +35,9 @@ export default async function ImprintPage() {
     });
 
     return (
-        <main data-list-page>
+        <div data-list-page>
             <h1>{imprint.title}</h1>
             <Markdown markdown={imprint.content} />
-        </main>
+        </div>
     );
 }

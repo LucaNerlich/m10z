@@ -9,10 +9,24 @@ import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
+import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
+
+/**
+ * Pre-generate static params for all published podcasts at build time.
+ * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ */
+export async function generateStaticParams() {
+    try {
+        const entries = await fetchPublishedSlugs('podcasts', ['strapi:podcast']);
+        return entries.map(({slug}) => ({slug}));
+    } catch {
+        return [];
+    }
+}
 
 /**
  * Generate page metadata for a podcast episode identified by the route slug.

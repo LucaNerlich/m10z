@@ -11,10 +11,24 @@ import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
+import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
+
+/**
+ * Pre-generate static params for all published articles at build time.
+ * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ */
+export async function generateStaticParams() {
+    try {
+        const entries = await fetchPublishedSlugs('articles', ['strapi:article']);
+        return entries.map(({slug}) => ({slug}));
+    } catch {
+        return [];
+    }
+}
 
 /**
  * Build OpenGraph, Twitter, author, and alternate metadata for an article identified by slug.

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
     return (
-        <main className={styles.container}>
+        <div className={styles.container}>
             <section className={styles.panel} aria-labelledby="not-found-title">
                 <div className={styles.badge}>404</div>
                 <h1 id="not-found-title" className={styles.title}>
@@ -38,6 +38,6 @@ export default function NotFound() {
                     </Link>
                 </div>
             </section>
-        </main>
+        </div>
     );
 }
