@@ -6,6 +6,7 @@ import {type M12GGame, type M12GMonth, type M12GMonthWithWinner, type M12GOvervi
 type Frontmatter = {
     forum?: string;
     title?: string;
+    finalized?: boolean;
 };
 
 const MONTH_FILE_REGEX = /^\d{4}-\d{2}\.md$/;
@@ -35,6 +36,14 @@ function parseFrontmatter(rawContent: string): {frontmatter: Frontmatter; body: 
         }
         if (key === 'title') {
             frontmatter.title = value.trim();
+        }
+        if (key === 'finalized') {
+            const normalizedValue = value.trim().toLowerCase();
+            if (normalizedValue === 'true') {
+                frontmatter.finalized = true;
+            } else if (normalizedValue === 'false') {
+                frontmatter.finalized = false;
+            }
         }
     }
 
@@ -66,17 +75,13 @@ function computeWinner(games: M12GGame[]): M12GGame | null {
     }, games[0] ?? null);
 }
 
-function isPastMonth(monthId: string): boolean {
-    const now = new Date();
-    const cutoff = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
-    const cutoffMonth = cutoff.toISOString().slice(0, 7);
-    return monthId <= cutoffMonth;
-}
-
 async function loadMonthFromFile(filePath: string, monthId: string): Promise<M12GMonthWithWinner | null> {
     try {
         const rawContent = await fs.readFile(filePath, 'utf8');
         const {frontmatter, body} = parseFrontmatter(rawContent);
+        if (frontmatter.finalized !== true) {
+            return null;
+        }
         const games = parseGamesFromBody(body);
         const month: M12GMonth = {
             month: monthId,
@@ -102,7 +107,6 @@ async function loadM12GMonths(): Promise<M12GMonthWithWinner[]> {
         const months = await Promise.all(
             monthFiles.map(async (fileName) => {
                 const monthId = fileName.replace(/\.md$/, '');
-                if (!isPastMonth(monthId)) return null;
                 const filePath = path.join(dataDir, fileName);
                 return loadMonthFromFile(filePath, monthId);
             }),
