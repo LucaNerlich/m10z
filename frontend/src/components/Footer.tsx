@@ -52,7 +52,7 @@ export default function Footer() {
             <div className={styles.content}>
                 {sections.map((section) => (
                     <div key={section.title} className={styles.section}>
-                        <h2 className={styles.sectionTitle}>{section.title}</h2>
+                        <span className={styles.sectionTitle}>{section.title}</span>
                         <ul className={styles.linkList}>
                             {section.links.map((link) => (
                                 <li key={link.href}>

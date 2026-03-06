@@ -6,7 +6,7 @@ export function FeedSkeleton() {
     return (
         <div className={styles.page}>
             <aside className={styles.toc} aria-label="Inhaltsverzeichnis">
-                <h1 className={styles.tocTitle}>Inhaltsverzeichnis</h1>
+                <h2 className={styles.tocTitle}>Inhaltsverzeichnis</h2>
                 <ul className={styles.tocList}>
                     {Array.from({length: 10}).map((_, index) => (
                         <li key={index} className={styles.tocEntry}>

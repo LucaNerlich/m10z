@@ -15,6 +15,7 @@ import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import React from 'react';
 
 export const metadata: Metadata = {
+    metadataBase: new URL(routes.siteUrl),
     title: {
         template: '%s | Mindestens 10 Zeichen',
         default: 'Mindestens 10 Zeichen',
@@ -23,6 +24,14 @@ export const metadata: Metadata = {
     robots: {
         index: true,
         follow: true,
+    },
+    alternates: {
+        types: {
+            'application/rss+xml': [
+                {url: '/rss.xml', title: 'M10Z Artikel-Feed'},
+                {url: '/audiofeed.xml', title: 'M10Z Audio-Feed'},
+            ],
+        },
     },
     openGraph: {
         type: 'website',

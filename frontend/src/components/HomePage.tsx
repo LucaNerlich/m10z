@@ -91,6 +91,7 @@ export async function HomePage({page}: {page: number}) {
 
     return (
         <div className={styles.page}>
+            <h1 className="visually-hidden">Mindestens 10 Zeichen</h1>
             <aside className={styles.toc} aria-label="Inhaltsverzeichnis">
                 <h2 className={styles.tocTitle}>Inhaltsverzeichnis</h2>
                 {currentItems.length === 0 ? (
@@ -136,7 +137,7 @@ export async function HomePage({page}: {page: number}) {
                 {currentItems.length === 0 ? (
                     <Card variant="empty">Keine Inhalte gefunden.</Card>
                 ) : (
-                    currentItems.map((item) => {
+                    currentItems.map((item, index) => {
                         const anchor = `${item.type}-${item.slug}`;
                         const coverUrl = mediaUrlToAbsolute({media: item.cover});
                         const bannerUrl = mediaUrlToAbsolute({media: item.banner});
@@ -153,6 +154,9 @@ export async function HomePage({page}: {page: number}) {
                         const coverTitle = item.cover?.caption ?? undefined;
                         const bannerAlt = item.banner?.alternativeText ?? item.title;
                         const bannerTitle = item.banner?.caption ?? undefined;
+
+                        // Prioritize loading for the first card's images (above the fold)
+                        const isFirstItem = index === 0;
 
                         return (
                             <Card key={anchor} id={anchor} className={styles.contentCard}>
@@ -178,6 +182,7 @@ export async function HomePage({page}: {page: number}) {
                                                     alt={coverAlt || ''}
                                                     title={coverTitle}
                                                     className={styles.cover}
+                                                    priority={isFirstItem}
                                                 />
                                                 <Image
                                                     src={bannerSrc}
@@ -190,6 +195,7 @@ export async function HomePage({page}: {page: number}) {
                                                     alt={bannerAlt || ''}
                                                     title={bannerTitle}
                                                     className={styles.banner}
+                                                    priority={isFirstItem}
                                                 />
                                             </Link>
                                         );

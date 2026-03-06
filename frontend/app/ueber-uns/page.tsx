@@ -107,7 +107,7 @@ export default async function AboutUsPage() {
     const placeholder = mediaUrl ? 'empty' : 'blur';
 
     return (
-        <main data-list-page>
+        <div data-list-page>
             <article>
                 <ContentLayout>
                     <ContentImage
@@ -128,6 +128,6 @@ export default async function AboutUsPage() {
                     <Markdown markdown={about.content} />
                 </ContentLayout>
             </article>
-        </main>
+        </div>
     );
 }

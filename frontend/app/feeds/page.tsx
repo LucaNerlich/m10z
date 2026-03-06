@@ -36,9 +36,9 @@ export default async function FeedsPage() {
 
 
     return (
-        <main data-list-page>
+        <div data-list-page>
             <h1>{feeds.title}</h1>
             <Markdown markdown={feeds.content} />
-        </main>
+        </div>
     );
 }

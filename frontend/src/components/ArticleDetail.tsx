@@ -12,6 +12,7 @@ import {TableOfContents} from '@/src/components/TableOfContents';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
+import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/artikel/[slug]/page.module.css';
 
@@ -57,6 +58,11 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const imageAlt = optimizedMedia?.alternativeText ?? article.base.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generateArticleJsonLd(article);
+    const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+        {name: 'Startseite', path: '/'},
+        {name: 'Artikel', path: '/artikel'},
+        {name: article.base.title, path: `/artikel/${slug}`},
+    ]);
     const content = article.content ?? '';
     const headings = extractHeadings(content, 3);
     const hasToc = headings.length >= 4;
@@ -68,6 +74,13 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
                     __html: JSON.stringify(jsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
+                }}
+            />
+            <Script
+                id={`jsonld-breadcrumb-${slug}`}
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(breadcrumbJsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
                 }}
             />
 

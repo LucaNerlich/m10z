@@ -1,13 +1,7 @@
 import {MetadataRoute} from 'next';
 
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {fetchStrapiCollection} from '@/src/lib/strapi';
-
-type StrapiSlugItem = {
-    slug: string;
-    updatedAt?: string | null;
-    publishedAt?: string | null;
-};
+import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 
 type SitemapEntry = {slug: string; lastModified?: string};
 
@@ -23,12 +17,16 @@ function createLanguageAlternates(url: string) {
 function buildDynamicEntries(
     entries: SitemapEntry[],
     buildPath: (slug: string) => string,
+    changeFrequency?: MetadataRoute.Sitemap[number]['changeFrequency'],
+    priority?: number,
 ): MetadataRoute.Sitemap {
     return entries.map(({slug, lastModified}) => {
         const url = absoluteRoute(buildPath(slug));
         return {
             url,
             lastModified,
+            changeFrequency,
+            priority,
             alternates: createLanguageAlternates(url),
         };
     });
@@ -44,46 +42,10 @@ function buildStaticEntries(urls: string[]): MetadataRoute.Sitemap {
     });
 }
 
-async function fetchPublishedSlugs(
-    endpoint: string,
-    tags: string[],
-): Promise<SitemapEntry[]> {
-    const pageSize = 100;
-    let page = 1;
-    const entries: SitemapEntry[] = [];
-
-    while (true) {
-        const query =
-            `fields[0]=slug&fields[1]=updatedAt&fields[2]=publishedAt&` +
-            `pagination[pageSize]=${pageSize}&pagination[page]=${page}&` +
-            `status=published`;
-
-        const res = await fetchStrapiCollection<StrapiSlugItem>(endpoint, query, {
-            tags,
-        });
-
-        const data = Array.isArray(res.data) ? res.data : [];
-        data.forEach(({slug, updatedAt, publishedAt}) => {
-            if (!slug || !publishedAt) return;
-            entries.push({slug, lastModified: updatedAt ?? publishedAt ?? undefined});
-        });
-
-        const pagination = res.meta?.pagination;
-        const done =
-            !pagination ||
-            pagination.page >= (pagination.pageCount ?? 0) ||
-            data.length === 0;
-        if (done) break;
-        page++;
-    }
-
-    return entries;
-}
-
 /**
  * Generate the site's sitemap by combining static routes with published content entries.
  *
- * Includes language alternates for each URL and a dedicated about page entry with priority 0.8 and changeFrequency "monthly".
+ * Includes language alternates, changeFrequency, and priority for each URL.
  *
  * @returns An array of sitemap items containing static routes and dynamic entries for articles, podcasts, categories, and authors
  */
@@ -97,33 +59,48 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const staticEntries = buildStaticEntries([
         routes.home,
-        routes.imprint,
-        routes.privacy,
         routes.articles,
         routes.podcasts,
         routes.categories,
         routes.authors,
         routes.m12g,
+        routes.feeds,
         routes.audioFeed,
         routes.articleFeed,
+        routes.imprint,
+        routes.privacy,
         routes.about,
     ]);
 
-    // Update about page entry with custom priority and changeFrequency
-    const aboutIndex = staticEntries.findIndex((entry) => entry.url === absoluteRoute(routes.about));
-    if (aboutIndex !== -1) {
-        staticEntries[aboutIndex] = {
-            ...staticEntries[aboutIndex],
-            priority: 0.8,
-            changeFrequency: 'monthly',
-        };
+    // Assign changeFrequency and priority to static entries by URL
+    const staticPriorities: Record<string, {changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']; priority: number}> = {
+        [absoluteRoute(routes.home)]: {changeFrequency: 'daily', priority: 1.0},
+        [absoluteRoute(routes.articles)]: {changeFrequency: 'daily', priority: 0.9},
+        [absoluteRoute(routes.podcasts)]: {changeFrequency: 'daily', priority: 0.9},
+        [absoluteRoute(routes.categories)]: {changeFrequency: 'weekly', priority: 0.6},
+        [absoluteRoute(routes.authors)]: {changeFrequency: 'weekly', priority: 0.6},
+        [absoluteRoute(routes.m12g)]: {changeFrequency: 'monthly', priority: 0.4},
+        [absoluteRoute(routes.feeds)]: {changeFrequency: 'monthly', priority: 0.4},
+        [absoluteRoute(routes.audioFeed)]: {changeFrequency: 'daily', priority: 0.3},
+        [absoluteRoute(routes.articleFeed)]: {changeFrequency: 'daily', priority: 0.3},
+        [absoluteRoute(routes.imprint)]: {changeFrequency: 'yearly', priority: 0.3},
+        [absoluteRoute(routes.privacy)]: {changeFrequency: 'yearly', priority: 0.3},
+        [absoluteRoute(routes.about)]: {changeFrequency: 'monthly', priority: 0.8},
+    };
+
+    for (const entry of staticEntries) {
+        const config = staticPriorities[entry.url];
+        if (config) {
+            entry.changeFrequency = config.changeFrequency;
+            entry.priority = config.priority;
+        }
     }
 
     const dynamicEntries: MetadataRoute.Sitemap = [
-        ...buildDynamicEntries(articles, routes.article),
-        ...buildDynamicEntries(podcasts, routes.podcast),
-        ...buildDynamicEntries(categories, routes.category),
-        ...buildDynamicEntries(authors, routes.author),
+        ...buildDynamicEntries(articles, routes.article, 'weekly', 0.8),
+        ...buildDynamicEntries(podcasts, routes.podcast, 'weekly', 0.8),
+        ...buildDynamicEntries(categories, routes.category, 'monthly', 0.5),
+        ...buildDynamicEntries(authors, routes.author, 'monthly', 0.5),
     ];
 
     return [...staticEntries, ...dynamicEntries];

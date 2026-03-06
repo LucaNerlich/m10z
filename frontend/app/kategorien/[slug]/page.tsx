@@ -13,11 +13,29 @@ import {PodcastCard} from '@/src/components/PodcastCard';
 import {EmptyState} from '@/src/components/EmptyState';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
+import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
+import {generateCategoryJsonLd} from '@/src/lib/jsonld/category';
+import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
+import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import Script from 'next/script';
 import styles from './page.module.css';
 
 type PageProps = {
     params: Promise<{slug: string}>;
 };
+
+/**
+ * Pre-generate static params for all published categories at build time.
+ * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ */
+export async function generateStaticParams() {
+    try {
+        const entries = await fetchPublishedSlugs('categories', ['sitemap:categories']);
+        return entries.map(({slug}) => ({slug}));
+    } catch {
+        return [];
+    }
+}
 
 /**
  * Builds metadata for a category page based on the route `slug`.
@@ -143,8 +161,32 @@ export default async function CategoryDetailPage({params}: PageProps) {
 
     const title = category.base?.title ?? category.slug ?? 'Kategorie';
 
+    const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+        {name: 'Startseite', path: '/'},
+        {name: 'Kategorien', path: '/kategorien'},
+        {name: title, path: `/kategorien/${slug}`},
+    ]);
+
+    const categoryJsonLd = generateCategoryJsonLd({
+        title,
+        description: category.base?.description ?? undefined,
+        slug,
+        articleSlugs: sortedArticles.map((a) => a.slug),
+        podcastSlugs: sortedPodcasts.map((p) => p.slug),
+    });
+
     return (
-        <main data-list-page>
+        <div data-list-page>
+            <Script
+                id={`jsonld-breadcrumb-${slug}`}
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{__html: stringifyJsonLd(breadcrumbJsonLd)}}
+            />
+            <Script
+                id={`jsonld-category-${slug}`}
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{__html: stringifyJsonLd(categoryJsonLd)}}
+            />
             <header className={styles.header}>
                 <h1 className={styles.title}>{title}</h1>
                 {category.base?.description ? (
@@ -181,6 +223,6 @@ export default async function CategoryDetailPage({params}: PageProps) {
             {sortedArticles.length === 0 && sortedPodcasts.length === 0 ? (
                 <EmptyState message="Keine Inhalte in dieser Kategorie gefunden." />
             ) : null}
-        </main>
+        </div>
     );
 }
