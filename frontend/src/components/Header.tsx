@@ -5,7 +5,6 @@ import React, {Suspense} from 'react';
 import HeaderClient from './HeaderClient';
 import LogoClient from './LogoClient';
 import {SearchLauncher} from './SearchLauncher';
-import {ThemeToggle} from './ThemeToggle';
 import styles from './Header.module.css';
 import {routes} from '@/src/lib/routes';
 
