@@ -40,23 +40,7 @@ export default async function M12GPage() {
 
     return (
         <div data-list-page>
-            <div
-                style={{
-                    background: 'var(--color-primary)',
-                    color: 'var(--color-on-primary)',
-                    padding: '6px 12px',
-                    borderRadius: '999px',
-                    display: 'inline-block',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.06em',
-                    textTransform: 'uppercase',
-                    marginBottom: '12px',
-                }}
-            >
-                Beta
-            </div>
-            <h1>Mindestens 12 Games Statistik</h1>
+            <h1>Mindestens 12 Games</h1>
 
             {months.length === 0 ? (
                 <EmptyState message="Keine M12G-Abstimmungen gefunden." />
