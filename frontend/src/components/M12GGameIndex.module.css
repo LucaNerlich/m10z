@@ -1,0 +1,169 @@
+.wrapper {
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    background: var(--color-surface);
+}
+
+.searchRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-background);
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.searchInput::placeholder {
+    color: var(--color-text-muted);
+}
+
+.searchInput:focus {
+    border-color: var(--color-primary);
+}
+
+.resultCount {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0 0 8px;
+}
+
+.table th:last-child {
+    text-align: right;
+}
+
+.table td {
+    padding: 8px 0;
+    border-top: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+.table td.barCell {
+    padding: 8px 12px 8px 0;
+}
+
+.nameCell {
+    font-weight: 500;
+}
+
+.gameLink {
+    color: var(--color-text);
+}
+
+.gameLink:hover {
+    color: var(--color-primary);
+}
+
+.monthsBadge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.winBadge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-text) 10%, transparent);
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+.barCell {
+    width: 35%;
+}
+
+.meter {
+    width: 100%;
+}
+
+.meter::-webkit-meter-bar {
+    background: var(--color-border);
+    border-radius: 4px;
+    border: none;
+}
+
+.meter::-webkit-meter-optimum-value {
+    background: var(--color-primary);
+    border-radius: 4px;
+}
+
+.meter::-moz-meter-bar {
+    background: var(--color-primary);
+    border-radius: 4px;
+}
+
+.votesCell {
+    text-align: right;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    width: 80px;
+}
+
+.monthsList {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.emptyRow td {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+@media (max-width: 640px) {
+    .wrapper {
+        padding: 16px;
+    }
+
+    .barCell {
+        display: none;
+    }
+
+    .table th:nth-child(3),
+    .table td:nth-child(3) {
+        display: none;
+    }
+
+    .monthsList {
+        display: none;
+    }
+}

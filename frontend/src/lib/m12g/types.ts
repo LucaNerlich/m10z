@@ -28,6 +28,10 @@ export interface M12GLeaderboardEntry {
     wins: number;
 }
 
+export interface M12GGameIndexEntry extends M12GLeaderboardEntry {
+    months: string[];
+}
+
 export interface M12GMonthParticipation {
     month: string;
     totalVotes: number;

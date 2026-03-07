@@ -1,8 +1,9 @@
 import {type Metadata} from 'next';
+import Link from 'next/link';
 
 import {fetchM12GOverview} from '@/src/lib/m12g/m12gData';
 import {computeM12GStats} from '@/src/lib/m12g/m12gStats';
-import {absoluteRoute} from '@/src/lib/routes';
+import {absoluteRoute, routes} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {M12GMonthCard} from '@/src/components/M12GMonthCard';
@@ -64,6 +65,11 @@ export default async function M12GPage() {
                             <M12GParticipationChart months={stats.monthlyParticipation} />
                         </div>
                         <M12GLeaderboard entries={stats.leaderboard} />
+                        <p style={{textAlign: 'center'}}>
+                            <Link href={routes.m12gGames}>
+                                Alle {stats.totalUniqueGames} Spiele ansehen
+                            </Link>
+                        </p>
                     </section>
 
                     <h2>Alle Abstimmungen</h2>

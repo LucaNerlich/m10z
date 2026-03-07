@@ -21,6 +21,7 @@ export const routes = {
     authors: '/team',
     author: (slug: string) => `/team/${slug}`,
     m12g: '/m12g',
+    m12gGames: '/m12g/spiele',
     audioFeed: '/audiofeed.xml',
     articleFeed: '/rss.xml',
     feeds: '/feeds',

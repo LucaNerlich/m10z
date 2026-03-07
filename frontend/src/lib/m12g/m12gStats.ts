@@ -1,4 +1,5 @@
 import {
+    type M12GGameIndexEntry,
     type M12GLeaderboardEntry,
     type M12GMonthParticipation,
     type M12GMonthWithWinner,
@@ -83,4 +84,55 @@ export function computeM12GStats(months: M12GMonthWithWinner[]): M12GStats {
         winnerTimeline,
         monthlyParticipation,
     };
+}
+
+/**
+ * Builds a complete alphabetical index of every game ever nominated across all M12G months.
+ * Unlike the leaderboard (top 10), this returns all games with their aggregated stats
+ * and the list of months each game appeared in.
+ */
+export function buildGameIndex(months: M12GMonthWithWinner[]): M12GGameIndexEntry[] {
+    const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
+
+    const gameMap = new Map<
+        string,
+        {link: string; totalVotes: number; monthsNominated: number; wins: number; months: string[]}
+    >();
+
+    for (const month of chronological) {
+        for (const game of month.games) {
+            const existing = gameMap.get(game.name);
+            if (existing) {
+                existing.totalVotes += game.votes;
+                existing.monthsNominated += 1;
+                existing.months.push(month.month);
+            } else {
+                gameMap.set(game.name, {
+                    link: game.link,
+                    totalVotes: game.votes,
+                    monthsNominated: 1,
+                    wins: 0,
+                    months: [month.month],
+                });
+            }
+        }
+
+        if (month.winner) {
+            const entry = gameMap.get(month.winner.name);
+            if (entry) {
+                entry.wins += 1;
+            }
+        }
+    }
+
+    return [...gameMap.entries()]
+        .map(([name, data]) => ({
+            name,
+            link: data.link,
+            totalVotes: data.totalVotes,
+            monthsNominated: data.monthsNominated,
+            wins: data.wins,
+            months: data.months,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name, 'de-DE'));
 }
