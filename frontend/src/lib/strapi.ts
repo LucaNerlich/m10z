@@ -179,10 +179,9 @@ async function getLegalDocWithFallback(
         documentId: `fallback-${kind}`,
         title: kind === 'imprint' ? 'Impressum' : 'Datenschutz',
         content:
-            'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
-            + '- Artikel-Feed: `/rss.xml`\n'
-            + '- Podcast-Feed: `/audiofeed.xml`\n\n'
-            + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
+            kind === 'imprint'
+                ? 'Das Impressum konnte leider nicht geladen werden. Bitte versuche es später erneut.'
+                : 'Die Datenschutzerklärung konnte leider nicht geladen werden. Bitte versuche es später erneut.',
         createdAt: nowIso,
         updatedAt: nowIso,
         publishedAt: null,
@@ -198,12 +197,12 @@ async function getLegalDocWithFallback(
     }
 }
 
-export async function getImprint(options: FetchStrapiOptions = {}) {
+export const getImprint = cache(async (options: FetchStrapiOptions = {}) => {
     return getLegalDocWithFallback('imprint', {
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
-}
+});
 
 /**
  * Retrieve the site's privacy legal document, falling back to a built-in default if the remote fetch fails.
@@ -211,12 +210,12 @@ export async function getImprint(options: FetchStrapiOptions = {}) {
  * @param options - Optional fetch options (e.g., `revalidateSeconds` for ISR and `tags` for cache tagging)
  * @returns The privacy `StrapiLegalDoc` retrieved from Strapi, or a fallback `StrapiLegalDoc` if fetching or validation fails
  */
-export async function getPrivacy(options: FetchStrapiOptions = {}) {
+export const getPrivacy = cache(async (options: FetchStrapiOptions = {}) => {
     return getLegalDocWithFallback('privacy', {
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
-}
+});
 
 /**
  * Asserts that a value conforms to the StrapiAbout structure.
@@ -350,10 +349,10 @@ async function getFeedsInfoWithFallback(
  * @param options - Optional fetch options (e.g., cache revalidation seconds and cache tags)
  * @returns The site's feeds tutorial content as a `StrapiFeedsInfo` object; a fallback `StrapiFeedsInfo` if the remote fetch fails
  */
-export async function getFeedsInfo(options: FetchStrapiOptions = {}) {
+export const getFeedsInfo = cache(async (options: FetchStrapiOptions = {}) => {
     return getFeedsInfoWithFallback({
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
-}
+});
 

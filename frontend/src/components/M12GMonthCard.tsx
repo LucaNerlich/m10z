@@ -1,32 +1,18 @@
 import styles from './M12GMonthCard.module.css';
 import {type M12GMonthWithWinner} from '@/src/lib/m12g/types';
+import {formatVotes, formatMonthLong} from '@/src/lib/m12g/formatters';
 import {ChatsCircleIcon} from '@phosphor-icons/react/dist/ssr';
 
 type M12GMonthCardProps = {
     month: M12GMonthWithWinner;
 };
 
-const germanDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: 'numeric'});
-const germanPluralRules = new Intl.PluralRules('de-DE');
-
-function formatMonthTitle(monthId: string): string {
-    const parsed = new Date(`${monthId}-01T00:00:00Z`);
-    if (Number.isNaN(parsed.getTime())) return monthId;
-    return germanDateFormatter.format(parsed);
-}
-
-function formatVotes(votes: number): string {
-    const rule = germanPluralRules.select(votes);
-    const unit = rule === 'one' ? 'Stimme' : 'Stimmen';
-    return `${votes} ${unit}`;
-}
-
 export function M12GMonthCard({month}: M12GMonthCardProps) {
     return (
         <article className={styles.card}>
             <header className={styles.header}>
                 <h2 className={styles.title}>
-                    {formatMonthTitle(month.month)}
+                    {formatMonthLong(month.month)}
                     {month.title ? <span className={styles.subtitle}>"{month.title}"</span> : null}
                 </h2>
             </header>

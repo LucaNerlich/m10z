@@ -18,9 +18,10 @@ export function PodcastPlayer({src}: PlayerProps) {
             <audio
                 controls
                 preload="metadata"
+                aria-label="Podcast-Episode abspielen"
                 style={{width: '100%'}}
             >
-                <source src={src} />
+                <source src={src} type="audio/mpeg" />
                 Your browser does not support the audio element.
             </audio>
         </div>

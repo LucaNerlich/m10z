@@ -73,6 +73,15 @@ export default function HeaderClient({
 
     useEffect(() => {
         if (!isMenuOpen) return;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [isMenuOpen]);
+
+    useEffect(() => {
+        if (!isMenuOpen) return;
         const handleClickOutside = (event: MouseEvent | TouchEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 closeMenu();

@@ -1,13 +1,14 @@
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
-import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
+import {fetchPodcastBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
+import {RelatedContent} from '@/src/components/RelatedContent';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 
@@ -116,5 +117,16 @@ export default async function PodcastDetailPage({params}: PageProps) {
 
     if (!episode) notFound();
 
-    return <PodcastDetail slug={slug} podcast={episode} />;
+    const categorySlugs = episode.categories?.map((c) => c.slug).filter(Boolean) as string[] ?? [];
+    const [relatedArticles, relatedPodcasts] = await Promise.all([
+        fetchRelatedArticles(categorySlugs, slug).catch(() => []),
+        fetchRelatedPodcasts(categorySlugs, slug).catch(() => []),
+    ]);
+
+    return (
+        <>
+            <PodcastDetail slug={slug} podcast={episode} />
+            <RelatedContent articles={relatedArticles} podcasts={relatedPodcasts} />
+        </>
+    );
 }

@@ -10,7 +10,6 @@ import {
 } from '@/src/lib/rss/media';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
-
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
@@ -59,11 +58,12 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const imageAlt = optimizedMedia?.alternativeText ?? podcast.base.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generatePodcastJsonLd(podcast);
-    const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    const breadcrumbItems = [
         {name: 'Startseite', path: '/'},
         {name: 'Podcasts', path: '/podcasts'},
         {name: podcast.base.title, path: `/podcasts/${slug}`},
-    ]);
+    ];
+    const breadcrumbJsonLd = generateBreadcrumbJsonLd(breadcrumbItems);
 
     return (
         <article className={styles.episode}>

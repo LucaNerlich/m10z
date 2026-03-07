@@ -1,25 +1,11 @@
 import {type M12GWinnerEntry} from '@/src/lib/m12g/types';
+import {formatVotes, formatMonthLong} from '@/src/lib/m12g/formatters';
 
 import styles from './M12GWinnerTimeline.module.css';
 
 type M12GWinnerTimelineProps = {
     winners: M12GWinnerEntry[];
 };
-
-const germanDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: 'numeric'});
-const germanPluralRules = new Intl.PluralRules('de-DE');
-
-function formatMonth(monthId: string): string {
-    const parsed = new Date(`${monthId}-01T00:00:00Z`);
-    if (Number.isNaN(parsed.getTime())) return monthId;
-    return germanDateFormatter.format(parsed);
-}
-
-function formatVotes(votes: number): string {
-    const rule = germanPluralRules.select(votes);
-    const unit = rule === 'one' ? 'Stimme' : 'Stimmen';
-    return `${votes} ${unit}`;
-}
 
 export function M12GWinnerTimeline({winners}: M12GWinnerTimelineProps) {
     if (winners.length === 0) return null;
@@ -32,7 +18,7 @@ export function M12GWinnerTimeline({winners}: M12GWinnerTimelineProps) {
             <ul className={styles.timeline}>
                 {reversed.map((entry) => (
                     <li key={entry.month} className={styles.entry}>
-                        <span className={styles.month}>{formatMonth(entry.month)}</span>
+                        <span className={styles.month}>{formatMonthLong(entry.month)}</span>
                         <a
                             className={styles.gameName}
                             href={entry.gameLink}

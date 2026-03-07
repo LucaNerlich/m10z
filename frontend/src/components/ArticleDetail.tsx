@@ -58,11 +58,12 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const imageAlt = optimizedMedia?.alternativeText ?? article.base.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generateArticleJsonLd(article);
-    const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    const breadcrumbItems = [
         {name: 'Startseite', path: '/'},
         {name: 'Artikel', path: '/artikel'},
         {name: article.base.title, path: `/artikel/${slug}`},
-    ]);
+    ];
+    const breadcrumbJsonLd = generateBreadcrumbJsonLd(breadcrumbItems);
     const content = article.content ?? '';
     const headings = extractHeadings(content, 3);
     const hasToc = headings.length >= 4;

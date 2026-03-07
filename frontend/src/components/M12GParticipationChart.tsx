@@ -1,18 +1,11 @@
 import {type M12GMonthParticipation} from '@/src/lib/m12g/types';
+import {formatMonthShort} from '@/src/lib/m12g/formatters';
 
 import styles from './M12GParticipationChart.module.css';
 
 type M12GParticipationChartProps = {
     months: M12GMonthParticipation[];
 };
-
-const germanShortDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: '2-digit'});
-
-function formatMonth(monthId: string): string {
-    const parsed = new Date(`${monthId}-01T00:00:00Z`);
-    if (Number.isNaN(parsed.getTime())) return monthId;
-    return germanShortDateFormatter.format(parsed);
-}
 
 export function M12GParticipationChart({months}: M12GParticipationChartProps) {
     if (months.length === 0) return null;
@@ -25,7 +18,7 @@ export function M12GParticipationChart({months}: M12GParticipationChartProps) {
             <div className={styles.chart}>
                 {months.map((month) => (
                     <div key={month.month} className={styles.row}>
-                        <span className={styles.month}>{formatMonth(month.month)}</span>
+                        <span className={styles.month}>{formatMonthShort(month.month)}</span>
                         <meter
                             className={styles.meter}
                             min={0}

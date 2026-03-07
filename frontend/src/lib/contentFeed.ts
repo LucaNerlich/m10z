@@ -61,10 +61,11 @@ export async function buildContentFeed(
     const safePage = Math.max(1, Math.floor(page || 1));
     const safePageSize = Math.max(1, Math.min(100, Math.floor(pageSize || 10)));
 
-    // We need to fetch enough items to potentially fill the requested page
-    // Since items are merged, we fetch a small buffer to ensure we have enough after merging.
-    // This reduces over-fetching from 4x to ~1.5x while still providing a safe margin.
-    const fetchSize = Math.min(safePageSize + 5, 200);
+    // Fetch enough items from each source to fill the requested page.
+    // Since items are merged by date, we need all items up to the end of the
+    // requested page from each source to guarantee correct ordering.
+    const itemsNeeded = safePage * safePageSize;
+    const fetchSize = Math.min(itemsNeeded + 5, 200);
 
     const extraTags = options.tags ?? [];
     const articleTags = Array.from(new Set(['strapi:article', 'strapi:article:list:page', ...extraTags]));
@@ -112,7 +113,9 @@ export async function buildContentFeed(
         return bd - ad;
     });
 
-    const total = allItems.length;
+    // Use Strapi-reported totals for accurate pagination rather than
+    // the merged array length (which is capped by fetchSize).
+    const total = articlesResult.pagination.total + podcastsResult.pagination.total;
     const offset = (safePage - 1) * safePageSize;
     const paginatedItems = allItems.slice(offset, offset + safePageSize);
     const pageCount = Math.max(1, Math.ceil(total / safePageSize));

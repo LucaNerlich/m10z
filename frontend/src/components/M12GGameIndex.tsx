@@ -4,30 +4,13 @@ import {useState, useMemo} from 'react';
 import Fuse, {type IFuseOptions} from 'fuse.js';
 
 import {type M12GGameIndexEntry} from '@/src/lib/m12g/types';
+import {formatVotes, formatMonthCompact} from '@/src/lib/m12g/formatters';
 
 import styles from './M12GGameIndex.module.css';
 
 type M12GGameIndexProps = {
     games: M12GGameIndexEntry[];
 };
-
-const germanPluralRules = new Intl.PluralRules('de-DE');
-const germanShortDateFormatter = new Intl.DateTimeFormat('de-DE', {
-    month: 'short',
-    year: '2-digit',
-});
-
-function formatVotes(votes: number): string {
-    const rule = germanPluralRules.select(votes);
-    const unit = rule === 'one' ? 'Stimme' : 'Stimmen';
-    return `${votes} ${unit}`;
-}
-
-function formatMonth(monthId: string): string {
-    const [year, month] = monthId.split('-').map(Number);
-    if (year === undefined || month === undefined) return monthId;
-    return germanShortDateFormatter.format(new Date(year, month - 1));
-}
 
 const FUSE_OPTIONS: IFuseOptions<M12GGameIndexEntry> = {
     keys: ['name'],
@@ -111,7 +94,7 @@ export function M12GGameIndex({games}: M12GGameIndexProps) {
                                         ) : null}
                                     </div>
                                     <div className={styles.monthsList}>
-                                        {game.months.map(formatMonth).join(', ')}
+                                        {game.months.map(formatMonthCompact).join(', ')}
                                     </div>
                                 </td>
                                 <td className={styles.barCell}>

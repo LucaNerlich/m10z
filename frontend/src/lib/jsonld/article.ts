@@ -41,7 +41,6 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
         description: article.base.description ?? undefined,
         datePublished: datePublished ?? dateModified,
         dateModified,
-        articleBody: article.content || undefined,
         url: articleUrl,
         image: images.length > 0 ? images : undefined,
         author: authors,

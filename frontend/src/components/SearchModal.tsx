@@ -80,6 +80,15 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         inputRef.current?.focus();
     }, []);
 
+    // Lock body scroll while modal is open
+    useEffect(() => {
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, []);
+
     useEffect(() => {
         const handleTabKey = (event: globalThis.KeyboardEvent) => {
             if (event.key !== 'Tab') return;

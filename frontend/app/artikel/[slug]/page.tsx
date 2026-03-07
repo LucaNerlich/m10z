@@ -2,7 +2,7 @@ import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {fetchArticleBySlug} from '@/src/lib/strapiContent';
+import {fetchArticleBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
@@ -10,6 +10,7 @@ import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
+import {RelatedContent} from '@/src/components/RelatedContent';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 
@@ -117,5 +118,16 @@ export default async function ArticleDetailPage({params}: PageProps) {
 
     if (!article) notFound();
 
-    return <ArticleDetail slug={slug} article={article} />;
+    const categorySlugs = article.categories?.map((c) => c.slug).filter(Boolean) as string[] ?? [];
+    const [relatedArticles, relatedPodcasts] = await Promise.all([
+        fetchRelatedArticles(categorySlugs, slug).catch(() => []),
+        fetchRelatedPodcasts(categorySlugs, slug).catch(() => []),
+    ]);
+
+    return (
+        <>
+            <ArticleDetail slug={slug} article={article} />
+            <RelatedContent articles={relatedArticles} podcasts={relatedPodcasts} />
+        </>
+    );
 }

@@ -1,0 +1,117 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 8px;
+}
+
+.titleBar {
+    height: 32px;
+    width: 240px;
+    background: var(--color-surface-strong);
+    border-radius: 999px;
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardMedia {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--color-surface-strong);
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.cardBody {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bar {
+    height: 12px;
+    background: var(--color-surface-strong);
+    border-radius: 999px;
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.barShort {
+    composes: bar;
+    width: 70%;
+}
+
+.barXShort {
+    composes: bar;
+    width: 45%;
+}
+
+.pill {
+    height: 20px;
+    width: 60px;
+    background: var(--color-surface-strong);
+    border-radius: 999px;
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Detail page skeleton (article/podcast single view) */
+.detailImage {
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    background: var(--color-surface-strong);
+    border-radius: var(--border-radius);
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.detailBody {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.detailTitle {
+    height: 28px;
+    width: 60%;
+    background: var(--color-surface-strong);
+    border-radius: 999px;
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.detailLine {
+    height: 14px;
+    background: var(--color-surface-strong);
+    border-radius: 999px;
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}

@@ -1036,7 +1036,84 @@ export const fetchArticlesByAuthorPaginated = cache(
     },
 );
 
+const RELATED_CONTENT_LIMIT = 5;
+
 /**
+ * Fetch recent articles in the given categories, excluding a specific slug.
+ * Used for "related content" sections on article detail pages.
+ */
+export const fetchRelatedArticles = cache(
+    async (categorySlugs: string[], excludeSlug: string): Promise<StrapiArticle[]> => {
+        if (categorySlugs.length === 0) return [];
+
+        const query = qs.stringify(
+            {
+                sort: ['base.date:desc'],
+                status: 'published',
+                pagination: {pageSize: RELATED_CONTENT_LIMIT, page: 1},
+                filters: {
+                    slug: {$ne: excludeSlug},
+                    categories: {slug: {$in: categorySlugs}},
+                },
+                populate: {
+                    base: populateBaseMedia,
+                    categories: populateCategoryBase,
+                },
+                fields: ['slug', 'wordCount', 'publishedAt'],
+            },
+            {encodeValuesOnly: true},
+        );
+
+        const res = await fetchJson<{data: StrapiArticle[]}>(
+            `/api/articles?${query}`,
+            {
+                tags: ['strapi:article', 'related-content'],
+                revalidate: CACHE_REVALIDATE_DEFAULT,
+            },
+        );
+
+        return res.data ?? [];
+    },
+);
+
+/**
+ * Fetch recent podcasts in the given categories, excluding a specific slug.
+ * Used for "related content" sections on podcast detail pages.
+ */
+export const fetchRelatedPodcasts = cache(
+    async (categorySlugs: string[], excludeSlug: string): Promise<StrapiPodcast[]> => {
+        if (categorySlugs.length === 0) return [];
+
+        const query = qs.stringify(
+            {
+                sort: ['base.date:desc'],
+                status: 'published',
+                pagination: {pageSize: RELATED_CONTENT_LIMIT, page: 1},
+                filters: {
+                    slug: {$ne: excludeSlug},
+                    categories: {slug: {$in: categorySlugs}},
+                },
+                populate: {
+                    base: populateBaseMedia,
+                    categories: populateCategoryBase,
+                    file: {populate: '*'},
+                },
+                fields: ['slug', 'duration', 'wordCount', 'publishedAt'],
+            },
+            {encodeValuesOnly: true},
+        );
+
+        const res = await fetchJson<{data: StrapiPodcast[]}>(
+            `/api/podcasts?${query}`,
+            {
+                tags: ['strapi:podcast', 'related-content'],
+                revalidate: CACHE_REVALIDATE_DEFAULT,
+            },
+        );
+
+        return res.data ?? [];
+    },
+);/**
  * Fetch a paginated list of published podcasts for a given author (optionally filtered by category).
  *
  * Uses Strapi filter syntax equivalent to `filters[authors][slug][$eq]=<authorSlug>` plus standard pagination parameters.

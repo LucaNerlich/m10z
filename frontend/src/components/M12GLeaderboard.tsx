@@ -1,18 +1,11 @@
 import {type M12GLeaderboardEntry} from '@/src/lib/m12g/types';
+import {formatVotes} from '@/src/lib/m12g/formatters';
 
 import styles from './M12GLeaderboard.module.css';
 
 type M12GLeaderboardProps = {
     entries: M12GLeaderboardEntry[];
 };
-
-const germanPluralRules = new Intl.PluralRules('de-DE');
-
-function formatVotes(votes: number): string {
-    const rule = germanPluralRules.select(votes);
-    const unit = rule === 'one' ? 'Stimme' : 'Stimmen';
-    return `${votes} ${unit}`;
-}
 
 export function M12GLeaderboard({entries}: M12GLeaderboardProps) {
     if (entries.length === 0) return null;
