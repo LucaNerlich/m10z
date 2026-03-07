@@ -1,4 +1,6 @@
 .player {
+    display: flex;
+    align-items: center;
     margin-bottom: 2.5rem;
     padding: 1.5rem;
     background: var(--color-surface);
