@@ -37,7 +37,7 @@ export default async function M12GGamesPage() {
     return (
         <div data-list-page>
             <h1>Spieleindex</h1>
-            <p style={{color: 'var(--color-text-muted)', marginTop: '-0.5rem'}}>
+            <p style={{color: 'var(--color-text-muted)', margin: '0.5rem 0'}}>
                 Alle Spiele, die jemals bei M12G nominiert wurden.
             </p>
 
