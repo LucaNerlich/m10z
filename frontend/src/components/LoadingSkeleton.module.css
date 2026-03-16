@@ -15,17 +15,37 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: 1fr;
     gap: 20px;
+    align-items: stretch;
+}
+
+.grid > * {
+    height: 100%;
+}
+
+@media (min-width: 640px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 960px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 .card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 400px;
 }
 
 .cardMedia {

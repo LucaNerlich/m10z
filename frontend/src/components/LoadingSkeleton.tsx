@@ -1,4 +1,5 @@
 import styles from './LoadingSkeleton.module.css';
+import contentCardStyles from './ContentCard.module.css';
 
 type LoadingSkeletonProps = {
     /** Number of card skeletons to show in the grid (default: 6) */
@@ -13,25 +14,27 @@ type LoadingSkeletonProps = {
  */
 export function LoadingSkeletonGrid({cards = 6, showTitle = true}: LoadingSkeletonProps) {
     return (
-        <div className={styles.container}>
-            {showTitle ? <div className={styles.titleBar} /> : null}
-            <div className={styles.grid}>
-                {Array.from({length: cards}, (_, i) => (
-                    <div key={i} className={styles.card}>
-                        <div className={styles.cardMedia} />
-                        <div className={styles.cardBody}>
-                            <div className={styles.meta}>
-                                <div className={styles.pill} />
-                                <div className={styles.pill} />
+        <section data-list-page>
+            <div className={styles.container}>
+                {showTitle ? <div className={styles.titleBar} /> : null}
+                <div className={styles.grid}>
+                    {Array.from({length: cards}, (_, i) => (
+                        <article key={i} className={contentCardStyles.card}>
+                            <div className={styles.cardMedia} />
+                            <div className={styles.cardBody}>
+                                <div className={styles.meta}>
+                                    <div className={styles.pill} />
+                                    <div className={styles.pill} />
+                                </div>
+                                <div className={styles.bar} />
+                                <div className={styles.barShort} />
+                                <div className={styles.barXShort} />
                             </div>
-                            <div className={styles.bar} />
-                            <div className={styles.barShort} />
-                            <div className={styles.barXShort} />
-                        </div>
-                    </div>
-                ))}
+                        </article>
+                    ))}
+                </div>
             </div>
-        </div>
+        </section>
     );
 }
 
