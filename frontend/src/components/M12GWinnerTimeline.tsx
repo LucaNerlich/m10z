@@ -17,7 +17,7 @@ export function M12GWinnerTimeline({winners}: M12GWinnerTimelineProps) {
             <h2 className={styles.heading}>Hall of Fame</h2>
             <ul className={styles.timeline}>
                 {reversed.map((entry) => (
-                    <li key={entry.month} className={styles.entry}>
+                    <li key={`${entry.month}-${entry.gameName}`} className={styles.entry}>
                         <span className={styles.month}>{formatMonthLong(entry.month)}</span>
                         <a
                             className={styles.gameName}

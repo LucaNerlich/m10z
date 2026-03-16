@@ -39,17 +39,17 @@ export function computeM12GStats(months: M12GMonthWithWinner[]): M12GStats {
             }
         }
 
-        if (month.winner) {
-            const entry = gameMap.get(month.winner.name);
+        for (const winner of month.winners) {
+            const entry = gameMap.get(winner.name);
             if (entry) {
                 entry.wins += 1;
             }
 
             winnerTimeline.push({
                 month: month.month,
-                gameName: month.winner.name,
-                gameLink: month.winner.link,
-                votes: month.winner.votes,
+                gameName: winner.name,
+                gameLink: winner.link,
+                votes: winner.votes,
             });
         }
 
@@ -117,8 +117,8 @@ export function buildGameIndex(months: M12GMonthWithWinner[]): M12GGameIndexEntr
             }
         }
 
-        if (month.winner) {
-            const entry = gameMap.get(month.winner.name);
+        for (const winner of month.winners) {
+            const entry = gameMap.get(winner.name);
             if (entry) {
                 entry.wins += 1;
             }

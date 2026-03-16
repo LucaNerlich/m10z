@@ -66,13 +66,11 @@ function parseGamesFromBody(body: string): M12GGame[] {
     return games;
 }
 
-function computeWinner(games: M12GGame[]): M12GGame | null {
-    if (games.length === 0) return null;
-    return games.reduce((currentWinner, candidate) => {
-        if (!currentWinner) return candidate;
-        if (candidate.votes > currentWinner.votes) return candidate;
-        return currentWinner;
-    }, games[0] ?? null);
+function computeWinners(games: M12GGame[]): M12GGame[] {
+    if (games.length === 0) return [];
+    const maxVotes = games[0].votes;
+    if (maxVotes === 0) return [];
+    return games.filter((game) => game.votes === maxVotes);
 }
 
 async function loadMonthFromFile(filePath: string, monthId: string): Promise<M12GMonthWithWinner | null> {
@@ -91,7 +89,7 @@ async function loadMonthFromFile(filePath: string, monthId: string): Promise<M12
         };
         return {
             ...month,
-            winner: computeWinner(games),
+            winners: computeWinners(games),
             titleDefender: null,
         };
     } catch {
@@ -121,12 +119,13 @@ async function loadM12GMonths(): Promise<M12GMonthWithWinner[]> {
 function assignTitleDefenders(months: M12GMonthWithWinner[]): void {
     const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
     for (let i = 1; i < chronological.length; i++) {
-        const previousWinner = chronological[i - 1]?.winner;
-        if (!previousWinner) continue;
+        const previousWinners = chronological[i - 1]?.winners ?? [];
+        if (previousWinners.length === 0) continue;
+        const previousWinnerNames = new Set(previousWinners.map((w) => w.name));
         const current = chronological[i];
-        const isNominated = current.games.some((game) => game.name === previousWinner.name);
-        if (isNominated) {
-            current.titleDefender = previousWinner.name;
+        const defender = current.games.find((game) => previousWinnerNames.has(game.name));
+        if (defender) {
+            current.titleDefender = defender.name;
         }
     }
 }

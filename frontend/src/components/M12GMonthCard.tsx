@@ -8,6 +8,10 @@ type M12GMonthCardProps = {
 };
 
 export function M12GMonthCard({month}: M12GMonthCardProps) {
+    const {winners} = month;
+    const winnerNames = new Set(winners.map((w) => w.name));
+    const nonWinners = month.games.filter((game) => !winnerNames.has(game.name));
+
     return (
         <article className={styles.card}>
             <header className={styles.header}>
@@ -21,13 +25,38 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                 <p className={styles.emptyState}>Keine Spiele für diesen Monat.</p>
             ) : (
                 <ul className={styles.gameList}>
-                    {month.games.map((game) => {
-                        const isWinner = month.winner === game;
+                    {winners.length > 0 ? (
+                        <li className={styles.winnerGroup}>
+                            <span className={styles.winnerLabel}>Sieger</span>
+                            {winners.map((game) => {
+                                const isTitleDefender = game.name === month.titleDefender;
+                                return (
+                                    <div key={`${game.name}-${game.link}`}
+                                        className={styles.winnerItem}>
+                                        <span className={styles.nameGroup}>
+                                            <a
+                                                className={styles.gameLink}
+                                                href={game.link}
+                                                target="_blank"
+                                                rel="noreferrer noopener"
+                                            >
+                                                {game.name}
+                                            </a>
+                                            {isTitleDefender ? (
+                                                <span className={styles.titleDefender}>Titelträger</span>
+                                            ) : null}
+                                        </span>
+                                        <span className={styles.voteCount}>{formatVotes(game.votes)}</span>
+                                    </div>
+                                );
+                            })}
+                        </li>
+                    ) : null}
+                    {nonWinners.map((game) => {
                         const isTitleDefender = game.name === month.titleDefender;
                         return (
                             <li key={`${game.name}-${game.link}`}
-                                className={isWinner ? styles.gameWinner : styles.gameItem}>
-                                {isWinner ? <span className={styles.winnerLabel}>Sieger</span> : null}
+                                className={styles.gameItem}>
                                 <span className={styles.nameGroup}>
                                     <a
                                         className={styles.gameLink}
