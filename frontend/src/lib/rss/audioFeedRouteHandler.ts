@@ -20,7 +20,13 @@ import {
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateBaseMedia, populateCategoryBase} from '@/src/lib/strapiContent';
+import {
+    MEDIA_FIELDS,
+    normalizeStrapiPodcast,
+    populateAuthorAvatar,
+    populateBaseComponent,
+    populateCategoryBase,
+} from '@/src/lib/strapiContent';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
@@ -272,14 +278,16 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
                 status: 'published',
                 pagination: {pageSize, page},
                 populate: {
-                    base: populateBaseMedia,
+                    cover: {fields: MEDIA_FIELDS},
+                    banner: {fields: MEDIA_FIELDS},
+                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     file: {
                         populate: '*',
                     },
                 },
-                fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt'],
+                fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             },
             {encodeValuesOnly: true},
         );
@@ -289,7 +297,9 @@ async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
             meta?: {pagination?: {page: number; pageCount: number; total: number}};
         }>(`/api/podcasts?${query}`);
 
-        const items = Array.isArray(res.data) ? (res.data as StrapiPodcast[]) : [];
+        const items = Array.isArray(res.data)
+            ? (res.data as StrapiPodcast[]).map(normalizeStrapiPodcast)
+            : [];
         const remaining = Math.max(0, maxItems - all.length);
         if (remaining > 0) {
             all.push(...items.slice(0, remaining));

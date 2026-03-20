@@ -3,6 +3,7 @@ import {generateMissingBlurhashes} from '../src/cron/blurhash';
 import {generateMissingWordCounts} from '../src/cron/wordcount';
 import {rebuildSearchIndex} from '../src/cron/searchIndex';
 import {publishScheduledEntries} from '../src/cron/scheduledPublish';
+import {migrateFlattenBaseCronJob} from '../src/cron/migrateFlattenBase';
 
 /**
  * Configures HTTP server timeout settings to prevent premature socket closure
@@ -61,6 +62,20 @@ export default ({env}) => ({
     cron: {
         enabled: true,
         tasks: {
+            ...(env.bool('MIGRATE_FLATTEN_BASE_CRON_ENABLED', false)
+                ? {
+                    /**
+                     * One-time-style migration: enable only for the deploy window where `base` still exists,
+                     * then remove MIGRATE_FLATTEN_BASE_CRON_ENABLED and redeploy (otherwise it repeats on schedule).
+                     */
+                    migrateFlattenBase: {
+                        task: migrateFlattenBaseCronJob,
+                        options: {
+                            rule: env('MIGRATE_FLATTEN_BASE_CRON_RULE', '0 5 * * *'),
+                        },
+                    },
+                }
+                : {}),
             // Generate blurhash for images missing it - runs once nightly
             generateMissingBlurhashes: {
                 task: generateMissingBlurhashes,
@@ -82,7 +97,7 @@ export default ({env}) => ({
                     rule: '30 3 * * *', // Run nightly at 03:30 (server local time)
                 },
             },
-            // Publish scheduled drafts whose base.date has arrived
+            // Publish scheduled drafts whose root `date` has arrived
             publishScheduledEntries: {
                 task: publishScheduledEntries,
                 options: {

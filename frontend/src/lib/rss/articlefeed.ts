@@ -6,18 +6,17 @@ import {
     normalizeStrapiMedia,
     pickCoverOrBannerMedia,
     type StrapiAuthor,
-    type StrapiBaseContent,
     type StrapiCategoryRef,
+    type StrapiContentMedia,
     type StrapiMediaRef,
     StrapiYoutube,
 } from '@/src/lib/rss/media';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
-export type StrapiArticle = {
+export type StrapiArticle = StrapiContentMedia & {
     id: number;
     slug: string;
     publishedAt: string | null;
-    base: StrapiBaseContent;
     categories?: StrapiCategoryRef[];
     authors?: StrapiAuthor[];
     youtube?: StrapiYoutube[];
@@ -85,13 +84,13 @@ export function generateArticleFeedXml(args: {
             const pubRaw = getEffectiveDate(a);
             const pub = pubRaw ? new Date(pubRaw) : new Date(0);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
-            const preferredMedia = pickCoverOrBannerMedia(a.base, a.categories);
+            const preferredMedia = pickCoverOrBannerMedia(a, a.categories);
             const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
             const optimizedMediaUrl = mediaUrlToAbsolute({media: optimizedMedia});
 
             // Prepare and Sanitize Content
-            const title = escapeXml(a.base.title);
-            const effectiveDescription = a.base.description || a.categories?.[0]?.base?.description;
+            const title = escapeXml(a.title);
+            const effectiveDescription = a.description || a.categories?.[0]?.description;
             const description = escapeXml(effectiveDescription ?? '');
             const html = markdownToHtml(a.content ?? '');
             const cdataContent = escapeCdata(html);

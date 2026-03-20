@@ -112,7 +112,7 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
 
     if (!author) return notFound();
 
-    const fetchedCategoryTitle = category?.base?.title ?? null;
+    const fetchedCategoryTitle = category?.title ?? null;
     const categoryLabel = props.categoryFilterLabel ?? fetchedCategoryTitle ?? categorySlug;
 
     const {page: currentPage, pageCount, total} = data.pagination;

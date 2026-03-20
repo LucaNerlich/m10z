@@ -3,6 +3,7 @@ import type {Schema, Struct} from '@strapi/strapi';
 export interface CollectionTypeBaseContent extends Struct.ComponentSchema {
     collectionName: 'components_collection_type_base_contents';
     info: {
+        description: '';
         displayName: 'BaseContent';
         icon: 'message';
     };

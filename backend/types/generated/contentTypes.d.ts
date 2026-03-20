@@ -554,6 +554,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     };
     attributes: {
         authors: Schema.Attribute.Relation<'manyToMany', 'api::author.author'>;
+        banner: Schema.Attribute.Media<'images'>;
         base: Schema.Attribute.Component<
             'collection-type.base-content',
             false
@@ -564,9 +565,12 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
             'api::category.category'
         >;
         content: Schema.Attribute.RichText & Schema.Attribute.Required;
+        cover: Schema.Attribute.Media<'images'>;
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
+        date: Schema.Attribute.DateTime;
+        description: Schema.Attribute.Text;
         locale: Schema.Attribute.String & Schema.Attribute.Private;
         localizations: Schema.Attribute.Relation<
             'oneToMany',
@@ -575,6 +579,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
             Schema.Attribute.Private;
         publishedAt: Schema.Attribute.DateTime;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        title: Schema.Attribute.String;
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
@@ -673,14 +678,18 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
             'manyToMany',
             'api::article.article'
         >;
+        banner: Schema.Attribute.Media<'images'>;
         base: Schema.Attribute.Component<
             'collection-type.base-content',
             false
         > &
             Schema.Attribute.Required;
+        cover: Schema.Attribute.Media<'images'>;
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
+        date: Schema.Attribute.DateTime;
+        description: Schema.Attribute.Text;
         locale: Schema.Attribute.String & Schema.Attribute.Private;
         localizations: Schema.Attribute.Relation<
             'oneToMany',
@@ -693,6 +702,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
         >;
         publishedAt: Schema.Attribute.DateTime;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        title: Schema.Attribute.String;
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
@@ -742,6 +752,7 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
     };
     attributes: {
         authors: Schema.Attribute.Relation<'manyToMany', 'api::author.author'>;
+        banner: Schema.Attribute.Media<'images'>;
         base: Schema.Attribute.Component<
             'collection-type.base-content',
             false
@@ -751,9 +762,12 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
             'manyToMany',
             'api::category.category'
         >;
+        cover: Schema.Attribute.Media<'images'>;
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
+        date: Schema.Attribute.DateTime;
+        description: Schema.Attribute.Text;
         duration: Schema.Attribute.Integer &
             Schema.Attribute.SetMinMax<
                 {
@@ -771,6 +785,7 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         publishedAt: Schema.Attribute.DateTime;
         shownotes: Schema.Attribute.RichText;
         slug: Schema.Attribute.UID & Schema.Attribute.Required;
+        title: Schema.Attribute.String;
         updatedAt: Schema.Attribute.DateTime;
         updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;

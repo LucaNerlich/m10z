@@ -28,8 +28,8 @@ export default async function Image({params}: {params: Promise<{slug: string}>})
         try {
             const episode = await fetchPodcastBySlug(slug);
             if (episode) {
-                title = episode.base.title;
-                description = episode.base.description ?? undefined;
+                title = episode.title;
+                description = episode.description ?? undefined;
             }
         } catch {
             // Fall back to default title

@@ -63,26 +63,89 @@ export type StrapiMediaRef = {
     attributes?: StrapiMedia;
 };
 
-export type StrapiBaseContent = {
-    title: string;
+/** BaseContent component while it coexists with optional root duplicates (migration phase A). */
+export type StrapiBaseContentLegacy = {
+    title?: string | null;
     description?: string | null;
     date?: string | null;
     cover?: StrapiMediaRef | null;
     banner?: StrapiMediaRef | null;
 };
 
+/** Root content metadata (duplicate of `base` after migration; during phase A may be empty until backfill). */
+export type StrapiContentMedia = {
+    title: string;
+    description?: string | null;
+    date?: string | null;
+    cover?: StrapiMediaRef | null;
+    banner?: StrapiMediaRef | null;
+    base?: StrapiBaseContentLegacy | null;
+};
+
 export type StrapiCategoryRef = {
     slug?: string;
-    base?: {
-        cover?: StrapiMediaRef | null;
-        banner?: StrapiMediaRef | null;
-        title?: string | null;
-        description?: string | null;
-    } | null;
+    title?: string | null;
+    description?: string | null;
     cover?: StrapiMediaRef | null;
     banner?: StrapiMediaRef | null;
     image?: StrapiMediaRef | null;
+    base?: StrapiBaseContentLegacy | null;
 };
+
+/**
+ * Prefer root title/description/date/cover/banner; fall back to `base` when root is unset (phase A).
+ */
+export function mergeContentMediaFromBase<
+    T extends StrapiContentMedia & {base?: StrapiBaseContentLegacy | null},
+>(entity: T): T {
+    const b = entity.base;
+    if (!b || typeof b !== 'object') {
+        return entity;
+    }
+    const rootTitle = entity.title.trim().length > 0 ? entity.title : null;
+    const baseTitle = typeof b.title === 'string' && b.title.trim().length > 0 ? b.title : null;
+    return {
+        ...entity,
+        title: (rootTitle ?? baseTitle ?? '') as T['title'],
+        description: entity.description ?? b.description ?? null,
+        date: entity.date ?? b.date ?? null,
+        cover: entity.cover ?? b.cover ?? null,
+        banner: entity.banner ?? b.banner ?? null,
+    };
+}
+
+export function mergeCategoryRefFromBase(
+    cat: StrapiCategoryRef & {base?: StrapiBaseContentLegacy | null},
+): StrapiCategoryRef {
+    const merged = mergeContentMediaFromBase({
+        title: cat.title ?? '',
+        description: cat.description,
+        date: undefined,
+        cover: cat.cover,
+        banner: cat.banner,
+        base: cat.base,
+    });
+    return {
+        ...cat,
+        title: merged.title || cat.slug || null,
+        description: merged.description,
+        cover: merged.cover,
+        banner: merged.banner,
+    };
+}
+
+export function mergeListingEntryFromBase<
+    T extends {title?: string; date?: string | null; base?: StrapiBaseContentLegacy | null},
+>(item: T): T {
+    const b = item.base;
+    if (!b || typeof b !== 'object') return item;
+    const hasRootTitle = item.title != null && String(item.title).trim().length > 0;
+    return {
+        ...item,
+        title: hasRootTitle ? item.title : typeof b.title === 'string' ? b.title : item.title,
+        date: item.date ?? b.date ?? null,
+    };
+}
 
 export type StrapiAuthor = {
     id: number;
@@ -159,31 +222,31 @@ export function mediaUrlToAbsolute(args: {
 }
 
 /**
- * Selects a cover media for content, preferring the base's cover and falling back to the first category's cover or image.
+ * Selects a cover media for content, preferring the entry's cover and falling back to the first category's cover or image.
  *
- * @param base - Optional base content whose `cover` is checked first
- * @param categories - Optional list of category references; the first category's `base.cover`, `cover`, or `image` is used as a fallback
+ * @param content - Optional content whose `cover` is checked first
+ * @param categories - Optional list of category references; the first category's `cover` or `image` is used as a fallback
  * @returns The selected `StrapiMedia` (with a valid `url`) if one is found, `undefined` otherwise
  */
-export function pickCoverMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    const primary = normalizeStrapiMedia(base?.cover ?? undefined);
+export function pickCoverMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
+    const primary = normalizeStrapiMedia(content?.cover ?? undefined);
     if (primary.url) return primary;
 
     const firstCategory = categories?.[0];
     const categoryCover = normalizeStrapiMedia(
-        firstCategory?.base?.cover ?? firstCategory?.cover ?? firstCategory?.image ?? undefined,
+        firstCategory?.cover ?? firstCategory?.image ?? undefined,
     );
     if (categoryCover.url) return categoryCover;
 
     return undefined;
 }
 
-export function pickBannerMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    const primary = normalizeStrapiMedia(base?.banner ?? undefined);
+export function pickBannerMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
+    const primary = normalizeStrapiMedia(content?.banner ?? undefined);
     if (primary.url) return primary;
 
     const firstCategory = categories?.[0];
-    const categoryBanner = normalizeStrapiMedia(firstCategory?.base?.banner ?? firstCategory?.banner ?? undefined);
+    const categoryBanner = normalizeStrapiMedia(firstCategory?.banner ?? undefined);
     if (categoryBanner.url) return categoryBanner;
 
     return undefined;
@@ -194,13 +257,13 @@ export function pickBannerMedia(base?: StrapiBaseContent, categories?: StrapiCat
  *
  * @returns The chosen `StrapiMedia` containing a `url` when available, or `undefined` if neither banner nor cover media exist.
  */
-export function pickBannerOrCoverMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
+export function pickBannerOrCoverMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
     // Try banner first
-    const banner = pickBannerMedia(base, categories);
+    const banner = pickBannerMedia(content, categories);
     if (banner?.url) return banner;
 
     // Fall back to cover
-    return pickCoverMedia(base, categories);
+    return pickCoverMedia(content, categories);
 }
 
 /**
@@ -208,13 +271,13 @@ export function pickBannerOrCoverMedia(base?: StrapiBaseContent, categories?: St
  *
  * @returns The chosen `StrapiMedia` (cover preferred, banner fallback), or `undefined` if no media is available.
  */
-export function pickCoverOrBannerMedia(base?: StrapiBaseContent, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
+export function pickCoverOrBannerMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
     // Try cover first
-    const cover = pickCoverMedia(base, categories);
+    const cover = pickCoverMedia(content, categories);
     if (cover?.url) return cover;
 
     // Fall back to banner
-    return pickBannerMedia(base, categories);
+    return pickBannerMedia(content, categories);
 }
 
 /**

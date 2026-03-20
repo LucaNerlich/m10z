@@ -28,8 +28,8 @@ export default async function Image({params}: {params: Promise<{slug: string}>})
         try {
             const article = await fetchArticleBySlug(slug);
             if (article) {
-                title = article.base.title;
-                description = article.base.description ?? undefined;
+                title = article.title;
+                description = article.description ?? undefined;
             }
         } catch {
             // Fall back to default title

@@ -11,7 +11,13 @@ import {
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateBaseMedia, populateCategoryBase} from '@/src/lib/strapiContent';
+import {
+    MEDIA_FIELDS,
+    normalizeStrapiArticle,
+    populateAuthorAvatar,
+    populateBaseComponent,
+    populateCategoryBase,
+} from '@/src/lib/strapiContent';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
@@ -156,8 +162,8 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
  * Fetches all published articles from Strapi, paging through results until all pages are retrieved.
  *
  * The fetched articles include `slug`, `content`, `wordCount`, and `publishedAt`, and have populated
- * `base` (cover, banner, title, description, date), `authors` (avatar, title, slug, description),
- * and `categories` (slug with populated base cover/banner/title/description).
+ * root title, description, date, cover, banner, `authors` (avatar, title, slug, description),
+ * and `categories` (slug with cover/banner/title/description).
  *
  * @returns An array of `StrapiArticle` objects ordered by `publishedAt` descending.
  */
@@ -174,11 +180,13 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
                 status: 'published',
                 pagination: {pageSize, page},
                 populate: {
-                    base: populateBaseMedia,
+                    cover: {fields: MEDIA_FIELDS},
+                    banner: {fields: MEDIA_FIELDS},
+                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                 },
-                fields: ['slug', 'content', 'wordCount', 'publishedAt'],
+                fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             },
             {encodeValuesOnly: true},
         );
@@ -188,7 +196,9 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
             meta?: {pagination?: {page: number; pageCount: number; total: number}};
         }>(`/api/articles?${query}`);
 
-        const items = Array.isArray(res.data) ? (res.data as StrapiArticle[]) : [];
+        const items = Array.isArray(res.data)
+            ? (res.data as StrapiArticle[]).map(normalizeStrapiArticle)
+            : [];
         const remaining = Math.max(0, maxItems - all.length);
         if (remaining > 0) {
             all.push(...items.slice(0, remaining));

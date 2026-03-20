@@ -6,19 +6,18 @@ import {
     normalizeStrapiMedia,
     pickCoverOrBannerMedia,
     type StrapiAuthor,
-    type StrapiBaseContent,
     type StrapiCategoryRef,
+    type StrapiContentMedia,
     type StrapiMedia,
     type StrapiMediaRef,
     StrapiYoutube,
 } from '@/src/lib/rss/media';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
-export type StrapiPodcast = {
+export type StrapiPodcast = StrapiContentMedia & {
     id: number;
     slug: string;
     publishedAt: string | null;
-    base: StrapiBaseContent;
     categories?: StrapiCategoryRef[];
     youtube?: StrapiYoutube[];
     shownotes?: string | null;
@@ -229,23 +228,23 @@ function renderItem(
     const tEnclosure1 = nowMs();
     timings?.record('enclosure', tEnclosure1 - tEnclosure0);
     if (!enclosureUrl) {
-        console.warn(`[audiofeed] Skipping episode "${episode.base.title}" (slug: ${episode.slug}): no valid enclosure URL`);
+        console.warn(`[audiofeed] Skipping episode "${episode.title}" (slug: ${episode.slug}): no valid enclosure URL`);
         return null;
     }
 
-    const title = escapeXml(episode.base.title);
+    const title = escapeXml(episode.title);
     const pubDateRaw = getEffectiveDate(episode);
     const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
     const pubDate = formatRssDate(pub);
 
-    const preferredMedia = pickCoverOrBannerMedia(episode.base, episode.categories);
+    const preferredMedia = pickCoverOrBannerMedia(episode, episode.categories);
     const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
     const itunesImageHref =
         mediaUrlToAbsolute({media: optimizedMedia}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
     // Prepare and Sanitize Content
-    const effectiveDescription = episode.base.description || episode.categories?.[0]?.base?.description;
+    const effectiveDescription = episode.description || episode.categories?.[0]?.description;
     const shownotes = (episode.shownotes ?? '').toString();
     const footer = episodeFooter ?? '';
     // Use shownotes if available, otherwise fall back to base.description (with category fallback)

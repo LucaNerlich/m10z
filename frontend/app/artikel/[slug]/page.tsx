@@ -46,10 +46,10 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         const article = await fetchArticleBySlug(slug);
         if (!article) return {};
 
-        const title = article.base.title;
-        const description = article.base.description || undefined;
+        const title = article.title;
+        const description = article.description || undefined;
         const publishedTime = formatIso8601Date(getEffectiveDate(article));
-        const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
+        const bannerOrCoverMedia = pickBannerOrCoverMedia(article, article.categories);
         const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
         const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
         const authors = article.authors?.map((a) => a.title).filter(Boolean) as string[] | undefined;

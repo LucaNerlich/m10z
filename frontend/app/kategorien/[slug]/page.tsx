@@ -55,9 +55,12 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         const category = await fetchCategoryBySlug(slug);
         if (!category) return {};
 
-        const title = category.base?.title || category.slug || 'Kategorie';
-        const description = category.base?.description || undefined;
-        const bannerOrCoverMedia = pickBannerOrCoverMedia(undefined, [category]);
+        const title = category.title || category.slug || 'Kategorie';
+        const description = category.description || undefined;
+        const bannerOrCoverMedia = pickBannerOrCoverMedia(
+            {title: category.title ?? slug, cover: category.cover, banner: category.banner},
+            undefined,
+        );
         const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
         const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
 
@@ -159,7 +162,7 @@ export default async function CategoryDetailPage({params}: PageProps) {
     const sortedArticles = sortByDateDesc(articles);
     const sortedPodcasts = sortByDateDesc(podcasts);
 
-    const title = category.base?.title ?? category.slug ?? 'Kategorie';
+    const title = category.title ?? category.slug ?? 'Kategorie';
 
     const breadcrumbJsonLd = generateBreadcrumbJsonLd([
         {name: 'Startseite', path: '/'},
@@ -169,7 +172,7 @@ export default async function CategoryDetailPage({params}: PageProps) {
 
     const categoryJsonLd = generateCategoryJsonLd({
         title,
-        description: category.base?.description ?? undefined,
+        description: category.description ?? undefined,
         slug,
         articleSlugs: sortedArticles.map((a) => a.slug),
         podcastSlugs: sortedPodcasts.map((p) => p.slug),
@@ -189,9 +192,9 @@ export default async function CategoryDetailPage({params}: PageProps) {
             />
             <header className={styles.header}>
                 <h1 className={styles.title}>{title}</h1>
-                {category.base?.description ? (
+                {category.description ? (
                     <p className={styles.description}>
-                        {category.base.description}
+                        {category.description}
                     </p>
                 ) : null}
             </header>

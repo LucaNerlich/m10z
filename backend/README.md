@@ -16,14 +16,41 @@
     - `pg_restore -U postgres -c -d m10z pg-dump-m10z-1766918338.dmp`
 4. Update Strapi API Token in `/frontend.env.local`
 
+## Migrating from BaseContent (`base` component)
+
+**Critical:** Do **not** start Strapi with a build that **removed** `base` until the backfill has run on that database
+while `base` was still part of the schema. Otherwise the admin and API can show empty metadata; fixing that usually
+means **restoring the DB** from a backup (see [`docs/RECOVER_BASECONTENT.md`](docs/RECOVER_BASECONTENT.md)).
+
+**Phase A (this repo today):** Article, podcast, and category have **both** the required `base` component (canonical
+data) **and** optional duplicate root fields (`title`, `description`, `date`, `cover`, `banner`). Deploy this, run *
+*`MIGRATE_FLATTEN_BASE=true`** once (or the optional cron), verify root fields in admin, then remove the env var.
+
+**Phase C (later deploy):** Remove `base` from the three content types, delete `collection-type.base-content`, set root
+`title` (etc.) **required** again, remove `base` from frontend populate and merge helpers, and redeploy.
+
+**Recommended (Docker / Coolify):** set environment variable **`MIGRATE_FLATTEN_BASE=true`** on the Strapi service and
+deploy or restart. On bootstrap, Strapi runs the migration inside the normal app process (same config and DB as
+production). Check logs for `[migrate-flatten-base] Done`, then **remove `MIGRATE_FLATTEN_BASE`** and redeploy so it
+does not run on every restart.
+
+**Optional scheduled run:** set **`MIGRATE_FLATTEN_BASE_CRON_ENABLED=true`** and optionally *
+*`MIGRATE_FLATTEN_BASE_CRON_RULE`** (cron expression, default `0 5 * * *`). This registers a cron task that runs the
+same migration. Disable the env var and redeploy after it has run once, or it will repeat on schedule.
+
+If the schema no longer has `base`, the migration is a no-op.
+
+After the DB schema no longer includes the BaseContent component, run **`pnpm exec strapi ts:generate-types`** so
+`types/generated/components.d.ts` matches. If typegen still emits `CollectionTypeBaseContent`, the connected database
+still has that component table (e.g. restore from before migration); apply schema sync or migrate first.
+
 ## Content Types
 
 - Author
     - slug
-    - BaseContent (Component)
 - Podcast
     - slug
-    - BaseContent (Component)
+  - title, description, date, cover, banner (root fields; migrated from former BaseContent component)
     - 1 -> n Authors
     - 1 -> n Categories
     - shownotes (rte)
@@ -31,13 +58,13 @@
     - duration (audio file length in seconds)
 - Article
     - slug
-    - BaseContent (Component)
+  - title, description, date, cover, banner (root fields)
     - content (TBD, dyn zone?)
     - 1 -> n Authors
     - 1 -> 1 Categories
 - Category
     - slug
-    - BaseContent (Component)
+  - title, description, date, cover, banner (root fields)
 
 ## Single Type
 
@@ -48,11 +75,6 @@
 
 ## Components
 
-- BaseContent
-    - title
-    - description (teaser-text)
-    - cover (image)
-    - banner (image)
 - BaseFeed
     - title
     - description
