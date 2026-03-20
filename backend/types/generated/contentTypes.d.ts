@@ -564,7 +564,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
-        date: Schema.Attribute.DateTime;
+        date: Schema.Attribute.DateTime & Schema.Attribute.Required;
         description: Schema.Attribute.Text;
         locale: Schema.Attribute.String & Schema.Attribute.Private;
         localizations: Schema.Attribute.Relation<
@@ -751,7 +751,7 @@ export interface ApiPodcastPodcast extends Struct.CollectionTypeSchema {
         createdAt: Schema.Attribute.DateTime;
         createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
             Schema.Attribute.Private;
-        date: Schema.Attribute.DateTime;
+        date: Schema.Attribute.DateTime & Schema.Attribute.Required;
         description: Schema.Attribute.Text;
         duration: Schema.Attribute.Integer &
             Schema.Attribute.SetMinMax<

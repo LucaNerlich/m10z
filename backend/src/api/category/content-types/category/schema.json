@@ -1,54 +1,58 @@
 {
-    "kind": "collectionType",
-    "collectionName": "categories",
-    "info": {
-        "singularName": "category",
-        "pluralName": "categories",
-        "displayName": "Category"
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": {
+    "singularName": "category",
+    "pluralName": "categories",
+    "displayName": "Category"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "options": {
-        "draftAndPublish": false
+    "description": {
+      "type": "text",
+      "required": false
     },
-    "pluginOptions": {},
-    "attributes": {
-        "title": {
-            "type": "string",
-            "required": true
-        },
-        "description": {
-            "type": "text",
-            "required": false
-        },
-        "cover": {
-            "type": "media",
-            "multiple": false,
-            "required": false,
-            "allowedTypes": ["images"]
-        },
-        "banner": {
-            "type": "media",
-            "multiple": false,
-            "required": false,
-            "allowedTypes": ["images"]
-        },
-        "date": {
-            "type": "datetime"
-        },
-        "slug": {
-            "type": "uid",
-            "required": true
-        },
-        "articles": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::article.article",
-            "mappedBy": "categories"
-        },
-        "podcasts": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::podcast.podcast",
-            "inversedBy": "categories"
-        }
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "banner": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "date": {
+      "type": "datetime"
+    },
+    "slug": {
+      "type": "uid",
+      "required": true
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "mappedBy": "categories"
+    },
+    "podcasts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::podcast.podcast",
+      "inversedBy": "categories"
     }
+  }
 }

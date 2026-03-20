@@ -148,7 +148,7 @@
       },
       "authors": {
         "edit": {
-          "label": "AutorInnen",
+          "label": "Authors",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -163,12 +163,12 @@
       },
       "categories": {
         "edit": {
-          "label": "Kategorien",
+          "label": "Categories",
           "description": "Erste Kategorie bestimmt das verwendete Bild",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "slug"
+          "mainField": "title"
         },
         "list": {
           "label": "Categories",
@@ -312,17 +312,17 @@
         ],
         [
           {
-            "name": "date",
+            "name": "authors",
             "size": 6
           },
           {
-            "name": "authors",
+            "name": "categories",
             "size": 6
           }
         ],
         [
           {
-            "name": "categories",
+            "name": "date",
             "size": 6
           }
         ],

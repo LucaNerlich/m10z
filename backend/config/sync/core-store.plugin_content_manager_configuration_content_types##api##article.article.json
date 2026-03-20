@@ -140,7 +140,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "slug"
+          "mainField": "title"
         },
         "list": {
           "label": "Categories",
@@ -278,16 +278,6 @@
         ],
         [
           {
-            "name": "categories",
-            "size": 6
-          },
-          {
-            "name": "wordCount",
-            "size": 6
-          }
-        ],
-        [
-          {
             "name": "content",
             "size": 12
           }
@@ -296,12 +286,22 @@
           {
             "name": "authors",
             "size": 6
+          },
+          {
+            "name": "categories",
+            "size": 6
           }
         ],
         [
           {
             "name": "youtube",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "wordCount",
+            "size": 6
           }
         ]
       ],

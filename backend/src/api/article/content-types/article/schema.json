@@ -1,67 +1,72 @@
 {
-    "kind": "collectionType",
-    "collectionName": "articles",
-    "info": {
-        "singularName": "article",
-        "pluralName": "articles",
-        "displayName": "Article"
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Article"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "options": {
-        "draftAndPublish": true
+    "description": {
+      "type": "text",
+      "required": false
     },
-    "pluginOptions": {},
-    "attributes": {
-        "title": {
-            "type": "string",
-            "required": true
-        },
-        "description": {
-            "type": "text",
-            "required": false
-        },
-        "cover": {
-            "type": "media",
-            "multiple": false,
-            "required": false,
-            "allowedTypes": ["images"]
-        },
-        "banner": {
-            "type": "media",
-            "multiple": false,
-            "required": false,
-            "allowedTypes": ["images"]
-        },
-        "date": {
-            "type": "datetime"
-        },
-        "slug": {
-            "type": "uid",
-            "required": true
-        },
-        "content": {
-            "type": "richtext",
-            "required": true
-        },
-        "authors": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::author.author",
-            "inversedBy": "articles"
-        },
-        "categories": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::category.category",
-            "inversedBy": "articles"
-        },
-        "youtube": {
-            "type": "component",
-            "component": "collection-type.youtube",
-            "repeatable": true
-        },
-        "wordCount": {
-            "type": "integer",
-            "min": 0
-        }
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "banner": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "date": {
+      "type": "datetime",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "authors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::author.author",
+      "inversedBy": "articles"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "articles"
+    },
+    "youtube": {
+      "type": "component",
+      "component": "collection-type.youtube",
+      "repeatable": true
+    },
+    "wordCount": {
+      "type": "integer",
+      "min": 0
     }
+  }
 }
