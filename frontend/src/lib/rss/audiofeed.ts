@@ -247,7 +247,7 @@ function renderItem(
     const effectiveDescription = episode.description || episode.categories?.[0]?.description;
     const shownotes = (episode.shownotes ?? '').toString();
     const footer = episodeFooter ?? '';
-    // Use shownotes if available, otherwise fall back to base.description (with category fallback)
+    // Use shownotes if available, otherwise fall back to root description (with category fallback)
     const descriptionText = shownotes || effectiveDescription || '';
     const tMd0 = nowMs();
     const convert =

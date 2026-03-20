@@ -14,10 +14,15 @@ backups, or your own `pg_dump`).
 
 After restore:
 
-1. Run a build that still has **`base` on article/podcast/category** *and* root fields (phase A), **or** restore the
-   repo to that commit.
-2. Set **`MIGRATE_FLATTEN_BASE=true`**, start Strapi once, confirm logs: `[migrate-flatten-base] Done`.
-3. Remove **`MIGRATE_FLATTEN_BASE`**, then deploy the version **without** `base` (phase C).
+1. Check out a **git commit or tag from before Phase C** that still includes the `base` component **and** the bootstrap
+   migration (`MIGRATE_FLATTEN_BASE` in `src/index.ts`, `src/cron/migrateFlattenBase.ts`). The current `main` branch no
+   longer ships that migration.
+2. Deploy/run Strapi from that revision with **`MIGRATE_FLATTEN_BASE=true`** once; confirm logs for a successful flatten
+   run, then unset the variable.
+3. Deploy **this** repository version (flattened schema, no `base`) against the same database.
+
+If you cannot use an old revision, recovery is **database restore** to a backup from before the bad deploy, or manual
+re-entry of metadata in the admin UI.
 
 ## 2. Check whether old data still exists (no backup yet)
 
@@ -46,7 +51,7 @@ If tables are empty or missing, recovery is **backup-only**.
 | What happened                                                         | Result                                                                                 |
 |-----------------------------------------------------------------------|----------------------------------------------------------------------------------------|
 | Phase C in code + start Strapi                                        | DB schema drops `base`; root fields stay empty if never backfilled → “data gone” in UI |
-| Correct: phase A → `MIGRATE_FLATTEN_BASE=true` → remove env → phase C | Root fields populated; then safe to remove `base`                                      |
+| Correct order: phase A → run flatten migration (old revision + `MIGRATE_FLATTEN_BASE`) → phase C (this repo) | Root fields populated; then safe to remove `base` |
 
 ## 4. Local dev
 
