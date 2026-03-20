@@ -32,14 +32,14 @@ export function PodcastCard({
                                 descriptionLines = 3,
                                 className,
                             }: PodcastCardProps) {
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast.base, podcast.categories);
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
     const blurhash = optimizedMedia?.blurhash ?? null;
     const effectiveDate = getEffectiveDate(podcast);
     const formattedDate = formatDateShort(effectiveDate);
     const podcastUrl = routes.podcast(podcast.slug);
-    const effectiveDescription = podcast.base.description || podcast.categories?.[0]?.base?.description;
+    const effectiveDescription = podcast.description || podcast.categories?.[0]?.description;
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
 
@@ -47,10 +47,10 @@ export function PodcastCard({
         <article className={cardClasses}>
             <div className={styles.media}>
                 <Link href={podcastUrl} className={styles.mediaLink}
-                      aria-label={`Podcast-Cover anzeigen: ${podcast.base.title}`}>
+                      aria-label={`Podcast-Cover anzeigen: ${podcast.title}`}>
                     <Image
                         src={imageUrl ?? placeholderCover}
-                        alt={podcast.base.title}
+                        alt={podcast.title}
                         width={optimizedMedia?.width ?? 400}
                         height={optimizedMedia?.height ?? 225}
                         className={styles.cover}
@@ -70,7 +70,7 @@ export function PodcastCard({
                 </div>
                 <h2 className={styles.cardTitle}>
                     <Link href={podcastUrl} className={styles.cardLink}>
-                        {podcast.base.title}
+                        {podcast.title}
                     </Link>
                 </h2>
                 {effectiveDescription ? (

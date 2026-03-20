@@ -77,30 +77,30 @@ export async function buildContentFeed(
     ]);
 
     const articleItems: FeedItem[] = articlesResult.items.map((article) => {
-        const effectiveDescription = article.base.description || article.categories?.[0]?.base?.description;
+        const effectiveDescription = article.description || article.categories?.[0]?.description;
         return {
             type: 'article',
             slug: article.slug,
-            title: article.base.title,
+            title: article.title,
             description: effectiveDescription,
             publishedAt: getEffectiveDate(article),
-            cover: getOptimalMediaFormat(pickCoverMedia(article.base, article.categories), 'medium'),
-            banner: getOptimalMediaFormat(pickBannerMedia(article.base, article.categories), 'medium'),
+            cover: getOptimalMediaFormat(pickCoverMedia(article, article.categories), 'medium'),
+            banner: getOptimalMediaFormat(pickBannerMedia(article, article.categories), 'medium'),
             wordCount: article.wordCount ?? null,
             href: `/artikel/${article.slug}`,
         };
     });
 
     const podcastItems: FeedItem[] = podcastsResult.items.map((podcast) => {
-        const effectiveDescription = podcast.base.description || podcast.categories?.[0]?.base?.description;
+        const effectiveDescription = podcast.description || podcast.categories?.[0]?.description;
         return {
             type: 'podcast',
             slug: podcast.slug,
-            title: podcast.base.title,
+            title: podcast.title,
             description: effectiveDescription,
             publishedAt: getEffectiveDate(podcast),
-            cover: getOptimalMediaFormat(pickCoverMedia(podcast.base, podcast.categories), 'medium'),
-            banner: getOptimalMediaFormat(pickBannerMedia(podcast.base, podcast.categories), 'medium'),
+            cover: getOptimalMediaFormat(pickCoverMedia(podcast, podcast.categories), 'medium'),
+            banner: getOptimalMediaFormat(pickBannerMedia(podcast, podcast.categories), 'medium'),
             wordCount: podcast.wordCount ?? null,
             duration: podcast.duration ?? null,
             href: `/podcasts/${podcast.slug}`,

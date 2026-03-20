@@ -163,7 +163,8 @@ function sanitizeText(value: unknown): string | undefined {
 }
 
 function effectiveDate(raw: any): string | null {
-    const override = safeText(raw?.base?.date);
+    const base = unwrapEntry(raw?.base);
+    const override = safeText(raw?.date) || safeText(base?.date);
     if (override) return override;
     return safeText(raw?.publishedAt) ?? null;
 }
@@ -200,18 +201,23 @@ function extractMediaUrl(mediaRef: any, strapiUrl?: string): string | null {
 function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
     if (!strapiUrl) return null;
 
-    // Try to get cover from entity.base.cover first
-    const baseCover = raw?.base?.cover;
+    const rootCover = raw?.cover;
+    if (rootCover) {
+        const url = extractMediaUrl(rootCover, strapiUrl);
+        if (url) return url;
+    }
+
+    const base = unwrapEntry(raw?.base);
+    const baseCover = base?.cover;
     if (baseCover) {
         const url = extractMediaUrl(baseCover, strapiUrl);
         if (url) return url;
     }
 
-    // Fallback to first category's cover if entity.base.cover is not set
     const firstCategory = raw?.categories?.[0];
     if (firstCategory) {
         const category = unwrapEntry(firstCategory);
-        const categoryCover = category?.base?.cover;
+        const categoryCover = category?.cover;
         if (categoryCover) {
             const url = extractMediaUrl(categoryCover, strapiUrl);
             if (url) return url;
@@ -235,9 +241,9 @@ function extractAuthorAvatarUrl(raw: any, strapiUrl?: string): string | null {
 function extractCategoryCoverUrl(raw: any, strapiUrl?: string): string | null {
     if (!strapiUrl) return null;
 
-    const baseCover = raw?.base?.cover;
-    if (baseCover) {
-        return extractMediaUrl(baseCover, strapiUrl);
+    const rootCover = raw?.cover;
+    if (rootCover) {
+        return extractMediaUrl(rootCover, strapiUrl);
     }
 
     return null;
@@ -249,6 +255,29 @@ function unwrapEntry<T extends {attributes?: Record<string, unknown>}>(entry: T)
         return {...entry.attributes, id: (entry as any).id, documentId: (entry as any).documentId};
     }
     return entry;
+}
+
+/** Merge optional root duplicates from BaseContent component (phase A migration). */
+function mergeBaseContentFields(entity: any): any {
+    const e = unwrapEntry(entity);
+    if (!e?.base) return e;
+    const b = unwrapEntry(e.base);
+    return {
+        ...e,
+        title: e.title || b.title,
+        description: e.description ?? b.description,
+        date: e.date ?? b.date,
+        cover: e.cover ?? b.cover,
+        banner: e.banner ?? b.banner,
+    };
+}
+
+function mergeBaseContentFieldsWithCategories(entity: any): any {
+    const e = mergeBaseContentFields(entity);
+    if (Array.isArray(e.categories)) {
+        e.categories = e.categories.map((c: any) => mergeBaseContentFields(unwrapEntry(c)));
+    }
+    return e;
 }
 
 async function fetchAllDocuments<T>(
@@ -279,17 +308,17 @@ async function fetchAllDocuments<T>(
 }
 
 function normalizeArticle(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const article = unwrapEntry(raw);
+    const article = mergeBaseContentFieldsWithCategories(unwrapEntry(raw));
     const slug = safeText(article?.slug);
-    const title = sanitizeText(article?.base?.title);
+    const title = sanitizeText(article?.title);
     if (!slug || !title) return null;
 
-    const description = sanitizeText(article?.base?.description) ?? null;
+    const description = sanitizeText(article?.description) ?? null;
     const content = toPlainText(article?.content, metrics) ?? null;
     const categories: string[] =
         article?.categories
             ?.map((c: any) => unwrapEntry(c))
-            ?.map((c: any) => sanitizeText(c?.base?.title) ?? sanitizeText(c?.slug))
+            ?.map((c: any) => sanitizeText(c?.title) ?? sanitizeText(c?.slug))
             ?.filter(Boolean) ?? [];
     const authors: string[] =
         article?.authors
@@ -313,17 +342,17 @@ function normalizeArticle(raw: any, strapiUrl?: string, metrics?: PlainTextMetri
 }
 
 function normalizePodcast(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const podcast = unwrapEntry(raw);
+    const podcast = mergeBaseContentFieldsWithCategories(unwrapEntry(raw));
     const slug = safeText(podcast?.slug);
-    const title = sanitizeText(podcast?.base?.title);
+    const title = sanitizeText(podcast?.title);
     if (!slug || !title) return null;
 
-    const description = sanitizeText(podcast?.base?.description) ?? null;
+    const description = sanitizeText(podcast?.description) ?? null;
     const content = toPlainText(podcast?.shownotes, metrics) ?? null;
     const categories: string[] =
         podcast?.categories
             ?.map((c: any) => unwrapEntry(c))
-            ?.map((c: any) => sanitizeText(c?.base?.title) ?? sanitizeText(c?.slug))
+            ?.map((c: any) => sanitizeText(c?.title) ?? sanitizeText(c?.slug))
             ?.filter(Boolean) ?? [];
     const authors: string[] =
         podcast?.authors
@@ -367,12 +396,12 @@ function normalizeAuthor(raw: any, strapiUrl?: string): SearchRecord | null {
 }
 
 function normalizeCategory(raw: any, strapiUrl?: string): SearchRecord | null {
-    const category = unwrapEntry(raw);
+    const category = mergeBaseContentFields(unwrapEntry(raw));
     const slug = safeText(category?.slug);
-    const title = sanitizeText(category?.base?.title) ?? sanitizeText(category?.title) ?? slug;
+    const title = sanitizeText(category?.title) ?? slug;
     if (!slug || !title) return null;
 
-    const description = sanitizeText(category?.base?.description) ?? null;
+    const description = sanitizeText(category?.description) ?? null;
 
     return {
         id: `category:${slug}`,
@@ -396,14 +425,18 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
             'api::article.article',
             {
                 populate: {
-                    base: {populate: ['cover'], fields: ['title', 'description', 'date']},
+                    cover: true,
+                    base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
                     categories: {
-                        populate: {base: {populate: ['cover'], fields: ['title']}},
-                        fields: ['slug'],
+                        populate: {
+                            cover: true,
+                            base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
+                        },
+                        fields: ['slug', 'title', 'description', 'date'],
                     },
                     authors: {fields: ['title', 'slug']},
                 },
-                fields: ['slug', 'publishedAt', 'content'],
+                fields: ['slug', 'publishedAt', 'content', 'title', 'description', 'date'],
             },
         )
         .then((items) => ({items, ms: Date.now() - articlesStartedAt}));
@@ -414,14 +447,18 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
         'api::podcast.podcast',
         {
             populate: {
-                base: {populate: ['cover'], fields: ['title', 'description', 'date']},
+                cover: true,
+                base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
                 categories: {
-                    populate: {base: {populate: ['cover'], fields: ['title']}},
-                    fields: ['slug'],
+                    populate: {
+                        cover: true,
+                        base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
+                    },
+                    fields: ['slug', 'title', 'description', 'date'],
                 },
                 authors: {fields: ['title', 'slug']},
             },
-            fields: ['slug', 'publishedAt', 'shownotes'],
+            fields: ['slug', 'publishedAt', 'shownotes', 'title', 'description', 'date'],
         },
     ).then((items) => ({items, ms: Date.now() - podcastsStartedAt}));
 
@@ -440,8 +477,11 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
         strapi,
         'api::category.category',
         {
-            populate: {base: {populate: ['cover'], fields: ['title', 'description']}},
-            fields: ['slug'],
+            populate: {
+                cover: true,
+                base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
+            },
+            fields: ['slug', 'title', 'description', 'date'],
         },
     ).then((items) => ({items, ms: Date.now() - categoriesStartedAt}));
 

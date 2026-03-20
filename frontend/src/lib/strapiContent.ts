@@ -3,7 +3,15 @@ import {cache} from 'react';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/rss/media';
+import {
+    mergeCategoryRefFromBase,
+    mergeContentMediaFromBase,
+    mergeListingEntryFromBase,
+    type StrapiAuthor,
+    type StrapiBaseContentLegacy,
+    type StrapiCategoryRef,
+    type StrapiMediaRef,
+} from '@/src/lib/rss/media';
 import {CACHE_REVALIDATE_CONTENT_PAGE, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
@@ -19,45 +27,36 @@ const MAX_SLUGS = 150;
 
 // Reusable populate configurations to reduce duplication and query string length
 export const MEDIA_FIELDS = ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats'] as const;
-const BASE_FIELDS = ['title', 'description', 'date'] as const;
 const AUTHOR_FIELDS = ['title', 'slug', 'description'] as const;
-const CATEGORY_BASE_FIELDS = ['title', 'description'] as const;
+const CATEGORY_CONTENT_FIELDS = ['title', 'description'] as const;
 
 // Optimized populate configurations
 // Note: Field selection requires object syntax per Strapi docs
 // Array syntax (populate[0]=relation) only works without field selection
 // Since we need specific fields, object syntax is required and already optimal
 const populateMedia = {fields: MEDIA_FIELDS};
-export const populateBaseMedia = {
+/** Populated on article/podcast/category during BaseContent phase A (alongside optional root fields). */
+export const populateBaseComponent = {
     populate: {
         cover: populateMedia,
         banner: populateMedia,
     },
-    fields: BASE_FIELDS,
+    fields: ['title', 'description', 'date'] as const,
 };
 export const populateAuthorAvatar = {
     populate: {avatar: populateMedia},
     fields: AUTHOR_FIELDS,
 };
 const populateCategoryForStats = {
-    populate: {
-        base: {
-            fields: ['title'] as const,
-        },
-    },
-    fields: ['slug'] as const,
+    fields: ['slug', 'title'] as const,
 };
 export const populateCategoryBase = {
     populate: {
-        base: {
-            populate: {
-                cover: populateMedia,
-                banner: populateMedia,
-            },
-            fields: CATEGORY_BASE_FIELDS,
-        },
+        cover: populateMedia,
+        banner: populateMedia,
+        base: populateBaseComponent,
     },
-    fields: ['slug'] as const,
+    fields: [...CATEGORY_CONTENT_FIELDS, 'slug', 'date'] as unknown as ['title', 'description', 'slug', 'date'],
 };
 
 type FetchOptions = {
@@ -376,12 +375,14 @@ export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArti
             filters: {slug: {$eq: slug}},
             status: 'published',
             populate: {
-                base: populateBaseMedia,
+                cover: populateMedia,
+                banner: populateMedia,
+                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: true,
             },
-            fields: ['slug', 'content', 'wordCount', 'publishedAt'],
+            fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             pagination: {pageSize: 1},
         },
         {encodeValuesOnly: true},
@@ -396,7 +397,9 @@ export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArti
                 slug,
                 contentType: 'article',
                 populateOptions: {
-                    base: populateBaseMedia,
+                    cover: populateMedia,
+                    banner: populateMedia,
+                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     youtube: true,
@@ -404,7 +407,8 @@ export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArti
             },
         },
     );
-    return res.data?.[0] ?? null;
+    const row = res.data?.[0];
+    return row ? normalizeStrapiArticle(row) : null;
 });
 
 type PreviewStatus = 'draft' | 'published';
@@ -425,12 +429,14 @@ export async function fetchArticleBySlugForPreview(
             filters: {slug: {$eq: slug}},
             status,
             populate: {
-                base: populateBaseMedia,
+                cover: populateMedia,
+                banner: populateMedia,
+                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: true,
             },
-            fields: ['slug', 'content', 'wordCount', 'publishedAt'],
+            fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             pagination: {pageSize: 1},
         },
         {encodeValuesOnly: true},
@@ -444,7 +450,9 @@ export async function fetchArticleBySlugForPreview(
                 slug,
                 contentType: 'article',
                 populateOptions: {
-                    base: populateBaseMedia,
+                    cover: populateMedia,
+                    banner: populateMedia,
+                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     youtube: true,
@@ -452,7 +460,8 @@ export async function fetchArticleBySlugForPreview(
             },
         },
     );
-    return res.data?.[0] ?? null;
+    const row = res.data?.[0];
+    return row ? normalizeStrapiArticle(row) : null;
 }
 
 /**
@@ -467,13 +476,15 @@ export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodc
             filters: {slug: {$eq: slug}},
             status: 'published',
             populate: {
-                base: populateBaseMedia,
+                cover: populateMedia,
+                banner: populateMedia,
+                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
                 file: {populate: '*'},
             },
-            fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt'],
+            fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             pagination: {pageSize: 1},
         },
         {encodeValuesOnly: true},
@@ -488,7 +499,9 @@ export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodc
                 slug,
                 contentType: 'podcast',
                 populateOptions: {
-                    base: populateBaseMedia,
+                    cover: populateMedia,
+                    banner: populateMedia,
+                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     youtube: {fields: ['title', 'url']},
@@ -497,7 +510,8 @@ export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodc
             },
         },
     );
-    return res.data?.[0] ?? null;
+    const pod = res.data?.[0];
+    return pod ? normalizeStrapiPodcast(pod) : null;
 });
 
 /**
@@ -516,13 +530,15 @@ export async function fetchPodcastBySlugForPreview(
             filters: {slug: {$eq: slug}},
             status,
             populate: {
-                base: populateBaseMedia,
+                cover: populateMedia,
+                banner: populateMedia,
+                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
                 file: {populate: '*'},
             },
-            fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt'],
+            fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             pagination: {pageSize: 1},
         },
         {encodeValuesOnly: true},
@@ -536,7 +552,9 @@ export async function fetchPodcastBySlugForPreview(
                 slug,
                 contentType: 'podcast',
                 populateOptions: {
-                    base: populateBaseMedia,
+                    cover: populateMedia,
+                    banner: populateMedia,
+                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     youtube: {fields: ['title', 'url']},
@@ -545,27 +563,32 @@ export async function fetchPodcastBySlugForPreview(
             },
         },
     );
-    return res.data?.[0] ?? null;
+    const pod = res.data?.[0];
+    return pod ? normalizeStrapiPodcast(pod) : null;
 }
 
 export type StrapiCategoryWithContent = {
     id: number;
     slug: string;
-    base?: {
-        title?: string | null;
-        description?: string | null;
-        cover?: StrapiMediaRef | null;
-        banner?: StrapiMediaRef | null;
-    } | null;
+    title?: string | null;
+    description?: string | null;
+    date?: string | null;
+    cover?: StrapiMediaRef | null;
+    banner?: StrapiMediaRef | null;
+    base?: StrapiBaseContentLegacy | null;
     articles?: Array<{
         slug: string;
         publishedAt?: string | null;
-        base: {title: string; date?: string | null};
+        title: string;
+        date?: string | null;
+        base?: StrapiBaseContentLegacy | null;
     }>;
     podcasts?: Array<{
         slug: string;
         publishedAt?: string | null;
-        base: {title: string; date?: string | null};
+        title: string;
+        date?: string | null;
+        base?: StrapiBaseContentLegacy | null;
     }>;
 };
 
@@ -573,16 +596,53 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
     articles?: Array<{
         slug: string;
         publishedAt?: string | null;
-        base: {title: string; date?: string | null};
+        title: string;
+        date?: string | null;
+        base?: StrapiBaseContentLegacy | null;
         categories?: StrapiCategoryRef[];
     }>;
     podcasts?: Array<{
         slug: string;
         publishedAt?: string | null;
-        base: {title: string; date?: string | null};
+        title: string;
+        date?: string | null;
+        base?: StrapiBaseContentLegacy | null;
         categories?: StrapiCategoryRef[];
     }>;
 };
+
+export function normalizeStrapiArticle(item: StrapiArticle): StrapiArticle {
+    const m = mergeContentMediaFromBase(item);
+    const categories = m.categories?.map((c) => mergeCategoryRefFromBase(c));
+    return {...m, categories};
+}
+
+export function normalizeStrapiPodcast(item: StrapiPodcast): StrapiPodcast {
+    const m = mergeContentMediaFromBase(item);
+    const categories = m.categories?.map((c) => mergeCategoryRefFromBase(c));
+    return {...m, categories};
+}
+
+function normalizeStrapiCategoryWithContent(item: StrapiCategoryWithContent): StrapiCategoryWithContent {
+    const root = mergeContentMediaFromBase({
+        title: item.title ?? '',
+        description: item.description,
+        date: item.date,
+        cover: item.cover,
+        banner: item.banner,
+        base: item.base,
+    });
+    return {
+        ...item,
+        title: root.title || item.slug,
+        description: root.description,
+        date: root.date,
+        cover: root.cover,
+        banner: root.banner,
+        articles: item.articles?.map(mergeListingEntryFromBase),
+        podcasts: item.podcasts?.map(mergeListingEntryFromBase),
+    };
+}
 
 export const fetchArticlesList = cache(async (options: FetchListOptions = {}): Promise<StrapiArticle[]> => {
     const limit = options.limit ?? 100;
@@ -637,7 +697,7 @@ export const fetchAuthorsList = cache(async (options: FetchListOptions = {}): Pr
 });
 
 /**
- * Fetches an author by slug, including avatar, articles, and podcasts with their base title and date.
+ * Fetches an author by slug, including avatar, articles, and podcasts with title and date on each entry.
  *
  * @param slug - The author's slug to query
  * @returns The matching author with populated content, or `null` if not found
@@ -650,17 +710,17 @@ export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAutho
                 avatar: true,
                 articles: {
                     populate: {
-                        base: {fields: ['title', 'date']},
                         categories: populateCategoryForStats,
+                        base: populateBaseComponent,
                     },
-                    fields: ['slug', 'publishedAt'],
+                    fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
                 podcasts: {
                     populate: {
-                        base: {fields: ['title', 'date']},
                         categories: populateCategoryForStats,
+                        base: populateBaseComponent,
                     },
-                    fields: ['slug', 'publishedAt'],
+                    fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
             },
             fields: ['slug', 'title', 'description'],
@@ -676,31 +736,47 @@ export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAutho
             revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
         },
     );
-    return res.data?.[0] ?? null;
+    const author = res.data?.[0];
+    if (!author) return null;
+    return {
+        ...author,
+        articles: author.articles?.map((a) => {
+            const m = mergeListingEntryFromBase(a);
+            const categories = m.categories?.map((c) => mergeCategoryRefFromBase(c));
+            return {...m, categories};
+        }),
+        podcasts: author.podcasts?.map((p) => {
+            const m = mergeListingEntryFromBase(p);
+            const categories = m.categories?.map((c) => mergeCategoryRefFromBase(c));
+            return {...m, categories};
+        }),
+    };
 });
 
 /**
- * Fetches a category by its slug and returns it with populated base metadata and related content lists.
+ * Fetches a category by its slug and returns it with populated metadata and related content lists.
  *
  * @param slug - The category slug to look up
- * @returns The category including `base` (title, description, date, cover, banner), `articles` and `podcasts` (each with `slug`, `publishedAt`, and `base` containing `title` and `date`), or `null` if no matching category is found
+ * @returns The category including title, description, date, cover, banner, plus `articles` and `podcasts` (each with slug, publishedAt, title, date), or `null` if no matching category is found
  */
 export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCategoryWithContent | null> => {
     const query = qs.stringify(
         {
             filters: {slug: {$eq: slug}},
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
+                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                base: populateBaseComponent,
+                articles: {
+                    populate: {base: populateBaseComponent},
+                    fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
-                articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
-                podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                podcasts: {
+                    populate: {base: populateBaseComponent},
+                    fields: ['slug', 'publishedAt', 'title', 'date'],
+                },
             },
-            fields: ['slug'],
+            fields: ['slug', 'title', 'description', 'date'],
             pagination: {pageSize: 1},
         },
         {encodeValuesOnly: true},
@@ -715,46 +791,51 @@ export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCat
                 slug,
                 contentType: 'category',
                 populateOptions: {
-                    base: {
-                        populate: {
-                            cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                            banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                        },
-                        fields: ['title', 'description', 'date'],
+                    cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                    banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                    base: populateBaseComponent,
+                    articles: {
+                        populate: {base: populateBaseComponent},
+                        fields: ['slug', 'publishedAt', 'title', 'date'],
                     },
-                    articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
-                    podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                    podcasts: {
+                        populate: {base: populateBaseComponent},
+                        fields: ['slug', 'publishedAt', 'title', 'date'],
+                    },
                 },
             },
         },
     );
-    return res.data?.[0] ?? null;
+    const cat = res.data?.[0];
+    return cat ? normalizeStrapiCategoryWithContent(cat) : null;
 });
 
 /**
  * Fetches categories along with their populated metadata, articles, and podcasts.
  *
  * @param options - Optional fetch settings. `limit` caps the number of categories (default 100); `tags` provides request tags for caching/observability.
- * @returns An array of categories with base metadata (title, description, date, cover, banner), and lists of related articles and podcasts (each with slug, publishedAt, and base title/date).
+ * @returns An array of categories with metadata (title, description, date, cover, banner), and lists of related articles and podcasts (each with slug, publishedAt, title, date).
  */
 export const fetchCategoriesWithContent = cache(async (options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> => {
     const limit = options.limit ?? 100;
     const query = qs.stringify(
         {
-            sort: ['base.title:asc'],
+            sort: ['title:asc'],
             pagination: {pageSize: limit, page: 1},
             populate: {
-                base: {
-                    populate: {
-                        cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                        banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                    },
-                    fields: ['title', 'description', 'date'],
+                cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
+                base: populateBaseComponent,
+                articles: {
+                    populate: {base: populateBaseComponent},
+                    fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
-                articles: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
-                podcasts: {populate: {base: {fields: ['title', 'date']}}, fields: ['slug', 'publishedAt']},
+                podcasts: {
+                    populate: {base: populateBaseComponent},
+                    fields: ['slug', 'publishedAt', 'title', 'date'],
+                },
             },
-            fields: ['slug'],
+            fields: ['slug', 'title', 'description', 'date'],
         },
         {encodeValuesOnly: true},
     );
@@ -766,7 +847,7 @@ export const fetchCategoriesWithContent = cache(async (options: FetchListOptions
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
-    return res.data ?? [];
+    return (res.data ?? []).map(normalizeStrapiCategoryWithContent);
 });
 
 /**
@@ -781,15 +862,17 @@ export const fetchArticlesPage = cache(async (options: FetchPageOptions = {}): P
 
     const query = qs.stringify(
         {
-            sort: ['base.date:desc'],
+            sort: ['date:desc'],
             status: 'published',
             pagination: {pageSize, page},
             populate: {
-                base: populateBaseMedia,
+                cover: populateMedia,
+                banner: populateMedia,
+                base: populateBaseComponent,
                 categories: populateCategoryBase,
                 youtube: true,
             },
-            fields: ['slug', 'wordCount', 'publishedAt'],
+            fields: ['slug', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
         },
         {encodeValuesOnly: true},
     );
@@ -802,7 +885,8 @@ export const fetchArticlesPage = cache(async (options: FetchPageOptions = {}): P
         },
     );
 
-    return toPaginatedResult(res, page, pageSize);
+    const pr = toPaginatedResult(res, page, pageSize);
+    return {...pr, items: pr.items.map(normalizeStrapiArticle)};
 });
 
 /**
@@ -825,12 +909,14 @@ export const fetchArticlesBySlugs = cache(async (slugs: string[]): Promise<Strap
             filters: {slug: {$in: slugs}},
             status: 'published',
             populate: {
-                base: populateBaseMedia,
+                cover: populateMedia,
+                banner: populateMedia,
+                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: true,
             },
-            fields: ['slug', 'wordCount', 'publishedAt'],
+            fields: ['slug', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             pagination: {pageSize: MAX_SLUGS},
         },
         {encodeValuesOnly: true},
@@ -843,7 +929,7 @@ export const fetchArticlesBySlugs = cache(async (slugs: string[]): Promise<Strap
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
-    return res.data ?? [];
+    return (res.data ?? []).map(normalizeStrapiArticle);
 });
 
 /**
@@ -866,13 +952,15 @@ export const fetchPodcastsBySlugs = cache(async (slugs: string[]): Promise<Strap
             filters: {slug: {$in: slugs}},
             status: 'published',
             populate: {
-                base: populateBaseMedia,
+                cover: populateMedia,
+                banner: populateMedia,
+                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
                 file: {populate: '*'},
             },
-            fields: ['slug', 'duration', 'wordCount', 'publishedAt'],
+            fields: ['slug', 'duration', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             pagination: {pageSize: MAX_SLUGS},
         },
         {encodeValuesOnly: true},
@@ -885,7 +973,7 @@ export const fetchPodcastsBySlugs = cache(async (slugs: string[]): Promise<Strap
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
-    return res.data ?? [];
+    return (res.data ?? []).map(normalizeStrapiPodcast);
 });
 
 /**
@@ -939,8 +1027,8 @@ export const fetchPodcastsBySlugsBatched = cache(async (slugs: string[]): Promis
 /**
  * Fetches a paginated list of published podcasts from Strapi.
  *
- * The returned podcast items include populated `base` (title, description, date, cover, banner),
- * `categories` (slug and their base title/description and cover/banner), `youtube` (title, url),
+ * The returned podcast items include root title, description, date, cover, banner,
+ * `categories` (slug, title, description, cover, banner), `youtube` (title, url),
  * and `file` fields. Each item also includes `slug`, `duration`, `wordCount`, and `publishedAt`.
  *
  * @param options - Optional settings for the request.
@@ -955,16 +1043,18 @@ export const fetchPodcastsPage = cache(async (options: FetchPageOptions = {}): P
 
     const query = qs.stringify(
         {
-            sort: ['base.date:desc'],
+            sort: ['date:desc'],
             status: 'published',
             pagination: {pageSize, page},
             populate: {
-                base: populateBaseMedia,
+                cover: populateMedia,
+                banner: populateMedia,
+                base: populateBaseComponent,
                 categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
                 file: {populate: '*'},
             },
-            fields: ['slug', 'duration', 'wordCount', 'publishedAt'],
+            fields: ['slug', 'duration', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
         },
         {encodeValuesOnly: true},
     );
@@ -977,7 +1067,8 @@ export const fetchPodcastsPage = cache(async (options: FetchPageOptions = {}): P
         },
     );
 
-    return toPaginatedResult(res, page, pageSize);
+    const pr = toPaginatedResult(res, page, pageSize);
+    return {...pr, items: pr.items.map(normalizeStrapiPodcast)};
 });
 
 /**
@@ -998,7 +1089,7 @@ export const fetchArticlesByAuthorPaginated = cache(
 
         const query = qs.stringify(
             {
-                sort: ['base.date:desc'],
+                sort: ['date:desc'],
                 status: 'published',
                 filters: {
                     authors: {slug: {$eq: authorSlug}},
@@ -1006,11 +1097,13 @@ export const fetchArticlesByAuthorPaginated = cache(
                 },
                 pagination: {pageSize: safePageSize, page: safePage},
                 populate: {
-                    base: populateBaseMedia,
+                    cover: populateMedia,
+                    banner: populateMedia,
+                    base: populateBaseComponent,
                     categories: populateCategoryBase,
                     youtube: true,
                 },
-                fields: ['slug', 'wordCount', 'publishedAt'],
+                fields: ['slug', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             },
             {encodeValuesOnly: true},
         );
@@ -1024,7 +1117,9 @@ export const fetchArticlesByAuthorPaginated = cache(
                     slug: authorSlug,
                     contentType: 'article',
                     populateOptions: {
-                        base: populateBaseMedia,
+                        cover: populateMedia,
+                        banner: populateMedia,
+                        base: populateBaseComponent,
                         categories: populateCategoryBase,
                         youtube: true,
                     },
@@ -1032,7 +1127,8 @@ export const fetchArticlesByAuthorPaginated = cache(
             },
         );
 
-        return toPaginatedResult(res, safePage, safePageSize);
+        const pr = toPaginatedResult(res, safePage, safePageSize);
+        return {...pr, items: pr.items.map(normalizeStrapiArticle)};
     },
 );
 
@@ -1048,7 +1144,7 @@ export const fetchRelatedArticles = cache(
 
         const query = qs.stringify(
             {
-                sort: ['base.date:desc'],
+                sort: ['date:desc'],
                 status: 'published',
                 pagination: {pageSize: RELATED_CONTENT_LIMIT, page: 1},
                 filters: {
@@ -1056,10 +1152,12 @@ export const fetchRelatedArticles = cache(
                     categories: {slug: {$in: categorySlugs}},
                 },
                 populate: {
-                    base: populateBaseMedia,
+                    cover: populateMedia,
+                    banner: populateMedia,
+                    base: populateBaseComponent,
                     categories: populateCategoryBase,
                 },
-                fields: ['slug', 'wordCount', 'publishedAt'],
+                fields: ['slug', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             },
             {encodeValuesOnly: true},
         );
@@ -1072,7 +1170,7 @@ export const fetchRelatedArticles = cache(
             },
         );
 
-        return res.data ?? [];
+        return (res.data ?? []).map(normalizeStrapiArticle);
     },
 );
 
@@ -1086,7 +1184,7 @@ export const fetchRelatedPodcasts = cache(
 
         const query = qs.stringify(
             {
-                sort: ['base.date:desc'],
+                sort: ['date:desc'],
                 status: 'published',
                 pagination: {pageSize: RELATED_CONTENT_LIMIT, page: 1},
                 filters: {
@@ -1094,11 +1192,13 @@ export const fetchRelatedPodcasts = cache(
                     categories: {slug: {$in: categorySlugs}},
                 },
                 populate: {
-                    base: populateBaseMedia,
+                    cover: populateMedia,
+                    banner: populateMedia,
+                    base: populateBaseComponent,
                     categories: populateCategoryBase,
                     file: {populate: '*'},
                 },
-                fields: ['slug', 'duration', 'wordCount', 'publishedAt'],
+                fields: ['slug', 'duration', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             },
             {encodeValuesOnly: true},
         );
@@ -1111,9 +1211,11 @@ export const fetchRelatedPodcasts = cache(
             },
         );
 
-        return res.data ?? [];
+        return (res.data ?? []).map(normalizeStrapiPodcast);
     },
-);/**
+);
+
+/**
  * Fetch a paginated list of published podcasts for a given author (optionally filtered by category).
  *
  * Uses Strapi filter syntax equivalent to `filters[authors][slug][$eq]=<authorSlug>` plus standard pagination parameters.
@@ -1131,7 +1233,7 @@ export const fetchPodcastsByAuthorPaginated = cache(
 
         const query = qs.stringify(
             {
-                sort: ['base.date:desc'],
+                sort: ['date:desc'],
                 status: 'published',
                 filters: {
                     authors: {slug: {$eq: authorSlug}},
@@ -1139,12 +1241,14 @@ export const fetchPodcastsByAuthorPaginated = cache(
                 },
                 pagination: {pageSize: safePageSize, page: safePage},
                 populate: {
-                    base: populateBaseMedia,
+                    cover: populateMedia,
+                    banner: populateMedia,
+                    base: populateBaseComponent,
                     categories: populateCategoryBase,
                     youtube: {fields: ['title', 'url']},
                     file: {populate: '*'},
                 },
-                fields: ['slug', 'duration', 'wordCount', 'publishedAt'],
+                fields: ['slug', 'duration', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             },
             {encodeValuesOnly: true},
         );
@@ -1158,7 +1262,9 @@ export const fetchPodcastsByAuthorPaginated = cache(
                     slug: authorSlug,
                     contentType: 'podcast',
                     populateOptions: {
-                        base: populateBaseMedia,
+                        cover: populateMedia,
+                        banner: populateMedia,
+                        base: populateBaseComponent,
                         categories: populateCategoryBase,
                         youtube: {fields: ['title', 'url']},
                         file: {populate: '*'},
@@ -1167,6 +1273,7 @@ export const fetchPodcastsByAuthorPaginated = cache(
             },
         );
 
-        return toPaginatedResult(res, safePage, safePageSize);
+        const pr = toPaginatedResult(res, safePage, safePageSize);
+        return {...pr, items: pr.items.map(normalizeStrapiPodcast)};
     },
 );

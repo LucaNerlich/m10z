@@ -2,7 +2,8 @@
     "collectionName": "components_collection_type_base_contents",
     "info": {
         "displayName": "BaseContent",
-        "icon": "message"
+      "icon": "message",
+      "description": ""
     },
     "options": {},
     "attributes": {
@@ -18,21 +19,20 @@
             "type": "media",
             "multiple": false,
             "required": false,
-            "allowedTypes": [
-                "images"
-            ]
+          "allowedTypes": [
+            "images"
+          ]
         },
         "banner": {
             "type": "media",
             "multiple": false,
             "required": false,
-            "allowedTypes": [
-                "images"
-            ]
+          "allowedTypes": [
+            "images"
+          ]
         },
         "date": {
             "type": "datetime"
         }
-    },
-    "config": {}
+    }
 }

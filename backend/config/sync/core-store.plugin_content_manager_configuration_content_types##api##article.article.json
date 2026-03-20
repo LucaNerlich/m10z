@@ -8,7 +8,8 @@
       "pageSize": 20,
       "mainField": "slug",
       "defaultSortBy": "updatedAt",
-      "defaultSortOrder": "DESC"
+      "defaultSortOrder": "DESC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -31,6 +32,76 @@
           "label": "Title",
           "searchable": false,
           "sortable": false
+        }
+      },
+      "title": {
+        "edit": {
+          "label": "title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "cover": {
+        "edit": {
+          "label": "cover",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "cover",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "banner": {
+        "edit": {
+          "label": "banner",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "banner",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "date": {
+        "edit": {
+          "label": "date",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "date",
+          "searchable": true,
+          "sortable": true
         }
       },
       "slug": {
@@ -187,7 +258,43 @@
       }
     },
     "layouts": {
+      "list": [
+        "slug",
+        "updatedAt",
+        "title",
+        "description"
+      ],
       "edit": [
+        [
+          {
+            "name": "title",
+            "size": 6
+          },
+          {
+            "name": "description",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "cover",
+            "size": 6
+          },
+          {
+            "name": "banner",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "slug",
+            "size": 6
+          },
+          {
+            "name": "date",
+            "size": 6
+          }
+        ],
         [
           {
             "name": "base",
@@ -196,7 +303,7 @@
         ],
         [
           {
-            "name": "slug",
+            "name": "categories",
             "size": 6
           },
           {
@@ -214,10 +321,6 @@
           {
             "name": "authors",
             "size": 6
-          },
-          {
-            "name": "categories",
-            "size": 6
           }
         ],
         [
@@ -226,10 +329,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "slug",
-        "updatedAt"
       ]
     },
     "uid": "api::article.article"

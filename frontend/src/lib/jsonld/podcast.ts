@@ -36,7 +36,7 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
         }
         : undefined;
 
-    const preferredMedia = pickCoverOrBannerMedia(podcast.base, podcast.categories);
+    const preferredMedia = pickCoverOrBannerMedia(podcast, podcast.categories);
     const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
     const coverImage = mediaToImage(optimizedMedia);
 
@@ -54,8 +54,8 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
     return {
         '@context': 'https://schema.org',
         '@type': 'PodcastEpisode',
-        name: podcast.base.title,
-        description: podcast.base.description ?? undefined,
+        name: podcast.title,
+        description: podcast.description ?? undefined,
         datePublished: datePublished,
         duration,
         associatedMedia,

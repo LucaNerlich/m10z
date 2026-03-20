@@ -50,9 +50,9 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         const episode = await fetchPodcastBySlug(slug);
         if (!episode) return {};
 
-        const title = episode.base.title;
-        const description = episode.base.description || undefined;
-        const bannerOrCoverMedia = pickBannerOrCoverMedia(episode.base, episode.categories);
+        const title = episode.title;
+        const description = episode.description || undefined;
+        const bannerOrCoverMedia = pickBannerOrCoverMedia(episode, episode.categories);
         const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
         const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
 

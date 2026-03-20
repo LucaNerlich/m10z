@@ -13,10 +13,37 @@
     "attributes": {
         "base": {
             "type": "component",
-            "component": "collection-type.base-content",
             "repeatable": false,
+          "component": "collection-type.base-content",
             "required": true
         },
+      "title": {
+        "type": "string",
+        "required": false
+      },
+      "description": {
+        "type": "text",
+        "required": false
+      },
+      "cover": {
+        "type": "media",
+        "multiple": false,
+        "required": false,
+        "allowedTypes": [
+          "images"
+        ]
+      },
+      "banner": {
+        "type": "media",
+        "multiple": false,
+        "required": false,
+        "allowedTypes": [
+          "images"
+        ]
+      },
+      "date": {
+        "type": "datetime"
+      },
         "slug": {
             "type": "uid",
             "required": true

@@ -27,7 +27,7 @@ export function CategoryList({categories, showCounts = false, maxDisplay}: Categ
             {displayCategories.map((category, index) => {
                 const categorySlug = category.slug ?? '';
                 const categoryUrl = routes.category(categorySlug);
-                const title = category.base?.title ?? categorySlug;
+                const title = category.title ?? categorySlug;
 
                 return (
                     <Link key={categorySlug || index} href={categoryUrl} className={styles.link}>

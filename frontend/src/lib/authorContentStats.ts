@@ -34,7 +34,7 @@ function computeCategoryCounts(items: ItemWithCategories[]): CategoryCount[] {
         for (const category of item.categories ?? []) {
             const slug = category.slug ?? '';
             if (!slug) continue;
-            const title = category.base?.title ?? slug;
+            const title = category.title ?? slug;
             const existing = map.get(slug);
             if (existing) {
                 existing.count += 1;

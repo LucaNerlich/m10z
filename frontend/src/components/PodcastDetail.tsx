@@ -40,7 +40,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const published = getEffectiveDate(podcast);
     const fileMedia = normalizeStrapiMedia(podcast.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia});
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast.base, podcast.categories);
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
     // Fallback configuration
@@ -55,13 +55,13 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const imageHeight = optimizedMedia?.height ?? fallbackHeight;
     const blurhash = optimizedMedia?.blurhash ?? null;
     const placeholder = blurhash ? 'blur' : 'empty';
-    const imageAlt = optimizedMedia?.alternativeText ?? podcast.base.title;
+    const imageAlt = optimizedMedia?.alternativeText ?? podcast.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generatePodcastJsonLd(podcast);
     const breadcrumbItems = [
         {name: 'Startseite', path: '/'},
         {name: 'Podcasts', path: '/podcasts'},
-        {name: podcast.base.title, path: `/podcasts/${slug}`},
+        {name: podcast.title, path: `/podcasts/${slug}`},
     ];
     const breadcrumbJsonLd = generateBreadcrumbJsonLd(breadcrumbItems);
 
@@ -99,7 +99,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                     authors={podcast.authors}
                     categories={podcast.categories}
                 />
-                <h1 className={styles.title}>{podcast.base.title}</h1>
+                <h1 className={styles.title}>{podcast.title}</h1>
             </section>
 
             {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}

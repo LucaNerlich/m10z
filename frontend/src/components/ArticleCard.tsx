@@ -39,7 +39,7 @@ export function ArticleCard({
                                 descriptionLines = 3,
                                 className,
                             }: ArticleCardProps) {
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(article, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
     const blurhash = optimizedMedia?.blurhash ?? null;
@@ -49,7 +49,7 @@ export function ArticleCard({
 
     // Use wordCount for reading time calculation (no fallback to content)
     const readingTime = article.wordCount != null ? calculateReadingTime(article.wordCount) : null;
-    const effectiveDescription = article.base.description || article.categories?.[0]?.base?.description;
+    const effectiveDescription = article.description || article.categories?.[0]?.description;
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
 
@@ -57,10 +57,10 @@ export function ArticleCard({
         <article className={cardClasses}>
             <div className={styles.media}>
                 <Link href={articleUrl} className={styles.mediaLink}
-                      aria-label={`Artikelbild anzeigen: ${article.base.title}`}>
+                      aria-label={`Artikelbild anzeigen: ${article.title}`}>
                     <Image
                         src={imageUrl ?? placeholderCover}
-                        alt={article.base.title}
+                        alt={article.title}
                         width={optimizedMedia?.width ?? 400}
                         height={optimizedMedia?.height ?? 225}
                         className={styles.cover}
@@ -80,7 +80,7 @@ export function ArticleCard({
                 </div>
                 <h2 className={styles.cardTitle}>
                     <Link href={articleUrl} className={styles.cardLink}>
-                        {article.base.title}
+                        {article.title}
                     </Link>
                 </h2>
                 {effectiveDescription ? (

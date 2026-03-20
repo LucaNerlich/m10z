@@ -16,7 +16,7 @@
         "jsdom": "^27.4.0",
         "marked": "^17.0.4",
         "mermaid": "^11.13.0",
-        "next": "^16.1.6",
+      "next": "^16.2.0",
         "prism-react-renderer": "^2.4.1",
         "qs": "^6.15.0",
         "react": "^19.2.4",
@@ -32,11 +32,11 @@
         "remark-smartypants": "^3.0.2",
         "serialize-javascript": "^7.0.4",
         "swr": "^2.4.1",
-        "undici": "^7.24.4",
+      "undici": "^7.24.5",
         "xml-formatter": "^3.7.0"
     },
     "devDependencies": {
-        "@next/env": "^16.1.6",
+      "@next/env": "^16.2.0",
         "@types/jsdom": "^27.0.0",
         "@types/node": "^25.5.0",
         "@types/qs": "^6.15.0",

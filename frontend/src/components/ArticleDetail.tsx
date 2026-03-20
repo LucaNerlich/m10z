@@ -40,7 +40,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
 
     const published = getEffectiveDate(article);
     const readingTime = calculateReadingTime(article.content ?? '');
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(article.base, article.categories);
+    const bannerOrCoverMedia = pickBannerOrCoverMedia(article, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
     // Fallback configuration
@@ -55,13 +55,13 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const imageHeight = optimizedMedia?.height ?? fallbackHeight;
     const blurhash = optimizedMedia?.blurhash ?? null;
     const placeholder = blurhash ? 'blur' : 'empty';
-    const imageAlt = optimizedMedia?.alternativeText ?? article.base.title;
+    const imageAlt = optimizedMedia?.alternativeText ?? article.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
     const jsonLd = generateArticleJsonLd(article);
     const breadcrumbItems = [
         {name: 'Startseite', path: '/'},
         {name: 'Artikel', path: '/artikel'},
-        {name: article.base.title, path: `/artikel/${slug}`},
+        {name: article.title, path: `/artikel/${slug}`},
     ];
     const breadcrumbJsonLd = generateBreadcrumbJsonLd(breadcrumbItems);
     const content = article.content ?? '';
@@ -102,7 +102,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                     authors={article.authors}
                     categories={article.categories}
                 />
-                <h1 className={styles.title}>{article.base.title}</h1>
+                <h1 className={styles.title}>{article.title}</h1>
             </section>
 
             <Markdown markdown={content} />

@@ -19,8 +19,8 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
 
     const articleUrl = absoluteRoute(routes.article(article.slug));
 
-    const coverMedia = pickCoverMedia(article.base, article.categories);
-    const bannerMedia = pickBannerMedia(article.base, article.categories);
+    const coverMedia = pickCoverMedia(article, article.categories);
+    const bannerMedia = pickBannerMedia(article, article.categories);
 
     const images: (ImageObject | string)[] = [];
     const coverImage = mediaToImage(coverMedia);
@@ -37,8 +37,8 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
     return {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
-        headline: article.base.title,
-        description: article.base.description ?? undefined,
+        headline: article.title,
+        description: article.description ?? undefined,
         datePublished: datePublished ?? dateModified,
         dateModified,
         url: articleUrl,

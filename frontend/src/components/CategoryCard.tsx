@@ -9,12 +9,10 @@ import styles from './CategoryCard.module.css';
 
 type CategoryCardCategory = {
     slug?: string | null;
-    base?: {
-        title?: string | null;
-        description?: string | null;
-        cover?: StrapiMediaRef | null;
-        banner?: StrapiMediaRef | null;
-    } | null;
+    title?: string | null;
+    description?: string | null;
+    cover?: StrapiMediaRef | null;
+    banner?: StrapiMediaRef | null;
 };
 
 type CategoryCardProps = {
@@ -52,13 +50,13 @@ function formatContentCounts(articleCount?: number, podcastCount?: number): stri
 export function CategoryCard({category, articleCount, podcastCount, className}: CategoryCardProps) {
     const categorySlug = category.slug ?? '';
     const categoryUrl = routes.category(categorySlug);
-    const title = category.base?.title ?? categorySlug;
-    const description = category.base?.description;
+    const title = category.title ?? categorySlug;
+    const description = category.description;
     const contentCounts = formatContentCounts(articleCount, podcastCount);
-    const coverMedia = normalizeStrapiMedia(category.base?.banner ?? category.base?.cover);
+    const coverMedia = normalizeStrapiMedia(category.banner ?? category.cover);
     const optimizedMedia = coverMedia ? getOptimalMediaFormat(coverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
-    const blurhash = category.base?.cover?.blurhash;
+    const blurhash = category.cover?.blurhash;
     const imageSrc = imageUrl ?? placeholderCover;
     const imageWidth = optimizedMedia?.width ?? 400;
     const imageHeight = optimizedMedia?.height ?? 225;
