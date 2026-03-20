@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 20,
-      "mainField": "slug",
+      "mainField": "title",
       "defaultSortOrder": "ASC",
       "defaultSortBy": "slug",
       "relationOpenMode": "modal"
@@ -20,23 +20,9 @@
           "sortable": true
         }
       },
-      "base": {
-        "edit": {
-          "label": "base",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "Title",
-          "searchable": false,
-          "sortable": false
-        }
-      },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Title",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -50,7 +36,7 @@
       },
       "description": {
         "edit": {
-          "label": "description",
+          "label": "Description",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -64,7 +50,7 @@
       },
       "cover": {
         "edit": {
-          "label": "cover",
+          "label": "Cover",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -78,7 +64,7 @@
       },
       "banner": {
         "edit": {
-          "label": "banner",
+          "label": "Banner",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -216,12 +202,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "slug",
-        "base",
-        "title",
-        "description"
-      ],
       "edit": [
         [
           {
@@ -245,10 +225,6 @@
         ],
         [
           {
-            "name": "date",
-            "size": 6
-          },
-          {
             "name": "slug",
             "size": 6
           }
@@ -262,13 +238,12 @@
             "name": "articles",
             "size": 6
           }
-        ],
-        [
-          {
-            "name": "base",
-            "size": 12
-          }
         ]
+      ],
+      "list": [
+        "slug",
+        "title",
+        "description"
       ]
     },
     "uid": "api::category.category"

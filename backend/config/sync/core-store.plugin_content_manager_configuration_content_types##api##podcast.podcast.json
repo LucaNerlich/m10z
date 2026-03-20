@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 20,
-      "mainField": "slug",
+      "mainField": "title",
       "defaultSortBy": "updatedAt",
       "defaultSortOrder": "DESC",
       "relationOpenMode": "modal"
@@ -20,38 +20,23 @@
           "sortable": true
         }
       },
-      "base": {
-        "edit": {
-          "label": "Base",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "title"
-        },
-        "list": {
-          "label": "Title",
-          "searchable": false,
-          "sortable": false
-        }
-      },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "title",
+          "label": "Title",
           "searchable": true,
           "sortable": true
         }
       },
       "description": {
         "edit": {
-          "label": "description",
+          "label": "Description",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -65,7 +50,7 @@
       },
       "cover": {
         "edit": {
-          "label": "cover",
+          "label": "Cover",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -79,7 +64,7 @@
       },
       "banner": {
         "edit": {
-          "label": "banner",
+          "label": "Banner",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -93,7 +78,7 @@
       },
       "date": {
         "edit": {
-          "label": "date",
+          "label": "Release Date",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -327,7 +312,7 @@
         ],
         [
           {
-            "name": "categories",
+            "name": "date",
             "size": 6
           },
           {
@@ -337,11 +322,7 @@
         ],
         [
           {
-            "name": "wordCount",
-            "size": 6
-          },
-          {
-            "name": "duration",
+            "name": "categories",
             "size": 6
           }
         ],
@@ -353,22 +334,18 @@
         ],
         [
           {
-            "name": "date",
+            "name": "duration",
             "size": 6
-          }
-        ],
-        [
+          },
           {
-            "name": "base",
-            "size": 12
+            "name": "wordCount",
+            "size": 6
           }
         ]
       ],
       "list": [
-        "slug",
-        "updatedAt",
-        "categories",
-        "title"
+        "title",
+        "updatedAt"
       ]
     },
     "uid": "api::podcast.podcast"

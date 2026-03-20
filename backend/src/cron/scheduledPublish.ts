@@ -2,7 +2,7 @@
  * Cron job to auto-publish scheduled articles and podcasts.
  * https://github.com/strapi/strapi/pull/25292
  *
- * Finds draft documents whose root `date` or `base.date` is in the past (or within a small
+ * Finds draft documents whose root `date` is in the past (or within a small
  * leeway window) and that have never been published, then publishes them.
  * Runs every 15 minutes. Cache invalidation is handled automatically by the
  * existing cacheInvalidationMiddleware in the document service pipeline.
@@ -27,7 +27,7 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
     try {
         const cutoffDate = new Date(Date.now() + LEEWAY_MS).toISOString();
 
-        strapi.log.info(`Scheduled publish: checking for entries with date or base.date <= ${cutoffDate}`);
+        strapi.log.info(`Scheduled publish: checking for entries with date <= ${cutoffDate}`);
 
         let totalPublished = 0;
         let totalFailed = 0;
@@ -42,22 +42,10 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
                         status: 'draft',
                         hasPublishedVersion: false,
                         filters: {
-                            $or: [
-                                {
-                                    date: {
-                                        $notNull: true,
-                                        $lte: cutoffDate,
-                                    },
-                                },
-                                {
-                                    base: {
-                                        date: {
-                                            $notNull: true,
-                                            $lte: cutoffDate,
-                                        },
-                                    },
-                                },
-                            ],
+                            date: {
+                                $notNull: true,
+                                $lte: cutoffDate,
+                            },
                         },
                         fields: ['slug'],
                         pagination: {

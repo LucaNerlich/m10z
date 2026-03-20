@@ -3,15 +3,7 @@ import {cache} from 'react';
 
 import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {
-    mergeCategoryRefFromBase,
-    mergeContentMediaFromBase,
-    mergeListingEntryFromBase,
-    type StrapiAuthor,
-    type StrapiBaseContentLegacy,
-    type StrapiCategoryRef,
-    type StrapiMediaRef,
-} from '@/src/lib/rss/media';
+import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/rss/media';
 import {CACHE_REVALIDATE_CONTENT_PAGE, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
@@ -35,14 +27,6 @@ const CATEGORY_CONTENT_FIELDS = ['title', 'description'] as const;
 // Array syntax (populate[0]=relation) only works without field selection
 // Since we need specific fields, object syntax is required and already optimal
 const populateMedia = {fields: MEDIA_FIELDS};
-/** Populated on article/podcast/category during BaseContent phase A (alongside optional root fields). */
-export const populateBaseComponent = {
-    populate: {
-        cover: populateMedia,
-        banner: populateMedia,
-    },
-    fields: ['title', 'description', 'date'] as const,
-};
 export const populateAuthorAvatar = {
     populate: {avatar: populateMedia},
     fields: AUTHOR_FIELDS,
@@ -54,7 +38,6 @@ export const populateCategoryBase = {
     populate: {
         cover: populateMedia,
         banner: populateMedia,
-        base: populateBaseComponent,
     },
     fields: [...CATEGORY_CONTENT_FIELDS, 'slug', 'date'] as unknown as ['title', 'description', 'slug', 'date'],
 };
@@ -377,7 +360,6 @@ export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArti
             populate: {
                 cover: populateMedia,
                 banner: populateMedia,
-                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: true,
@@ -399,7 +381,6 @@ export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArti
                 populateOptions: {
                     cover: populateMedia,
                     banner: populateMedia,
-                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     youtube: true,
@@ -407,8 +388,7 @@ export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArti
             },
         },
     );
-    const row = res.data?.[0];
-    return row ? normalizeStrapiArticle(row) : null;
+    return res.data?.[0] ?? null;
 });
 
 type PreviewStatus = 'draft' | 'published';
@@ -431,7 +411,6 @@ export async function fetchArticleBySlugForPreview(
             populate: {
                 cover: populateMedia,
                 banner: populateMedia,
-                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: true,
@@ -452,7 +431,6 @@ export async function fetchArticleBySlugForPreview(
                 populateOptions: {
                     cover: populateMedia,
                     banner: populateMedia,
-                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     youtube: true,
@@ -460,8 +438,7 @@ export async function fetchArticleBySlugForPreview(
             },
         },
     );
-    const row = res.data?.[0];
-    return row ? normalizeStrapiArticle(row) : null;
+    return res.data?.[0] ?? null;
 }
 
 /**
@@ -478,7 +455,6 @@ export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodc
             populate: {
                 cover: populateMedia,
                 banner: populateMedia,
-                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
@@ -501,7 +477,6 @@ export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodc
                 populateOptions: {
                     cover: populateMedia,
                     banner: populateMedia,
-                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     youtube: {fields: ['title', 'url']},
@@ -510,8 +485,7 @@ export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodc
             },
         },
     );
-    const pod = res.data?.[0];
-    return pod ? normalizeStrapiPodcast(pod) : null;
+    return res.data?.[0] ?? null;
 });
 
 /**
@@ -532,7 +506,6 @@ export async function fetchPodcastBySlugForPreview(
             populate: {
                 cover: populateMedia,
                 banner: populateMedia,
-                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
@@ -554,7 +527,6 @@ export async function fetchPodcastBySlugForPreview(
                 populateOptions: {
                     cover: populateMedia,
                     banner: populateMedia,
-                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                     youtube: {fields: ['title', 'url']},
@@ -563,8 +535,7 @@ export async function fetchPodcastBySlugForPreview(
             },
         },
     );
-    const pod = res.data?.[0];
-    return pod ? normalizeStrapiPodcast(pod) : null;
+    return res.data?.[0] ?? null;
 }
 
 export type StrapiCategoryWithContent = {
@@ -575,20 +546,17 @@ export type StrapiCategoryWithContent = {
     date?: string | null;
     cover?: StrapiMediaRef | null;
     banner?: StrapiMediaRef | null;
-    base?: StrapiBaseContentLegacy | null;
     articles?: Array<{
         slug: string;
         publishedAt?: string | null;
         title: string;
         date?: string | null;
-        base?: StrapiBaseContentLegacy | null;
     }>;
     podcasts?: Array<{
         slug: string;
         publishedAt?: string | null;
         title: string;
         date?: string | null;
-        base?: StrapiBaseContentLegacy | null;
     }>;
 };
 
@@ -598,7 +566,6 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
         publishedAt?: string | null;
         title: string;
         date?: string | null;
-        base?: StrapiBaseContentLegacy | null;
         categories?: StrapiCategoryRef[];
     }>;
     podcasts?: Array<{
@@ -606,43 +573,9 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
         publishedAt?: string | null;
         title: string;
         date?: string | null;
-        base?: StrapiBaseContentLegacy | null;
         categories?: StrapiCategoryRef[];
     }>;
 };
-
-export function normalizeStrapiArticle(item: StrapiArticle): StrapiArticle {
-    const m = mergeContentMediaFromBase(item);
-    const categories = m.categories?.map((c) => mergeCategoryRefFromBase(c));
-    return {...m, categories};
-}
-
-export function normalizeStrapiPodcast(item: StrapiPodcast): StrapiPodcast {
-    const m = mergeContentMediaFromBase(item);
-    const categories = m.categories?.map((c) => mergeCategoryRefFromBase(c));
-    return {...m, categories};
-}
-
-function normalizeStrapiCategoryWithContent(item: StrapiCategoryWithContent): StrapiCategoryWithContent {
-    const root = mergeContentMediaFromBase({
-        title: item.title ?? '',
-        description: item.description,
-        date: item.date,
-        cover: item.cover,
-        banner: item.banner,
-        base: item.base,
-    });
-    return {
-        ...item,
-        title: root.title || item.slug,
-        description: root.description,
-        date: root.date,
-        cover: root.cover,
-        banner: root.banner,
-        articles: item.articles?.map(mergeListingEntryFromBase),
-        podcasts: item.podcasts?.map(mergeListingEntryFromBase),
-    };
-}
 
 export const fetchArticlesList = cache(async (options: FetchListOptions = {}): Promise<StrapiArticle[]> => {
     const limit = options.limit ?? 100;
@@ -711,14 +644,12 @@ export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAutho
                 articles: {
                     populate: {
                         categories: populateCategoryForStats,
-                        base: populateBaseComponent,
                     },
                     fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
                 podcasts: {
                     populate: {
                         categories: populateCategoryForStats,
-                        base: populateBaseComponent,
                     },
                     fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
@@ -736,21 +667,7 @@ export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAutho
             revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
         },
     );
-    const author = res.data?.[0];
-    if (!author) return null;
-    return {
-        ...author,
-        articles: author.articles?.map((a) => {
-            const m = mergeListingEntryFromBase(a);
-            const categories = m.categories?.map((c) => mergeCategoryRefFromBase(c));
-            return {...m, categories};
-        }),
-        podcasts: author.podcasts?.map((p) => {
-            const m = mergeListingEntryFromBase(p);
-            const categories = m.categories?.map((c) => mergeCategoryRefFromBase(c));
-            return {...m, categories};
-        }),
-    };
+    return res.data?.[0] ?? null;
 });
 
 /**
@@ -766,13 +683,10 @@ export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCat
             populate: {
                 cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
                 banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                base: populateBaseComponent,
                 articles: {
-                    populate: {base: populateBaseComponent},
                     fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
                 podcasts: {
-                    populate: {base: populateBaseComponent},
                     fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
             },
@@ -793,21 +707,17 @@ export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCat
                 populateOptions: {
                     cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
                     banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                    base: populateBaseComponent,
                     articles: {
-                        populate: {base: populateBaseComponent},
                         fields: ['slug', 'publishedAt', 'title', 'date'],
                     },
                     podcasts: {
-                        populate: {base: populateBaseComponent},
                         fields: ['slug', 'publishedAt', 'title', 'date'],
                     },
                 },
             },
         },
     );
-    const cat = res.data?.[0];
-    return cat ? normalizeStrapiCategoryWithContent(cat) : null;
+    return res.data?.[0] ?? null;
 });
 
 /**
@@ -825,13 +735,10 @@ export const fetchCategoriesWithContent = cache(async (options: FetchListOptions
             populate: {
                 cover: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
                 banner: {fields: ['url', 'width', 'height', 'blurhash', 'alternativeText', 'caption', 'formats']},
-                base: populateBaseComponent,
                 articles: {
-                    populate: {base: populateBaseComponent},
                     fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
                 podcasts: {
-                    populate: {base: populateBaseComponent},
                     fields: ['slug', 'publishedAt', 'title', 'date'],
                 },
             },
@@ -847,7 +754,7 @@ export const fetchCategoriesWithContent = cache(async (options: FetchListOptions
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
-    return (res.data ?? []).map(normalizeStrapiCategoryWithContent);
+    return res.data ?? [];
 });
 
 /**
@@ -868,7 +775,6 @@ export const fetchArticlesPage = cache(async (options: FetchPageOptions = {}): P
             populate: {
                 cover: populateMedia,
                 banner: populateMedia,
-                base: populateBaseComponent,
                 categories: populateCategoryBase,
                 youtube: true,
             },
@@ -885,8 +791,7 @@ export const fetchArticlesPage = cache(async (options: FetchPageOptions = {}): P
         },
     );
 
-    const pr = toPaginatedResult(res, page, pageSize);
-    return {...pr, items: pr.items.map(normalizeStrapiArticle)};
+    return toPaginatedResult(res, page, pageSize);
 });
 
 /**
@@ -911,7 +816,6 @@ export const fetchArticlesBySlugs = cache(async (slugs: string[]): Promise<Strap
             populate: {
                 cover: populateMedia,
                 banner: populateMedia,
-                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: true,
@@ -929,7 +833,7 @@ export const fetchArticlesBySlugs = cache(async (slugs: string[]): Promise<Strap
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
-    return (res.data ?? []).map(normalizeStrapiArticle);
+    return res.data ?? [];
 });
 
 /**
@@ -954,7 +858,6 @@ export const fetchPodcastsBySlugs = cache(async (slugs: string[]): Promise<Strap
             populate: {
                 cover: populateMedia,
                 banner: populateMedia,
-                base: populateBaseComponent,
                 authors: populateAuthorAvatar,
                 categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
@@ -973,7 +876,7 @@ export const fetchPodcastsBySlugs = cache(async (slugs: string[]): Promise<Strap
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
-    return (res.data ?? []).map(normalizeStrapiPodcast);
+    return res.data ?? [];
 });
 
 /**
@@ -1049,7 +952,6 @@ export const fetchPodcastsPage = cache(async (options: FetchPageOptions = {}): P
             populate: {
                 cover: populateMedia,
                 banner: populateMedia,
-                base: populateBaseComponent,
                 categories: populateCategoryBase,
                 youtube: {fields: ['title', 'url']},
                 file: {populate: '*'},
@@ -1067,8 +969,7 @@ export const fetchPodcastsPage = cache(async (options: FetchPageOptions = {}): P
         },
     );
 
-    const pr = toPaginatedResult(res, page, pageSize);
-    return {...pr, items: pr.items.map(normalizeStrapiPodcast)};
+    return toPaginatedResult(res, page, pageSize);
 });
 
 /**
@@ -1099,7 +1000,6 @@ export const fetchArticlesByAuthorPaginated = cache(
                 populate: {
                     cover: populateMedia,
                     banner: populateMedia,
-                    base: populateBaseComponent,
                     categories: populateCategoryBase,
                     youtube: true,
                 },
@@ -1119,7 +1019,6 @@ export const fetchArticlesByAuthorPaginated = cache(
                     populateOptions: {
                         cover: populateMedia,
                         banner: populateMedia,
-                        base: populateBaseComponent,
                         categories: populateCategoryBase,
                         youtube: true,
                     },
@@ -1127,8 +1026,7 @@ export const fetchArticlesByAuthorPaginated = cache(
             },
         );
 
-        const pr = toPaginatedResult(res, safePage, safePageSize);
-        return {...pr, items: pr.items.map(normalizeStrapiArticle)};
+        return toPaginatedResult(res, safePage, safePageSize);
     },
 );
 
@@ -1154,7 +1052,6 @@ export const fetchRelatedArticles = cache(
                 populate: {
                     cover: populateMedia,
                     banner: populateMedia,
-                    base: populateBaseComponent,
                     categories: populateCategoryBase,
                 },
                 fields: ['slug', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
@@ -1170,7 +1067,7 @@ export const fetchRelatedArticles = cache(
             },
         );
 
-        return (res.data ?? []).map(normalizeStrapiArticle);
+        return res.data ?? [];
     },
 );
 
@@ -1194,7 +1091,6 @@ export const fetchRelatedPodcasts = cache(
                 populate: {
                     cover: populateMedia,
                     banner: populateMedia,
-                    base: populateBaseComponent,
                     categories: populateCategoryBase,
                     file: {populate: '*'},
                 },
@@ -1211,7 +1107,7 @@ export const fetchRelatedPodcasts = cache(
             },
         );
 
-        return (res.data ?? []).map(normalizeStrapiPodcast);
+        return res.data ?? [];
     },
 );
 
@@ -1243,7 +1139,6 @@ export const fetchPodcastsByAuthorPaginated = cache(
                 populate: {
                     cover: populateMedia,
                     banner: populateMedia,
-                    base: populateBaseComponent,
                     categories: populateCategoryBase,
                     youtube: {fields: ['title', 'url']},
                     file: {populate: '*'},
@@ -1264,7 +1159,6 @@ export const fetchPodcastsByAuthorPaginated = cache(
                     populateOptions: {
                         cover: populateMedia,
                         banner: populateMedia,
-                        base: populateBaseComponent,
                         categories: populateCategoryBase,
                         youtube: {fields: ['title', 'url']},
                         file: {populate: '*'},
@@ -1273,7 +1167,6 @@ export const fetchPodcastsByAuthorPaginated = cache(
             },
         );
 
-        const pr = toPaginatedResult(res, safePage, safePageSize);
-        return {...pr, items: pr.items.map(normalizeStrapiPodcast)};
+        return toPaginatedResult(res, safePage, safePageSize);
     },
 );

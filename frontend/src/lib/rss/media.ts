@@ -63,23 +63,12 @@ export type StrapiMediaRef = {
     attributes?: StrapiMedia;
 };
 
-/** BaseContent component while it coexists with optional root duplicates (migration phase A). */
-export type StrapiBaseContentLegacy = {
-    title?: string | null;
-    description?: string | null;
-    date?: string | null;
-    cover?: StrapiMediaRef | null;
-    banner?: StrapiMediaRef | null;
-};
-
-/** Root content metadata (duplicate of `base` after migration; during phase A may be empty until backfill). */
 export type StrapiContentMedia = {
     title: string;
     description?: string | null;
     date?: string | null;
     cover?: StrapiMediaRef | null;
     banner?: StrapiMediaRef | null;
-    base?: StrapiBaseContentLegacy | null;
 };
 
 export type StrapiCategoryRef = {
@@ -89,63 +78,7 @@ export type StrapiCategoryRef = {
     cover?: StrapiMediaRef | null;
     banner?: StrapiMediaRef | null;
     image?: StrapiMediaRef | null;
-    base?: StrapiBaseContentLegacy | null;
 };
-
-/**
- * Prefer root title/description/date/cover/banner; fall back to `base` when root is unset (phase A).
- */
-export function mergeContentMediaFromBase<
-    T extends StrapiContentMedia & {base?: StrapiBaseContentLegacy | null},
->(entity: T): T {
-    const b = entity.base;
-    if (!b || typeof b !== 'object') {
-        return entity;
-    }
-    const rootTitle = entity.title.trim().length > 0 ? entity.title : null;
-    const baseTitle = typeof b.title === 'string' && b.title.trim().length > 0 ? b.title : null;
-    return {
-        ...entity,
-        title: (rootTitle ?? baseTitle ?? '') as T['title'],
-        description: entity.description ?? b.description ?? null,
-        date: entity.date ?? b.date ?? null,
-        cover: entity.cover ?? b.cover ?? null,
-        banner: entity.banner ?? b.banner ?? null,
-    };
-}
-
-export function mergeCategoryRefFromBase(
-    cat: StrapiCategoryRef & {base?: StrapiBaseContentLegacy | null},
-): StrapiCategoryRef {
-    const merged = mergeContentMediaFromBase({
-        title: cat.title ?? '',
-        description: cat.description,
-        date: undefined,
-        cover: cat.cover,
-        banner: cat.banner,
-        base: cat.base,
-    });
-    return {
-        ...cat,
-        title: merged.title || cat.slug || null,
-        description: merged.description,
-        cover: merged.cover,
-        banner: merged.banner,
-    };
-}
-
-export function mergeListingEntryFromBase<
-    T extends {title?: string; date?: string | null; base?: StrapiBaseContentLegacy | null},
->(item: T): T {
-    const b = item.base;
-    if (!b || typeof b !== 'object') return item;
-    const hasRootTitle = item.title != null && String(item.title).trim().length > 0;
-    return {
-        ...item,
-        title: hasRootTitle ? item.title : typeof b.title === 'string' ? b.title : item.title,
-        date: item.date ?? b.date ?? null,
-    };
-}
 
 export type StrapiAuthor = {
     id: number;

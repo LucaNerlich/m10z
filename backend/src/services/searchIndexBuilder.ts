@@ -163,8 +163,7 @@ function sanitizeText(value: unknown): string | undefined {
 }
 
 function effectiveDate(raw: any): string | null {
-    const base = unwrapEntry(raw?.base);
-    const override = safeText(raw?.date) || safeText(base?.date);
+    const override = safeText(raw?.date);
     if (override) return override;
     return safeText(raw?.publishedAt) ?? null;
 }
@@ -207,10 +206,9 @@ function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
         if (url) return url;
     }
 
-    const base = unwrapEntry(raw?.base);
-    const baseCover = base?.cover;
-    if (baseCover) {
-        const url = extractMediaUrl(baseCover, strapiUrl);
+    const rootBanner = raw?.banner;
+    if (rootBanner) {
+        const url = extractMediaUrl(rootBanner, strapiUrl);
         if (url) return url;
     }
 
@@ -220,6 +218,11 @@ function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
         const categoryCover = category?.cover;
         if (categoryCover) {
             const url = extractMediaUrl(categoryCover, strapiUrl);
+            if (url) return url;
+        }
+        const categoryBanner = category?.banner;
+        if (categoryBanner) {
+            const url = extractMediaUrl(categoryBanner, strapiUrl);
             if (url) return url;
         }
     }
@@ -243,7 +246,13 @@ function extractCategoryCoverUrl(raw: any, strapiUrl?: string): string | null {
 
     const rootCover = raw?.cover;
     if (rootCover) {
-        return extractMediaUrl(rootCover, strapiUrl);
+        const url = extractMediaUrl(rootCover, strapiUrl);
+        if (url) return url;
+    }
+
+    const rootBanner = raw?.banner;
+    if (rootBanner) {
+        return extractMediaUrl(rootBanner, strapiUrl);
     }
 
     return null;
@@ -255,29 +264,6 @@ function unwrapEntry<T extends {attributes?: Record<string, unknown>}>(entry: T)
         return {...entry.attributes, id: (entry as any).id, documentId: (entry as any).documentId};
     }
     return entry;
-}
-
-/** Merge optional root duplicates from BaseContent component (phase A migration). */
-function mergeBaseContentFields(entity: any): any {
-    const e = unwrapEntry(entity);
-    if (!e?.base) return e;
-    const b = unwrapEntry(e.base);
-    return {
-        ...e,
-        title: e.title || b.title,
-        description: e.description ?? b.description,
-        date: e.date ?? b.date,
-        cover: e.cover ?? b.cover,
-        banner: e.banner ?? b.banner,
-    };
-}
-
-function mergeBaseContentFieldsWithCategories(entity: any): any {
-    const e = mergeBaseContentFields(entity);
-    if (Array.isArray(e.categories)) {
-        e.categories = e.categories.map((c: any) => mergeBaseContentFields(unwrapEntry(c)));
-    }
-    return e;
 }
 
 async function fetchAllDocuments<T>(
@@ -308,7 +294,7 @@ async function fetchAllDocuments<T>(
 }
 
 function normalizeArticle(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const article = mergeBaseContentFieldsWithCategories(unwrapEntry(raw));
+    const article = unwrapEntry(raw);
     const slug = safeText(article?.slug);
     const title = sanitizeText(article?.title);
     if (!slug || !title) return null;
@@ -342,7 +328,7 @@ function normalizeArticle(raw: any, strapiUrl?: string, metrics?: PlainTextMetri
 }
 
 function normalizePodcast(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const podcast = mergeBaseContentFieldsWithCategories(unwrapEntry(raw));
+    const podcast = unwrapEntry(raw);
     const slug = safeText(podcast?.slug);
     const title = sanitizeText(podcast?.title);
     if (!slug || !title) return null;
@@ -396,7 +382,7 @@ function normalizeAuthor(raw: any, strapiUrl?: string): SearchRecord | null {
 }
 
 function normalizeCategory(raw: any, strapiUrl?: string): SearchRecord | null {
-    const category = mergeBaseContentFields(unwrapEntry(raw));
+    const category = unwrapEntry(raw);
     const slug = safeText(category?.slug);
     const title = sanitizeText(category?.title) ?? slug;
     if (!slug || !title) return null;
@@ -426,12 +412,9 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
             {
                 populate: {
                     cover: true,
-                    base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
+                    banner: true,
                     categories: {
-                        populate: {
-                            cover: true,
-                            base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
-                        },
+                        populate: {cover: true, banner: true},
                         fields: ['slug', 'title', 'description', 'date'],
                     },
                     authors: {fields: ['title', 'slug']},
@@ -448,12 +431,9 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
         {
             populate: {
                 cover: true,
-                base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
+                banner: true,
                 categories: {
-                    populate: {
-                        cover: true,
-                        base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
-                    },
+                    populate: {cover: true, banner: true},
                     fields: ['slug', 'title', 'description', 'date'],
                 },
                 authors: {fields: ['title', 'slug']},
@@ -479,7 +459,7 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
         {
             populate: {
                 cover: true,
-                base: {populate: {cover: true, banner: true}, fields: ['title', 'description', 'date']},
+                banner: true,
             },
             fields: ['slug', 'title', 'description', 'date'],
         },

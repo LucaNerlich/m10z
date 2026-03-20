@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 20,
-      "mainField": "slug",
+      "mainField": "title",
       "defaultSortBy": "updatedAt",
       "defaultSortOrder": "DESC",
       "relationOpenMode": "modal"
@@ -20,9 +20,9 @@
           "sortable": true
         }
       },
-      "base": {
+      "title": {
         "edit": {
-          "label": "Base",
+          "label": "Title",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -30,27 +30,13 @@
         },
         "list": {
           "label": "Title",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "title": {
-        "edit": {
-          "label": "title",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "title",
           "searchable": true,
           "sortable": true
         }
       },
       "description": {
         "edit": {
-          "label": "description",
+          "label": "Description",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -64,7 +50,7 @@
       },
       "cover": {
         "edit": {
-          "label": "cover",
+          "label": "Cover",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -78,7 +64,7 @@
       },
       "banner": {
         "edit": {
-          "label": "banner",
+          "label": "Banner",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -92,7 +78,7 @@
       },
       "date": {
         "edit": {
-          "label": "date",
+          "label": "Release Date",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -168,7 +154,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "url"
         },
         "list": {
           "label": "youtube",
@@ -258,12 +245,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "slug",
-        "updatedAt",
-        "title",
-        "description"
-      ],
       "edit": [
         [
           {
@@ -297,12 +278,6 @@
         ],
         [
           {
-            "name": "base",
-            "size": 12
-          }
-        ],
-        [
-          {
             "name": "categories",
             "size": 6
           },
@@ -329,6 +304,10 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "title",
+        "updatedAt"
       ]
     },
     "uid": "api::article.article"

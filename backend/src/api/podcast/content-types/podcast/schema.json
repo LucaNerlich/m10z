@@ -11,39 +11,29 @@
     },
     "pluginOptions": {},
     "attributes": {
-        "base": {
-            "type": "component",
-            "repeatable": false,
-          "component": "collection-type.base-content",
+        "title": {
+            "type": "string",
             "required": true
         },
-      "title": {
-        "type": "string",
-        "required": false
-      },
-      "description": {
-        "type": "text",
-        "required": false
-      },
-      "cover": {
-        "type": "media",
-        "multiple": false,
-        "required": false,
-        "allowedTypes": [
-          "images"
-        ]
-      },
-      "banner": {
-        "type": "media",
-        "multiple": false,
-        "required": false,
-        "allowedTypes": [
-          "images"
-        ]
-      },
-      "date": {
-        "type": "datetime"
-      },
+        "description": {
+            "type": "text",
+            "required": false
+        },
+        "cover": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": ["images"]
+        },
+        "banner": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": ["images"]
+        },
+        "date": {
+            "type": "datetime"
+        },
         "slug": {
             "type": "uid",
             "required": true
@@ -52,9 +42,7 @@
             "type": "media",
             "multiple": false,
             "required": true,
-          "allowedTypes": [
-            "audios"
-          ]
+            "allowedTypes": ["audios"]
         },
         "duration": {
             "type": "integer",

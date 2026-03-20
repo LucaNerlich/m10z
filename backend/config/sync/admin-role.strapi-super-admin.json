@@ -198,17 +198,12 @@
       "locale": null
     },
     {
-      "documentId": "gntgxtbikhxd787vzxpfvpu8",
+      "documentId": "yqtoaxlk7gad10e3wgv73qcl",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",
@@ -245,17 +240,12 @@
       "locale": null
     },
     {
-      "documentId": "qefm8k1db400zg0wx0elbgkr",
+      "documentId": "mdep6k6bnvshzdbz9dzcdd9b",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",
@@ -274,17 +264,12 @@
       "locale": null
     },
     {
-      "documentId": "jf44mp0jaiysquqdedo0jb02",
+      "documentId": "ac6emfkkdzke8gtxuzpk4f1l",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",
@@ -444,17 +429,12 @@
       "locale": null
     },
     {
-      "documentId": "qpa602ykd76kjidfy2zwpqia",
+      "documentId": "oekpuxc8lhp9e12sql0aomf5",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",
@@ -487,17 +467,12 @@
       "locale": null
     },
     {
-      "documentId": "hww3ghp1ldstevtgn4rs6eos",
+      "documentId": "k6xbjo3ef73tapaq7h0js97w",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",
@@ -512,17 +487,12 @@
       "locale": null
     },
     {
-      "documentId": "ydy6n0zhln6nqz9ehalm7dhj",
+      "documentId": "dr0ueyibvm6nvrvxo4dihcta",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",
@@ -597,17 +567,12 @@
       "locale": null
     },
     {
-      "documentId": "ets6es2h3ol015b3104ijddy",
+      "documentId": "t7l5pdij65lcya750xl0fvix",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",
@@ -646,17 +611,12 @@
       "locale": null
     },
     {
-      "documentId": "l9c5ibuqbjihi2nvnmfr20ft",
+      "documentId": "eoxb9iu89lt0kmx61azm1i7p",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",
@@ -677,17 +637,12 @@
       "locale": null
     },
     {
-      "documentId": "xf0un1h1qyero0ifmojmvij3",
+      "documentId": "zbuwlb8f7nw8smaotgwxqs95",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "title",
           "description",
           "cover",

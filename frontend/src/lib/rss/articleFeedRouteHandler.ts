@@ -11,13 +11,7 @@ import {
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {
-    MEDIA_FIELDS,
-    normalizeStrapiArticle,
-    populateAuthorAvatar,
-    populateBaseComponent,
-    populateCategoryBase,
-} from '@/src/lib/strapiContent';
+import {MEDIA_FIELDS, populateAuthorAvatar, populateCategoryBase} from '@/src/lib/strapiContent';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
@@ -182,7 +176,6 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
                 populate: {
                     cover: {fields: MEDIA_FIELDS},
                     banner: {fields: MEDIA_FIELDS},
-                    base: populateBaseComponent,
                     authors: populateAuthorAvatar,
                     categories: populateCategoryBase,
                 },
@@ -196,9 +189,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
             meta?: {pagination?: {page: number; pageCount: number; total: number}};
         }>(`/api/articles?${query}`);
 
-        const items = Array.isArray(res.data)
-            ? (res.data as StrapiArticle[]).map(normalizeStrapiArticle)
-            : [];
+        const items = Array.isArray(res.data) ? (res.data as StrapiArticle[]) : [];
         const remaining = Math.max(0, maxItems - all.length);
         if (remaining > 0) {
             all.push(...items.slice(0, remaining));

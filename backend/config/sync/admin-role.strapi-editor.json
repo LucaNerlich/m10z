@@ -177,11 +177,6 @@
       "subject": "api::article.article",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "content",
           "authors",
@@ -219,11 +214,6 @@
       "subject": "api::article.article",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "content",
           "authors",
@@ -243,11 +233,6 @@
       "subject": "api::article.article",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "content",
           "authors",
@@ -399,11 +384,6 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "articles",
           "podcasts"
@@ -437,11 +417,6 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "articles",
           "podcasts"
@@ -457,11 +432,6 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "articles",
           "podcasts"
@@ -528,11 +498,6 @@
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "file",
           "duration",
@@ -572,11 +537,6 @@
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "file",
           "duration",
@@ -598,11 +558,6 @@
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
-          "base.title",
-          "base.description",
-          "base.cover",
-          "base.banner",
-          "base.date",
           "slug",
           "file",
           "duration",

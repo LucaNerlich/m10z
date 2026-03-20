@@ -2,7 +2,6 @@ import {wordCountMiddleware} from './middlewares/wordCount';
 import {durationMiddleware} from './middlewares/duration';
 import {cacheInvalidationMiddleware} from './middlewares/cacheInvalidation';
 import {configureServerTimeouts} from '../config/server';
-import {runMigrateFlattenBase} from './cron/migrateFlattenBase';
 
 export default {
     /**
@@ -274,19 +273,5 @@ export default {
             strapi.log.error('Unhandled Rejection at:', promise, 'reason:', reason);
             // Not calling gracefulShutdown here as unhandled rejections are often recoverable
         });
-
-        // BaseContent → root fields (phase B). Set MIGRATE_FLATTEN_BASE=true in Coolify for one deploy, then remove.
-        if (process.env.MIGRATE_FLATTEN_BASE === 'true') {
-            try {
-                strapi.log.info('[migrate-flatten-base] MIGRATE_FLATTEN_BASE=true — running migration on bootstrap');
-                await runMigrateFlattenBase(strapi);
-                strapi.log.warn(
-                    '[migrate-flatten-base] Unset MIGRATE_FLATTEN_BASE after a successful run to avoid repeating on every restart.',
-                );
-            } catch (err) {
-                strapi.log.error('[migrate-flatten-base] Bootstrap migration failed:', err);
-                throw err;
-            }
-        }
     },
 };

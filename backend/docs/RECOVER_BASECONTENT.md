@@ -1,5 +1,8 @@
 # Recovering after BaseContent was removed too early
 
+**Note:** The production migration path (backfill, then remove `base`) is complete in the main codebase. This document
+is for **disaster recovery** if someone deploys the flattened schema against a database that was never backfilled.
+
 If Strapi was started with a schema that **no longer has `base`**, but you **never ran the copy** from `base` to root
 fields while `base` still existed, the CMS can show empty titles, missing covers, etc. The plan always required **phase
 A → backfill → phase C**, in that order.
