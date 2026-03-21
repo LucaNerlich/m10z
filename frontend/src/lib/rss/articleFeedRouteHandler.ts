@@ -11,7 +11,7 @@ import {
     maybeReturn304,
 } from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateCategoryBase} from '@/src/lib/strapiContent';
+import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapiContent';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
@@ -177,7 +177,7 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
                     cover: {fields: MEDIA_FIELDS},
                     banner: {fields: MEDIA_FIELDS},
                     authors: populateAuthorAvatar,
-                    categories: populateCategoryBase,
+                    categories: populateCategory,
                 },
                 fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
             },
