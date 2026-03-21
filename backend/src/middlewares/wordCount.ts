@@ -170,12 +170,39 @@ export function extractTextFromRichtext(
     return null;
 }
 
+const RICHTEXT_FIELD = {
+    article: 'content',
+    podcast: 'shownotes',
+} as const;
+
+/**
+ * Returns true when the payload includes the body richtext field (even if null/empty).
+ * Strapi updates often send only changed keys; missing keys must not trigger a wordCount reset.
+ */
+function hasRichtextFieldInPayload(
+    data: ArticleDocument | PodcastDocument,
+    contentType: 'article' | 'podcast',
+): boolean {
+    const key = RICHTEXT_FIELD[contentType];
+    return Object.prototype.hasOwnProperty.call(data, key);
+}
+
+/**
+ * Sets `data.wordCount` from `content` (articles) or `shownotes` (podcasts).
+ * If the payload omits that field (partial update), does not modify `wordCount` — required so cron
+ * backfills that only send `{wordCount}` are not reset to 0 by this middleware.
+ */
 export async function extractWordCount(
     strapi: StrapiInstance,
     data: ArticleDocument | PodcastDocument,
     contentType: 'article' | 'podcast',
 ): Promise<void> {
     try {
+        if (!hasRichtextFieldInPayload(data, contentType)) {
+            // Partial update (e.g. cron only sets wordCount) — leave wordCount unchanged
+            return;
+        }
+
         let richtextValue: any;
 
         if (contentType === 'article') {

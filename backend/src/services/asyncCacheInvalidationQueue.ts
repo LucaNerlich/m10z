@@ -31,6 +31,10 @@ function scheduleDebouncedRun(strapi: StrapiLike): void {
     }, DEBOUNCE_MS);
 }
 
+async function runBatch(strapi: StrapiLike, batch: InvalidateTarget[]): Promise<boolean[]> {
+    return Promise.all(batch.map((target) => invalidateNext(target, strapi.log)));
+}
+
 async function runInvalidations(strapi: StrapiLike): Promise<void> {
     if (isRunning || pendingTargets.size === 0) {
         return;
@@ -42,34 +46,17 @@ async function runInvalidations(strapi: StrapiLike): Promise<void> {
     strapi.log.info(`Cache invalidation started for ${targets.length} target(s).`);
 
     try {
-        // Parallelize invalidations with a concurrency limit
         const CONCURRENCY_LIMIT = 5;
-        const results = await Promise.allSettled(
-            targets.slice(0, CONCURRENCY_LIMIT).map(target =>
-                invalidateNext(target, strapi.log).catch(err => {
-                    // Error already logged by invalidateNext with retry logic
-                    throw err; // Re-throw to be caught by allSettled
-                })
-            )
-        );
+        const outcomes: boolean[] = [];
 
-        // Process remaining targets if any (for when we have more than the concurrency limit)
-        for (let i = CONCURRENCY_LIMIT; i < targets.length; i += CONCURRENCY_LIMIT) {
+        for (let i = 0; i < targets.length; i += CONCURRENCY_LIMIT) {
             const batch = targets.slice(i, i + CONCURRENCY_LIMIT);
-            const batchResults = await Promise.allSettled(
-                batch.map(target =>
-                    invalidateNext(target, strapi.log).catch(err => {
-                        // Error already logged by invalidateNext with retry logic
-                        throw err;
-                    })
-                )
-            );
-            results.push(...batchResults);
+            const batchOutcomes = await runBatch(strapi, batch);
+            outcomes.push(...batchOutcomes);
         }
 
-        // Log summary of results
-        const successful = results.filter(r => r.status === 'fulfilled').length;
-        const failed = results.filter(r => r.status === 'rejected').length;
+        const successful = outcomes.filter(Boolean).length;
+        const failed = outcomes.length - successful;
         if (failed > 0) {
             strapi.log.warn(`Cache invalidation completed: ${successful} successful, ${failed} failed.`);
         }

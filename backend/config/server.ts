@@ -68,11 +68,12 @@ export default ({env}) => ({
                     rule: '0 3 * * *', // Run nightly at 03:00 (server local time)
                 },
             },
-            // Generate wordCount for articles and podcasts missing it - runs once nightly
+            // Generate wordCount for articles and podcasts missing it
             generateMissingWordCounts: {
                 task: generateMissingWordCounts,
                 options: {
-                    rule: '15 3 * * *', // Run nightly at 03:15 (server local time)
+                    // Every minute (for local testing). Revert to nightly: '15 3 * * *' (03:15 server local).
+                    rule: '* * * * *',
                 },
             },
             // Rebuild search index - runs once nightly

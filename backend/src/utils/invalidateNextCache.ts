@@ -44,6 +44,13 @@ function getSecret(): string | undefined {
     return getEnv('FEED_INVALIDATION_TOKEN') ?? getEnv('LEGAL_INVALIDATION_TOKEN');
 }
 
+function formatErrorForLog(err: unknown): string {
+    if (err instanceof Error) {
+        return err.message;
+    }
+    return String(err);
+}
+
 /**
  * Delay execution for the specified number of milliseconds
  */
@@ -57,15 +64,17 @@ function delay(ms: number): Promise<void> {
  * @param target - The cache target to invalidate
  * @param logger - Optional logger instance (defaults to console)
  * @param maxRetries - Maximum number of retry attempts (default: 3)
+ * @returns `true` if Next.js responded with 2xx; `false` on misconfiguration, HTTP error, or network failure after retries
  */
 export async function invalidateNext(
     target: InvalidateTarget,
     logger?: Logger,
     maxRetries: number = 3
-): Promise<void> {
+): Promise<boolean> {
     const log = {
         info: logger?.info || ((msg: string) => console.log(msg)),
-        warn: logger?.warn || ((msg: string, err?: unknown) => console.warn(msg, err))
+        // Strapi's logger.warn often accepts only one string — never pass a second argument (can throw).
+        warn: logger?.warn || ((msg: string) => console.warn(msg)),
     };
 
     const base = getNextBaseUrl();
@@ -73,7 +82,7 @@ export async function invalidateNext(
     if (!secret) {
         // Misconfiguration should be visible in logs, but don't throw.
         log.warn('Missing FEED_INVALIDATION_TOKEN; skipping Next invalidation');
-        return;
+        return false;
     }
 
     const url = `${base}/api/${target}/invalidate`;
@@ -100,22 +109,27 @@ export async function invalidateNext(
                 }
                 // Client error or final attempt - don't retry
                 log.warn(`Next invalidation failed (${target}): ${res.status} ${res.statusText}`);
-                return;
+                return false;
             }
 
             log.info(`Next invalidation successful (${target})`);
-            return; // Success - exit
+            return true;
         } catch (err) {
             // Network error or timeout
             if (attempt < maxRetries - 1) {
-                log.warn(`Next invalidation request error (${target}), attempt ${attempt + 1}/${maxRetries}. Retrying in ${retryDelays[attempt]}ms...`, err);
+                log.warn(
+                    `Next invalidation request error (${target}), attempt ${attempt + 1}/${maxRetries}. Retrying in ${retryDelays[attempt]}ms... Cause: ${formatErrorForLog(err)}`,
+                );
                 await delay(retryDelays[attempt]);
                 continue;
             }
-            // Final attempt failed
-            log.warn(`Next invalidation request failed after ${maxRetries} attempts (${target})`, err);
-            return; // Fail open - don't throw
+            log.warn(
+                `Next invalidation request failed after ${maxRetries} attempts (${target}). Cause: ${formatErrorForLog(err)}`,
+            );
+            return false;
         }
     }
+
+    return false;
 }
 

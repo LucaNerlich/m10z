@@ -66,6 +66,7 @@ export interface PodcastDocument {
     file?: FileReference | FileReference[];
     duration?: number;
     wordCount?: number;
+    shownotes?: string | RichTextBlock[];
     content?: string | RichTextBlock[];
     [key: string]: any;
 }

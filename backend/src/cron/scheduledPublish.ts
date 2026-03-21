@@ -8,10 +8,62 @@
  * existing cacheInvalidationMiddleware in the document service pipeline.
  */
 
-const LEEWAY_MS = 2 * 60 * 1000; // 2 minutes into the future
+/** Same leeway as scheduled publish: treat dates up to this far in the future as "due". */
+export const SCHEDULE_PUBLISH_LEEWAY_MS = 2 * 60 * 1000; // 2 minutes into the future
+
 const PAGE_SIZE = 25;
 
-type ContentUid = 'api::article.article' | 'api::podcast.podcast';
+export type ContentUid = 'api::article.article' | 'api::podcast.podcast';
+
+/**
+ * ISO timestamp used as the upper bound for "scheduled date has arrived" (aligned with scheduled publish cron).
+ */
+export function getSchedulePublishCutoffIso(): string {
+    return new Date(Date.now() + SCHEDULE_PUBLISH_LEEWAY_MS).toISOString();
+}
+
+/**
+ * Publishes a draft document when its root `date` is at or before the schedule cutoff.
+ * Used by the scheduled-publish cron and by the wordCount backfill after fixing drafts.
+ *
+ * @returns `true` if publish was attempted and succeeded
+ */
+export async function publishDraftIfScheduledDateReached({
+    strapi,
+    uid,
+    documentId,
+    date,
+    slug,
+    label,
+}: {
+    strapi: any;
+    uid: ContentUid;
+    documentId: string | number;
+    date: string | null | undefined;
+    slug: string;
+    label: string;
+}): Promise<boolean> {
+    const cutoffIso = getSchedulePublishCutoffIso();
+    if (!date) {
+        return false;
+    }
+    if (new Date(date) > new Date(cutoffIso)) {
+        return false;
+    }
+    try {
+        await strapi.documents(uid).publish({documentId});
+        strapi.log.info(
+            `publishDraftIfScheduledDateReached: published ${label} "${slug}" (${documentId}) — date <= ${cutoffIso}`,
+        );
+        return true;
+    } catch (error) {
+        strapi.log.error(
+            `publishDraftIfScheduledDateReached: failed ${label} "${slug}" (${documentId}):`,
+            error,
+        );
+        return false;
+    }
+}
 
 const CONTENT_TYPES: {uid: ContentUid; label: string}[] = [
     {uid: 'api::article.article', label: 'article'},
@@ -25,7 +77,7 @@ const CONTENT_TYPES: {uid: ContentUid; label: string}[] = [
  */
 export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<void> {
     try {
-        const cutoffDate = new Date(Date.now() + LEEWAY_MS).toISOString();
+        const cutoffDate = getSchedulePublishCutoffIso();
 
         strapi.log.info(`Scheduled publish: checking for entries with date <= ${cutoffDate}`);
 
