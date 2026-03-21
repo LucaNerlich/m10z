@@ -60,6 +60,8 @@ async function runInvalidations(strapi: StrapiLike): Promise<void> {
         if (failed > 0) {
             strapi.log.warn(`Cache invalidation completed: ${successful} successful, ${failed} failed.`);
         }
+    } catch (error) {
+        strapi.log.warn(`Cache invalidation error: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
         isRunning = false;
         strapi.log.info('Cache invalidation completed.');

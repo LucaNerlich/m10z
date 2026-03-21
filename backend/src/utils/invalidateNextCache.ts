@@ -71,10 +71,11 @@ export async function invalidateNext(
     logger?: Logger,
     maxRetries: number = 3
 ): Promise<boolean> {
+    // Call methods on the logger object (preserving `this` for pino/Strapi).
+    // Fall back to console if no logger is provided.
     const log = {
-        info: logger?.info || ((msg: string) => console.log(msg)),
-        // Strapi's logger.warn often accepts only one string — never pass a second argument (can throw).
-        warn: logger?.warn || ((msg: string) => console.warn(msg)),
+        info: (msg: string) => (logger?.info ? logger.info(msg) : console.log(msg)),
+        warn: (msg: string) => (logger?.warn ? logger.warn(msg) : console.warn(msg)),
     };
 
     const base = getNextBaseUrl();
