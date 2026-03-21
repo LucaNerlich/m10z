@@ -36,8 +36,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       marked:
-        specifier: ^17.0.4
-        version: 17.0.4
+        specifier: ^17.0.5
+        version: 17.0.5
       music-metadata:
         specifier: ^11.12.3
         version: 11.12.3
@@ -1272,6 +1272,7 @@ packages:
   '@koa/router@12.0.2':
     resolution: {integrity: sha512-sYcHglGKTxGF+hQ6x67xDfkE9o+NhVlRHBqq6gLywaMc6CojK/5vFZByphdonKinYlMLkEkacm+HEse9HzwgTA==}
     engines: {node: '>= 12'}
+    deprecated: Please upgrade to v15 or higher. All reported bugs in this version are fixed in newer releases, dependencies have been updated, and security has been improved.
 
   '@lezer/common@1.5.1':
     resolution: {integrity: sha512-6YRVG9vBkaY7p1IVxL4s44n5nUnaNnGM2/AckNgYOnxTG2kWh1vR8BMxPseWPjRNpb5VtXnMpeYAEAADoRV1Iw==}
@@ -5158,8 +5159,8 @@ packages:
   markdown-to-txt@2.0.1:
     resolution: {integrity: sha512-Hsj7KTN8k1gutlLum3vosHwVZGnv8/cbYKWVkUyo/D1rzOYddbDesILebRfOsaVfjIBJank/AVOySBlHAYqfZw==}
 
-  marked@17.0.4:
-    resolution: {integrity: sha512-NOmVMM+KAokHMvjWmC5N/ZOvgmSWuqJB8FoYI019j4ogb/PeRMKoKIjReZ2w3376kkA8dSJIP8uD993Kxc0iRQ==}
+  marked@17.0.5:
+    resolution: {integrity: sha512-6hLvc0/JEbRjRgzI6wnT2P1XuM1/RrrDEX0kPt0N7jGm1133g6X7DlxFasUIx+72aKAr904GTxhSLDrd5DIlZg==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -9535,7 +9536,7 @@ snapshots:
       '@strapi/design-system': 2.2.0(@babel/runtime@7.29.2)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.12.2)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.6.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.40.0)(@strapi/icons@2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)))(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(codemirror@5.65.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/icons': 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/permissions': 5.40.0
-      '@strapi/types': 5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.9.3)
+      '@strapi/types': 5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.4.4)
       '@strapi/typescript-utils': 5.40.0
       '@strapi/utils': 5.40.0
       '@testing-library/dom': 10.4.1
@@ -9733,7 +9734,7 @@ snapshots:
       '@strapi/database': 5.40.0(@types/node@22.19.15)(pg@8.16.3)
       '@strapi/design-system': 2.2.0(@babel/runtime@7.29.2)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.12.2)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.6.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.40.0)(@strapi/icons@2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)))(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(codemirror@5.65.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/icons': 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
-      '@strapi/types': 5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.9.3)
+      '@strapi/types': 5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.4.4)
       '@strapi/utils': 5.40.0
       date-fns: 2.30.0
       date-fns-tz: 2.0.1(date-fns@2.30.0)
@@ -9834,7 +9835,7 @@ snapshots:
       '@strapi/generators': 5.40.0(@types/node@22.19.15)
       '@strapi/logger': 5.40.0
       '@strapi/permissions': 5.40.0
-      '@strapi/types': 5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.9.3)
+      '@strapi/types': 5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.4.4)
       '@strapi/typescript-utils': 5.40.0
       '@strapi/utils': 5.40.0
       '@vercel/stega': 0.1.2
@@ -10252,7 +10253,7 @@ snapshots:
       '@strapi/openapi': 5.40.0
       '@strapi/permissions': 5.40.0
       '@strapi/review-workflows': 5.40.0(31e175d0d7d8c9ba92158c1c1a82bfde)
-      '@strapi/types': 5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.9.3)
+      '@strapi/types': 5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.4.4)
       '@strapi/typescript-utils': 5.40.0
       '@strapi/upload': 5.40.0(6f981c8d655f5700b0502ad7b8c8ed41)
       '@strapi/utils': 5.40.0
@@ -10355,6 +10356,36 @@ snapshots:
       - webpack-cli
       - webpack-dev-server
       - webpack-plugin-serve
+
+  '@strapi/types@5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.4.4)':
+    dependencies:
+      '@casl/ability': 6.7.5
+      '@koa/cors': 5.0.0
+      '@koa/router': 12.0.2
+      '@strapi/database': 5.40.0(@types/node@22.19.15)(pg@8.16.3)
+      '@strapi/logger': 5.40.0
+      '@strapi/permissions': 5.40.0
+      '@strapi/utils': 5.40.0
+      commander: 8.3.0
+      json-logic-js: 2.0.5
+      koa: 2.16.4
+      koa-body: 6.0.1
+      node-schedule: 2.1.1
+      typedoc: 0.25.10(typescript@5.4.4)
+      typedoc-github-wiki-theme: 1.1.0(typedoc-plugin-markdown@3.17.1(typedoc@0.25.10(typescript@5.9.3)))(typedoc@0.25.10(typescript@5.9.3))
+      typedoc-plugin-markdown: 3.17.1(typedoc@0.25.10(typescript@5.9.3))
+      zod: 3.25.67
+    transitivePeerDependencies:
+      - '@types/node'
+      - better-sqlite3
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - sqlite3
+      - supports-color
+      - tedious
+      - typescript
 
   '@strapi/types@5.40.0(@types/node@22.19.15)(pg@8.16.3)(typescript@5.9.3)':
     dependencies:
@@ -13376,7 +13407,7 @@ snapshots:
       lodash.unescape: 4.0.1
       marked: 4.3.0
 
-  marked@17.0.4: {}
+  marked@17.0.5: {}
 
   marked@4.3.0: {}
 
@@ -15353,6 +15384,14 @@ snapshots:
     dependencies:
       handlebars: 4.7.8
       typedoc: 0.25.10(typescript@5.9.3)
+
+  typedoc@0.25.10(typescript@5.4.4):
+    dependencies:
+      lunr: 2.3.9
+      marked: 4.3.0
+      minimatch: 9.0.9
+      shiki: 0.14.7
+      typescript: 5.4.4
 
   typedoc@0.25.10(typescript@5.9.3):
     dependencies:

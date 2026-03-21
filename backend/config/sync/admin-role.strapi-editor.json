@@ -171,12 +171,17 @@
       "locale": null
     },
     {
-      "documentId": "fkf9jg6uvwt2uj2asm7bviba",
+      "documentId": "elmlybyqn71wmuuxdr22oti3",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "content",
           "authors",
@@ -208,12 +213,17 @@
       "locale": null
     },
     {
-      "documentId": "hdaqqplh2se641kjwy0fslcf",
+      "documentId": "czdg2x5vyoip3p0997hn7itj",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "content",
           "authors",
@@ -227,12 +237,17 @@
       "locale": null
     },
     {
-      "documentId": "of8dznvrd0xwbrg72vrstzsb",
+      "documentId": "kc3ymcr0iy0jecfhdv5pixvd",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "content",
           "authors",
@@ -378,12 +393,17 @@
       "locale": null
     },
     {
-      "documentId": "ycgqhshho3cg19bsi15aog87",
+      "documentId": "c1zr1fi1mv7sdwdk6jwmpmkw",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "articles",
           "podcasts"
@@ -411,12 +431,17 @@
       "locale": null
     },
     {
-      "documentId": "jlgr011p4z0c1s9q0864a7z3",
+      "documentId": "ud5miam8tdck3v6v6quhupqo",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "articles",
           "podcasts"
@@ -426,12 +451,17 @@
       "locale": null
     },
     {
-      "documentId": "w8pgb2vuig621vh217g90vzt",
+      "documentId": "gwdymq4sd5kcapfrzzjkofzn",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "articles",
           "podcasts"
@@ -492,12 +522,17 @@
       "locale": null
     },
     {
-      "documentId": "pz38f8kxeb6ct3dldog6suj8",
+      "documentId": "k9nnhp4ct56h92z7pjeli2pt",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "file",
           "duration",
@@ -531,12 +566,17 @@
       "locale": null
     },
     {
-      "documentId": "bk2khh127tlok0mzfk59r2hy",
+      "documentId": "mvvfzshc2j9oll2d265gir3h",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "file",
           "duration",
@@ -552,12 +592,17 @@
       "locale": null
     },
     {
-      "documentId": "s8hrvc0rj51rxdi39x6h2154",
+      "documentId": "cvisz575sisuv8mb68jvjkw2",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "file",
           "duration",

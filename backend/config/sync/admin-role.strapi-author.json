@@ -6,12 +6,17 @@
   "locale": null,
   "permissions": [
     {
-      "documentId": "dqd8m1ueh7bdfhskp823m91r",
+      "documentId": "huvgmhcr6ouc3ezo13cr35jb",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "content",
           "authors",
@@ -49,12 +54,17 @@
       "locale": null
     },
     {
-      "documentId": "yg6i95xt0ri0d17cuekvbmpv",
+      "documentId": "spcr6xo24rrp36afmya53n6n",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "content",
           "authors",
@@ -70,12 +80,17 @@
       "locale": null
     },
     {
-      "documentId": "x915h40cbbqx2gniot3i50ze",
+      "documentId": "s1ltrj4yma24s6u27x9d2l8b",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::article.article",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "content",
           "authors",
@@ -109,12 +124,17 @@
       "locale": null
     },
     {
-      "documentId": "wxk73yuixux3oujeejcotmqg",
+      "documentId": "j2dbwbfi7vv1imcb1935haod",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "articles",
           "podcasts"
@@ -124,12 +144,17 @@
       "locale": null
     },
     {
-      "documentId": "nz9dyq4nv5zxm9x8y9x4m1ne",
+      "documentId": "p78yavxddwwwkcquiyh2btlh",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "file",
           "duration",
@@ -169,12 +194,17 @@
       "locale": null
     },
     {
-      "documentId": "mf36aeqgk678081tiif7r5yr",
+      "documentId": "zkh1urub94fsmkeejooogrhl",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "file",
           "duration",
@@ -192,12 +222,17 @@
       "locale": null
     },
     {
-      "documentId": "ejqdwpn9zwyhcdeyzf35fe73",
+      "documentId": "pj0lbecxy9y1eidl5f3r4hal",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::podcast.podcast",
       "properties": {
         "fields": [
+          "title",
+          "description",
+          "cover",
+          "banner",
+          "date",
           "slug",
           "file",
           "duration",
