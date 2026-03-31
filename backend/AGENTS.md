@@ -127,6 +127,7 @@ types/generated/            # Auto-generated Strapi type definitions (do not edi
 - Rate limiting: in-memory sliding window (30 req/min) on invalidation endpoints.
 - Parameterized queries: `db.connection.raw('... WHERE x = ?', [value])`.
 - API tokens are never logged. Secrets come from environment variables (`.env`).
+- Public and authenticated API permissions are documented in [`docs/strapi-api-permissions.md`](docs/strapi-api-permissions.md) (synced from `config/sync/user-role.*.json`).
 
 ### Documentation
 

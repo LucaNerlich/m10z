@@ -1,0 +1,18 @@
+name: Security — SQL template patterns
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  sql-template-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+      - name: Check for unsafe SQL string interpolation in raw templates
+        run: node scripts/check-sql-injection-patterns.mjs
