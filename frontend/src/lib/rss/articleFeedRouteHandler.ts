@@ -17,9 +17,7 @@ import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
-    ? process.env.NEXT_PUBLIC_STRAPI_URL.replace(/\/+$/, '')
-    : '';
+const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL ?? '').replace(/\/+$/, '');
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
 const FEED_REGENERATE_MS = Number(process.env.FEED_REGENERATE_MS ?? '') || 30 * 60_000;
@@ -161,47 +159,53 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
  *
  * @returns An array of `StrapiArticle` objects ordered by `publishedAt` descending.
  */
-async function fetchAllArticles(): Promise<StrapiArticle[]> {
-    const maxPages = 50; // safety: prevents runaway loops if pagination gets weird
-    const maxItems = Number(process.env.FEED_ARTICLE_MAX_ITEMS ?? '') || 1000; // configurable; default 1000
-    const pageSize = 100;
-    let page = 1;
-    const all: StrapiArticle[] = [];
-    while (page <= maxPages && all.length < maxItems) {
-        const query = qs.stringify(
-            {
-                sort: ['publishedAt:desc'],
-                status: 'published',
-                pagination: {pageSize, page},
-                populate: {
-                    cover: {fields: MEDIA_FIELDS},
-                    banner: {fields: MEDIA_FIELDS},
-                    authors: populateAuthorAvatar,
-                    categories: populateCategory,
-                },
-                fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
+async function fetchArticlePage(page: number, pageSize: number): Promise<{
+    data: unknown[];
+    meta?: {pagination?: {page: number; pageCount: number; total: number}};
+}> {
+    const query = qs.stringify(
+        {
+            sort: ['publishedAt:desc'],
+            status: 'published',
+            pagination: {pageSize, page},
+            populate: {
+                cover: {fields: MEDIA_FIELDS},
+                banner: {fields: MEDIA_FIELDS},
+                authors: populateAuthorAvatar,
+                categories: populateCategory,
             },
-            {encodeValuesOnly: true},
-        );
+            fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
+        },
+        {encodeValuesOnly: true},
+    );
+    return fetchStrapiJson(`/api/articles?${query}`);
+}
 
-        const res = await fetchStrapiJson<{
-            data: unknown[];
-            meta?: {pagination?: {page: number; pageCount: number; total: number}};
-        }>(`/api/articles?${query}`);
+async function fetchAllArticles(): Promise<StrapiArticle[]> {
+    const maxPages = 50;
+    const maxItems = Number(process.env.FEED_ARTICLE_MAX_ITEMS ?? '') || 1000;
+    const pageSize = 100;
 
+    // Fetch page 1 to discover total page count
+    const firstRes = await fetchArticlePage(1, pageSize);
+    const firstItems = Array.isArray(firstRes.data) ? (firstRes.data as StrapiArticle[]) : [];
+    const all: StrapiArticle[] = firstItems.slice(0, maxItems);
+
+    const pagination = firstRes.meta?.pagination;
+    if (!pagination || pagination.pageCount <= 1 || firstItems.length === 0 || all.length >= maxItems) {
+        return all;
+    }
+
+    // Fetch remaining pages in parallel
+    const lastPage = Math.min(pagination.pageCount, maxPages);
+    const pageNumbers = Array.from({length: lastPage - 1}, (_, i) => i + 2);
+    const results = await Promise.all(pageNumbers.map((p) => fetchArticlePage(p, pageSize)));
+
+    for (const res of results) {
         const items = Array.isArray(res.data) ? (res.data as StrapiArticle[]) : [];
         const remaining = Math.max(0, maxItems - all.length);
-        if (remaining > 0) {
-            all.push(...items.slice(0, remaining));
-        }
-
-        const pagination = res.meta?.pagination;
-        const done =
-            !pagination ||
-            pagination.page >= pagination.pageCount ||
-            items.length === 0;
-        if (done) break;
-        page++;
+        if (remaining <= 0) break;
+        all.push(...items.slice(0, remaining));
     }
 
     return all;

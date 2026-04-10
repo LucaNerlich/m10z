@@ -64,11 +64,12 @@ export interface FetchStrapiOptions {
 }
 
 export function getStrapiApiBaseUrl(): URL {
-    // Prefer server-only env var; fall back to NEXT_PUBLIC_* for local/dev convenience.
-    const raw = process.env.NEXT_PUBLIC_STRAPI_URL;
+    // Prefer server-only env var (not bundled into client JS); fall back to NEXT_PUBLIC_* for
+    // backward compatibility and for client components that need the URL for image resolution.
+    const raw = process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL;
     if (!raw) {
         throw new Error(
-            'Missing NEXT_PUBLIC_STRAPI_URL. Set it (e.g. NEXT_PUBLIC_STRAPI_URL=http://localhost:1337).',
+            'Missing STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL). Set it (e.g. STRAPI_URL=http://localhost:1337).',
         );
     }
 
@@ -76,7 +77,7 @@ export function getStrapiApiBaseUrl(): URL {
         return new URL(raw);
     } catch {
         throw new Error(
-            `Invalid NEXT_PUBLIC_STRAPI_URL: "${raw}". Expected a valid absolute URL like "http://localhost:1337".`,
+            `Invalid STRAPI_URL: "${raw}". Expected a valid absolute URL like "http://localhost:1337".`,
         );
     }
 }

@@ -1,5 +1,6 @@
 type Bucket = {count: number; resetAtMs: number};
 
+const MAX_BUCKETS = 10_000;
 const buckets = new Map<string, Bucket>();
 
 // Add cleanup
@@ -32,6 +33,12 @@ export function checkRateLimit(key: string, cfg: RateLimitConfig): {ok: boolean;
     const existing = buckets.get(key);
 
     if (!existing || existing.resetAtMs <= now) {
+        // Evict oldest entries if map exceeds size bound (DDoS protection)
+        if (buckets.size >= MAX_BUCKETS) {
+            const iter = buckets.keys();
+            const oldest = iter.next().value;
+            if (oldest !== undefined) buckets.delete(oldest);
+        }
         buckets.set(key, {count: 1, resetAtMs: now + cfg.windowMs});
         return {ok: true, retryAfterSeconds: 0};
     }

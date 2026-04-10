@@ -254,11 +254,13 @@ export async function GET(request: Request) {
     const query = searchParams.get('q');
     const startedAt = Date.now();
 
-    // If no query parameter, return the full index (existing behavior)
+    // If no query parameter, return the full index (without content field to reduce payload size and avoid bulk content exposure)
     if (!query) {
         try {
             const content = await loadSearchIndex();
             const augmented = augmentIndexWithStaticPages(content);
+            const publicRecords = augmented.records.map(({content: _content, ...rest}) => rest);
+            const publicIndex = {...augmented, records: publicRecords};
             const expiresDate = new Date(Date.now() + 60000).toUTCString();
             const durationMs = Date.now() - startedAt;
             if (durationMs >= 500) {
@@ -271,7 +273,7 @@ export async function GET(request: Request) {
                     detail: {total: augmented.total},
                 });
             }
-            return NextResponse.json(augmented, {
+            return NextResponse.json(publicIndex, {
                 headers: {
                     'Cache-Control': 'public, max-age=60',
                     'Expires': expiresDate,

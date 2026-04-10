@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
         const unique = (values: string[]) => Array.from(new Set(values));
 
         const strapiOriginForCsp = (() => {
-            const raw = process.env.NEXT_PUBLIC_STRAPI_URL;
+            const raw = process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL;
             if (!raw) return null;
             try {
                 const url = new URL(raw);

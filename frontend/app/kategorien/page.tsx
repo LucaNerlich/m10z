@@ -5,6 +5,7 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {CategoryCard} from '@/src/components/CategoryCard';
+import {Card} from '@/src/components/Card';
 
 export const metadata: Metadata = {
     title: 'Kategorien',
@@ -28,7 +29,22 @@ export const metadata: Metadata = {
 };
 
 export default async function CategoriesPage() {
-    const categories = await fetchCategoriesWithContent();
+    let categories;
+    try {
+        categories = await fetchCategoriesWithContent();
+    } catch {
+        return (
+            <section data-list-page>
+                <h1>Kategorien</h1>
+                <Card variant="empty">
+                    <p>Fehler beim Laden der Kategorien.</p>
+                    <a href="/kategorien" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                        Erneut versuchen
+                    </a>
+                </Card>
+            </section>
+        );
+    }
 
     return (
         <section data-list-page>

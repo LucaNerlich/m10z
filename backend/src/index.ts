@@ -241,9 +241,6 @@ export default {
                     process.exit(1);
                 }, 30000); // 30 second timeout
 
-                // Clear all intervals and timers
-                clearTimeout(shutdownTimeout);
-
                 // Close database connections
                 if (strapi.db) {
                     strapi.log.info('Closing database connections...');
@@ -251,6 +248,7 @@ export default {
                     strapi.log.info('Database connections closed');
                 }
 
+                clearTimeout(shutdownTimeout);
                 strapi.log.info('Graceful shutdown completed');
                 process.exit(0);
             } catch (error) {

@@ -146,8 +146,8 @@ export function mediaUrlToAbsolute(args: {
     // If URL is already absolute, return as-is
     if (/^https?:\/\//i.test(media.url)) return media.url;
 
-    // Use Strapi URL from environment variable
-    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/+$/, '');
+    // Use Strapi URL from environment variable (prefer server-only var)
+    const strapiUrl = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL)?.replace(/\/+$/, '');
     if (!strapiUrl) return undefined;
 
     const path = media.url.startsWith('/') ? media.url : `/${media.url}`;

@@ -9,10 +9,10 @@ import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 
 export type {StrapiMediaRef};
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/+$/, '');
+const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL)?.replace(/\/+$/, '');
 
 if (!STRAPI_URL) {
-    throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
+    throw new Error('Missing STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL)');
 }
 
 const MAX_SLUGS = 150;

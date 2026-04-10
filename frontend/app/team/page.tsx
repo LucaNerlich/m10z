@@ -4,6 +4,7 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {AuthorCard} from '@/src/components/AuthorCard';
+import {Card} from '@/src/components/Card';
 
 export const metadata: Metadata = {
     title: 'Team',
@@ -32,7 +33,22 @@ export const metadata: Metadata = {
  * @returns The JSX element for the Team page containing a grid of author cards.
  */
 export default async function TeamPage() {
-    const authors = await fetchAuthorsList();
+    let authors;
+    try {
+        authors = await fetchAuthorsList();
+    } catch {
+        return (
+            <section data-list-page>
+                <h1>Team</h1>
+                <Card variant="empty">
+                    <p>Fehler beim Laden der Autoren.</p>
+                    <a href="/team" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                        Erneut versuchen
+                    </a>
+                </Card>
+            </section>
+        );
+    }
 
     return (
         <section data-list-page>
