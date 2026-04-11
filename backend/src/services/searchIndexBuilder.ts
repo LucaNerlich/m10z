@@ -142,13 +142,13 @@ type PlainTextMetrics = {
 };
 
 const PAGE_SIZE = 100;
-const DEFAULT_MAX_LEN = 5000;
+const DEFAULT_MAX_LEN = 50_000;
 
 function getMaxLen(): number {
     const raw = process.env.SEARCH_INDEX_MAX_LEN;
     if (!raw) return DEFAULT_MAX_LEN;
     const n = Number(raw);
-    if (Number.isFinite(n) && n > 0) return Math.min(n, 50_000);
+    if (Number.isFinite(n) && n > 0) return Math.min(n, 100_000);
     return DEFAULT_MAX_LEN;
 }
 

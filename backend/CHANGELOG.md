@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-04-11
+
+### Changed
+- Search index now indexes up to 50,000 characters of article content (previously 5,000), enabling full-content search for most articles
+
 ## [1.1.0] - 2026-04-11
 
 ### Added
