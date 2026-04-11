@@ -9,8 +9,10 @@ type StrapiLike = {
 };
 
 const DEBOUNCE_MS = 5000;
+const MAX_FAILURE_RETRIES = 5;
 let pendingRebuild = false;
 let isRunning = false;
+let consecutiveFailures = 0;
 let debounceTimer: NodeJS.Timeout | null = null;
 
 function clearDebounceTimer(): void {
@@ -22,6 +24,9 @@ function clearDebounceTimer(): void {
 
 function scheduleDebouncedRun(strapi: StrapiLike): void {
     clearDebounceTimer();
+    const delay = consecutiveFailures > 0
+        ? Math.min(DEBOUNCE_MS * Math.pow(2, consecutiveFailures), 60_000)
+        : DEBOUNCE_MS;
     debounceTimer = setTimeout(() => {
         debounceTimer = null;
         if (isRunning) {
@@ -30,7 +35,7 @@ function scheduleDebouncedRun(strapi: StrapiLike): void {
             return;
         }
         void runRebuild(strapi);
-    }, DEBOUNCE_MS);
+    }, delay);
 }
 
 async function runRebuild(strapi: StrapiLike): Promise<void> {
@@ -57,12 +62,19 @@ async function runRebuild(strapi: StrapiLike): Promise<void> {
     } finally {
         isRunning = false;
         if (succeeded) {
+            consecutiveFailures = 0;
             strapi.log.info('Search index rebuild completed.');
         } else {
-            strapi.log.warn('Search index rebuild failed.', rebuildError);
+            consecutiveFailures++;
+            strapi.log.warn(`Search index rebuild failed (attempt ${consecutiveFailures}).`, rebuildError);
         }
         if (pendingRebuild) {
-            scheduleDebouncedRun(strapi);
+            if (!succeeded && consecutiveFailures >= MAX_FAILURE_RETRIES) {
+                strapi.log.warn(`Search index rebuild abandoned after ${MAX_FAILURE_RETRIES} consecutive failures. Will retry on next content change.`);
+                pendingRebuild = false;
+            } else {
+                scheduleDebouncedRun(strapi);
+            }
         }
     }
 }

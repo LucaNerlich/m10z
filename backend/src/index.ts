@@ -182,20 +182,17 @@ export default {
                 strapi.log.info('Database pool monitoring enabled');
 
                 // Periodic pool health logging in development
+                const poolMax = parseInt(process.env.DATABASE_POOL_MAX || '25', 10);
                 if (process.env.NODE_ENV === 'development') {
                     const healthInterval = setInterval(() => {
                         const metrics = getPoolMetrics();
                         strapi.log.info('Database pool health', metrics);
 
-                        // Metric interpretation:
-                        // - High 'waiting' count indicates pool exhaustion - consider increasing max
-                        // - 'active' + 'idle' should not exceed 'max' (25)
-                        // - Monitor for connection leaks (idle connections not being released)
                         if (metrics.waiting > 0) {
                             strapi.log.warn('Database pool has waiting requests - consider increasing pool size', metrics);
                         }
-                        if (metrics.total > 25) {
-                            strapi.log.warn('Database pool exceeds max connections - potential connection leak', metrics);
+                        if (metrics.total > poolMax) {
+                            strapi.log.warn(`Database pool exceeds max connections (${poolMax}) - potential connection leak`, metrics);
                         }
                     }, 60000); // Every 60 seconds
 

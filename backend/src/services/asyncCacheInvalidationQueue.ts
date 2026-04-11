@@ -24,7 +24,7 @@ function scheduleDebouncedRun(strapi: StrapiLike): void {
     debounceTimer = setTimeout(() => {
         debounceTimer = null;
         if (isRunning) {
-            strapi.log.info('Cache invalidation already running; will rerun after completion.');
+            strapi.log.info('Cache invalidation already running; pending targets will be processed after completion.');
             return;
         }
         void runInvalidations(strapi);
