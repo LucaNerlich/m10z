@@ -24,8 +24,10 @@ export async function POST(request: Request) {
     }
 
     revalidateTag('feed:audio', 'max');
+    revalidateTag('strapi:audio-feed', 'max');
     revalidateTag('strapi:podcast', 'max');
     revalidateTag('strapi:podcast:list', 'max');
+    revalidateTag('related-content', 'max');
     // Categories show podcast counts, so invalidate category pages too
     revalidateTag('strapi:category', 'max');
     revalidateTag('strapi:category:list', 'max');
@@ -42,8 +44,10 @@ export async function POST(request: Request) {
         ok: true,
         revalidated: [
             'feed:audio',
+            'strapi:audio-feed',
             'strapi:podcast',
             'strapi:podcast:list',
+            'related-content',
             'strapi:category',
             'strapi:category:list',
             '/audiofeed.xml',

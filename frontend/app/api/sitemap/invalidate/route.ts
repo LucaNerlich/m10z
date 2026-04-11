@@ -28,5 +28,15 @@ export async function POST(request: Request) {
     revalidatePath('/sitemap.xml');
     revalidatePath('/sitemap');
 
-    return Response.json({ok: true, revalidated: ['feed:article', '/rss.xml']});
+    return Response.json({
+        ok: true,
+        revalidated: [
+            'sitemap:articles',
+            'sitemap:podcasts',
+            'sitemap:authors',
+            'sitemap:categories',
+            '/sitemap.xml',
+            '/sitemap',
+        ],
+    });
 }

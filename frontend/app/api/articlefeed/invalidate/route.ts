@@ -23,8 +23,10 @@ export async function POST(request: Request) {
     }
 
     revalidateTag('feed:article', 'max');
+    revalidateTag('strapi:article-feed', 'max');
     revalidateTag('strapi:article', 'max');
     revalidateTag('strapi:article:list', 'max');
+    revalidateTag('related-content', 'max');
     // Categories show article counts, so invalidate category pages too
     revalidateTag('strapi:category', 'max');
     revalidateTag('strapi:category:list', 'max');
@@ -41,8 +43,10 @@ export async function POST(request: Request) {
         ok: true,
         revalidated: [
             'feed:article',
+            'strapi:article-feed',
             'strapi:article',
             'strapi:article:list',
+            'related-content',
             'strapi:category',
             'strapi:category:list',
             '/rss.xml',

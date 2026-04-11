@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     // Invalidate article-related cache tags
     revalidateTag('strapi:article', 'max');
     revalidateTag('strapi:article:list', 'max');
+    revalidateTag('related-content', 'max');
     // Invalidate homepage cache tag (homepage uses HOME_ARTICLE_TAGS which includes 'page:home')
     // This dual-tagging approach allows granular invalidation: content-specific tags (strapi:article)
     // enable targeted cache control, while page:home allows homepage-specific invalidation without
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
         revalidated: [
             'strapi:article',
             'strapi:article:list',
+            'related-content',
             routes.articles,
             routes.articles + '/[slug]',
             '/',

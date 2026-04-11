@@ -122,15 +122,14 @@ type FetchPageOptions = {
  * @returns The parsed response body typed as `T`
  * @throws Error when the request times out, when a socket/connection error occurs, or when the HTTP response status is not OK
  */
-async function performStrapiFetch<T>(
-    pathWithQuery: string,
+async function performStrapiFetchOnce<T>(
+    urlString: string,
+    url: URL,
     options: FetchOptions,
     init: StrapiFetchInit,
     diagnosticName: string,
+    timeout: number,
 ): Promise<T> {
-    const timeout = options.timeout ?? 30000; // Default 30 seconds
-    const url = new URL(pathWithQuery, STRAPI_URL);
-    const urlString = url.toString();
     const startedAt = Date.now();
 
     const controller = new AbortController();
@@ -268,6 +267,43 @@ async function performStrapiFetch<T>(
         // Re-throw other errors as-is
         throw error;
     }
+}
+
+const MAX_RETRIES = 1;
+const RETRY_DELAY_MS = 500;
+
+function isRetryableError(error: unknown): boolean {
+    if (error instanceof Error) {
+        if (error.name === 'AbortError' || error.message.includes('timed out')) return true;
+        if (error.message.includes('ECONNRESET') || error.message.includes('ECONNREFUSED') || error.message.includes('UND_ERR_SOCKET')) return true;
+    }
+    return false;
+}
+
+async function performStrapiFetch<T>(
+    pathWithQuery: string,
+    options: FetchOptions,
+    init: StrapiFetchInit,
+    diagnosticName: string,
+): Promise<T> {
+    const timeout = options.timeout ?? 30000; // Default 30 seconds
+    const url = new URL(pathWithQuery, STRAPI_URL);
+    const urlString = url.toString();
+
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+        try {
+            return await performStrapiFetchOnce<T>(urlString, url, options, init, diagnosticName, timeout);
+        } catch (error) {
+            lastError = error;
+            if (attempt < MAX_RETRIES && isRetryableError(error)) {
+                await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)));
+                continue;
+            }
+            throw error;
+        }
+    }
+    throw lastError;
 }
 
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
