@@ -73,6 +73,9 @@ export type PaginatedResult<T> = {
     hasNextPage: boolean;
 };
 
+// Builds hierarchical cache tags for author pages: base type → author → optional category.
+// Each level enables increasingly granular invalidation (e.g., invalidate all articles
+// vs. only a specific author's articles in a specific category).
 function buildAuthorPageTags(args: {
     contentType: 'article' | 'podcast';
     authorSlug: string;
@@ -272,6 +275,8 @@ async function performStrapiFetchOnce<T>(
 const MAX_RETRIES = 1;
 const RETRY_DELAY_MS = 500;
 
+// Only retry on transient network/timeout failures — not on 4xx/5xx HTTP responses,
+// which indicate server-side issues that won't resolve by retrying immediately.
 function isRetryableError(error: unknown): boolean {
     if (error instanceof Error) {
         if (error.name === 'AbortError' || error.message.includes('timed out')) return true;
@@ -297,6 +302,7 @@ async function performStrapiFetch<T>(
         } catch (error) {
             lastError = error;
             if (attempt < MAX_RETRIES && isRetryableError(error)) {
+                // Linear backoff: 500ms, 1000ms, etc.
                 await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)));
                 continue;
             }

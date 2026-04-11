@@ -50,7 +50,10 @@ let schedulerTimer: ReturnType<typeof setInterval> | null = null;
 let warmupStarted = false;
 let invalidationTimer: ReturnType<typeof setTimeout> | null = null;
 
-// Runtime health tracking (long-lived scheduler)
+// Runtime health tracking (long-lived scheduler).
+// Detects performance regressions (e.g., memory leaks, slow Strapi responses) by comparing
+// recent build durations against the initial build. If the last SLOW_BUILD_WINDOW builds
+// all exceed SLOW_BUILD_MULTIPLIER × initial duration, the diagnostics endpoint flags it.
 let schedulerStartedAtMs: number | null = null;
 let initialBuildDurationMs: number | null = null;
 const buildDurationsMs: number[] = [];
@@ -137,6 +140,8 @@ export function getAudioFeedRuntimeState() {
     const wouldTrigger =
         hasEnough && thresholdMs !== null ? last3.every((d) => d > thresholdMs) : false;
 
+    // Trend detection: compare first and last recorded durations.
+    // ratio >= 1.25 → builds are getting slower; ratio <= 0.85 → getting faster.
     const trend =
         buildDurationsMs.length >= 5
             ? (() => {

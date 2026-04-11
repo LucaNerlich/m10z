@@ -43,6 +43,8 @@ export async function fetchPublishedSlugs(
         });
 
         const pagination = res.meta?.pagination;
+        // Three-way stop: missing pagination (unexpected API shape), page reached the end,
+        // or empty page (Strapi bug/race condition). All three are needed for robustness.
         const done =
             !pagination ||
             pagination.page >= (pagination.pageCount ?? 0) ||

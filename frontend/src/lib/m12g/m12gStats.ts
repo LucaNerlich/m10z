@@ -9,6 +9,9 @@ import {
 
 const MAX_LEADERBOARD_ENTRIES = 10;
 
+// Two-pass aggregation: first accumulates per-game stats (votes, nominations) from all months,
+// then processes winners to count wins. This avoids double-counting because a game can be both
+// a nominee and a winner in the same month.
 export function computeM12GStats(months: M12GMonthWithWinner[]): M12GStats {
     const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
 
@@ -134,5 +137,6 @@ export function buildGameIndex(months: M12GMonthWithWinner[]): M12GGameIndexEntr
             wins: data.wins,
             months: data.months,
         }))
+        // German locale sort so umlauts (ä, ö, ü) are ordered correctly.
         .sort((a, b) => a.name.localeCompare(b.name, 'de-DE'));
 }

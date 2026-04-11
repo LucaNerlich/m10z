@@ -96,6 +96,7 @@ export function generateArticleFeedXml(args: {
 
             // Prepare and Sanitize Content
             const title = escapeXml(a.title);
+            // Fall back to the first category's description when the article has no explicit description.
             const effectiveDescription = a.description || a.categories?.[0]?.description;
             const description = escapeXml(effectiveDescription ?? '');
             const html = markdownToHtml(a.content ?? '');
@@ -122,6 +123,8 @@ export function generateArticleFeedXml(args: {
         .join('');
 
     const footer = `</channel></rss>`;
+    // ETag seed: itemCount + latestPublishedAt. The full XML is also hashed by the caller,
+    // so the seed serves as a quick-change indicator while the XML hash catches content edits.
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
 
     return {xml: `${header}${items}${footer}`, etagSeed, lastModified: latestPublishedAt};

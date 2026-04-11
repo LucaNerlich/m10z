@@ -69,6 +69,8 @@ const METRICS_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 let metricsHistory: SearchIndexMetricsSnapshot[] = [];
 
+// Two-pass cleanup: first evict entries older than 30 days, then cap at 1000 entries.
+// Both guards are needed — age alone doesn't bound memory during high-frequency rebuilds.
 function cleanupMetricsHistory(now: number = Date.now()): void {
     const cutoff = now - METRICS_MAX_AGE_MS;
 
@@ -197,6 +199,8 @@ function extractMediaUrl(mediaRef: any, strapiUrl?: string): string | null {
     return `${trimmedBase}${path}`;
 }
 
+// Fallback chain: cover → banner → first category's cover → first category's banner.
+// Ensures search results always show an image even when the entry itself has none.
 function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
     if (!strapiUrl) return null;
 
@@ -258,6 +262,8 @@ function extractCategoryCoverUrl(raw: any, strapiUrl?: string): string | null {
     return null;
 }
 
+// Strapi v4 wraps fields in `{ attributes: {...} }`, while v5 uses flat objects.
+// This normalizer handles both shapes so the index builder works across versions.
 function unwrapEntry<T extends {attributes?: Record<string, unknown>}>(entry: T): any {
     if (!entry) return entry;
     if (entry.attributes && typeof entry.attributes === 'object') {
@@ -525,6 +531,8 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
     return {index, metrics};
 }
 
+// Persists the index as a Strapi single-type document with monotonically increasing version.
+// Uses findFirst if available (Strapi 5), falls back to findMany (Strapi 4 compat).
 async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<SearchIndexFile> {
     const svc = strapi.documents('api::search-index.search-index');
     const existing = (await (svc.findFirst ? svc.findFirst() : svc.findMany({pagination: {pageSize: 1}}))) as any;

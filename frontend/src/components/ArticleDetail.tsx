@@ -66,6 +66,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const breadcrumbJsonLd = generateBreadcrumbJsonLd(breadcrumbItems);
     const content = article.content ?? '';
     const headings = extractHeadings(content, 3);
+    // Only render the table of contents for articles with enough structure (4+ headings).
     const hasToc = headings.length >= 4;
 
     const articleElement = (
@@ -74,6 +75,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
                 id={`jsonld-article-${slug}`}
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
+                    // Escape `<` to prevent `</script>` injection in JSON-LD payloads.
                     __html: JSON.stringify(jsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
                 }}
             />

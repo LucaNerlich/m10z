@@ -80,7 +80,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         inputRef.current?.focus();
     }, []);
 
-    // Lock body scroll while modal is open
+    // Lock body scroll while modal is open; restore on unmount.
     useEffect(() => {
         const previousOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
@@ -163,7 +163,8 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         }
     }, [activeIndex, results.length]);
 
-    // Reset active index when results change (derived state during render)
+    // Derived state pattern: reset active index when result set changes.
+    // This is intentional state derivation during render (React docs: "You Might Not Need an Effect").
     const [prevResultsLength, setPrevResultsLength] = useState(results.length);
     if (results.length !== prevResultsLength) {
         setPrevResultsLength(results.length);
@@ -172,6 +173,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         }
     }
 
+    // Disable auto-scroll when new results arrive; only scroll on keyboard navigation.
     useEffect(() => {
         shouldScrollRef.current = false;
     }, [results.length]);

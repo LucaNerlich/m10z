@@ -50,8 +50,9 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
                 }
             },
             {
-                // Observe intersections relative to a narrow band at the top of
-                // the viewport, just below the sticky header.
+                // -60px top: clear the sticky header height.
+                // -66% bottom: only watch the top ~34% of the viewport, so the
+                // active heading updates as the user scrolls past each section.
                 rootMargin: '-60px 0px -66% 0px',
             }
         );

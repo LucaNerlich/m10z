@@ -10,6 +10,8 @@ type StrapiLike = {
 
 const DEBOUNCE_MS = 5000;
 const MAX_FAILURE_RETRIES = 5;
+// State machine: pendingRebuild flags a queued rebuild, isRunning prevents concurrent runs.
+// When a rebuild finishes and pendingRebuild is still set, it re-schedules itself.
 let pendingRebuild = false;
 let isRunning = false;
 let consecutiveFailures = 0;
@@ -24,6 +26,7 @@ function clearDebounceTimer(): void {
 
 function scheduleDebouncedRun(strapi: StrapiLike): void {
     clearDebounceTimer();
+    // Exponential backoff on failures: 5s → 10s → 20s → 40s → 60s (capped).
     const delay = consecutiveFailures > 0
         ? Math.min(DEBOUNCE_MS * Math.pow(2, consecutiveFailures), 60_000)
         : DEBOUNCE_MS;

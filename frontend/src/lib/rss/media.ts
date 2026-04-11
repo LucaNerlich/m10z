@@ -99,6 +99,11 @@ export type ImageSize = 'thumbnail' | 'small' | 'medium' | 'large';
 
 const IMAGE_SIZES_ORDERED: ImageSize[] = ['thumbnail', 'small', 'medium', 'large'];
 
+// Strapi returns media in three possible shapes depending on version and populate depth:
+//   1. Flat object (v5 default): { url, width, ... }
+//   2. Wrapped in `attributes`: { attributes: { url, width, ... } }
+//   3. Wrapped in `data.attributes`: { data: { attributes: { url, ... } } }
+// This normalizer collapses all three into a flat StrapiMedia object.
 export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): StrapiMedia {
     if (!ref) return {};
     const attrs = ref.attributes ?? ref.data?.attributes ?? ref;
@@ -244,7 +249,8 @@ export function getOptimalMediaFormat(
         return rest;
     }
 
-    // Search for requested size or fallback to larger sizes
+    // Walk up from the requested size to find the nearest available format.
+    // E.g., requesting "medium" will try medium → large → original.
     for (let i = requestedIndex; i < IMAGE_SIZES_ORDERED.length; i++) {
         const size = IMAGE_SIZES_ORDERED[i];
         const format = formats[size];

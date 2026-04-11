@@ -37,10 +37,10 @@ export async function fetchStrapiJson<T>({
         const res = await fetch(url, {
             headers,
             signal: controller.signal,
-            ...(revalidate === 0
+            // Next.js treats `revalidate: 0` as "revalidate immediately" (not "no cache"),
+        // so we must use `cache: 'no-store'` to fully bypass the fetch cache in dev mode.
+        ...(revalidate === 0
                 ? {
-                    // In Next.js, `cache: 'no-store'` is the most reliable way to bypass fetch caching.
-                    // We still include tags for observability, but omit `revalidate` since caching is disabled.
                     cache: 'no-store',
                     next: {tags},
                 }

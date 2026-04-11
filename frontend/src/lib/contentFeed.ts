@@ -64,6 +64,8 @@ export async function buildContentFeed(
     // Fetch enough items from each source to fill the requested page.
     // Since items are merged by date, we need all items up to the end of the
     // requested page from each source to guarantee correct ordering.
+    // Over-fetch by 5 items to account for edge cases where items land exactly
+    // on page boundaries after date-based merge sorting. Capped at 200 to limit memory.
     const itemsNeeded = safePage * safePageSize;
     const fetchSize = Math.min(itemsNeeded + 5, 200);
 

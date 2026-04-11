@@ -156,8 +156,8 @@ export function stringifyJsonLd(jsonLd: unknown): string {
         if (value === undefined) return undefined;
         return value;
     }));
-    // Use serialize-javascript for safe serialization (handles XSS protection)
-    // For JSON-LD, we want JSON format, so we use serialize with isJSON: true
-    // This produces JSON-compatible output while maintaining security
+    // JSON.stringify is unsafe for script tag injection — a payload like `</script>` in
+    // content would break out of the tag. serialize-javascript escapes these sequences.
+    // isJSON: true produces valid JSON (no JS-specific syntax like undefined/Infinity).
     return serialize(cleaned, {isJSON: true});
 }

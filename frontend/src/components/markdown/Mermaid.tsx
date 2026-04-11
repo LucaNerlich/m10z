@@ -48,6 +48,8 @@ export function Mermaid({chart, className}: MermaidProps) {
     const [{error, dataUrl}, dispatch] = useReducer(mermaidReducer, {error: null, dataUrl: null});
     const renderedChartRef = useRef<string>('');
 
+    // Initialize Mermaid once. startOnLoad: false prevents auto-scanning the DOM
+    // (we render explicitly). securityLevel: 'loose' allows click handlers and links in diagrams.
     useEffect(() => {
         mermaid.initialize({
             startOnLoad: false,
@@ -74,6 +76,7 @@ export function Mermaid({chart, className}: MermaidProps) {
 
         const trimmedChart = chart.trim();
 
+        // Skip re-render if the chart source hasn't changed (prevents infinite render loops).
         if (trimmedChart === renderedChartRef.current && !error && dataUrl) return;
 
         dispatch({type: 'reset'});
@@ -91,6 +94,7 @@ export function Mermaid({chart, className}: MermaidProps) {
                 if (containerRef.current) {
                     containerRef.current.innerHTML = svg;
                     renderedChartRef.current = trimmedChart;
+                    // Encode the SVG as a data URL for the Fancybox lightbox preview.
                     const encodedSvg = encodeURIComponent(svg);
                     dispatch({type: 'rendered', dataUrl: `data:image/svg+xml;charset=utf-8,${encodedSvg}`});
                 }

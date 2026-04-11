@@ -48,6 +48,8 @@ export function SearchLauncher(): React.ReactElement {
                 <span className={styles.searchButtonLabel}>Suche</span>
                 <span className={styles.searchShortcut}>{shortcutLabel}</span>
             </button>
+            {/* Mount SWRProvider only when modal is open to avoid registering
+                 the global SWR config and fetch dedupe layer when unused. */}
             {isOpen ? (
                 <SWRProvider>
                     <SearchModal onClose={() => setIsOpen(false)} />

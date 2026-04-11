@@ -116,6 +116,8 @@ async function loadM12GMonths(): Promise<M12GMonthWithWinner[]> {
     }
 }
 
+// Marks games that won the previous month and were nominated again this month.
+// A "title defender" is the returning champion — shown in the UI to highlight repeat contenders.
 function assignTitleDefenders(months: M12GMonthWithWinner[]): void {
     const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
     for (let i = 1; i < chronological.length; i++) {

@@ -36,7 +36,9 @@ export function checkRateLimit(key: string, cfg: RateLimitConfig): {ok: boolean;
     const existing = buckets.get(key);
 
     if (!existing || existing.resetAtMs <= now) {
-        // Evict oldest entries if map exceeds size bound (DDoS protection)
+        // Evict the first-inserted entry (Map preserves insertion order) to bound
+        // memory. This is FIFO, not LRU — simpler and sufficient since expired
+        // buckets are cleaned up every 60s by the background timer.
         if (buckets.size >= MAX_BUCKETS) {
             const iter = buckets.keys();
             const oldest = iter.next().value;

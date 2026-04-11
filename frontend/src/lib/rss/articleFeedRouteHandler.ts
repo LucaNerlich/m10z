@@ -75,6 +75,8 @@ async function ensureFeedDir() {
     await fs.mkdir(FEED_CACHE_DIR, {recursive: true});
 }
 
+// Atomic write: write to .tmp files first, then rename. rename() is atomic on POSIX,
+// so a crash mid-write leaves the previous valid files intact.
 async function writeFeedToDisk(feed: CachedFeed) {
     await ensureFeedDir();
     const tmpXml = `${ARTICLE_FEED_PATH}.tmp`;
@@ -264,6 +266,8 @@ async function getCachedArticleFeed() {
     return {xml, etag, lastModified, itemCount: articles.length};
 }
 
+// Inflight deduplication: concurrent callers share the same in-progress promise,
+// preventing parallel builds that would race on disk writes and Strapi fetches.
 export async function refreshFeed(): Promise<CachedFeed> {
     if (inflight) return inflight;
 

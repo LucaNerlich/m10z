@@ -259,6 +259,8 @@ export async function GET(request: Request) {
         try {
             const content = await loadSearchIndex();
             const augmented = augmentIndexWithStaticPages(content);
+            // Strip `content` from public response: reduces payload size (~80%) and avoids
+            // exposing full article/podcast body text to unauthenticated clients.
             const publicRecords = augmented.records.map(({content: _content, ...rest}) => rest);
             const publicIndex = {...augmented, records: publicRecords};
             const expiresDate = new Date(Date.now() + 60000).toUTCString();
@@ -367,6 +369,7 @@ export async function GET(request: Request) {
         }
 
         const fuse = getCachedFuse(augmented);
+        // Cap results at 20 to limit response size and Fuse scoring work.
         const results = fuse.search(trimmedQuery, {limit: 20}).map((match) => ({
             ...match.item,
             score: match.score ?? null,

@@ -39,6 +39,8 @@ export default ({env}) => {
             enabled: true,
             config: {
                 allowedOrigins: [clientUrl, 'https://m10z.de', 'http://localhost:3000'].filter(Boolean),
+                // Maps Strapi content UIDs to frontend preview routes.
+                // Only articles and podcasts support preview; other types return null (no preview link).
                 async handler(uid, {documentId, locale, status}) {
                     if (!clientUrl) return null;
                     if (!documentId) return null;
@@ -59,6 +61,7 @@ export default ({env}) => {
                     const secret = env('STRAPI_PREVIEW_SECRET');
                     if (!secret) return null;
 
+                    // Normalize Strapi's status values to the two states the frontend understands.
                     const previewStatus = status === 'published' ? 'published' : 'draft';
                     const query = new URLSearchParams({
                         secret,

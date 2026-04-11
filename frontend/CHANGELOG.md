@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2026-04-11
+
+### Changed
+- Added technical inline comments across 26 files in frontend and backend to improve readability and maintainability
+- Documented non-obvious patterns: retry/backoff strategies, Strapi response normalization, atomic writes, timing-safe comparison, feed deduplication, focus trapping, and cache invalidation hierarchies
+
 ## [1.1.1] - 2026-04-11
 
 ### Fixed

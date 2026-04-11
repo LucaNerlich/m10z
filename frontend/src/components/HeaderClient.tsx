@@ -80,6 +80,8 @@ export default function HeaderClient({
         };
     }, [isMenuOpen]);
 
+    // Close menu on outside click/touch. Both events are needed:
+    // mousedown for desktop, touchstart for mobile (iOS Safari doesn't fire mousedown reliably).
     useEffect(() => {
         if (!isMenuOpen) return;
         const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -109,6 +111,7 @@ export default function HeaderClient({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isMenuOpen]);
 
+    // Focus trap: Tab/Shift+Tab cycles within the menu; Escape closes it.
     useEffect(() => {
         if (!isMenuOpen) return;
 

@@ -71,7 +71,9 @@ export function Markdown({markdown, className}: MarkdownProps) {
                         rehypeSanitize,
                         {
                             ...defaultSchema,
-                            // clobberPrefix defaults to 'user-content-' for security against DOM clobbering
+                            // clobberPrefix defaults to 'user-content-' to prevent DOM clobbering attacks.
+                            // Set to '' because our content comes from trusted CMS authors, and
+                            // the prefix would break footnote anchor links (#fn-1 → #user-content-fn-1).
                             clobberPrefix: '',
                             tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark', 'section'],
                             // Allow data-* attributes for Fancybox and analytics

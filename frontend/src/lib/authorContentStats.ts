@@ -50,6 +50,8 @@ function computeCategoryCounts(items: ItemWithCategories[]): CategoryCount[] {
     });
 }
 
+// Accepts two input shapes: PaginatedResult (where total comes from server-reported pagination,
+// which may be higher than the items array length) or a plain array (total = array length).
 function normalizeInput(input: PaginatedResult<ItemWithCategories> | ItemWithCategories[]): {
     items: ItemWithCategories[];
     total: number
