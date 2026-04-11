@@ -41,11 +41,14 @@ type CachedFeed = {
     episodeCount: number;
 };
 
+const INVALIDATION_DEBOUNCE_MS = 10_000;
+
 let cachedFeed: CachedFeed | null = null;
 let inflight: Promise<CachedFeed> | null = null;
 let schedulerStarted = false;
 let schedulerTimer: ReturnType<typeof setInterval> | null = null;
 let warmupStarted = false;
+let invalidationTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Runtime health tracking (long-lived scheduler)
 let schedulerStartedAtMs: number | null = null;
@@ -93,6 +96,10 @@ export function stopScheduler() {
     if (schedulerTimer) {
         clearInterval(schedulerTimer);
         schedulerTimer = null;
+    }
+    if (invalidationTimer) {
+        clearTimeout(invalidationTimer);
+        invalidationTimer = null;
     }
     schedulerStarted = false;
     schedulerStartedAtMs = null;
@@ -193,21 +200,27 @@ async function ensureFeedDir() {
 
 async function writeFeedToDisk(feed: CachedFeed) {
     await ensureFeedDir();
-    await fs.writeFile(AUDIO_FEED_PATH, feed.xml, 'utf8');
-    await fs.writeFile(
-        AUDIO_FEED_META_PATH,
-        JSON.stringify(
-            {
-                etag: feed.etag,
-                builtAtMs: feed.builtAtMs,
-                lastModified: feed.lastModified ? feed.lastModified.toISOString() : null,
-                episodeCount: feed.episodeCount,
-            },
-            null,
-            2,
+    const tmpXml = `${AUDIO_FEED_PATH}.tmp`;
+    const tmpMeta = `${AUDIO_FEED_META_PATH}.tmp`;
+    await Promise.all([
+        fs.writeFile(tmpXml, feed.xml, 'utf8'),
+        fs.writeFile(
+            tmpMeta,
+            JSON.stringify(
+                {
+                    etag: feed.etag,
+                    builtAtMs: feed.builtAtMs,
+                    lastModified: feed.lastModified ? feed.lastModified.toISOString() : null,
+                    episodeCount: feed.episodeCount,
+                },
+                null,
+                2,
+            ),
+            'utf8',
         ),
-        'utf8',
-    );
+    ]);
+    await fs.rename(tmpXml, AUDIO_FEED_PATH);
+    await fs.rename(tmpMeta, AUDIO_FEED_META_PATH);
 }
 
 async function readFeedFromDisk(): Promise<CachedFeed | null> {
@@ -421,7 +434,7 @@ async function getCachedAudioFeed() {
  *
  * @returns The refreshed `CachedFeed` containing `xml`, `etag`, `lastModified`, `builtAtMs`, and `episodeCount`.
  */
-async function refreshFeed(): Promise<CachedFeed> {
+export async function refreshFeed(): Promise<CachedFeed> {
     if (inflight) {
         return inflight;
     }
@@ -443,9 +456,9 @@ async function refreshFeed(): Promise<CachedFeed> {
             episodeCount: built.episodeCount,
         };
         cachedFeed = next;
-        inflight = null;
         // Best-effort persist so future requests can serve without rebuild.
         await writeFeedToDisk(next);
+        inflight = null;
 
         // Update health tracking (successful builds only)
         if (initialBuildDurationMs === null) {
@@ -556,6 +569,20 @@ function ensureScheduler() {
     (schedulerTimer as any).unref?.();
 }
 
+/**
+ * Schedule a debounced feed rebuild after invalidation.
+ *
+ * Multiple calls within `INVALIDATION_DEBOUNCE_MS` (10 s) coalesce into a single rebuild,
+ * preventing expensive Strapi fetches + XML generation when content is batch-published.
+ */
+export function scheduleDebouncedRefresh() {
+    if (invalidationTimer) clearTimeout(invalidationTimer);
+    invalidationTimer = setTimeout(() => {
+        invalidationTimer = null;
+        void refreshFeed().catch(() => undefined);
+    }, INVALIDATION_DEBOUNCE_MS);
+}
+
 export async function buildAudioFeedResponse(request: Request): Promise<Response> {
     ensureWarmup();
     ensureScheduler();
@@ -589,13 +616,18 @@ export async function buildAudioFeedResponse(request: Request): Promise<Response
     }
 
     try {
-        // Prefer on-disk cached feed (fast, no rebuild). Fall back to refresh on cache miss/staleness.
         const now = Date.now();
-        const disk = await readFeedFromDisk();
-        // In development, avoid serving potentially stale disk caches from previous runs.
-        const allowDiskFreshness = process.env.NODE_ENV === 'production';
-        const freshEnough = allowDiskFreshness && disk ? now - disk.builtAtMs < FEED_REGENERATE_MS * 2 : false;
-        const feed = disk && freshEnough ? disk : await refreshFeed();
+        const allowFreshness = process.env.NODE_ENV === 'production';
+        const isFresh = (builtAtMs: number) => allowFreshness && now - builtAtMs < FEED_REGENERATE_MS * 2;
+
+        // Prefer in-memory cache (zero I/O), fall through to disk, then rebuild.
+        let feed: CachedFeed;
+        if (cachedFeed && isFresh(cachedFeed.builtAtMs)) {
+            feed = cachedFeed;
+        } else {
+            const disk = await readFeedFromDisk();
+            feed = disk && isFresh(disk.builtAtMs) ? disk : await refreshFeed();
+        }
 
         // Encourage clients to revalidate on every request; server-side fetch remains cached by tags.
         const headers = buildRssHeaders({

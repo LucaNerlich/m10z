@@ -5,7 +5,7 @@ const buckets = new Map<string, Bucket>();
 
 // Add cleanup
 if (typeof setInterval !== 'undefined') {
-    setInterval(() => {
+    const cleanupTimer = setInterval(() => {
         const now = Date.now();
         for (const [key, bucket] of buckets.entries()) {
             if (bucket.resetAtMs <= now) {
@@ -13,6 +13,9 @@ if (typeof setInterval !== 'undefined') {
             }
         }
     }, 60000); // Clean every minute
+    // Don't keep the process alive just for cleanup.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (cleanupTimer as any).unref?.();
 }
 
 export type RateLimitConfig = {

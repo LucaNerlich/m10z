@@ -165,7 +165,8 @@ function renderChannelHeader(
     channelImageUrl: string,
     pubDate: Date,
 ): string {
-    return `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">` +
+    return `<?xml version="1.0" encoding="UTF-8"?>` +
+        `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">` +
         `    <channel>` +
         `        <title>${escapeXml(channel.title)}</title>` +
         `        <link>${escapeXml(cfg.siteUrl)}</link>` +
@@ -274,7 +275,6 @@ function renderItem(
         `<item>` +
         `    <title>${title}</title>` +
         `    <pubDate>${pubDate}</pubDate>` +
-        `    <lastBuildDate>${pubDate}</lastBuildDate>` +
         `    <guid isPermaLink="false">${guid}</guid>` +
         `    <itunes:image href="${escapeXml(itunesImageHref)}"/>` +
         `    <description><![CDATA[${description}]]></description>` +

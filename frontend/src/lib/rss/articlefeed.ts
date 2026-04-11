@@ -51,12 +51,24 @@ export function generateArticleFeedXml(args: {
 }): {xml: string; etagSeed: string; lastModified: Date | null} {
     const {siteUrl, channel, articles} = args;
 
-    const now = new Date();
+    const sorted = [...articles].sort((a, b) => {
+        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
+        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
+        return bd - ad;
+    });
+
+    const latestRaw = getEffectiveDate(sorted[0]);
+    const latestPublishedAt = latestRaw ? new Date(latestRaw) : null;
+    // Use the latest published date so the XML (and ETag) stays stable between rebuilds
+    // when content hasn't changed. Fallback to current time aligns with audio feed pattern.
+    const buildDate = latestPublishedAt ?? new Date();
+
     const channelImage = normalizeStrapiMedia(channel.image);
     const channelImageUrl =
         mediaUrlToAbsolute({media: channelImage}) ??
         `${siteUrl}/images/m10z.jpg`;
     const header =
+        `<?xml version="1.0" encoding="UTF-8"?>` +
         `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">` +
         `  <channel>` +
         `    <title>${escapeXml(channel.title)}</title>` +
@@ -65,19 +77,13 @@ export function generateArticleFeedXml(args: {
         `    <language>de</language>` +
         `    <managingEditor>${escapeXml(`${channel.mail} (M10Z)`)}</managingEditor>` +
         `    <webMaster>${escapeXml(`${channel.mail} (M10Z)`)}</webMaster>` +
-        `    <lastBuildDate>${formatRssDate(now)}</lastBuildDate>` +
+        `    <lastBuildDate>${formatRssDate(buildDate)}</lastBuildDate>` +
         `    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>` +
         `    <image>` +
         `      <url>${escapeXml(channelImageUrl)}</url>` +
         `      <title>${escapeXml(channel.title)}</title>` +
         `      <link>${escapeXml(siteUrl)}</link>` +
         `    </image>`;
-
-    const sorted = [...articles].sort((a, b) => {
-        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
-        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
-        return bd - ad;
-    });
 
     const items = sorted
         .map((a) => {
@@ -116,9 +122,6 @@ export function generateArticleFeedXml(args: {
         .join('');
 
     const footer = `</channel></rss>`;
-
-    const latestRaw = getEffectiveDate(sorted[0]);
-    const latestPublishedAt = latestRaw ? new Date(latestRaw) : null;
     const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
 
     return {xml: `${header}${items}${footer}`, etagSeed, lastModified: latestPublishedAt};

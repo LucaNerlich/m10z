@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-04-11
+
+### Fixed
+- Feed rebuild race condition where concurrent disk writes could corrupt cached XML
+- Article feed `lastBuildDate` changing on every rebuild, defeating ETag-based 304 responses
+- New content taking up to 30 minutes to appear in feeds after publishing (now rebuilds within 10 seconds)
+- In-memory feed cache bypassed on every request, causing unnecessary disk I/O
+- Invalid `<lastBuildDate>` element inside `<item>` tags in audio feed (RSS 2.0 spec violation)
+- Missing XML declaration in generated article and audio feeds
+- ETag comparison not handling multi-value `If-None-Match` headers per RFC 7232
+- Fallback feed XML not escaping interpolated values
+- Rate limit cleanup timer preventing clean process exit
+
+### Changed
+- Feed disk writes now use atomic rename to prevent partial-file corruption on crash
+- Feed invalidation uses debounced rebuild to prevent server overload during batch publishing
+
 ## [1.1.0] - 2026-04-11
 
 ### Added

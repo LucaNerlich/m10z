@@ -4,6 +4,7 @@ import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {routes} from '@/src/lib/routes';
 import {getClientIp} from '@/src/lib/net/getClientIp';
+import {scheduleDebouncedRefresh} from '@/src/lib/rss/articleFeedRouteHandler';
 
 export async function POST(request: Request) {
     const expected = process.env.FEED_INVALIDATION_TOKEN ?? null;
@@ -38,6 +39,10 @@ export async function POST(request: Request) {
     revalidatePath(routes.articles + '/[slug]', 'page');
     revalidatePath(routes.categories, 'page');
     revalidatePath(routes.categories + '/[slug]', 'page');
+
+    // Schedule a debounced feed rebuild so new content appears promptly without
+    // overwhelming the server when multiple articles are published in quick succession.
+    scheduleDebouncedRefresh();
 
     return Response.json({
         ok: true,

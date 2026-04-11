@@ -1,6 +1,8 @@
 // @ts-ignore
 import xmlFormat from 'xml-formatter';
 
+import {escapeXml} from '@/src/lib/rss/xml';
+
 export type FeedBuildResult = {
     xml: string;
     etag?: string; // should include quotes if provided, e.g. "\"abc\""
@@ -94,7 +96,10 @@ export function buildRssHeaders(args: {
 export function maybeReturn304(request: Request, etag?: string, headers?: Headers): Response | null {
     if (!etag || !headers) return null;
     const inm = request.headers.get('if-none-match');
-    if (inm && inm === etag) return new Response(null, {status: 304, headers});
+    if (!inm) return null;
+    // Per RFC 7232, If-None-Match can contain comma-separated ETags.
+    const matches = inm.split(',').some((t) => t.trim() === etag);
+    if (matches) return new Response(null, {status: 304, headers});
     return null;
 }
 
@@ -108,10 +113,10 @@ export function fallbackFeedXml(args: {
         `<?xml version="1.0" encoding="UTF-8"?>` +
         `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">` +
         `  <channel>` +
-        `    <title>${args.title}</title>` +
-        `    <link>${args.link}</link>` +
-        `    <description>${args.description}</description>` +
-        `    <atom:link href="${args.selfLink}" rel="self" type="application/rss+xml"/>` +
+        `    <title>${escapeXml(args.title)}</title>` +
+        `    <link>${escapeXml(args.link)}</link>` +
+        `    <description>${escapeXml(args.description)}</description>` +
+        `    <atom:link href="${escapeXml(args.selfLink)}" rel="self" type="application/rss+xml"/>` +
         `  </channel>` +
         `</rss>`
     );
