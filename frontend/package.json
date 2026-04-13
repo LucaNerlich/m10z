@@ -1,6 +1,6 @@
 {
     "name": "m10z-frontend",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "private": true,
     "scripts": {
         "dev": "next dev",
@@ -32,7 +32,7 @@
         "remark-smartypants": "^3.0.2",
         "serialize-javascript": "^7.0.5",
         "swr": "^2.4.1",
-        "undici": "^7.24.7",
+        "undici": "^7.24.8",
         "xml-formatter": "^3.7.0"
     },
     "devDependencies": {

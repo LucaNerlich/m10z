@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-04-13
+
+### Added
+- `/llms.txt` route following the llmstxt.org proposal for LLM-friendly site discovery
+
+### Changed
+- Updated undici dependency (7.24.7 → 7.24.8)
+
 ## [1.1.2] - 2026-04-11
 
 ### Changed

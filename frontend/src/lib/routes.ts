@@ -24,6 +24,7 @@ export const routes = {
     m12gGames: '/m12g/spiele',
     audioFeed: '/audiofeed.xml',
     articleFeed: '/rss.xml',
+    llmsTxt: '/llms.txt',
     feeds: '/feeds',
     forum: 'https://forum.m10z.de',
     discord: 'https://discord.gg/G5ngm7S6wF',
