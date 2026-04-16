@@ -182,7 +182,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         if (searchError) return 'Suche konnte nicht geladen werden.';
         if (isLoading) return 'Suchen ...';
         if (results.length === 0 && query.trim().length > 0) return 'Keine Treffer gefunden.';
-        if (query.trim().length === 0) return 'Tippe, um nach Artikeln, Podcasts oder Autoren zu suchen.';
+        if (query.trim().length === 0) return 'Tippe, um die Suche zu starten.';
         return null;
     }, [searchError, isLoading, query, results.length]);
 
