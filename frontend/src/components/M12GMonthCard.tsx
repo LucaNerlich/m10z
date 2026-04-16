@@ -9,6 +9,7 @@ type M12GMonthCardProps = {
 
 export function M12GMonthCard({month}: M12GMonthCardProps) {
     const {winners} = month;
+    const titleDefenderNames = new Set(month.titleDefenders);
     const winnerNames = new Set(winners.map((w) => w.name));
     const nonWinners = month.games.filter((game) => !winnerNames.has(game.name));
 
@@ -29,7 +30,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                         <li className={styles.winnerGroup}>
                             <span className={styles.winnerLabel}>Sieger</span>
                             {winners.map((game) => {
-                                const isTitleDefender = game.name === month.titleDefender;
+                                const isTitleDefender = titleDefenderNames.has(game.name);
                                 return (
                                     <div key={`${game.name}-${game.link}`}
                                         className={styles.winnerItem}>
@@ -53,7 +54,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                         </li>
                     ) : null}
                     {nonWinners.map((game) => {
-                        const isTitleDefender = game.name === month.titleDefender;
+                        const isTitleDefender = titleDefenderNames.has(game.name);
                         return (
                             <li key={`${game.name}-${game.link}`}
                                 className={styles.gameItem}>

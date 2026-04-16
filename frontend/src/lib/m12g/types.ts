@@ -13,7 +13,8 @@ export interface M12GMonth {
 
 export interface M12GMonthWithWinner extends M12GMonth {
     winners: M12GGame[];
-    titleDefender: string | null;
+    /** Normalized game names that won the prior month and are nominated again this month (can be several after a tie). */
+    titleDefenders: string[];
 }
 
 export interface M12GOverview {

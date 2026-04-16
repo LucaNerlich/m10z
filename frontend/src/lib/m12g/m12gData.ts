@@ -11,6 +11,16 @@ type Frontmatter = {
 
 const MONTH_FILE_REGEX = /^\d{4}-\d{2}\.md$/;
 const LIST_ITEM_REGEX = /^\s*[*-]\s+\[([^\]]+)\]\(([^)]+)\)(?:\s+(\d+))?\s*$/;
+const TITLE_DEFENDER_NAME_SUFFIX = ' (Titelträger)';
+
+/** Strips manual "(Titelträger)" hints from markdown link text so names match across months. */
+function normalizeM12GGameName(raw: string): string {
+    const trimmed = raw.trim();
+    if (trimmed.endsWith(TITLE_DEFENDER_NAME_SUFFIX)) {
+        return trimmed.slice(0, -TITLE_DEFENDER_NAME_SUFFIX.length).trim();
+    }
+    return trimmed;
+}
 
 function parseFrontmatter(rawContent: string): {frontmatter: Frontmatter; body: string} {
     if (!rawContent.startsWith('---')) {
@@ -59,7 +69,11 @@ function parseGamesFromBody(body: string): M12GGame[] {
         if (!match) continue;
         const [, name, link, voteValue] = match;
         const votes = voteValue ? Number.parseInt(voteValue, 10) : 0;
-        games.push({name: name.trim(), link: link.trim(), votes: Number.isNaN(votes) ? 0 : votes});
+        games.push({
+            name: normalizeM12GGameName(name),
+            link: link.trim(),
+            votes: Number.isNaN(votes) ? 0 : votes,
+        });
     }
 
     games.sort((a, b) => b.votes - a.votes);
@@ -90,7 +104,7 @@ async function loadMonthFromFile(filePath: string, monthId: string): Promise<M12
         return {
             ...month,
             winners: computeWinners(games),
-            titleDefender: null,
+            titleDefenders: [],
         };
     } catch {
         return null;
@@ -118,6 +132,7 @@ async function loadM12GMonths(): Promise<M12GMonthWithWinner[]> {
 
 // Marks games that won the previous month and were nominated again this month.
 // A "title defender" is the returning champion — shown in the UI to highlight repeat contenders.
+// After a tied month, every co-winner can be a defender in the next month.
 function assignTitleDefenders(months: M12GMonthWithWinner[]): void {
     const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
     for (let i = 1; i < chronological.length; i++) {
@@ -125,9 +140,9 @@ function assignTitleDefenders(months: M12GMonthWithWinner[]): void {
         if (previousWinners.length === 0) continue;
         const previousWinnerNames = new Set(previousWinners.map((w) => w.name));
         const current = chronological[i];
-        const defender = current.games.find((game) => previousWinnerNames.has(game.name));
-        if (defender) {
-            current.titleDefender = defender.name;
+        const defenders = current.games.filter((game) => previousWinnerNames.has(game.name));
+        if (defenders.length > 0) {
+            current.titleDefenders = defenders.map((game) => game.name);
         }
     }
 }
