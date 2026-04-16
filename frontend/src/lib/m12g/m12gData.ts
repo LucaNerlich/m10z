@@ -59,7 +59,10 @@ function parseGamesFromBody(body: string): M12GGame[] {
         if (!match) continue;
         const [, name, link, voteValue] = match;
         const votes = voteValue ? Number.parseInt(voteValue, 10) : 0;
-        games.push({name: name.trim(), link: link.trim(), votes: Number.isNaN(votes) ? 0 : votes});
+        const trimmedName = name.trim();
+        const earlyAccess = /\(Early Access\)\s*$/i.test(trimmedName);
+        const cleanName = earlyAccess ? trimmedName.replace(/\s*\(Early Access\)\s*$/i, '') : trimmedName;
+        games.push({name: cleanName, link: link.trim(), votes: Number.isNaN(votes) ? 0 : votes, ...(earlyAccess && {earlyAccess})});
     }
 
     games.sort((a, b) => b.votes - a.votes);

@@ -94,6 +94,17 @@
     color: var(--color-primary);
 }
 
+.earlyAccess {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-primary-strong);
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    border-radius: 999px;
+    padding: 1px 7px;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+}
+
 .titleDefender {
     font-size: 0.75rem;
     font-weight: 600;

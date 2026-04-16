@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2026-04-16
+
+### Added
+- Early Access badge on M12G game cards, replacing the verbose "(Early Access)" suffix in game titles with a compact "EA" pill
+
 ## [1.2.1] - 2026-04-16
 
 ### Added

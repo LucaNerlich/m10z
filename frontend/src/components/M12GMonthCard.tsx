@@ -42,6 +42,9 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                                             >
                                                 {game.name}
                                             </a>
+                                            {game.earlyAccess ? (
+                                                <span className={styles.earlyAccess} title="Early Access">EA</span>
+                                            ) : null}
                                             {isTitleDefender ? (
                                                 <span className={styles.titleDefender}>Titelträger</span>
                                             ) : null}
@@ -66,6 +69,9 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                                     >
                                         {game.name}
                                     </a>
+                                    {game.earlyAccess ? (
+                                        <span className={styles.earlyAccess} title="Early Access">EA</span>
+                                    ) : null}
                                     {isTitleDefender ? (
                                         <span className={styles.titleDefender}>Titelträger</span>
                                     ) : null}

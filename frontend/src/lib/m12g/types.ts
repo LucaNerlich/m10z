@@ -2,6 +2,7 @@ export interface M12GGame {
     name: string;
     link: string;
     votes: number;
+    earlyAccess?: boolean;
 }
 
 export interface M12GMonth {
