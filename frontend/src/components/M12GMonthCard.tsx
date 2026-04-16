@@ -29,7 +29,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                         <li className={styles.winnerGroup}>
                             <span className={styles.winnerLabel}>Sieger</span>
                             {winners.map((game) => {
-                                const isTitleDefender = game.name === month.titleDefender;
+                                const isTitleDefender = month.titleDefenders.includes(game.name);
                                 return (
                                     <div key={`${game.name}-${game.link}`}
                                         className={styles.winnerItem}>
@@ -53,7 +53,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                         </li>
                     ) : null}
                     {nonWinners.map((game) => {
-                        const isTitleDefender = game.name === month.titleDefender;
+                        const isTitleDefender = month.titleDefenders.includes(game.name);
                         return (
                             <li key={`${game.name}-${game.link}`}
                                 className={styles.gameItem}>

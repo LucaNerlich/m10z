@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-04-16
+
+### Added
+- March 2026 M12G dataset ("Early-Access-Armee vs. Full-Release-Rudel")
+
+### Fixed
+- Titelträger badge only appearing for one game when multiple previous winners were nominated again
+
 ## [1.2.0] - 2026-04-13
 
 ### Added

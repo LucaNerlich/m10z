@@ -90,7 +90,7 @@ async function loadMonthFromFile(filePath: string, monthId: string): Promise<M12
         return {
             ...month,
             winners: computeWinners(games),
-            titleDefender: null,
+            titleDefenders: [],
         };
     } catch {
         return null;
@@ -125,9 +125,9 @@ function assignTitleDefenders(months: M12GMonthWithWinner[]): void {
         if (previousWinners.length === 0) continue;
         const previousWinnerNames = new Set(previousWinners.map((w) => w.name));
         const current = chronological[i];
-        const defender = current.games.find((game) => previousWinnerNames.has(game.name));
-        if (defender) {
-            current.titleDefender = defender.name;
+        const defenders = current.games.filter((game) => previousWinnerNames.has(game.name));
+        if (defenders.length > 0) {
+            current.titleDefenders = defenders.map((d) => d.name);
         }
     }
 }
