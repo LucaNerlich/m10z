@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2026-04-20
+
+### Added
+- Status page link (status.m10z.de) in the footer's Rechtliches section
+
 ## [1.3.0] - 2026-04-20
 
 ### Added

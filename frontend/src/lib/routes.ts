@@ -32,6 +32,7 @@ export const routes = {
     twitch: 'https://www.twitch.tv/m10z_tv',
     linktree: 'https://linktr.ee/m10z',
     twitter: '@m10z_tv',
+    status: 'https://status.m10z.de/status/m10z',
 };
 
 /**

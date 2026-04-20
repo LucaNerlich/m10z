@@ -42,6 +42,7 @@ const sections: FooterSection[] = [
         links: [
             {label: 'Impressum', href: routes.imprint},
             {label: 'Datenschutz', href: routes.privacy},
+            {label: 'Status', href: routes.status, external: true},
         ],
     },
 ];
