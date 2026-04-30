@@ -182,8 +182,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "url"
+          "editable": true
         },
         "list": {
           "label": "youtube",
@@ -273,6 +272,10 @@
       }
     },
     "layouts": {
+      "list": [
+        "title",
+        "updatedAt"
+      ],
       "edit": [
         [
           {
@@ -342,10 +345,6 @@
             "size": 6
           }
         ]
-      ],
-      "list": [
-        "title",
-        "updatedAt"
       ]
     },
     "uid": "api::podcast.podcast"

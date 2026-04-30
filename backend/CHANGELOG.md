@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2026-04-30
+
+### Changed
+- Upgraded Strapi to 5.44 and removed unused admin dependencies (`@strapi/design-system`, `@radix-ui/react-tooltip`)
+- Reordered admin content-manager layouts for articles and podcasts; dropped redundant `mainField` on YouTube relations
+- Captured the admin homepage widget layout in config sync
+
 ## [1.1.1] - 2026-04-11
 
 ### Changed
