@@ -262,17 +262,18 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
         }
 
         try {
-            const now = Date.now();
-            const allowFreshness = process.env.NODE_ENV === 'production';
-            const isFresh = (builtAtMs: number) =>
-                allowFreshness && now - builtAtMs < FEED_REGENERATE_MS * 2;
-
-            let feed: CachedFeed;
-            if (cachedFeed && isFresh(cachedFeed.builtAtMs)) {
-                feed = cachedFeed;
-            } else {
-                const disk = await readFeedFromDisk();
-                feed = disk && isFresh(disk.builtAtMs) ? disk : await refresh();
+            // Cache-first serving: serve whatever's persisted regardless of age. The background
+            // scheduler is the only refresh path under normal operation. The request path only
+            // builds on cold start (no memory, no disk) — preventing synchronous rebuilds from
+            // piling up under load. Invalidations trigger a debounced background refresh via
+            // scheduleDebouncedRefresh().
+            let feed: CachedFeed | null = cachedFeed;
+            if (!feed) {
+                feed = await readFeedFromDisk();
+                if (feed) cachedFeed = feed;
+            }
+            if (!feed) {
+                feed = await refresh();
             }
 
             const headers = buildRssHeaders({
