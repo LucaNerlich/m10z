@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2026-05-06
+
+### Added
+- April 2026 M12G dataset draft
+
+### Changed
+- Upgraded Next.js (16.2.3 → 16.2.4), undici, dompurify, and @fancyapps/ui
+- Cache invalidation endpoints now accept either `FEED_INVALIDATION_TOKEN` or `LEGAL_INVALIDATION_TOKEN` for any target
+- Consolidated ten `/api/<type>/invalidate` route handlers into a single dynamic `/api/[target]/invalidate` route backed by a declarative invalidation taxonomy
+
 ## [1.3.1] - 2026-04-20
 
 ### Added
