@@ -1,156 +1,26 @@
 import qs from 'qs';
-import fs from 'node:fs/promises';
-import path from 'node:path';
 
-import {generateArticleFeedXml, type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/rss/articlefeed';
-import {sha256Hex} from '@/src/lib/rss/xml';
-import {
-    buildRssHeaders,
-    fallbackFeedXml,
-    fetchStrapiJson as fetchStrapiJsonCore,
-    maybeReturn304,
-} from '@/src/lib/rss/feedRoute';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {
+    generateArticleFeedXml,
+    type StrapiArticle,
+    type StrapiArticleFeedSingle,
+} from '@/src/lib/rss/articlefeed';
+import {createFeedCache, type FeedBuilt} from '@/src/lib/rss/feedCache';
+import {fetchStrapiJson as fetchStrapiJsonCore} from '@/src/lib/rss/feedRoute';
+import {sha256Hex} from '@/src/lib/rss/xml';
 import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapiContent';
-import {checkRateLimit} from '@/src/lib/security/rateLimit';
-import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
-import {getClientIp} from '@/src/lib/net/getClientIp';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
-const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL ?? '').replace(/\/+$/, '');
+const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL ?? '').replace(
+    /\/+$/,
+    '',
+);
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
-
-const FEED_REGENERATE_MS = Number(process.env.FEED_REGENERATE_MS ?? '') || 30 * 60_000;
-const FEED_CACHE_DIR = process.env.FEED_CACHE_DIR ?? path.join(process.cwd(), '.feed-cache');
-const ARTICLE_FEED_PATH = path.join(FEED_CACHE_DIR, 'rss.xml');
-const ARTICLE_FEED_META_PATH = path.join(FEED_CACHE_DIR, 'rss.meta.json');
-
-type CachedFeed = {
-    xml: string;
-    etag: string;
-    lastModified: Date | null | undefined;
-    builtAtMs: number;
-    itemCount: number;
-};
-
-const INVALIDATION_DEBOUNCE_MS = 10_000;
-
-let cachedFeed: CachedFeed | null = null;
-let inflight: Promise<CachedFeed> | null = null;
-let schedulerStarted = false;
-let schedulerTimer: ReturnType<typeof setInterval> | null = null;
-let warmupStarted = false;
-let invalidationTimer: ReturnType<typeof setTimeout> | null = null;
 
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const module: any;
-
-/**
- * Stops the background feed refresh scheduler (if running).
- *
- * This is mainly useful for local development/HMR and for operational tooling (deployments/tests).
- * In production the scheduler is expected to run continuously.
- */
-export function stopScheduler() {
-    if (schedulerTimer) {
-        clearInterval(schedulerTimer);
-        schedulerTimer = null;
-    }
-    if (invalidationTimer) {
-        clearTimeout(invalidationTimer);
-        invalidationTimer = null;
-    }
-    schedulerStarted = false;
-}
-
-export function getSchedulerState() {
-    return {
-        schedulerStarted,
-        hasTimer: schedulerTimer !== null,
-    };
-}
-
-async function ensureFeedDir() {
-    await fs.mkdir(FEED_CACHE_DIR, {recursive: true});
-}
-
-// Atomic write: write to .tmp files first, then rename. rename() is atomic on POSIX,
-// so a crash mid-write leaves the previous valid files intact.
-async function writeFeedToDisk(feed: CachedFeed) {
-    await ensureFeedDir();
-    const tmpXml = `${ARTICLE_FEED_PATH}.tmp`;
-    const tmpMeta = `${ARTICLE_FEED_META_PATH}.tmp`;
-    await Promise.all([
-        fs.writeFile(tmpXml, feed.xml, 'utf8'),
-        fs.writeFile(
-            tmpMeta,
-            JSON.stringify(
-                {
-                    etag: feed.etag,
-                    builtAtMs: feed.builtAtMs,
-                    lastModified: feed.lastModified ? feed.lastModified.toISOString() : null,
-                    itemCount: feed.itemCount,
-                },
-                null,
-                2,
-            ),
-            'utf8',
-        ),
-    ]);
-    await fs.rename(tmpXml, ARTICLE_FEED_PATH);
-    await fs.rename(tmpMeta, ARTICLE_FEED_META_PATH);
-}
-
-async function readFeedFromDisk(): Promise<CachedFeed | null> {
-    try {
-        const [xml, metaRaw] = await Promise.all([
-            fs.readFile(ARTICLE_FEED_PATH, 'utf8'),
-            fs.readFile(ARTICLE_FEED_META_PATH, 'utf8'),
-        ]);
-        const meta = JSON.parse(metaRaw) as {
-            etag?: string;
-            builtAtMs?: number;
-            lastModified?: string | null;
-            itemCount?: number;
-        };
-        if (!meta.etag || !meta.builtAtMs) return null;
-        return {
-            xml,
-            etag: meta.etag,
-            builtAtMs: meta.builtAtMs,
-            lastModified: meta.lastModified ? new Date(meta.lastModified) : null,
-            itemCount: meta.itemCount ?? 0,
-        };
-    } catch {
-        return null;
-    }
-}
-
-/**
- * Warm the feed once per process/module load:
- * - Load any persisted feed from disk into memory immediately (best-effort)
- * - Kick off one build in the background (best-effort)
- *
- * This reduces chances of serving a fallback or stale content during local testing.
- */
-function ensureWarmup() {
-    if (warmupStarted) return;
-    warmupStarted = true;
-    void (async () => {
-        try {
-            const disk = await readFeedFromDisk();
-            if (disk) cachedFeed = disk;
-        } catch {
-            // ignore
-        }
-        try {
-            await refreshFeed();
-        } catch {
-            // ignore
-        }
-    })();
-}
 
 async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
     if (!STRAPI_URL) throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
@@ -165,16 +35,10 @@ async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
     });
 }
 
-/**
- * Fetches all published articles from Strapi, paging through results until all pages are retrieved.
- *
- * The fetched articles include `slug`, `content`, `wordCount`, and `publishedAt`, and have populated
- * root title, description, date, cover, banner, `authors` (avatar, title, slug, description),
- * and `categories` (slug with cover/banner/title/description).
- *
- * @returns An array of `StrapiArticle` objects ordered by `publishedAt` descending.
- */
-async function fetchArticlePage(page: number, pageSize: number): Promise<{
+async function fetchArticlePage(
+    page: number,
+    pageSize: number,
+): Promise<{
     data: unknown[];
     meta?: {pagination?: {page: number; pageCount: number; total: number}};
 }> {
@@ -201,17 +65,20 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
     const maxItems = Number(process.env.FEED_ARTICLE_MAX_ITEMS ?? '') || 1000;
     const pageSize = 100;
 
-    // Fetch page 1 to discover total page count
     const firstRes = await fetchArticlePage(1, pageSize);
     const firstItems = Array.isArray(firstRes.data) ? (firstRes.data as StrapiArticle[]) : [];
     const all: StrapiArticle[] = firstItems.slice(0, maxItems);
 
     const pagination = firstRes.meta?.pagination;
-    if (!pagination || pagination.pageCount <= 1 || firstItems.length === 0 || all.length >= maxItems) {
+    if (
+        !pagination ||
+        pagination.pageCount <= 1 ||
+        firstItems.length === 0 ||
+        all.length >= maxItems
+    ) {
         return all;
     }
 
-    // Fetch remaining pages in parallel
     const lastPage = Math.min(pagination.pageCount, maxPages);
     const pageNumbers = Array.from({length: lastPage - 1}, (_, i) => i + 2);
     const results = await Promise.all(pageNumbers.map((p) => fetchArticlePage(p, pageSize)));
@@ -226,11 +93,6 @@ async function fetchAllArticles(): Promise<StrapiArticle[]> {
     return all;
 }
 
-/**
- * Fetches the article feed entity with its channel image populated.
- *
- * @returns The article feed record including `channel.image` with `url`, `width`, `height`, `blurhash`, `alternativeText`, and `formats` fields
- */
 async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
     const query = qs.stringify(
         {
@@ -242,202 +104,37 @@ async function fetchArticleFeedSingle(): Promise<StrapiArticleFeedSingle> {
         },
         {encodeValuesOnly: true},
     );
-    const res = await fetchStrapiJson<{data: StrapiArticleFeedSingle}>(`/api/article-feed?${query}`);
+    const res = await fetchStrapiJson<{data: StrapiArticleFeedSingle}>(
+        `/api/article-feed?${query}`,
+    );
     return res.data;
 }
 
-/**
- * Builds the article feed XML, computes a content-derived ETag, and returns the XML with caching metadata.
- *
- * @returns An object containing:
- * - `xml` — the complete feed XML string.
- * - `etag` — a quoted SHA-256 hex ETag derived from the feed content and seed.
- * - `lastModified` — the feed's last-modified timestamp as provided by the source feed data.
- */
-async function getCachedArticleFeed() {
+async function buildArticleFeed(): Promise<FeedBuilt> {
     const [feed, articles] = await Promise.all([fetchArticleFeedSingle(), fetchAllArticles()]);
     const {xml, etagSeed, lastModified} = generateArticleFeedXml({
         siteUrl: SITE_URL,
         channel: feed.channel,
         articles,
     });
-    // Use the full XML content to derive the ETag so content-only changes invalidate caches.
     const etag = `"${sha256Hex(`${etagSeed}:${sha256Hex(xml)}`)}"`;
     return {xml, etag, lastModified, itemCount: articles.length};
 }
 
-// Inflight deduplication: concurrent callers share the same in-progress promise,
-// preventing parallel builds that would race on disk writes and Strapi fetches.
-export async function refreshFeed(): Promise<CachedFeed> {
-    if (inflight) return inflight;
+const cache = createFeedCache({
+    feedKey: 'article',
+    diskFileName: 'rss.xml',
+    fallback: {title: 'M10Z Artikel', selfPath: '/rss.xml'},
+    build: buildArticleFeed,
+});
 
-    inflight = (async () => {
-        const startedAt = Date.now();
-        const memStart = process.memoryUsage();
-        const built = await getCachedArticleFeed();
-        const memEnd = process.memoryUsage();
-        const durationMs = Date.now() - startedAt;
-        const memoryUsedMB = Math.round((memEnd.heapUsed / (1024 * 1024)) * 100) / 100;
-        const memoryDeltaMB =
-            Math.round(((memEnd.heapUsed - memStart.heapUsed) / (1024 * 1024)) * 100) / 100;
-        const next: CachedFeed = {
-            xml: built.xml,
-            etag: built.etag,
-            lastModified: built.lastModified,
-            builtAtMs: Date.now(),
-            itemCount: built.itemCount,
-        };
-        cachedFeed = next;
-        await writeFeedToDisk(next);
-        inflight = null;
-
-        if (durationMs >= 500) {
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'route',
-                name: 'feed.article.build',
-                ok: true,
-                durationMs,
-                detail: {items: built.itemCount, memoryUsedMB, memoryDeltaMB},
-            });
-        }
-
-        return next;
-    })().catch((err) => {
-        inflight = null;
-        throw err;
-    });
-
-    return inflight;
-}
-
-function ensureScheduler() {
-    if (schedulerStarted) return;
-    schedulerStarted = true;
-    void refreshFeed().catch(() => undefined);
-    schedulerTimer = setInterval(() => {
-        void refreshFeed().catch(() => undefined);
-    }, FEED_REGENERATE_MS);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (schedulerTimer as any).unref?.();
-}
-
-/**
- * Schedule a debounced feed rebuild after invalidation.
- *
- * Multiple calls within `INVALIDATION_DEBOUNCE_MS` (10 s) coalesce into a single rebuild,
- * preventing expensive Strapi fetches + XML generation when content is batch-published.
- */
-export function scheduleDebouncedRefresh() {
-    if (invalidationTimer) clearTimeout(invalidationTimer);
-    invalidationTimer = setTimeout(() => {
-        invalidationTimer = null;
-        void refreshFeed().catch(() => undefined);
-    }, INVALIDATION_DEBOUNCE_MS);
-}
-
-export async function buildArticleFeedResponse(request: Request): Promise<Response> {
-    ensureWarmup();
-    ensureScheduler();
-
-    const ip = getClientIp(request);
-    const rl = checkRateLimit(`feed:article:${ip}`, {windowMs: 60_000, max: 20});
-    if (!rl.ok) {
-        const fallback = fallbackFeedXml({
-            title: 'M10Z Artikel',
-            link: SITE_URL,
-            selfLink: `${SITE_URL}/rss.xml`,
-            description: 'Rate limited. Please try again shortly.',
-        });
-        const headers = buildRssHeaders({
-            cacheControl: 'no-store',
-        });
-        headers.set('Retry-After', String(rl.retryAfterSeconds));
-        recordDiagnosticEvent({
-            ts: Date.now(),
-            kind: 'route',
-            name: 'feed.article.rate_limit',
-            ok: false,
-            durationMs: 0,
-            detail: {retryAfterSeconds: rl.retryAfterSeconds},
-        });
-        return new Response(fallback, {
-            status: 429,
-            headers,
-        });
-    }
-
-    try {
-        const now = Date.now();
-        const allowFreshness = process.env.NODE_ENV === 'production';
-        const isFresh = (builtAtMs: number) => allowFreshness && now - builtAtMs < FEED_REGENERATE_MS * 2;
-
-        // Prefer in-memory cache (zero I/O), fall through to disk, then rebuild.
-        let feed: CachedFeed;
-        if (cachedFeed && isFresh(cachedFeed.builtAtMs)) {
-            feed = cachedFeed;
-        } else {
-            const disk = await readFeedFromDisk();
-            feed = disk && isFresh(disk.builtAtMs) ? disk : await refreshFeed();
-        }
-
-        // Encourage clients to revalidate on every request; server-side fetch remains cached by tags.
-        const headers = buildRssHeaders({
-            etag: feed.etag,
-            lastModified: feed.lastModified,
-            cacheControl: 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate',
-        });
-        const maybe304 = maybeReturn304(request, feed.etag, headers);
-        if (maybe304) return maybe304;
-
-        return new Response(feed.xml, {headers});
-    } catch (err) {
-        // Prefer serving a cached (possibly stale) feed over an empty fallback when available.
-        const stale = cachedFeed ?? (await readFeedFromDisk().catch(() => null));
-        if (stale) {
-            const headers = buildRssHeaders({
-                etag: stale.etag,
-                lastModified: stale.lastModified,
-                cacheControl: 'no-store',
-            });
-            const maybe304 = maybeReturn304(request, stale.etag, headers);
-            if (maybe304) return maybe304;
-            return new Response(stale.xml, {headers});
-        }
-
-        const fallback = fallbackFeedXml({
-            title: 'M10Z Artikel',
-            link: SITE_URL,
-            selfLink: `${SITE_URL}/rss.xml`,
-            description: 'Feed temporarily unavailable',
-        });
-
-        recordDiagnosticEvent({
-            ts: Date.now(),
-            kind: 'route',
-            name: 'feed.article.serve',
-            ok: false,
-            durationMs: 0,
-            detail:
-                err instanceof Error
-                    ? {
-                        errorName: err.name,
-                        errorMessage: err.message,
-                    }
-                    : {errorName: 'UnknownError'},
-        });
-
-        return new Response(fallback, {
-            status: 503,
-            headers: buildRssHeaders({
-                cacheControl: 'no-store',
-            }),
-        });
-    }
-}
+export const buildArticleFeedResponse = cache.handle;
+export const scheduleDebouncedRefresh = cache.scheduleDebouncedRefresh;
+export const stopScheduler = cache.stopScheduler;
+export const getSchedulerState = cache.getSchedulerState;
 
 if (typeof module !== 'undefined' && module.hot) {
     module.hot.dispose(() => {
-        stopScheduler();
+        cache.stopScheduler();
     });
 }
