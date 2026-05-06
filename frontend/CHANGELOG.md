@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.3] - 2026-05-06
+
+### Fixed
+- RSS and audio feed requests no longer block on synchronous Strapi rebuilds — the request path always serves the cached XML from disk or memory; the background scheduler is the sole refresh path under normal operation. Prevents the request-pile-up failure mode that previously crashed the site under load.
+
+### Changed
+- Consolidated the article and audio feed route handlers into a shared `feedCache` module that owns disk I/O, scheduling, ETag/304, rate limiting, and fallback responses; the per-feed handlers now only supply Strapi fetch and XML generation specifics
+
 ## [1.3.2] - 2026-05-06
 
 ### Added
