@@ -8,7 +8,7 @@ import {Card} from '@/src/components/Card';
 
 export const metadata: Metadata = {
     title: 'Team',
-    description: 'Lernen Sie das Team von Mindestens 10 Zeichen kennen. Unsere Autoren und Podcaster.',
+    description: 'Lerne das Team von Mindestens 10 Zeichen kennen. Unsere Autor- und PodcasterInnen.',
     openGraph: {
         type: 'website',
         locale: OG_LOCALE,
