@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import {toAbsoluteUrl} from '@/src/lib/strapi';
+import {resolveStrapiImageUrl} from '@/src/lib/image';
 import {SafeImage} from '@/src/components/SafeImage';
 
 export type PlainImageProps = React.ComponentProps<'img'>;
@@ -15,7 +15,7 @@ export type PlainImageProps = React.ComponentProps<'img'>;
 export function PlainImage({src, alt = '', title}: PlainImageProps) {
     if (!src || typeof src !== 'string') return null;
 
-    const url = /^https?:\/\//i.test(src) ? src : toAbsoluteUrl(src);
+    const url = resolveStrapiImageUrl(src);
 
     return (
         <SafeImage

@@ -1,0 +1,24 @@
+# Audio Feed Golden
+
+etagSeed: 3:2026-04-20T09:00:00.000Z
+lastModified: 2026-04-20T09:00:00.000Z
+renderedEpisodeCount: 3
+xmlSha256: f3f29a609d1e063c461cd8f1482e4d6b2636d41e0a5eb481ff08d045b8fcb722
+
+--- BEGIN XML ---
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">    <channel>        <title>M10Z Podcast</title>        <link>https://m10z.de</link>        <description>Mindestens 10 Zeichen — Podcast-Feed.</description>        <ttl>1</ttl>        <language>de</language>        <copyright>All rights reserved</copyright>        <webMaster>m10z@example.test (M10Z)</webMaster>        <managingEditor>m10z@example.test (M10Z)</managingEditor>        <author>m10z@example.test</author>        <itunes:category text="Leisure"/>        <itunes:owner>            <itunes:name>M10Z</itunes:name>            <itunes:email>m10z@example.test</itunes:email>        </itunes:owner>        <itunes:author>M10Z</itunes:author>        <itunes:explicit>false</itunes:explicit>        <itunes:type>episodic</itunes:type>        <itunes:image href="https://strapi.example.test/uploads/audio-cover.jpg"/>        <image>            <url>https://strapi.example.test/uploads/audio-cover.jpg</url>            <title>M10Z Podcast</title>            <link>https://m10z.de</link>        </image>        <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>        <podcast:guid>E9QfcR8TYeotS5ceJLmn</podcast:guid>        <pubDate>Mon, 20 Apr 2026 09:00:00 GMT</pubDate><item>    <title>Episode 001</title>    <pubDate>Mon, 20 Apr 2026 09:00:00 GMT</pubDate>    <guid isPermaLink="false">b471160189907433be6a7a1a93ac55e7dc83e21fd7d904d25bbf8911b109ddb4</guid>    <itunes:image href="https://strapi.example.test/uploads/episode-001-medium.jpg"/>    <description><![CDATA[<h2>Shownotes</h2>
+<p>Wir reden über <em>Spiele</em> und <strong>Technik</strong>.</p>
+<ul>
+<li>Link 1</li>
+<li>Link 2</li>
+</ul>
+<br/><h2>Footer</h2>
+<p>Unterstütze uns auf <a href="https://example.test">example.test</a>.</p>
+]]></description>    <author>m10z@example.test</author>    <itunes:explicit>false</itunes:explicit>    <link>https://m10z.de/podcasts/episode-001</link>    <itunes:duration>3540</itunes:duration>    <enclosure url="https://strapi.example.test/uploads/episode-001.mp3" length="45000000" type="audio/mpeg"/></item><item>    <title>Episode 002 — keine Shownotes</title>    <pubDate>Sun, 15 Mar 2026 09:00:00 GMT</pubDate>    <guid isPermaLink="false">5f39b26385f52054f5ef79b682246fd4d3d820311c7be8b65bd6b7e72ce69173</guid>    <itunes:image href="https://strapi.example.test/uploads/cat.jpg"/>    <description><![CDATA[<p>Beschreibung.</p>
+<br/><h2>Footer</h2>
+<p>Unterstütze uns auf <a href="https://example.test">example.test</a>.</p>
+]]></description>    <author>m10z@example.test</author>    <itunes:explicit>false</itunes:explicit>    <link>https://m10z.de/podcasts/episode-002-keine-shownotes</link>    <itunes:duration>2700</itunes:duration>    <enclosure url="https://cdn.example.test/episode-002.mp3" length="30000000" type="audio/mpeg"/></item><item>    <title>Episode 003 — Strapi size in KB</title>    <pubDate>Sun, 01 Feb 2026 09:00:00 GMT</pubDate>    <guid isPermaLink="false">ba354e70c4f72a73419270cbea40bd84d29de4bca7f109cf6925f39bd2a3412f</guid>    <itunes:image href="https://m10z.de/static/img/formate/cover/m10z.jpg"/>    <description><![CDATA[<p>Kurze Notizen.</p>
+<br/><h2>Footer</h2>
+<p>Unterstütze uns auf <a href="https://example.test">example.test</a>.</p>
+]]></description>    <author>m10z@example.test</author>    <itunes:explicit>false</itunes:explicit>    <link>https://m10z.de/podcasts/episode-003-size-in-kb</link>    <itunes:duration>1800</itunes:duration>    <enclosure url="https://strapi.example.test/uploads/episode-003.mp3" length="15360000" type="audio/mpeg"/></item></channel></rss>
+--- END XML ---

@@ -1,7 +1,8 @@
 /**
- * List of allowed image hostnames for Next.js Image optimization.
- * This is the single source of truth for image hostname configuration.
- * Both next.config.ts and runtime code import from this file.
+ * Single source of truth for image hostname configuration.
+ *
+ * Used by `next.config.ts` (build-time `remotePatterns`) and by the runtime
+ * Image module (`@/src/lib/image`).
  */
 
 export const ALLOWED_IMAGE_HOSTNAMES = [
@@ -16,18 +17,11 @@ export const ALLOWED_IMAGE_HOSTNAMES = [
     'shared.steamstatic.com',
 ] as const;
 
-/**
- * Helper to generate remotePatterns from the hostname list.
- * Used by next.config.ts to generate remotePatterns configuration.
- */
 export function getRemotePatterns() {
     return ALLOWED_IMAGE_HOSTNAMES.map((hostname) => {
-        // Handle localhost with port
         if (hostname === 'localhost') {
             return {protocol: 'http' as const, hostname, port: '1337'};
         }
-        // All others use HTTPS
         return {protocol: 'https' as const, hostname};
     });
 }
-

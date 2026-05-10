@@ -2,58 +2,54 @@
  * Cache invalidation middleware for Strapi document operations.
  *
  * Invalidates Next.js caches after successful mutations.
+ *
+ * Cross-wire contract — DO NOT DRIFT.
+ *
+ * The `target` values below must exist as keys in the frontend's
+ * `INVALIDATION_TAXONOMY` (`frontend/src/lib/cache/invalidationTaxonomy.ts`)
+ * and in the `InvalidateTarget` union in
+ * `backend/src/utils/invalidateNextCache.ts`. If you add a target here,
+ * update those files too.
  */
 
 import {queueCacheInvalidation} from '../services/asyncCacheInvalidationQueue';
+import type {InvalidateTarget} from '../utils/invalidateNextCache';
 
-const publishTargets = new Map<string, 'articlefeed' | 'audiofeed'>([
-    ['api::article.article', 'articlefeed'],
-    ['api::podcast.podcast', 'audiofeed'],
-]);
-
-const updateTargets = new Map<string, 'articlefeed' | 'audiofeed' | 'about'>([
-    ['api::article-feed.article-feed', 'articlefeed'],
-    ['api::audio-feed.audio-feed', 'audiofeed'],
-    ['api::about.about', 'about'],
-]);
+type StrapiAction = 'publish' | 'update';
 
 /**
- * Invalidates Next.js caches after a successful Strapi document mutation.
- *
- * @param context - Operation context containing `uid` (document UID), `action` (the performed action), and optional `params` (may include `strapi` instance under `params.strapi`)
- * @param next - The next middleware/operation to execute; its result is returned unchanged
- * @returns The value returned by the invoked `next` middleware
+ * Map a Strapi document UID → which frontend invalidation target(s) to fire,
+ * and on which actions. A single config replaces the previous separate
+ * publish/update maps.
  */
+const UID_TO_TARGETS: Record<string, {actions: StrapiAction[]; target: InvalidateTarget}> = {
+    'api::article.article': {actions: ['publish'], target: 'articlefeed'},
+    'api::podcast.podcast': {actions: ['publish'], target: 'audiofeed'},
+    'api::article-feed.article-feed': {actions: ['update'], target: 'articlefeed'},
+    'api::audio-feed.audio-feed': {actions: ['update'], target: 'audiofeed'},
+    'api::about.about': {actions: ['update'], target: 'about'},
+};
+
 export async function cacheInvalidationMiddleware(
     context: {uid: string; action: string; params?: any},
     next: () => Promise<unknown>,
 ): Promise<unknown> {
-    // Run the core operation first; only invalidate on success.
     const result = await next();
 
-    // Get strapi instance from context params (set by index.ts)
-    const strapiInstance = context.params?.strapi;
+    const entry = UID_TO_TARGETS[context.uid];
+    if (!entry) return result;
 
-    // Invalidate Content
-    if (context.action === 'publish' && publishTargets.has(context.uid)) {
-        if (strapiInstance) {
-            queueCacheInvalidation(publishTargets.get(context.uid)!, strapiInstance);
-        } else {
-            console.warn('[cacheInvalidation] Missing strapiInstance for cache invalidation', {
-                action: context.action,
-                uid: context.uid,
-            });
-        }
-    } else if (context.action === 'update' && updateTargets.has(context.uid)) {
-        if (strapiInstance) {
-            queueCacheInvalidation(updateTargets.get(context.uid)!, strapiInstance);
-        } else {
-            console.warn('[cacheInvalidation] Missing strapiInstance for cache invalidation', {
-                action: context.action,
-                uid: context.uid,
-            });
-        }
+    if (!entry.actions.includes(context.action as StrapiAction)) return result;
+
+    const strapiInstance = context.params?.strapi;
+    if (!strapiInstance) {
+        console.warn('[cacheInvalidation] Missing strapiInstance for cache invalidation', {
+            action: context.action,
+            uid: context.uid,
+        });
+        return result;
     }
 
+    queueCacheInvalidation(entry.target, strapiInstance);
     return result;
 }

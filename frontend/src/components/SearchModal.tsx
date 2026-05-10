@@ -6,6 +6,7 @@ import Image from 'next/image';
 import {BookIcon, MusicNoteIcon, UserIcon, FileTextIcon} from '@phosphor-icons/react/dist/ssr';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
+import {normalizeSearchImageUrl} from '@/src/lib/image';
 import {type SearchRecord} from '@/src/lib/search/types';
 import {umamiEventId} from '@/src/lib/analytics/umami';
 
@@ -33,26 +34,6 @@ const TYPE_ICON: Record<SearchRecord['type'], typeof BookIcon> = {
     category: BookIcon,
     page: FileTextIcon,
 };
-
-// Hoist RegExp patterns to module scope
-const REGEX_HTTP_PROTOCOL = /^https?:\/\//i;
-const REGEX_LOCALHOST = /^localhost(?::\d+)?/i;
-const REGEX_127_0_0_1 = /^127\.0\.0\.1(?::\d+)?/i;
-
-function normalizeImageUrl(url: string | null | undefined): string | null {
-    if (!url) return null;
-
-    // If URL already has a protocol, return as-is
-    if (REGEX_HTTP_PROTOCOL.test(url)) return url;
-
-    // If URL starts with localhost or 127.0.0.1 without protocol, prepend http://
-    // This handles cases like "localhost:1337/path" or "127.0.0.1:1337/path"
-    if (REGEX_LOCALHOST.test(url) || REGEX_127_0_0_1.test(url)) {
-        return `http://${url}`;
-    }
-
-    return 'https://' + url;
-}
 
 /**
  * Display a modal that lets the user search site content and choose a result.
@@ -264,7 +245,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         >
                             <div className={styles.resultContent}>
                                 {item.coverImageUrl ? (() => {
-                                    const normalizedUrl = normalizeImageUrl(item.coverImageUrl);
+                                    const normalizedUrl = normalizeSearchImageUrl(item.coverImageUrl);
                                     return normalizedUrl ? (
                                         <div className={styles.resultImage}>
                                             <Image

@@ -1,0 +1,17 @@
+# Article Feed Golden
+
+etagSeed: 3:2026-04-12T10:30:00.000Z
+lastModified: 2026-04-12T10:30:00.000Z
+xmlSha256: dc32ae4507ba5efb3491722c63b708bec5285354f104fb4861d874ae4ec855df
+
+--- BEGIN XML ---
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">  <channel>    <title>M10Z Artikel</title>    <link>https://m10z.de</link>    <description>Mindestens 10 Zeichen — Artikel-Feed.</description>    <language>de</language>    <managingEditor>m10z@example.test (M10Z)</managingEditor>    <webMaster>m10z@example.test (M10Z)</webMaster>    <lastBuildDate>Sun, 12 Apr 2026 10:30:00 GMT</lastBuildDate>    <atom:link href="https://m10z.de/rss.xml" rel="self" type="application/rss+xml"/>    <image>      <url>https://strapi.example.test/uploads/feed-cover.jpg</url>      <title>M10Z Artikel</title>      <link>https://m10z.de</link>    </image>    <item>      <title>Erstes Spiel im Test</title>      <link>https://m10z.de/artikel/erstes-spiel-test</link>      <guid isPermaLink="false">fa199905c800d81481ec7fc57a1da6ecf8e543603e4bbbd7737441a3251f7f7c</guid>      <pubDate>Sun, 12 Apr 2026 10:30:00 GMT</pubDate>      <description>Eine ausführliche Besprechung.</description>      <content:encoded><![CDATA[<h2>Einleitung</h2>
+<p>Das ist ein <strong>Test</strong>-Artikel mit etwas <em>Markdown</em>.</p>
+<ul>
+<li>Punkt 1</li>
+<li>Punkt 2</li>
+</ul>
+]]></content:encoded>      <enclosure url="https://strapi.example.test/uploads/cover-1-medium.jpg" length="120000" type="image/jpeg"/>    </item>    <item>      <title>Artikel ohne Cover</title>      <link>https://m10z.de/artikel/kein-cover-faellt-zurueck</link>      <guid isPermaLink="false">3c8431f020c54e4d5295a95ac16fa0a43704297c6dddf6a899fcc83779137700</guid>      <pubDate>Sun, 01 Mar 2026 08:00:00 GMT</pubDate>      <description>Allgemeine Beiträge.</description>      <content:encoded><![CDATA[<p>Kein eigenes Cover, kein Description — fällt auf Kategorie zurück.</p>
+]]></content:encoded>      <enclosure url="https://strapi.example.test/uploads/category-cover.jpg" length="100000" type="image/jpeg"/>    </item>    <item>      <title>Artikel mit absoluter Cover-URL</title>      <link>https://m10z.de/artikel/absolute-cover-url</link>      <guid isPermaLink="false">fda8f1858a00a0e9db6121e0617cacb9679fc8dc56292ed05e1b8d867167d5f1</guid>      <pubDate>Sun, 15 Feb 2026 00:00:00 GMT</pubDate>      <description>Cover ist eine externe URL.</description>      <content:encoded><![CDATA[<p>Inhalt.</p>
+]]></content:encoded>      <enclosure url="https://cdn.example.test/external-cover.jpg" length="150000" type="image/jpeg"/>    </item></channel></rss>
+--- END XML ---

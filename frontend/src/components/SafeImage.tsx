@@ -2,7 +2,7 @@
 
 import {useState} from 'react';
 import Image from 'next/image';
-import {isImageHostnameAllowed} from '@/src/lib/imageUtils';
+import {isImageHostnameAllowed} from '@/src/lib/image';
 import {ImageWarning} from './ImageWarning';
 
 type SafeImageProps = {

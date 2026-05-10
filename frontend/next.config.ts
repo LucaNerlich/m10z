@@ -1,5 +1,5 @@
 import type {NextConfig} from 'next';
-import {ALLOWED_IMAGE_HOSTNAMES, getRemotePatterns} from './src/lib/imageHostnames';
+import {ALLOWED_IMAGE_HOSTNAMES, getRemotePatterns} from './src/lib/image/hostnames';
 
 const isProd = process.env.NODE_ENV === 'production';
 

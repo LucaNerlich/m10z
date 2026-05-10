@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.4] - 2026-05-10
+
+### Changed
+- Centralised image URL handling behind a single `lib/image` module: the hostname allowlist, Strapi-relative URL resolution, and search-index URL normalisation now live in one place; `SearchModal`'s duplicated normaliser was collapsed onto the shared seam
+- Split the Markdown component's plugin pipeline and rehype-sanitize allowlist out into `lib/markdown/plugins.ts` and the custom inline-syntax pre-processor (`==mark==`, `++ins++`, `^sup^`, `~sub~`) into `lib/markdown/preprocess.ts` so the security-relevant allowlist is auditable in one file
+- Extracted the article and audio feed handlers' shared paginated-fetch and feed-single-config logic into `lib/rss/feedFetcher.ts`; both handlers slimmed (article 140 → 90 lines, audio 360 → 311 lines) while preserving their content-specific concerns intact
+- Replaced the 16 inline `qs.stringify` call sites in `lib/strapiContent.ts` with three intent-shaped query builders (`buildBySlugQuery`, `buildBySlugsQuery`, `buildListQuery`) and named populate presets in `lib/strapi-queries`; the file shrank from 1,214 to 787 lines and each fetcher is now 5–15 lines of intent
+- Tightened the cache-invalidation taxonomy: the frontend `InvalidationTarget` type now derives from `INVALIDATION_TAXONOMY` keys, the backend collapses its separate publish/update target maps into one declarative `UID_TO_TARGETS` config, and a documented cross-wire contract is now present in both files
+- Added a `pnpm run snapshot:feeds` script that locks the public `/rss.xml` and `/audiofeed.xml` XML byte-output to a golden fixture; runs after refactors as a regression guard
+- Upgraded backend dependencies (Strapi-side) and minor frontend dependency bumps
+- Updated team page description copy
+
 ## [1.3.3] - 2026-05-06
 
 ### Fixed

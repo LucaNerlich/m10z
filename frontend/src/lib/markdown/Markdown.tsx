@@ -6,107 +6,63 @@ import remarkSmartypants from 'remark-smartypants';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeSlug from 'rehype-slug';
 import rehypeRaw from 'rehype-raw';
-import rehypeSanitize, {defaultSchema} from 'rehype-sanitize';
+import rehypeSanitize from 'rehype-sanitize';
 import rehypeUnwrapImages from 'rehype-unwrap-images';
+
+import {Anchor} from '@/src/components/markdown/Anchor';
 import {Code} from '@/src/components/markdown/Code';
+import {FancyboxClient} from '@/src/components/markdown/FancyboxClient';
 import {Heading} from '@/src/components/markdown/Heading';
 import {Image} from '@/src/components/markdown/Image';
-import {Anchor} from '@/src/components/markdown/Anchor';
-import {FancyboxClient} from '@/src/components/markdown/FancyboxClient';
+
+import {preprocessMarkdown} from './preprocess';
+import {
+    REHYPE_EXTERNAL_LINKS_OPTIONS,
+    REHYPE_SANITIZE_SCHEMA,
+    REMARK_REHYPE_OPTIONS,
+} from './plugins';
 
 export type MarkdownProps = {
     markdown: string;
     className?: string;
 };
 
+const REMARK_PLUGINS = [remarkBreaks, remarkGfm, remarkSmartypants];
+
+const COMPONENTS = {
+    h1: Heading,
+    code: Code,
+    img: Image,
+    a: Anchor,
+} as const;
+
 /**
- * Render sanitized Markdown into a React element with extended inline syntax and image gallery support.
+ * Render sanitised Markdown into a React element.
  *
- * Converts inline extensions (==mark==, ++ins++, ^sup^, ~sub~), strips inline `<br>` tags,
- * enables GitHub Flavored Markdown and smart typographic replacements, and initializes Fancybox
- * for images grouped by `data-fancybox="article-gallery"`. HTML in the Markdown is parsed then
- * sanitized with an extended schema that allows `ins`, `sup`, `sub`, and `mark` tags.
+ * Pipeline: preprocess (custom inline syntax) → ReactMarkdown
+ * (remark + rehype + sanitize) → FancyboxClient (image lightbox).
  *
- * @param markdown - The Markdown source to render.
- * @param className - Optional additional CSS class(es) added to the container.
- * @returns A React element containing the rendered and sanitized Markdown content.
+ * Custom syntax and the sanitisation allowlist live in `./preprocess` and
+ * `./plugins`; the component itself is the thin shell that wires them.
  */
 export function Markdown({markdown, className}: MarkdownProps) {
-    // Remove inline <br>, to avoid large gaps. Markdown Parsing already handles linebreaks via \n.
-    let normalized = markdown.replace(/<br\s*\/?>/gi, '');
-
-    // Convert markdown syntax to HTML tags for sub, sup, ins, and mark
-    // Process in order to avoid conflicts: mark first, then ins, then sup/sub
-    // Marked text: ==text== -> <mark>text</mark> (common markdown extension)
-    normalized = normalized.replace(/==([^=\n]+)==/g, '<mark>$1</mark>');
-    // Inserted text: ++text++ -> <ins>text</ins>
-    normalized = normalized.replace(/\+\+([^+\n]+)\+\+/g, '<ins>$1</ins>');
-    // Superscript: ^text^ -> <sup>text</sup>
-    // Use negative lookbehind to avoid matching footnote references [^...]
-    normalized = normalized.replace(/(?<!\[)\^([^\^\n]+)\^/g, '<sup>$1</sup>');
-    // Subscript: ~text~ -> <sub>text</sub>
-    // Use negative lookbehind/lookahead to avoid collision with GFM strikethrough (~~text~~)
-    // Only match single tildes that are not part of double-tildes
-    normalized = normalized.replace(/(?<!~)~([^~\n]+)~(?!~)/g, '<sub>$1</sub>');
-
     const containerClassName = className ? `markdown-content ${className}` : 'markdown-content';
 
     return (
         <FancyboxClient className={containerClassName}>
             <ReactMarkdown
-                remarkPlugins={[remarkBreaks, remarkGfm, remarkSmartypants]}
-                remarkRehypeOptions={
-                    {
-                        clobberPrefix: '',
-                        footnoteLabel: 'Fußnoten',
-                    }
-                }
+                remarkPlugins={REMARK_PLUGINS}
+                remarkRehypeOptions={REMARK_REHYPE_OPTIONS}
                 rehypePlugins={[
                     rehypeSlug,
-                    [rehypeExternalLinks, {target: '_blank', rel: ['noopener', 'noreferrer']}],
-                    // Parse HTML tags (required before sanitization)
+                    [rehypeExternalLinks, REHYPE_EXTERNAL_LINKS_OPTIONS],
                     rehypeRaw,
-                    // Sanitize HTML: extend default schema to allow ins, sup, and sub tags
-                    [
-                        rehypeSanitize,
-                        {
-                            ...defaultSchema,
-                            // clobberPrefix defaults to 'user-content-' to prevent DOM clobbering attacks.
-                            // Set to '' because our content comes from trusted CMS authors, and
-                            // the prefix would break footnote anchor links (#fn-1 → #user-content-fn-1).
-                            clobberPrefix: '',
-                            tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark', 'section'],
-                            // Allow data-* attributes for Fancybox and analytics
-                            attributes: {
-                                ...defaultSchema.attributes,
-                                ins: [],
-                                sup: [],
-                                sub: [],
-                                mark: [],
-                                section: ['class'],
-                                a: [
-                                    ...(defaultSchema.attributes?.a || []),
-                                    'id',
-                                    ['data*', /^data-/],
-                                ],
-                                li: [
-                                    ...(defaultSchema.attributes?.li || []),
-                                    'id',
-                                ],
-                            },
-                        },
-                    ],
-                    // Unwrap images from <p> tags for proper styling
+                    [rehypeSanitize, REHYPE_SANITIZE_SCHEMA],
                     rehypeUnwrapImages,
                 ]}
-                components={{
-                    h1: Heading,
-                    code: Code,
-                    img: Image,
-                    a: Anchor,
-                }}
+                components={COMPONENTS}
             >
-                {normalized}
+                {preprocessMarkdown(markdown)}
             </ReactMarkdown>
         </FancyboxClient>
     );

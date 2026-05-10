@@ -1,6 +1,5 @@
 import qs from 'qs';
 
-import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {
     type AudioFeedConfig,
@@ -15,17 +14,16 @@ import {
     createFeedCache,
     type FeedBuilt,
 } from '@/src/lib/rss/feedCache';
-import {fetchStrapiJson as fetchStrapiJsonCore} from '@/src/lib/rss/feedRoute';
+import {
+    createFeedStrapiFetcher,
+    fetchAllPaginated,
+    fetchFeedSingle,
+} from '@/src/lib/rss/feedFetcher';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapiContent';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
-const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL ?? '').replace(
-    /\/+$/,
-    '',
-);
-const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
 // Runtime health tracking for the long-lived audio scheduler.
 // Detects performance regressions (e.g., memory leaks, slow Strapi responses) by comparing
@@ -57,27 +55,10 @@ let lastBuildTiming: LastBuildTiming | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const module: any;
 
-async function fetchStrapiJson<T>(pathWithQuery: string): Promise<T> {
-    if (!STRAPI_URL) throw new Error('Missing NEXT_PUBLIC_STRAPI_URL');
-    const revalidate = process.env.NODE_ENV === 'production' ? CACHE_REVALIDATE_DEFAULT : 0;
-    return await fetchStrapiJsonCore<T>({
-        strapiBaseUrl: STRAPI_URL,
-        apiPathWithQuery: pathWithQuery,
-        token: STRAPI_TOKEN,
-        tags: ['feed:audio', 'strapi:podcast', 'strapi:audio-feed'],
-        revalidate,
-        timeoutMs: 30_000,
-    });
-}
+const fetcher = createFeedStrapiFetcher(['feed:audio', 'strapi:podcast', 'strapi:audio-feed']);
 
-async function fetchPodcastPage(
-    page: number,
-    pageSize: number,
-): Promise<{
-    data: unknown[];
-    meta?: {pagination?: {page: number; pageCount: number; total: number}};
-}> {
-    const query = qs.stringify(
+function buildPodcastListQuery(page: number, pageSize: number): string {
+    return qs.stringify(
         {
             sort: ['publishedAt:desc'],
             status: 'published',
@@ -102,56 +83,18 @@ async function fetchPodcastPage(
         },
         {encodeValuesOnly: true},
     );
-    return fetchStrapiJson(`/api/podcasts?${query}`);
 }
 
-async function fetchAllPodcasts(): Promise<StrapiPodcast[]> {
-    const maxPages = 50;
-    const maxItems = Number(process.env.FEED_AUDIO_MAX_ITEMS ?? '') || 1000;
-    const pageSize = 100;
-
-    const firstRes = await fetchPodcastPage(1, pageSize);
-    const firstItems = Array.isArray(firstRes.data) ? (firstRes.data as StrapiPodcast[]) : [];
-    const all: StrapiPodcast[] = firstItems.slice(0, maxItems);
-
-    const pagination = firstRes.meta?.pagination;
-    if (
-        !pagination ||
-        pagination.pageCount <= 1 ||
-        firstItems.length === 0 ||
-        all.length >= maxItems
-    ) {
-        return all;
-    }
-
-    const lastPage = Math.min(pagination.pageCount, maxPages);
-    const pageNumbers = Array.from({length: lastPage - 1}, (_, i) => i + 2);
-    const results = await Promise.all(pageNumbers.map((p) => fetchPodcastPage(p, pageSize)));
-
-    for (const res of results) {
-        const items = Array.isArray(res.data) ? (res.data as StrapiPodcast[]) : [];
-        const remaining = Math.max(0, maxItems - all.length);
-        if (remaining <= 0) break;
-        all.push(...items.slice(0, remaining));
-    }
-
-    return all;
-}
-
-async function fetchAudioFeedSingle(): Promise<StrapiAudioFeedSingle> {
-    const query = qs.stringify(
-        {
-            populate: {
-                channel: {
-                    populate: {image: {fields: MEDIA_FIELDS}},
-                },
+const AUDIO_FEED_SINGLE_QUERY = qs.stringify(
+    {
+        populate: {
+            channel: {
+                populate: {image: {fields: MEDIA_FIELDS}},
             },
         },
-        {encodeValuesOnly: true},
-    );
-    const res = await fetchStrapiJson<{data: StrapiAudioFeedSingle}>(`/api/audio-feed?${query}`);
-    return res.data;
-}
+    },
+    {encodeValuesOnly: true},
+);
 
 function getAudioFeedDefaults(): AudioFeedConfig {
     return {
@@ -169,7 +112,15 @@ function getAudioFeedDefaults(): AudioFeedConfig {
 }
 
 async function buildAudioFeed(): Promise<FeedBuilt> {
-    const [feed, episodes] = await Promise.all([fetchAudioFeedSingle(), fetchAllPodcasts()]);
+    const [feed, episodes] = await Promise.all([
+        fetchFeedSingle<StrapiAudioFeedSingle>(fetcher, `/api/audio-feed?${AUDIO_FEED_SINGLE_QUERY}`),
+        fetchAllPaginated<StrapiPodcast>({
+            fetcher,
+            apiBasePath: '/api/podcasts',
+            buildQueryString: buildPodcastListQuery,
+            resolveMaxItems: () => Number(process.env.FEED_AUDIO_MAX_ITEMS ?? '') || 1000,
+        }),
+    ]);
     const cfg = getAudioFeedDefaults();
 
     const markdownCache = new Map<string, string>();

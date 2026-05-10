@@ -110,15 +110,6 @@ async function fetchStrapiJson<T>(
     return (await res.json()) as T;
 }
 
-export function toAbsoluteUrl(maybeAbsoluteOrRelativeUrl: string): string {
-    if (/^https?:\/\//i.test(maybeAbsoluteOrRelativeUrl)) return maybeAbsoluteOrRelativeUrl;
-    const base = getStrapiApiBaseUrl().toString().replace(/\/+$/, '');
-    const path = maybeAbsoluteOrRelativeUrl.startsWith('/')
-        ? maybeAbsoluteOrRelativeUrl
-        : `/${maybeAbsoluteOrRelativeUrl}`;
-    return `${base}${path}`;
-}
-
 function assertIsLegalDoc(data: unknown): asserts data is StrapiLegalDoc {
     if (!data || typeof data !== 'object') throw new Error('Invalid Strapi data');
     const d = data as Partial<StrapiLegalDoc>;
