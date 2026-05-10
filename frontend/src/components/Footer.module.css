@@ -61,6 +61,16 @@
     flex-wrap: wrap;
 }
 
+.versionLink {
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+}
+
+.versionLink:hover {
+    color: var(--color-primary);
+}
+
 @media (max-width: 640px) {
     .footer {
         padding: 28px 16px 32px;

@@ -5,6 +5,7 @@ import FontPicker from './FontPicker';
 import ThemeSelector from './ThemeSelector';
 import {routes} from '@/src/lib/routes';
 import {umamiEventId} from '@/src/lib/analytics/umami';
+import {version as appVersion} from '../../package.json';
 
 type FooterLink = {label: string; href: string; external?: boolean};
 type FooterSection = {title: string; links: FooterLink[]};
@@ -81,6 +82,13 @@ export default function Footer() {
             <div className={styles.metaRow}>
                 <FontPicker />
                 <ThemeSelector />
+                <Link
+                    className={styles.versionLink}
+                    href={routes.changelog}
+                    data-umami-event={umamiEventId(['footer', 'meta', 'version'])}
+                >
+                    v{appVersion}
+                </Link>
             </div>
         </footer>
     );

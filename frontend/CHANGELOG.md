@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2026-05-10
+
+### Added
+- Version number in the site footer (next to the font and theme pickers) linking to a new `/changelog` page that renders this CHANGELOG; the footer label and the page's metadata both read from `package.json` so future releases update both automatically
+
 ## [1.4.0] - 2026-05-10
 
 ### Added
