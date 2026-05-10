@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Version number in the site footer (next to the font and theme pickers) linking to a new `/changelog` page that renders this CHANGELOG; the footer label and the page's metadata both read from `package.json` so future releases update both automatically
 
+### Fixed
+- `/changelog` loads `CHANGELOG.md` reliably in CI and cloud deploys: `getChangelogMarkdown()` checks both the app root and `frontend/CHANGELOG.md` when `process.cwd()` is the monorepo root, and `outputFileTracingIncludes` in `next.config.ts` forces the file into the traced server output so Turbopack/serverless bundles no longer omit it
+
 ## [1.4.0] - 2026-05-10
 
 ### Added
