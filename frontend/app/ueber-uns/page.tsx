@@ -1,8 +1,7 @@
 import {type Metadata} from 'next';
 import {getAbout} from '@/src/lib/strapi';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
-import {absoluteRoute} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 
 import {ContentLayout} from '@/src/components/ContentLayout';
@@ -53,30 +52,12 @@ export async function generateMetadata(): Promise<Metadata> {
     const title = about.name;
     const description = extractDescription(about.content);
 
-    return {
+    return buildStaticListMetadata({
         title,
         description,
-        openGraph: {
-            type: 'website',
-            locale: OG_LOCALE,
-            siteName: OG_SITE_NAME,
-            url: absoluteRoute('/ueber-uns'),
-            images: [
-                {
-                    url: absoluteRoute('/images/m10z.jpg'),
-                    width: 1200,
-                    height: 630,
-                },
-            ],
-        },
-        robots: {
-            index: true,
-            follow: true,
-        },
-        alternates: {
-            canonical: absoluteRoute('/ueber-uns'),
-        },
-    };
+        path: '/ueber-uns',
+        ogImageAlt: 'Über Mindestens 10 Zeichen',
+    });
 }
 
 /**

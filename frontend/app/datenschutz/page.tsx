@@ -1,33 +1,15 @@
 import {type Metadata} from 'next';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getPrivacy} from '@/src/lib/strapi';
-import {absoluteRoute} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticListMetadata({
     title: 'Datenschutz',
-    description: 'Datenschutzerklärung von Mindestens 10 Zeichen. Informationen zur Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten.',
-    openGraph: {
-        type: 'website',
-        locale: OG_LOCALE,
-        siteName: OG_SITE_NAME,
-        url: absoluteRoute('/datenschutz'),
-        images: [
-            {
-                url: absoluteRoute('/images/m10z.jpg'),
-                width: 1200,
-                height: 630,
-            },
-        ],
-    },
-    robots: {
-        index: true,
-        follow: true,
-    },
-    alternates: {
-        canonical: absoluteRoute('/datenschutz'),
-    },
-};
+    description:
+        'Datenschutzerklärung von Mindestens 10 Zeichen. Informationen zur Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten.',
+    path: '/datenschutz',
+    ogImageAlt: 'Datenschutzerklärung von Mindestens 10 Zeichen',
+});
 
 export default async function PrivacyPage() {
     const privacy = await getPrivacy({

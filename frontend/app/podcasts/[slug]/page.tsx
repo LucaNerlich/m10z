@@ -6,6 +6,7 @@ import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
 import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
@@ -51,7 +52,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         if (!episode) return {};
 
         const title = episode.title;
-        const description = episode.description || undefined;
+        const description = episode.description?.trim() || deriveExcerpt(episode.shownotes);
         const bannerOrCoverMedia = pickBannerOrCoverMedia(episode, episode.categories);
         const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
         const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;

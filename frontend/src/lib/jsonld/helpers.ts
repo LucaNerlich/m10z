@@ -1,6 +1,7 @@
 import {type ImageObject, type Person} from './types';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor, type StrapiMedia} from '@/src/lib/rss/media';
+import {OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import serialize from 'serialize-javascript';
 
 /**
@@ -77,6 +78,11 @@ export function authorToPerson(author: StrapiAuthor): Person {
         '@context': 'https://schema.org',
         '@type': 'Person',
         name,
+        worksFor: {
+            '@type': 'Organization',
+            name: OG_SITE_NAME,
+            url: routes.siteUrl,
+        },
     };
 
     if (author.slug) {

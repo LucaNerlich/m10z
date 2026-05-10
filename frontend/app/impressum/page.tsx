@@ -1,33 +1,14 @@
 import {type Metadata} from 'next';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {getImprint} from '@/src/lib/strapi';
-import {absoluteRoute} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticListMetadata({
     title: 'Impressum',
     description: 'Impressum von Mindestens 10 Zeichen. Angaben gemäß § 5 TMG über den Anbieter dieser Website.',
-    openGraph: {
-        type: 'website',
-        locale: OG_LOCALE,
-        siteName: OG_SITE_NAME,
-        url: absoluteRoute('/impressum'),
-        images: [
-            {
-                url: absoluteRoute('/images/m10z.jpg'),
-                width: 1200,
-                height: 630,
-            },
-        ],
-    },
-    robots: {
-        index: true,
-        follow: true,
-    },
-    alternates: {
-        canonical: absoluteRoute('/impressum'),
-    },
-};
+    path: '/impressum',
+    ogImageAlt: 'Impressum von Mindestens 10 Zeichen',
+});
 
 export default async function ImprintPage() {
     const imprint = await getImprint({

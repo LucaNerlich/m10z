@@ -7,6 +7,7 @@ import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
 import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
@@ -47,7 +48,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         if (!article) return {};
 
         const title = article.title;
-        const description = article.description || undefined;
+        const description = article.description?.trim() || deriveExcerpt(article.content);
         const publishedTime = formatIso8601Date(getEffectiveDate(article));
         const bannerOrCoverMedia = pickBannerOrCoverMedia(article, article.categories);
         const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;

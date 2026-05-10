@@ -9,6 +9,9 @@ import {
     normalizeStrapiMedia,
     pickCoverOrBannerMedia,
 } from '@/src/lib/rss/media';
+import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
+import {CONTENT_LANGUAGE} from '@/src/lib/metadata/constants';
+import {categoryTitlesToKeywords} from '@/src/lib/metadata/keywords';
 
 /**
  * Create a Schema.org PodcastEpisode JSON-LD object from a Strapi podcast record.
@@ -49,15 +52,21 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
         '@type': 'PodcastSeries',
         name: 'M10Z Podcasts',
         url: absoluteRoute(routes.podcasts),
+        image: absoluteRoute('/images/m10z.jpg'),
     };
+
+    const description = podcast.description?.trim() || deriveExcerpt(podcast.shownotes);
+    const keywords = categoryTitlesToKeywords(podcast.categories);
 
     return {
         '@context': 'https://schema.org',
         '@type': 'PodcastEpisode',
         name: podcast.title,
-        description: podcast.description ?? undefined,
+        description,
         datePublished: datePublished,
         duration,
+        keywords,
+        inLanguage: CONTENT_LANGUAGE,
         associatedMedia,
         image: coverImage ? [coverImage] : undefined,
         author: authors,

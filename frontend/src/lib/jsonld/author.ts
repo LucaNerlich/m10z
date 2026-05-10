@@ -1,6 +1,8 @@
 import {type Person, type ProfilePage} from './types';
 import {authorToPerson} from './helpers';
 import {type StrapiAuthor} from '@/src/lib/rss/media';
+import {routes} from '@/src/lib/routes';
+import {CONTENT_LANGUAGE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 
 /**
  * Generate a schema.org ProfilePage JSON-LD object for an author profile page.
@@ -18,5 +20,11 @@ export function generateAuthorProfileJsonLd(author: StrapiAuthor): ProfilePage {
         '@context': 'https://schema.org',
         '@type': 'ProfilePage',
         mainEntity: person,
+        inLanguage: CONTENT_LANGUAGE,
+        isPartOf: {
+            '@type': 'WebSite',
+            name: OG_SITE_NAME,
+            url: routes.siteUrl,
+        },
     };
 }

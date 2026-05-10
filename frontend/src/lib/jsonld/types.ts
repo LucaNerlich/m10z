@@ -15,11 +15,24 @@ export interface ImageObject extends JsonLdBase {
     height?: number;
 }
 
+export interface OrganizationRef {
+    '@type': 'Organization';
+    name: string;
+    url?: string;
+}
+
+export interface WebSiteRef {
+    '@type': 'WebSite';
+    name: string;
+    url: string;
+}
+
 export interface Person extends JsonLdBase {
     '@type': 'Person';
     name: string;
     url?: string;
     image?: ImageObject | string;
+    worksFor?: OrganizationRef;
 }
 
 export interface Organization extends JsonLdBase {
@@ -42,6 +55,7 @@ export interface PodcastSeries extends JsonLdBase {
     '@type': 'PodcastSeries';
     name: string;
     url: string;
+    image?: ImageObject | string;
 }
 
 export interface BlogPosting extends JsonLdBase {
@@ -51,6 +65,10 @@ export interface BlogPosting extends JsonLdBase {
     datePublished?: string;
     dateModified?: string;
     articleBody?: string;
+    articleSection?: string;
+    keywords?: string;
+    wordCount?: number;
+    inLanguage?: string;
     url: string;
     image?: (ImageObject | string)[];
     author?: Person[];
@@ -64,6 +82,8 @@ export interface PodcastEpisode extends JsonLdBase {
     description?: string;
     datePublished?: string;
     duration: string;
+    keywords?: string;
+    inLanguage?: string;
     associatedMedia?: AudioObject;
     image?: (ImageObject | string)[];
     author?: Person[];
@@ -104,6 +124,8 @@ export interface CollectionPage extends JsonLdBase {
     name: string;
     description?: string;
     url: string;
+    inLanguage?: string;
+    isPartOf?: WebSiteRef;
     mainEntity?: ItemList;
 }
 
@@ -121,5 +143,7 @@ export interface ItemListItem {
 export interface ProfilePage extends JsonLdBase {
     '@type': 'ProfilePage';
     mainEntity: Person;
+    inLanguage?: string;
+    isPartOf?: WebSiteRef;
 }
 

@@ -5,6 +5,9 @@ import {authorToPerson, formatIso8601Date, imagesEqual, mediaToImage} from './he
 import {generateOrganizationJsonLd} from './organization';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
+import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
+import {CONTENT_LANGUAGE} from '@/src/lib/metadata/constants';
+import {categoryTitlesToKeywords, primaryCategoryTitle} from '@/src/lib/metadata/keywords';
 
 /**
  * Builds a Schema.org BlogPosting JSON-LD object for the provided Strapi article.
@@ -34,13 +37,22 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
 
     const publisher = generateOrganizationJsonLd();
 
+    const description = article.description?.trim() || deriveExcerpt(article.content);
+    const articleSection = primaryCategoryTitle(article.categories);
+    const keywords = categoryTitlesToKeywords(article.categories);
+    const wordCount = typeof article.wordCount === 'number' && article.wordCount > 0 ? article.wordCount : undefined;
+
     return {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
         headline: article.title,
-        description: article.description ?? undefined,
+        description,
         datePublished: datePublished ?? dateModified,
         dateModified,
+        articleSection,
+        keywords,
+        wordCount,
+        inLanguage: CONTENT_LANGUAGE,
         url: articleUrl,
         image: images.length > 0 ? images : undefined,
         author: authors,

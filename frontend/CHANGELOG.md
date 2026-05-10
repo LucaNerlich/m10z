@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2026-05-10
+
+### Added
+- Per-page Twitter Card metadata on all static and list routes (`/`, `/artikel`, `/podcasts`, `/kategorien`, `/team`, `/datenschutz`, `/impressum`, `/feeds`, `/m12g`, `/m12g/spiele`, `/ueber-uns`); previously these routes inherited the root default and rendered with the wrong title in social shares
+- `articleSection`, `keywords`, `wordCount`, and `inLanguage` fields on `BlogPosting` JSON-LD; `keywords`, `inLanguage`, and a `partOfSeries.image` on `PodcastEpisode` JSON-LD
+- `inLanguage` and `isPartOf` (WebSite reference) on `CollectionPage` (category) and `ProfilePage` (author) JSON-LD; `worksFor` (Organization reference) on author `Person` JSON-LD
+- Description fallback for article and podcast detail pages: when the CMS `description` is empty, a 155-character excerpt is now derived from the article body or podcast shownotes for both the `<meta name="description">` tag and the JSON-LD, eliminating duplicate meta descriptions across articles
+- Alt text on the static `/images/m10z.jpg` Open Graph image for every static and list route
+
+### Changed
+- Consolidated the eleven near-identical static-page metadata blocks behind a single `buildStaticListMetadata()` helper that emits the standard OpenGraph, Twitter Card, canonical URL, and alt-tagged share image in one call
+
 ## [1.3.4] - 2026-05-10
 
 ### Changed

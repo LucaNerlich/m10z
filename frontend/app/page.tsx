@@ -3,27 +3,14 @@ import {type Metadata} from 'next';
 
 import {HomePage} from '@/src/components/HomePage';
 import {FeedSkeleton} from '@/src/components/FeedSkeleton';
-import {absoluteRoute} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
-export const metadata: Metadata = {
-    description: 'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen. Artikel, Podcasts und mehr zu Gaming, Organisationskultur und HR-Themen.',
-    openGraph: {
-        type: 'website',
-        locale: OG_LOCALE,
-        siteName: OG_SITE_NAME,
-        url: absoluteRoute('/'),
-        images: [
-            {
-                url: absoluteRoute('/images/m10z.jpg'),
-                alt: 'Mindestens 10 Zeichen',
-            },
-        ],
-    },
-    alternates: {
-        canonical: absoluteRoute('/'),
-    },
-};
+export const metadata: Metadata = buildStaticListMetadata({
+    description:
+        'Ein offener Kanal für Videospielcontent und das Drumherum – unentgeltlich, unabhängig, ungezwungen. Artikel, Podcasts und mehr zu Gaming, Organisationskultur und HR-Themen.',
+    path: '/',
+    ogImageAlt: 'Mindestens 10 Zeichen Logo',
+});
 
 type PageProps = {
     searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;

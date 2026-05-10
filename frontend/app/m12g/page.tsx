@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 import {fetchM12GOverview} from '@/src/lib/m12g/m12gData';
 import {computeM12GStats} from '@/src/lib/m12g/m12gStats';
-import {absoluteRoute, routes} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {routes} from '@/src/lib/routes';
+import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {M12GMonthCard} from '@/src/components/M12GMonthCard';
 import {M12GStatsBar} from '@/src/components/M12GStatsBar';
@@ -13,26 +13,12 @@ import {M12GLeaderboard} from '@/src/components/M12GLeaderboard';
 import {M12GParticipationChart} from '@/src/components/M12GParticipationChart';
 import {EmptyState} from '@/src/components/EmptyState';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticListMetadata({
     title: 'M12G Statistik',
     description: 'Monatliche Community-Abstimmungen zu M12G mit den jeweiligen Gewinnern.',
-    openGraph: {
-        type: 'website',
-        locale: OG_LOCALE,
-        siteName: OG_SITE_NAME,
-        url: absoluteRoute('/m12g'),
-        images: [
-            {
-                url: absoluteRoute('/images/m10z.jpg'),
-                width: 1200,
-                height: 630,
-            },
-        ],
-    },
-    alternates: {
-        canonical: absoluteRoute('/m12g'),
-    },
-};
+    path: routes.m12g,
+    ogImageAlt: 'M12G Statistik – Mindestens 10 Zeichen',
+});
 
 export default async function M12GPage() {
     const overview = await fetchM12GOverview();

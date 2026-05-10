@@ -17,3 +17,9 @@ export const OG_LOCALE = 'de' as const;
  */
 export const OG_SITE_NAME = 'Mindestens 10 Zeichen' as const;
 
+/**
+ * BCP 47 language tag used by JSON-LD `inLanguage` properties.
+ * Distinct from `OG_LOCALE` ('de'), which follows the OpenGraph locale format.
+ */
+export const CONTENT_LANGUAGE = 'de-DE' as const;
+

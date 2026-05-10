@@ -1,5 +1,6 @@
 import {type CollectionPage, type ItemListItem} from './types';
 import {absoluteRoute, routes} from '@/src/lib/routes';
+import {CONTENT_LANGUAGE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 
 type CategoryJsonLdInput = {
     title: string;
@@ -38,6 +39,12 @@ export function generateCategoryJsonLd(input: CategoryJsonLdInput): CollectionPa
         '@type': 'CollectionPage',
         name: input.title,
         url,
+        inLanguage: CONTENT_LANGUAGE,
+        isPartOf: {
+            '@type': 'WebSite',
+            name: OG_SITE_NAME,
+            url: routes.siteUrl,
+        },
     };
 
     if (input.description) {

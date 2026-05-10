@@ -3,29 +3,15 @@ import {Suspense} from 'react';
 
 import {ArticleListPage} from '@/src/components/ArticleListPage';
 import {ArticleListSkeleton} from '@/src/components/ArticleListSkeleton';
-import {absoluteRoute} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticListMetadata({
     title: 'Artikel',
-    description: 'Alle Artikel von Mindestens 10 Zeichen. Lesen Sie unsere Beiträge zu Gaming, Organisationskultur, HR-Themen und mehr.',
-    openGraph: {
-        type: 'website',
-        locale: OG_LOCALE,
-        siteName: OG_SITE_NAME,
-        url: absoluteRoute('/artikel'),
-        images: [
-            {
-                url: absoluteRoute('/images/m10z.jpg'),
-                width: 1200,
-                height: 630,
-            },
-        ],
-    },
-    alternates: {
-        canonical: absoluteRoute('/artikel'),
-    },
-};
+    description:
+        'Alle Artikel von Mindestens 10 Zeichen. Lesen Sie unsere Beiträge zu Gaming, Organisationskultur, HR-Themen und mehr.',
+    path: '/artikel',
+    ogImageAlt: 'Artikel auf Mindestens 10 Zeichen',
+});
 
 /**
  * Renders the article listing page for the /artikel route.

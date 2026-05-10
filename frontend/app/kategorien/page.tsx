@@ -1,32 +1,18 @@
 import {type Metadata} from 'next';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
-import {absoluteRoute} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {CategoryCard} from '@/src/components/CategoryCard';
 import {Card} from '@/src/components/Card';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticListMetadata({
     title: 'Kategorien',
-    description: 'Durchsuchen Sie unsere Inhalte nach Kategorien. Finden Sie Artikel und Podcasts zu verschiedenen Themen.',
-    openGraph: {
-        type: 'website',
-        locale: OG_LOCALE,
-        siteName: OG_SITE_NAME,
-        url: absoluteRoute('/kategorien'),
-        images: [
-            {
-                url: absoluteRoute('/images/m10z.jpg'),
-                width: 1200,
-                height: 630,
-            },
-        ],
-    },
-    alternates: {
-        canonical: absoluteRoute('/kategorien'),
-    },
-};
+    description:
+        'Durchsuchen Sie unsere Inhalte nach Kategorien. Finden Sie Artikel und Podcasts zu verschiedenen Themen.',
+    path: '/kategorien',
+    ogImageAlt: 'Kategorien auf Mindestens 10 Zeichen',
+});
 
 export default async function CategoriesPage() {
     let categories;
