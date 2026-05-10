@@ -4,6 +4,9 @@ import {ALLOWED_IMAGE_HOSTNAMES, getRemotePatterns} from './src/lib/image/hostna
 const isProd = process.env.NODE_ENV === 'production';
 
 const nextConfig: NextConfig = {
+    outputFileTracingIncludes: {
+        '/changelog': ['./CHANGELOG.md'],
+    },
     ...(isProd
         ? {}
         : {
