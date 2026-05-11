@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.4] - 2026-05-11
+
+### Fixed
+- Docker production build no longer fails on `/changelog` prerender with `ENOENT: /app/public/changelog.md`: the root and `frontend/` `.dockerignore` files excluded all `*.md` from the build context, so `CHANGELOG.md` was missing inside the container and `scripts/copy-changelog.mjs` had nothing to copy; both files now whitelist `CHANGELOG.md` with `!CHANGELOG.md`, and the script exits with a clear error (instead of warning and continuing) when the source file is missing, so this kind of misconfiguration fails fast and visibly
+
 ## [1.5.3] - 2026-05-11
 
 ### Changed

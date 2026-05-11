@@ -8,8 +8,11 @@ const destDir = path.join(projectRoot, 'public');
 const dest = path.join(destDir, 'changelog.md');
 
 if (!existsSync(src)) {
-    console.warn('[copy-changelog] CHANGELOG.md not found at', src);
-    process.exit(0);
+    console.error(
+        `[copy-changelog] CHANGELOG.md not found at ${src}. ` +
+            'Ensure it is present in the build context (e.g. not excluded by .dockerignore).'
+    );
+    process.exit(1);
 }
 
 mkdirSync(destDir, {recursive: true});

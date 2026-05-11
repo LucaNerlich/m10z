@@ -32,6 +32,8 @@ docker-compose*
 # Documentation and readme files that aren't needed for build
 README.md
 *.md
+# CHANGELOG.md is needed at build time — scripts/copy-changelog.mjs publishes it to public/
+!CHANGELOG.md
 
 # Temporary files
 *.tmp
