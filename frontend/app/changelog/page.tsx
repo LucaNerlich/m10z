@@ -11,8 +11,8 @@ export const metadata: Metadata = buildStaticListMetadata({
     ogImageAlt: 'Changelog von Mindestens 10 Zeichen',
 });
 
-export default async function ChangelogPage() {
-    const markdown = await getChangelogMarkdown();
+export default function ChangelogPage() {
+    const markdown = getChangelogMarkdown();
     return (
         <div data-list-page>
             <Markdown markdown={markdown} />

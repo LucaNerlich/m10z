@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.1] - 2026-05-11
+
+### Fixed
+- `/changelog` page now builds reliably in all CI/CD environments: `CHANGELOG.md` is read in `next.config.ts` where `process.cwd()` is guaranteed to be the project root, then injected as a build-time environment variable (`BUILD_CHANGELOG_CONTENT`) — eliminating runtime filesystem access and the path ambiguity that broke cloud builds
+
 ## [1.5.0] - 2026-05-10
 
 ### Added

@@ -1,11 +1,21 @@
+import {readFileSync} from 'node:fs';
+import path from 'node:path';
 import type {NextConfig} from 'next';
-import {ALLOWED_IMAGE_HOSTNAMES, getRemotePatterns} from './src/lib/image/hostnames';
+import {ALLOWED_IMAGE_HOSTNAMES, getRemotePatterns} from '@/src/lib/image';
 
 const isProd = process.env.NODE_ENV === 'production';
 
+// process.cwd() in next.config.ts is always the frontend/ project root — guaranteed by Next.js.
+let changelogContent = '';
+try {
+    changelogContent = readFileSync(path.join(process.cwd(), 'CHANGELOG.md'), 'utf-8');
+} catch {
+    // Missing file becomes an empty string; the page handles this gracefully.
+}
+
 const nextConfig: NextConfig = {
-    outputFileTracingIncludes: {
-        '/changelog': ['./CHANGELOG.md'],
+    env: {
+        BUILD_CHANGELOG_CONTENT: changelogContent,
     },
     ...(isProd
         ? {}
