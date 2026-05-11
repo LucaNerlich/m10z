@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.3] - 2026-05-11
+
+### Changed
+- Simplified the `/changelog` implementation: a new `scripts/copy-changelog.mjs` prebuild step copies `CHANGELOG.md` to `public/changelog.md`, and the page reads it directly via `fs.readFileSync`; replaces the previous generated TypeScript module approach. As a bonus, the raw markdown is now also available at `/changelog.md`
+
+### Fixed
+- Silenced a pre-existing Turbopack "Encountered unexpected file in NFT list" build warning originating from `src/lib/rss/feedCache.ts` runtime cache writes; the documented `/*turbopackIgnore: true*/` magic comment is a no-op for `fs.*` / `path.join` (it only applies to dynamic imports/requires), so the warning is suppressed via the new `turbopack.ignoreIssue` config in `next.config.ts`
+
 ## [1.5.2] - 2026-05-11
 
 ### Fixed

@@ -4,6 +4,19 @@ import {ALLOWED_IMAGE_HOSTNAMES, getRemotePatterns} from '@/src/lib/image';
 const isProd = process.env.NODE_ENV === 'production';
 
 const nextConfig: NextConfig = {
+    turbopack: {
+        // The NFT tracer flags any `path.join(process.cwd(), …)` call as "the whole project
+        // was traced unintentionally", even when the path is statically scoped to a
+        // subfolder. The suggested `/*turbopackIgnore: true*/` magic comment only applies
+        // to dynamic imports/requires (not `fs.*` / `path.join`), so we suppress the warning
+        // here. See https://github.com/vercel/next.js/issues/84960.
+        ignoreIssue: [
+            {
+                path: '**/next.config.ts',
+                title: /unexpected file in NFT list/,
+            },
+        ],
+    },
     ...(isProd
         ? {}
         : {

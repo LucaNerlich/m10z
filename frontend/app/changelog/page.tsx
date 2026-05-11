@@ -1,5 +1,6 @@
+import {readFileSync} from 'node:fs';
+import path from 'node:path';
 import {type Metadata} from 'next';
-import {getChangelogMarkdown} from '@/src/lib/changelogMarkdown';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {version as appVersion} from '../../package.json';
@@ -12,7 +13,7 @@ export const metadata: Metadata = buildStaticListMetadata({
 });
 
 export default function ChangelogPage() {
-    const markdown = getChangelogMarkdown();
+    const markdown = readFileSync(path.join(process.cwd(), 'public', 'changelog.md'), 'utf-8');
     return (
         <div data-list-page>
             <Markdown markdown={markdown} />
