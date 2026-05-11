@@ -1,11 +1,14 @@
 {
     "name": "m10z-frontend",
-    "version": "1.5.1",
+    "version": "1.5.2",
     "private": true,
     "scripts": {
+        "predev": "node scripts/generate-changelog.mjs",
         "dev": "next dev",
+        "prebuild": "node scripts/generate-changelog.mjs",
         "build": "next build",
         "start": "next start",
+        "postversion": "node scripts/generate-changelog.mjs && git add src/generated/changelog-content.ts",
         "snapshot:feeds": "tsx scripts/feed-snapshot.ts",
         "snapshot:feeds:write": "tsx scripts/feed-snapshot.ts --write"
     },

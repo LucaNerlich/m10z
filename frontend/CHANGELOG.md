@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.2] - 2026-05-11
+
+### Fixed
+- `/changelog` page now shows content: replaced the fragile build-time `process.cwd()` + env-var approach with a `scripts/generate-changelog.mjs` prebuild script that uses `import.meta.dirname` (always relative to the script file, never to the working directory) to read `CHANGELOG.md` and write its content into `src/generated/changelog-content.ts`; the page imports this TypeScript constant directly, so the content is resolved at compile time regardless of where the CI/CD runner executes from
+
 ## [1.5.1] - 2026-05-11
 
 ### Fixed
