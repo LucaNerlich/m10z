@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.5] - 2026-05-16
+
+### Changed
+- Added `.npmrc` with supply-chain security settings: 7-day package quarantine, blocked exotic subdependency specifiers, and disabled lifecycle scripts
+- Updated April 2026 m12g list content
+
 ## [1.5.4] - 2026-05-11
 
 ### Fixed
