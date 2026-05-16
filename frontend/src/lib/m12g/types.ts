@@ -23,6 +23,7 @@ export interface M12GOverview {
 
 export interface M12GLeaderboardEntry {
     name: string;
+    slug: string;
     link: string;
     totalVotes: number;
     monthsNominated: number;

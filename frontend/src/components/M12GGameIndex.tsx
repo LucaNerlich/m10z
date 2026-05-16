@@ -1,10 +1,12 @@
 'use client';
 
 import {useState, useMemo} from 'react';
+import Link from 'next/link';
 import Fuse, {type IFuseOptions} from 'fuse.js';
 
 import {type M12GGameIndexEntry} from '@/src/lib/m12g/types';
 import {formatVotes, formatMonthCompact} from '@/src/lib/m12g/formatters';
+import {routes} from '@/src/lib/routes';
 
 import styles from './M12GGameIndex.module.css';
 
@@ -75,12 +77,18 @@ export function M12GGameIndex({games}: M12GGameIndexProps) {
                             <tr key={game.name}>
                                 <td className={styles.nameCell}>
                                     <div>
-                                        <a
+                                        <Link
                                             className={styles.gameLink}
+                                            href={routes.m12gGame(game.slug)}>
+                                            {game.name}
+                                        </Link>
+                                        <a
+                                            className={styles.externalLink}
                                             href={game.link}
                                             target="_blank"
-                                            rel="noreferrer noopener">
-                                            {game.name}
+                                            rel="noreferrer noopener"
+                                            aria-label={`${game.name} im Store öffnen`}>
+                                            ↗
                                         </a>
                                         {game.monthsNominated > 1 ? (
                                             <span className={styles.monthsBadge}>

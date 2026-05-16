@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0] - 2026-05-16
+
+### Added
+- Per-game detail pages at `/m12g/spiele/[slug]`: each nominated game now has its own shareable page with stats (nominations, wins, total votes) and a per-month timeline showing votes earned and which months it won. All 56 pages are prerendered at build time; unknown slugs return 404.
+- Streaks card on `/m12g`: highlights the longest consecutive-month nomination streak and the longest consecutive-month win streak, with deep links to the streak holder's detail page.
+- Open Graph image for `/m12g`: dynamic share card showing the all-time top-3 leaderboard.
+
+### Changed
+- Game names in the leaderboard and game index now link to the internal detail pages; the external store link is preserved as a small `↗` affordance next to each name.
+
 ## [1.5.7] - 2026-05-16
 
 ### Added

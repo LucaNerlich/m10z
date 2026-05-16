@@ -1,5 +1,8 @@
+import Link from 'next/link';
+
 import {type M12GLeaderboardEntry} from '@/src/lib/m12g/types';
 import {formatVotes} from '@/src/lib/m12g/formatters';
+import {routes} from '@/src/lib/routes';
 
 import styles from './M12GLeaderboard.module.css';
 
@@ -30,13 +33,20 @@ export function M12GLeaderboard({entries}: M12GLeaderboardProps) {
                             <tr key={entry.name}>
                                 <td className={styles.rank}>{index + 1}</td>
                                 <td className={styles.nameCell}>
-                                    <a
+                                    <Link
                                         className={styles.gameLink}
+                                        href={routes.m12gGame(entry.slug)}
+                                    >
+                                        {entry.name}
+                                    </Link>
+                                    <a
+                                        className={styles.externalLink}
                                         href={entry.link}
                                         target="_blank"
                                         rel="noreferrer noopener"
+                                        aria-label={`${entry.name} im Store öffnen`}
                                     >
-                                        {entry.name}
+                                        ↗
                                     </a>
                                     {entry.monthsNominated > 1 ? (
                                         <span className={styles.monthsBadge}>
