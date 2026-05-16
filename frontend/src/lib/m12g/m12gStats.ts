@@ -1,6 +1,6 @@
+import {buildGameHistory, toGameIndex, toLeaderboard} from './gameHistory';
 import {
     type M12GGameIndexEntry,
-    type M12GLeaderboardEntry,
     type M12GMonthParticipation,
     type M12GMonthWithWinner,
     type M12GStats,
@@ -9,134 +9,43 @@ import {
 
 const MAX_LEADERBOARD_ENTRIES = 10;
 
-// Two-pass aggregation: first accumulates per-game stats (votes, nominations) from all months,
-// then processes winners to count wins. This avoids double-counting because a game can be both
-// a nominee and a winner in the same month.
+function toMonthlyParticipation(months: M12GMonthWithWinner[]): M12GMonthParticipation[] {
+    return months.map((month) => ({
+        month: month.month,
+        totalVotes: month.games.reduce((sum, g) => sum + g.votes, 0),
+        gameCount: month.games.length,
+    }));
+}
+
+function toWinnerTimeline(months: M12GMonthWithWinner[]): M12GWinnerEntry[] {
+    return months.flatMap((month) =>
+        month.winners.map((winner) => ({
+            month: month.month,
+            gameName: winner.name,
+            gameLink: winner.link,
+            votes: winner.votes,
+        })),
+    );
+}
+
 export function computeM12GStats(months: M12GMonthWithWinner[]): M12GStats {
     const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
-
-    const gameMap = new Map<string, {link: string; totalVotes: number; monthsNominated: number; wins: number}>();
-
-    let totalVotes = 0;
-
-    const monthlyParticipation: M12GMonthParticipation[] = [];
-    const winnerTimeline: M12GWinnerEntry[] = [];
-
-    for (const month of chronological) {
-        let monthVotes = 0;
-
-        for (const game of month.games) {
-            monthVotes += game.votes;
-
-            const existing = gameMap.get(game.name);
-            if (existing) {
-                existing.totalVotes += game.votes;
-                existing.monthsNominated += 1;
-            } else {
-                gameMap.set(game.name, {
-                    link: game.link,
-                    totalVotes: game.votes,
-                    monthsNominated: 1,
-                    wins: 0,
-                });
-            }
-        }
-
-        for (const winner of month.winners) {
-            const entry = gameMap.get(winner.name);
-            if (entry) {
-                entry.wins += 1;
-            }
-
-            winnerTimeline.push({
-                month: month.month,
-                gameName: winner.name,
-                gameLink: winner.link,
-                votes: winner.votes,
-            });
-        }
-
-        totalVotes += monthVotes;
-
-        monthlyParticipation.push({
-            month: month.month,
-            totalVotes: monthVotes,
-            gameCount: month.games.length,
-        });
-    }
-
-    const leaderboard: M12GLeaderboardEntry[] = [...gameMap.entries()]
-        .map(([name, data]) => ({
-            name,
-            link: data.link,
-            totalVotes: data.totalVotes,
-            monthsNominated: data.monthsNominated,
-            wins: data.wins,
-        }))
-        .sort((a, b) => b.totalVotes - a.totalVotes || b.monthsNominated - a.monthsNominated)
-        .slice(0, MAX_LEADERBOARD_ENTRIES);
-
+    const history = buildGameHistory(chronological);
+    const monthlyParticipation = toMonthlyParticipation(chronological);
+    const totalVotes = monthlyParticipation.reduce((sum, m) => sum + m.totalVotes, 0);
     const totalMonths = chronological.length;
 
     return {
         totalMonths,
-        totalUniqueGames: gameMap.size,
+        totalUniqueGames: history.length,
         totalVotes,
         avgVotesPerMonth: totalMonths > 0 ? Math.round(totalVotes / totalMonths) : 0,
-        leaderboard,
-        winnerTimeline,
+        leaderboard: toLeaderboard(history, MAX_LEADERBOARD_ENTRIES),
+        winnerTimeline: toWinnerTimeline(chronological),
         monthlyParticipation,
     };
 }
 
-/**
- * Builds a complete alphabetical index of every game ever nominated across all M12G months.
- * Unlike the leaderboard (top 10), this returns all games with their aggregated stats
- * and the list of months each game appeared in.
- */
 export function buildGameIndex(months: M12GMonthWithWinner[]): M12GGameIndexEntry[] {
-    const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
-
-    const gameMap = new Map<
-        string,
-        {link: string; totalVotes: number; monthsNominated: number; wins: number; months: string[]}
-    >();
-
-    for (const month of chronological) {
-        for (const game of month.games) {
-            const existing = gameMap.get(game.name);
-            if (existing) {
-                existing.totalVotes += game.votes;
-                existing.monthsNominated += 1;
-                existing.months.push(month.month);
-            } else {
-                gameMap.set(game.name, {
-                    link: game.link,
-                    totalVotes: game.votes,
-                    monthsNominated: 1,
-                    wins: 0,
-                    months: [month.month],
-                });
-            }
-        }
-
-        for (const winner of month.winners) {
-            const entry = gameMap.get(winner.name);
-            if (entry) {
-                entry.wins += 1;
-            }
-        }
-    }
-
-    return [...gameMap.entries()]
-        .map(([name, data]) => ({
-            name,
-            link: data.link,
-            totalVotes: data.totalVotes,
-            monthsNominated: data.monthsNominated,
-            wins: data.wins,
-            months: data.months,
-        }))
-        // German locale sort so umlauts (ä, ö, ü) are ordered correctly.
-        .sort((a, b) => a.name.localeCompare(b.name, 'de-DE'));
+    return toGameIndex(buildGameHistory(months));
 }

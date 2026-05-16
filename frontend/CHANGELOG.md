@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.6] - 2026-05-16
+
+### Changed
+- Refactored the M12G data pipeline: markdown parsing is split from filesystem loading, a new Game-history aggregate powers both the leaderboard and the alphabetical game index, and title-defender derivation is now a pure projection (no in-place mutation). No behaviour changes for valid month files.
+
+### Fixed
+- M12G month files with missing required frontmatter (`forum`, `title`, `finalized`) or malformed list items now fail loud with the file name in the error, instead of silently dropping the month from the overview.
+
 ## [1.5.5] - 2026-05-16
 
 ### Changed
