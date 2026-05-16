@@ -3,7 +3,7 @@ import {type M12GMonthWithWinner, type M12GOverview} from './types';
 
 // Marks games that won the previous Month and were nominated again this Month.
 // Pure projection — does not mutate inputs.
-function withTitleDefenders(months: M12GMonthWithWinner[]): M12GMonthWithWinner[] {
+export function withTitleDefenders(months: M12GMonthWithWinner[]): M12GMonthWithWinner[] {
     const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
     const previousWinnersByMonth = new Map<string, Set<string>>();
     for (let i = 0; i < chronological.length; i++) {

@@ -43,6 +43,6 @@ export function formatMonthShort(monthId: string): string {
  */
 export function formatMonthCompact(monthId: string): string {
     const [year, month] = monthId.split('-').map(Number);
-    if (year === undefined || month === undefined) return monthId;
+    if (!Number.isFinite(year) || !Number.isFinite(month)) return monthId;
     return germanCompactDateFormatter.format(new Date(year, month - 1));
 }

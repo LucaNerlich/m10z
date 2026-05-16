@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.7] - 2026-05-16
+
+### Added
+- Vitest test suite for pure utility modules — m12g pipeline (parser, game-history aggregate, stats projections, title-defender derivation), formatters, validators, security helpers (slug validation, secret comparison, rate limit). 18 test files / 215 tests, runs in ~150ms. `pnpm test` (watch) and `pnpm test:run` (one-shot) scripts.
+
+### Changed
+- `pnpm run build` now runs `vitest run` before `next build`, so failing tests block the build and regressions in pure-logic modules are caught at build time.
+
+### Fixed
+- `formatMonthCompact` no longer throws `RangeError` on invalid month-id input; falls back to the input string, matching `formatMonthLong` and `formatMonthShort` behaviour.
+
 ## [1.5.6] - 2026-05-16
 
 ### Changed
