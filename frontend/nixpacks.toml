@@ -1,6 +1,0 @@
-[phases.setup]
-nixPkgs = ["nodejs_22"]
-cmds = ["npm install -g pnpm@10.33.4 --ignore-scripts"]
-
-[phases.install]
-cmds = ["pnpm install --frozen-lockfile"]
