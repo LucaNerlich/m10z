@@ -108,6 +108,7 @@ function getAudioFeedDefaults(): AudioFeedConfig {
         itunesExplicit: 'false',
         itunesType: 'episodic',
         podcastGuid: 'E9QfcR8TYeotS5ceJLmn',
+        downloadTracking: process.env.FEED_AUDIO_TRACKING_ENABLED === 'true',
     };
 }
 

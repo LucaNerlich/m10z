@@ -49,7 +49,20 @@ export type AudioFeedConfig = {
     itunesExplicit: 'false' | 'true';
     itunesType: 'episodic' | 'serial';
     podcastGuid: string;
+    // When true, <enclosure> URLs point at the on-domain download-tracking endpoint instead of the
+    // direct Strapi file URL. The episode GUID stays derived from the real Strapi URL regardless.
+    downloadTracking?: boolean;
 };
+
+/**
+ * Build the on-domain podcast download-tracking URL for an episode.
+ *
+ * Used as the RSS <enclosure> URL when download tracking is enabled. The endpoint records a
+ * server-side Umami event and 302-redirects to the real audio file.
+ */
+export function buildPodcastDownloadUrl(siteUrl: string, slug: string): string {
+    return `${siteUrl.replace(/\/+$/, '')}/api/podcast-download/${encodeURIComponent(slug)}`;
+}
 
 type TimingOp = 'markdownConversion' | 'guidGeneration' | 'fileMetadata' | 'enclosure';
 
@@ -233,6 +246,12 @@ function renderItem(
         return null;
     }
 
+    // The displayed enclosure URL may be rewritten to the tracking endpoint, but the GUID below
+    // stays derived from the real Strapi URL so toggling tracking never changes episode identity.
+    const enclosureDisplayUrl = cfg.downloadTracking
+        ? buildPodcastDownloadUrl(cfg.siteUrl, episode.slug)
+        : enclosureUrl;
+
     const title = escapeXml(episode.title);
     const pubDateRaw = getEffectiveDate(episode);
     const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
@@ -282,7 +301,7 @@ function renderItem(
         `    <itunes:explicit>${cfg.itunesExplicit}</itunes:explicit>` +
         `    <link>${escapeXml(link)}</link>` +
         `    <itunes:duration>${episode.duration}</itunes:duration>` +
-        `    <enclosure url="${escapeXml(enclosureUrl)}" length="${lengthBytes}" type="${escapeXml(enclosureType)}"/>` +
+        `    <enclosure url="${escapeXml(enclosureDisplayUrl)}" length="${lengthBytes}" type="${escapeXml(enclosureType)}"/>` +
         `</item>`
     );
 }
