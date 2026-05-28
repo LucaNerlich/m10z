@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.0] - 2026-05-28
+
+### Added
+- Podcast RSS download tracking: when enabled, each episode's `<enclosure>` URL points at an on-domain endpoint that records a custom Umami `podcast-download` event (episode slug and title) before redirecting to the audio file, so downloads initiated by podcatcher apps can finally be measured. Off by default; toggle with the `FEED_AUDIO_TRACKING_ENABLED` environment variable. Episode GUIDs stay identical whether tracking is on or off, so existing subscribers are unaffected.
+
+### Changed
+- Build/dependency tooling: pinned pnpm to v10 and removed redundant `ignore-scripts` settings from `.npmrc`.
+
 ## [1.6.0] - 2026-05-16
 
 ### Added
