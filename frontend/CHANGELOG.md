@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.1] - 2026-05-28
+
+### Added
+- The on-site audio player on podcast detail pages now routes through the same download-tracking endpoint as the RSS feed, so plays started on the website are recorded as `podcast-download` Umami events too (when `FEED_AUDIO_TRACKING_ENABLED` is enabled).
+
+### Changed
+- Podcast download counting now ignores seek/continuation range requests so a single play or download counts once; with tracking enabled the on-site player uses `preload="none"` so the event fires when playback starts rather than on every page load.
+
 ## [1.7.0] - 2026-05-28
 
 ### Added
