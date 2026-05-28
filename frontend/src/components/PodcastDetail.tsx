@@ -8,6 +8,7 @@ import {
     normalizeStrapiMedia,
     pickBannerOrCoverMedia,
 } from '@/src/lib/rss/media';
+import {umamiEventId} from '@/src/lib/analytics/umami';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Markdown} from '@/src/lib/markdown/Markdown';
@@ -15,6 +16,7 @@ import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
+import {DownloadSimpleIcon} from '@phosphor-icons/react/dist/ssr';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/podcasts/[slug]/page.module.css';
 
@@ -103,6 +105,18 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
             </section>
 
             {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
+
+            {audioUrl ? (
+                <a
+                    href={audioUrl}
+                    download={fileMedia.name || undefined}
+                    className={styles.download}
+                    data-umami-event={umamiEventId(['podcast', 'download', slug])}
+                >
+                    <DownloadSimpleIcon size={20} weight="bold" aria-hidden="true" />
+                    Episode herunterladen
+                </a>
+            ) : null}
 
             <Markdown markdown={podcast.shownotes ?? ''} />
 
