@@ -39,7 +39,6 @@
         "serialize-javascript": "^7.0.5",
         "swr": "^2.4.1",
         "undici": "^7.25.0",
-        "vitest": "^4.1.7",
         "xml-formatter": "^3.7.0"
     },
     "devDependencies": {
@@ -52,7 +51,8 @@
         "@types/serialize-javascript": "^5.0.4",
         "babel-plugin-react-compiler": "^1.0.0",
         "tsx": "^4.22.3",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "vitest": "^4.1.7"
     },
     "engines": {
         "node": "^22",
