@@ -1,6 +1,7 @@
 import Script from 'next/script';
 
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
+import {buildPodcastDownloadPath, isPodcastDownloadTrackingEnabled} from '@/src/lib/analytics/podcastDownload';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {
     getOptimalMediaFormat,
@@ -40,6 +41,12 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const published = getEffectiveDate(podcast);
     const fileMedia = normalizeStrapiMedia(podcast.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia});
+    // When tracking is enabled, route playback through the same download-tracking endpoint as the
+    // RSS feed so on-site plays are recorded too. `preload="none"` then defers the request (and the
+    // tracked event) until the user actually presses play, rather than firing on every page load.
+    const trackingEnabled = isPodcastDownloadTrackingEnabled();
+    const playerSrc = trackingEnabled && audioUrl ? buildPodcastDownloadPath(slug) : audioUrl;
+    const playerPreload = trackingEnabled ? 'none' : 'metadata';
     const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
@@ -102,7 +109,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                 <h1 className={styles.title}>{podcast.title}</h1>
             </section>
 
-            {audioUrl ? <PodcastPlayer src={audioUrl} /> : null}
+            {audioUrl ? <PodcastPlayer src={playerSrc} preload={playerPreload} /> : null}
 
             <Markdown markdown={podcast.shownotes ?? ''} />
 

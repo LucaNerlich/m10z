@@ -12,6 +12,7 @@ import {
     type StrapiMediaRef,
     StrapiYoutube,
 } from '@/src/lib/rss/media';
+import {buildPodcastDownloadUrl} from '@/src/lib/analytics/podcastDownload';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
 export type StrapiPodcast = StrapiContentMedia & {
@@ -53,16 +54,6 @@ export type AudioFeedConfig = {
     // direct Strapi file URL. The episode GUID stays derived from the real Strapi URL regardless.
     downloadTracking?: boolean;
 };
-
-/**
- * Build the on-domain podcast download-tracking URL for an episode.
- *
- * Used as the RSS <enclosure> URL when download tracking is enabled. The endpoint records a
- * server-side Umami event and 302-redirects to the real audio file.
- */
-export function buildPodcastDownloadUrl(siteUrl: string, slug: string): string {
-    return `${siteUrl.replace(/\/+$/, '')}/api/podcast-download/${encodeURIComponent(slug)}`;
-}
 
 type TimingOp = 'markdownConversion' | 'guidGeneration' | 'fileMetadata' | 'enclosure';
 

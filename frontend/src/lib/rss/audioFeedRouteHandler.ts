@@ -1,5 +1,6 @@
 import qs from 'qs';
 
+import {isPodcastDownloadTrackingEnabled} from '@/src/lib/analytics/podcastDownload';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {
     type AudioFeedConfig,
@@ -108,7 +109,7 @@ function getAudioFeedDefaults(): AudioFeedConfig {
         itunesExplicit: 'false',
         itunesType: 'episodic',
         podcastGuid: 'E9QfcR8TYeotS5ceJLmn',
-        downloadTracking: process.env.FEED_AUDIO_TRACKING_ENABLED === 'true',
+        downloadTracking: isPodcastDownloadTrackingEnabled(),
     };
 }
 

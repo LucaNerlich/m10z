@@ -1,5 +1,9 @@
 import {after, NextResponse} from 'next/server';
 
+import {
+    isAllowedDownloadTarget,
+    shouldRecordDownloadForRange,
+} from '@/src/lib/analytics/podcastDownload';
 import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
@@ -18,33 +22,24 @@ type RouteContext = {
 };
 
 /**
- * Guard against open-redirect / SSRF: only allow redirecting to the configured Strapi origin
- * (matching the deployment's protocol, e.g. https in prod, http://localhost in dev) or to an
- * explicit HTTPS host allowlist (e.g. a media CDN) via `PODCAST_DOWNLOAD_ALLOWED_HOSTS`.
+ * Open-redirect / SSRF guard: only allow redirecting to the configured Strapi origin (matching the
+ * deployment's protocol, e.g. https in prod, http://localhost in dev) or to an explicit HTTPS host
+ * allowlist (e.g. a media CDN) via `PODCAST_DOWNLOAD_ALLOWED_HOSTS`.
  */
 function isAllowedDownloadUrl(fileUrl: string): boolean {
-    let parsed: URL;
+    let strapiOrigin: string | null = null;
     try {
-        parsed = new URL(fileUrl);
+        strapiOrigin = getStrapiApiBaseUrl().origin;
     } catch {
-        return false;
+        // STRAPI_URL not configured — rely on the explicit allowlist only.
     }
 
-    try {
-        if (parsed.origin === getStrapiApiBaseUrl().origin) return true;
-    } catch {
-        // STRAPI_URL not configured — fall through to the explicit allowlist.
-    }
+    const allowedHosts = (process.env.PODCAST_DOWNLOAD_ALLOWED_HOSTS ?? '')
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter(Boolean);
 
-    const extra = process.env.PODCAST_DOWNLOAD_ALLOWED_HOSTS;
-    if (extra && parsed.protocol === 'https:') {
-        const host = parsed.hostname.toLowerCase();
-        for (const entry of extra.split(',')) {
-            if (entry.trim().toLowerCase() === host) return true;
-        }
-    }
-
-    return false;
+    return isAllowedDownloadTarget(fileUrl, {strapiOrigin, allowedHosts});
 }
 
 /**
@@ -79,7 +74,10 @@ export async function GET(request: Request, {params}: RouteContext) {
     }
 
     // Record the custom event after the response is flushed so it never delays the download.
-    after(() => sendPodcastDownloadEvent({slug, title, request}));
+    // Skip seek/continuation range requests so a single play or download counts once.
+    if (shouldRecordDownloadForRange(request.headers.get('range'))) {
+        after(() => sendPodcastDownloadEvent({slug, title, request}));
+    }
 
     const response = NextResponse.redirect(fileUrl, 302);
     // Prevent intermediaries from caching the redirect, which would bypass download counting.
