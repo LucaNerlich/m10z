@@ -233,15 +233,15 @@ async function buildArticleSnapshot(): Promise<string> {
     ].join('\n');
 }
 
-async function buildAudioSnapshot(): Promise<string> {
+async function buildAudioSnapshot(cfg: AudioFeedConfig = audioCfg, heading = 'Audio Feed Golden'): Promise<string> {
     const {xml, etagSeed, lastModified, renderedEpisodeCount} = generateAudioFeedXml({
-        cfg: audioCfg,
+        cfg,
         channel: audioChannel.channel,
         episodeFooter: audioChannel.episodeFooter,
         episodes: podcasts,
     });
     return [
-        `# Audio Feed Golden`,
+        `# ${heading}`,
         ``,
         `etagSeed: ${etagSeed}`,
         `lastModified: ${lastModified ? lastModified.toISOString() : 'null'}`,
@@ -292,10 +292,15 @@ async function main() {
 
     const article = await buildArticleSnapshot();
     const audio = await buildAudioSnapshot();
+    const audioTracking = await buildAudioSnapshot(
+        {...audioCfg, downloadTracking: true},
+        'Audio Feed Golden (download tracking)',
+    );
 
     if (mode === 'write') {
         await writeGolden('article-feed.golden.txt', article);
         await writeGolden('audio-feed.golden.txt', audio);
+        await writeGolden('audio-feed-tracking.golden.txt', audioTracking);
         console.log('Wrote goldens to', GOLDEN_DIR);
         return;
     }
@@ -324,6 +329,18 @@ async function main() {
         console.error(diff(audio, audioGolden));
     } else {
         console.log('Audio feed snapshot OK.');
+    }
+
+    const audioTrackingGolden = await loadGolden('audio-feed-tracking.golden.txt');
+    if (audioTrackingGolden === null) {
+        console.error('Missing audio-feed-tracking.golden.txt — run with --write to generate.');
+        failed = true;
+    } else if (audioTrackingGolden !== audioTracking) {
+        failed = true;
+        console.error('Audio feed (download tracking) snapshot drift:');
+        console.error(diff(audioTracking, audioTrackingGolden));
+    } else {
+        console.log('Audio feed (download tracking) snapshot OK.');
     }
 
     if (failed) process.exit(1);
