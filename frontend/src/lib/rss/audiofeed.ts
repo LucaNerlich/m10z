@@ -271,6 +271,10 @@ function renderItem(
     const tGuid1 = nowMs();
     timings?.record('guidGeneration', tGuid1 - tGuid0);
 
+    // Route RSS downloads through the tracking endpoint so podcast apps fire
+    // a server-side Umami event before redirecting to the CDN file.
+    const trackingUrl = `${cfg.siteUrl.replace(/\/+$/, '')}/api/podcast-download/${encodeURIComponent(episode.slug)}`;
+
     return (
         `<item>` +
         `    <title>${title}</title>` +
@@ -282,7 +286,7 @@ function renderItem(
         `    <itunes:explicit>${cfg.itunesExplicit}</itunes:explicit>` +
         `    <link>${escapeXml(link)}</link>` +
         `    <itunes:duration>${episode.duration}</itunes:duration>` +
-        `    <enclosure url="${escapeXml(enclosureUrl)}" length="${lengthBytes}" type="${escapeXml(enclosureType)}"/>` +
+        `    <enclosure url="${escapeXml(trackingUrl)}" length="${lengthBytes}" type="${escapeXml(enclosureType)}"/>` +
         `</item>`
     );
 }

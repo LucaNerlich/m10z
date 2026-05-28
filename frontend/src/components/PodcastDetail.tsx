@@ -108,7 +108,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
 
             {audioUrl ? (
                 <a
-                    href={audioUrl}
+                    href={`/api/podcast-download/${encodeURIComponent(slug)}`}
                     download={fileMedia.name || undefined}
                     className={styles.download}
                     data-umami-event={umamiEventId(['podcast', 'download', slug])}
