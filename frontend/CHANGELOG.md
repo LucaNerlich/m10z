@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.2] - 2026-05-29
+
+### Added
+- Expanded the Vitest suite to cover the RSS feed pipeline (XML escaping, Strapi media normalization, Markdown→HTML sanitization/XSS, article feed, feed-route helpers), Strapi query builders, metadata helpers (excerpt, keywords, Open Graph image), Markdown preprocessing and heading extraction, JSON-LD generators, analytics event IDs, image URL/hostname allow-listing, client-IP parsing, and relative date formatting. The suite now runs 436 tests across 38 files as part of `pnpm run build`.
+- Cross-package contract test pinning the cache-invalidation target list to the Strapi backend's, so the frontend taxonomy and backend targets can no longer drift silently.
+
 ## [1.7.1] - 2026-05-28
 
 ### Added
