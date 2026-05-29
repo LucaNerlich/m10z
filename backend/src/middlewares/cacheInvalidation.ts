@@ -22,7 +22,7 @@ type StrapiAction = 'publish' | 'update';
  * and on which actions. A single config replaces the previous separate
  * publish/update maps.
  */
-const UID_TO_TARGETS: Record<string, {actions: StrapiAction[]; target: InvalidateTarget}> = {
+export const UID_TO_TARGETS: Record<string, {actions: StrapiAction[]; target: InvalidateTarget}> = {
     'api::article.article': {actions: ['publish'], target: 'articlefeed'},
     'api::podcast.podcast': {actions: ['publish'], target: 'audiofeed'},
     'api::article-feed.article-feed': {actions: ['update'], target: 'articlefeed'},

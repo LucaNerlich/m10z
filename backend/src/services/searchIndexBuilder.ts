@@ -1,5 +1,7 @@
 import markdownToTxt from 'markdown-to-txt';
 
+import {filterAndLimitMetrics} from './metricsHistory';
+
 type Strapi = {
     documents: (
         uid: string,
@@ -106,36 +108,7 @@ export function getHistoricalSearchIndexMetrics(
     from?: string,
     to?: string,
 ): SearchIndexMetricsHistoryEntry[] {
-    let fromTs: number | null = null;
-    let toTs: number | null = null;
-
-    if (from) {
-        const parsed = Date.parse(from);
-        if (!Number.isNaN(parsed)) fromTs = parsed;
-    }
-
-    if (to) {
-        const parsed = Date.parse(to);
-        if (!Number.isNaN(parsed)) toTs = parsed;
-    }
-
-    let normalizedLimit = Number(limit);
-    if (!Number.isFinite(normalizedLimit) || normalizedLimit <= 0) {
-        normalizedLimit = 30;
-    }
-    if (normalizedLimit > MAX_METRICS_ENTRIES) {
-        normalizedLimit = MAX_METRICS_ENTRIES;
-    }
-
-    const filtered = metricsHistory.filter((entry) => {
-        const ts = Date.parse(entry.updatedAt);
-        if (Number.isNaN(ts)) return false;
-        if (fromTs !== null && ts < fromTs) return false;
-        if (toTs !== null && ts > toTs) return false;
-        return true;
-    });
-
-    return filtered.slice(0, normalizedLimit);
+    return filterAndLimitMetrics(metricsHistory, {limit, from, to, maxLimit: MAX_METRICS_ENTRIES});
 }
 type PlainTextMetrics = {
     addProcessingMs: (ms: number) => void;

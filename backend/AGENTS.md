@@ -16,18 +16,30 @@ pnpm install               # Install dependencies
 pnpm run dev               # Strapi dev server on port 1337
 pnpm run build             # Build Strapi admin panel
 pnpm run start             # Start production server
+pnpm run test              # Vitest in watch mode
+pnpm run test:run          # Vitest once (CI/pre-commit)
 pnpm run migrate:audio     # One-time audio file migration (tsx)
 ```
 
 ### Verification
 
-There are **no automated tests, no linter, and no typecheck script**.
-The backend uses `strict: false` in tsconfig and Strapi handles compilation.
+Unit tests use **Vitest** (`src/**/*.test.ts`, `node` environment, `pool: 'forks'`
+to isolate module-level state). There is no linter and no typecheck script; the
+backend uses `strict: false` in tsconfig and Strapi handles compilation. Test
+files are excluded from the Strapi build (`tsconfig.json` excludes `**/*.test.*`),
+so `pnpm run test:run` is run separately (not part of `strapi build`).
+
+Write Strapi-free unit tests: extract pure logic into modules with no
+`@strapi/strapi` import (see `utils/requestSecurity.ts`, `services/metricsHistory.ts`,
+`scripts/audioMigrationUtils.ts`, `middlewares/durationFile.ts`) and mock
+`strapi.documents()`, `fetch`, env (`vi.stubEnv`), and timers (`vi.useFakeTimers`).
+Do not boot Strapi or a database in tests.
 
 Before submitting changes:
-1. `pnpm run build` — must succeed
-2. `pnpm run dev` — start the dev server and confirm no runtime errors
-3. Verify cache invalidation reaches the frontend if middleware was changed
+1. `pnpm run test:run` — must pass
+2. `pnpm run build` — must succeed
+3. `pnpm run dev` — start the dev server and confirm no runtime errors
+4. Verify cache invalidation reaches the frontend if middleware was changed
 
 ---
 
@@ -178,6 +190,7 @@ See `.env.example` for all variables. Key ones:
 
 ## Submission Checklist
 
+- [ ] `pnpm run test:run` passes
 - [ ] `pnpm run build` succeeds
 - [ ] Dev server starts without errors (`pnpm run dev`)
 - [ ] Code follows formatting and style conventions above

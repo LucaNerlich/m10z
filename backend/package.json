@@ -3,12 +3,14 @@
     "version": "1.1.3",
     "private": true,
     "scripts": {
-        "build": "strapi build",
+        "build": "vitest run && strapi build",
         "console": "strapi console",
         "dev": "strapi develop",
         "migrate:audio": "tsx src/scripts/migrate-audio-files.ts",
         "start": "strapi start",
-        "strapi": "strapi"
+        "strapi": "strapi",
+        "test": "vitest",
+        "test:run": "vitest run"
     },
     "dependencies": {
         "@strapi/plugin-users-permissions": "^5.46.1",
@@ -36,7 +38,8 @@
         "dotenv": "^16.6.1",
         "tsx": "^4.22.3",
         "typescript": "~5.3.3",
-        "vite": "^7.3.3"
+        "vite": "^7.3.3",
+        "vitest": "^4.1.7"
     },
     "engines": {
         "node": "^22",

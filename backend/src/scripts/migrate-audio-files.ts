@@ -20,6 +20,8 @@ import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 
+import {extractFilename, getMimeType, validateUrl} from './audioMigrationUtils';
+
 // Load environment variables from .env file
 config();
 
@@ -47,7 +49,6 @@ interface MigrationReport {
 // ============================================================================
 
 const STRAPI_UPLOAD_URL = 'https://cms.m10z.de/api/upload';
-const ALLOWED_DOMAIN = 'm10z.picnotes.de';
 const MAX_RETRIES = 3; // Total number of attempts (1 initial + 2 retries)
 const RETRY_DELAYS = [2000, 5000]; // Delays for retries (one less than MAX_RETRIES)
 const BETWEEN_FILE_DELAY_MIN = 1000;
@@ -157,60 +158,6 @@ function log(...args: unknown[]): void {
 
 function error(...args: unknown[]): void {
     console.error('[migrate-audio-files] ERROR:', ...args);
-}
-
-function validateUrl(url: string): void {
-    let parsedUrl: URL;
-    try {
-        parsedUrl = new URL(url);
-    } catch {
-        throw new Error(`Invalid URL format: ${url}`);
-    }
-
-    // SSRF protection: ensure URL is from allowed domain
-    if (parsedUrl.hostname !== ALLOWED_DOMAIN) {
-        throw new Error(
-            `URL hostname ${parsedUrl.hostname} does not match allowed domain ${ALLOWED_DOMAIN}`,
-        );
-    }
-
-    // Ensure HTTPS
-    if (parsedUrl.protocol !== 'https:') {
-        throw new Error(`URL must use HTTPS protocol: ${url}`);
-    }
-}
-
-function extractFilename(url: string): string {
-    const parsedUrl = new URL(url);
-    const pathname = parsedUrl.pathname;
-    const filename = path.basename(pathname);
-
-    if (!filename || filename === '/') {
-        throw new Error(`Could not extract filename from URL: ${url}`);
-    }
-
-    return filename;
-}
-
-function getMimeType(filename: string): string {
-    const ext = path.extname(filename).toLowerCase();
-
-    // Audio MIME types
-    const mimeTypes: Record<string, string> = {
-        '.mp3': 'audio/mpeg',
-        '.mpeg': 'audio/mpeg',
-        '.wav': 'audio/wav',
-        '.wave': 'audio/wav',
-        '.ogg': 'audio/ogg',
-        '.oga': 'audio/ogg',
-        '.m4a': 'audio/mp4',
-        '.aac': 'audio/aac',
-        '.flac': 'audio/flac',
-        '.webm': 'audio/webm',
-        '.opus': 'audio/opus',
-    };
-
-    return mimeTypes[ext] || 'application/octet-stream';
 }
 
 function randomDelay(min: number, max: number): Promise<void> {
