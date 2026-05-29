@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.4] - 2026-05-29
+
+### Added
+- Vitest unit-test setup (`pnpm test` / `pnpm test:run`) with tests for word-count extraction, scheduled-publish cutoff logic, Next.js cache invalidation (retry/backoff), request-security helpers (constant-time secret comparison, rate limiting), audio-migration URL/MIME validation, file-path traversal guarding, and search-index metrics filtering. Test files are excluded from `strapi build`.
+- Cross-package contract test ensuring the backend's cache-invalidation targets stay in sync with the frontend taxonomy.
+
+### Changed
+- Extracted pure, framework-free helpers out of the search-index controller, podcast duration middleware, audio-migration script, and search-index builder into dedicated modules (`requestSecurity`, `durationFile`, `audioMigrationUtils`, `metricsHistory`) to make them unit-testable. Behaviour is unchanged.
+
 ## [1.1.3] - 2026-05-16
 
 ### Changed
