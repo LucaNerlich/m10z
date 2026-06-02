@@ -13,7 +13,7 @@ const MARKDOWN_STRIPPERS: Array<[RegExp, string]> = [
     [/[*_~]+/g, ''],
 ];
 
-function stripMarkdown(input: string): string {
+export function stripMarkdown(input: string): string {
     let out = input;
     for (const [pattern, replacement] of MARKDOWN_STRIPPERS) {
         out = out.replace(pattern, replacement);

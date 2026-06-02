@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.3] - 2026-06-02
+
+### Added
+- May 2026 M12G (Mindestens 12 Gamevorschläge) article placeholder with curated game list.
+
+### Changed
+- `articleBody` is now included in the `BlogPosting` JSON-LD on article pages: article content is stripped of Markdown syntax and embedded as plain text (capped at 10 000 characters), giving search engines direct access to the article body.
+- Removed the `potentialAction` / `SearchAction` block from the site-wide `WebSite` schema — it was pointing to a JSON API endpoint rather than a user-facing search page, which would have caused Google's Sitelinks Search Box to malfunction.
+
 ## [1.7.2] - 2026-05-29
 
 ### Added

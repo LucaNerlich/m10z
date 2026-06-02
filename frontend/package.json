@@ -1,6 +1,6 @@
 {
     "name": "m10z-frontend",
-    "version": "1.7.2",
+    "version": "1.7.3",
     "private": true,
     "scripts": {
         "predev": "node scripts/copy-changelog.mjs",
@@ -38,7 +38,7 @@
         "remark-smartypants": "^3.0.2",
         "serialize-javascript": "^7.0.5",
         "swr": "^2.4.1",
-        "undici": "^7.25.0",
+        "undici": "^7.26.0",
         "xml-formatter": "^3.7.0"
     },
     "devDependencies": {
