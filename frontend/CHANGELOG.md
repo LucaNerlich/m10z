@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.8.0] - 2026-06-05
+
+### Changed
+- M12G: the request-cached archive is now the single aggregation hub — title-defender marking and the overview view-model (stats, streaks, newest-first months) are derived once behind the archive instead of being recomposed in the page. No change to what's displayed.
+- Collapsed the parallel article/podcast Strapi fetchers behind one content-type descriptor, so batching, cache-tagging, and pagination are defined once. Same data and cache behaviour.
+- Cache tags are now built from one shared module used by both the data fetchers (read) and the invalidation taxonomy (write), so a tag can no longer drift between where it is set and where it is purged.
+- The Strapi transport now owns the privileged-read token and base-URL resolution; the feeds and search index request a "privileged" read instead of wiring the token themselves.
+- The RSS and audio feed handlers now share one feed-definition module (site URL, channel query, list-query builder, fetch orchestration, ETag), removing the duplicated wiring between them.
+
+### Removed
+- Unused content-list fetchers, feed populate presets, and feed-route helpers.
+
 ## [1.7.4] - 2026-06-05
 
 ### Added
