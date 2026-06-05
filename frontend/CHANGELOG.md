@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.1] - 2026-06-05
+
+### Changed
+- Category tags and homepage meta tags use regular font weight instead of bold.
+
+### Fixed
+- Committed shared contract copies so frontend-only Docker builds do not depend on the repo-root `shared/` folder at image build time.
+
 ## [1.10.0] - 2026-06-05
 
 ### Added
