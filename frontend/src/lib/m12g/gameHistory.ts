@@ -40,11 +40,10 @@ export function gameSlug(name: string): string {
     return slug.length > 0 ? slug : 'unnamed';
 }
 
-// Single chronological walk over months → one GameHistory per canonical game name.
-// First-seen link wins (earliest chronological appearance). Each Game-Month pairing
-// becomes an appearance carrying that Month's outcome and context.
-export function buildGameHistory(months: M12GMonthWithWinner[]): GameHistory[] {
-    const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
+// Single walk over the Months → one GameHistory per canonical game name. Expects
+// `chronological` sorted oldest-first (the Archive guarantees this), so the first link
+// seen wins and appearances come out chronological without a second sort.
+export function buildGameHistory(chronological: M12GMonthWithWinner[]): GameHistory[] {
     const byName = new Map<string, GameHistory>();
 
     for (const month of chronological) {

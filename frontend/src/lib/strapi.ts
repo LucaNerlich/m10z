@@ -66,20 +66,18 @@ export interface FetchStrapiOptions {
     revalidate?: number;
 }
 
-/**
- * Fetches JSON data from the Strapi API with optional cache configuration.
- * Crosses the shared transport seam — unauthenticated, since content reads are public.
- *
- * @param apiPath - The API path to fetch (relative to Strapi base URL)
- * @param options - Optional fetch options including cache tags and revalidation period
- * @returns The parsed JSON response
- */
-async function fetchStrapiJson<T>(
-    apiPath: string,
-    options: FetchStrapiOptions = {},
-): Promise<T> {
+// Single-type and collection reads share one shape: normalise `endpoint` + `query`
+// into a `/api/...` path and cross the transport seam as a public (unauthenticated)
+// read. Kept as one helper rather than a separate pass-through wrapper.
+function buildApiPath(endpoint: string, query: string): string {
+    const normalized = endpoint.replace(/^\/*/, '');
+    const q = query.startsWith('?') || query.length === 0 ? query : `?${query}`;
+    return `/api/${normalized}${q}`;
+}
+
+function fetchStrapiResource<T>(endpoint: string, query: string, options: FetchStrapiOptions): Promise<T> {
     return strapiFetch<T>({
-        path: apiPath,
+        path: buildApiPath(endpoint, query),
         cache: {mode: 'tags', tags: options.tags ?? [], revalidate: options.revalidate},
         diagnosticName: 'strapi.single',
     });
@@ -111,12 +109,7 @@ export async function fetchStrapiSingle<TData>(
     options: FetchStrapiOptions = {},
 ): Promise<StrapiSingleResponse<TData>> {
     // endpoint examples: "imprint", "privacy", "about"
-    const normalized = endpoint.replace(/^\/*/, '');
-    const q = query.startsWith('?') || query.length === 0 ? query : `?${query}`;
-    return await fetchStrapiJson<StrapiSingleResponse<TData>>(
-        `/api/${normalized}${q}`,
-        options,
-    );
+    return fetchStrapiResource<StrapiSingleResponse<TData>>(endpoint, query, options);
 }
 
 export async function fetchStrapiCollection<TData>(
@@ -124,9 +117,7 @@ export async function fetchStrapiCollection<TData>(
     query: string = '',
     options: FetchStrapiOptions = {},
 ): Promise<StrapiCollectionResponse<TData>> {
-    const normalized = endpoint.replace(/^\/*/, '');
-    const q = query.startsWith('?') || query.length === 0 ? query : `?${query}`;
-    return await fetchStrapiJson<StrapiCollectionResponse<TData>>(`/api/${normalized}${q}`, options);
+    return fetchStrapiResource<StrapiCollectionResponse<TData>>(endpoint, query, options);
 }
 
 /**

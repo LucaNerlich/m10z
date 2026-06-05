@@ -1,5 +1,3 @@
-import qs from 'qs';
-
 import {
     generateArticleFeedXml,
     type StrapiArticle,
@@ -7,68 +5,42 @@ import {
 } from '@/src/lib/rss/articlefeed';
 import {createFeedCache, type FeedBuilt} from '@/src/lib/rss/feedCache';
 import {
-    createFeedStrapiFetcher,
-    fetchAllPaginated,
-    fetchFeedSingle,
-} from '@/src/lib/rss/feedFetcher';
-import {sha256Hex} from '@/src/lib/rss/xml';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapiContent';
-
-const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
+    FEED_CHANNEL_SINGLE_QUERY,
+    FEED_SITE_URL,
+    computeFeedEtag,
+    createFeedListQuery,
+    feedListPopulate,
+    fetchFeedSourceData,
+} from '@/src/lib/rss/feedDefinition';
+import {createFeedStrapiFetcher} from '@/src/lib/rss/feedFetcher';
+import {contentTag, feedSourceTag, feedTag} from '@/src/lib/cache/strapiTags';
 
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const module: any;
 
-const fetcher = createFeedStrapiFetcher(['feed:article', 'strapi:article', 'strapi:article-feed']);
+const fetcher = createFeedStrapiFetcher([feedTag('article'), contentTag('article'), feedSourceTag('article')]);
 
-function buildArticleListQuery(page: number, pageSize: number): string {
-    return qs.stringify(
-        {
-            sort: ['publishedAt:desc'],
-            status: 'published',
-            pagination: {pageSize, page},
-            populate: {
-                cover: {fields: MEDIA_FIELDS},
-                banner: {fields: MEDIA_FIELDS},
-                authors: populateAuthorAvatar,
-                categories: populateCategory,
-            },
-            fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
-        },
-        {encodeValuesOnly: true},
-    );
-}
-
-const ARTICLE_FEED_SINGLE_QUERY = qs.stringify(
-    {
-        populate: {
-            channel: {
-                populate: {image: {fields: MEDIA_FIELDS}},
-            },
-        },
-    },
-    {encodeValuesOnly: true},
-);
+const buildArticleListQuery = createFeedListQuery({
+    populate: feedListPopulate,
+    fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
+});
 
 async function buildArticleFeed(): Promise<FeedBuilt> {
-    const [feed, articles] = await Promise.all([
-        fetchFeedSingle<StrapiArticleFeedSingle>(fetcher, `/api/article-feed?${ARTICLE_FEED_SINGLE_QUERY}`),
-        fetchAllPaginated<StrapiArticle>({
-            fetcher,
-            apiBasePath: '/api/articles',
-            buildQueryString: buildArticleListQuery,
-            resolveMaxItems: () => Number(process.env.FEED_ARTICLE_MAX_ITEMS ?? '') || 1000,
-        }),
-    ]);
+    const {single: feed, items: articles} = await fetchFeedSourceData<StrapiArticleFeedSingle, StrapiArticle>({
+        fetcher,
+        singlePathWithQuery: `/api/article-feed?${FEED_CHANNEL_SINGLE_QUERY}`,
+        listBasePath: '/api/articles',
+        listQueryBuilder: buildArticleListQuery,
+        resolveMaxItems: () => Number(process.env.FEED_ARTICLE_MAX_ITEMS ?? '') || 1000,
+    });
 
     const {xml, etagSeed, lastModified} = generateArticleFeedXml({
-        siteUrl: SITE_URL,
+        siteUrl: FEED_SITE_URL,
         channel: feed.channel,
         articles,
     });
-    const etag = `"${sha256Hex(`${etagSeed}:${sha256Hex(xml)}`)}"`;
-    return {xml, etag, lastModified, itemCount: articles.length};
+    return {xml, etag: computeFeedEtag(etagSeed, xml), lastModified, itemCount: articles.length};
 }
 
 const cache = createFeedCache({

@@ -14,6 +14,7 @@ import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {contentTag} from '@/src/lib/cache/strapiTags';
 
 type PageProps = {
     params: Promise<{slug: string}>;
@@ -25,7 +26,7 @@ type PageProps = {
  */
 export async function generateStaticParams() {
     try {
-        const entries = await fetchPublishedSlugs('articles', ['strapi:article']);
+        const entries = await fetchPublishedSlugs('articles', [contentTag('article')]);
         return entries.map(({slug}) => ({slug}));
     } catch {
         return [];

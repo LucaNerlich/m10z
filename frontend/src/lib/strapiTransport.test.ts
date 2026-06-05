@@ -69,6 +69,24 @@ describe('defaultStrapiTransport (via strapiFetch)', () => {
         expect((anon.headers as Headers).get('Authorization')).toBeNull();
     });
 
+    test("auth 'privileged' attaches the env token; explicit token wins", async () => {
+        const fetchMock = vi.fn().mockResolvedValue(okJson({}));
+        vi.stubGlobal('fetch', fetchMock);
+        vi.stubEnv('STRAPI_API_TOKEN', 'env-token');
+
+        await strapiFetch({path: '/api/x', auth: 'privileged', cache: {mode: 'tags', tags: []}});
+        const privileged = fetchMock.mock.calls[0][1] as RequestInit;
+        expect((privileged.headers as Headers).get('Authorization')).toBe('Bearer env-token');
+
+        await strapiFetch({path: '/api/x', auth: 'privileged', token: 'explicit', cache: {mode: 'tags', tags: []}});
+        const explicit = fetchMock.mock.calls[1][1] as RequestInit;
+        expect((explicit.headers as Headers).get('Authorization')).toBe('Bearer explicit');
+
+        await strapiFetch({path: '/api/x', auth: 'public', cache: {mode: 'tags', tags: []}});
+        const pub = fetchMock.mock.calls[2][1] as RequestInit;
+        expect((pub.headers as Headers).get('Authorization')).toBeNull();
+    });
+
     test('maps the tags directive to Next cache options', async () => {
         const fetchMock = vi.fn().mockResolvedValue(okJson({}));
         vi.stubGlobal('fetch', fetchMock);

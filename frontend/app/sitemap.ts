@@ -1,6 +1,7 @@
 import {MetadataRoute} from 'next';
 
 import {absoluteRoute, routes} from '@/src/lib/routes';
+import {contentTag, sitemapTag} from '@/src/lib/cache/strapiTags';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 
 type SitemapEntry = {slug: string; lastModified?: string};
@@ -51,10 +52,10 @@ function buildStaticEntries(urls: string[]): MetadataRoute.Sitemap {
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const [articles, podcasts, categories, authors] = await Promise.all([
-        fetchPublishedSlugs('articles', ['sitemap:articles', 'strapi:article']),
-        fetchPublishedSlugs('podcasts', ['sitemap:podcasts', 'strapi:podcast']),
-        fetchPublishedSlugs('categories', ['sitemap:categories']),
-        fetchPublishedSlugs('authors', ['sitemap:authors']),
+        fetchPublishedSlugs('articles', [sitemapTag('articles'), contentTag('article')]),
+        fetchPublishedSlugs('podcasts', [sitemapTag('podcasts'), contentTag('podcast')]),
+        fetchPublishedSlugs('categories', [sitemapTag('categories')]),
+        fetchPublishedSlugs('authors', [sitemapTag('authors')]),
     ]);
 
     const staticEntries = buildStaticEntries([

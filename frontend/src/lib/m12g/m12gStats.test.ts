@@ -1,18 +1,9 @@
 import {describe, expect, test} from 'vitest';
 
+import {game, month} from './m12gFixtures';
 import {buildArchive} from './m12gArchive';
-import {computeM12GStats} from './m12gStats';
-import {type M12GGame, type M12GMonthWithWinner} from './types';
-
-function game(name: string, votes: number): M12GGame {
-    return {name, link: `https://${name}.example`, votes};
-}
-
-function month(id: string, games: M12GGame[]): M12GMonthWithWinner {
-    const max = games.length === 0 ? 0 : Math.max(...games.map((g) => g.votes));
-    const winners = max > 0 ? games.filter((g) => g.votes === max) : [];
-    return {month: id, title: id, forumThreadUrl: 'https://x', games, winners, titleDefenders: []};
-}
+import {buildM12GOverview, computeM12GStats} from './m12gStats';
+import {type M12GMonthWithWinner} from './types';
 
 function stats(months: M12GMonthWithWinner[]) {
     return computeM12GStats(buildArchive(months));
@@ -55,5 +46,19 @@ describe('computeM12GStats', () => {
             {month: '2025-01', totalVotes: 4, gameCount: 2},
             {month: '2025-02', totalVotes: 5, gameCount: 1},
         ]);
+    });
+});
+
+describe('buildM12GOverview', () => {
+    test('bundles stats, streaks, and newest-first Months from one Archive', () => {
+        const archive = buildArchive([
+            month('2025-01', [game('A', 5)]),
+            month('2025-02', [game('A', 3)]), // A nominated two months running
+        ]);
+        const overview = buildM12GOverview(archive);
+
+        expect(overview.stats.totalMonths).toBe(2);
+        expect(overview.monthsNewestFirst.map((m) => m.month)).toEqual(['2025-02', '2025-01']);
+        expect(overview.streaks.nomination).toMatchObject({name: 'A', length: 2});
     });
 });

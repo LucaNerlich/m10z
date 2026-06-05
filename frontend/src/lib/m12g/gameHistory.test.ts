@@ -1,5 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
+import {game, month} from './m12gFixtures';
 import {
     buildGameHistory,
     computeStreaks,
@@ -8,26 +9,6 @@ import {
     toGameIndex,
     toLeaderboard,
 } from './gameHistory';
-import {type M12GGame, type M12GMonthWithWinner} from './types';
-
-function game(name: string, votes: number, link = `https://${name.toLowerCase()}.example`): M12GGame {
-    return {name, link, votes};
-}
-
-function month(
-    id: string,
-    games: M12GGame[],
-    winners: M12GGame[] = games.filter((g) => g.votes === Math.max(...games.map((x) => x.votes)) && g.votes > 0),
-): M12GMonthWithWinner {
-    return {
-        month: id,
-        title: `M ${id}`,
-        forumThreadUrl: 'https://forum.example',
-        games,
-        winners,
-        titleDefenders: [],
-    };
-}
 
 // Minimal GameHistory fixture for the projection functions (toLeaderboard/toGameIndex).
 function history(name: string, months: string[], extra: Partial<GameHistory> = {}): GameHistory {
@@ -66,7 +47,7 @@ describe('buildGameHistory', () => {
         const m2 = month('2025-02', [game('A', 5), game('C', 2)]);
         const m3 = month('2025-03', [game('B', 4)]);
 
-        const result = buildGameHistory([m3, m1, m2]);
+        const result = buildGameHistory([m1, m2, m3]);
         const byName = new Map(result.map((h) => [h.name, h]));
 
         expect(byName.get('A')).toMatchObject({totalVotes: 8, monthsNominated: 2});
@@ -92,7 +73,7 @@ describe('buildGameHistory', () => {
         const m1 = month('2025-01', [game('A', 3, 'https://old.example')]);
         const m2 = month('2025-02', [game('A', 5, 'https://new.example')]);
 
-        const result = buildGameHistory([m2, m1]);
+        const result = buildGameHistory([m1, m2]);
         expect(result[0].link).toBe('https://old.example');
     });
 

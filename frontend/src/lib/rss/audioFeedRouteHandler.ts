@@ -1,5 +1,3 @@
-import qs from 'qs';
-
 import {isPodcastDownloadTrackingEnabled} from '@/src/lib/analytics/podcastDownload';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {
@@ -16,15 +14,17 @@ import {
     type FeedBuilt,
 } from '@/src/lib/rss/feedCache';
 import {
-    createFeedStrapiFetcher,
-    fetchAllPaginated,
-    fetchFeedSingle,
-} from '@/src/lib/rss/feedFetcher';
+    FEED_CHANNEL_SINGLE_QUERY,
+    FEED_SITE_URL,
+    computeFeedEtag,
+    createFeedListQuery,
+    feedListPopulate,
+    fetchFeedSourceData,
+} from '@/src/lib/rss/feedDefinition';
+import {createFeedStrapiFetcher} from '@/src/lib/rss/feedFetcher';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {sha256Hex} from '@/src/lib/rss/xml';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapiContent';
-
-const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
+import {contentTag, feedSourceTag, feedTag} from '@/src/lib/cache/strapiTags';
 
 // Runtime health tracking for the long-lived audio scheduler.
 // Detects performance regressions (e.g., memory leaks, slow Strapi responses) by comparing
@@ -56,50 +56,16 @@ let lastBuildTiming: LastBuildTiming | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const module: any;
 
-const fetcher = createFeedStrapiFetcher(['feed:audio', 'strapi:podcast', 'strapi:audio-feed']);
+const fetcher = createFeedStrapiFetcher([feedTag('audio'), contentTag('podcast'), feedSourceTag('audio')]);
 
-function buildPodcastListQuery(page: number, pageSize: number): string {
-    return qs.stringify(
-        {
-            sort: ['publishedAt:desc'],
-            status: 'published',
-            pagination: {pageSize, page},
-            populate: {
-                cover: {fields: MEDIA_FIELDS},
-                banner: {fields: MEDIA_FIELDS},
-                authors: populateAuthorAvatar,
-                categories: populateCategory,
-                file: {populate: '*'},
-            },
-            fields: [
-                'slug',
-                'duration',
-                'shownotes',
-                'wordCount',
-                'publishedAt',
-                'title',
-                'description',
-                'date',
-            ],
-        },
-        {encodeValuesOnly: true},
-    );
-}
-
-const AUDIO_FEED_SINGLE_QUERY = qs.stringify(
-    {
-        populate: {
-            channel: {
-                populate: {image: {fields: MEDIA_FIELDS}},
-            },
-        },
-    },
-    {encodeValuesOnly: true},
-);
+const buildPodcastListQuery = createFeedListQuery({
+    populate: {...feedListPopulate, file: {populate: '*'}},
+    fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
+});
 
 function getAudioFeedDefaults(): AudioFeedConfig {
     return {
-        siteUrl: SITE_URL,
+        siteUrl: FEED_SITE_URL,
         ttlSeconds: 60,
         language: 'de',
         copyright: 'All rights reserved',
@@ -114,15 +80,13 @@ function getAudioFeedDefaults(): AudioFeedConfig {
 }
 
 async function buildAudioFeed(): Promise<FeedBuilt> {
-    const [feed, episodes] = await Promise.all([
-        fetchFeedSingle<StrapiAudioFeedSingle>(fetcher, `/api/audio-feed?${AUDIO_FEED_SINGLE_QUERY}`),
-        fetchAllPaginated<StrapiPodcast>({
-            fetcher,
-            apiBasePath: '/api/podcasts',
-            buildQueryString: buildPodcastListQuery,
-            resolveMaxItems: () => Number(process.env.FEED_AUDIO_MAX_ITEMS ?? '') || 1000,
-        }),
-    ]);
+    const {single: feed, items: episodes} = await fetchFeedSourceData<StrapiAudioFeedSingle, StrapiPodcast>({
+        fetcher,
+        singlePathWithQuery: `/api/audio-feed?${FEED_CHANNEL_SINGLE_QUERY}`,
+        listBasePath: '/api/podcasts',
+        listQueryBuilder: buildPodcastListQuery,
+        resolveMaxItems: () => Number(process.env.FEED_AUDIO_MAX_ITEMS ?? '') || 1000,
+    });
     const cfg = getAudioFeedDefaults();
 
     const markdownCache = new Map<string, string>();
@@ -151,7 +115,7 @@ async function buildAudioFeed(): Promise<FeedBuilt> {
         markdownConverter,
     });
 
-    const etag = `"${sha256Hex(`${etagSeed}:${sha256Hex(xml)}`)}"`;
+    const etag = computeFeedEtag(etagSeed, xml);
 
     const avgPerEpisodeMs = {
         markdownConversionMs: timing.markdownConversion.avgMs,

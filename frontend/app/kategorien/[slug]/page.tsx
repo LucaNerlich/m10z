@@ -17,6 +17,7 @@ import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateCategoryJsonLd} from '@/src/lib/jsonld/category';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {sitemapTag} from '@/src/lib/cache/strapiTags';
 import Script from 'next/script';
 import styles from './page.module.css';
 
@@ -30,7 +31,7 @@ type PageProps = {
  */
 export async function generateStaticParams() {
     try {
-        const entries = await fetchPublishedSlugs('categories', ['sitemap:categories']);
+        const entries = await fetchPublishedSlugs('categories', [sitemapTag('categories')]);
         return entries.map(({slug}) => ({slug}));
     } catch {
         return [];

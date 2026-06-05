@@ -1,5 +1,6 @@
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {buildContentFeed, type ContentFeedResponse} from '@/src/lib/contentFeed';
+import {HOME_PAGE_TAG} from '@/src/lib/cache/strapiTags';
 
 /**
  * Serve a merged, paginated content feed of articles and podcasts.
@@ -16,7 +17,7 @@ export async function GET(request: Request) {
     const startedAt = Date.now();
 
     try {
-        const response: ContentFeedResponse = await buildContentFeed(page, pageSize, {tags: ['page:home']});
+        const response: ContentFeedResponse = await buildContentFeed(page, pageSize, {tags: [HOME_PAGE_TAG]});
 
         const durationMs = Date.now() - startedAt;
         if (durationMs >= 500) {

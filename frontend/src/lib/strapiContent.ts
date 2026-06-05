@@ -4,6 +4,15 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/rss/media';
 import {CACHE_REVALIDATE_CONTENT_PAGE, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {
+    RELATED_CONTENT_TAG,
+    buildAuthorPageTags,
+    contentBySlugsTag,
+    contentItemTag,
+    contentListPageTag,
+    contentListTag,
+    contentTag,
+} from '@/src/lib/cache/strapiTags';
 import {strapiFetch} from '@/src/lib/strapiTransport';
 import {
     ARTICLE_DETAIL_FIELDS,
@@ -34,6 +43,10 @@ export type {StrapiMediaRef};
 // Re-exports preserved for back-compat with existing imports (e.g. feed handlers).
 export {MEDIA_FIELDS, populateAuthorAvatar, populateCategory};
 
+// Author page tags now live in the shared tag module; re-exported so existing callers
+// (and tests) keep importing them from here.
+export {buildAuthorPageTags};
+
 const MAX_SLUGS = 150;
 
 type FetchOptions = {
@@ -59,37 +72,6 @@ export type PaginatedResult<T> = {
     pagination: PaginationMeta;
     hasNextPage: boolean;
 };
-
-// Builds hierarchical cache tags for author pages: base type → author → optional category.
-// Each level enables increasingly granular invalidation (e.g., invalidate all articles
-// vs. only a specific author's articles in a specific category).
-export function buildAuthorPageTags(args: {
-    contentType: 'article' | 'podcast';
-    authorSlug: string;
-    categorySlug?: string;
-}): string[] {
-    const {contentType, authorSlug, categorySlug} = args;
-
-    const baseTypeTag = `strapi:${contentType}`;
-    const baseListTag = `strapi:${contentType}:list`;
-    const authorTags = ['strapi:author', `strapi:author:${authorSlug}`];
-
-    const tags: string[] = [
-        baseTypeTag,
-        baseListTag,
-        ...authorTags,
-        `strapi:${contentType}:list:author:${authorSlug}`,
-        `strapi:${contentType}:list:author:${authorSlug}:page`,
-    ];
-
-    if (categorySlug) {
-        tags.push('strapi:category', `strapi:category:${categorySlug}`);
-        tags.push(`strapi:${contentType}:list:author:${authorSlug}:category:${categorySlug}`);
-        tags.push(`strapi:${contentType}:list:author:${authorSlug}:category:${categorySlug}:page`);
-    }
-
-    return tags;
-}
 
 type FetchListOptions = {
     limit?: number;
@@ -163,43 +145,86 @@ export function clampPageSize(s: number): number {
     return Math.max(1, Math.min(200, Math.floor(s)));
 }
 
-// ─── Articles ──────────────────────────────────────────────────────────────
-
-export const fetchArticleBySlug = cache(async (slug: string): Promise<StrapiArticle | null> => {
-    const query = buildBySlugQuery({
-        slug,
-        populate: articleDetailPopulate,
-        fields: ARTICLE_DETAIL_FIELDS,
-        status: 'published',
-    });
-    const res = await fetchJson<{data: StrapiArticle[]}>(`/api/articles?${query}`, {
-        tags: ['strapi:article', `strapi:article:${slug}`],
-        revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
-        context: {slug, contentType: 'article', populateOptions: articleDetailPopulate},
-    });
-    return res.data?.[0] ?? null;
-});
+// ─── Content-type fetchers (articles + podcasts) ─────────────────────────────
+//
+// Articles and Podcasts are read the same seven ways (by slug, preview by slug,
+// paginated list, by-slug list, batched by-slug list, by author, related). A
+// ContentDescriptor captures everything that differs between the two — endpoint,
+// content-type (used for tags and diagnostics), populate presets, field sets — so the
+// read behaviour (batching, tags, pagination, fallbacks) lives in one place instead of
+// in mirrored twin functions. The exported per-type fetchers stay the public interface.
 
 type PreviewStatus = 'draft' | 'published';
 
-export async function fetchArticleBySlugForPreview(
-    slug: string,
-    status: PreviewStatus = 'draft',
-): Promise<StrapiArticle | null> {
+const RELATED_CONTENT_LIMIT = 5;
+
+type ContentDescriptor = {
+    apiPath: string;
+    contentType: 'article' | 'podcast';
+    detailPopulate: object;
+    listPopulate: object;
+    relatedPopulate: object;
+    // by-slugs reuses the detail population for Articles (authors are needed there) but
+    // the lighter list population for Podcasts — preserved from the original fetchers.
+    bySlugsPopulate: object;
+    detailFields: readonly string[];
+    listFields: readonly string[];
+};
+
+const ARTICLE_DESCRIPTOR: ContentDescriptor = {
+    apiPath: '/api/articles',
+    contentType: 'article',
+    detailPopulate: articleDetailPopulate,
+    listPopulate: articleListPopulate,
+    relatedPopulate: articleRelatedPopulate,
+    bySlugsPopulate: articleDetailPopulate,
+    detailFields: ARTICLE_DETAIL_FIELDS,
+    listFields: ARTICLE_LIST_FIELDS,
+};
+
+const PODCAST_DESCRIPTOR: ContentDescriptor = {
+    apiPath: '/api/podcasts',
+    contentType: 'podcast',
+    detailPopulate: podcastDetailPopulate,
+    listPopulate: podcastListPopulate,
+    relatedPopulate: podcastRelatedPopulate,
+    bySlugsPopulate: podcastListPopulate,
+    detailFields: PODCAST_DETAIL_FIELDS,
+    listFields: PODCAST_LIST_FIELDS,
+};
+
+function fetchBySlug<T>(desc: ContentDescriptor, slug: string): Promise<T | null> {
     const query = buildBySlugQuery({
         slug,
-        populate: articleDetailPopulate,
-        fields: ARTICLE_DETAIL_FIELDS,
-        status,
+        populate: desc.detailPopulate,
+        fields: desc.detailFields,
+        status: 'published',
     });
-    const res = await fetchJsonNoStore<{data: StrapiArticle[]}>(`/api/articles?${query}`, {
-        tags: [],
-        context: {slug, contentType: 'article', populateOptions: articleDetailPopulate},
-    });
-    return res.data?.[0] ?? null;
+    return fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
+        tags: [contentTag(desc.contentType), contentItemTag(desc.contentType, slug)],
+        revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+        context: {slug, contentType: desc.contentType, populateOptions: desc.detailPopulate},
+    }).then((res) => res.data?.[0] ?? null);
 }
 
-export const fetchArticlesPage = cache(async (options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> => {
+function fetchBySlugForPreview<T>(
+    desc: ContentDescriptor,
+    slug: string,
+    status: PreviewStatus,
+): Promise<T | null> {
+    const query = buildBySlugQuery({
+        slug,
+        populate: desc.detailPopulate,
+        fields: desc.detailFields,
+        status,
+    });
+    return fetchJsonNoStore<{data: T[]}>(`${desc.apiPath}?${query}`, {
+        tags: [],
+        context: {slug, contentType: desc.contentType, populateOptions: desc.detailPopulate},
+    }).then((res) => res.data?.[0] ?? null);
+}
+
+async function fetchPage<T>(desc: ContentDescriptor, options: FetchPageOptions): Promise<PaginatedResult<T>> {
     const page = clampPage(options.page ?? 1);
     const pageSize = clampPageSize(options.pageSize ?? 20);
 
@@ -208,283 +233,204 @@ export const fetchArticlesPage = cache(async (options: FetchPageOptions = {}): P
         pageSize,
         sort: ['date:desc'],
         status: 'published',
-        populate: articleListPopulate,
-        fields: ARTICLE_LIST_FIELDS,
+        populate: desc.listPopulate,
+        fields: desc.listFields,
     });
 
-    const res = await fetchJson<{data: StrapiArticle[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
-        `/api/articles?${query}`,
+    const res = await fetchJson<{data: T[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
+        `${desc.apiPath}?${query}`,
         {
-            tags: options.tags ?? ['strapi:article', 'strapi:article:list:page'],
+            tags: options.tags ?? [contentTag(desc.contentType), contentListPageTag(desc.contentType)],
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
 
     return toPaginatedResult(res, page, pageSize);
-});
+}
 
-export const fetchArticlesList = cache(async (options: FetchListOptions = {}): Promise<StrapiArticle[]> => {
-    const limit = options.limit ?? 100;
-    const paginated = await fetchArticlesPage({
-        page: 1,
-        pageSize: limit,
-        tags: options.tags ?? ['strapi:article', 'strapi:article:list'],
-    });
-    return paginated.items;
-});
-
-export const fetchArticlesBySlugs = cache(async (slugs: string[]): Promise<StrapiArticle[]> => {
+async function fetchBySlugs<T>(desc: ContentDescriptor, slugs: string[]): Promise<T[]> {
     if (slugs.length === 0) return [];
     if (slugs.length > MAX_SLUGS) {
         throw new Error(
-            `fetchArticlesBySlugs: Maximum ${MAX_SLUGS} slugs allowed, but ${slugs.length} were provided. Please batch your requests.`,
+            `fetchBySlugs(${desc.contentType}): Maximum ${MAX_SLUGS} slugs allowed, but ${slugs.length} were provided. Please batch your requests.`,
         );
     }
 
     const query = buildBySlugsQuery({
         slugs,
         pageSize: MAX_SLUGS,
-        populate: articleDetailPopulate,
-        fields: ARTICLE_LIST_FIELDS,
+        populate: desc.bySlugsPopulate,
+        fields: desc.listFields,
         status: 'published',
     });
 
-    const res = await fetchJson<{data: StrapiArticle[]}>(`/api/articles?${query}`, {
-        tags: ['strapi:article', 'strapi:article:by-slugs'],
+    const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
+        tags: [contentTag(desc.contentType), contentBySlugsTag(desc.contentType)],
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
     return res.data ?? [];
-});
+}
 
-export const fetchArticlesBySlugsBatched = cache(async (slugs: string[]): Promise<StrapiArticle[]> => {
+// Splits an over-length slug list into MAX_SLUGS chunks and fans out through the
+// per-type cached by-slugs fetcher, so each chunk is still memoised per request.
+async function batchBySlugs<T>(
+    bySlugs: (slugs: string[]) => Promise<T[]>,
+    slugs: string[],
+): Promise<T[]> {
     if (slugs.length === 0) return [];
-    if (slugs.length <= MAX_SLUGS) return fetchArticlesBySlugs(slugs);
+    if (slugs.length <= MAX_SLUGS) return bySlugs(slugs);
 
     const chunks: string[][] = [];
     for (let i = 0; i < slugs.length; i += MAX_SLUGS) {
         chunks.push(slugs.slice(i, i + MAX_SLUGS));
     }
-    const batches = await Promise.all(chunks.map((chunk) => fetchArticlesBySlugs(chunk)));
+    const batches = await Promise.all(chunks.map((chunk) => bySlugs(chunk)));
     return batches.flat();
-});
+}
 
-export const fetchArticlesByAuthorPaginated = cache(
-    async (authorSlug: string, page: number, pageSize: number, categorySlug?: string): Promise<PaginatedResult<StrapiArticle>> => {
-        const safePage = clampPage(page);
-        const safePageSize = clampPageSize(pageSize);
+async function fetchByAuthorPaginated<T>(
+    desc: ContentDescriptor,
+    authorSlug: string,
+    page: number,
+    pageSize: number,
+    categorySlug?: string,
+): Promise<PaginatedResult<T>> {
+    const safePage = clampPage(page);
+    const safePageSize = clampPageSize(pageSize);
 
-        const query = buildListQuery({
-            page: safePage,
-            pageSize: safePageSize,
-            sort: ['date:desc'],
-            status: 'published',
-            filters: {
-                authors: {slug: {$eq: authorSlug}},
-                ...(categorySlug ? {categories: {slug: {$eq: categorySlug}}} : {}),
-            },
-            populate: articleListPopulate,
-            fields: ARTICLE_LIST_FIELDS,
-        });
+    const query = buildListQuery({
+        page: safePage,
+        pageSize: safePageSize,
+        sort: ['date:desc'],
+        status: 'published',
+        filters: {
+            authors: {slug: {$eq: authorSlug}},
+            ...(categorySlug ? {categories: {slug: {$eq: categorySlug}}} : {}),
+        },
+        populate: desc.listPopulate,
+        fields: desc.listFields,
+    });
 
-        const res = await fetchJson<{data: StrapiArticle[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
-            `/api/articles?${query}`,
-            {
-                tags: buildAuthorPageTags({contentType: 'article', authorSlug, categorySlug}),
-                revalidate: CACHE_REVALIDATE_DEFAULT,
-                context: {slug: authorSlug, contentType: 'article', populateOptions: articleListPopulate},
-            },
-        );
+    const res = await fetchJson<{data: T[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
+        `${desc.apiPath}?${query}`,
+        {
+            tags: buildAuthorPageTags({contentType: desc.contentType, authorSlug, categorySlug}),
+            revalidate: CACHE_REVALIDATE_DEFAULT,
+            context: {slug: authorSlug, contentType: desc.contentType, populateOptions: desc.listPopulate},
+        },
+    );
 
-        return toPaginatedResult(res, safePage, safePageSize);
-    },
+    return toPaginatedResult(res, safePage, safePageSize);
+}
+
+async function fetchRelated<T>(
+    desc: ContentDescriptor,
+    categorySlugs: string[],
+    excludeSlug: string,
+): Promise<T[]> {
+    if (categorySlugs.length === 0) return [];
+
+    const query = buildListQuery({
+        page: 1,
+        pageSize: RELATED_CONTENT_LIMIT,
+        sort: ['date:desc'],
+        status: 'published',
+        filters: {
+            slug: {$ne: excludeSlug},
+            categories: {slug: {$in: categorySlugs}},
+        },
+        populate: desc.relatedPopulate,
+        fields: desc.listFields,
+    });
+
+    const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
+        tags: [contentTag(desc.contentType), RELATED_CONTENT_TAG],
+        revalidate: CACHE_REVALIDATE_DEFAULT,
+    });
+
+    return res.data ?? [];
+}
+
+// ─── Articles ──────────────────────────────────────────────────────────────
+
+export const fetchArticleBySlug = cache(
+    (slug: string): Promise<StrapiArticle | null> => fetchBySlug<StrapiArticle>(ARTICLE_DESCRIPTOR, slug),
 );
 
-const RELATED_CONTENT_LIMIT = 5;
+export function fetchArticleBySlugForPreview(
+    slug: string,
+    status: PreviewStatus = 'draft',
+): Promise<StrapiArticle | null> {
+    return fetchBySlugForPreview<StrapiArticle>(ARTICLE_DESCRIPTOR, slug, status);
+}
+
+export const fetchArticlesPage = cache(
+    (options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> =>
+        fetchPage<StrapiArticle>(ARTICLE_DESCRIPTOR, options),
+);
+
+export const fetchArticlesBySlugs = cache(
+    (slugs: string[]): Promise<StrapiArticle[]> => fetchBySlugs<StrapiArticle>(ARTICLE_DESCRIPTOR, slugs),
+);
+
+export const fetchArticlesBySlugsBatched = cache(
+    (slugs: string[]): Promise<StrapiArticle[]> => batchBySlugs(fetchArticlesBySlugs, slugs),
+);
+
+export const fetchArticlesByAuthorPaginated = cache(
+    (
+        authorSlug: string,
+        page: number,
+        pageSize: number,
+        categorySlug?: string,
+    ): Promise<PaginatedResult<StrapiArticle>> =>
+        fetchByAuthorPaginated<StrapiArticle>(ARTICLE_DESCRIPTOR, authorSlug, page, pageSize, categorySlug),
+);
 
 export const fetchRelatedArticles = cache(
-    async (categorySlugs: string[], excludeSlug: string): Promise<StrapiArticle[]> => {
-        if (categorySlugs.length === 0) return [];
-
-        const query = buildListQuery({
-            page: 1,
-            pageSize: RELATED_CONTENT_LIMIT,
-            sort: ['date:desc'],
-            status: 'published',
-            filters: {
-                slug: {$ne: excludeSlug},
-                categories: {slug: {$in: categorySlugs}},
-            },
-            populate: articleRelatedPopulate,
-            fields: ARTICLE_LIST_FIELDS,
-        });
-
-        const res = await fetchJson<{data: StrapiArticle[]}>(`/api/articles?${query}`, {
-            tags: ['strapi:article', 'related-content'],
-            revalidate: CACHE_REVALIDATE_DEFAULT,
-        });
-
-        return res.data ?? [];
-    },
+    (categorySlugs: string[], excludeSlug: string): Promise<StrapiArticle[]> =>
+        fetchRelated<StrapiArticle>(ARTICLE_DESCRIPTOR, categorySlugs, excludeSlug),
 );
 
 // ─── Podcasts ──────────────────────────────────────────────────────────────
 
-export const fetchPodcastBySlug = cache(async (slug: string): Promise<StrapiPodcast | null> => {
-    const query = buildBySlugQuery({
-        slug,
-        populate: podcastDetailPopulate,
-        fields: PODCAST_DETAIL_FIELDS,
-        status: 'published',
-    });
-    const res = await fetchJson<{data: StrapiPodcast[]}>(`/api/podcasts?${query}`, {
-        tags: ['strapi:podcast', `strapi:podcast:${slug}`],
-        revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
-        context: {slug, contentType: 'podcast', populateOptions: podcastDetailPopulate},
-    });
-    return res.data?.[0] ?? null;
-});
+export const fetchPodcastBySlug = cache(
+    (slug: string): Promise<StrapiPodcast | null> => fetchBySlug<StrapiPodcast>(PODCAST_DESCRIPTOR, slug),
+);
 
-export async function fetchPodcastBySlugForPreview(
+export function fetchPodcastBySlugForPreview(
     slug: string,
     status: PreviewStatus = 'draft',
 ): Promise<StrapiPodcast | null> {
-    const query = buildBySlugQuery({
-        slug,
-        populate: podcastDetailPopulate,
-        fields: PODCAST_DETAIL_FIELDS,
-        status,
-    });
-    const res = await fetchJsonNoStore<{data: StrapiPodcast[]}>(`/api/podcasts?${query}`, {
-        tags: [],
-        context: {slug, contentType: 'podcast', populateOptions: podcastDetailPopulate},
-    });
-    return res.data?.[0] ?? null;
+    return fetchBySlugForPreview<StrapiPodcast>(PODCAST_DESCRIPTOR, slug, status);
 }
 
-export const fetchPodcastsPage = cache(async (options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> => {
-    const page = clampPage(options.page ?? 1);
-    const pageSize = clampPageSize(options.pageSize ?? 20);
+export const fetchPodcastsPage = cache(
+    (options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> =>
+        fetchPage<StrapiPodcast>(PODCAST_DESCRIPTOR, options),
+);
 
-    const query = buildListQuery({
-        page,
-        pageSize,
-        sort: ['date:desc'],
-        status: 'published',
-        populate: podcastListPopulate,
-        fields: PODCAST_LIST_FIELDS,
-    });
+export const fetchPodcastsBySlugs = cache(
+    (slugs: string[]): Promise<StrapiPodcast[]> => fetchBySlugs<StrapiPodcast>(PODCAST_DESCRIPTOR, slugs),
+);
 
-    const res = await fetchJson<{data: StrapiPodcast[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
-        `/api/podcasts?${query}`,
-        {
-            tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list:page'],
-            revalidate: CACHE_REVALIDATE_DEFAULT,
-        },
-    );
-
-    return toPaginatedResult(res, page, pageSize);
-});
-
-export const fetchPodcastsList = cache(async (options: FetchListOptions = {}): Promise<StrapiPodcast[]> => {
-    const limit = options.limit ?? 100;
-    const paginated = await fetchPodcastsPage({
-        page: 1,
-        pageSize: limit,
-        tags: options.tags ?? ['strapi:podcast', 'strapi:podcast:list'],
-    });
-    return paginated.items;
-});
-
-export const fetchPodcastsBySlugs = cache(async (slugs: string[]): Promise<StrapiPodcast[]> => {
-    if (slugs.length === 0) return [];
-    if (slugs.length > MAX_SLUGS) {
-        throw new Error(
-            `fetchPodcastsBySlugs: Maximum ${MAX_SLUGS} slugs allowed, but ${slugs.length} were provided. Please batch your requests.`,
-        );
-    }
-
-    const query = buildBySlugsQuery({
-        slugs,
-        pageSize: MAX_SLUGS,
-        populate: podcastListPopulate,
-        fields: PODCAST_LIST_FIELDS,
-        status: 'published',
-    });
-
-    const res = await fetchJson<{data: StrapiPodcast[]}>(`/api/podcasts?${query}`, {
-        tags: ['strapi:podcast', 'strapi:podcast:by-slugs'],
-        revalidate: CACHE_REVALIDATE_DEFAULT,
-    });
-    return res.data ?? [];
-});
-
-export const fetchPodcastsBySlugsBatched = cache(async (slugs: string[]): Promise<StrapiPodcast[]> => {
-    if (slugs.length === 0) return [];
-    if (slugs.length <= MAX_SLUGS) return fetchPodcastsBySlugs(slugs);
-
-    const chunks: string[][] = [];
-    for (let i = 0; i < slugs.length; i += MAX_SLUGS) {
-        chunks.push(slugs.slice(i, i + MAX_SLUGS));
-    }
-    const batches = await Promise.all(chunks.map((chunk) => fetchPodcastsBySlugs(chunk)));
-    return batches.flat();
-});
+export const fetchPodcastsBySlugsBatched = cache(
+    (slugs: string[]): Promise<StrapiPodcast[]> => batchBySlugs(fetchPodcastsBySlugs, slugs),
+);
 
 export const fetchPodcastsByAuthorPaginated = cache(
-    async (authorSlug: string, page: number, pageSize: number, categorySlug?: string): Promise<PaginatedResult<StrapiPodcast>> => {
-        const safePage = clampPage(page);
-        const safePageSize = clampPageSize(pageSize);
-
-        const query = buildListQuery({
-            page: safePage,
-            pageSize: safePageSize,
-            sort: ['date:desc'],
-            status: 'published',
-            filters: {
-                authors: {slug: {$eq: authorSlug}},
-                ...(categorySlug ? {categories: {slug: {$eq: categorySlug}}} : {}),
-            },
-            populate: podcastListPopulate,
-            fields: PODCAST_LIST_FIELDS,
-        });
-
-        const res = await fetchJson<{data: StrapiPodcast[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
-            `/api/podcasts?${query}`,
-            {
-                tags: buildAuthorPageTags({contentType: 'podcast', authorSlug, categorySlug}),
-                revalidate: CACHE_REVALIDATE_DEFAULT,
-                context: {slug: authorSlug, contentType: 'podcast', populateOptions: podcastListPopulate},
-            },
-        );
-
-        return toPaginatedResult(res, safePage, safePageSize);
-    },
+    (
+        authorSlug: string,
+        page: number,
+        pageSize: number,
+        categorySlug?: string,
+    ): Promise<PaginatedResult<StrapiPodcast>> =>
+        fetchByAuthorPaginated<StrapiPodcast>(PODCAST_DESCRIPTOR, authorSlug, page, pageSize, categorySlug),
 );
 
 export const fetchRelatedPodcasts = cache(
-    async (categorySlugs: string[], excludeSlug: string): Promise<StrapiPodcast[]> => {
-        if (categorySlugs.length === 0) return [];
-
-        const query = buildListQuery({
-            page: 1,
-            pageSize: RELATED_CONTENT_LIMIT,
-            sort: ['date:desc'],
-            status: 'published',
-            filters: {
-                slug: {$ne: excludeSlug},
-                categories: {slug: {$in: categorySlugs}},
-            },
-            populate: podcastRelatedPopulate,
-            fields: PODCAST_LIST_FIELDS,
-        });
-
-        const res = await fetchJson<{data: StrapiPodcast[]}>(`/api/podcasts?${query}`, {
-            tags: ['strapi:podcast', 'related-content'],
-            revalidate: CACHE_REVALIDATE_DEFAULT,
-        });
-
-        return res.data ?? [];
-    },
+    (categorySlugs: string[], excludeSlug: string): Promise<StrapiPodcast[]> =>
+        fetchRelated<StrapiPodcast>(PODCAST_DESCRIPTOR, categorySlugs, excludeSlug),
 );
 
 // ─── Authors ───────────────────────────────────────────────────────────────
@@ -517,7 +463,7 @@ export const fetchAuthorsList = cache(async (options: FetchListOptions = {}): Pr
     });
 
     const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(`/api/authors?${query}`, {
-        tags: options.tags ?? ['strapi:author', 'strapi:author:list'],
+        tags: options.tags ?? [contentTag('author'), contentListTag('author')],
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
     return res.data ?? [];
@@ -531,7 +477,7 @@ export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAutho
     });
 
     const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(`/api/authors?${query}`, {
-        tags: ['strapi:author', `strapi:author:${slug}`],
+        tags: [contentTag('author'), contentItemTag('author', slug)],
         revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
     });
     return res.data?.[0] ?? null;
@@ -569,7 +515,7 @@ export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCat
     });
 
     const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(`/api/categories?${query}`, {
-        tags: ['strapi:category', `strapi:category:${slug}`],
+        tags: [contentTag('category'), contentItemTag('category', slug)],
         revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
         context: {slug, contentType: 'category', populateOptions: categoryWithContentPopulate},
     });
@@ -587,7 +533,7 @@ export const fetchCategoriesWithContent = cache(async (options: FetchListOptions
     });
 
     const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(`/api/categories?${query}`, {
-        tags: options.tags ?? ['strapi:category', 'strapi:category:list'],
+        tags: options.tags ?? [contentTag('category'), contentListTag('category')],
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
     return res.data ?? [];

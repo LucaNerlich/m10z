@@ -1,5 +1,6 @@
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {contentTag, sitemapTag} from '@/src/lib/cache/strapiTags';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -18,10 +19,10 @@ function buildLinkList(
 
 export async function GET() {
     const [articles, podcasts, categories, authors] = await Promise.all([
-        fetchPublishedSlugs('articles', ['strapi:article']),
-        fetchPublishedSlugs('podcasts', ['strapi:podcast']),
-        fetchPublishedSlugs('categories', ['sitemap:categories']),
-        fetchPublishedSlugs('authors', ['sitemap:authors']),
+        fetchPublishedSlugs('articles', [contentTag('article')]),
+        fetchPublishedSlugs('podcasts', [contentTag('podcast')]),
+        fetchPublishedSlugs('categories', [sitemapTag('categories')]),
+        fetchPublishedSlugs('authors', [sitemapTag('authors')]),
     ]);
 
     const lines = [

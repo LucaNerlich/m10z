@@ -1,4 +1,14 @@
 import {routes} from '@/src/lib/routes';
+import {
+    HOME_PAGE_TAG,
+    RELATED_CONTENT_TAG,
+    SEARCH_INDEX_TAG,
+    contentListTag,
+    contentTag,
+    feedSourceTag,
+    feedTag,
+    sitemapTag,
+} from '@/src/lib/cache/strapiTags';
 
 /**
  * Cross-wire contract — DO NOT DRIFT.
@@ -23,23 +33,23 @@ export type Revalidations = {
 
 export const INVALIDATION_TAXONOMY = {
     article: {
-        tags: ['strapi:article', 'strapi:article:list', 'related-content', 'page:home'],
+        tags: [contentTag('article'), contentListTag('article'), RELATED_CONTENT_TAG, HOME_PAGE_TAG],
         pages: [routes.articles, `${routes.articles}/[slug]`, routes.home],
         paths: [],
     },
     podcast: {
-        tags: ['strapi:podcast', 'strapi:podcast:list', 'related-content', 'page:home'],
+        tags: [contentTag('podcast'), contentListTag('podcast'), RELATED_CONTENT_TAG, HOME_PAGE_TAG],
         pages: [routes.podcasts, `${routes.podcasts}/[slug]`, routes.home],
         paths: [],
     },
     category: {
         tags: [
-            'strapi:category',
-            'strapi:category:list',
-            'strapi:article',
-            'strapi:article:list',
-            'strapi:podcast',
-            'strapi:podcast:list',
+            contentTag('category'),
+            contentListTag('category'),
+            contentTag('article'),
+            contentListTag('article'),
+            contentTag('podcast'),
+            contentListTag('podcast'),
         ],
         pages: [
             routes.categories,
@@ -52,12 +62,12 @@ export const INVALIDATION_TAXONOMY = {
     },
     author: {
         tags: [
-            'strapi:author',
-            'strapi:author:list',
-            'strapi:article',
-            'strapi:article:list',
-            'strapi:podcast',
-            'strapi:podcast:list',
+            contentTag('author'),
+            contentListTag('author'),
+            contentTag('article'),
+            contentListTag('article'),
+            contentTag('podcast'),
+            contentListTag('podcast'),
         ],
         pages: [
             routes.articles,
@@ -81,29 +91,29 @@ export const INVALIDATION_TAXONOMY = {
     },
     sitemap: {
         tags: [
-            'sitemap:articles',
-            'sitemap:podcasts',
-            'sitemap:authors',
-            'sitemap:categories',
+            sitemapTag('articles'),
+            sitemapTag('podcasts'),
+            sitemapTag('authors'),
+            sitemapTag('categories'),
         ],
         pages: [],
         paths: ['/sitemap.xml', '/sitemap'],
     },
     'search-index': {
-        tags: ['search-index'],
+        tags: [SEARCH_INDEX_TAG],
         pages: [],
         paths: [],
     },
     articlefeed: {
         tags: [
-            'feed:article',
-            'strapi:article-feed',
-            'strapi:article',
-            'strapi:article:list',
-            'related-content',
-            'strapi:category',
-            'strapi:category:list',
-            'page:home',
+            feedTag('article'),
+            feedSourceTag('article'),
+            contentTag('article'),
+            contentListTag('article'),
+            RELATED_CONTENT_TAG,
+            contentTag('category'),
+            contentListTag('category'),
+            HOME_PAGE_TAG,
         ],
         pages: [
             routes.home,
@@ -116,14 +126,14 @@ export const INVALIDATION_TAXONOMY = {
     },
     audiofeed: {
         tags: [
-            'feed:audio',
-            'strapi:audio-feed',
-            'strapi:podcast',
-            'strapi:podcast:list',
-            'related-content',
-            'strapi:category',
-            'strapi:category:list',
-            'page:home',
+            feedTag('audio'),
+            feedSourceTag('audio'),
+            contentTag('podcast'),
+            contentListTag('podcast'),
+            RELATED_CONTENT_TAG,
+            contentTag('category'),
+            contentListTag('category'),
+            HOME_PAGE_TAG,
         ],
         pages: [
             routes.home,

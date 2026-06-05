@@ -1,4 +1,4 @@
-import {toLeaderboard} from './gameHistory';
+import {computeStreaks, toLeaderboard, type StreaksResult} from './gameHistory';
 import {type M12GArchive} from './m12gArchive';
 import {
     type M12GMonthParticipation,
@@ -44,5 +44,22 @@ export function computeM12GStats(archive: M12GArchive): M12GStats {
         leaderboard: toLeaderboard(gameHistory, MAX_LEADERBOARD_ENTRIES),
         winnerTimeline: toWinnerTimeline(months),
         monthlyParticipation,
+    };
+}
+
+// Everything the M12G overview page renders, assembled once from the Archive. The page
+// reads this single projection instead of composing stats, streaks, and month ordering
+// itself — keeping the view-model in the domain, not the route component.
+export type M12GOverview = {
+    stats: M12GStats;
+    streaks: StreaksResult;
+    monthsNewestFirst: M12GMonthWithWinner[];
+};
+
+export function buildM12GOverview(archive: M12GArchive): M12GOverview {
+    return {
+        stats: computeM12GStats(archive),
+        streaks: computeStreaks(archive.gameHistory),
+        monthsNewestFirst: [...archive.months].reverse(),
     };
 }

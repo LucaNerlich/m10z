@@ -26,6 +26,7 @@ import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateAuthorProfileJsonLd} from '@/src/lib/jsonld/author';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {sitemapTag} from '@/src/lib/cache/strapiTags';
 import Script from 'next/script';
 import styles from './page.module.css';
 
@@ -39,7 +40,7 @@ type PageProps = {
  */
 export async function generateStaticParams() {
     try {
-        const entries = await fetchPublishedSlugs('authors', ['sitemap:authors']);
+        const entries = await fetchPublishedSlugs('authors', [sitemapTag('authors')]);
         return entries.map(({slug}) => ({slug}));
     } catch {
         return [];

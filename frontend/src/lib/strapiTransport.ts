@@ -31,11 +31,18 @@ export type StrapiCacheDirective =
     | {mode: 'tags'; tags: string[]; revalidate?: number}
     | {mode: 'no-store'; tags?: string[]};
 
+// Read mode is part of the interface, not a per-caller env lookup. `public` (the
+// default) reads the CMS unauthenticated; `privileged` attaches the server-only
+// STRAPI_API_TOKEN. Callers express intent; the transport owns the secret.
+export type StrapiAuthMode = 'public' | 'privileged';
+
 export type StrapiRequest = {
     // Path relative to the Strapi base URL, query string included, e.g. "/api/articles?…".
     path: string;
     cache: StrapiCacheDirective;
-    // Opt-in Bearer auth. Content reads stay unauthenticated; feeds/search pass a token.
+    // Read mode. Omit (or 'public') for content reads; 'privileged' for feeds/search.
+    auth?: StrapiAuthMode;
+    // Escape hatch for an explicit Bearer token; takes precedence over `auth`.
     token?: string;
     timeoutMs?: number;
     diagnosticName?: string;
@@ -43,6 +50,13 @@ export type StrapiRequest = {
 };
 
 export type StrapiTransport = <T>(req: StrapiRequest) => Promise<T>;
+
+// The single place the privileged token is read from the environment.
+function resolveToken(req: StrapiRequest): string | undefined {
+    if (req.token) return req.token;
+    if (req.auth === 'privileged') return process.env.STRAPI_API_TOKEN;
+    return undefined;
+}
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 1;
@@ -54,7 +68,8 @@ function tagCountOf(cache: StrapiCacheDirective): number {
 
 function buildRequestInit(req: StrapiRequest): RequestInit {
     const headers = new Headers();
-    if (req.token) headers.set('Authorization', `Bearer ${req.token}`);
+    const token = resolveToken(req);
+    if (token) headers.set('Authorization', `Bearer ${token}`);
 
     if (req.cache.mode === 'no-store') {
         return req.cache.tags

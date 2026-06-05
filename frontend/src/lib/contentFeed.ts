@@ -1,4 +1,5 @@
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
+import {contentListPageTag, contentTag} from '@/src/lib/cache/strapiTags';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
 import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
 
@@ -70,8 +71,8 @@ export async function buildContentFeed(
     const fetchSize = Math.min(itemsNeeded + 5, 200);
 
     const extraTags = options.tags ?? [];
-    const articleTags = Array.from(new Set(['strapi:article', 'strapi:article:list:page', ...extraTags]));
-    const podcastTags = Array.from(new Set(['strapi:podcast', 'strapi:podcast:list:page', ...extraTags]));
+    const articleTags = Array.from(new Set([contentTag('article'), contentListPageTag('article'), ...extraTags]));
+    const podcastTags = Array.from(new Set([contentTag('podcast'), contentListPageTag('podcast'), ...extraTags]));
 
     const [articlesResult, podcastsResult] = await Promise.all([
         fetchArticlesPage({page: 1, pageSize: fetchSize, tags: articleTags}),

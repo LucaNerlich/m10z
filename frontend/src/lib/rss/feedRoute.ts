@@ -1,23 +1,9 @@
-// @ts-ignore
-import xmlFormat from 'xml-formatter';
-
 import {escapeXml} from '@/src/lib/rss/xml';
 
-export type FeedBuildResult = {
-    xml: string;
-    etag?: string; // should include quotes if provided, e.g. "\"abc\""
-    lastModified?: Date | null;
-};
-
+// Trim trailing slashes from a base URL. The canonical site-origin normaliser used by
+// the shared feed definition (feedDefinition.FEED_SITE_URL).
 export function normalizeBaseUrl(raw: string): string {
     return raw.replace(/\/+$/, '');
-}
-
-export function formatXml(xml: string): string {
-    return xmlFormat(xml, {
-        collapseContent: true,
-        lineSeparator: '\n',
-    });
 }
 
 export function buildRssHeaders(args: {

@@ -12,12 +12,6 @@
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {strapiFetch} from '@/src/lib/strapiTransport';
 
-const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL ?? '').replace(
-    /\/+$/,
-    '',
-);
-const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
-
 const DEFAULT_PAGE_SIZE = 100;
 const DEFAULT_MAX_PAGES = 50;
 const DEFAULT_MAX_ITEMS = 1000;
@@ -27,16 +21,16 @@ export type StrapiFeedFetcher = <T>(pathWithQuery: string) => Promise<T>;
 
 /**
  * Build a fetcher bound to a fixed cache-tag set. The returned function
- * forwards every call across the shared Strapi transport seam with the feed
- * token and the production-vs-dev revalidate behaviour.
+ * forwards every call across the shared Strapi transport seam as a privileged
+ * read, with the production-vs-dev revalidate behaviour. Base-URL resolution and
+ * the privileged token both live in the transport, not here.
  */
 export function createFeedStrapiFetcher(tags: string[]): StrapiFeedFetcher {
     return async <T>(pathWithQuery: string): Promise<T> => {
-        if (!STRAPI_URL) throw new Error('Missing STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL)');
         const revalidate = process.env.NODE_ENV === 'production' ? CACHE_REVALIDATE_DEFAULT : 0;
         return strapiFetch<T>({
             path: pathWithQuery,
-            token: STRAPI_TOKEN,
+            auth: 'privileged',
             cache: revalidate === 0 ? {mode: 'no-store', tags} : {mode: 'tags', tags, revalidate},
             timeoutMs: DEFAULT_TIMEOUT_MS,
             diagnosticName: 'strapi.feed',

@@ -135,29 +135,6 @@ export const podcastRelatedPopulate = {
     file: podcastFile,
 };
 
-// ─── Feed presets (used by feed route handlers) ─────────────────────────────
-
-/** Article feed: list-style population sans youtube. */
-export const articleFeedPopulate = {
-    cover: populateMedia,
-    banner: populateMedia,
-    authors: populateAuthorAvatar,
-    categories: populateCategory,
-};
-
-export const ARTICLE_FEED_FIELDS = ARTICLE_DETAIL_FIELDS;
-
-/** Podcast feed: includes file enclosure metadata. */
-export const podcastFeedPopulate = {
-    cover: populateMedia,
-    banner: populateMedia,
-    authors: populateAuthorAvatar,
-    categories: populateCategory,
-    file: podcastFile,
-};
-
-export const PODCAST_FEED_FIELDS = PODCAST_DETAIL_FIELDS;
-
 // ─── Author presets ────────────────────────────────────────────────────────
 
 export const AUTHOR_FIELDS_LIST = ['slug', 'title', 'description'] as const;

@@ -7,6 +7,7 @@ import {getStaticPageRecords} from '@/src/lib/search/staticPages';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {CACHE_REVALIDATE_SEARCH} from '@/src/lib/cache/constants';
+import {SEARCH_INDEX_TAG} from '@/src/lib/cache/strapiTags';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
 
@@ -122,8 +123,8 @@ async function loadSearchIndex(): Promise<SearchIndexFile> {
     try {
         json = await strapiFetch<unknown>({
             path: '/api/search-index',
-            token: process.env.STRAPI_API_TOKEN,
-            cache: {mode: 'tags', tags: ['search-index'], revalidate: CACHE_REVALIDATE_SEARCH},
+            auth: 'privileged',
+            cache: {mode: 'tags', tags: [SEARCH_INDEX_TAG], revalidate: CACHE_REVALIDATE_SEARCH},
             diagnosticName: 'strapi.search-index',
         });
     } catch (err) {
