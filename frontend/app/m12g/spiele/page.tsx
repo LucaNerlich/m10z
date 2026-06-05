@@ -1,7 +1,7 @@
 import {type Metadata} from 'next';
 
-import {fetchM12GOverview} from '@/src/lib/m12g/m12gData';
-import {buildGameIndex} from '@/src/lib/m12g/m12gStats';
+import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
+import {toGameIndex} from '@/src/lib/m12g/gameHistory';
 import {routes} from '@/src/lib/routes';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {EmptyState} from '@/src/components/EmptyState';
@@ -16,8 +16,8 @@ export const metadata: Metadata = buildStaticListMetadata({
 });
 
 export default async function M12GGamesPage() {
-    const overview = await fetchM12GOverview();
-    const games = buildGameIndex(overview.months);
+    const archive = await getM12GArchive();
+    const games = toGameIndex(archive.gameHistory);
 
     return (
         <div data-list-page>

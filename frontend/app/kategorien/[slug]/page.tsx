@@ -1,22 +1,19 @@
 import {type Metadata} from 'next';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {notFound} from 'next/navigation';
-import {fetchArticlesBySlugsBatched, fetchCategoryBySlug, fetchPodcastsBySlugsBatched} from '@/src/lib/strapiContent';
-import {absoluteRoute} from '@/src/lib/routes';
-import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
-import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
+import {fetchCategoryBySlug, fetchCategoryPageData} from '@/src/lib/strapiContent';
+import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
 
 import {EmptyState} from '@/src/components/EmptyState';
-import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateCategoryJsonLd} from '@/src/lib/jsonld/category';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {sitemapTag} from '@/src/lib/strapi/cacheTags';
 import Script from 'next/script';
 import styles from './page.module.css';
 
@@ -30,7 +27,7 @@ type PageProps = {
  */
 export async function generateStaticParams() {
     try {
-        const entries = await fetchPublishedSlugs('categories', ['sitemap:categories']);
+        const entries = await fetchPublishedSlugs('categories', [sitemapTag('categories')]);
         return entries.map(({slug}) => ({slug}));
     } catch {
         return [];
@@ -47,61 +44,18 @@ export async function generateStaticParams() {
  * @returns The assembled `Metadata` for the category page (title, description, alternates, `openGraph`, `twitter`, and `robots`).
  */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-    const {slug: rawSlug} = await params;
-    const slug = validateSlugSafe(rawSlug);
-    if (!slug) return {};
-
-    try {
-        const category = await fetchCategoryBySlug(slug);
-        if (!category) return {};
-
-        const title = category.title || category.slug || 'Kategorie';
-        const description = category.description || undefined;
-        const bannerOrCoverMedia = pickBannerOrCoverMedia(
-            {title: category.title ?? slug, cover: category.cover, banner: category.banner},
-            undefined,
-        );
-        const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
-        const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
-
-        return {
-            title,
-            description,
-            alternates: {
-                canonical: absoluteRoute(`/kategorien/${slug}`),
-            },
-            openGraph: {
-                type: 'website',
-                locale: OG_LOCALE,
-                siteName: OG_SITE_NAME,
-                url: absoluteRoute(`/kategorien/${slug}`),
-                title,
-                description,
-                images: coverImage,
-            },
-            twitter: {
-                card: 'summary_large_image',
-                title,
-                description,
-                images: coverImage,
-            },
-            robots: {
-                index: true,
-                follow: true,
-            },
-        };
-    } catch (error) {
-        // Log error but return empty metadata to allow page to render with defaults
-        const errorMessage = getErrorMessage(error);
-
-        if (isTimeoutOrSocketError(error)) {
-            console.error(`Socket/timeout error fetching category metadata for slug "${slug}":`, errorMessage);
-        } else {
-            console.error(`Error fetching category metadata for slug "${slug}":`, errorMessage);
-        }
-
-        return {};
-    }
+    return buildContentSlugMetadata({
+        params,
+        canonicalPath: (slug) => `/kategorien/${slug}`,
+        contentLabel: 'category',
+        fetchBySlug: fetchCategoryBySlug,
+        getTitle: (category) => category.title || category.slug || 'Kategorie',
+        getDescription: (category) => category.description || undefined,
+        getMediaSource: (category) => category,
+        getMetadataExtras: () => ({
+            robots: {index: true, follow: true},
+        }),
+    });
 }
 
 /**
@@ -117,10 +71,10 @@ export default async function CategoryDetailPage({params}: PageProps) {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
-    let category;
+    let pageData;
     try {
-        category = await fetchCategoryBySlug(slug);
-        if (!category) return notFound();
+        pageData = await fetchCategoryPageData(slug);
+        if (!pageData) return notFound();
     } catch (error) {
         const errorMessage = getErrorMessage(error);
 
@@ -133,35 +87,7 @@ export default async function CategoryDetailPage({params}: PageProps) {
         return notFound();
     }
 
-    const articleSlugs = category.articles?.map((a) => a.slug).filter(Boolean) ?? [];
-    const podcastSlugs = category.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
-
-    // Handle batched fetches with graceful degradation - show available content even if some fail
-    let articles: Awaited<ReturnType<typeof fetchArticlesBySlugsBatched>> = [];
-    let podcasts: Awaited<ReturnType<typeof fetchPodcastsBySlugsBatched>> = [];
-
-    try {
-        [articles, podcasts] = await Promise.all([
-            fetchArticlesBySlugsBatched(articleSlugs),
-            fetchPodcastsBySlugsBatched(podcastSlugs),
-        ]);
-    } catch (error) {
-        const errorMessage = getErrorMessage(error);
-
-        if (isTimeoutOrSocketError(error)) {
-            console.error(`Socket/timeout error fetching category content for slug "${slug}":`, errorMessage);
-        } else {
-            console.error(`Error fetching category content for slug "${slug}":`, errorMessage);
-        }
-
-        // Continue with empty arrays - page will show empty state
-        // This allows the category page to render even if content fetches fail
-    }
-
-    // Sort by date descending
-    const sortedArticles = sortByDateDesc(articles);
-    const sortedPodcasts = sortByDateDesc(podcasts);
-
+    const {category, articles: sortedArticles, podcasts: sortedPodcasts} = pageData;
     const title = category.title ?? category.slug ?? 'Kategorie';
 
     const breadcrumbJsonLd = generateBreadcrumbJsonLd([

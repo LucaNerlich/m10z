@@ -1,6 +1,6 @@
 import {type Person, type ProfilePage} from './types';
 import {authorToPerson} from './helpers';
-import {type StrapiAuthor} from '@/src/lib/rss/media';
+import {type StrapiAuthor} from '@/src/lib/strapi/media';
 import {routes} from '@/src/lib/routes';
 import {CONTENT_LANGUAGE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 

@@ -1,4 +1,4 @@
-import {type StrapiAuthor} from '@/src/lib/rss/media';
+import {type StrapiAuthor} from '@/src/lib/strapi/media';
 import {AuthorList} from './AuthorList';
 import styles from './ContentAuthors.module.css';
 

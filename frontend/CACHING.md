@@ -88,7 +88,7 @@ Cache duration constants are defined in `src/lib/cache/constants.ts`:
 
 - **`CACHE_REVALIDATE_DEFAULT`** (3600 seconds / 1 hour)
   - Used for: List/collection pages, legal/static pages, RSS feeds
-  - Applied to: `fetchArticlesList()`, `fetchPodcastsList()`, `fetchAuthorsList()`, `fetchCategoriesWithContent()`, `fetchArticlesPage()`, `fetchPodcastsPage()`, `fetchArticlesBySlugs()`, `fetchPodcastsBySlugs()`, `getPrivacy()`, `getImprint()`, `getAbout()`
+  - Applied to: `fetchAuthorsList()`, `fetchCategoriesWithContent()`, `fetchArticlesPage()`, `fetchPodcastsPage()`, `fetchArticlesBySlugs()`, `fetchPodcastsBySlugs()`, `getPrivacy()`, `getImprint()`, `getAbout()`
 
 - **`CACHE_REVALIDATE_CONTENT_PAGE`** (900 seconds / 15 minutes)
   - Used for: Individual content detail pages
@@ -154,14 +154,11 @@ const res = await fetch(url, {
 All fetch functions support cache configuration with both tags and revalidate periods:
 
 **Base utilities** (`src/lib/strapi.ts`):
-- `fetchStrapiJson()`: Accepts `FetchStrapiOptions` with `tags` and `revalidate`
 - `fetchStrapiSingle()`: Accepts `FetchStrapiOptions` with `tags` and `revalidate`
 - `fetchStrapiCollection()`: Accepts `FetchStrapiOptions` with `tags` and `revalidate`
 - `getPrivacy()`, `getImprint()`, `getAbout()`: Default to `CACHE_REVALIDATE_DEFAULT`
 
 **Content fetching** (`src/lib/strapiContent.ts`):
-- `fetchArticlesList()`: Uses `CACHE_REVALIDATE_DEFAULT`
-- `fetchPodcastsList()`: Uses `CACHE_REVALIDATE_DEFAULT`
 - `fetchAuthorsList()`: Uses `CACHE_REVALIDATE_DEFAULT`
 - `fetchCategoriesWithContent()`: Uses `CACHE_REVALIDATE_DEFAULT`
 - `fetchArticlesPage()`: Uses `CACHE_REVALIDATE_DEFAULT`

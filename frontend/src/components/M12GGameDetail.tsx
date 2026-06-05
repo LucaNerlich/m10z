@@ -5,20 +5,13 @@ import {formatMonthLong, formatVotes} from '@/src/lib/m12g/formatters';
 
 import styles from './M12GGameDetail.module.css';
 
-export type GameTimelineEntry = {
-    month: string;
-    title?: string;
-    forumThreadUrl?: string;
-    votes: number;
-    isWinner: boolean;
-};
-
 type M12GGameDetailProps = {
     game: GameHistory;
-    timeline: GameTimelineEntry[];
 };
 
-export function M12GGameDetail({game, timeline}: M12GGameDetailProps) {
+export function M12GGameDetail({game}: M12GGameDetailProps) {
+    // Game-history appearances are chronological; show them newest-first.
+    const timeline = [...game.appearances].reverse();
     const maxVotes = Math.max(1, ...timeline.map((t) => t.votes));
 
     return (

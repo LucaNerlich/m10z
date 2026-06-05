@@ -14,7 +14,7 @@ import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {parseCategoryParam, parsePageParam} from '@/src/lib/params';
 import {absoluteRoute} from '@/src/lib/routes';
-import {getOptimalMediaFormat} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat} from '@/src/lib/strapi/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {fetchAuthorBySlug, fetchCategoryBySlug, type PaginatedResult} from '@/src/lib/strapiContent';
 import styles from './AuthorContentPage.module.css';

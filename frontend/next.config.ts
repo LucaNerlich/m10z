@@ -106,7 +106,13 @@ const nextConfig: NextConfig = {
                 'https://i.ytimg.com',
                 'https://ytimg.com',
             ]).join(' ')}`,
-            "connect-src 'self' https://umami.m10z.de https://*.googlevideo.com",
+            `connect-src ${unique([
+                "'self'",
+                'https://umami.m10z.de',
+                'https://*.googlevideo.com',
+                // Service workers and fetch() use connect-src (not media-src) when loading Strapi uploads.
+                ...(strapiOriginForCsp ? [strapiOriginForCsp] : []),
+            ]).join(' ')}`,
             `media-src ${unique([
                 "'self'",
                 // Allow media from configured Strapi origin (e.g. http://localhost:1337 in local prod-like setups).

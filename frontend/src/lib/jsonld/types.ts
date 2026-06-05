@@ -91,20 +91,10 @@ export interface PodcastEpisode extends JsonLdBase {
     url: string;
 }
 
-export interface SearchAction {
-    '@type': 'SearchAction';
-    target: {
-        '@type': 'EntryPoint';
-        urlTemplate: string;
-    };
-    'query-input': string;
-}
-
 export interface WebSite extends JsonLdBase {
     '@type': 'WebSite';
     name: string;
     url: string;
-    potentialAction?: SearchAction;
 }
 
 export interface BreadcrumbListItem {

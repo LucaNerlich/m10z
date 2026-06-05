@@ -1,4 +1,4 @@
-import {type StrapiAuthor, type StrapiCategoryRef} from '@/src/lib/rss/media';
+import {type StrapiAuthor, type StrapiCategoryRef} from '@/src/lib/strapi/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {formatIso8601Duration} from '@/src/lib/jsonld/helpers';
 import {ContentAuthors} from './ContentAuthors';

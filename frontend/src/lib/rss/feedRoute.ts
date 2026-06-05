@@ -1,81 +1,9 @@
-// @ts-ignore
-import xmlFormat from 'xml-formatter';
-
 import {escapeXml} from '@/src/lib/rss/xml';
 
-export type FeedBuildResult = {
-    xml: string;
-    etag?: string; // should include quotes if provided, e.g. "\"abc\""
-    lastModified?: Date | null;
-};
-
-export type StrapiFetchArgs = {
-    strapiBaseUrl: string;
-    apiPathWithQuery: string;
-    token?: string | undefined;
-    tags: string[];
-    revalidate?: number;
-    timeoutMs?: number;
-};
-
-export async function fetchStrapiJson<T>({
-                                             strapiBaseUrl,
-                                             apiPathWithQuery,
-                                             token,
-                                             tags,
-                                             revalidate,
-                                             timeoutMs,
-                                         }: StrapiFetchArgs): Promise<T> {
-    const url = new URL(apiPathWithQuery, strapiBaseUrl);
-
-    const headers = new Headers();
-    if (token) headers.set('Authorization', `Bearer ${token}`);
-    const controller = new AbortController();
-    const timeout = timeoutMs ?? 30_000;
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
-    try {
-        const res = await fetch(url, {
-            headers,
-            signal: controller.signal,
-            // Next.js treats `revalidate: 0` as "revalidate immediately" (not "no cache"),
-        // so we must use `cache: 'no-store'` to fully bypass the fetch cache in dev mode.
-        ...(revalidate === 0
-                ? {
-                    cache: 'no-store',
-                    next: {tags},
-                }
-                : {
-                    next: {
-                        tags,
-                        revalidate,
-                    },
-                }),
-        });
-
-        if (!res.ok) {
-            throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
-        }
-
-        return (await res.json()) as T;
-    } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {
-            throw new Error(`Strapi request timed out after ${timeout}ms: ${url.toString()}`);
-        }
-        throw err;
-    } finally {
-        clearTimeout(timeoutId);
-    }
-}
-
+// Trim trailing slashes from a base URL. The canonical site-origin normaliser used by
+// the shared feed definition (feedDefinition.FEED_SITE_URL).
 export function normalizeBaseUrl(raw: string): string {
     return raw.replace(/\/+$/, '');
-}
-
-export function formatXml(xml: string): string {
-    return xmlFormat(xml, {
-        collapseContent: true,
-        lineSeparator: '\n',
-    });
 }
 
 export function buildRssHeaders(args: {

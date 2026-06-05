@@ -6,7 +6,8 @@ import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
 import {buildContentFeed} from '@/src/lib/contentFeed';
-import {mediaUrlToAbsolute} from '@/src/lib/rss/media';
+import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
+import {mediaUrlToAbsolute} from '@/src/lib/strapi/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import styles from '@/app/page.module.css';
@@ -61,7 +62,7 @@ function hasNextPage(currentPage: number, totalItems: number): boolean {
 export async function HomePage({page}: {page: number}) {
     let data;
     try {
-        data = await buildContentFeed(page, PAGE_SIZE, {tags: ['page:home']});
+        data = await buildContentFeed(page, PAGE_SIZE, {tags: [HOME_PAGE_TAG]});
     } catch {
         return (
             <div className={styles.page}>

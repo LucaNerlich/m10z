@@ -9,41 +9,21 @@
  * Centralising these here means a query/config change is one edit, not two.
  */
 
-import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-
-import {fetchStrapiJson} from './feedRoute';
-
-const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL ?? '').replace(
-    /\/+$/,
-    '',
-);
-const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
+import {createPrivilegedFeedReader} from '@/src/lib/strapi/contentAccess';
 
 const DEFAULT_PAGE_SIZE = 100;
 const DEFAULT_MAX_PAGES = 50;
 const DEFAULT_MAX_ITEMS = 1000;
-const DEFAULT_TIMEOUT_MS = 30_000;
 
 export type StrapiFeedFetcher = <T>(pathWithQuery: string) => Promise<T>;
 
 /**
  * Build a fetcher bound to a fixed cache-tag set. The returned function
- * forwards every call through `fetchStrapiJson` with the shared
- * STRAPI_URL/STRAPI_TOKEN and the production-vs-dev revalidate behaviour.
+ * forwards every call across the unified Content access read interface as a
+ * privileged read, with the production-vs-dev revalidate behaviour.
  */
 export function createFeedStrapiFetcher(tags: string[]): StrapiFeedFetcher {
-    return async <T>(pathWithQuery: string): Promise<T> => {
-        if (!STRAPI_URL) throw new Error('Missing STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL)');
-        const revalidate = process.env.NODE_ENV === 'production' ? CACHE_REVALIDATE_DEFAULT : 0;
-        return fetchStrapiJson<T>({
-            strapiBaseUrl: STRAPI_URL,
-            apiPathWithQuery: pathWithQuery,
-            token: STRAPI_TOKEN,
-            tags,
-            revalidate,
-            timeoutMs: DEFAULT_TIMEOUT_MS,
-        });
-    };
+    return createPrivilegedFeedReader(tags);
 }
 
 type StrapiCollectionPage<T> = {

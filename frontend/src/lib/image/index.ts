@@ -29,6 +29,18 @@ function getStrapiBaseUrl(): string | null {
 }
 
 /**
+ * Join a Strapi media path or absolute URL with the configured Strapi base URL.
+ * Returns null when the input is relative and no base URL is configured.
+ */
+export function joinStrapiBaseUrl(pathOrUrl: string): string | null {
+    if (HTTP_PROTOCOL_RE.test(pathOrUrl)) return pathOrUrl;
+    const base = getStrapiBaseUrl();
+    if (!base) return null;
+    const path = pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`;
+    return `${base}${path}`;
+}
+
+/**
  * Resolve a Strapi-served image URL to an absolute URL.
  *
  * Returns the input unchanged when already absolute. Prefixes the Strapi base
@@ -37,15 +49,13 @@ function getStrapiBaseUrl(): string | null {
  * should fail loudly.
  */
 export function resolveStrapiImageUrl(src: string): string {
-    if (HTTP_PROTOCOL_RE.test(src)) return src;
-    const base = getStrapiBaseUrl();
-    if (!base) {
+    const resolved = joinStrapiBaseUrl(src);
+    if (!resolved) {
         throw new Error(
             'Missing STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL); cannot resolve relative image URL.',
         );
     }
-    const path = src.startsWith('/') ? src : `/${src}`;
-    return `${base}${path}`;
+    return resolved;
 }
 
 /**

@@ -8,12 +8,18 @@ UI text is German; code and comments are English. See also: root `../AGENTS.md`.
 ```bash
 pnpm install                   # Install dependencies (pnpm 10, Node ^22)
 pnpm run dev                   # Dev server on :3000 (Turbopack)
-pnpm run build                 # Production build — MUST succeed before submitting
+pnpm run build                 # Production build — runs `vitest run` then `next build`
+pnpm run test                  # Vitest in watch mode
+pnpm run test:run              # Vitest once — MUST pass before submitting
 npx tsc --noEmit               # Typecheck — MUST pass with zero errors
 ```
 
-There are **no automated tests** and no linter (no ESLint, no Biome).
-Always run `npx tsc --noEmit` and `pnpm run build` to verify changes.
+Unit tests use **Vitest** (`src/**/*.test.ts`, `node` environment, `@` alias
+mirrored in `vitest.config.ts`). There is no linter (no ESLint, no Biome).
+`pnpm run build` runs the test suite before `next build`, so failing tests block
+the build. Tests cover pure logic — use `vi.stubEnv`, `vi.stubGlobal('fetch', …)`,
+and `vi.useFakeTimers()` for env/network/time-dependent code.
+Always run `pnpm run test:run`, `npx tsc --noEmit`, and `pnpm run build` to verify changes.
 
 ## Code Style
 
@@ -135,6 +141,7 @@ Only `security-global-base.mdc` has `alwaysApply: true`; others activate context
 
 ## Submission Checklist
 
+- [ ] `pnpm run test:run` passes
 - [ ] `npx tsc --noEmit` passes
 - [ ] `pnpm run build` succeeds
 - [ ] No unrelated files added

@@ -23,6 +23,8 @@ pnpm run dev             # Dev server on port 3000 (Turbopack)
 pnpm run build           # Production build
 pnpm run start           # Start production server
 pnpm run typecheck       # TypeScript type check (tsc --noEmit)
+pnpm run test            # Vitest in watch mode
+pnpm run test:run        # Vitest once (also runs as part of `pnpm run build`)
 ```
 
 ### Backend (`cd backend`)
@@ -32,12 +34,17 @@ pnpm install             # Install dependencies
 pnpm run dev             # Strapi dev server on port 1337
 pnpm run build           # Build Strapi admin panel
 pnpm run start           # Start production server
+pnpm run test            # Vitest in watch mode
+pnpm run test:run        # Vitest once
 pnpm run migrate:audio   # Run audio migration script
 ```
 
 ### Verification
 
-There are no automated tests. Before submitting changes:
+Both workspaces use Vitest for unit tests (`src/**/*.test.ts`); tests cover pure
+logic and mock Strapi/fetch/env/timers rather than booting the CMS. Before
+submitting changes:
+- Run `pnpm run test:run` in `frontend/` and/or `backend/` (whichever you changed)
 - Run `pnpm run typecheck` in `frontend/`
 - Run `pnpm run build` in `frontend/` for code/config changes
 

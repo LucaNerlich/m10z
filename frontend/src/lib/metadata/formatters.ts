@@ -1,4 +1,4 @@
-import {mediaUrlToAbsolute, type StrapiMedia} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, type StrapiMedia} from '@/src/lib/strapi/media';
 
 type OGImageObject = {
     url: string | URL;

@@ -19,8 +19,10 @@ UI text is German; code and comments are English.
 ```bash
 pnpm install                   # Install dependencies
 pnpm run dev                   # Dev server on port 3000 (Turbopack)
-pnpm run build                 # Production build
+pnpm run build                 # Production build (runs `vitest run` first, then `next build`)
 pnpm run start                 # Start production server
+pnpm run test                  # Vitest in watch mode
+pnpm run test:run              # Vitest once (CI/pre-commit)
 npx tsc --noEmit               # Typecheck (no script alias — run directly)
 ```
 
@@ -31,18 +33,26 @@ pnpm install
 pnpm run dev                   # Strapi dev server on port 1337
 pnpm run build                 # Build Strapi admin panel
 pnpm run start                 # Start production server
+pnpm run test                  # Vitest in watch mode
+pnpm run test:run              # Vitest once (CI/pre-commit)
 pnpm run migrate:audio         # Run audio migration script
 ```
 
 ### Tests
 
-There are **no automated tests**. No ESLint or Biome linter is configured.
+Both workspaces use **Vitest** for unit tests (`src/**/*.test.ts`). No ESLint or
+Biome linter is configured. Frontend `pnpm run build` runs `vitest run` before
+`next build`; the backend exposes `pnpm run test:run` (not wired into `strapi build`).
+Tests target pure logic — mock Strapi (`strapi.documents()`), `fetch`, env, and
+timers rather than booting the CMS or a database.
+
 Before submitting any change:
 
-1. `npx tsc --noEmit` in `frontend/` — must pass with zero errors
-2. `pnpm run build` in `frontend/` — must succeed for code/config changes
-3. `pnpm run build` in `backend/` — must succeed for backend changes
-4. Start the dev server to visually verify content/layout changes
+1. `pnpm run test:run` in the workspace(s) you touched — must pass
+2. `npx tsc --noEmit` in `frontend/` — must pass with zero errors
+3. `pnpm run build` in `frontend/` — must succeed for code/config changes
+4. `pnpm run build` in `backend/` — must succeed for backend changes
+5. Start the dev server to visually verify content/layout changes
 
 ---
 
@@ -161,6 +171,7 @@ Ranked by impact. Treat CRITICAL rules as mandatory.
 
 ## Submission Checklist
 
+- [ ] `pnpm run test:run` passes (in each workspace you changed)
 - [ ] `npx tsc --noEmit` passes (in `frontend/`)
 - [ ] `pnpm run build` succeeds (in `frontend/`)
 - [ ] `pnpm run build` succeeds (in `backend/`, if backend was changed)

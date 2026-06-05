@@ -79,3 +79,31 @@ export function buildListQuery(args: {
         QS_OPTS,
     );
 }
+
+/** Build a paginated slug-index query (sitemap, static params, llms.txt). */
+export function buildSlugIndexQuery(args: {page: number; pageSize: number}): string {
+    return qs.stringify(
+        {
+            fields: ['slug', 'updatedAt', 'publishedAt'],
+            status: 'published',
+            pagination: {pageSize: args.pageSize, page: args.page},
+        },
+        QS_OPTS,
+    );
+}
+
+/** Build a curried feed list query (sorted by publishedAt, published only). */
+export function buildFeedListQuery(args: {
+    fields: readonly string[];
+    populate: object;
+}): (page: number, pageSize: number) => string {
+    return (page: number, pageSize: number) =>
+        buildListQuery({
+            page,
+            pageSize,
+            sort: ['publishedAt:desc'],
+            status: 'published',
+            populate: args.populate,
+            fields: args.fields,
+        });
+}

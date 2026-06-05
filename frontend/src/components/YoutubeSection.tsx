@@ -1,4 +1,4 @@
-import {type StrapiYoutube} from '@/src/lib/rss/media';
+import {type StrapiYoutube} from '@/src/lib/strapi/media';
 import {extractYouTubeVideoId} from '@/src/lib/youtube';
 import styles from './YoutubeSection.module.css';
 import YoutubeEmbed from '@/src/components/YoutubeEmbed';

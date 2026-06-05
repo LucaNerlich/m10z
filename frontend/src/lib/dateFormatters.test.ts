@@ -1,6 +1,6 @@
-import {describe, expect, test} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
-import {formatDateFull, formatDateShort, formatDuration} from './dateFormatters';
+import {formatDateFull, formatDateRelative, formatDateShort, formatDuration} from './dateFormatters';
 
 describe('formatDateFull', () => {
     test('plain YYYY-MM-DD → German full date', () => {
@@ -60,5 +60,42 @@ describe('formatDuration', () => {
 
     test('floors fractional seconds', () => {
         expect(formatDuration(65.9)).toBe('1:05');
+    });
+});
+
+describe('formatDateRelative', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+        // Pin "now" to midnight UTC so calendar-day diffs are exact.
+        vi.setSystemTime(new Date('2026-04-20T00:00:00.000Z'));
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    test('returns em dash for invalid input', () => {
+        expect(formatDateRelative(null)).toBe('—');
+        expect(formatDateRelative(undefined)).toBe('—');
+        expect(formatDateRelative('not-a-date')).toBe('—');
+    });
+
+    test('labels today, yesterday, and tomorrow', () => {
+        expect(formatDateRelative('2026-04-20')).toBe('heute');
+        expect(formatDateRelative('2026-04-19')).toBe('gestern');
+        expect(formatDateRelative('2026-04-21')).toBe('morgen');
+    });
+
+    test('uses day granularity within a week', () => {
+        expect(formatDateRelative('2026-04-17')).toBe('vor 3 Tagen');
+        expect(formatDateRelative('2026-04-23')).toBe('in 3 Tagen');
+    });
+
+    test('uses week granularity within a month', () => {
+        expect(formatDateRelative('2026-04-06')).toBe('vor 2 Wochen');
+    });
+
+    test('uses month granularity within a year', () => {
+        expect(formatDateRelative('2026-02-19')).toBe('vor 2 Monaten');
     });
 });

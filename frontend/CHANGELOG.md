@@ -2,6 +2,91 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.0] - 2026-06-05
+
+### Added
+- Shared cross-repo invalidation manifest with a synced local copy on predev, prebuild, and pretest.
+- Search index module (`searchIndexService`) for load, validation, Fuse caching, and static-page augmentation; the API route is now a thin HTTP adapter.
+- Slug-page metadata builder (`buildContentSlugMetadata`) shared by article, podcast, category, and author routes.
+- Category page loader (`fetchCategoryPageData`) with parallel batched article and podcast hydration.
+- Feed registry owning RSS disk cache, schedulers, and invalidation side effects.
+
+### Changed
+- Content access reads consolidated into `contentAccess.ts`; `fetchJson` and `reads` remain as deprecated shims.
+- Cache invalidation taxonomy derives target names from the shared manifest.
+
+## [1.9.0] - 2026-06-05
+
+### Added
+- Public CMS import surface at `src/lib/strapi/` for content types, media helpers, cache tags, and the unified Strapi read interface.
+
+### Changed
+- CMS types and media helpers are imported from `strapi/` instead of the RSS folder, so UI, JSON-LD, and feeds share one namespace.
+- All Strapi HTTP reads (pages, sitemap, feeds) go through one Content access read interface; endpoint vs `/api/` path shape and privileged auth are handled internally.
+- Cache invalidation tag sets are defined next to fetch-surface tag builders so read and purge sides cannot drift.
+- RSS feed assembly (fetch → XML → ETag) lives in dedicated build modules; route handlers only wire HTTP caching.
+- M12G Archive loading uses an explicit filesystem MonthSource adapter in production — same reader-facing data, swappable in tests.
+- Strapi media URLs and markdown image URLs share one base-URL resolver.
+
+## [1.8.0] - 2026-06-05
+
+### Changed
+- M12G: the request-cached archive is now the single aggregation hub — title-defender marking and the overview view-model (stats, streaks, newest-first months) are derived once behind the archive instead of being recomposed in the page. No change to what's displayed.
+- Collapsed the parallel article/podcast Strapi fetchers behind one content-type descriptor, so batching, cache-tagging, and pagination are defined once. Same data and cache behaviour.
+- Cache tags are now built from one shared module used by both the data fetchers (read) and the invalidation taxonomy (write), so a tag can no longer drift between where it is set and where it is purged.
+- The Strapi transport now owns the privileged-read token and base-URL resolution; the feeds and search index request a "privileged" read instead of wiring the token themselves.
+- The RSS and audio feed handlers now share one feed-definition module (site URL, channel query, list-query builder, fetch orchestration, ETag), removing the duplicated wiring between them.
+
+### Removed
+- Unused content-list fetchers, feed populate presets, and feed-route helpers.
+
+### Fixed
+- Production Content-Security-Policy now includes the configured Strapi origin in `connect-src`, so service workers (e.g. Umami session replay) and `fetch()` can load podcast audio and other Strapi uploads; previously only `media-src` allowed them.
+
+## [1.7.4] - 2026-06-05
+
+### Added
+- Expanded the Vitest suite to 486 tests, covering the new M12G archive pipeline, the unified Strapi transport (auth, retries, timeout, cache directives), paginated feed fetching, published-slug pagination, content-fetch helpers, and the cache-invalidation endpoint.
+
+### Changed
+- Refactored the M12G data layer behind a single request-cached archive: the months are loaded, sorted, and aggregated once per request instead of repeatedly per page, and a game's appearance timeline is now derived from its history rather than re-scanning every month. No change to what's displayed.
+- Unified all Strapi data fetching behind one transport seam with shared timeout, single-retry, and cache-tag handling; behaviour and auth (content unauthenticated, feeds/search tokened) are unchanged.
+- Updated `dompurify` to 3.4.7.
+
+### Fixed
+- Reserve the scrollbar gutter page-wide so the layout no longer shifts horizontally when navigating between pages with and without a vertical scrollbar.
+
+## [1.7.3] - 2026-06-02
+
+### Added
+- May 2026 M12G (Mindestens 12 Gamevorschläge) article placeholder with curated game list.
+
+### Changed
+- `articleBody` is now included in the `BlogPosting` JSON-LD on article pages: article content is stripped of Markdown syntax and embedded as plain text (capped at 10 000 characters), giving search engines direct access to the article body.
+- Removed the `potentialAction` / `SearchAction` block from the site-wide `WebSite` schema — it was pointing to a JSON API endpoint rather than a user-facing search page, which would have caused Google's Sitelinks Search Box to malfunction.
+
+## [1.7.2] - 2026-05-29
+
+### Added
+- Expanded the Vitest suite to cover the RSS feed pipeline (XML escaping, Strapi media normalization, Markdown→HTML sanitization/XSS, article feed, feed-route helpers), Strapi query builders, metadata helpers (excerpt, keywords, Open Graph image), Markdown preprocessing and heading extraction, JSON-LD generators, analytics event IDs, image URL/hostname allow-listing, client-IP parsing, and relative date formatting. The suite now runs 436 tests across 38 files as part of `pnpm run build`.
+- Cross-package contract test pinning the cache-invalidation target list to the Strapi backend's, so the frontend taxonomy and backend targets can no longer drift silently.
+
+## [1.7.1] - 2026-05-28
+
+### Added
+- The on-site audio player on podcast detail pages now routes through the same download-tracking endpoint as the RSS feed, so plays started on the website are recorded as `podcast-download` Umami events too (when `FEED_AUDIO_TRACKING_ENABLED` is enabled).
+
+### Changed
+- Podcast download counting now ignores seek/continuation range requests so a single play or download counts once; with tracking enabled the on-site player uses `preload="none"` so the event fires when playback starts rather than on every page load.
+
+## [1.7.0] - 2026-05-28
+
+### Added
+- Podcast RSS download tracking: when enabled, each episode's `<enclosure>` URL points at an on-domain endpoint that records a custom Umami `podcast-download` event (episode slug and title) before redirecting to the audio file, so downloads initiated by podcatcher apps can finally be measured. Off by default; toggle with the `FEED_AUDIO_TRACKING_ENABLED` environment variable. Episode GUIDs stay identical whether tracking is on or off, so existing subscribers are unaffected.
+
+### Changed
+- Build/dependency tooling: pinned pnpm to v10 and removed redundant `ignore-scripts` settings from `.npmrc`.
+
 ## [1.6.0] - 2026-05-16
 
 ### Added

@@ -1,9 +1,8 @@
 import {type Metadata} from 'next';
 import Link from 'next/link';
 
-import {fetchM12GOverview} from '@/src/lib/m12g/m12gData';
-import {computeM12GStats} from '@/src/lib/m12g/m12gStats';
-import {computeStreaks} from '@/src/lib/m12g/gameHistory';
+import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
+import {buildM12GOverview} from '@/src/lib/m12g/m12gStats';
 import {routes} from '@/src/lib/routes';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {ContentGrid} from '@/src/components/ContentGrid';
@@ -23,16 +22,14 @@ export const metadata: Metadata = buildStaticListMetadata({
 });
 
 export default async function M12GPage() {
-    const overview = await fetchM12GOverview();
-    const months = overview.months;
-    const stats = computeM12GStats(months);
-    const streaks = computeStreaks(months);
+    const archive = await getM12GArchive();
+    const {stats, streaks, monthsNewestFirst} = buildM12GOverview(archive);
 
     return (
         <div data-list-page>
             <h1>Mindestens 12 Games</h1>
 
-            {months.length === 0 ? (
+            {monthsNewestFirst.length === 0 ? (
                 <EmptyState message="Keine M12G-Abstimmungen gefunden." />
             ) : (
                 <>
@@ -64,7 +61,7 @@ export default async function M12GPage() {
 
                     <h2>Alle Abstimmungen</h2>
                     <ContentGrid gap="comfortable">
-                        {months.map((month) => (
+                        {monthsNewestFirst.map((month) => (
                             <M12GMonthCard key={month.month} month={month} />
                         ))}
                     </ContentGrid>

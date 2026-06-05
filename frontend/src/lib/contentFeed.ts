@@ -1,137 +1,41 @@
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
-import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
+import {contentListPageTag, contentTag} from '@/src/lib/strapi/cacheTags';
+import {
+    computeContentFeedFetchSize,
+    mergeFeedItems,
+    paginateMergedFeed,
+    type ContentFeedResponse,
+} from '@/src/lib/contentFeed/mergeFeedItems';
 
-type FeedItem =
-    | {
-    type: 'article';
-    slug: string;
-    title: string;
-    description?: string | null;
-    publishedAt?: string | null;
-    cover?: any;
-    banner?: any;
-    wordCount?: number | null;
-    href: string;
-}
-    | {
-    type: 'podcast';
-    slug: string;
-    title: string;
-    description?: string | null;
-    publishedAt?: string | null;
-    cover?: any;
-    banner?: any;
-    wordCount?: number | null;
-    duration?: number | null;
-    href: string;
-};
-
-export type ContentFeedResponse = {
-    items: FeedItem[];
-    pagination: {
-        page: number;
-        pageSize: number;
-        total: number;
-        pageCount: number;
-    };
-    hasNextPage: boolean;
-};
+export type {ContentFeedResponse, FeedItem} from '@/src/lib/contentFeed/mergeFeedItems';
 
 export interface ContentFeedOptions {
     tags?: string[];
 }
 
-/**
- * Builds a paginated combined feed of articles and podcasts, optionally filtered by tags.
- *
- * Normalizes and clamps `page` and `pageSize`, fetches a buffered set of articles and podcasts,
- * merges and sorts them by published date, and returns the slice corresponding to the requested page.
- *
- * @param page - 1-based page index (values less than 1 are treated as 1)
- * @param pageSize - number of items per page (clamped to the range 1–100)
- * @param options - optional feed options; `options.tags` can include additional tags to filter the fetched content
- * @returns The paginated feed response containing `items`, `pagination` (page, pageSize, total, pageCount), and `hasNextPage`
- */
 export async function buildContentFeed(
     page: number,
     pageSize: number,
     options: ContentFeedOptions = {},
 ): Promise<ContentFeedResponse> {
-    const safePage = Math.max(1, Math.floor(page || 1));
-    const safePageSize = Math.max(1, Math.min(100, Math.floor(pageSize || 10)));
-
-    // Fetch enough items from each source to fill the requested page.
-    // Since items are merged by date, we need all items up to the end of the
-    // requested page from each source to guarantee correct ordering.
-    // Over-fetch by 5 items to account for edge cases where items land exactly
-    // on page boundaries after date-based merge sorting. Capped at 200 to limit memory.
-    const itemsNeeded = safePage * safePageSize;
-    const fetchSize = Math.min(itemsNeeded + 5, 200);
+    const fetchSize = computeContentFeedFetchSize(page, pageSize);
 
     const extraTags = options.tags ?? [];
-    const articleTags = Array.from(new Set(['strapi:article', 'strapi:article:list:page', ...extraTags]));
-    const podcastTags = Array.from(new Set(['strapi:podcast', 'strapi:podcast:list:page', ...extraTags]));
+    const articleTags = Array.from(new Set([contentTag('article'), contentListPageTag('article'), ...extraTags]));
+    const podcastTags = Array.from(new Set([contentTag('podcast'), contentListPageTag('podcast'), ...extraTags]));
 
     const [articlesResult, podcastsResult] = await Promise.all([
         fetchArticlesPage({page: 1, pageSize: fetchSize, tags: articleTags}),
         fetchPodcastsPage({page: 1, pageSize: fetchSize, tags: podcastTags}),
     ]);
 
-    const articleItems: FeedItem[] = articlesResult.items.map((article) => {
-        const effectiveDescription = article.description || article.categories?.[0]?.description;
-        return {
-            type: 'article',
-            slug: article.slug,
-            title: article.title,
-            description: effectiveDescription,
-            publishedAt: getEffectiveDate(article),
-            cover: getOptimalMediaFormat(pickCoverMedia(article, article.categories), 'medium'),
-            banner: getOptimalMediaFormat(pickBannerMedia(article, article.categories), 'medium'),
-            wordCount: article.wordCount ?? null,
-            href: `/artikel/${article.slug}`,
-        };
+    const merged = mergeFeedItems(articlesResult.items, podcastsResult.items);
+
+    return paginateMergedFeed({
+        items: merged,
+        page,
+        pageSize,
+        articleTotal: articlesResult.pagination.total,
+        podcastTotal: podcastsResult.pagination.total,
     });
-
-    const podcastItems: FeedItem[] = podcastsResult.items.map((podcast) => {
-        const effectiveDescription = podcast.description || podcast.categories?.[0]?.description;
-        return {
-            type: 'podcast',
-            slug: podcast.slug,
-            title: podcast.title,
-            description: effectiveDescription,
-            publishedAt: getEffectiveDate(podcast),
-            cover: getOptimalMediaFormat(pickCoverMedia(podcast, podcast.categories), 'medium'),
-            banner: getOptimalMediaFormat(pickBannerMedia(podcast, podcast.categories), 'medium'),
-            wordCount: podcast.wordCount ?? null,
-            duration: podcast.duration ?? null,
-            href: `/podcasts/${podcast.slug}`,
-        };
-    });
-
-    const allItems = [...articleItems, ...podcastItems].sort((a, b) => {
-        const ad = toDateTimestamp(a.publishedAt) ?? 0;
-        const bd = toDateTimestamp(b.publishedAt) ?? 0;
-        return bd - ad;
-    });
-
-    // Use Strapi-reported totals for accurate pagination rather than
-    // the merged array length (which is capped by fetchSize).
-    const total = articlesResult.pagination.total + podcastsResult.pagination.total;
-    const offset = (safePage - 1) * safePageSize;
-    const paginatedItems = allItems.slice(offset, offset + safePageSize);
-    const pageCount = Math.max(1, Math.ceil(total / safePageSize));
-    const hasNextPage = safePage < pageCount;
-
-    return {
-        items: paginatedItems,
-        pagination: {
-            page: safePage,
-            pageSize: safePageSize,
-            total,
-            pageCount,
-        },
-        hasNextPage,
-    };
 }
-

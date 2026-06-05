@@ -79,7 +79,10 @@ function parseGames(body: string, monthId: string): M12GGame[] {
     return games;
 }
 
-function computeWinners(games: M12GGame[]): M12GGame[] {
+// The Winner rule: the Game(s) with the highest non-zero vote count. Expects `games`
+// sorted by votes descending (as parseGames leaves them). Exported so test fixtures
+// derive Winners from the same rule instead of re-implementing it.
+export function computeWinners(games: M12GGame[]): M12GGame[] {
     if (games.length === 0) return [];
     const maxVotes = games[0].votes;
     if (maxVotes === 0) return [];

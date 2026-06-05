@@ -6,18 +6,8 @@
 
 import {parseFile} from 'music-metadata';
 import {existsSync} from 'fs';
-import {resolve} from 'path';
 
-function normalizeFileIdentity(file: any): string | null {
-    if (!file) return null;
-    if (typeof file === 'string' || typeof file === 'number') {
-        return String(file);
-    }
-    if (file.documentId) return String(file.documentId);
-    if (file.id) return String(file.id);
-    if (file.url) return `url:${file.url}`;
-    return null;
-}
+import {normalizeFileIdentity, resolveFileWithinPublicDir} from './durationFile';
 
 async function getExistingPodcastFileIdentity(
     strapi: any,
@@ -98,14 +88,10 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
             return;
         }
 
-        // Remove leading slash if present to handle relative URLs
-        const relativePath = fileUrl.startsWith('/') ? fileUrl.slice(1) : fileUrl;
-        const filePath = resolve(publicDir, relativePath);
-
-        // Security: Validate path is within public directory to prevent path traversal
-        const resolvedPublicDir = resolve(publicDir);
-        if (!filePath.startsWith(resolvedPublicDir)) {
-            strapi.log.warn(`File path outside public directory: ${filePath}`);
+        // Security: resolve within the public directory to prevent path traversal.
+        const filePath = resolveFileWithinPublicDir(publicDir, fileUrl);
+        if (!filePath) {
+            strapi.log.warn(`File path outside public directory for url: ${fileUrl}`);
             return;
         }
 

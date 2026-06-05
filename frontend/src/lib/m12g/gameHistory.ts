@@ -4,8 +4,20 @@ import {
     type M12GMonthWithWinner,
 } from './types';
 
+// One Month in which a Game was nominated, with that Month's outcome for the Game.
+// Carries enough Month context (title, forum thread) to render a Game's timeline
+// without re-reading the Months — see CONTEXT.md (Game history).
+export type GameAppearance = {
+    month: string;
+    votes: number;
+    isWinner: boolean;
+    title?: string;
+    forumThreadUrl?: string;
+};
+
 // Aggregated record of one Game across every Month it appeared in.
 // Canonical name (post Early-Access strip) is the identity — see CONTEXT.md.
+// `appearances` are chronological (oldest first).
 export type GameHistory = {
     name: string;
     slug: string;
@@ -13,7 +25,7 @@ export type GameHistory = {
     totalVotes: number;
     monthsNominated: number;
     wins: number;
-    months: string[];
+    appearances: GameAppearance[];
 };
 
 // Stable URL-safe identifier for a Game. ASCII-only via NFD strip so umlauts
@@ -28,19 +40,29 @@ export function gameSlug(name: string): string {
     return slug.length > 0 ? slug : 'unnamed';
 }
 
-// Single chronological walk over months → one GameHistory per canonical game name.
-// First-seen link wins (earliest chronological appearance), matching prior behaviour.
-export function buildGameHistory(months: M12GMonthWithWinner[]): GameHistory[] {
-    const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
+// Single walk over the Months → one GameHistory per canonical game name. Expects
+// `chronological` sorted oldest-first (the Archive guarantees this), so the first link
+// seen wins and appearances come out chronological without a second sort.
+export function buildGameHistory(chronological: M12GMonthWithWinner[]): GameHistory[] {
     const byName = new Map<string, GameHistory>();
 
     for (const month of chronological) {
+        const winnerNames = new Set(month.winners.map((w) => w.name));
         for (const game of month.games) {
+            const isWinner = winnerNames.has(game.name);
+            const appearance: GameAppearance = {
+                month: month.month,
+                votes: game.votes,
+                isWinner,
+                ...(month.title !== undefined && {title: month.title}),
+                ...(month.forumThreadUrl !== undefined && {forumThreadUrl: month.forumThreadUrl}),
+            };
             const existing = byName.get(game.name);
             if (existing) {
                 existing.totalVotes += game.votes;
                 existing.monthsNominated += 1;
-                existing.months.push(month.month);
+                if (isWinner) existing.wins += 1;
+                existing.appearances.push(appearance);
             } else {
                 byName.set(game.name, {
                     name: game.name,
@@ -48,15 +70,9 @@ export function buildGameHistory(months: M12GMonthWithWinner[]): GameHistory[] {
                     link: game.link,
                     totalVotes: game.votes,
                     monthsNominated: 1,
-                    wins: 0,
-                    months: [month.month],
+                    wins: isWinner ? 1 : 0,
+                    appearances: [appearance],
                 });
-            }
-        }
-        for (const winner of month.winners) {
-            const entry = byName.get(winner.name);
-            if (entry) {
-                entry.wins += 1;
             }
         }
     }
@@ -68,11 +84,13 @@ export function toLeaderboard(history: GameHistory[], limit: number): M12GLeader
     return [...history]
         .sort((a, b) => b.totalVotes - a.totalVotes || b.monthsNominated - a.monthsNominated)
         .slice(0, limit)
-        .map(({months: _months, ...entry}) => entry);
+        .map(({appearances: _appearances, ...entry}) => entry);
 }
 
 export function toGameIndex(history: GameHistory[]): M12GGameIndexEntry[] {
-    return [...history].sort((a, b) => a.name.localeCompare(b.name, 'de-DE'));
+    return [...history]
+        .sort((a, b) => a.name.localeCompare(b.name, 'de-DE'))
+        .map(({appearances, ...entry}) => ({...entry, months: appearances.map((a) => a.month)}));
 }
 
 export type Streak = {
@@ -118,22 +136,18 @@ function monthsApart(a: string, b: string): number {
 
 // Longest run of consecutive monthly nominations and wins across all games.
 // Ties are broken by game name (alphabetical) for deterministic output.
-export function computeStreaks(months: M12GMonthWithWinner[]): StreaksResult {
-    const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
+// Projection over the prebuilt Game histories — no second walk over the Months.
+export function computeStreaks(history: GameHistory[]): StreaksResult {
     const nominations = new Map<string, string[]>();
     const wins = new Map<string, string[]>();
 
-    for (const month of chronological) {
-        for (const game of month.games) {
-            const list = nominations.get(game.name) ?? [];
-            list.push(month.month);
-            nominations.set(game.name, list);
-        }
-        for (const winner of month.winners) {
-            const list = wins.get(winner.name) ?? [];
-            list.push(month.month);
-            wins.set(winner.name, list);
-        }
+    for (const game of history) {
+        nominations.set(
+            game.name,
+            game.appearances.map((a) => a.month),
+        );
+        const winMonths = game.appearances.filter((a) => a.isWinner).map((a) => a.month);
+        if (winMonths.length > 0) wins.set(game.name, winMonths);
     }
 
     return {

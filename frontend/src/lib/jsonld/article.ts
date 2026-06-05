@@ -1,11 +1,11 @@
 import {type BlogPosting, type ImageObject, type Person} from './types';
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
+import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {authorToPerson, formatIso8601Date, imagesEqual, mediaToImage} from './helpers';
+import {deriveExcerpt, stripMarkdown} from '@/src/lib/metadata/excerpt';
 import {generateOrganizationJsonLd} from './organization';
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
-import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
+import {pickBannerMedia, pickCoverMedia} from '@/src/lib/strapi/media';
 import {CONTENT_LANGUAGE} from '@/src/lib/metadata/constants';
 import {categoryTitlesToKeywords, primaryCategoryTitle} from '@/src/lib/metadata/keywords';
 
@@ -39,6 +39,14 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
 
     const description = article.description?.trim() || deriveExcerpt(article.content);
     const articleSection = primaryCategoryTitle(article.categories);
+
+    const MAX_ARTICLE_BODY_CHARS = 10_000;
+    const rawBody = article.content ? stripMarkdown(article.content) : undefined;
+    const articleBody = rawBody
+        ? rawBody.length <= MAX_ARTICLE_BODY_CHARS
+            ? rawBody
+            : rawBody.slice(0, MAX_ARTICLE_BODY_CHARS).replace(/\s\S*$/, '')
+        : undefined;
     const keywords = categoryTitlesToKeywords(article.categories);
     const wordCount = typeof article.wordCount === 'number' && article.wordCount > 0 ? article.wordCount : undefined;
 
@@ -47,6 +55,7 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
         '@type': 'BlogPosting',
         headline: article.title,
         description,
+        articleBody,
         datePublished: datePublished ?? dateModified,
         dateModified,
         articleSection,

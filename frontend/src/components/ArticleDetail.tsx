@@ -1,8 +1,8 @@
 import Script from 'next/script';
 
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
+import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/strapi/media';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import {extractHeadings} from '@/src/lib/markdown/extractHeadings';
 import {ContentMetadata} from '@/src/components/ContentMetadata';

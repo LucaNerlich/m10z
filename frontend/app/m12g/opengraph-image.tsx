@@ -1,6 +1,6 @@
 import {ImageResponse} from 'next/og';
 
-import {fetchM12GOverview} from '@/src/lib/m12g/m12gData';
+import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
 import {computeM12GStats} from '@/src/lib/m12g/m12gStats';
 
 export const alt = 'M12G Statistik – Mindestens 10 Zeichen';
@@ -10,8 +10,8 @@ export const contentType = 'image/png';
 export default async function Image() {
     let top3: {name: string; totalVotes: number}[] = [];
     try {
-        const overview = await fetchM12GOverview();
-        const stats = computeM12GStats(overview.months);
+        const archive = await getM12GArchive();
+        const stats = computeM12GStats(archive);
         top3 = stats.leaderboard.slice(0, 3).map((e) => ({name: e.name, totalVotes: e.totalVotes}));
     } catch {
         // Fall back to a generic card if data can't be loaded.

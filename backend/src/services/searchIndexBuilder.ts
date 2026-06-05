@@ -1,5 +1,9 @@
 import markdownToTxt from 'markdown-to-txt';
 
+import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '../../../shared/search/types';
+
+import {filterAndLimitMetrics} from './metricsHistory';
+
 type Strapi = {
     documents: (
         uid: string,
@@ -12,28 +16,6 @@ type Strapi = {
     log: {
         info: (message: string) => void;
     };
-};
-
-type SearchRecordType = 'article' | 'podcast' | 'author' | 'category' | 'page';
-
-type SearchRecord = {
-    id: string;
-    type: SearchRecordType;
-    slug: string;
-    title: string;
-    description?: string | null;
-    content?: string | null;
-    href: string;
-    publishedAt?: string | null;
-    tags: string[];
-    coverImageUrl?: string | null;
-};
-
-type SearchIndexFile = {
-    version: number;
-    generatedAt: string;
-    total: number;
-    records: SearchRecord[];
 };
 
 type SearchIndexMetrics = {
@@ -106,36 +88,7 @@ export function getHistoricalSearchIndexMetrics(
     from?: string,
     to?: string,
 ): SearchIndexMetricsHistoryEntry[] {
-    let fromTs: number | null = null;
-    let toTs: number | null = null;
-
-    if (from) {
-        const parsed = Date.parse(from);
-        if (!Number.isNaN(parsed)) fromTs = parsed;
-    }
-
-    if (to) {
-        const parsed = Date.parse(to);
-        if (!Number.isNaN(parsed)) toTs = parsed;
-    }
-
-    let normalizedLimit = Number(limit);
-    if (!Number.isFinite(normalizedLimit) || normalizedLimit <= 0) {
-        normalizedLimit = 30;
-    }
-    if (normalizedLimit > MAX_METRICS_ENTRIES) {
-        normalizedLimit = MAX_METRICS_ENTRIES;
-    }
-
-    const filtered = metricsHistory.filter((entry) => {
-        const ts = Date.parse(entry.updatedAt);
-        if (Number.isNaN(ts)) return false;
-        if (fromTs !== null && ts < fromTs) return false;
-        if (toTs !== null && ts > toTs) return false;
-        return true;
-    });
-
-    return filtered.slice(0, normalizedLimit);
+    return filterAndLimitMetrics(metricsHistory, {limit, from, to, maxLimit: MAX_METRICS_ENTRIES});
 }
 type PlainTextMetrics = {
     addProcessingMs: (ms: number) => void;

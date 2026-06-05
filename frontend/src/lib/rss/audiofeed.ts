@@ -11,31 +11,12 @@ import {
     type StrapiMedia,
     type StrapiMediaRef,
     StrapiYoutube,
-} from '@/src/lib/rss/media';
+} from '@/src/lib/strapi/media';
+import {type StrapiAudioFeedSingle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
+import {buildPodcastDownloadUrl} from '@/src/lib/analytics/podcastDownload';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
-export type StrapiPodcast = StrapiContentMedia & {
-    id: number;
-    slug: string;
-    publishedAt: string | null;
-    categories?: StrapiCategoryRef[];
-    youtube?: StrapiYoutube[];
-    shownotes?: string | null;
-    duration: number;
-    file: StrapiMediaRef;
-    authors?: StrapiAuthor[];
-    wordCount?: number | null;
-};
-
-export type StrapiAudioFeedSingle = {
-    channel: {
-        title: string;
-        description: string;
-        mail: string;
-        image: StrapiMediaRef;
-    };
-    episodeFooter?: string | null;
-};
+export type {StrapiAudioFeedSingle, StrapiPodcast};
 
 export type AudioFeedConfig = {
     siteUrl: string; // e.g. https://m10z.de
@@ -49,6 +30,9 @@ export type AudioFeedConfig = {
     itunesExplicit: 'false' | 'true';
     itunesType: 'episodic' | 'serial';
     podcastGuid: string;
+    // When true, <enclosure> URLs point at the on-domain download-tracking endpoint instead of the
+    // direct Strapi file URL. The episode GUID stays derived from the real Strapi URL regardless.
+    downloadTracking?: boolean;
 };
 
 type TimingOp = 'markdownConversion' | 'guidGeneration' | 'fileMetadata' | 'enclosure';
@@ -233,6 +217,12 @@ function renderItem(
         return null;
     }
 
+    // The displayed enclosure URL may be rewritten to the tracking endpoint, but the GUID below
+    // stays derived from the real Strapi URL so toggling tracking never changes episode identity.
+    const enclosureDisplayUrl = cfg.downloadTracking
+        ? buildPodcastDownloadUrl(cfg.siteUrl, episode.slug)
+        : enclosureUrl;
+
     const title = escapeXml(episode.title);
     const pubDateRaw = getEffectiveDate(episode);
     const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
@@ -282,7 +272,7 @@ function renderItem(
         `    <itunes:explicit>${cfg.itunesExplicit}</itunes:explicit>` +
         `    <link>${escapeXml(link)}</link>` +
         `    <itunes:duration>${episode.duration}</itunes:duration>` +
-        `    <enclosure url="${escapeXml(enclosureUrl)}" length="${lengthBytes}" type="${escapeXml(enclosureType)}"/>` +
+        `    <enclosure url="${escapeXml(enclosureDisplayUrl)}" length="${lengthBytes}" type="${escapeXml(enclosureType)}"/>` +
         `</item>`
     );
 }

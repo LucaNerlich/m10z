@@ -3,16 +3,29 @@ import path from 'node:path';
 
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
-import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {checkRateLimit, type RateLimitConfig} from '@/src/lib/security/rateLimit';
 
 import {buildRssHeaders, fallbackFeedXml, maybeReturn304} from './feedRoute';
 
-const FEED_REGENERATE_MS = Number(process.env.FEED_REGENERATE_MS ?? '') || 30 * 60_000;
-const FEED_CACHE_DIR = process.env.FEED_CACHE_DIR ?? path.join(process.cwd(), '.feed-cache');
-const INVALIDATION_DEBOUNCE_MS = 10_000;
-const RATE_LIMIT = {windowMs: 60_000, max: 20} as const;
+const DEFAULT_FEED_REGENERATE_MS = 30 * 60_000;
+const DEFAULT_INVALIDATION_DEBOUNCE_MS = 10_000;
+const DEFAULT_RATE_LIMIT = {windowMs: 60_000, max: 20} as const;
 
-const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
+export type FeedCacheDeps = {
+    fs?: Pick<typeof fs, 'mkdir' | 'writeFile' | 'readFile' | 'rename'>;
+    now?: () => number;
+    setIntervalFn?: typeof setInterval;
+    clearIntervalFn?: typeof clearInterval;
+    setTimeoutFn?: typeof setTimeout;
+    clearTimeoutFn?: typeof clearTimeout;
+    checkRateLimitFn?: (key: string, limit: RateLimitConfig) => {ok: boolean; retryAfterSeconds: number};
+    getClientIpFn?: (request: Request) => string;
+    feedCacheDir?: string;
+    regenerateMs?: number;
+    invalidationDebounceMs?: number;
+    siteUrl?: string;
+    rateLimit?: {windowMs: number; max: number};
+};
 
 export type FeedBuilt = {
     xml: string;
@@ -56,7 +69,22 @@ export type FeedCache = {
     reset: () => void;
 };
 
-export function createFeedCache(spec: FeedSpec): FeedCache {
+export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedCache {
+    const fsImpl = deps.fs ?? fs;
+    const now = deps.now ?? (() => Date.now());
+    const setIntervalFn = deps.setIntervalFn ?? setInterval;
+    const clearIntervalFn = deps.clearIntervalFn ?? clearInterval;
+    const setTimeoutFn = deps.setTimeoutFn ?? setTimeout;
+    const clearTimeoutFn = deps.clearTimeoutFn ?? clearTimeout;
+    const checkRateLimitFn = deps.checkRateLimitFn ?? checkRateLimit;
+    const getClientIpFn = deps.getClientIpFn ?? getClientIp;
+
+    const FEED_CACHE_DIR = deps.feedCacheDir ?? process.env.FEED_CACHE_DIR ?? path.join(process.cwd(), '.feed-cache');
+    const FEED_REGENERATE_MS = deps.regenerateMs ?? (Number(process.env.FEED_REGENERATE_MS ?? '') || DEFAULT_FEED_REGENERATE_MS);
+    const INVALIDATION_DEBOUNCE_MS = deps.invalidationDebounceMs ?? DEFAULT_INVALIDATION_DEBOUNCE_MS;
+    const RATE_LIMIT = deps.rateLimit ?? DEFAULT_RATE_LIMIT;
+    const SITE_URL = (deps.siteUrl ?? process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
+
     const xmlPath = path.join(FEED_CACHE_DIR, spec.diskFileName);
     const metaPath = path.join(FEED_CACHE_DIR, `${spec.diskFileName}.meta.json`);
     const selfLink = `${SITE_URL}${spec.fallback.selfPath}`;
@@ -70,7 +98,7 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
     let invalidationTimer: ReturnType<typeof setTimeout> | null = null;
 
     async function ensureFeedDir() {
-        await fs.mkdir(FEED_CACHE_DIR, {recursive: true});
+        await fsImpl.mkdir(FEED_CACHE_DIR, {recursive: true});
     }
 
     async function writeFeedToDisk(feed: CachedFeed) {
@@ -78,8 +106,8 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
         const tmpXml = `${xmlPath}.tmp`;
         const tmpMeta = `${metaPath}.tmp`;
         await Promise.all([
-            fs.writeFile(tmpXml, feed.xml, 'utf8'),
-            fs.writeFile(
+            fsImpl.writeFile(tmpXml, feed.xml, 'utf8'),
+            fsImpl.writeFile(
                 tmpMeta,
                 JSON.stringify(
                     {
@@ -94,15 +122,15 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
                 'utf8',
             ),
         ]);
-        await fs.rename(tmpXml, xmlPath);
-        await fs.rename(tmpMeta, metaPath);
+        await fsImpl.rename(tmpXml, xmlPath);
+        await fsImpl.rename(tmpMeta, metaPath);
     }
 
     async function readFeedFromDisk(): Promise<CachedFeed | null> {
         try {
             const [xml, metaRaw] = await Promise.all([
-                fs.readFile(xmlPath, 'utf8'),
-                fs.readFile(metaPath, 'utf8'),
+                fsImpl.readFile(xmlPath, 'utf8'),
+                fsImpl.readFile(metaPath, 'utf8'),
             ]);
             const meta = JSON.parse(metaRaw) as {
                 etag?: string;
@@ -128,11 +156,11 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
         if (inflight) return inflight;
 
         inflight = (async () => {
-            const startedAt = Date.now();
+            const startedAt = now();
             const memStart = process.memoryUsage();
             const built = await spec.build();
             const memEnd = process.memoryUsage();
-            const durationMs = Date.now() - startedAt;
+            const durationMs = now() - startedAt;
             const memoryUsedMB = Math.round((memEnd.heapUsed / (1024 * 1024)) * 100) / 100;
             const memoryDeltaMB =
                 Math.round(((memEnd.heapUsed - memStart.heapUsed) / (1024 * 1024)) * 100) / 100;
@@ -140,7 +168,7 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
                 xml: built.xml,
                 etag: built.etag,
                 lastModified: built.lastModified,
-                builtAtMs: Date.now(),
+                builtAtMs: now(),
                 itemCount: built.itemCount,
             };
             cachedFeed = next;
@@ -192,7 +220,7 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
         schedulerStarted = true;
         schedulerStartedAtMs = Date.now();
         void refresh().catch(() => undefined);
-        schedulerTimer = setInterval(() => {
+        schedulerTimer = setIntervalFn(() => {
             void refresh().catch(() => undefined);
         }, FEED_REGENERATE_MS);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -201,11 +229,11 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
 
     function stopScheduler() {
         if (schedulerTimer) {
-            clearInterval(schedulerTimer);
+            clearIntervalFn(schedulerTimer);
             schedulerTimer = null;
         }
         if (invalidationTimer) {
-            clearTimeout(invalidationTimer);
+            clearTimeoutFn(invalidationTimer);
             invalidationTimer = null;
         }
         schedulerStarted = false;
@@ -213,8 +241,8 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
     }
 
     function scheduleDebouncedRefresh() {
-        if (invalidationTimer) clearTimeout(invalidationTimer);
-        invalidationTimer = setTimeout(() => {
+        if (invalidationTimer) clearTimeoutFn(invalidationTimer);
+        invalidationTimer = setTimeoutFn(() => {
             invalidationTimer = null;
             void refresh().catch(() => undefined);
         }, INVALIDATION_DEBOUNCE_MS);
@@ -239,8 +267,8 @@ export function createFeedCache(spec: FeedSpec): FeedCache {
         ensureWarmup();
         ensureScheduler();
 
-        const ip = getClientIp(request);
-        const rl = checkRateLimit(`feed:${spec.feedKey}:${ip}`, RATE_LIMIT);
+        const ip = getClientIpFn(request);
+        const rl = checkRateLimitFn(`feed:${spec.feedKey}:${ip}`, RATE_LIMIT);
         if (!rl.ok) {
             const fallback = fallbackFeedXml({
                 title: spec.fallback.title,
