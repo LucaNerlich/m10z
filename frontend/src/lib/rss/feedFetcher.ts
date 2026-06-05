@@ -10,8 +10,7 @@
  */
 
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-
-import {fetchStrapiJson} from './feedRoute';
+import {strapiFetch} from '@/src/lib/strapiTransport';
 
 const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL ?? '').replace(
     /\/+$/,
@@ -28,20 +27,19 @@ export type StrapiFeedFetcher = <T>(pathWithQuery: string) => Promise<T>;
 
 /**
  * Build a fetcher bound to a fixed cache-tag set. The returned function
- * forwards every call through `fetchStrapiJson` with the shared
- * STRAPI_URL/STRAPI_TOKEN and the production-vs-dev revalidate behaviour.
+ * forwards every call across the shared Strapi transport seam with the feed
+ * token and the production-vs-dev revalidate behaviour.
  */
 export function createFeedStrapiFetcher(tags: string[]): StrapiFeedFetcher {
     return async <T>(pathWithQuery: string): Promise<T> => {
         if (!STRAPI_URL) throw new Error('Missing STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL)');
         const revalidate = process.env.NODE_ENV === 'production' ? CACHE_REVALIDATE_DEFAULT : 0;
-        return fetchStrapiJson<T>({
-            strapiBaseUrl: STRAPI_URL,
-            apiPathWithQuery: pathWithQuery,
+        return strapiFetch<T>({
+            path: pathWithQuery,
             token: STRAPI_TOKEN,
-            tags,
-            revalidate,
+            cache: revalidate === 0 ? {mode: 'no-store', tags} : {mode: 'tags', tags, revalidate},
             timeoutMs: DEFAULT_TIMEOUT_MS,
+            diagnosticName: 'strapi.feed',
         });
     };
 }

@@ -2,6 +2,9 @@ import qs from 'qs';
 import {cache} from 'react';
 
 import {CACHE_REVALIDATE_DEFAULT} from './cache/constants';
+import {getStrapiApiBaseUrl, strapiFetch} from './strapiTransport';
+
+export {getStrapiApiBaseUrl};
 
 export interface StrapiMeta {
     // Strapi often returns an empty object here; keep it extensible.
@@ -63,27 +66,9 @@ export interface FetchStrapiOptions {
     revalidate?: number;
 }
 
-export function getStrapiApiBaseUrl(): URL {
-    // Prefer server-only env var (not bundled into client JS); fall back to NEXT_PUBLIC_* for
-    // backward compatibility and for client components that need the URL for image resolution.
-    const raw = process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL;
-    if (!raw) {
-        throw new Error(
-            'Missing STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL). Set it (e.g. STRAPI_URL=http://localhost:1337).',
-        );
-    }
-
-    try {
-        return new URL(raw);
-    } catch {
-        throw new Error(
-            `Invalid STRAPI_URL: "${raw}". Expected a valid absolute URL like "http://localhost:1337".`,
-        );
-    }
-}
-
 /**
  * Fetches JSON data from the Strapi API with optional cache configuration.
+ * Crosses the shared transport seam — unauthenticated, since content reads are public.
  *
  * @param apiPath - The API path to fetch (relative to Strapi base URL)
  * @param options - Optional fetch options including cache tags and revalidation period
@@ -93,21 +78,11 @@ async function fetchStrapiJson<T>(
     apiPath: string,
     options: FetchStrapiOptions = {},
 ): Promise<T> {
-    const base = getStrapiApiBaseUrl();
-    const url = new URL(apiPath, base);
-    const res = await fetch(url, {
-        next: {
-            tags: options.tags,
-            revalidate: options.revalidate,
-        },
+    return strapiFetch<T>({
+        path: apiPath,
+        cache: {mode: 'tags', tags: options.tags ?? [], revalidate: options.revalidate},
+        diagnosticName: 'strapi.single',
     });
-
-    if (!res.ok) {
-        // Fail securely: do not include response body (may leak details).
-        throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
-    }
-
-    return (await res.json()) as T;
 }
 
 function assertIsLegalDoc(data: unknown): asserts data is StrapiLegalDoc {

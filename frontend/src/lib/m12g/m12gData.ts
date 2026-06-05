@@ -1,8 +1,7 @@
-import {loadMonths} from './loadMonths';
-import {type M12GMonthWithWinner, type M12GOverview} from './types';
+import {type M12GMonthWithWinner} from './types';
 
 // Marks games that won the previous Month and were nominated again this Month.
-// Pure projection — does not mutate inputs.
+// Pure projection — does not mutate inputs. Returns Months chronologically (oldest first).
 export function withTitleDefenders(months: M12GMonthWithWinner[]): M12GMonthWithWinner[] {
     const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
     const previousWinnersByMonth = new Map<string, Set<string>>();
@@ -23,11 +22,4 @@ export function withTitleDefenders(months: M12GMonthWithWinner[]): M12GMonthWith
         }
         return {...month, titleDefenders};
     });
-}
-
-export async function fetchM12GOverview(): Promise<M12GOverview> {
-    const months = await loadMonths();
-    const enriched = withTitleDefenders(months);
-    enriched.sort((a, b) => b.month.localeCompare(a.month));
-    return {months: enriched};
 }

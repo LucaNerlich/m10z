@@ -17,10 +17,6 @@ export interface M12GMonthWithWinner extends M12GMonth {
     titleDefenders: string[];
 }
 
-export interface M12GOverview {
-    months: M12GMonthWithWinner[];
-}
-
 export interface M12GLeaderboardEntry {
     name: string;
     slug: string;

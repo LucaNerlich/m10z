@@ -4,7 +4,7 @@ import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
 import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
 import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/rss/media';
 import {CACHE_REVALIDATE_CONTENT_PAGE, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
+import {strapiFetch} from '@/src/lib/strapiTransport';
 import {
     ARTICLE_DETAIL_FIELDS,
     ARTICLE_LIST_FIELDS,
@@ -34,12 +34,6 @@ export type {StrapiMediaRef};
 // Re-exports preserved for back-compat with existing imports (e.g. feed handlers).
 export {MEDIA_FIELDS, populateAuthorAvatar, populateCategory};
 
-const STRAPI_URL = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL)?.replace(/\/+$/, '');
-
-if (!STRAPI_URL) {
-    throw new Error('Missing STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL)');
-}
-
 const MAX_SLUGS = 150;
 
 type FetchOptions = {
@@ -50,13 +44,6 @@ type FetchOptions = {
         slug?: string;
         contentType?: string;
         populateOptions?: unknown;
-    };
-};
-
-type StrapiFetchInit = RequestInit & {
-    next?: {
-        tags: string[];
-        revalidate?: number;
     };
 };
 
@@ -76,7 +63,7 @@ export type PaginatedResult<T> = {
 // Builds hierarchical cache tags for author pages: base type → author → optional category.
 // Each level enables increasingly granular invalidation (e.g., invalidate all articles
 // vs. only a specific author's articles in a specific category).
-function buildAuthorPageTags(args: {
+export function buildAuthorPageTags(args: {
     contentType: 'article' | 'podcast';
     authorSlug: string;
     categorySlug?: string;
@@ -115,207 +102,27 @@ type FetchPageOptions = {
     tags?: string[];
 };
 
-async function performStrapiFetchOnce<T>(
-    urlString: string,
-    url: URL,
-    options: FetchOptions,
-    init: StrapiFetchInit,
-    diagnosticName: string,
-    timeout: number,
-): Promise<T> {
-    const startedAt = Date.now();
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-        controller.abort();
-    }, timeout);
-
-    try {
-        const res = await fetch(urlString, {
-            signal: controller.signal,
-            ...init,
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!res.ok) {
-            throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
-        }
-
-        const body = (await res.json()) as T;
-
-        const durationMs = Date.now() - startedAt;
-        if (durationMs >= 800) {
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'fetch',
-                name: diagnosticName,
-                ok: true,
-                durationMs,
-                detail: {
-                    path: url.pathname,
-                    tagCount: options.tags.length,
-                },
-            });
-        }
-
-        return body;
-    } catch (error: unknown) {
-        clearTimeout(timeoutId);
-        const durationMs = Date.now() - startedAt;
-
-        if (error instanceof Error && error.name === 'AbortError') {
-            const timeoutError = new Error(`Strapi request timed out after ${timeout}ms: ${urlString}`);
-            console.error(
-                JSON.stringify({
-                    error: 'Request timeout',
-                    errorCode: 'TIMEOUT',
-                    timeout: true,
-                    timeoutMs: timeout,
-                    url: urlString,
-                    context: options.context,
-                }),
-            );
-
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'fetch',
-                name: diagnosticName,
-                ok: false,
-                durationMs,
-                detail: {
-                    path: url.pathname,
-                    error: 'TIMEOUT',
-                    timeoutMs: timeout,
-                    tagCount: options.tags.length,
-                },
-            });
-            throw timeoutError;
-        }
-
-        const err = error as Error & {
-            code?: string;
-            cause?: Error & {
-                code?: string;
-                bytesRead?: number;
-                bytesWritten?: number;
-                localAddress?: string;
-                remoteAddress?: string;
-            };
-        };
-
-        const errorCode = err.code || err.cause?.code;
-        const isSocketError = errorCode === 'UND_ERR_SOCKET' || errorCode === 'ECONNRESET' || errorCode === 'ECONNREFUSED';
-
-        if (isSocketError) {
-            const socketErrorInfo = {
-                error: err.message,
-                errorCode: errorCode || 'UNKNOWN_SOCKET_ERROR',
-                bytesRead: err.cause?.bytesRead,
-                bytesWritten: err.cause?.bytesWritten,
-                localAddress: err.cause?.localAddress,
-                remoteAddress: err.cause?.remoteAddress,
-                timeout: false,
-                url: urlString,
-                context: options.context,
-            };
-
-            console.error(JSON.stringify(socketErrorInfo));
-
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'fetch',
-                name: diagnosticName,
-                ok: false,
-                durationMs,
-                detail: {
-                    path: url.pathname,
-                    error: errorCode || 'UNKNOWN_SOCKET_ERROR',
-                    tagCount: options.tags.length,
-                },
-            });
-
-            throw new Error(`Strapi connection error (${errorCode}): ${err.message}`);
-        }
-
-        if (error instanceof Error) {
-            recordDiagnosticEvent({
-                ts: Date.now(),
-                kind: 'fetch',
-                name: diagnosticName,
-                ok: false,
-                durationMs,
-                detail: {
-                    path: url.pathname,
-                    error: 'ERROR',
-                    message: error.message,
-                    tagCount: options.tags.length,
-                },
-            });
-        }
-
-        throw error;
-    }
-}
-
-const MAX_RETRIES = 1;
-const RETRY_DELAY_MS = 500;
-
-// Only retry on transient network/timeout failures — not on 4xx/5xx HTTP responses,
-// which indicate server-side issues that won't resolve by retrying immediately.
-function isRetryableError(error: unknown): boolean {
-    if (error instanceof Error) {
-        if (error.name === 'AbortError' || error.message.includes('timed out')) return true;
-        if (error.message.includes('ECONNRESET') || error.message.includes('ECONNREFUSED') || error.message.includes('UND_ERR_SOCKET')) return true;
-    }
-    return false;
-}
-
-async function performStrapiFetch<T>(
-    pathWithQuery: string,
-    options: FetchOptions,
-    init: StrapiFetchInit,
-    diagnosticName: string,
-): Promise<T> {
-    const timeout = options.timeout ?? 30000;
-    const url = new URL(pathWithQuery, STRAPI_URL);
-    const urlString = url.toString();
-
-    let lastError: unknown;
-    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-        try {
-            return await performStrapiFetchOnce<T>(urlString, url, options, init, diagnosticName, timeout);
-        } catch (error) {
-            lastError = error;
-            if (attempt < MAX_RETRIES && isRetryableError(error)) {
-                await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)));
-                continue;
-            }
-            throw error;
-        }
-    }
-    throw lastError;
-}
-
 async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
-    return performStrapiFetch(
-        pathWithQuery,
-        options,
-        {
-            next: {
-                tags: options.tags,
-                revalidate: options.revalidate,
-            },
-        },
-        'strapi.fetchJson',
-    );
+    return strapiFetch<T>({
+        path: pathWithQuery,
+        cache: {mode: 'tags', tags: options.tags, revalidate: options.revalidate},
+        timeoutMs: options.timeout,
+        diagnosticName: 'strapi.fetchJson',
+        context: options.context,
+    });
 }
 
 async function fetchJsonNoStore<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
-    return performStrapiFetch(pathWithQuery, options, {cache: 'no-store'}, 'strapi.fetchJsonNoStore');
+    return strapiFetch<T>({
+        path: pathWithQuery,
+        cache: {mode: 'no-store'},
+        timeoutMs: options.timeout,
+        diagnosticName: 'strapi.fetchJsonNoStore',
+        context: options.context,
+    });
 }
 
-function normalizePagination(
+export function normalizePagination(
     meta: {pagination?: Partial<PaginationMeta>} | undefined,
     fallbackPage: number,
     fallbackPageSize: number,
@@ -337,7 +144,7 @@ function normalizePagination(
     return {page, pageSize, total: totalRaw, pageCount: pageCountRaw};
 }
 
-function toPaginatedResult<T>(
+export function toPaginatedResult<T>(
     res: {data?: T[]; meta?: {pagination?: Partial<PaginationMeta>}},
     requestedPage: number,
     requestedPageSize: number,
@@ -348,11 +155,11 @@ function toPaginatedResult<T>(
     return {items, pagination, hasNextPage};
 }
 
-function clampPage(p: number): number {
+export function clampPage(p: number): number {
     return Math.max(1, Math.floor(p));
 }
 
-function clampPageSize(s: number): number {
+export function clampPageSize(s: number): number {
     return Math.max(1, Math.min(200, Math.floor(s)));
 }
 

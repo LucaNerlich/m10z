@@ -49,6 +49,18 @@ in the current Month.
 ### Game history
 
 The aggregated record of one Game across every Month it appeared in: total
-votes, win count, the list of Months it was nominated in, and the most recent
-store link seen. Built once from a `Month[]`; views like the leaderboard and
-the alphabetical game index are projections of it.
+votes, win count, and the list of **appearances** — one per Month, each carrying
+that Month's vote tally, whether the Game was a Winner, and the Month's title and
+forum thread. The store link is the first one seen (earliest chronological
+appearance). Built once per request from the **Archive**; the leaderboard, the
+alphabetical game index, the streak detection, and a single Game's appearance
+timeline are all projections of it.
+
+### Archive
+
+The finalized record of every Month, loaded and aggregated once per request. Holds
+the Months (in chronological order) and the Game histories derived from them. Every
+M12G view — the overview, leaderboard, game index, streaks, winner timeline, and a
+single Game's page — is a pure projection of the Archive; none of them re-read the
+Months or re-aggregate independently. The Months come from a swappable source (the
+filesystem in production, fixtures in tests).

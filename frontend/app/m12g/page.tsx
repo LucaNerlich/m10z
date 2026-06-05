@@ -1,7 +1,7 @@
 import {type Metadata} from 'next';
 import Link from 'next/link';
 
-import {fetchM12GOverview} from '@/src/lib/m12g/m12gData';
+import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
 import {computeM12GStats} from '@/src/lib/m12g/m12gStats';
 import {computeStreaks} from '@/src/lib/m12g/gameHistory';
 import {routes} from '@/src/lib/routes';
@@ -23,10 +23,11 @@ export const metadata: Metadata = buildStaticListMetadata({
 });
 
 export default async function M12GPage() {
-    const overview = await fetchM12GOverview();
-    const months = overview.months;
-    const stats = computeM12GStats(months);
-    const streaks = computeStreaks(months);
+    const archive = await getM12GArchive();
+    const stats = computeM12GStats(archive);
+    const streaks = computeStreaks(archive.gameHistory);
+    // Archive Months are chronological; the grid shows them newest-first.
+    const months = [...archive.months].reverse();
 
     return (
         <div data-list-page>

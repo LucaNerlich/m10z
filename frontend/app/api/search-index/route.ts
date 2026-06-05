@@ -1,7 +1,7 @@
 import {NextResponse} from 'next/server';
 import Fuse from 'fuse.js';
 
-import {getStrapiApiBaseUrl} from '@/src/lib/strapi';
+import {strapiFetch} from '@/src/lib/strapiTransport';
 import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '@/src/lib/search/types';
 import {getStaticPageRecords} from '@/src/lib/search/staticPages';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
@@ -39,17 +39,6 @@ class ValidationError extends Error {
         super(message);
         this.name = 'ValidationError';
     }
-}
-
-/**
- * Return an Authorization header object using the STRAPI_API_TOKEN environment variable when available.
- *
- * @returns An object with an `Authorization` header set to `Bearer <token>`, or `undefined` if `STRAPI_API_TOKEN` is not set.
- */
-function getAuthHeader(): Record<string, string> | undefined {
-    const token = process.env.STRAPI_API_TOKEN;
-    if (!token) return undefined;
-    return {Authorization: `Bearer ${token}`};
 }
 
 /**
@@ -129,22 +118,19 @@ function isValidSearchIndexFile(obj: unknown): obj is SearchIndexFile {
  * @throws ValidationError if the fetched payload is missing or does not match the expected structure
  */
 async function loadSearchIndex(): Promise<SearchIndexFile> {
-    const base = getStrapiApiBaseUrl();
-    const url = new URL('/api/search-index', base);
-
-    const res = await fetch(url, {
-        headers: getAuthHeader(),
-        next: {
-            tags: ['search-index'],
-            revalidate: CACHE_REVALIDATE_SEARCH,
-        },
-    });
-
-    if (!res.ok) {
-        throw new FetchError(`Failed to fetch search index: ${res.status} ${res.statusText}`);
+    let json: unknown;
+    try {
+        json = await strapiFetch<unknown>({
+            path: '/api/search-index',
+            token: process.env.STRAPI_API_TOKEN,
+            cache: {mode: 'tags', tags: ['search-index'], revalidate: CACHE_REVALIDATE_SEARCH},
+            diagnosticName: 'strapi.search-index',
+        });
+    } catch (err) {
+        // Preserve the FetchError → 502 mapping the route's catch blocks rely on.
+        throw new FetchError(err instanceof Error ? err.message : 'Failed to fetch search index');
     }
 
-    const json = await res.json();
     const content = unwrapSearchIndex(json);
 
     if (!content || typeof content !== 'object') {

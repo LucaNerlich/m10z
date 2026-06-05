@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.4] - 2026-06-05
+
+### Added
+- Expanded the Vitest suite to 486 tests, covering the new M12G archive pipeline, the unified Strapi transport (auth, retries, timeout, cache directives), paginated feed fetching, published-slug pagination, content-fetch helpers, and the cache-invalidation endpoint.
+
+### Changed
+- Refactored the M12G data layer behind a single request-cached archive: the months are loaded, sorted, and aggregated once per request instead of repeatedly per page, and a game's appearance timeline is now derived from its history rather than re-scanning every month. No change to what's displayed.
+- Unified all Strapi data fetching behind one transport seam with shared timeout, single-retry, and cache-tag handling; behaviour and auth (content unauthenticated, feeds/search tokened) are unchanged.
+- Updated `dompurify` to 3.4.7.
+
+### Fixed
+- Reserve the scrollbar gutter page-wide so the layout no longer shifts horizontally when navigating between pages with and without a vertical scrollbar.
+
 ## [1.7.3] - 2026-06-02
 
 ### Added

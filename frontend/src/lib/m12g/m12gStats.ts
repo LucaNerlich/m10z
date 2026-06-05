@@ -1,6 +1,6 @@
-import {buildGameHistory, toGameIndex, toLeaderboard} from './gameHistory';
+import {toLeaderboard} from './gameHistory';
+import {type M12GArchive} from './m12gArchive';
 import {
-    type M12GGameIndexEntry,
     type M12GMonthParticipation,
     type M12GMonthWithWinner,
     type M12GStats,
@@ -28,24 +28,21 @@ function toWinnerTimeline(months: M12GMonthWithWinner[]): M12GWinnerEntry[] {
     );
 }
 
-export function computeM12GStats(months: M12GMonthWithWinner[]): M12GStats {
-    const chronological = [...months].sort((a, b) => a.month.localeCompare(b.month));
-    const history = buildGameHistory(chronological);
-    const monthlyParticipation = toMonthlyParticipation(chronological);
+// Pure projection of the Archive — months are already chronological and the Game
+// histories are already built, so this neither re-sorts nor re-aggregates.
+export function computeM12GStats(archive: M12GArchive): M12GStats {
+    const {months, gameHistory} = archive;
+    const monthlyParticipation = toMonthlyParticipation(months);
     const totalVotes = monthlyParticipation.reduce((sum, m) => sum + m.totalVotes, 0);
-    const totalMonths = chronological.length;
+    const totalMonths = months.length;
 
     return {
         totalMonths,
-        totalUniqueGames: history.length,
+        totalUniqueGames: gameHistory.length,
         totalVotes,
         avgVotesPerMonth: totalMonths > 0 ? Math.round(totalVotes / totalMonths) : 0,
-        leaderboard: toLeaderboard(history, MAX_LEADERBOARD_ENTRIES),
-        winnerTimeline: toWinnerTimeline(chronological),
+        leaderboard: toLeaderboard(gameHistory, MAX_LEADERBOARD_ENTRIES),
+        winnerTimeline: toWinnerTimeline(months),
         monthlyParticipation,
     };
-}
-
-export function buildGameIndex(months: M12GMonthWithWinner[]): M12GGameIndexEntry[] {
-    return toGameIndex(buildGameHistory(months));
 }
