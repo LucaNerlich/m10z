@@ -2,13 +2,16 @@ import {
     LIFECYCLE_INVALIDATION,
     SEARCH_INDEX_REBUILD_UIDS,
     type StrapiLifecycleEvent,
-} from '../../../shared/invalidation/manifest';
+} from '../shared/contracts/invalidation/manifest';
 
 import {queueCacheInvalidation} from './asyncCacheInvalidationQueue';
 import {queueSearchIndexRebuild} from './asyncSearchIndexQueue';
 
 type StrapiGlobal = {
-    log?: {info: (message: string) => void};
+    log: {
+        info: (message: string) => void;
+        warn: (message: string, error?: unknown) => void;
+    };
 };
 
 function runInvalidation(uid: string, event: StrapiLifecycleEvent, strapi: StrapiGlobal): void {

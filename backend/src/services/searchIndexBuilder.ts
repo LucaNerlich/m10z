@@ -1,6 +1,6 @@
 import markdownToTxt from 'markdown-to-txt';
 
-import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '../../../shared/search/types';
+import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '../shared/contracts/search/types';
 
 import {filterAndLimitMetrics} from './metricsHistory';
 

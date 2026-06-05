@@ -5,7 +5,7 @@ import {
     INVALIDATION_TARGETS,
     LIFECYCLE_INVALIDATION,
     isInvalidationTargetName,
-} from '../../../shared/invalidation/manifest';
+} from '../shared/contracts/invalidation/manifest';
 
 import {INVALIDATE_TARGETS} from '../utils/invalidateNextCache';
 

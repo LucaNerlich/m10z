@@ -5,7 +5,7 @@
  * invalidation manifest (`shared/invalidation/manifest.ts`).
  */
 
-import {DOCUMENT_INVALIDATION} from '../../../shared/invalidation/manifest';
+import {DOCUMENT_INVALIDATION} from '../shared/contracts/invalidation/manifest';
 
 import {queueCacheInvalidation} from '../services/asyncCacheInvalidationQueue';
 

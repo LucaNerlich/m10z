@@ -12,7 +12,7 @@
 import {
     INVALIDATION_TARGETS,
     type InvalidationTargetName,
-} from '../../../shared/invalidation/manifest';
+} from '../shared/contracts/invalidation/manifest';
 
 export const INVALIDATE_TARGETS = INVALIDATION_TARGETS;
 
