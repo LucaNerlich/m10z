@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.6] - 2026-06-05
+
+### Changed
+- Updated Strapi and related packages (`@strapi/strapi`, `@strapi/utils`, `@strapi/plugin-users-permissions`, `@strapi/provider-email-mailgun`) to 5.47.0.
+
 ## [1.1.5] - 2026-06-02
 
 ### Changed

@@ -1,6 +1,6 @@
 {
     "name": "m10z-backend",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "private": true,
     "scripts": {
         "build": "vitest run && strapi build",
@@ -13,10 +13,10 @@
         "test:run": "vitest run"
     },
     "dependencies": {
-        "@strapi/plugin-users-permissions": "^5.46.1",
-        "@strapi/provider-email-mailgun": "^5.46.1",
-        "@strapi/strapi": "^5.46.1",
-        "@strapi/utils": "^5.46.1",
+        "@strapi/plugin-users-permissions": "^5.47.0",
+        "@strapi/provider-email-mailgun": "^5.47.0",
+        "@strapi/strapi": "^5.47.0",
+        "@strapi/utils": "^5.47.0",
         "blurhash": "^2.0.5",
         "form-data": "^4.0.5",
         "markdown-to-txt": "^2.0.1",
