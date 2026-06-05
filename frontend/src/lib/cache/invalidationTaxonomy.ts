@@ -1,17 +1,5 @@
 import {routes} from '@/src/lib/routes';
-import {
-    ABOUT_PAGE_TAG,
-    ABOUT_TAG,
-    HOME_PAGE_TAG,
-    LEGAL_TAGS,
-    RELATED_CONTENT_TAG,
-    SEARCH_INDEX_TAG,
-    contentListTag,
-    contentTag,
-    feedSourceTag,
-    feedTag,
-    sitemapTag,
-} from '@/src/lib/strapi/cacheTags';
+import {INVALIDATION_TAG_GROUPS} from '@/src/lib/strapi/cacheTags';
 
 /**
  * Cross-wire contract — DO NOT DRIFT.
@@ -26,6 +14,9 @@ import {
  *
  * `InvalidationTarget` is *derived* from this object's keys — the runtime
  * record is the single source of truth on the frontend side.
+ *
+ * Tag strings are built via `INVALIDATION_TAG_GROUPS` in `strapi/cacheTags.ts`
+ * so read and write sides cannot drift.
  */
 
 export type Revalidations = {
@@ -36,24 +27,17 @@ export type Revalidations = {
 
 export const INVALIDATION_TAXONOMY = {
     article: {
-        tags: [contentTag('article'), contentListTag('article'), RELATED_CONTENT_TAG, HOME_PAGE_TAG],
+        tags: INVALIDATION_TAG_GROUPS.article(),
         pages: [routes.articles, `${routes.articles}/[slug]`, routes.home],
         paths: [],
     },
     podcast: {
-        tags: [contentTag('podcast'), contentListTag('podcast'), RELATED_CONTENT_TAG, HOME_PAGE_TAG],
+        tags: INVALIDATION_TAG_GROUPS.podcast(),
         pages: [routes.podcasts, `${routes.podcasts}/[slug]`, routes.home],
         paths: [],
     },
     category: {
-        tags: [
-            contentTag('category'),
-            contentListTag('category'),
-            contentTag('article'),
-            contentListTag('article'),
-            contentTag('podcast'),
-            contentListTag('podcast'),
-        ],
+        tags: INVALIDATION_TAG_GROUPS.category(),
         pages: [
             routes.categories,
             `${routes.categories}/[slug]`,
@@ -64,14 +48,7 @@ export const INVALIDATION_TAXONOMY = {
         paths: [],
     },
     author: {
-        tags: [
-            contentTag('author'),
-            contentListTag('author'),
-            contentTag('article'),
-            contentListTag('article'),
-            contentTag('podcast'),
-            contentListTag('podcast'),
-        ],
+        tags: INVALIDATION_TAG_GROUPS.author(),
         pages: [
             routes.articles,
             `${routes.articles}/[slug]`,
@@ -83,41 +60,27 @@ export const INVALIDATION_TAXONOMY = {
         paths: [],
     },
     about: {
-        tags: [ABOUT_PAGE_TAG, ABOUT_TAG],
+        tags: INVALIDATION_TAG_GROUPS.about(),
         pages: [routes.about],
         paths: [],
     },
     legal: {
-        tags: [...LEGAL_TAGS],
+        tags: INVALIDATION_TAG_GROUPS.legal(),
         pages: [],
         paths: [routes.imprint, routes.privacy],
     },
     sitemap: {
-        tags: [
-            sitemapTag('articles'),
-            sitemapTag('podcasts'),
-            sitemapTag('authors'),
-            sitemapTag('categories'),
-        ],
+        tags: INVALIDATION_TAG_GROUPS.sitemap(),
         pages: [],
         paths: ['/sitemap.xml', '/sitemap'],
     },
     'search-index': {
-        tags: [SEARCH_INDEX_TAG],
+        tags: INVALIDATION_TAG_GROUPS.searchIndex(),
         pages: [],
         paths: [],
     },
     articlefeed: {
-        tags: [
-            feedTag('article'),
-            feedSourceTag('article'),
-            contentTag('article'),
-            contentListTag('article'),
-            RELATED_CONTENT_TAG,
-            contentTag('category'),
-            contentListTag('category'),
-            HOME_PAGE_TAG,
-        ],
+        tags: INVALIDATION_TAG_GROUPS.articleFeed(),
         pages: [
             routes.home,
             routes.articles,
@@ -128,16 +91,7 @@ export const INVALIDATION_TAXONOMY = {
         paths: [routes.articleFeed],
     },
     audiofeed: {
-        tags: [
-            feedTag('audio'),
-            feedSourceTag('audio'),
-            contentTag('podcast'),
-            contentListTag('podcast'),
-            RELATED_CONTENT_TAG,
-            contentTag('category'),
-            contentListTag('category'),
-            HOME_PAGE_TAG,
-        ],
+        tags: INVALIDATION_TAG_GROUPS.audioFeed(),
         pages: [
             routes.home,
             routes.podcasts,

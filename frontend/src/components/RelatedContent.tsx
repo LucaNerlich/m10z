@@ -1,5 +1,5 @@
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
-import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
+import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
+import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';

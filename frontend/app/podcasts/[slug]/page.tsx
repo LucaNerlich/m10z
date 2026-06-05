@@ -7,12 +7,12 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
-import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/strapi/media';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
-import {contentTag} from '@/src/lib/cache/strapiTags';
+import {contentTag} from '@/src/lib/strapi/cacheTags';
 
 type PageProps = {
     params: Promise<{slug: string}>;

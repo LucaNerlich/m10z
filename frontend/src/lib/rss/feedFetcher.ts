@@ -9,33 +9,21 @@
  * Centralising these here means a query/config change is one edit, not two.
  */
 
-import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {strapiFetch} from '@/src/lib/strapiTransport';
+import {createPrivilegedFeedReader} from '@/src/lib/strapi/contentAccess';
 
 const DEFAULT_PAGE_SIZE = 100;
 const DEFAULT_MAX_PAGES = 50;
 const DEFAULT_MAX_ITEMS = 1000;
-const DEFAULT_TIMEOUT_MS = 30_000;
 
 export type StrapiFeedFetcher = <T>(pathWithQuery: string) => Promise<T>;
 
 /**
  * Build a fetcher bound to a fixed cache-tag set. The returned function
- * forwards every call across the shared Strapi transport seam as a privileged
- * read, with the production-vs-dev revalidate behaviour. Base-URL resolution and
- * the privileged token both live in the transport, not here.
+ * forwards every call across the unified Content access read interface as a
+ * privileged read, with the production-vs-dev revalidate behaviour.
  */
 export function createFeedStrapiFetcher(tags: string[]): StrapiFeedFetcher {
-    return async <T>(pathWithQuery: string): Promise<T> => {
-        const revalidate = process.env.NODE_ENV === 'production' ? CACHE_REVALIDATE_DEFAULT : 0;
-        return strapiFetch<T>({
-            path: pathWithQuery,
-            auth: 'privileged',
-            cache: revalidate === 0 ? {mode: 'no-store', tags} : {mode: 'tags', tags, revalidate},
-            timeoutMs: DEFAULT_TIMEOUT_MS,
-            diagnosticName: 'strapi.feed',
-        });
-    };
+    return createPrivilegedFeedReader(tags);
 }
 
 type StrapiCollectionPage<T> = {

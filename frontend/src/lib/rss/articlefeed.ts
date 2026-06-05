@@ -11,10 +11,7 @@ import {
     type StrapiMediaRef,
     StrapiYoutube,
 } from '@/src/lib/strapi/media';
-import {
-    type StrapiArticle,
-    type StrapiArticleFeedSingle,
-} from '@/src/lib/strapi/contentTypes';
+import {type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/strapi/contentTypes';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
 export type {StrapiArticle, StrapiArticleFeedSingle};

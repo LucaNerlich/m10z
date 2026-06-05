@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
+import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/strapi/media';
 import {formatDateShort} from '@/src/lib/dateFormatters';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';

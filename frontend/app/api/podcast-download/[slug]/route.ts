@@ -6,7 +6,7 @@ import {
 } from '@/src/lib/analytics/podcastDownload';
 import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
-import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {getStrapiApiBaseUrl} from '@/src/lib/strapi';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 

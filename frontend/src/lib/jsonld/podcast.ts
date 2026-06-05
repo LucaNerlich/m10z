@@ -1,5 +1,5 @@
 import {type AudioObject, type Person, type PodcastEpisode, type PodcastSeries} from './types';
-import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
+import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {authorToPerson, formatIso8601Date, formatIso8601Duration, mediaToImage} from './helpers';
 import {absoluteRoute, routes} from '@/src/lib/routes';
@@ -8,7 +8,7 @@ import {
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
     pickCoverOrBannerMedia,
-} from '@/src/lib/rss/media';
+} from '@/src/lib/strapi/media';
 import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
 import {CONTENT_LANGUAGE} from '@/src/lib/metadata/constants';
 import {categoryTitlesToKeywords} from '@/src/lib/metadata/keywords';

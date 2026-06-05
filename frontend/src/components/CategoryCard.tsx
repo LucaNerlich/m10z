@@ -2,7 +2,7 @@ import Link from 'next/link';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
 import {type StrapiMediaRef} from '@/src/lib/strapiContent';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {ContentImage} from '@/src/components/ContentImage';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './CategoryCard.module.css';

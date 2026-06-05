@@ -2,7 +2,7 @@ import {type Metadata} from 'next';
 
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {AuthorContentPage, generateAuthorContentMetadata} from '@/src/components/AuthorContentPage';
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
+import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
 import {fetchArticlesByAuthorPaginated} from '@/src/lib/strapiContent';
 
 type PageProps = {

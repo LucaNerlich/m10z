@@ -1,6 +1,6 @@
 import Script from 'next/script';
 
-import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
+import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {buildPodcastDownloadPath, isPodcastDownloadTrackingEnabled} from '@/src/lib/analytics/podcastDownload';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {
@@ -8,7 +8,7 @@ import {
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
     pickBannerOrCoverMedia,
-} from '@/src/lib/rss/media';
+} from '@/src/lib/strapi/media';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Markdown} from '@/src/lib/markdown/Markdown';

@@ -1,4 +1,4 @@
-import {type StrapiCategoryRef} from '@/src/lib/rss/media';
+import {type StrapiCategoryRef} from '@/src/lib/strapi/media';
 
 function collectTitles(categories: StrapiCategoryRef[] | undefined): string[] {
     if (!categories?.length) return [];

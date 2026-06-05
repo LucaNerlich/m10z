@@ -1,6 +1,6 @@
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
-import {contentTag, sitemapTag} from '@/src/lib/cache/strapiTags';
+import {contentTag, sitemapTag} from '@/src/lib/strapi/cacheTags';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

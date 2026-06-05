@@ -1,6 +1,6 @@
 import {type ImageObject, type Person} from './types';
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor, type StrapiMedia} from '@/src/lib/rss/media';
+import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor, type StrapiMedia} from '@/src/lib/strapi/media';
 import {OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import serialize from 'serialize-javascript';
 

@@ -1,7 +1,7 @@
 import {describe, expect, test} from 'vitest';
 
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
-import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
+import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
+import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 
 import {generateArticleJsonLd} from './article';
 import {generateAuthorProfileJsonLd} from './author';

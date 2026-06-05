@@ -1,6 +1,15 @@
 export {getStrapiApiBaseUrl} from '@/src/lib/strapiTransport';
 
 export {
+    readApiPath,
+    readCollection,
+    readSingle,
+    readStrapi,
+    createPrivilegedFeedReader,
+    type ContentReadOptions,
+} from '@/src/lib/strapi/contentAccess';
+
+export {
     fetchStrapiSingle,
     fetchStrapiCollection,
     type FetchStrapiOptions,

@@ -1,4 +1,4 @@
-import {type StrapiCategoryRef} from '@/src/lib/rss/media';
+import {type StrapiCategoryRef} from '@/src/lib/strapi/media';
 import {type PaginatedResult} from '@/src/lib/strapiContent';
 
 export type CategoryCount = {

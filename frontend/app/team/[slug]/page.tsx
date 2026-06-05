@@ -6,7 +6,7 @@ import {
     fetchAuthorBySlug,
     fetchPodcastsByAuthorPaginated,
 } from '@/src/lib/strapiContent';
-import {getOptimalMediaFormat} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat} from '@/src/lib/strapi/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
@@ -26,7 +26,7 @@ import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateAuthorProfileJsonLd} from '@/src/lib/jsonld/author';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
-import {sitemapTag} from '@/src/lib/cache/strapiTags';
+import {sitemapTag} from '@/src/lib/strapi/cacheTags';
 import Script from 'next/script';
 import styles from './page.module.css';
 

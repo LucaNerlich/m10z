@@ -5,7 +5,7 @@ import {fetchArticlesBySlugsBatched, fetchCategoryBySlug, fetchPodcastsBySlugsBa
 import {absoluteRoute} from '@/src/lib/routes';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
-import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/rss/media';
+import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/strapi/media';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
@@ -17,7 +17,7 @@ import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateCategoryJsonLd} from '@/src/lib/jsonld/category';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
-import {sitemapTag} from '@/src/lib/cache/strapiTags';
+import {sitemapTag} from '@/src/lib/strapi/cacheTags';
 import Script from 'next/script';
 import styles from './page.module.css';
 

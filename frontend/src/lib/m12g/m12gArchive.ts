@@ -1,7 +1,7 @@
 import {cache} from 'react';
 
+import {fsMonthSource} from './fsMonthSource';
 import {buildGameHistory, type GameHistory} from './gameHistory';
-import {loadMonths} from './loadMonths';
 import {type M12GMonthWithWinner} from './types';
 
 // The finalized record of every Month plus the Game histories derived from them —
@@ -55,4 +55,4 @@ export async function loadArchive(source: MonthSource): Promise<M12GArchive> {
 
 // Request-scoped: load + sort + enrich + aggregate the Months exactly once per
 // render, regardless of how many projections (stats, streaks, game index, …) read it.
-export const getM12GArchive = cache((): Promise<M12GArchive> => loadArchive(loadMonths));
+export const getM12GArchive = cache((): Promise<M12GArchive> => loadArchive(fsMonthSource));

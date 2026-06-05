@@ -1,3 +1,5 @@
+import {joinStrapiBaseUrl} from '@/src/lib/image';
+
 export type StrapiMediaFormat = {
     ext?: string | null;
     url?: string;
@@ -147,16 +149,7 @@ export function mediaUrlToAbsolute(args: {
 }): string | undefined {
     const {media} = args;
     if (!media?.url) return undefined;
-
-    // If URL is already absolute, return as-is
-    if (/^https?:\/\//i.test(media.url)) return media.url;
-
-    // Use Strapi URL from environment variable (prefer server-only var)
-    const strapiUrl = (process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL)?.replace(/\/+$/, '');
-    if (!strapiUrl) return undefined;
-
-    const path = media.url.startsWith('/') ? media.url : `/${media.url}`;
-    return `${strapiUrl}${path}`;
+    return joinStrapiBaseUrl(media.url) ?? undefined;
 }
 
 /**

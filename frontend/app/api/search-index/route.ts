@@ -7,7 +7,7 @@ import {getStaticPageRecords} from '@/src/lib/search/staticPages';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {CACHE_REVALIDATE_SEARCH} from '@/src/lib/cache/constants';
-import {SEARCH_INDEX_TAG} from '@/src/lib/cache/strapiTags';
+import {SEARCH_INDEX_TAG} from '@/src/lib/strapi/cacheTags';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
 

@@ -1,7 +1,7 @@
 import {type Metadata} from 'next';
 import {AuthorContentPage, generateAuthorContentMetadata} from '@/src/components/AuthorContentPage';
 import {PodcastCard} from '@/src/components/PodcastCard';
-import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
+import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {fetchPodcastsByAuthorPaginated} from '@/src/lib/strapiContent';
 
 type PageProps = {

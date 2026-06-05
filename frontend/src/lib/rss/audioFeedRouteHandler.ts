@@ -1,126 +1,15 @@
-import {isPodcastDownloadTrackingEnabled} from '@/src/lib/analytics/podcastDownload';
-import {
-    type AudioFeedConfig,
-    type AudioFeedMarkdownConverter,
-    type AudioFeedTiming,
-    generateAudioFeedXml,
-    type StrapiAudioFeedSingle,
-    type StrapiPodcast,
-} from '@/src/lib/rss/audiofeed';
 import {
     createAudioFeedBuildHealth,
     resetAudioFeedBuildHealthForDiagnostics,
 } from '@/src/lib/rss/audioFeedBuildHealth';
-import {type FeedBuilt, type FeedCache, createFeedCache} from '@/src/lib/rss/feedCache';
-import {
-    FEED_CHANNEL_SINGLE_QUERY,
-    FEED_SITE_URL,
-    computeFeedEtag,
-    createFeedListQuery,
-    feedListPopulate,
-    fetchFeedSourceData,
-} from '@/src/lib/rss/feedDefinition';
-import {createFeedStrapiFetcher} from '@/src/lib/rss/feedFetcher';
-import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
-import {sha256Hex} from '@/src/lib/rss/xml';
-import {contentTag, feedSourceTag, feedTag} from '@/src/lib/strapi/cacheTags';
-
-type LastBuildTiming = {
-    episodeCount: number;
-    renderedEpisodeCount: number;
-    timing: AudioFeedTiming;
-    avgPerEpisodeMs: {
-        markdownConversionMs: number;
-        guidGenerationMs: number;
-        fileMetadataMs: number;
-        enclosureMs: number;
-    };
-    markdownCache?: {hits: number; misses: number; size: number};
-};
+import {buildAudioFeed, type AudioFeedBuildTiming} from '@/src/lib/rss/buildAudioFeed';
+import {type FeedCache, createFeedCache} from '@/src/lib/rss/feedCache';
 
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const module: any;
 
-const fetcher = createFeedStrapiFetcher([feedTag('audio'), contentTag('podcast'), feedSourceTag('audio')]);
-
-const buildPodcastListQuery = createFeedListQuery({
-    populate: {...feedListPopulate, file: {populate: '*'}},
-    fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
-});
-
-let lastBuildTiming: LastBuildTiming | null = null;
-
-function getAudioFeedDefaults(): AudioFeedConfig {
-    return {
-        siteUrl: FEED_SITE_URL,
-        ttlSeconds: 60,
-        language: 'de',
-        copyright: 'All rights reserved',
-        webMaster: 'm10z@posteo.de',
-        authorEmail: 'm10z@posteo.de',
-        itunesAuthor: 'M10Z',
-        itunesExplicit: 'false',
-        itunesType: 'episodic',
-        podcastGuid: 'E9QfcR8TYeotS5ceJLmn',
-        downloadTracking: isPodcastDownloadTrackingEnabled(),
-    };
-}
-
-async function buildAudioFeed(): Promise<FeedBuilt> {
-    const {single: feed, items: episodes} = await fetchFeedSourceData<StrapiAudioFeedSingle, StrapiPodcast>({
-        fetcher,
-        singlePathWithQuery: `/api/audio-feed?${FEED_CHANNEL_SINGLE_QUERY}`,
-        listBasePath: '/api/podcasts',
-        listQueryBuilder: buildPodcastListQuery,
-        resolveMaxItems: () => Number(process.env.FEED_AUDIO_MAX_ITEMS ?? '') || 1000,
-    });
-    const cfg = getAudioFeedDefaults();
-
-    const markdownCache = new Map<string, string>();
-    let markdownCacheHits = 0;
-    let markdownCacheMisses = 0;
-
-    const markdownConverter: AudioFeedMarkdownConverter = ({episodeId, kind, markdownText}) => {
-        if (!markdownText) return '';
-        const key = `${episodeId}:${kind}:${sha256Hex(markdownText)}`;
-        const hit = markdownCache.get(key);
-        if (hit !== undefined) {
-            markdownCacheHits += 1;
-            return hit;
-        }
-        markdownCacheMisses += 1;
-        const html = markdownToHtml(markdownText);
-        markdownCache.set(key, html);
-        return html;
-    };
-
-    const {xml, etagSeed, lastModified, timing, renderedEpisodeCount} = generateAudioFeedXml({
-        cfg,
-        channel: feed.channel,
-        episodeFooter: feed.episodeFooter,
-        episodes,
-        markdownConverter,
-    });
-
-    const etag = computeFeedEtag(etagSeed, xml);
-
-    lastBuildTiming = {
-        episodeCount: episodes.length,
-        renderedEpisodeCount,
-        timing,
-        avgPerEpisodeMs: {
-            markdownConversionMs: timing.markdownConversion.avgMs,
-            guidGenerationMs: timing.guidGeneration.avgMs,
-            fileMetadataMs: timing.fileMetadata.avgMs,
-            enclosureMs: timing.enclosure.avgMs,
-        },
-        markdownCache: {hits: markdownCacheHits, misses: markdownCacheMisses, size: markdownCache.size},
-    };
-
-    return {xml, etag, lastModified, itemCount: episodes.length};
-}
-
+let lastBuildTiming: AudioFeedBuildTiming | null = null;
 let cache: FeedCache;
 
 const buildHealth = createAudioFeedBuildHealth(() => {
@@ -131,7 +20,11 @@ cache = createFeedCache({
     feedKey: 'audio',
     diskFileName: 'audiofeed.xml',
     fallback: {title: 'M10Z Podcasts', selfPath: '/audiofeed.xml'},
-    build: buildAudioFeed,
+    build: async () => {
+        const {built, buildTiming} = await buildAudioFeed();
+        lastBuildTiming = buildTiming;
+        return built;
+    },
     onBuildSuccess: (info) => {
         buildHealth.recordBuild({...info, lastBuildTiming: lastBuildTiming ?? undefined});
     },

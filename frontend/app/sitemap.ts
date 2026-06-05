@@ -1,7 +1,7 @@
 import {MetadataRoute} from 'next';
 
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {contentTag, sitemapTag} from '@/src/lib/cache/strapiTags';
+import {contentTag, sitemapTag} from '@/src/lib/strapi/cacheTags';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 
 type SitemapEntry = {slug: string; lastModified?: string};

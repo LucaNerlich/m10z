@@ -1,11 +1,11 @@
 import {type BlogPosting, type ImageObject, type Person} from './types';
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
+import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {authorToPerson, formatIso8601Date, imagesEqual, mediaToImage} from './helpers';
 import {deriveExcerpt, stripMarkdown} from '@/src/lib/metadata/excerpt';
 import {generateOrganizationJsonLd} from './organization';
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {pickBannerMedia, pickCoverMedia} from '@/src/lib/rss/media';
+import {pickBannerMedia, pickCoverMedia} from '@/src/lib/strapi/media';
 import {CONTENT_LANGUAGE} from '@/src/lib/metadata/constants';
 import {categoryTitlesToKeywords, primaryCategoryTitle} from '@/src/lib/metadata/keywords';
 

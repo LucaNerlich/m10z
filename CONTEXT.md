@@ -63,7 +63,8 @@ the Months (in chronological order) and the Game histories derived from them. Ev
 M12G view — the overview, leaderboard, game index, streaks, winner timeline, and a
 single Game's page — is a pure projection of the Archive; none of them re-read the
 Months or re-aggregate independently. The Months come from a swappable source (the
-filesystem in production, fixtures in tests).
+filesystem in production, fixtures in tests). Production uses the `fsMonthSource`
+adapter (`m12g/fsMonthSource.ts`).
 
 ## CMS (Strapi content layer)
 
@@ -81,4 +82,12 @@ All reads cross the transport seam (`strapiTransport`) and attach cache tags fro
 
 The authoritative vocabulary for Next.js cache tags on Strapi reads. Fetch surfaces
 attach tags here; invalidation taxonomy revalidates them on write. Coarse tags
-(e.g. `strapi:article`) intentionally cover fine-grained list tags.
+(e.g. `strapi:article`) intentionally cover fine-grained list tags. Tag groups for
+invalidation live in `INVALIDATION_TAG_GROUPS` alongside fetch-surface builders.
+
+### Content access read interface
+
+The unified seam for Strapi HTTP reads (`strapi/contentAccess.ts`). Callers pass
+either a collection endpoint (`articles`) or a full `/api/...` path; path shape,
+privileged auth, and cache directives are implementation details behind
+`readCollection`, `readSingle`, and `readApiPath`.

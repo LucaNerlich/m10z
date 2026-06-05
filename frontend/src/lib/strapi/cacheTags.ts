@@ -118,3 +118,57 @@ export const FETCH_TAG_SURFACES = {
     privacy: () => [...LEGAL_TAGS],
     feedsInfo: () => [feedSourceTag('article')],
 } as const;
+
+/**
+ * Tag sets revalidated on write — shared between fetch surfaces and invalidation taxonomy.
+ * Coarse tags (e.g. `strapi:article`) intentionally subsume fine-grained list tags.
+ */
+export const INVALIDATION_TAG_GROUPS = {
+    article: () => [contentTag('article'), contentListTag('article'), RELATED_CONTENT_TAG, HOME_PAGE_TAG],
+    podcast: () => [contentTag('podcast'), contentListTag('podcast'), RELATED_CONTENT_TAG, HOME_PAGE_TAG],
+    category: () => [
+        contentTag('category'),
+        contentListTag('category'),
+        contentTag('article'),
+        contentListTag('article'),
+        contentTag('podcast'),
+        contentListTag('podcast'),
+    ],
+    author: () => [
+        contentTag('author'),
+        contentListTag('author'),
+        contentTag('article'),
+        contentListTag('article'),
+        contentTag('podcast'),
+        contentListTag('podcast'),
+    ],
+    about: () => [ABOUT_PAGE_TAG, ABOUT_TAG],
+    legal: () => [...LEGAL_TAGS],
+    sitemap: () => [
+        sitemapTag('articles'),
+        sitemapTag('podcasts'),
+        sitemapTag('authors'),
+        sitemapTag('categories'),
+    ],
+    searchIndex: () => [SEARCH_INDEX_TAG],
+    articleFeed: () => [
+        feedTag('article'),
+        feedSourceTag('article'),
+        contentTag('article'),
+        contentListTag('article'),
+        RELATED_CONTENT_TAG,
+        contentTag('category'),
+        contentListTag('category'),
+        HOME_PAGE_TAG,
+    ],
+    audioFeed: () => [
+        feedTag('audio'),
+        feedSourceTag('audio'),
+        contentTag('podcast'),
+        contentListTag('podcast'),
+        RELATED_CONTENT_TAG,
+        contentTag('category'),
+        contentListTag('category'),
+        HOME_PAGE_TAG,
+    ],
+} as const;

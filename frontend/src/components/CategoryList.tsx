@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import {type StrapiCategoryRef} from '@/src/lib/rss/media';
+import {type StrapiCategoryRef} from '@/src/lib/strapi/media';
 import {routes} from '@/src/lib/routes';
 import {Tag} from './Tag';
 import styles from './CategoryList.module.css';

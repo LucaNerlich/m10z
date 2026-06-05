@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.0] - 2026-06-05
+
+### Added
+- Public CMS import surface at `src/lib/strapi/` for content types, media helpers, cache tags, and the unified Strapi read interface.
+
+### Changed
+- CMS types and media helpers are imported from `strapi/` instead of the RSS folder, so UI, JSON-LD, and feeds share one namespace.
+- All Strapi HTTP reads (pages, sitemap, feeds) go through one Content access read interface; endpoint vs `/api/` path shape and privileged auth are handled internally.
+- Cache invalidation tag sets are defined next to fetch-surface tag builders so read and purge sides cannot drift.
+- RSS feed assembly (fetch → XML → ETag) lives in dedicated build modules; route handlers only wire HTTP caching.
+- M12G Archive loading uses an explicit filesystem MonthSource adapter in production — same reader-facing data, swappable in tests.
+- Strapi media URLs and markdown image URLs share one base-URL resolver.
+
 ## [1.8.0] - 2026-06-05
 
 ### Changed
