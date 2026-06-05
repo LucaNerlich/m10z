@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.0] - 2026-06-05
+
+### Added
+- Shared cross-repo invalidation manifest with a synced local copy on predev, prebuild, and pretest.
+- Search index module (`searchIndexService`) for load, validation, Fuse caching, and static-page augmentation; the API route is now a thin HTTP adapter.
+- Slug-page metadata builder (`buildContentSlugMetadata`) shared by article, podcast, category, and author routes.
+- Category page loader (`fetchCategoryPageData`) with parallel batched article and podcast hydration.
+- Feed registry owning RSS disk cache, schedulers, and invalidation side effects.
+
+### Changed
+- Content access reads consolidated into `contentAccess.ts`; `fetchJson` and `reads` remain as deprecated shims.
+- Cache invalidation taxonomy derives target names from the shared manifest.
+
 ## [1.9.0] - 2026-06-05
 
 ### Added

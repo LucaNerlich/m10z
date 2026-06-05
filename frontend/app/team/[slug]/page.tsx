@@ -6,11 +6,8 @@ import {
     fetchAuthorBySlug,
     fetchPodcastsByAuthorPaginated,
 } from '@/src/lib/strapiContent';
-import {getOptimalMediaFormat} from '@/src/lib/strapi/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
-import {absoluteRoute} from '@/src/lib/routes';
-import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
@@ -56,40 +53,17 @@ export async function generateStaticParams() {
  * @returns A `Metadata` object containing the page `title`, `description`, canonical alternate URL, `openGraph` data (type `'profile'`, `locale: 'de'`, `siteName`, URL, `title`, `description`, and `images` when available) and `twitter` card data; or an empty object if no valid slug or author is found.
  */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-    const {slug: rawSlug} = await params;
-    const slug = validateSlugSafe(rawSlug);
-    if (!slug) return {};
-
-    const author = await fetchAuthorBySlug(slug);
-    if (!author) return {};
-
-    const title = author.title || 'Autor';
-    const description = author.description || undefined;
-    const avatarMedia = getOptimalMediaFormat(author.avatar, 'medium');
-    const avatarImage = avatarMedia ? formatOpenGraphImage(avatarMedia) : undefined;
-
-    return {
-        title,
-        description,
-        alternates: {
-            canonical: absoluteRoute(`/team/${slug}`),
-        },
-        openGraph: {
-            type: 'profile',
-            locale: OG_LOCALE,
-            siteName: OG_SITE_NAME,
-            url: absoluteRoute(`/team/${slug}`),
-            title,
-            description,
-            images: avatarImage,
-        },
-        twitter: {
-            card: 'summary',
-            title,
-            description,
-            images: avatarImage,
-        },
-    };
+    return buildContentSlugMetadata({
+        params,
+        canonicalPath: (slug) => `/team/${slug}`,
+        contentLabel: 'author',
+        fetchBySlug: fetchAuthorBySlug,
+        getTitle: (author) => author.title || 'Autor',
+        getDescription: (author) => author.description || undefined,
+        ogType: 'profile',
+        twitterCard: 'summary',
+        getMediaSource: (author) => ({title: author.title, cover: author.avatar, banner: null}),
+    });
 }
 
 /**

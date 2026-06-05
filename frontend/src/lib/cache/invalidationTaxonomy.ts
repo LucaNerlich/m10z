@@ -1,22 +1,14 @@
+import {INVALIDATION_TARGETS} from '@/src/lib/shared/invalidation';
+
 import {routes} from '@/src/lib/routes';
 import {INVALIDATION_TAG_GROUPS} from '@/src/lib/strapi/cacheTags';
 
 /**
- * Cross-wire contract — DO NOT DRIFT.
+ * Frontend revalidation mapping for each invalidation target.
  *
- * The backend (Strapi) POSTs to `/api/{target}/invalidate` where `{target}` is
- * one of the keys below. If you add a key here, you must also:
- *
- *   1. Add the same string to `backend/src/utils/invalidateNextCache.ts`
- *      (the `InvalidateTarget` union there).
- *   2. Wire the Strapi UID → target mapping in
- *      `backend/src/middlewares/cacheInvalidation.ts`.
- *
- * `InvalidationTarget` is *derived* from this object's keys — the runtime
- * record is the single source of truth on the frontend side.
- *
- * Tag strings are built via `INVALIDATION_TAG_GROUPS` in `strapi/cacheTags.ts`
- * so read and write sides cannot drift.
+ * Target names come from `shared/invalidation/manifest.ts`. Tag strings are
+ * built via `INVALIDATION_TAG_GROUPS` in `strapi/cacheTags.ts` so read and
+ * write sides cannot drift.
  */
 
 export type Revalidations = {
@@ -101,9 +93,9 @@ export const INVALIDATION_TAXONOMY = {
         ],
         paths: [routes.audioFeed],
     },
-} as const satisfies Record<string, Revalidations>;
+} as const satisfies Record<(typeof INVALIDATION_TARGETS)[number], Revalidations>;
 
-export type InvalidationTarget = keyof typeof INVALIDATION_TAXONOMY;
+export type InvalidationTarget = (typeof INVALIDATION_TARGETS)[number];
 
 export function isInvalidationTarget(value: string): value is InvalidationTarget {
     return value in INVALIDATION_TAXONOMY;

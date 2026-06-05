@@ -8,7 +8,7 @@ import {
     LEGAL_TAGS,
     feedSourceTag,
 } from '@/src/lib/strapi/cacheTags';
-import {fetchStrapiSingle, type FetchStrapiOptions} from '@/src/lib/strapi/reads';
+import {fetchStrapiSingle, type FetchStrapiOptions} from '@/src/lib/strapi/contentAccess';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
 
 export type StrapiLegalDoc = {

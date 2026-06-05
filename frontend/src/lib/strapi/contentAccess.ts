@@ -1,7 +1,17 @@
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {strapiFetch} from '@/src/lib/strapiTransport';
 
-import type {StrapiCollectionResponse, StrapiSingleResponse} from '@/src/lib/strapi/responses';
+import type {
+    StrapiCollectionResponse,
+    StrapiSingleResponse,
+} from '@/src/lib/strapi/responses';
+
+export type {
+    FetchStrapiOptions,
+    StrapiCollectionResponse,
+    StrapiMeta,
+    StrapiSingleResponse,
+} from '@/src/lib/strapi/responses';
 
 export type ContentReadOptions = {
     tags: string[];
@@ -89,6 +99,63 @@ export async function readSingle<TData>(
 export async function readApiPath<T>(pathWithQuery: string, options: ContentReadOptions): Promise<T> {
     const path = pathWithQuery.startsWith('/api/') ? pathWithQuery : `/api/${pathWithQuery.replace(/^\/*/, '')}`;
     return readStrapi<T>(path, '', {...options, diagnosticName: options.diagnosticName ?? 'strapi.readApiPath'});
+}
+
+export type ContentFetchOptions = {
+    tags: string[];
+    revalidate?: number;
+    timeout?: number;
+    context?: ContentReadOptions['context'];
+};
+
+function toTaggedReadOptions(options: ContentFetchOptions, cache: 'tags' | 'no-store'): ContentReadOptions {
+    return {
+        tags: options.tags,
+        revalidate: options.revalidate,
+        timeoutMs: options.timeout,
+        cache,
+        context: options.context,
+    };
+}
+
+/** Read a Strapi API path with tag-based caching (domain fetchers). */
+export async function fetchJson<T>(pathWithQuery: string, options: ContentFetchOptions): Promise<T> {
+    return readApiPath<T>(pathWithQuery, {
+        ...toTaggedReadOptions(options, 'tags'),
+        diagnosticName: 'strapi.fetchJson',
+    });
+}
+
+/** Read a Strapi API path without caching (preview routes). */
+export async function fetchJsonNoStore<T>(pathWithQuery: string, options: ContentFetchOptions): Promise<T> {
+    return readApiPath<T>(pathWithQuery, {
+        ...toTaggedReadOptions(options, 'no-store'),
+        diagnosticName: 'strapi.fetchJsonNoStore',
+    });
+}
+
+export async function fetchStrapiSingle<TData>(
+    endpoint: string,
+    query: string = '',
+    options: {tags?: string[]; revalidate?: number} = {},
+): Promise<StrapiSingleResponse<TData>> {
+    return readSingle<TData>(endpoint, query, {
+        tags: options.tags ?? [],
+        revalidate: options.revalidate,
+        diagnosticName: 'strapi.fetchStrapiSingle',
+    });
+}
+
+export async function fetchStrapiCollection<TData>(
+    endpoint: string,
+    query: string = '',
+    options: {tags?: string[]; revalidate?: number} = {},
+): Promise<StrapiCollectionResponse<TData>> {
+    return readCollection<TData>(endpoint, query, {
+        tags: options.tags ?? [],
+        revalidate: options.revalidate,
+        diagnosticName: 'strapi.fetchStrapiCollection',
+    });
 }
 
 /** Privileged feed read with production revalidate defaults. */

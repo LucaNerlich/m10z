@@ -3,14 +3,11 @@ import {notFound} from 'next/navigation';
 
 import {fetchPodcastBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
-import {absoluteRoute} from '@/src/lib/routes';
-import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
 import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
-import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/strapi/media';
+import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
-import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 import {contentTag} from '@/src/lib/strapi/cacheTags';
 
@@ -44,56 +41,16 @@ export async function generateStaticParams() {
  * @returns A Metadata object with title, description, alternates.canonical, `openGraph`, and `twitter` fields, or an empty object if metadata cannot be generated
  */
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-    const {slug: rawSlug} = await params;
-    const slug = validateSlugSafe(rawSlug);
-    if (!slug) return {};
-
-    try {
-        const episode = await fetchPodcastBySlug(slug);
-        if (!episode) return {};
-
-        const title = episode.title;
-        const description = episode.description?.trim() || deriveExcerpt(episode.shownotes);
-        const bannerOrCoverMedia = pickBannerOrCoverMedia(episode, episode.categories);
-        const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
-        const coverImage = optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
-
-        const openGraph: Metadata['openGraph'] = {
-            type: 'article',
-            locale: OG_LOCALE,
-            siteName: OG_SITE_NAME,
-            url: absoluteRoute(`/podcasts/${slug}`),
-            title,
-            description,
-            images: coverImage,
-        };
-
-        return {
-            title,
-            description,
-            alternates: {
-                canonical: absoluteRoute(`/podcasts/${slug}`),
-            },
-            openGraph,
-            twitter: {
-                card: 'summary_large_image',
-                title,
-                description,
-                images: coverImage,
-            },
-        };
-    } catch (error) {
-        // Log error but return empty metadata to allow page to render with defaults
-        const errorMessage = getErrorMessage(error);
-
-        if (isTimeoutOrSocketError(error)) {
-            console.error(`Socket/timeout error fetching podcast metadata for slug "${slug}":`, errorMessage);
-        } else {
-            console.error(`Error fetching podcast metadata for slug "${slug}":`, errorMessage);
-        }
-
-        return {};
-    }
+    return buildContentSlugMetadata({
+        params,
+        canonicalPath: (slug) => `/podcasts/${slug}`,
+        contentLabel: 'podcast',
+        fetchBySlug: fetchPodcastBySlug,
+        getTitle: (episode) => episode.title,
+        getDescription: (episode) => episode.description?.trim() || deriveExcerpt(episode.shownotes),
+        ogType: 'article',
+        getMediaSource: (episode) => episode,
+    });
 }
 
 /**

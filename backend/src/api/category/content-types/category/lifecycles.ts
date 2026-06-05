@@ -1,14 +1,3 @@
-import {queueCacheInvalidation} from '../../../../services/asyncCacheInvalidationQueue';
+import {createContentInvalidationLifecycles} from '../../../../services/contentInvalidationLifecycles';
 
-export default {
-    async afterUpdate(_event: any) {
-        queueCacheInvalidation('category', strapi);
-    },
-    async afterCreate(_event: any) {
-        queueCacheInvalidation('category', strapi);
-    },
-    async afterDelete(_event: any) {
-        queueCacheInvalidation('category', strapi);
-    },
-};
-
+export default createContentInvalidationLifecycles('api::category.category');

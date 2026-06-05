@@ -22,3 +22,6 @@ yarn-error.log*
 
 blog/authors.json
 /static/audiofeed.xml
+
+# Synced from repo-root shared/ on frontend prebuild
+frontend/src/lib/shared/contracts/

@@ -12,7 +12,8 @@ import {
     contentListTag,
     contentTag,
 } from '@/src/lib/strapi/cacheTags';
-import {fetchJson, fetchJsonNoStore} from '@/src/lib/strapi/fetchJson';
+import {fetchJson, fetchJsonNoStore} from '@/src/lib/strapi/contentAccess';
+import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import {
     ARTICLE_DETAIL_FIELDS,
     ARTICLE_LIST_FIELDS,
@@ -463,6 +464,38 @@ export type StrapiCategoryWithContent = {
         date?: string | null;
     }>;
 };
+
+export type CategoryPageData = {
+    category: StrapiCategoryWithContent;
+    articles: StrapiArticle[];
+    podcasts: StrapiPodcast[];
+};
+
+export const fetchCategoryPageData = cache(async (slug: string): Promise<CategoryPageData | null> => {
+    const category = await fetchCategoryBySlug(slug);
+    if (!category) return null;
+
+    const articleSlugs = category.articles?.map((a) => a.slug).filter(Boolean) ?? [];
+    const podcastSlugs = category.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
+
+    let articles: StrapiArticle[] = [];
+    let podcasts: StrapiPodcast[] = [];
+
+    try {
+        [articles, podcasts] = await Promise.all([
+            fetchArticlesBySlugsBatched(articleSlugs),
+            fetchPodcastsBySlugsBatched(podcastSlugs),
+        ]);
+    } catch {
+        // Graceful degradation — page renders with available content
+    }
+
+    return {
+        category,
+        articles: sortByDateDesc(articles),
+        podcasts: sortByDateDesc(podcasts),
+    };
+});
 
 export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCategoryWithContent | null> => {
     const query = buildBySlugQuery({

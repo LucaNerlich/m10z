@@ -6,17 +6,17 @@ export {
     readSingle,
     readStrapi,
     createPrivilegedFeedReader,
-    type ContentReadOptions,
-} from '@/src/lib/strapi/contentAccess';
-
-export {
-    fetchStrapiSingle,
+    fetchJson,
+    fetchJsonNoStore,
     fetchStrapiCollection,
+    fetchStrapiSingle,
+    type ContentReadOptions,
+    type ContentFetchOptions,
     type FetchStrapiOptions,
     type StrapiMeta,
     type StrapiSingleResponse,
     type StrapiCollectionResponse,
-} from '@/src/lib/strapi/reads';
+} from '@/src/lib/strapi/contentAccess';
 
 export {
     getImprint,
