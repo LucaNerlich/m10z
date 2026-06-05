@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-06-05
+
+### Added
+- Search index rebuild now queues on article, podcast, author, and category mutations (debounced), not only on the nightly cron.
+
+### Changed
+- Cache invalidation lifecycle hooks are generated from the shared invalidation manifest.
+- Document middleware uses the shared `DOCUMENT_INVALIDATION` mapping for feed and about targets.
+- Search index builder imports record types from the shared search schema contract.
+
 ## [1.1.6] - 2026-06-05
 
 ### Changed
