@@ -20,7 +20,15 @@ function copyRecursive(src, dest) {
 }
 
 if (!fs.existsSync(repoShared)) {
-    console.error('[sync-shared-contracts] missing shared/ at repo root');
+    if (fs.existsSync(destRoot)) {
+        console.log(
+            '[sync-shared-contracts] repo shared/ not found; using committed src/lib/shared/contracts/',
+        );
+        process.exit(0);
+    }
+    console.error(
+        '[sync-shared-contracts] missing shared/ at repo root and no committed contracts in src/lib/shared/contracts/',
+    );
     process.exit(1);
 }
 
