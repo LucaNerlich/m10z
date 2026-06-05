@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-06-05
+
+### Fixed
+- Backend build failed when shared contracts were imported from outside `dist/`; contracts are now synced into `src/shared/contracts` on prebuild, predev, and pretest (matching the frontend pattern).
+
 ## [1.2.0] - 2026-06-05
 
 ### Added
