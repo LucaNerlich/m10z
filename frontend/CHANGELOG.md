@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - Unused content-list fetchers, feed populate presets, and feed-route helpers.
 
+### Fixed
+- Production Content-Security-Policy now includes the configured Strapi origin in `connect-src`, so service workers (e.g. Umami session replay) and `fetch()` can load podcast audio and other Strapi uploads; previously only `media-src` allowed them.
+
 ## [1.7.4] - 2026-06-05
 
 ### Added

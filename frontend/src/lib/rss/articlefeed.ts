@@ -10,28 +10,14 @@ import {
     type StrapiContentMedia,
     type StrapiMediaRef,
     StrapiYoutube,
-} from '@/src/lib/rss/media';
+} from '@/src/lib/strapi/media';
+import {
+    type StrapiArticle,
+    type StrapiArticleFeedSingle,
+} from '@/src/lib/strapi/contentTypes';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
-export type StrapiArticle = StrapiContentMedia & {
-    id: number;
-    slug: string;
-    publishedAt: string | null;
-    categories?: StrapiCategoryRef[];
-    authors?: StrapiAuthor[];
-    youtube?: StrapiYoutube[];
-    content: string;
-    wordCount?: number | null;
-};
-
-export type StrapiArticleFeedSingle = {
-    channel: {
-        title: string;
-        description: string;
-        mail: string;
-        image: StrapiMediaRef;
-    };
-};
+export type {StrapiArticle, StrapiArticleFeedSingle};
 
 /**
  * Build an RSS 2.0 feed XML document for a channel from a list of articles.

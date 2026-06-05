@@ -11,32 +11,15 @@ import {
     type StrapiMedia,
     type StrapiMediaRef,
     StrapiYoutube,
-} from '@/src/lib/rss/media';
+} from '@/src/lib/strapi/media';
+import {
+    type StrapiAudioFeedSingle,
+    type StrapiPodcast,
+} from '@/src/lib/strapi/contentTypes';
 import {buildPodcastDownloadUrl} from '@/src/lib/analytics/podcastDownload';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
-export type StrapiPodcast = StrapiContentMedia & {
-    id: number;
-    slug: string;
-    publishedAt: string | null;
-    categories?: StrapiCategoryRef[];
-    youtube?: StrapiYoutube[];
-    shownotes?: string | null;
-    duration: number;
-    file: StrapiMediaRef;
-    authors?: StrapiAuthor[];
-    wordCount?: number | null;
-};
-
-export type StrapiAudioFeedSingle = {
-    channel: {
-        title: string;
-        description: string;
-        mail: string;
-        image: StrapiMediaRef;
-    };
-    episodeFooter?: string | null;
-};
+export type {StrapiPodcast, StrapiAudioFeedSingle};
 
 export type AudioFeedConfig = {
     siteUrl: string; // e.g. https://m10z.de

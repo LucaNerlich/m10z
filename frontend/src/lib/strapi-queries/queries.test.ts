@@ -1,7 +1,7 @@
 import qs from 'qs';
 import {describe, expect, test} from 'vitest';
 
-import {buildBySlugQuery, buildBySlugsQuery, buildListQuery} from './queries';
+import {buildBySlugQuery, buildBySlugsQuery, buildFeedListQuery, buildListQuery, buildSlugIndexQuery} from './queries';
 
 describe('buildBySlugQuery', () => {
     test('builds an $eq slug filter with pageSize 1', () => {
@@ -75,5 +75,30 @@ describe('buildListQuery', () => {
 
         const withoutFilters = buildListQuery({page: 1, pageSize: 25, populate: {}, fields: ['slug']});
         expect(withoutFilters).not.toContain('filters');
+    });
+});
+
+describe('buildSlugIndexQuery', () => {
+    test('requests slug index fields with pagination', () => {
+        const query = buildSlugIndexQuery({page: 2, pageSize: 100});
+        expect(qs.parse(query)).toEqual({
+            fields: ['slug', 'updatedAt', 'publishedAt'],
+            status: 'published',
+            pagination: {pageSize: '100', page: '2'},
+        });
+    });
+});
+
+describe('buildFeedListQuery', () => {
+    test('sorts by publishedAt for feed lists', () => {
+        const build = buildFeedListQuery({populate: {cover: true}, fields: ['slug']});
+        const query = build(1, 50);
+        expect(qs.parse(query)).toEqual({
+            sort: ['publishedAt:desc'],
+            status: 'published',
+            pagination: {pageSize: '50', page: '1'},
+            populate: {cover: 'true'},
+            fields: ['slug'],
+        });
     });
 });

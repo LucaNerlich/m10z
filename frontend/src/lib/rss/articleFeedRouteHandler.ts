@@ -13,7 +13,7 @@ import {
     fetchFeedSourceData,
 } from '@/src/lib/rss/feedDefinition';
 import {createFeedStrapiFetcher} from '@/src/lib/rss/feedFetcher';
-import {contentTag, feedSourceTag, feedTag} from '@/src/lib/cache/strapiTags';
+import {contentTag, feedSourceTag, feedTag} from '@/src/lib/strapi/cacheTags';
 
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

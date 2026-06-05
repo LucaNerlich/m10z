@@ -64,3 +64,21 @@ M12G view — the overview, leaderboard, game index, streaks, winner timeline, a
 single Game's page — is a pure projection of the Archive; none of them re-read the
 Months or re-aggregate independently. The Months come from a swappable source (the
 filesystem in production, fixtures in tests).
+
+## CMS (Strapi content layer)
+
+Shared entity shapes and media helpers for Articles, Podcasts, Authors, and Categories.
+Lives under `frontend/src/lib/strapi/` — not under `rss/`, which only generates XML.
+
+### Content access
+
+The module that reads Articles, Podcasts, Authors, and Categories from Strapi.
+Single-type pages (About, Legal, Feeds info) use a sibling reader in the same namespace.
+All reads cross the transport seam (`strapiTransport`) and attach cache tags from
+`strapi/cacheTags`.
+
+### Cache tag contract
+
+The authoritative vocabulary for Next.js cache tags on Strapi reads. Fetch surfaces
+attach tags here; invalidation taxonomy revalidates them on write. Coarse tags
+(e.g. `strapi:article`) intentionally cover fine-grained list tags.

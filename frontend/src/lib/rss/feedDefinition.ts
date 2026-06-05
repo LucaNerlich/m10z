@@ -7,7 +7,8 @@ import {
     fetchFeedSingle,
     type StrapiFeedFetcher,
 } from '@/src/lib/rss/feedFetcher';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapiContent';
+import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapi-queries/populate';
+import {buildFeedListQuery} from '@/src/lib/strapi-queries/queries';
 
 // Shared building blocks for the RSS / audio feeds. The two feed handlers differ only
 // in their entity (article vs podcast), populate/field sets, and XML generator; the
@@ -37,17 +38,7 @@ export function createFeedListQuery(args: {
     fields: readonly string[];
     populate: object;
 }): (page: number, pageSize: number) => string {
-    return (page: number, pageSize: number) =>
-        qs.stringify(
-            {
-                sort: ['publishedAt:desc'],
-                status: 'published',
-                pagination: {pageSize, page},
-                populate: args.populate,
-                fields: args.fields,
-            },
-            {encodeValuesOnly: true},
-        );
+    return buildFeedListQuery(args);
 }
 
 // The feed etag: a stable hash of the generator's seed plus the rendered document.

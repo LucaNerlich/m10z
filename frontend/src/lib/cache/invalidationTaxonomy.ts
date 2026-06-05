@@ -1,6 +1,9 @@
 import {routes} from '@/src/lib/routes';
 import {
+    ABOUT_PAGE_TAG,
+    ABOUT_TAG,
     HOME_PAGE_TAG,
+    LEGAL_TAGS,
     RELATED_CONTENT_TAG,
     SEARCH_INDEX_TAG,
     contentListTag,
@@ -8,7 +11,7 @@ import {
     feedSourceTag,
     feedTag,
     sitemapTag,
-} from '@/src/lib/cache/strapiTags';
+} from '@/src/lib/strapi/cacheTags';
 
 /**
  * Cross-wire contract — DO NOT DRIFT.
@@ -80,12 +83,12 @@ export const INVALIDATION_TAXONOMY = {
         paths: [],
     },
     about: {
-        tags: ['about', 'strapi:about'],
+        tags: [ABOUT_PAGE_TAG, ABOUT_TAG],
         pages: [routes.about],
         paths: [],
     },
     legal: {
-        tags: ['legal', 'imprint', 'privacy'],
+        tags: [...LEGAL_TAGS],
         pages: [],
         paths: [routes.imprint, routes.privacy],
     },

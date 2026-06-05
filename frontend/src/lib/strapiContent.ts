@@ -1,8 +1,7 @@
 import {cache} from 'react';
 
-import {type StrapiArticle} from '@/src/lib/rss/articlefeed';
-import {type StrapiPodcast} from '@/src/lib/rss/audiofeed';
-import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/rss/media';
+import {type StrapiArticle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
+import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/strapi/media';
 import {CACHE_REVALIDATE_CONTENT_PAGE, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {
     RELATED_CONTENT_TAG,
@@ -12,14 +11,13 @@ import {
     contentListPageTag,
     contentListTag,
     contentTag,
-} from '@/src/lib/cache/strapiTags';
-import {strapiFetch} from '@/src/lib/strapiTransport';
+} from '@/src/lib/strapi/cacheTags';
+import {fetchJson, fetchJsonNoStore} from '@/src/lib/strapi/fetchJson';
 import {
     ARTICLE_DETAIL_FIELDS,
     ARTICLE_LIST_FIELDS,
     AUTHOR_FIELDS_LIST,
     CATEGORY_FIELDS_LIST,
-    MEDIA_FIELDS,
     PODCAST_DETAIL_FIELDS,
     PODCAST_LIST_FIELDS,
     articleDetailPopulate,
@@ -34,31 +32,9 @@ import {
     podcastDetailPopulate,
     podcastListPopulate,
     podcastRelatedPopulate,
-    populateAuthorAvatar,
-    populateCategory,
 } from '@/src/lib/strapi-queries';
 
 export type {StrapiMediaRef};
-
-// Re-exports preserved for back-compat with existing imports (e.g. feed handlers).
-export {MEDIA_FIELDS, populateAuthorAvatar, populateCategory};
-
-// Author page tags now live in the shared tag module; re-exported so existing callers
-// (and tests) keep importing them from here.
-export {buildAuthorPageTags};
-
-const MAX_SLUGS = 150;
-
-type FetchOptions = {
-    tags: string[];
-    revalidate?: number;
-    timeout?: number;
-    context?: {
-        slug?: string;
-        contentType?: string;
-        populateOptions?: unknown;
-    };
-};
 
 export type PaginationMeta = {
     page: number;
@@ -83,26 +59,7 @@ type FetchPageOptions = {
     pageSize?: number;
     tags?: string[];
 };
-
-async function fetchJson<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
-    return strapiFetch<T>({
-        path: pathWithQuery,
-        cache: {mode: 'tags', tags: options.tags, revalidate: options.revalidate},
-        timeoutMs: options.timeout,
-        diagnosticName: 'strapi.fetchJson',
-        context: options.context,
-    });
-}
-
-async function fetchJsonNoStore<T>(pathWithQuery: string, options: FetchOptions): Promise<T> {
-    return strapiFetch<T>({
-        path: pathWithQuery,
-        cache: {mode: 'no-store'},
-        timeoutMs: options.timeout,
-        diagnosticName: 'strapi.fetchJsonNoStore',
-        context: options.context,
-    });
-}
+const MAX_SLUGS = 150;
 
 export function normalizePagination(
     meta: {pagination?: Partial<PaginationMeta>} | undefined,
