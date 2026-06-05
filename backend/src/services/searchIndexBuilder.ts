@@ -1,5 +1,7 @@
 import markdownToTxt from 'markdown-to-txt';
 
+import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '../../../shared/search/types';
+
 import {filterAndLimitMetrics} from './metricsHistory';
 
 type Strapi = {
@@ -14,28 +16,6 @@ type Strapi = {
     log: {
         info: (message: string) => void;
     };
-};
-
-type SearchRecordType = 'article' | 'podcast' | 'author' | 'category' | 'page';
-
-type SearchRecord = {
-    id: string;
-    type: SearchRecordType;
-    slug: string;
-    title: string;
-    description?: string | null;
-    content?: string | null;
-    href: string;
-    publishedAt?: string | null;
-    tags: string[];
-    coverImageUrl?: string | null;
-};
-
-type SearchIndexFile = {
-    version: number;
-    generatedAt: string;
-    total: number;
-    records: SearchRecord[];
 };
 
 type SearchIndexMetrics = {

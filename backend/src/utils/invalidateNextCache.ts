@@ -6,27 +6,17 @@
  * - Uses HTTPS URL from env (or local dev).
  * - Fails open: never blocks Strapi write path if Next is unreachable.
  *
- * Cross-wire contract — DO NOT DRIFT.
- *
- * Each entry in `INVALIDATE_TARGETS` must also exist as a key in the frontend's
- * `INVALIDATION_TAXONOMY` (`frontend/src/lib/cache/invalidationTaxonomy.ts`).
- * If the names diverge, the POST hits a 404 route and content stays stale.
+ * Target names are defined in `shared/invalidation/manifest.ts`.
  */
 
-export const INVALIDATE_TARGETS = [
-    'audiofeed',
-    'articlefeed',
-    'legal',
-    'about',
-    'search-index',
-    'sitemap',
-    'category',
-    'author',
-    'article',
-    'podcast',
-] as const;
+import {
+    INVALIDATION_TARGETS,
+    type InvalidationTargetName,
+} from '../../../shared/invalidation/manifest';
 
-export type InvalidateTarget = (typeof INVALIDATE_TARGETS)[number];
+export const INVALIDATE_TARGETS = INVALIDATION_TARGETS;
+
+export type InvalidateTarget = InvalidationTargetName;
 
 type Logger = {
     info?: (message: string) => void;

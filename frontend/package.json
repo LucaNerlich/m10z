@@ -3,14 +3,16 @@
     "version": "1.9.0",
     "private": true,
     "scripts": {
-        "predev": "node scripts/copy-changelog.mjs",
+        "predev": "node scripts/sync-shared-contracts.mjs && node scripts/copy-changelog.mjs",
         "dev": "next dev",
-        "prebuild": "node scripts/copy-changelog.mjs",
+        "prebuild": "node scripts/sync-shared-contracts.mjs && node scripts/copy-changelog.mjs",
         "build": "vitest run && next build",
         "start": "next start",
         "snapshot:feeds": "tsx scripts/feed-snapshot.ts",
         "snapshot:feeds:write": "tsx scripts/feed-snapshot.ts --write",
+        "pretest": "node scripts/sync-shared-contracts.mjs",
         "test": "vitest",
+        "pretest:run": "node scripts/sync-shared-contracts.mjs",
         "test:run": "vitest run"
     },
     "dependencies": {

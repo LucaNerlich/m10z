@@ -1,4 +1,4 @@
-import {fetchStrapiCollection} from '@/src/lib/strapi/reads';
+import {fetchStrapiCollection} from '@/src/lib/strapi/contentAccess';
 import {buildSlugIndexQuery} from '@/src/lib/strapi-queries';
 
 type StrapiSlugItem = {

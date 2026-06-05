@@ -1,8 +1,3 @@
-import {queueCacheInvalidation} from '../../../../services/asyncCacheInvalidationQueue';
+import {createContentInvalidationLifecycles} from '../../../../services/contentInvalidationLifecycles';
 
-export default {
-    async afterUpdate(_event: any) {
-        queueCacheInvalidation('legal', strapi);
-    },
-};
-
+export default createContentInvalidationLifecycles('api::imprint.imprint');

@@ -1,11 +1,10 @@
-import {scheduleDebouncedRefresh as scheduleArticleFeedRefresh} from '@/src/lib/rss/articleFeedRouteHandler';
-import {scheduleDebouncedRefresh as scheduleAudioFeedRefresh} from '@/src/lib/rss/audioFeedRouteHandler';
+import {feedRegistry} from '@/src/lib/rss/feedRegistry';
 
 import {type InvalidationTarget} from './invalidationTaxonomy';
 
 export const INVALIDATION_SIDE_EFFECTS: Partial<
     Record<InvalidationTarget, () => void | Promise<void>>
 > = {
-    articlefeed: scheduleArticleFeedRefresh,
-    audiofeed: scheduleAudioFeedRefresh,
+    articlefeed: () => feedRegistry.onInvalidate('articlefeed'),
+    audiofeed: () => feedRegistry.onInvalidate('audiofeed'),
 };

@@ -1,14 +1,3 @@
-import {queueCacheInvalidation} from '../../../../services/asyncCacheInvalidationQueue';
+import {createContentInvalidationLifecycles} from '../../../../services/contentInvalidationLifecycles';
 
-export default {
-    async afterUpdate(_event: any) {
-        queueCacheInvalidation('author', strapi);
-    },
-    async afterCreate(_event: any) {
-        queueCacheInvalidation('author', strapi);
-    },
-    async afterDelete(_event: any) {
-        queueCacheInvalidation('author', strapi);
-    },
-};
-
+export default createContentInvalidationLifecycles('api::author.author');

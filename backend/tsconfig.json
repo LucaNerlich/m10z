@@ -18,6 +18,8 @@
   "include": [
     // Include root files
     "./",
+    // Shared cross-workspace contracts
+    "../shared/**/*.ts",
     // Include all ts files
     "./**/*.ts",
     // Include all js files
