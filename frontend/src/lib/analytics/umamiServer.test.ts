@@ -8,6 +8,9 @@ function makeRequest(headers: Record<string, string> = {}): Request {
 
 type FetchCall = [string, {method: string; headers: Record<string, string>; body: string; signal?: unknown}];
 
+const UMAMI_COLLECTOR_USER_AGENT =
+    'Mozilla/5.0 (M10Z Server-Side Analytics; +https://m10z.de)';
+
 function mockFetchOk() {
     const fetchMock = vi.fn().mockResolvedValue(new Response(null, {status: 200}));
     vi.stubGlobal('fetch', fetchMock);
@@ -30,7 +33,7 @@ describe('sendPodcastDownloadEvent', () => {
         expect(fetchMock).not.toHaveBeenCalled();
     });
 
-    test('posts a custom event to /api/send with the expected payload and headers', async () => {
+    test('posts a custom event to /api/send with the expected payload and attribution headers', async () => {
         vi.stubEnv('NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'site-123');
         vi.stubEnv('NEXT_PUBLIC_UMAMI_URL', 'https://umami.example.test');
         vi.stubEnv('NEXT_PUBLIC_DOMAIN', 'https://m10z.de');
@@ -50,7 +53,7 @@ describe('sendPodcastDownloadEvent', () => {
         expect(url).toBe('https://umami.example.test/api/send');
         expect(init.method).toBe('POST');
         expect(init.headers['content-type']).toBe('application/json');
-        expect(init.headers['user-agent']).toBe('PodcatcherApp/2.0');
+        expect(init.headers['user-agent']).toBe(UMAMI_COLLECTOR_USER_AGENT);
         // Only the first hop of x-forwarded-for is forwarded.
         expect(init.headers['x-forwarded-for']).toBe('203.0.113.7');
         expect(init.signal).toBeInstanceOf(AbortSignal);
@@ -65,6 +68,20 @@ describe('sendPodcastDownloadEvent', () => {
                 data: {slug: 'ep-1', title: 'Episode 1'},
             },
         });
+    });
+
+    test('does not forward podcatcher user agents as the Umami collector user agent', async () => {
+        vi.stubEnv('NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'site-123');
+        const fetchMock = mockFetchOk();
+
+        await sendPodcastDownloadEvent({
+            slug: 'ep-1',
+            request: makeRequest({'user-agent': 'PodcatcherBot/1.0 (+https://example.test/rss)'}),
+        });
+
+        const [, init] = fetchMock.mock.calls[0] as FetchCall;
+        expect(init.headers['user-agent']).toBe(UMAMI_COLLECTOR_USER_AGENT);
+        expect(init.headers['user-agent']).not.toContain('PodcatcherBot');
     });
 
     test('omits title from event data when not provided', async () => {

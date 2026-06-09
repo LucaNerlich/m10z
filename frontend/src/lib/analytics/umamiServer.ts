@@ -9,9 +9,11 @@ export const PODCAST_DOWNLOAD_EVENT = 'podcast-download';
 
 const UMAMI_SEND_TIMEOUT_MS = 2000;
 
-// Umami silently drops events that arrive without a valid User-Agent header. When the
-// originating client did not send one, fall back to a stable identifier for the feed.
-const FALLBACK_USER_AGENT = 'M10Z-Feed/1.0 (+https://m10z.de)';
+// Umami silently drops events when the collector User-Agent is classified as a bot. Podcast
+// apps often include feed/crawler-like identifiers, so use a stable server-side collector UA
+// for the Umami POST instead of forwarding the podcatcher's raw header.
+const UMAMI_COLLECTOR_USER_AGENT =
+    'Mozilla/5.0 (M10Z Server-Side Analytics; +https://m10z.de)';
 
 /**
  * Resolve the public site hostname reported to Umami as `payload.hostname`.
@@ -38,8 +40,8 @@ function getReportingHostname(): string {
  *
  * @param args.slug - Episode slug (used as the event url path and a `data` property).
  * @param args.title - Optional episode title, recorded as a `data` property when present.
- * @param args.request - The incoming download request; its `User-Agent`/IP are forwarded so Umami
- *   can attribute the visitor and filter bots.
+ * @param args.request - The incoming download request; its IP is forwarded so Umami can attribute
+ *   the visitor while the collector User-Agent stays stable for server-side events.
  */
 export async function sendPodcastDownloadEvent(args: {
     slug: string;
@@ -52,8 +54,8 @@ export async function sendPodcastDownloadEvent(args: {
     const {slug, title, request} = args;
     const umamiUrl = (process.env.NEXT_PUBLIC_UMAMI_URL || 'https://umami.m10z.de').replace(/\/+$/, '');
 
-    // Forward the real client UA (REQUIRED by Umami) and IP so the download is attributed correctly.
-    const userAgent = request.headers.get('user-agent') || FALLBACK_USER_AGENT;
+    // Forward the client IP, but keep the collector UA stable so podcatcher identifiers are not
+    // mistaken for bot traffic by Umami's ingestion endpoint.
     const clientIp = getClientIp(request);
 
     const body = JSON.stringify({
@@ -69,7 +71,7 @@ export async function sendPodcastDownloadEvent(args: {
 
     const headers: Record<string, string> = {
         'content-type': 'application/json',
-        'user-agent': userAgent,
+        'user-agent': UMAMI_COLLECTOR_USER_AGENT,
     };
     if (clientIp && clientIp !== 'unknown') {
         headers['x-forwarded-for'] = clientIp;

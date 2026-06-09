@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.2] - 2026-06-09
+
+### Fixed
+- RSS podcast download tracking now uses a stable server-side analytics user agent so podcatcher downloads are not silently filtered as bot traffic.
+
+### Changed
+- Updated frontend and backend dependency patch versions.
+
 ## [1.10.1] - 2026-06-05
 
 ### Changed
