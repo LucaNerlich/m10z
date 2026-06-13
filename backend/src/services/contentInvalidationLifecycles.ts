@@ -14,7 +14,10 @@ type StrapiGlobal = {
     };
 };
 
-function runInvalidation(uid: string, event: StrapiLifecycleEvent, strapi: StrapiGlobal): void {
+// Strapi sets this global during application bootstrap.
+declare const strapi: StrapiGlobal | undefined;
+
+function runInvalidation(uid: string, event: StrapiLifecycleEvent, strapi: StrapiGlobal | null): void {
     const targets = LIFECYCLE_INVALIDATION[uid]?.[event];
     if (!targets) return;
 
@@ -37,7 +40,8 @@ export function createContentInvalidationLifecycles(uid: string): Record<string,
     const handlers: Record<string, (event: unknown) => void> = {};
     for (const event of Object.keys(config) as StrapiLifecycleEvent[]) {
         handlers[event] = () => {
-            runInvalidation(uid, event, strapi);
+            // eslint-disable-next-line no-undef
+            runInvalidation(uid, event, typeof strapi !== 'undefined' ? strapi : null);
         };
     }
     return handlers;
