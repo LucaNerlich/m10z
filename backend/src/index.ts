@@ -78,7 +78,7 @@ export default {
         // 2. durationMiddleware (runs before save)
         // 3. cacheInvalidationMiddleware (runs after save)
 
-        strapi.documents.use(async (context, next) => {
+        strapi.documents.use(async (context: any, next: any) => {
             // Pass strapi to context params so middleware can access it
             if (!context.params) {
                 context.params = {};
@@ -87,7 +87,7 @@ export default {
             return wordCountMiddleware(context, next);
         });
 
-        strapi.documents.use(async (context, next) => {
+        strapi.documents.use(async (context: any, next: any) => {
             // Pass strapi to context params so middleware can access it
             if (!context.params) {
                 context.params = {};
@@ -96,7 +96,7 @@ export default {
             return durationMiddleware(context, next);
         });
 
-        strapi.documents.use(async (context, next) => {
+        strapi.documents.use(async (context: any, next: any) => {
             // Pass strapi to context params so middleware can access it
             if (!context.params) {
                 context.params = {};
@@ -220,7 +220,7 @@ export default {
                 if (strapi.server?.httpServer) {
                     strapi.log.info('Closing HTTP server...');
                     await new Promise<void>((resolve, reject) => {
-                        strapi.server.httpServer.close((err) => {
+                        strapi.server.httpServer.close((err: unknown) => {
                             if (err) {
                                 strapi.log.error('Error closing HTTP server:', err);
                                 reject(err);

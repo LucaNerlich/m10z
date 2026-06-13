@@ -1,9 +1,11 @@
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
+import {headers} from 'next/headers';
 
 import {fetchArticleBySlugForPreview} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {verifySecret} from '@/src/lib/security/verifySecret';
+import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import PreviewBanner from '@/src/components/PreviewBanner';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
@@ -28,6 +30,10 @@ export default async function ArticlePreviewPage({params, searchParams}: PagePro
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) notFound();
+
+    const ip = (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+    const rl = checkRateLimit(`preview:${ip}`, {windowMs: 60_000, max: 20});
+    if (!rl.ok) notFound();
 
     const {secret, status} = await searchParams;
     const expected = process.env.STRAPI_PREVIEW_SECRET ?? null;

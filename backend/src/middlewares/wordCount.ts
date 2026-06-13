@@ -288,6 +288,7 @@ export async function wordCountMiddleware(
             if (data) {
                 // Get strapi instance from context
                 const strapiInstance = context.params?.strapi;
+                if (!strapiInstance) return next();
                 // Determine contentType based on uid
                 const contentType = context.contentType?.uid === 'api::article.article' ? 'article' : 'podcast';
                 await extractWordCount(strapiInstance, data, contentType);

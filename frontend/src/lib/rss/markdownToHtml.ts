@@ -81,6 +81,14 @@ export function markdownToHtml(markdownText: string): string {
     const DOMPurify = createDOMPurify(window as any);
     domPurifyInstancesCreated += 1;
 
+    // Ensure every <a target="_blank"> gets rel="noopener noreferrer" to
+    // prevent reverse tabnapping attacks in RSS reader UAs that honour the attribute.
+    DOMPurify.addHook('afterSanitizeAttributes', (node: Element) => {
+        if (node.tagName === 'A' && node.getAttribute('target') === '_blank') {
+            node.setAttribute('rel', 'noopener noreferrer');
+        }
+    });
+
     try {
         // Marked output can include HTML; we sanitize after conversion.
         const rawHtml = marked.parse(markdownText, {
