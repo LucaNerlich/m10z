@@ -42,6 +42,20 @@ describe('markdownToHtml — sanitization (XSS)', () => {
     });
 });
 
+describe('markdownToHtml — rel=noopener injection', () => {
+    test('adds rel="noopener noreferrer" to <a target="_blank"> links', () => {
+        const html = markdownToHtml('<a href="https://example.com" target="_blank">link</a>');
+        expect(html).toContain('rel="noopener noreferrer"');
+        expect(html).toContain('target="_blank"');
+        expect(html).toContain('href="https://example.com"');
+    });
+
+    test('does not add rel to links without target="_blank"', () => {
+        const html = markdownToHtml('[M10Z](https://m10z.de)');
+        expect(html).not.toContain('noopener');
+    });
+});
+
 describe('getMarkdownToHtmlState', () => {
     test('reports a non-empty allow-list and increments conversion telemetry', () => {
         const before = getMarkdownToHtmlState().conversions;
