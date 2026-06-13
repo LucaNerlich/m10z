@@ -1,4 +1,4 @@
-export default ({env}) => {
+export default ({env}: any) => {
     const clientUrl = env('CLIENT_URL');
 
     return {
@@ -41,7 +41,7 @@ export default ({env}) => {
                 allowedOrigins: [clientUrl, 'https://m10z.de', 'http://localhost:3000'].filter(Boolean),
                 // Maps Strapi content UIDs to frontend preview routes.
                 // Only articles and podcasts support preview; other types return null (no preview link).
-                async handler(uid, {documentId, locale, status}) {
+                async handler(uid: any, {documentId, locale, status}: any) {
                     if (!clientUrl) return null;
                     if (!documentId) return null;
 
