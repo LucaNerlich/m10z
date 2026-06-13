@@ -204,13 +204,35 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
             try {
                 const disk = await readFeedFromDisk();
                 if (disk) cachedFeed = disk;
-            } catch {
-                // ignore
+            } catch (err) {
+                console.warn('[feedCache] warmup: failed to read feed from disk', err);
+                recordDiagnosticEvent({
+                    ts: Date.now(),
+                    kind: 'route',
+                    name: `feed.${spec.feedKey}.warmup`,
+                    ok: false,
+                    durationMs: 0,
+                    detail:
+                        err instanceof Error
+                            ? {errorName: err.name, errorMessage: err.message}
+                            : {errorName: 'UnknownError'},
+                });
             }
             try {
                 await refresh();
-            } catch {
-                // ignore
+            } catch (err) {
+                console.warn('[feedCache] warmup: initial feed refresh failed', err);
+                recordDiagnosticEvent({
+                    ts: Date.now(),
+                    kind: 'route',
+                    name: `feed.${spec.feedKey}.warmup`,
+                    ok: false,
+                    durationMs: 0,
+                    detail:
+                        err instanceof Error
+                            ? {errorName: err.name, errorMessage: err.message}
+                            : {errorName: 'UnknownError'},
+                });
             }
         })();
     }
