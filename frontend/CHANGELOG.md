@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.3] - 2026-06-20
+
+### Fixed
+- Podcast download tracking now sends a non-bot User-Agent to Umami, so RSS/podcatcher downloads and on-site plays are recorded again — the previous "stable analytics" User-Agent was itself filtered as bot traffic. Downloads now also carry the originating app for per-app breakdowns.
+- Preview secret validation is now rate-limited.
+- Feed cache warmup errors are now logged instead of swallowed.
+- External links in RSS feed HTML now include `rel="noopener"`.
+
+### Changed
+- Upgraded Strapi and related dependencies.
+- Finalized the May 2026 post and updated the game list with rankings.
+
 ## [1.10.2] - 2026-06-09
 
 ### Fixed
