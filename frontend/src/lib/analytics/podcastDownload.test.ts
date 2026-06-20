@@ -5,6 +5,8 @@ import {
     buildPodcastDownloadUrl,
     isAllowedDownloadTarget,
     isPodcastDownloadTrackingEnabled,
+    normalizeClientUserAgent,
+    podcastClientLabel,
     shouldRecordDownloadForRange,
 } from './podcastDownload';
 
@@ -67,6 +69,43 @@ describe('shouldRecordDownloadForRange', () => {
         ['bytes=1024-2047', false],
     ])('range %s → record=%s', (range, expected) => {
         expect(shouldRecordDownloadForRange(range)).toBe(expected);
+    });
+});
+
+describe('normalizeClientUserAgent', () => {
+    test.each([
+        [null, null],
+        [undefined, null],
+        ['', null],
+        ['   ', null],
+        ['AntennaPod/3.5.0', 'AntennaPod/3.5.0'],
+        ['  Overcast/1.0  ', 'Overcast/1.0'],
+    ])('%s → %s', (input, expected) => {
+        expect(normalizeClientUserAgent(input)).toBe(expected);
+    });
+
+    test('truncates an oversized User-Agent to 256 chars', () => {
+        const long = `App/${'x'.repeat(500)}`;
+        const result = normalizeClientUserAgent(long);
+        expect(result).toHaveLength(256);
+        expect(long.startsWith(result as string)).toBe(true);
+    });
+});
+
+describe('podcastClientLabel', () => {
+    test.each([
+        [null, null],
+        [undefined, null],
+        ['', null],
+        ['   ', null],
+        ['AntennaPod/3.5.0', 'AntennaPod'],
+        ['Overcast/1.0 (+http://overcast.fm/; iOS podcast app)', 'Overcast'],
+        ['Spotify/8.9.0 iOS/17.0', 'Spotify'],
+        ['AppleCoreMedia/1.0.0 (iPhone; U; CPU OS 17_0 like Mac OS X)', 'AppleCoreMedia'],
+        ['Mozilla/5.0 (Macintosh; Intel Mac OS X)', 'Mozilla'],
+        ['  gPodder/3.11  ', 'gPodder'],
+    ])('%s → %s', (input, expected) => {
+        expect(podcastClientLabel(input)).toBe(expected);
     });
 });
 

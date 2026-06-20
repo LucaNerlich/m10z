@@ -1,4 +1,5 @@
 import {getClientIp} from '@/src/lib/net/getClientIp';
+import {normalizeClientUserAgent, podcastClientLabel} from '@/src/lib/analytics/podcastDownload';
 
 /**
  * Custom Umami event name recorded for podcast downloads initiated via the RSS feed.
@@ -9,11 +10,14 @@ export const PODCAST_DOWNLOAD_EVENT = 'podcast-download';
 
 const UMAMI_SEND_TIMEOUT_MS = 2000;
 
-// Umami silently drops events when the collector User-Agent is classified as a bot. Podcast
-// apps often include feed/crawler-like identifiers, so use a stable server-side collector UA
-// for the Umami POST instead of forwarding the podcatcher's raw header.
+// Umami runs `isbot` on its /api/send endpoint and silently drops any event whose collector
+// User-Agent is classified as a bot. Podcatcher UAs (AntennaPod, Overcast, gPodder, ...) are
+// themselves bot-classified, so forwarding them would lose every event — but so would a custom
+// UA containing a "+https://" URL or words like "Server-Side"/"Analytics". Use a plain, real
+// browser UA (the most robust against isbot) for the POST and preserve the actual client in the
+// event `data` (see `clientUserAgent`/`clientApp` below) instead.
 const UMAMI_COLLECTOR_USER_AGENT =
-    'Mozilla/5.0 (M10Z Server-Side Analytics; +https://m10z.de)';
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
 
 /**
  * Resolve the public site hostname reported to Umami as `payload.hostname`.
@@ -58,6 +62,17 @@ export async function sendPodcastDownloadEvent(args: {
     // mistaken for bot traffic by Umami's ingestion endpoint.
     const clientIp = getClientIp(request);
 
+    // The collector UA is overridden to pass Umami's bot filter, so record the real podcatcher/
+    // browser in the event data to allow breaking downloads down by app in Umami.
+    const rawUserAgent = request.headers.get('user-agent');
+    const clientUserAgent = normalizeClientUserAgent(rawUserAgent);
+    const clientApp = podcastClientLabel(rawUserAgent);
+
+    const data: Record<string, string> = {slug};
+    if (title) data.title = title;
+    if (clientApp) data.clientApp = clientApp;
+    if (clientUserAgent) data.clientUserAgent = clientUserAgent;
+
     const body = JSON.stringify({
         type: 'event',
         payload: {
@@ -65,7 +80,7 @@ export async function sendPodcastDownloadEvent(args: {
             hostname: getReportingHostname(),
             url: `/podcasts/${slug}`,
             name: PODCAST_DOWNLOAD_EVENT,
-            data: title ? {slug, title} : {slug},
+            data,
         },
     });
 

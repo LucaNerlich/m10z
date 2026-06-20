@@ -30,6 +30,32 @@ export function isPodcastDownloadTrackingEnabled(): boolean {
     return process.env.FEED_AUDIO_TRACKING_ENABLED === 'true';
 }
 
+// Upper bound for the raw client User-Agent recorded as Umami event data. Umami caps custom string
+// data values around 500 chars; stay well under that and avoid storing unbounded header input.
+const MAX_CLIENT_USER_AGENT_LENGTH = 256;
+
+/**
+ * Trim and length-cap a client User-Agent for storage as an Umami event `data` property. Returns
+ * `null` for empty/whitespace-only input so the property can be omitted entirely.
+ */
+export function normalizeClientUserAgent(userAgent: string | null | undefined): string | null {
+    const trimmed = userAgent?.trim();
+    if (!trimmed) return null;
+    return trimmed.slice(0, MAX_CLIENT_USER_AGENT_LENGTH);
+}
+
+/**
+ * Derive a coarse podcast-client label from a User-Agent for grouping downloads by app in Umami
+ * (e.g. `AntennaPod/3.5.0` -> `AntennaPod`, `Mozilla/5.0 (...)` -> `Mozilla`). Returns the leading
+ * product token before the first `/` or whitespace, or `null` when no usable token is present.
+ */
+export function podcastClientLabel(userAgent: string | null | undefined): string | null {
+    const trimmed = userAgent?.trim();
+    if (!trimmed) return null;
+    const token = trimmed.split(/[/\s]/, 1)[0];
+    return token || null;
+}
+
 // Match a Range request that does not start at byte 0 (a seek/continuation). The on-site <audio>
 // element issues many such requests while seeking/buffering; counting only initial requests keeps
 // one play (or one download) from inflating the metric.

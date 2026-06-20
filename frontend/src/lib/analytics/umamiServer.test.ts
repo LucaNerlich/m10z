@@ -9,7 +9,11 @@ function makeRequest(headers: Record<string, string> = {}): Request {
 type FetchCall = [string, {method: string; headers: Record<string, string>; body: string; signal?: unknown}];
 
 const UMAMI_COLLECTOR_USER_AGENT =
-    'Mozilla/5.0 (M10Z Server-Side Analytics; +https://m10z.de)';
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
+
+// The old collector UA was itself classified as a bot by isbot (Umami's filter), so Umami dropped
+// every server-side event. Guard against regressing to a bot-flagged UA.
+const BOT_FLAGGED_USER_AGENT = 'Mozilla/5.0 (M10Z Server-Side Analytics; +https://m10z.de)';
 
 function mockFetchOk() {
     const fetchMock = vi.fn().mockResolvedValue(new Response(null, {status: 200}));
@@ -54,6 +58,7 @@ describe('sendPodcastDownloadEvent', () => {
         expect(init.method).toBe('POST');
         expect(init.headers['content-type']).toBe('application/json');
         expect(init.headers['user-agent']).toBe(UMAMI_COLLECTOR_USER_AGENT);
+        expect(init.headers['user-agent']).not.toBe(BOT_FLAGGED_USER_AGENT);
         // Only the first hop of x-forwarded-for is forwarded.
         expect(init.headers['x-forwarded-for']).toBe('203.0.113.7');
         expect(init.signal).toBeInstanceOf(AbortSignal);
@@ -65,7 +70,13 @@ describe('sendPodcastDownloadEvent', () => {
                 hostname: 'm10z.de',
                 url: '/podcasts/ep-1',
                 name: PODCAST_DOWNLOAD_EVENT,
-                data: {slug: 'ep-1', title: 'Episode 1'},
+                // The real client is recorded in data since the collector UA is overridden.
+                data: {
+                    slug: 'ep-1',
+                    title: 'Episode 1',
+                    clientApp: 'PodcatcherApp',
+                    clientUserAgent: 'PodcatcherApp/2.0',
+                },
             },
         });
     });
@@ -91,7 +102,11 @@ describe('sendPodcastDownloadEvent', () => {
         await sendPodcastDownloadEvent({slug: 'ep-2', request: makeRequest({'user-agent': 'X'})});
 
         const [, init] = fetchMock.mock.calls[0] as FetchCall;
-        expect(JSON.parse(init.body).payload.data).toEqual({slug: 'ep-2'});
+        expect(JSON.parse(init.body).payload.data).toEqual({
+            slug: 'ep-2',
+            clientApp: 'X',
+            clientUserAgent: 'X',
+        });
     });
 
     test('falls back to a non-empty User-Agent when the request has none', async () => {
