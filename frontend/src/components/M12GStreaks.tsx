@@ -13,8 +13,8 @@ type M12GStreaksProps = {
 export function M12GStreaks({streaks}: M12GStreaksProps) {
     return (
         <section className={styles.wrapper}>
-            <StreakCard label='Längste Nominierungs-Serie' streak={streaks.nomination} />
-            <StreakCard label='Längste Siegesserie' streak={streaks.win} />
+            <StreakCard label="Längste Nominierungs-Serie" streak={streaks.nomination} />
+            <StreakCard label="Längste Siegesserie" streak={streaks.win} />
         </section>
     );
 }

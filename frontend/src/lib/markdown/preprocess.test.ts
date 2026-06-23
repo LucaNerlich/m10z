@@ -33,7 +33,7 @@ describe('preprocessMarkdown', () => {
 
     test('applies multiple transforms together', () => {
         expect(preprocessMarkdown('==a== and ++b++ and ^c^ and ~d~')).toBe(
-            '<mark>a</mark> and <ins>b</ins> and <sup>c</sup> and <sub>d</sub>'
+            '<mark>a</mark> and <ins>b</ins> and <sup>c</sup> and <sub>d</sub>',
         );
     });
 });

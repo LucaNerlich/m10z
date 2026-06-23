@@ -1,6 +1,6 @@
 import styles from './M12GMonthCard.module.css';
 import {type M12GMonthWithWinner} from '@/src/lib/m12g/types';
-import {formatVotes, formatMonthLong} from '@/src/lib/m12g/formatters';
+import {formatMonthLong, formatVotes} from '@/src/lib/m12g/formatters';
 import {ChatsCircleIcon} from '@phosphor-icons/react/dist/ssr';
 
 type M12GMonthCardProps = {
@@ -32,7 +32,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                                 const isTitleDefender = month.titleDefenders.includes(game.name);
                                 return (
                                     <div key={`${game.name}-${game.link}`}
-                                        className={styles.winnerItem}>
+                                         className={styles.winnerItem}>
                                         <span className={styles.nameGroup}>
                                             <a
                                                 className={styles.gameLink}

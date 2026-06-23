@@ -1,9 +1,9 @@
 import {generateArticleFeedXml} from '@/src/lib/rss/articlefeed';
 import {
-    FEED_CHANNEL_SINGLE_QUERY,
-    FEED_SITE_URL,
     computeFeedEtag,
     createFeedListQuery,
+    FEED_CHANNEL_SINGLE_QUERY,
+    FEED_SITE_URL,
     feedListPopulate,
     fetchFeedSourceData,
 } from '@/src/lib/rss/feedDefinition';

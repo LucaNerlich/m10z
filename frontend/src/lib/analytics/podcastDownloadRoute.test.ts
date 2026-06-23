@@ -1,6 +1,7 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
+import {GET} from '@/app/api/podcast-download/[slug]/route';
 
 const mocks = vi.hoisted(() => ({
     afterCallbacks: [] as Array<() => void | Promise<void>>,
@@ -25,8 +26,6 @@ vi.mock('@/src/lib/strapiContent', () => ({
 vi.mock('@/src/lib/analytics/umamiServer', () => ({
     sendPodcastDownloadEvent: mocks.sendPodcastDownloadEvent,
 }));
-
-import {GET} from '@/app/api/podcast-download/[slug]/route';
 
 function makePodcast(overrides: Partial<StrapiPodcast> = {}): StrapiPodcast {
     return {

@@ -5,12 +5,7 @@ import {
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
     pickCoverOrBannerMedia,
-    type StrapiAuthor,
-    type StrapiCategoryRef,
-    type StrapiContentMedia,
     type StrapiMedia,
-    type StrapiMediaRef,
-    StrapiYoutube,
 } from '@/src/lib/strapi/media';
 import {type StrapiAudioFeedSingle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {buildPodcastDownloadUrl} from '@/src/lib/analytics/podcastDownload';

@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {M12GParseError, isMonthId, parseMonth} from './parseMonth';
+import {isMonthId, M12GParseError, parseMonth} from './parseMonth';
 
 const validFrontmatter = [
     '---',
@@ -146,7 +146,7 @@ describe('parseMonth — error cases', () => {
         expect(() => parseMonth(fm, '2025-12')).toThrow(/missing required 'finalized'/);
     });
 
-    test("non-boolean finalized throws", () => {
+    test('non-boolean finalized throws', () => {
         const fm = ['---', 'forum: x', 'title: x', 'finalized: maybe', '---'].join('\n');
         expect(() => parseMonth(fm, '2025-12')).toThrow(/finalized must be/);
     });

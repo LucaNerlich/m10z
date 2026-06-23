@@ -12,7 +12,7 @@ describe('deriveExcerpt', () => {
 
     test('strips common markdown while keeping link and code text', () => {
         expect(deriveExcerpt('# Title\n\nSome **bold** and [a link](https://x) and `code`.')).toBe(
-            'Title Some bold and a link and code.'
+            'Title Some bold and a link and code.',
         );
     });
 

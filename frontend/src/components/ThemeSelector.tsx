@@ -25,7 +25,8 @@ const THEME_OPTIONS: ThemeOption[] = [
 const DEFAULT_THEME: Theme = 'system';
 // useSyncExternalStore requires a subscribe function even for "snapshot-only" usage.
 // subscribeNoop never subscribes to updates — we re-read on each render instead.
-const subscribeNoop = () => () => {};
+const subscribeNoop = () => () => {
+};
 // getIsClient / getIsClientServer discriminate SSR from client for hydration safety.
 const getIsClient = () => true;
 const getIsClientServer = () => false;

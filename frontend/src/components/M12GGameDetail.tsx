@@ -19,7 +19,7 @@ export function M12GGameDetail({game}: M12GGameDetailProps) {
             <header className={styles.header}>
                 <h1 className={styles.title}>{game.name}</h1>
                 <div className={styles.subline}>
-                    <a href={game.link} target='_blank' rel='noreferrer noopener'>
+                    <a href={game.link} target="_blank" rel="noreferrer noopener">
                         Store-Seite öffnen ↗
                     </a>
                 </div>
@@ -47,10 +47,11 @@ export function M12GGameDetail({game}: M12GGameDetailProps) {
                         <div key={entry.month} className={styles.row}>
                             <span className={styles.monthLabel}>
                                 {entry.isWinner ? (
-                                    <CrownSimpleIcon size={16} weight='fill' className={styles.crown} aria-label='Sieger' />
+                                    <CrownSimpleIcon size={16} weight="fill" className={styles.crown}
+                                                     aria-label="Sieger" />
                                 ) : null}
                                 {entry.forumThreadUrl ? (
-                                    <a href={entry.forumThreadUrl} target='_blank' rel='noreferrer noopener'>
+                                    <a href={entry.forumThreadUrl} target="_blank" rel="noreferrer noopener">
                                         {formatMonthLong(entry.month)}
                                     </a>
                                 ) : (

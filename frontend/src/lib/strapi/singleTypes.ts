@@ -2,13 +2,8 @@ import qs from 'qs';
 import {cache} from 'react';
 
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {
-    ABOUT_PAGE_TAG,
-    ABOUT_TAG,
-    LEGAL_TAGS,
-    feedSourceTag,
-} from '@/src/lib/strapi/cacheTags';
-import {fetchStrapiSingle, type FetchStrapiOptions} from '@/src/lib/strapi/contentAccess';
+import {ABOUT_PAGE_TAG, ABOUT_TAG, feedSourceTag, LEGAL_TAGS} from '@/src/lib/strapi/cacheTags';
+import {type FetchStrapiOptions, fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
 
 export type StrapiLegalDoc = {
@@ -189,7 +184,9 @@ async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promi
         assertIsFeeds(res.data);
         return {
             ...res.data,
-            content: typeof (res.data as {content?: unknown}).content === 'string' ? (res.data as StrapiFeedsInfo).content : '',
+            content: typeof (res.data as {
+                content?: unknown
+            }).content === 'string' ? (res.data as StrapiFeedsInfo).content : '',
         };
     } catch (err) {
         console.warn(`[feeds] Failed to fetch feeds: ${err instanceof Error ? err.message : 'unknown error'}`);

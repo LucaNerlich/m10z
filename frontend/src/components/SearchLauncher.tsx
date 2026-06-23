@@ -11,7 +11,8 @@ const shortcutKeySearch = 'K';
 // Hoist RegExp pattern to module scope
 const REGEX_APPLE_PLATFORM = /Mac|iPhone|iPad|iPod/;
 
-const subscribeNoop = () => () => {};
+const subscribeNoop = () => () => {
+};
 const getIsMac = () => REGEX_APPLE_PLATFORM.test(navigator.platform);
 const getIsMacServer = () => false;
 

@@ -1,5 +1,4 @@
-import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
-import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
+import {type StrapiArticle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
@@ -51,7 +50,7 @@ export function RelatedContent({articles = [], podcasts = [], maxItems = 3}: Rel
                         <ArticleCard key={`a-${item.data.slug}`} article={item.data} />
                     ) : (
                         <PodcastCard key={`p-${item.data.slug}`} podcast={item.data} />
-                    )
+                    ),
                 )}
             </ContentGrid>
         </section>

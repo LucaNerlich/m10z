@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 function buildLinkList(
     entries: {slug: string}[],
-    buildPath: (slug: string) => string
+    buildPath: (slug: string) => string,
 ): string {
     return entries
         .map(({slug}) => {

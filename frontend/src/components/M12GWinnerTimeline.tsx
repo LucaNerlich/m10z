@@ -1,5 +1,5 @@
 import {type M12GWinnerEntry} from '@/src/lib/m12g/types';
-import {formatVotes, formatMonthLong} from '@/src/lib/m12g/formatters';
+import {formatMonthLong, formatVotes} from '@/src/lib/m12g/formatters';
 
 import styles from './M12GWinnerTimeline.module.css';
 

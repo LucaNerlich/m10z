@@ -29,7 +29,7 @@ describe('categoryTitlesToKeywords', () => {
                 {slug: 'a', title: 'News'},
                 {slug: 'b', title: 'Reviews'},
                 {slug: 'c', title: 'News'},
-            ])
+            ]),
         ).toBe('News, Reviews');
     });
 });

@@ -1,6 +1,14 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
+import {GET} from './route';
 
-const {verifySecret, checkRateLimit, getRecentDiagnosticEvents, getAudioFeedRuntimeState, getSchedulerState, getClientIp} =
+const {
+    verifySecret,
+    checkRateLimit,
+    getRecentDiagnosticEvents,
+    getAudioFeedRuntimeState,
+    getSchedulerState,
+    getClientIp,
+} =
     vi.hoisted(() => ({
         verifySecret: vi.fn(),
         checkRateLimit: vi.fn(),
@@ -19,8 +27,6 @@ vi.mock('@/src/lib/rss/articleFeedRouteHandler', () => ({
     buildArticleFeedResponse: vi.fn(),
 }));
 vi.mock('@/src/lib/net/getClientIp', () => ({getClientIp}));
-
-import {GET} from './route';
 
 function makeRequest(token?: string): Request {
     const url = token

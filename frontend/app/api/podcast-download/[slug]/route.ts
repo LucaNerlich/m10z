@@ -1,9 +1,6 @@
 import {after, NextResponse} from 'next/server';
 
-import {
-    isAllowedDownloadTarget,
-    shouldRecordDownloadForRange,
-} from '@/src/lib/analytics/podcastDownload';
+import {isAllowedDownloadTarget, shouldRecordDownloadForRange} from '@/src/lib/analytics/podcastDownload';
 import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';

@@ -27,7 +27,13 @@ const channel: StrapiAudioFeedSingle['channel'] = {
     description: 'Test feed',
     mail: 'm10z@example.test',
     // Absolute URL so the generator needs no STRAPI_URL env to resolve media.
-    image: {url: 'https://cdn.example.test/cover.jpg', mime: 'image/jpeg', width: 1400, height: 1400, sizeInBytes: 1000},
+    image: {
+        url: 'https://cdn.example.test/cover.jpg',
+        mime: 'image/jpeg',
+        width: 1400,
+        height: 1400,
+        sizeInBytes: 1000,
+    },
 };
 
 const episode: StrapiPodcast = {

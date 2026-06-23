@@ -1,4 +1,6 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
+import {handleInvalidation} from './handleInvalidation';
+import {INVALIDATION_TAXONOMY} from './invalidationTaxonomy';
 
 // Hoisted so the vi.mock factories below can reference the spies safely.
 const {revalidateTag, revalidatePath, articleSideEffect} = vi.hoisted(() => ({
@@ -13,9 +15,6 @@ vi.mock('next/cache', () => ({revalidateTag, revalidatePath}));
 vi.mock('./invalidationSideEffects', () => ({
     INVALIDATION_SIDE_EFFECTS: {article: articleSideEffect},
 }));
-
-import {handleInvalidation} from './handleInvalidation';
-import {INVALIDATION_TAXONOMY} from './invalidationTaxonomy';
 
 const SECRET = 'test-secret';
 

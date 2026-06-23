@@ -26,12 +26,12 @@ type StaticListMetadataInput = {
  * with its own copy.
  */
 export function buildStaticListMetadata({
-    title,
-    description,
-    path,
-    ogImageAlt,
-    ogType = 'website',
-}: StaticListMetadataInput): Metadata {
+                                            title,
+                                            description,
+                                            path,
+                                            ogImageAlt,
+                                            ogType = 'website',
+                                        }: StaticListMetadataInput): Metadata {
     const url = absoluteRoute(path);
     const image = {
         url: absoluteRoute(STATIC_OG_IMAGE_PATH),

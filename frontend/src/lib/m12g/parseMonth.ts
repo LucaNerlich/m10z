@@ -102,16 +102,16 @@ export function parseMonth(raw: string, monthId: string): M12GMonthWithWinner | 
     }
     const {frontmatter, body} = splitFrontmatter(raw, monthId);
     if (frontmatter.finalized === undefined) {
-        throw new M12GParseError(monthId, "missing required 'finalized' field");
+        throw new M12GParseError(monthId, 'missing required \'finalized\' field');
     }
     if (!frontmatter.finalized) {
         return null;
     }
     if (!frontmatter.forum) {
-        throw new M12GParseError(monthId, "missing required 'forum' field on finalized month");
+        throw new M12GParseError(monthId, 'missing required \'forum\' field on finalized month');
     }
     if (!frontmatter.title) {
-        throw new M12GParseError(monthId, "missing required 'title' field on finalized month");
+        throw new M12GParseError(monthId, 'missing required \'title\' field on finalized month');
     }
 
     const games = parseGames(body, monthId);

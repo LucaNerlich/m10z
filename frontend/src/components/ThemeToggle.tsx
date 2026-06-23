@@ -1,19 +1,14 @@
 'use client';
 
 import {useEffect, useState, useSyncExternalStore} from 'react';
-import {SunIcon, MoonIcon} from '@phosphor-icons/react/dist/ssr';
+import {MoonIcon, SunIcon} from '@phosphor-icons/react/dist/ssr';
 
-import {
-    applyTheme,
-    getStoredTheme,
-    resolveEffectiveTheme,
-    STORAGE_KEY,
-    type Theme,
-} from '@/src/lib/theme/initTheme';
+import {applyTheme, getStoredTheme, resolveEffectiveTheme, STORAGE_KEY, type Theme} from '@/src/lib/theme/initTheme';
 
 import styles from './ThemeToggle.module.css';
 
-const subscribeNoop = () => () => {};
+const subscribeNoop = () => () => {
+};
 const getIsClient = () => true;
 const getIsClientServer = () => false;
 

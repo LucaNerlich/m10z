@@ -187,7 +187,11 @@ async function fetchOnce<T>(req: StrapiRequest, url: URL, timeout: number): Prom
                 name: diagnosticName,
                 ok: false,
                 durationMs,
-                detail: {path: url.pathname, error: errorCode || 'UNKNOWN_SOCKET_ERROR', tagCount: tagCountOf(req.cache)},
+                detail: {
+                    path: url.pathname,
+                    error: errorCode || 'UNKNOWN_SOCKET_ERROR',
+                    tagCount: tagCountOf(req.cache),
+                },
             });
             throw new Error(`Strapi connection error (${errorCode}): ${err.message}`);
         }

@@ -12,7 +12,7 @@ const Mermaid = dynamic(
     {
         loading: () => <pre className={styles.pre}>Loading diagram...</pre>,
         ssr: false, // Mermaid requires DOM APIs
-    }
+    },
 );
 
 export type CodeProps = React.ComponentProps<'code'> & {

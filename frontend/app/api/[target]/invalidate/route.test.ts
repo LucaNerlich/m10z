@@ -1,12 +1,11 @@
 import {describe, expect, test, vi} from 'vitest';
+import {POST} from './route';
 
 const {handleInvalidation} = vi.hoisted(() => ({
     handleInvalidation: vi.fn(),
 }));
 
 vi.mock('@/src/lib/cache/handleInvalidation', () => ({handleInvalidation}));
-
-import {POST} from './route';
 
 describe('POST /api/[target]/invalidate', () => {
     test('delegates to handleInvalidation with the resolved target param and returns its response', async () => {

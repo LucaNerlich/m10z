@@ -7,7 +7,7 @@ import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from './xml';
 describe('escapeXml', () => {
     test('escapes all five XML metacharacters', () => {
         expect(escapeXml(`<a href="x">Tom & Jerry's</a>`)).toBe(
-            '&lt;a href=&quot;x&quot;&gt;Tom &amp; Jerry&apos;s&lt;/a&gt;'
+            '&lt;a href=&quot;x&quot;&gt;Tom &amp; Jerry&apos;s&lt;/a&gt;',
         );
     });
 
@@ -42,13 +42,13 @@ describe('escapeCdata', () => {
 describe('sha256Hex', () => {
     test('matches the well-known SHA-256 digest of "abc"', () => {
         expect(sha256Hex('abc')).toBe(
-            'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'
+            'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
         );
     });
 
     test('matches the SHA-256 digest of the empty string', () => {
         expect(sha256Hex('')).toBe(
-            'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+            'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
         );
     });
 

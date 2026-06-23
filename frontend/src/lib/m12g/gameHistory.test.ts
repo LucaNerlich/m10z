@@ -1,14 +1,7 @@
 import {describe, expect, test} from 'vitest';
 
 import {game, month} from './m12gFixtures';
-import {
-    buildGameHistory,
-    computeStreaks,
-    type GameHistory,
-    gameSlug,
-    toGameIndex,
-    toLeaderboard,
-} from './gameHistory';
+import {buildGameHistory, computeStreaks, type GameHistory, gameSlug, toGameIndex, toLeaderboard} from './gameHistory';
 
 // Minimal GameHistory fixture for the projection functions (toLeaderboard/toGameIndex).
 function history(name: string, months: string[], extra: Partial<GameHistory> = {}): GameHistory {

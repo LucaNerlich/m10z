@@ -26,7 +26,8 @@ const FONT_OPTIONS: FontOption[] = [
 
 const DEFAULT_FONT = 'poppins';
 
-const subscribeNoop = () => () => {};
+const subscribeNoop = () => () => {
+};
 const getIsClient = () => true;
 const getIsClientServer = () => false;
 

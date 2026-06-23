@@ -79,27 +79,27 @@ export default function RootLayout({
             suppressHydrationWarning
         >
         <body>
-            <a href="#main-content" className="skip-to-content">Zum Inhalt springen</a>
-            <Script id="theme-init" strategy="beforeInteractive" src="/theme-init.js" />
-            <ScrollRestoration />
-            <Header />
-            <main id="main-content">
-                <ContentLayout>{children}</ContentLayout>
-            </main>
-            <Footer />
-            <UmamiAnalytics />
-            <Script
-                id="jsonld-organization"
-                type="application/ld+json"
-                strategy="beforeInteractive"
-                dangerouslySetInnerHTML={{__html: stringifyJsonLd(orgJsonLd)}}
-            />
-            <Script
-                id="jsonld-website"
-                type="application/ld+json"
-                strategy="beforeInteractive"
-                dangerouslySetInnerHTML={{__html: stringifyJsonLd(websiteJsonLd)}}
-            />
+        <a href="#main-content" className="skip-to-content">Zum Inhalt springen</a>
+        <Script id="theme-init" strategy="beforeInteractive" src="/theme-init.js" />
+        <ScrollRestoration />
+        <Header />
+        <main id="main-content">
+            <ContentLayout>{children}</ContentLayout>
+        </main>
+        <Footer />
+        <UmamiAnalytics />
+        <Script
+            id="jsonld-organization"
+            type="application/ld+json"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{__html: stringifyJsonLd(orgJsonLd)}}
+        />
+        <Script
+            id="jsonld-website"
+            type="application/ld+json"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{__html: stringifyJsonLd(websiteJsonLd)}}
+        />
         </body>
         </html>
     );

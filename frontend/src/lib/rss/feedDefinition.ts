@@ -2,11 +2,7 @@ import qs from 'qs';
 
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {normalizeBaseUrl} from '@/src/lib/rss/feedRoute';
-import {
-    fetchAllPaginated,
-    fetchFeedSingle,
-    type StrapiFeedFetcher,
-} from '@/src/lib/rss/feedFetcher';
+import {fetchAllPaginated, fetchFeedSingle, type StrapiFeedFetcher} from '@/src/lib/rss/feedFetcher';
 import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapi-queries/populate';
 import {buildFeedListQuery} from '@/src/lib/strapi-queries/queries';
 

@@ -16,11 +16,7 @@ import {Heading} from '@/src/components/markdown/Heading';
 import {Image} from '@/src/components/markdown/Image';
 
 import {preprocessMarkdown} from './preprocess';
-import {
-    REHYPE_EXTERNAL_LINKS_OPTIONS,
-    REHYPE_SANITIZE_SCHEMA,
-    REMARK_REHYPE_OPTIONS,
-} from './plugins';
+import {REHYPE_EXTERNAL_LINKS_OPTIONS, REHYPE_SANITIZE_SCHEMA, REMARK_REHYPE_OPTIONS} from './plugins';
 
 export type MarkdownProps = {
     markdown: string;

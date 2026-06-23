@@ -51,10 +51,10 @@ describe('mediaUrlToAbsolute', () => {
 
     test('returns absolute http(s) URLs unchanged', () => {
         expect(mediaUrlToAbsolute({media: {url: 'https://cdn.example.test/a.jpg'}})).toBe(
-            'https://cdn.example.test/a.jpg'
+            'https://cdn.example.test/a.jpg',
         );
         expect(mediaUrlToAbsolute({media: {url: 'http://cdn.example.test/a.jpg'}})).toBe(
-            'http://cdn.example.test/a.jpg'
+            'http://cdn.example.test/a.jpg',
         );
     });
 
@@ -62,7 +62,7 @@ describe('mediaUrlToAbsolute', () => {
         vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de/');
         vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
         expect(mediaUrlToAbsolute({media: {url: '/uploads/a.jpg'}})).toBe(
-            'https://cms.m10z.de/uploads/a.jpg'
+            'https://cms.m10z.de/uploads/a.jpg',
         );
     });
 
@@ -70,7 +70,7 @@ describe('mediaUrlToAbsolute', () => {
         vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
         vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
         expect(mediaUrlToAbsolute({media: {url: 'uploads/a.jpg'}})).toBe(
-            'https://cms.m10z.de/uploads/a.jpg'
+            'https://cms.m10z.de/uploads/a.jpg',
         );
     });
 
@@ -78,7 +78,7 @@ describe('mediaUrlToAbsolute', () => {
         vi.stubEnv('STRAPI_URL', undefined);
         vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', 'https://public.m10z.de');
         expect(mediaUrlToAbsolute({media: {url: '/uploads/a.jpg'}})).toBe(
-            'https://public.m10z.de/uploads/a.jpg'
+            'https://public.m10z.de/uploads/a.jpg',
         );
     });
 
@@ -95,7 +95,11 @@ describe('pick*Media fallbacks', () => {
         cover: {url: '/cover.jpg'},
         banner: {url: '/banner.jpg'},
     };
-    const categories: StrapiCategoryRef[] = [{slug: 'c', cover: {url: '/cat-cover.jpg'}, banner: {url: '/cat-banner.jpg'}}];
+    const categories: StrapiCategoryRef[] = [{
+        slug: 'c',
+        cover: {url: '/cat-cover.jpg'},
+        banner: {url: '/cat-banner.jpg'},
+    }];
 
     test('pickCoverMedia prefers the content cover', () => {
         expect(pickCoverMedia(content, categories)?.url).toBe('/cover.jpg');
@@ -104,7 +108,7 @@ describe('pick*Media fallbacks', () => {
     test('pickCoverMedia falls back to the first category cover, then image', () => {
         expect(pickCoverMedia({title: 'T'}, categories)?.url).toBe('/cat-cover.jpg');
         expect(pickCoverMedia({title: 'T'}, [{slug: 'c', image: {url: '/cat-image.jpg'}}])?.url).toBe(
-            '/cat-image.jpg'
+            '/cat-image.jpg',
         );
     });
 

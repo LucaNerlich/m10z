@@ -1,6 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/strapi/media';
+import {
+    getOptimalMediaFormat,
+    mediaUrlToAbsolute,
+    normalizeStrapiMedia,
+    type StrapiAuthor,
+} from '@/src/lib/strapi/media';
 import {formatAuthorList} from '@/src/lib/listFormatters';
 import {routes} from '@/src/lib/routes';
 import styles from './AuthorList.module.css';

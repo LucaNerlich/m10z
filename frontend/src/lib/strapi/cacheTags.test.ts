@@ -4,14 +4,14 @@ import {INVALIDATION_TAXONOMY} from '@/src/lib/cache/invalidationTaxonomy';
 import {
     ABOUT_PAGE_TAG,
     ABOUT_TAG,
-    FETCH_TAG_SURFACES,
-    LEGAL_TAGS,
     buildAuthorPageTags,
     contentBySlugsTag,
     contentItemTag,
     contentListPageTag,
     contentListTag,
     contentTag,
+    FETCH_TAG_SURFACES,
+    LEGAL_TAGS,
 } from './cacheTags';
 
 function allInvalidationTags(): Set<string> {
@@ -32,7 +32,10 @@ describe('cache tag parity', () => {
             {name: 'contentBySlug', tags: FETCH_TAG_SURFACES.contentBySlug('article', 'foo')},
             {name: 'contentListPage', tags: FETCH_TAG_SURFACES.contentListPage('article')},
             {name: 'contentBySlugs', tags: FETCH_TAG_SURFACES.contentBySlugs('podcast')},
-            {name: 'contentAuthorPage', tags: FETCH_TAG_SURFACES.contentAuthorPage({contentType: 'article', authorSlug: 'alice'})},
+            {
+                name: 'contentAuthorPage',
+                tags: FETCH_TAG_SURFACES.contentAuthorPage({contentType: 'article', authorSlug: 'alice'}),
+            },
             {name: 'relatedContent', tags: FETCH_TAG_SURFACES.relatedContent('article')},
             {name: 'authorList', tags: FETCH_TAG_SURFACES.authorList()},
             {name: 'authorBySlug', tags: FETCH_TAG_SURFACES.authorBySlug('alice')},

@@ -69,7 +69,7 @@ describe('defaultStrapiTransport (via strapiFetch)', () => {
         expect((anon.headers as Headers).get('Authorization')).toBeNull();
     });
 
-    test("auth 'privileged' attaches the env token; explicit token wins", async () => {
+    test('auth \'privileged\' attaches the env token; explicit token wins', async () => {
         const fetchMock = vi.fn().mockResolvedValue(okJson({}));
         vi.stubGlobal('fetch', fetchMock);
         vi.stubEnv('STRAPI_API_TOKEN', 'env-token');

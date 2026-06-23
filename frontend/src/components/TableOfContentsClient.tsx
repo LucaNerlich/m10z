@@ -54,7 +54,7 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
                 // -66% bottom: only watch the top ~34% of the viewport, so the
                 // active heading updates as the user scrolls past each section.
                 rootMargin: '-60px 0px -66% 0px',
-            }
+            },
         );
 
         for (const el of elements) {
@@ -67,7 +67,7 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
     }, [headings]);
 
     return (
-        <nav className={styles.nav} aria-label='Inhaltsverzeichnis'>
+        <nav className={styles.nav} aria-label="Inhaltsverzeichnis">
             <p className={styles.title}>Inhalt</p>
             <ol className={styles.list}>
                 {headings.map((heading, index) => {
@@ -77,8 +77,8 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
                         heading.depth === 2
                             ? styles.depth2
                             : heading.depth === 3
-                              ? styles.depth3
-                              : styles.depth4;
+                                ? styles.depth3
+                                : styles.depth4;
                     const linkClass = [
                         styles.link,
                         depthClass,

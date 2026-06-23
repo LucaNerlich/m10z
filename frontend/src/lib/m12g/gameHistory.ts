@@ -1,8 +1,4 @@
-import {
-    type M12GGameIndexEntry,
-    type M12GLeaderboardEntry,
-    type M12GMonthWithWinner,
-} from './types';
+import {type M12GGameIndexEntry, type M12GLeaderboardEntry, type M12GMonthWithWinner} from './types';
 
 // One Month in which a Game was nominated, with that Month's outcome for the Game.
 // Carries enough Month context (title, forum thread) to render a Game's timeline

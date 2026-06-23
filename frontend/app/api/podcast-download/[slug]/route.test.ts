@@ -1,6 +1,16 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
+import {GET} from './route';
 
-const {fetchPodcastBySlug, sendPodcastDownloadEvent, isAllowedDownloadTarget, shouldRecordDownloadForRange, mediaUrlToAbsolute, normalizeStrapiMedia, getStrapiApiBaseUrl, after} =
+const {
+    fetchPodcastBySlug,
+    sendPodcastDownloadEvent,
+    isAllowedDownloadTarget,
+    shouldRecordDownloadForRange,
+    mediaUrlToAbsolute,
+    normalizeStrapiMedia,
+    getStrapiApiBaseUrl,
+    after,
+} =
     vi.hoisted(() => ({
         fetchPodcastBySlug: vi.fn(),
         sendPodcastDownloadEvent: vi.fn(),
@@ -28,8 +38,6 @@ vi.mock('@/src/lib/analytics/podcastDownload', () => ({
 }));
 vi.mock('@/src/lib/strapi/media', () => ({mediaUrlToAbsolute, normalizeStrapiMedia}));
 vi.mock('@/src/lib/strapi', () => ({getStrapiApiBaseUrl}));
-
-import {GET} from './route';
 
 function makeRequest(slug: string): [Request, {params: Promise<{slug: string}>}] {
     const request = new Request(`https://m10z.de/api/podcast-download/${slug}`, {method: 'GET'});

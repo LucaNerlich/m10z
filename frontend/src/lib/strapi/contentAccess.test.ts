@@ -13,7 +13,10 @@ describe('contentAccess read interface', () => {
         strapiFetchMock.mockResolvedValueOnce({data: [], meta: {}});
         await readCollection('articles', 'filters[slug][$eq]=foo', {tags: ['strapi:article']});
         expect(strapiFetchMock).toHaveBeenCalledWith(
-            expect.objectContaining({path: '/api/articles?filters[slug][$eq]=foo', diagnosticName: 'strapi.readCollection'}),
+            expect.objectContaining({
+                path: '/api/articles?filters[slug][$eq]=foo',
+                diagnosticName: 'strapi.readCollection',
+            }),
         );
     });
 

@@ -42,19 +42,19 @@ function resolveCoverImage(source: MediaSource): ReturnType<typeof formatOpenGra
  * Build slug-page metadata for Articles, Podcasts, Categories, and Authors.
  */
 export async function buildContentSlugMetadata<T extends MediaSource>({
-    params,
-    canonicalPath,
-    contentLabel,
-    fetchBySlug,
-    getTitle,
-    getDescription,
-    ogType = 'website',
-    twitterCard = 'summary_large_image',
-    getOpenGraphExtras,
-    getAuthors,
-    getMediaSource,
-    getMetadataExtras,
-}: ContentSlugMetadataInput<T>): Promise<Metadata> {
+                                                                          params,
+                                                                          canonicalPath,
+                                                                          contentLabel,
+                                                                          fetchBySlug,
+                                                                          getTitle,
+                                                                          getDescription,
+                                                                          ogType = 'website',
+                                                                          twitterCard = 'summary_large_image',
+                                                                          getOpenGraphExtras,
+                                                                          getAuthors,
+                                                                          getMediaSource,
+                                                                          getMetadataExtras,
+                                                                      }: ContentSlugMetadataInput<T>): Promise<Metadata> {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return {};

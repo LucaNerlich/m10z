@@ -1,11 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {
-    clampPage,
-    clampPageSize,
-    normalizePagination,
-    toPaginatedResult,
-} from './strapiContent';
+import {clampPage, clampPageSize, normalizePagination, toPaginatedResult} from './strapiContent';
 import {buildAuthorPageTags} from '@/src/lib/strapi/cacheTags';
 
 describe('clampPage', () => {
@@ -56,7 +51,10 @@ describe('normalizePagination', () => {
 
 describe('toPaginatedResult', () => {
     test('hasNextPage is true when page < pageCount', () => {
-        const r = toPaginatedResult({data: [1, 2], meta: {pagination: {page: 1, pageSize: 2, total: 6, pageCount: 3}}}, 1, 2);
+        const r = toPaginatedResult({
+            data: [1, 2],
+            meta: {pagination: {page: 1, pageSize: 2, total: 6, pageCount: 3}},
+        }, 1, 2);
         expect(r.items).toEqual([1, 2]);
         expect(r.hasNextPage).toBe(true);
     });

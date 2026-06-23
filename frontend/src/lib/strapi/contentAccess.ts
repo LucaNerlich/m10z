@@ -1,10 +1,7 @@
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {strapiFetch} from '@/src/lib/strapiTransport';
 
-import type {
-    StrapiCollectionResponse,
-    StrapiSingleResponse,
-} from '@/src/lib/strapi/responses';
+import type {StrapiCollectionResponse, StrapiSingleResponse} from '@/src/lib/strapi/responses';
 
 export type {
     FetchStrapiOptions,

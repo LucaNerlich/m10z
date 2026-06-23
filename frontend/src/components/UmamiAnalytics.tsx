@@ -14,7 +14,7 @@ export default function UmamiAnalytics(): React.ReactElement {
 
     return (
         <>
-            <Script async src={`${umamiUrl}/script.js`} data-website-id={websiteId}/>
+            <Script async src={`${umamiUrl}/script.js`} data-website-id={websiteId} />
             <Script
                 async
                 src={`${umamiUrl}/recorder.js`}

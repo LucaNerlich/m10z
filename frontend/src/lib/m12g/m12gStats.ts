@@ -1,11 +1,6 @@
-import {computeStreaks, toLeaderboard, type StreaksResult} from './gameHistory';
+import {computeStreaks, type StreaksResult, toLeaderboard} from './gameHistory';
 import {type M12GArchive} from './m12gArchive';
-import {
-    type M12GMonthParticipation,
-    type M12GMonthWithWinner,
-    type M12GStats,
-    type M12GWinnerEntry,
-} from './types';
+import {type M12GMonthParticipation, type M12GMonthWithWinner, type M12GStats, type M12GWinnerEntry} from './types';
 
 const MAX_LEADERBOARD_ENTRIES = 10;
 

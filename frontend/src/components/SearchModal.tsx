@@ -3,7 +3,7 @@
 import {type KeyboardEvent, type MouseEvent, useEffect, useId, useMemo, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
-import {BookIcon, MusicNoteIcon, UserIcon, FileTextIcon} from '@phosphor-icons/react/dist/ssr';
+import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {normalizeSearchImageUrl} from '@/src/lib/image';

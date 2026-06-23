@@ -60,12 +60,12 @@ export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildH
                     ...(state.lastBuildTiming ? {lastBuildTiming: state.lastBuildTiming} : {}),
                     reset: shouldResetNow
                         ? {
-                              scheduled: true,
-                              reason: 'slow_build',
-                              last3,
-                              thresholdMs,
-                              multiplier: SLOW_BUILD_MULTIPLIER,
-                          }
+                            scheduled: true,
+                            reason: 'slow_build',
+                            last3,
+                            thresholdMs,
+                            multiplier: SLOW_BUILD_MULTIPLIER,
+                        }
                         : {scheduled: false},
                 },
             });
@@ -112,14 +112,14 @@ export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildH
         const trend =
             state.buildDurationsMs.length >= 5
                 ? (() => {
-                      const first = state.buildDurationsMs[0] ?? 0;
-                      const last = state.buildDurationsMs[state.buildDurationsMs.length - 1] ?? 0;
-                      if (first <= 0) return 'unknown';
-                      const ratio = last / first;
-                      if (ratio >= 1.25) return 'increasing';
-                      if (ratio <= 0.85) return 'decreasing';
-                      return 'stable';
-                  })()
+                    const first = state.buildDurationsMs[0] ?? 0;
+                    const last = state.buildDurationsMs[state.buildDurationsMs.length - 1] ?? 0;
+                    if (first <= 0) return 'unknown';
+                    const ratio = last / first;
+                    if (ratio >= 1.25) return 'increasing';
+                    if (ratio <= 0.85) return 'decreasing';
+                    return 'stable';
+                })()
                 : 'unknown';
 
         return {

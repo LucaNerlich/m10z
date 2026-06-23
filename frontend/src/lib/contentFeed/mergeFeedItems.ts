@@ -1,33 +1,32 @@
 import type {StrapiMedia} from '@/src/lib/strapi/media';
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
-import type {StrapiArticle} from '@/src/lib/strapi/contentTypes';
-import type {StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/strapi/media';
+import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import type {StrapiArticle, StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 
 export type FeedItem =
     | {
-          type: 'article';
-          slug: string;
-          title: string;
-          description?: string | null;
-          publishedAt?: string | null;
-          cover?: StrapiMedia;
-          banner?: StrapiMedia;
-          wordCount?: number | null;
-          href: string;
-      }
+    type: 'article';
+    slug: string;
+    title: string;
+    description?: string | null;
+    publishedAt?: string | null;
+    cover?: StrapiMedia;
+    banner?: StrapiMedia;
+    wordCount?: number | null;
+    href: string;
+}
     | {
-          type: 'podcast';
-          slug: string;
-          title: string;
-          description?: string | null;
-          publishedAt?: string | null;
-          cover?: StrapiMedia;
-          banner?: StrapiMedia;
-          wordCount?: number | null;
-          duration?: number | null;
-          href: string;
-      };
+    type: 'podcast';
+    slug: string;
+    title: string;
+    description?: string | null;
+    publishedAt?: string | null;
+    cover?: StrapiMedia;
+    banner?: StrapiMedia;
+    wordCount?: number | null;
+    duration?: number | null;
+    href: string;
+};
 
 export type ContentFeedPagination = {
     page: number;

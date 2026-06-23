@@ -5,11 +5,6 @@ import {
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
     pickCoverOrBannerMedia,
-    type StrapiAuthor,
-    type StrapiCategoryRef,
-    type StrapiContentMedia,
-    type StrapiMediaRef,
-    StrapiYoutube,
 } from '@/src/lib/strapi/media';
 import {type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/strapi/contentTypes';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';

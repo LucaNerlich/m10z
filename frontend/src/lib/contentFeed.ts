@@ -2,9 +2,9 @@ import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {contentListPageTag, contentTag} from '@/src/lib/strapi/cacheTags';
 import {
     computeContentFeedFetchSize,
+    type ContentFeedResponse,
     mergeFeedItems,
     paginateMergedFeed,
-    type ContentFeedResponse,
 } from '@/src/lib/contentFeed/mergeFeedItems';
 
 export type {ContentFeedResponse, FeedItem} from '@/src/lib/contentFeed/mergeFeedItems';

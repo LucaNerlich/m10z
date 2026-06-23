@@ -1,8 +1,4 @@
-import {
-    SEARCH_RECORD_TYPES,
-    type SearchIndexFile,
-    type SearchRecordType,
-} from '@/src/lib/shared/search';
+import {SEARCH_RECORD_TYPES, type SearchIndexFile, type SearchRecordType} from '@/src/lib/shared/search';
 
 export function isValidSearchIndexFile(obj: unknown): obj is SearchIndexFile {
     if (!obj || typeof obj !== 'object') return false;

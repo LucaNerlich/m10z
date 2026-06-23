@@ -1,4 +1,5 @@
 import {describe, expect, test, vi} from 'vitest';
+import {GET} from './route';
 
 const {buildArticleFeedResponse} = vi.hoisted(() => ({
     buildArticleFeedResponse: vi.fn(),
@@ -8,8 +9,6 @@ vi.mock('@/src/lib/rss/articleFeedRouteHandler', () => ({
     buildArticleFeedResponse,
     getSchedulerState: vi.fn().mockReturnValue({}),
 }));
-
-import {GET} from './route';
 
 describe('GET /api/articlefeed', () => {
     test('delegates to buildArticleFeedResponse with the request and returns the response', async () => {

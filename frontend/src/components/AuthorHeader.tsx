@@ -1,5 +1,10 @@
 import Image from 'next/image';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor} from '@/src/lib/strapi/media';
+import {
+    getOptimalMediaFormat,
+    mediaUrlToAbsolute,
+    normalizeStrapiMedia,
+    type StrapiAuthor,
+} from '@/src/lib/strapi/media';
 import styles from './AuthorHeader.module.css';
 
 type AuthorHeaderProps = {
