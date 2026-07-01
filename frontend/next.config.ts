@@ -90,68 +90,65 @@ const nextConfig: NextConfig = {
 
         // The Podlove Web Player is loaded from the Podlove CDN and runs a Vue runtime that compiles
         // its templates via `new Function()` (requires `'unsafe-eval'`) and pulls scripts, styles,
-        // fonts, and client icons from the CDN. We keep the site-wide policy eval-free and CDN-free,
-        // and only relax the CSP on the podcast detail routes where the player is embedded (`player`
-        // flag below). Both http and https CDN origins are allowed because the player resolves its
-        // chunk URLs using the page's protocol; on an https page the browser never loads the http
-        // source (mixed-content blocking), so the http entry is inert there.
+        // fonts, and client icons from the CDN. The CDN + 'unsafe-eval' are allowed site-wide (not
+        // scoped to podcast routes) to keep the policy simple and avoid overlapping-header-rule
+        // merge differences between hosting platforms. Both http and https CDN origins are allowed
+        // because the player resolves its chunk URLs using the page's protocol; on an https page the
+        // browser never loads the http source (mixed-content blocking), so the http entry is inert.
         const PODLOVE_CDN_HOSTS = ['https://cdn.podlove.org', 'http://cdn.podlove.org'];
 
-        const buildCspDirectives = ({player = false}: {player?: boolean} = {}) => {
-            const cdn = player ? PODLOVE_CDN_HOSTS : [];
-            return [
-                "default-src 'self'",
-                // Allow inline scripts for Next.js bootstrapping and inline JSON-LD; the player
-                // routes additionally need 'unsafe-eval' and the Podlove CDN.
-                `script-src ${unique([
-                    "'self'",
-                    "'unsafe-inline'",
-                    'https://umami.m10z.de',
-                    'https://www.youtube.com',
-                    'https://s.ytimg.com',
-                    ...(player ? ["'unsafe-eval'", ...cdn] : []),
-                ]).join(' ')}`,
-                "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com",
-                `frame-ancestors ${frameAncestors}`,
-                `img-src ${unique([
-                    "'self'",
-                    // Used by Next.js blur placeholders and some inline SVG patterns.
-                    'data:',
-                    'blob:',
-                    // Allow images from configured Strapi origin (e.g. http://localhost:1337 in local prod-like setups).
-                    ...(strapiOriginForCsp ? [strapiOriginForCsp] : []),
-                    ...remoteImageSources,
-                    // YouTube thumbnails.
-                    'https://i.ytimg.com',
-                    'https://ytimg.com',
-                    // Podlove player client/app icons.
-                    ...cdn,
-                ]).join(' ')}`,
-                `connect-src ${unique([
-                    "'self'",
-                    'https://umami.m10z.de',
-                    'https://*.googlevideo.com',
-                    // Service workers and fetch() use connect-src (not media-src) when loading Strapi uploads.
-                    ...(strapiOriginForCsp ? [strapiOriginForCsp] : []),
-                    // Podlove player fetches its chunk manifest/assets from the CDN.
-                    ...cdn,
-                ]).join(' ')}`,
-                `media-src ${unique([
-                    "'self'",
-                    // Allow media from configured Strapi origin (e.g. http://localhost:1337 in local prod-like setups).
-                    ...(strapiOriginForCsp ? [strapiOriginForCsp] : []),
-                    'https://*.googlevideo.com',
-                ]).join(' ')}`,
-                `style-src ${unique(["'self'", "'unsafe-inline'", ...cdn]).join(' ')}`,
-                `font-src ${unique(["'self'", ...cdn]).join(' ')}`,
-                "object-src 'none'",
-                "base-uri 'self'",
-                "form-action 'self'",
-            ];
-        };
+        const cspDirectives = [
+            "default-src 'self'",
+            // 'unsafe-inline' for Next.js bootstrapping + inline JSON-LD; 'unsafe-eval' + CDN for the
+            // Podlove Web Player's Vue runtime.
+            `script-src ${unique([
+                "'self'",
+                "'unsafe-inline'",
+                "'unsafe-eval'",
+                'https://umami.m10z.de',
+                'https://www.youtube.com',
+                'https://s.ytimg.com',
+                ...PODLOVE_CDN_HOSTS,
+            ]).join(' ')}`,
+            "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com",
+            `frame-ancestors ${frameAncestors}`,
+            `img-src ${unique([
+                "'self'",
+                // Used by Next.js blur placeholders and some inline SVG patterns.
+                'data:',
+                'blob:',
+                // Allow images from configured Strapi origin (e.g. http://localhost:1337 in local prod-like setups).
+                ...(strapiOriginForCsp ? [strapiOriginForCsp] : []),
+                ...remoteImageSources,
+                // YouTube thumbnails.
+                'https://i.ytimg.com',
+                'https://ytimg.com',
+                // Podlove player client/app icons.
+                ...PODLOVE_CDN_HOSTS,
+            ]).join(' ')}`,
+            `connect-src ${unique([
+                "'self'",
+                'https://umami.m10z.de',
+                'https://*.googlevideo.com',
+                // Service workers and fetch() use connect-src (not media-src) when loading Strapi uploads.
+                ...(strapiOriginForCsp ? [strapiOriginForCsp] : []),
+                // Podlove player fetches its chunk manifest/assets from the CDN.
+                ...PODLOVE_CDN_HOSTS,
+            ]).join(' ')}`,
+            `media-src ${unique([
+                "'self'",
+                // Allow media from configured Strapi origin (e.g. http://localhost:1337 in local prod-like setups).
+                ...(strapiOriginForCsp ? [strapiOriginForCsp] : []),
+                'https://*.googlevideo.com',
+            ]).join(' ')}`,
+            `style-src ${unique(["'self'", "'unsafe-inline'", ...PODLOVE_CDN_HOSTS]).join(' ')}`,
+            `font-src ${unique(["'self'", ...PODLOVE_CDN_HOSTS]).join(' ')}`,
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+        ];
 
-        const csp = buildCspDirectives().join('; ');
-        const cspPlayer = buildCspDirectives({player: true}).join('; ');
+        const csp = cspDirectives.join('; ');
 
         // Deny sensitive APIs by default; keep policies conservative to avoid breaking embeds.
         const permissionsPolicy = [
@@ -186,23 +183,11 @@ const nextConfig: NextConfig = {
             {key: 'Permissions-Policy', value: permissionsPolicy},
         ];
 
-        // Strict policy applies site-wide via the catch-all. The podcast detail routes
-        // (`/podcasts/{slug}`, `/preview/podcasts/{slug}`) embed the Podlove player, whose Vue
-        // runtime needs `'unsafe-eval'`. Their rules come last so the eval-relaxed CSP overrides
-        // the catch-all for those requests (Next.js merges matching rules, later value wins per
-        // header key).
+        // Single site-wide policy (see `csp` above) applied to every route.
         return [
             {
                 source: '/:path*',
                 headers: securityHeaders(csp),
-            },
-            {
-                source: '/podcasts/:slug',
-                headers: securityHeaders(cspPlayer),
-            },
-            {
-                source: '/preview/podcasts/:slug',
-                headers: securityHeaders(cspPlayer),
             },
         ];
     },
