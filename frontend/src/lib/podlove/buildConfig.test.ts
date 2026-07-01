@@ -55,7 +55,7 @@ describe('buildPodloveEpisodeConfig', () => {
             {url: '/api/podcast-download/test-episode', mimeType: 'audio/mpeg', title: 'Audio', size: '1024'},
         ]);
         expect(episode.files).toEqual([
-            {url: '/api/podcast-download/test-episode', mimeType: 'audio/mpeg', title: 'Download', size: '1024'},
+            {url: '/api/podcast-download/test-episode', mimeType: 'audio/mpeg', title: 'Herunterladen', size: '1024'},
         ]);
     });
 

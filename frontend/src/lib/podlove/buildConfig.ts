@@ -82,7 +82,8 @@ export function buildPodloveEpisodeConfig(
     const fileAsset: PodloveFileAsset = {
         url: audioUrl,
         mimeType,
-        title: 'Download',
+        // German label shown as the download entry title in the player's Files tab.
+        title: 'Herunterladen',
         ...(size ? {size} : {}),
     };
 
