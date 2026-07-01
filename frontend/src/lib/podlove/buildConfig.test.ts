@@ -102,7 +102,8 @@ describe('buildPodlovePlayerConfig', () => {
         // No base: the CDN embed build self-resolves its chunks.
         expect(config.base).toBeUndefined();
         expect(config.language).toBe('de');
-        expect(config.activeTab).toBe('files');
+        // No default active tab: the player starts with only the playback controls.
+        expect(config.activeTab).toBeUndefined();
         expect(config.theme?.tokens?.brand).toBe('#ef702c');
         expect(config.share?.channels).toEqual(['mail', 'link']);
         expect(config.share?.sharePlaytime).toBe(true);

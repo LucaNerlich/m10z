@@ -114,7 +114,7 @@ export function buildPodlovePlayerConfig(): PodlovePlayerConfig {
         // is kept as a hint for completeness).
         language: 'de',
         runtime: {language: 'de', locale: 'de-DE'},
-        activeTab: 'files',
+        // No default active tab: start with just the playback controls (tabs open on click).
         theme: {
             tokens: {
                 brand: '#ef702c',
