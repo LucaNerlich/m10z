@@ -1,23 +1,44 @@
 .player {
-    display: flex;
-    align-items: center;
     margin-bottom: 2.5rem;
     padding: 1.5rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-soft);
+}
 
-    audio {
-        min-height: 50px;
-        height: auto;
+.mount {
+    width: 100%;
+    /* Reserve the player's rendered height from first paint so the client-mounted iframe does not
+       push surrounding content down when it appears (avoids layout shift / flash). ~280px matches
+       the default layout with no tab open. Released once ready (see .mountReady) so the container
+       can grow/shrink as the listener opens or closes a tab. */
+    min-height: 280px;
+    /* Hidden until the player signals ready, then faded in (see .mountReady). */
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
 
-        /* firefox specific ix to remove extra height */
-        @-moz-document url-prefix() {
-            min-height: 0;
-            border: 1px solid var(--color-border);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-soft);
-        }
+.mountReady {
+    opacity: 1;
+    /* Drop the reservation once the player controls its own (dynamic) height, so collapsing the
+       Files/Share tab shrinks the container instead of leaving empty space. */
+    min-height: 0;
+}
+
+/* Respect reduced-motion: no fade, just show. */
+@media (prefers-reduced-motion: reduce) {
+    .mount {
+        transition: none;
     }
+}
+
+/* Fallback rendered when the Podlove player fails to load. */
+.fallbackAudio {
+    width: 100%;
+}
+
+.fallbackDownload {
+    display: inline-block;
+    margin-top: 0.75rem;
 }

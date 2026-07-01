@@ -1,7 +1,7 @@
 import Script from 'next/script';
 
 import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
-import {buildPodcastDownloadPath, isPodcastDownloadTrackingEnabled} from '@/src/lib/analytics/podcastDownload';
+import {buildPodcastDownloadPath} from '@/src/lib/analytics/podcastDownload';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {
     getOptimalMediaFormat,
@@ -9,6 +9,9 @@ import {
     normalizeStrapiMedia,
     pickBannerOrCoverMedia,
 } from '@/src/lib/strapi/media';
+import {normalizeEnclosureLengthBytes} from '@/src/lib/rss/audiofeed';
+import {buildPodloveEpisodeConfig, buildPodlovePlayerConfig} from '@/src/lib/podlove/buildConfig';
+import {absoluteRoute, routes} from '@/src/lib/routes';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
 import {ContentImage} from '@/src/components/ContentImage';
 import {Markdown} from '@/src/lib/markdown/Markdown';
@@ -28,11 +31,11 @@ type PodcastDetailProps = {
 };
 
 /**
- * Render a podcast episode detail view including image, metadata, audio player, shownotes, and an optional YouTube section.
+ * Renders the detail view for a podcast episode.
  *
- * If `podcast` is nullish, returns `null`. Embeds episode JSON-LD for SEO and resolves an optimized image and audio URL with sensible fallbacks.
+ * Displays the episode image, metadata, title, Podlove player, shownotes, and an optional YouTube section. Also embeds podcast and breadcrumb JSON-LD for search engines.
  *
- * @returns A React element that renders the episode detail, or `null` if the `podcast` prop is nullish.
+ * @returns The podcast detail view, or `null` when no podcast is available.
  */
 export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProps) {
     const podcast = initialPodcast;
@@ -41,12 +44,11 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const published = getEffectiveDate(podcast);
     const fileMedia = normalizeStrapiMedia(podcast.file);
     const audioUrl = mediaUrlToAbsolute({media: fileMedia});
-    // When tracking is enabled, route playback through the same download-tracking endpoint as the
-    // RSS feed so on-site plays are recorded too. `preload="none"` then defers the request (and the
-    // tracked event) until the user actually presses play, rather than firing on every page load.
-    const trackingEnabled = isPodcastDownloadTrackingEnabled();
-    const playerSrc = trackingEnabled && audioUrl ? buildPodcastDownloadPath(slug) : audioUrl;
-    const playerPreload = trackingEnabled ? 'none' : 'metadata';
+    // Always route on-site playback and downloads through the download-tracking endpoint so plays
+    // are recorded; it 302-redirects to the real Strapi file. The Podlove player requests this URL
+    // when the listener presses play (and for the Files-tab download), which is what records the
+    // event. `undefined` when the episode has no audio file, in which case no player is rendered.
+    const playerSrc = audioUrl ? buildPodcastDownloadPath(slug) : undefined;
     const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
@@ -64,6 +66,20 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const placeholder = blurhash ? 'blur' : 'empty';
     const imageAlt = optimizedMedia?.alternativeText ?? podcast.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
+
+    // Podlove Web Player: build the episode + player config. `playerSrc` becomes the audio URL, so
+    // download tracking (when enabled) works exactly as it does for the RSS enclosure.
+    const podloveEpisode = playerSrc
+        ? buildPodloveEpisodeConfig(podcast, {
+            audioUrl: playerSrc,
+            audioMime: fileMedia.mime,
+            audioSizeBytes: normalizeEnclosureLengthBytes(fileMedia),
+            posterUrl: mediaUrl,
+            link: absoluteRoute(routes.podcast(slug)),
+        })
+        : null;
+    const podlovePlayerConfig = buildPodlovePlayerConfig();
+
     const jsonLd = generatePodcastJsonLd(podcast);
     const breadcrumbItems = [
         {name: 'Startseite', path: '/'},
@@ -109,7 +125,9 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
                 <h1 className={styles.title}>{podcast.title}</h1>
             </section>
 
-            {audioUrl ? <PodcastPlayer src={playerSrc} preload={playerPreload} /> : null}
+            {podloveEpisode ? (
+                <PodcastPlayer episode={podloveEpisode} config={podlovePlayerConfig} />
+            ) : null}
 
             <Markdown markdown={podcast.shownotes ?? ''} />
 
