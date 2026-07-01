@@ -28,3 +28,13 @@
         transition: none;
     }
 }
+
+/* Fallback rendered when the Podlove player fails to load. */
+.fallbackAudio {
+    width: 100%;
+}
+
+.fallbackDownload {
+    display: inline-block;
+    margin-top: 0.75rem;
+}

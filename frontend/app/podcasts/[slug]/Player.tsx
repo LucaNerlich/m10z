@@ -44,6 +44,9 @@ export function PodcastPlayer({episode, config}: PlayerProps) {
     // until its bootstrap promise resolves, then fade it in — so the internal boot flicker happens
     // behind a stable, correctly-sized placeholder instead of popping into view.
     const [playerReady, setPlayerReady] = useState(false);
+    // Set when the CDN script fails to load or the player bootstrap errors, so we can fall back to a
+    // native audio element instead of leaving the hidden (opacity 0) shell forever.
+    const [failed, setFailed] = useState(false);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -55,17 +58,24 @@ export function PodcastPlayer({episode, config}: PlayerProps) {
         // navigation between episodes.
         container.replaceChildren();
         setPlayerReady(false);
+        setFailed(false);
 
         let cancelled = false;
-        window.podlovePlayer(container, episode, config)
-            .then(() => {
-                if (!cancelled) setPlayerReady(true);
-            })
-            .catch((error: unknown) => {
-                if (!cancelled) {
-                    console.error('Failed to initialize Podlove player:', error);
-                }
-            });
+        try {
+            window.podlovePlayer(container, episode, config)
+                .then(() => {
+                    if (!cancelled) setPlayerReady(true);
+                })
+                .catch((error: unknown) => {
+                    if (!cancelled) {
+                        console.error('Failed to initialize Podlove player:', error);
+                        setFailed(true);
+                    }
+                });
+        } catch (error) {
+            console.error('Failed to initialize Podlove player:', error);
+            setFailed(true);
+        }
 
         return () => {
             cancelled = true;
@@ -75,11 +85,40 @@ export function PodcastPlayer({episode, config}: PlayerProps) {
 
     if (!episode) return null;
 
+    const audioSrc = episode.audio[0]?.url;
+
+    // Fallback: if the player can't load, still offer playback + download via the (tracked) audio URL.
+    if (failed) {
+        return (
+            <div className={styles.player}>
+                {audioSrc ? (
+                    <>
+                        <audio
+                            controls
+                            preload='metadata'
+                            className={styles.fallbackAudio}
+                            aria-label='Podcast-Episode abspielen'>
+                            <source src={audioSrc} type={episode.audio[0]?.mimeType ?? 'audio/mpeg'} />
+                        </audio>
+                        <a href={audioSrc} className={styles.fallbackDownload}>
+                            Episode herunterladen
+                        </a>
+                    </>
+                ) : null}
+            </div>
+        );
+    }
+
     return (
         <div className={styles.player}>
             {/* Warm up the CDN connection early so embed.js + chunks load with less delay. */}
             <link rel='preconnect' href='https://cdn.podlove.org' crossOrigin='anonymous' />
-            <Script src={EMBED_SRC} strategy='afterInteractive' onReady={() => setScriptReady(true)} />
+            <Script
+                src={EMBED_SRC}
+                strategy='afterInteractive'
+                onReady={() => setScriptReady(true)}
+                onError={() => setFailed(true)}
+            />
             <div
                 ref={containerRef}
                 className={`${styles.mount}${playerReady ? ` ${styles.mountReady}` : ''}`}

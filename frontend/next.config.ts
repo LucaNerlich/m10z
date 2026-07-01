@@ -95,7 +95,7 @@ const nextConfig: NextConfig = {
         // flag below). Both http and https CDN origins are allowed because the player resolves its
         // chunk URLs using the page's protocol; on an https page the browser never loads the http
         // source (mixed-content blocking), so the http entry is inert there.
-        const PODLOVE_CDN_HOSTS = ['https://cdn.podlove.org'];
+        const PODLOVE_CDN_HOSTS = ['https://cdn.podlove.org', 'http://cdn.podlove.org'];
 
         const buildCspDirectives = ({player = false}: {player?: boolean} = {}) => {
             const cdn = player ? PODLOVE_CDN_HOSTS : [];
