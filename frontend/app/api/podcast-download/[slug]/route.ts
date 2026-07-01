@@ -1,6 +1,10 @@
 import {after, NextResponse} from 'next/server';
 
-import {isAllowedDownloadTarget, shouldRecordDownloadForRange} from '@/src/lib/analytics/podcastDownload';
+import {
+    isAllowedDownloadTarget,
+    isPodcastDownloadTrackingEnabled,
+    shouldRecordDownloadForRange,
+} from '@/src/lib/analytics/podcastDownload';
 import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
@@ -40,9 +44,14 @@ function isAllowedDownloadUrl(fileUrl: string): boolean {
 }
 
 /**
- * Drop-in replacement for a podcast RSS <enclosure> URL: records a custom Umami download event,
- * then 302-redirects to the real Strapi audio file. Returns 404 for unknown/invalid episodes or
- * when the resolved file URL is not on an allowed host.
+ * Drop-in replacement for a podcast RSS <enclosure> URL and the on-site player's audio source:
+ * records a custom Umami download event (only when `FEED_AUDIO_TRACKING_ENABLED` is set), then
+ * 302-redirects to the real Strapi audio file. Returns 404 for unknown/invalid episodes or when the
+ * resolved file URL is not on an allowed host.
+ *
+ * Tracking is gated here rather than at the callers so components/pages can always route through
+ * this endpoint without branching on the feature flag; when tracking is disabled the endpoint just
+ * redirects without recording.
  */
 export async function GET(request: Request, {params}: RouteContext) {
     const {slug} = await params;
@@ -71,8 +80,9 @@ export async function GET(request: Request, {params}: RouteContext) {
     }
 
     // Record the custom event after the response is flushed so it never delays the download.
-    // Skip seek/continuation range requests so a single play or download counts once.
-    if (shouldRecordDownloadForRange(request.headers.get('range'))) {
+    // Only when tracking is enabled (single source of truth), and skip seek/continuation range
+    // requests so a single play or download counts once.
+    if (isPodcastDownloadTrackingEnabled() && shouldRecordDownloadForRange(request.headers.get('range'))) {
         after(() => sendPodcastDownloadEvent({slug, title, request}));
     }
 

@@ -1,23 +1,30 @@
 .player {
-    display: flex;
-    align-items: center;
     margin-bottom: 2.5rem;
     padding: 1.5rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-soft);
+}
 
-    audio {
-        min-height: 50px;
-        height: auto;
+.mount {
+    width: 100%;
+    /* Reserve the player's rendered height from first paint so the client-mounted iframe does not
+       push surrounding content down when it appears (avoids layout shift / flash). ~450px matches
+       the default layout with the Files tab open. */
+    min-height: 450px;
+    /* Hidden until the player signals ready, then faded in (see .mountReady). */
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
 
-        /* firefox specific ix to remove extra height */
-        @-moz-document url-prefix() {
-            min-height: 0;
-            border: 1px solid var(--color-border);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-soft);
-        }
+.mountReady {
+    opacity: 1;
+}
+
+/* Respect reduced-motion: no fade, just show. */
+@media (prefers-reduced-motion: reduce) {
+    .mount {
+        transition: none;
     }
 }

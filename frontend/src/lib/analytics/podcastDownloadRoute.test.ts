@@ -53,6 +53,8 @@ function makeContext(slug: string) {
 beforeEach(() => {
     vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
     vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', 'https://cms.m10z.de');
+    // Tracking is gated in the route behind this flag; enable it for the tracking-scheduling tests.
+    vi.stubEnv('FEED_AUDIO_TRACKING_ENABLED', 'true');
     mocks.afterCallbacks = [];
     mocks.fetchPodcastBySlug.mockReset();
     mocks.sendPodcastDownloadEvent.mockReset();
@@ -136,5 +138,22 @@ describe('podcast download route', () => {
 
         expect(response.status).toBe(302);
         expect(mocks.afterCallbacks).toHaveLength(0);
+    });
+
+    test('still redirects but does not track when FEED_AUDIO_TRACKING_ENABLED is off', async () => {
+        vi.stubEnv('FEED_AUDIO_TRACKING_ENABLED', 'false');
+        mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
+
+        const response = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1', {
+                headers: {'user-agent': 'PodcatcherApp/1.0'},
+            }),
+            makeContext('ep-1'),
+        );
+
+        expect(response.status).toBe(302);
+        expect(response.headers.get('location')).toBe('https://cms.m10z.de/uploads/ep-1.mp3');
+        expect(mocks.afterCallbacks).toHaveLength(0);
+        expect(mocks.sendPodcastDownloadEvent).not.toHaveBeenCalled();
     });
 });
