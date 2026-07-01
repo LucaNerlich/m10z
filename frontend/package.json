@@ -40,7 +40,7 @@
         "remark-smartypants": "^3.0.2",
         "serialize-javascript": "^7.0.5",
         "swr": "^2.4.1",
-        "undici": "^7.27.0",
+        "undici": "^8.5.0",
         "xml-formatter": "^3.7.0"
     },
     "devDependencies": {
