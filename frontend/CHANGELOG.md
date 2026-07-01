@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.11.0] - 2026-07-01
+
+### Added
+- Podcast episodes now play through the Podlove Web Player instead of the native audio element, including episode cover art and a German-localized download file title.
+- M12G: the longest win streak now appears directly in the top stats bar, which was restyled as a connected, mobile-friendly strip.
+
+### Fixed
+- The Podlove player now collapses by default and releases its reserved height, and falls back gracefully if the player fails to load (with an http CDN allowance in the CSP).
+
+### Changed
+- M12G stats no longer show the redundant "nominiert" count — the win count is surfaced instead (including a new leaderboard win badge), and the month's slogan is now visually separated on the month card.
+- Prepared the June 2026 M12G post.
+- Upgraded dependencies, including undici 8.5.0 and Strapi.
+
 ## [1.10.3] - 2026-06-20
 
 ### Fixed
