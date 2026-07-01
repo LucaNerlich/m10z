@@ -23,9 +23,10 @@ type RouteContext = {
 };
 
 /**
- * Open-redirect / SSRF guard: only allow redirecting to the configured Strapi origin (matching the
- * deployment's protocol, e.g. https in prod, http://localhost in dev) or to an explicit HTTPS host
- * allowlist (e.g. a media CDN) via `PODCAST_DOWNLOAD_ALLOWED_HOSTS`.
+ * Determines whether a download URL is allowed for redirection.
+ *
+ * @param fileUrl - The target URL to check.
+ * @returns `true` if the URL points to the configured Strapi origin or an allowed host, `false` otherwise.
  */
 function isAllowedDownloadUrl(fileUrl: string): boolean {
     let strapiOrigin: string | null = null;
@@ -44,14 +45,9 @@ function isAllowedDownloadUrl(fileUrl: string): boolean {
 }
 
 /**
- * Drop-in replacement for a podcast RSS <enclosure> URL and the on-site player's audio source:
- * records a custom Umami download event (only when `FEED_AUDIO_TRACKING_ENABLED` is set), then
- * 302-redirects to the real Strapi audio file. Returns 404 for unknown/invalid episodes or when the
- * resolved file URL is not on an allowed host.
+ * Redirects a podcast download request to the underlying audio file and records download tracking when enabled.
  *
- * Tracking is gated here rather than at the callers so components/pages can always route through
- * this endpoint without branching on the feature flag; when tracking is disabled the endpoint just
- * redirects without recording.
+ * Returns 404 for invalid or unknown slugs, or when the resolved audio URL is not allowed.
  */
 export async function GET(request: Request, {params}: RouteContext) {
     const {slug} = await params;

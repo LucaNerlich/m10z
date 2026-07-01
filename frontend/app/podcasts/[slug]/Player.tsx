@@ -26,11 +26,14 @@ type PlayerProps = {
 };
 
 /**
- * Podlove Web Player for podcast episodes.
+ * Renders the Podlove Web Player for a podcast episode.
  *
- * Loads the self-hosted embed script and mounts the sandboxed player (an iframe managed by the
- * Podlove runtime) into a container element. The audio URL inside `episode` may point at the
- * download-tracking endpoint, so on-site plays/downloads are recorded just like RSS enclosures.
+ * Mounts the Podlove embed into a container after the CDN script is ready and returns nothing when
+ * no episode is provided.
+ *
+ * @param episode - Episode configuration to load.
+ * @param config - Player configuration passed to the Podlove embed.
+ * @returns The player container for `episode`, or `null` when no episode is provided.
  */
 export function PodcastPlayer({episode, config}: PlayerProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);

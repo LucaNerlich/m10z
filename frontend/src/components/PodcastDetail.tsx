@@ -31,11 +31,11 @@ type PodcastDetailProps = {
 };
 
 /**
- * Render a podcast episode detail view including image, metadata, audio player, shownotes, and an optional YouTube section.
+ * Renders the detail view for a podcast episode.
  *
- * If `podcast` is nullish, returns `null`. Embeds episode JSON-LD for SEO and resolves an optimized image and audio URL with sensible fallbacks.
+ * Displays the episode image, metadata, title, Podlove player, shownotes, and an optional YouTube section. Also embeds podcast and breadcrumb JSON-LD for search engines.
  *
- * @returns A React element that renders the episode detail, or `null` if the `podcast` prop is nullish.
+ * @returns The podcast detail view, or `null` when no podcast is available.
  */
 export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProps) {
     const podcast = initialPodcast;

@@ -14,10 +14,10 @@ import {
 const AUDIO_FEED_PATH = '/audiofeed.xml';
 
 /**
- * Format a duration given in whole seconds into Podlove's `[hh]:[mm]:[ss].[sss]` string.
+ * Formats a duration in whole seconds for Podlove.
  *
- * Podcast durations are stored as integer seconds by the backend duration middleware, so the
- * milliseconds component is always `000`. Non-finite or non-positive input yields `00:00:00.000`.
+ * @param seconds - The duration in seconds
+ * @returns The duration as a Podlove time string, or `00:00:00.000` for invalid or non-positive input
  */
 export function formatPodloveDuration(seconds: number): string {
     if (!Number.isFinite(seconds) || seconds <= 0) {
@@ -31,6 +31,12 @@ export function formatPodloveDuration(seconds: number): string {
     return `${pad(hours)}:${pad(minutes)}:${pad(secs)}.000`;
 }
 
+/**
+ * Converts a byte count to a whole-number string.
+ *
+ * @param sizeBytes - The byte count to format
+ * @returns The floored byte count as a string, or `undefined` when the input is missing, non-finite, or less than or equal to zero
+ */
 function toByteSizeString(sizeBytes: number | undefined): string | undefined {
     if (typeof sizeBytes !== 'number' || !Number.isFinite(sizeBytes) || sizeBytes <= 0) {
         return undefined;
@@ -50,10 +56,11 @@ export type PodloveEpisodeInput = {
 };
 
 /**
- * Build the Podlove episode object from a Strapi podcast record and pre-resolved media values.
+ * Builds a Podlove episode configuration from a Strapi podcast record and pre-resolved media values.
  *
- * The caller resolves the audio URL (direct file vs. tracking endpoint), MIME type, byte size,
- * poster, and canonical link so this function stays pure and unit-testable.
+ * @param podcast - The podcast record used for the episode title, description, duration, and publication date
+ * @param input - The resolved audio and optional metadata for the episode
+ * @returns The Podlove episode configuration
  */
 export function buildPodloveEpisodeConfig(
     podcast: StrapiPodcast,
@@ -93,13 +100,9 @@ export function buildPodloveEpisodeConfig(
 }
 
 /**
- * Build the static Podlove player configuration.
+ * Builds the Podlove player configuration for the site.
  *
- * Loaded from the CDN, so no `base` is set (the CDN build self-resolves its chunks). The theme uses
- * a single static brand color derived from the site's base `--color-primary` OKLCH token. The
- * Podlove player only accepts static hex/rgba tokens at init, so this does not react to the site's
- * runtime theme switches (documented limitation). Files and Share (mail/link) tabs are enabled, and
- * a subscribe button links to the M10Z audio feed plus common podcast clients.
+ * @returns The static Podlove player configuration with German UI settings, theme tokens, enabled share options, and a subscribe button for the audio feed.
  */
 export function buildPodlovePlayerConfig(): PodlovePlayerConfig {
     const feedUrl = absoluteRoute(AUDIO_FEED_PATH);
