@@ -102,12 +102,12 @@
     width: 80px;
 }
 
-.monthsBadge {
+.winBadge {
     display: inline-block;
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--color-primary);
-    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-text) 10%, transparent);
     border-radius: 999px;
     padding: 2px 8px;
     margin-left: 8px;

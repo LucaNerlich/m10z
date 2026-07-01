@@ -53,12 +53,12 @@ describe('buildM12GOverview', () => {
     test('bundles stats, streaks, and newest-first Months from one Archive', () => {
         const archive = buildArchive([
             month('2025-01', [game('A', 5)]),
-            month('2025-02', [game('A', 3)]), // A nominated two months running
+            month('2025-02', [game('A', 3)]), // A wins two months running
         ]);
         const overview = buildM12GOverview(archive);
 
         expect(overview.stats.totalMonths).toBe(2);
         expect(overview.monthsNewestFirst.map((m) => m.month)).toEqual(['2025-02', '2025-01']);
-        expect(overview.streaks.nomination).toMatchObject({name: 'A', length: 2});
+        expect(overview.streaks.win).toMatchObject({name: 'A', length: 2});
     });
 });

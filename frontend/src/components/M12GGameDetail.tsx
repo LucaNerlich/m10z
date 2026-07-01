@@ -27,10 +27,6 @@ export function M12GGameDetail({game}: M12GGameDetailProps) {
 
             <div className={styles.stats}>
                 <div className={styles.stat}>
-                    <span className={styles.statLabel}>Nominierungen</span>
-                    <span className={styles.statValue}>{game.monthsNominated}</span>
-                </div>
-                <div className={styles.stat}>
                     <span className={styles.statLabel}>Siege</span>
                     <span className={styles.statValue}>{game.wins}</span>
                 </div>

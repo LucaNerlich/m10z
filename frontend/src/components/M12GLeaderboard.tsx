@@ -48,9 +48,9 @@ export function M12GLeaderboard({entries}: M12GLeaderboardProps) {
                                 >
                                     ↗
                                 </a>
-                                {entry.monthsNominated > 1 ? (
-                                    <span className={styles.monthsBadge}>
-                                            {entry.monthsNominated}x nominiert
+                                {entry.wins > 0 ? (
+                                    <span className={styles.winBadge}>
+                                            {entry.wins}x gewonnen
                                         </span>
                                 ) : null}
                             </td>

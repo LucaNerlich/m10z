@@ -90,11 +90,6 @@ export function M12GGameIndex({games}: M12GGameIndexProps) {
                                         aria-label={`${game.name} im Store öffnen`}>
                                         ↗
                                     </a>
-                                    {game.monthsNominated > 1 ? (
-                                        <span className={styles.monthsBadge}>
-                                                {game.monthsNominated}x nominiert
-                                            </span>
-                                    ) : null}
                                     {game.wins > 0 ? (
                                         <span className={styles.winBadge}>
                                                 {game.wins}x gewonnen

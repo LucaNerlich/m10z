@@ -11,7 +11,6 @@ import {M12GStatsBar} from '@/src/components/M12GStatsBar';
 import {M12GWinnerTimeline} from '@/src/components/M12GWinnerTimeline';
 import {M12GLeaderboard} from '@/src/components/M12GLeaderboard';
 import {M12GParticipationChart} from '@/src/components/M12GParticipationChart';
-import {M12GStreaks} from '@/src/components/M12GStreaks';
 import {EmptyState} from '@/src/components/EmptyState';
 
 export const metadata: Metadata = buildStaticListMetadata({
@@ -39,6 +38,7 @@ export default async function M12GPage() {
                             totalUniqueGames={stats.totalUniqueGames}
                             totalVotes={stats.totalVotes}
                             avgVotesPerMonth={stats.avgVotesPerMonth}
+                            winStreak={streaks.win}
                         />
                         <div
                             style={{
@@ -50,7 +50,6 @@ export default async function M12GPage() {
                             <M12GWinnerTimeline winners={stats.winnerTimeline} />
                             <M12GParticipationChart months={stats.monthlyParticipation} />
                         </div>
-                        <M12GStreaks streaks={streaks} />
                         <M12GLeaderboard entries={stats.leaderboard} />
                         <p style={{textAlign: 'center'}}>
                             <Link href={routes.m12gGames}>

@@ -25,6 +25,9 @@
     font-size: 0.9rem;
     font-weight: 400;
     color: var(--color-text-muted);
+    border-bottom: solid 1px var(--color-border);
+    padding-bottom: 4px;
+    align-self: flex-start;
 }
 
 .footer {

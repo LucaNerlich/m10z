@@ -136,31 +136,14 @@ describe('toGameIndex', () => {
 });
 
 describe('computeStreaks', () => {
-    test('no streak when no game appears in consecutive months', () => {
+    test('no streak when no game wins in consecutive months', () => {
         const result = computeStreaks(
             buildGameHistory([
                 month('2025-01', [game('A', 1)]),
                 month('2025-03', [game('A', 1)]), // gap
             ]),
         );
-        expect(result.nomination).toBeNull();
         expect(result.win).toBeNull();
-    });
-
-    test('detects a 3-month nomination streak', () => {
-        const result = computeStreaks(
-            buildGameHistory([
-                month('2025-01', [game('A', 1), game('B', 5)]),
-                month('2025-02', [game('A', 1)]),
-                month('2025-03', [game('A', 1)]),
-            ]),
-        );
-        expect(result.nomination).toMatchObject({
-            name: 'A',
-            slug: 'a',
-            length: 3,
-            months: ['2025-01', '2025-02', '2025-03'],
-        });
     });
 
     test('detects a 2-month win streak', () => {
@@ -171,28 +154,30 @@ describe('computeStreaks', () => {
                 month('2025-03', [game('B', 5)]),
             ]),
         );
-        expect(result.win).toMatchObject({name: 'A', length: 2});
+        expect(result.win).toMatchObject({name: 'A', slug: 'a', length: 2, months: ['2025-01', '2025-02']});
     });
 
     test('handles year boundary (2024-12 → 2025-01 are consecutive)', () => {
         const result = computeStreaks(
             buildGameHistory([month('2024-12', [game('A', 1)]), month('2025-01', [game('A', 1)])]),
         );
-        expect(result.nomination).toMatchObject({name: 'A', length: 2});
+        expect(result.win).toMatchObject({name: 'A', length: 2});
     });
 
-    test('picks the longer of two competing streaks', () => {
+    test('picks the longer of two competing win streaks', () => {
         const result = computeStreaks(
             buildGameHistory([
-                month('2025-01', [game('A', 1), game('B', 1)]),
-                month('2025-02', [game('A', 1), game('B', 1)]),
-                month('2025-03', [game('B', 1)]),
+                month('2025-01', [game('A', 5), game('B', 1)]),
+                month('2025-02', [game('A', 5), game('B', 1)]),
+                month('2025-03', [game('B', 5)]),
+                month('2025-04', [game('B', 5)]),
+                month('2025-05', [game('B', 5)]),
             ]),
         );
-        expect(result.nomination).toMatchObject({name: 'B', length: 3});
+        expect(result.win).toMatchObject({name: 'B', length: 3});
     });
 
     test('empty history → no streaks', () => {
-        expect(computeStreaks([])).toEqual({nomination: null, win: null});
+        expect(computeStreaks([])).toEqual({win: null});
     });
 });

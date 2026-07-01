@@ -97,7 +97,6 @@ export type Streak = {
 };
 
 export type StreaksResult = {
-    nomination: Streak | null;
     win: Streak | null;
 };
 
@@ -130,24 +129,18 @@ function monthsApart(a: string, b: string): number {
     return (yb - ya) * 12 + (mb - ma);
 }
 
-// Longest run of consecutive monthly nominations and wins across all games.
+// Longest run of consecutive monthly wins across all games.
 // Ties are broken by game name (alphabetical) for deterministic output.
 // Projection over the prebuilt Game histories — no second walk over the Months.
 export function computeStreaks(history: GameHistory[]): StreaksResult {
-    const nominations = new Map<string, string[]>();
     const wins = new Map<string, string[]>();
 
     for (const game of history) {
-        nominations.set(
-            game.name,
-            game.appearances.map((a) => a.month),
-        );
         const winMonths = game.appearances.filter((a) => a.isWinner).map((a) => a.month);
         if (winMonths.length > 0) wins.set(game.name, winMonths);
     }
 
     return {
-        nomination: pickBestStreak(nominations),
         win: pickBestStreak(wins),
     };
 }
