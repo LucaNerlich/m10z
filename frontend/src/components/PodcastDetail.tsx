@@ -67,6 +67,17 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const imageAlt = optimizedMedia?.alternativeText ?? podcast.title;
     const imageTitle = optimizedMedia?.caption ?? undefined;
 
+    // Player poster: prefer the episode cover, then its banner, then the first category's image
+    // (mirrors the chained image resolution used for other images).
+    const coverMedia = normalizeStrapiMedia(podcast.cover);
+    const bannerMedia = normalizeStrapiMedia(podcast.banner);
+    const categoryMedia = normalizeStrapiMedia(
+        podcast.categories?.[0]?.cover ?? podcast.categories?.[0]?.image ?? podcast.categories?.[0]?.banner
+    );
+    const posterMedia = coverMedia.url ? coverMedia : bannerMedia.url ? bannerMedia : categoryMedia;
+    const optimizedPoster = posterMedia.url ? getOptimalMediaFormat(posterMedia, 'medium') : undefined;
+    const playerPosterUrl = optimizedPoster ? mediaUrlToAbsolute({media: optimizedPoster}) : undefined;
+
     // Podlove Web Player: build the episode + player config. `playerSrc` becomes the audio URL, so
     // download tracking (when enabled) works exactly as it does for the RSS enclosure.
     const podloveEpisode = playerSrc
@@ -74,7 +85,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
             audioUrl: playerSrc,
             audioMime: fileMedia.mime,
             audioSizeBytes: normalizeEnclosureLengthBytes(fileMedia),
-            posterUrl: mediaUrl,
+            posterUrl: playerPosterUrl,
             link: absoluteRoute(routes.podcast(slug)),
         })
         : null;
