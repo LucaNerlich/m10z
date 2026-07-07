@@ -23,10 +23,10 @@
         "fuse.js": "^7.4.2",
         "jsdom": "^27.4.0",
         "marked": "^17.0.6",
-        "mermaid": "^11.15.0",
-        "next": "^16.2.9",
+        "mermaid": "^11.16.0",
+        "next": "^16.2.10",
         "prism-react-renderer": "^2.4.1",
-        "qs": "^6.15.2",
+        "qs": "^6.15.3",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
         "react-markdown": "^10.1.0",
@@ -38,13 +38,13 @@
         "remark-breaks": "^4.0.0",
         "remark-gfm": "^4.0.1",
         "remark-smartypants": "^3.0.2",
-        "serialize-javascript": "^7.0.6",
+        "serialize-javascript": "^7.0.7",
         "swr": "^2.4.2",
-        "undici": "^8.5.0",
+        "undici": "^8.7.0",
         "xml-formatter": "^3.7.0"
     },
     "devDependencies": {
-        "@next/env": "^16.2.9",
+        "@next/env": "^16.2.10",
         "@types/jsdom": "^27.0.0",
         "@types/node": "^25.9.4",
         "@types/qs": "^6.15.1",
@@ -52,9 +52,9 @@
         "@types/react-dom": "^19.2.3",
         "@types/serialize-javascript": "^5.0.4",
         "babel-plugin-react-compiler": "^1.0.0",
-        "tsx": "^4.22.4",
+        "tsx": "^4.23.0",
         "typescript": "^5.9.3",
-        "vitest": "^4.1.9"
+        "vitest": "^4.1.10"
     },
     "engines": {
         "node": "^22",
