@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- Podcast download-tracking URLs (RSS `<enclosure>` URLs and the on-site audio player) now carry a fake `.mp3` extension (e.g. `/api/podcast-download/some-slug.mp3`), since Apple Podcasts and other podcatchers sniff the `<enclosure>` URL for a recognizable audio-file extension and reject or mishandle URLs that don't look like audio files. The API route strips the suffix before slug validation, and the redirect target and RSS `<guid>` are unaffected.
+
 ## [1.11.0] - 2026-07-01
 
 ### Added

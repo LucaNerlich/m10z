@@ -69,9 +69,9 @@ describe('generateAudioFeedXml — download tracking', () => {
         expect(url).toBe('https://cdn.example.test/episode-001.mp3');
     });
 
-    test('tracking on → <enclosure> uses the on-domain tracking endpoint URL', () => {
+    test('tracking on → <enclosure> uses the on-domain tracking endpoint URL with a fake .mp3 suffix', () => {
         const {url} = parseEnclosure(render({...baseCfg, downloadTracking: true}));
-        expect(url).toBe('https://m10z.de/api/podcast-download/episode-001');
+        expect(url).toBe('https://m10z.de/api/podcast-download/episode-001.mp3');
     });
 
     test('GUID, length and type are identical whether tracking is on or off', () => {
@@ -81,6 +81,22 @@ describe('generateAudioFeedXml — download tracking', () => {
         expect(on.guid).toBe(off.guid);
         expect(on.length).toBe(off.length);
         expect(on.type).toBe(off.type);
+    });
+
+    test('each episode gets its own slug-specific .mp3-suffixed tracking URL', () => {
+        const second: StrapiPodcast = {
+            ...episode,
+            slug: 'episode-002',
+            file: {...episode.file, url: 'https://cdn.example.test/episode-002.mp3'},
+        };
+        const {xml} = generateAudioFeedXml({
+            cfg: {...baseCfg, downloadTracking: true},
+            channel,
+            episodeFooter: null,
+            episodes: [episode, second],
+        });
+        expect(xml).toContain('<enclosure url="https://m10z.de/api/podcast-download/episode-001.mp3"');
+        expect(xml).toContain('<enclosure url="https://m10z.de/api/podcast-download/episode-002.mp3"');
     });
 });
 

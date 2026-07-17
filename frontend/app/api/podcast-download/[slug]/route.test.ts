@@ -65,11 +65,21 @@ describe('GET /api/podcast-download/[slug]', () => {
         expect(fetchPodcastBySlug).not.toHaveBeenCalled();
     });
 
-    test('returns 404 when Strapi returns null for the slug', async () => {
-        fetchPodcastBySlug.mockResolvedValue(null);
-        const [request, context] = makeRequest('valid-slug');
+    test('returns 404 for a slug that still contains dots after stripping a trailing .mp3 suffix', async () => {
+        // SLUG_PATTERN disallows dots, so an embedded dot must still be rejected even though the
+        // trailing ".mp3" is stripped first.
+        const [request, context] = makeRequest('valid.slug.mp3');
         const res = await GET(request, context);
         expect(res.status).toBe(404);
+        expect(fetchPodcastBySlug).not.toHaveBeenCalled();
+    });
+
+    test('returns 404 when Strapi returns null for the slug', async () => {
+        fetchPodcastBySlug.mockResolvedValue(null);
+        const [request, context] = makeRequest('valid-slug.mp3');
+        const res = await GET(request, context);
+        expect(res.status).toBe(404);
+        expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
     });
 
     test('returns 404 when the resolved file URL is not on the allowlist', async () => {
@@ -77,12 +87,47 @@ describe('GET /api/podcast-download/[slug]', () => {
         mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
         isAllowedDownloadTarget.mockReturnValue(false);
 
-        const [request, context] = makeRequest('valid-slug');
+        const [request, context] = makeRequest('valid-slug.mp3');
         const res = await GET(request, context);
         expect(res.status).toBe(404);
     });
 
-    test('returns 302 with Location and Cache-Control headers for a valid slug and allowed URL', async () => {
+    test('returns 302 with Location and Cache-Control headers for a .mp3-suffixed inbound slug', async () => {
+        fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
+        mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
+        isAllowedDownloadTarget.mockReturnValue(true);
+
+        const [request, context] = makeRequest('valid-slug.mp3');
+        const res = await GET(request, context);
+
+        expect(res.status).toBe(302);
+        expect(res.headers.get('Location')).toBe('https://cdn.example.com/ep.mp3');
+        expect(res.headers.get('Cache-Control')).toBe('no-store');
+        expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
+    });
+
+    test('strips the .mp3 suffix case-insensitively before slug validation/lookup', async () => {
+        fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
+        mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
+        isAllowedDownloadTarget.mockReturnValue(true);
+
+        const [request, context] = makeRequest('valid-slug.MP3');
+        const res = await GET(request, context);
+
+        expect(res.status).toBe(302);
+        expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
+    });
+
+    test('returns 404 for a slug that is only the .mp3 suffix (empty after stripping)', async () => {
+        const [request, context] = makeRequest('.mp3');
+        const res = await GET(request, context);
+        expect(res.status).toBe(404);
+        expect(fetchPodcastBySlug).not.toHaveBeenCalled();
+    });
+
+    test('accepts a bare inbound slug with no .mp3 suffix (backward compatibility)', async () => {
+        // Requests that predate the fake-suffix change, or come from a client that didn't append it,
+        // must still resolve normally since the strip is a no-op when there is nothing to strip.
         fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
         mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
         isAllowedDownloadTarget.mockReturnValue(true);
@@ -91,7 +136,15 @@ describe('GET /api/podcast-download/[slug]', () => {
         const res = await GET(request, context);
 
         expect(res.status).toBe(302);
-        expect(res.headers.get('Location')).toBe('https://cdn.example.com/ep.mp3');
-        expect(res.headers.get('Cache-Control')).toBe('no-store');
+        expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
+    });
+
+    test('only strips one trailing .mp3, so a doubled suffix is still rejected', async () => {
+        // TRAILING_MP3_SUFFIX is anchored with a single `$`, so "slug.mp3.mp3" strips to
+        // "slug.mp3" — which still contains a dot and must be rejected by SLUG_PATTERN.
+        const [request, context] = makeRequest('valid-slug.mp3.mp3');
+        const res = await GET(request, context);
+        expect(res.status).toBe(404);
+        expect(fetchPodcastBySlug).not.toHaveBeenCalled();
     });
 });

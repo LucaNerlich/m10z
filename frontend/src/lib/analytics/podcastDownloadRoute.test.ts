@@ -65,18 +65,19 @@ afterEach(() => {
 });
 
 describe('podcast download route', () => {
-    test('redirects to the podcast file and schedules tracking for an initial request', async () => {
+    test('redirects to the podcast file and schedules tracking for a .mp3-suffixed inbound slug', async () => {
         const podcast = makePodcast();
         mocks.fetchPodcastBySlug.mockResolvedValue(podcast);
-        const request = new Request('https://m10z.de/api/podcast-download/ep-1', {
+        const request = new Request('https://m10z.de/api/podcast-download/ep-1.mp3', {
             headers: {'user-agent': 'PodcatcherApp/1.0'},
         });
 
-        const response = await GET(request, makeContext('ep-1'));
+        const response = await GET(request, makeContext('ep-1.mp3'));
 
         expect(response.status).toBe(302);
         expect(response.headers.get('location')).toBe('https://cms.m10z.de/uploads/ep-1.mp3');
         expect(response.headers.get('cache-control')).toBe('no-store');
+        // The trailing .mp3 must be stripped before the Strapi lookup.
         expect(mocks.fetchPodcastBySlug).toHaveBeenCalledWith('ep-1');
         expect(mocks.afterCallbacks).toHaveLength(1);
 
@@ -87,6 +88,18 @@ describe('podcast download route', () => {
             title: 'Episode 1',
             request,
         });
+    });
+
+    test('strips the .mp3 suffix case-insensitively before slug validation/lookup', async () => {
+        mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
+
+        const response = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1.MP3'),
+            makeContext('ep-1.MP3'),
+        );
+
+        expect(response.status).toBe(302);
+        expect(mocks.fetchPodcastBySlug).toHaveBeenCalledWith('ep-1');
     });
 
     test('returns 404 without lookup for an invalid slug', async () => {
@@ -100,12 +113,49 @@ describe('podcast download route', () => {
         expect(mocks.afterCallbacks).toHaveLength(0);
     });
 
+    test('returns 404 for a slug that still contains dots after stripping a trailing .mp3 suffix', async () => {
+        // SLUG_PATTERN disallows dots, so this must still be rejected even though the trailing
+        // ".mp3" is stripped first — the strip is unambiguous and never masks an invalid slug.
+        const response = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep.1.mp3'),
+            makeContext('ep.1.mp3'),
+        );
+
+        expect(response.status).toBe(404);
+        expect(mocks.fetchPodcastBySlug).not.toHaveBeenCalled();
+        expect(mocks.afterCallbacks).toHaveLength(0);
+    });
+
+    test('accepts a bare inbound slug with no .mp3 suffix (backward compatibility)', async () => {
+        mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
+
+        const response = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1'),
+            makeContext('ep-1'),
+        );
+
+        expect(response.status).toBe(302);
+        expect(response.headers.get('location')).toBe('https://cms.m10z.de/uploads/ep-1.mp3');
+        expect(mocks.fetchPodcastBySlug).toHaveBeenCalledWith('ep-1');
+    });
+
+    test('returns 404 for a slug that is only the .mp3 suffix (empty after stripping)', async () => {
+        const response = await GET(
+            new Request('https://m10z.de/api/podcast-download/.mp3'),
+            makeContext('.mp3'),
+        );
+
+        expect(response.status).toBe(404);
+        expect(mocks.fetchPodcastBySlug).not.toHaveBeenCalled();
+        expect(mocks.afterCallbacks).toHaveLength(0);
+    });
+
     test('returns 404 when the podcast is unknown', async () => {
         mocks.fetchPodcastBySlug.mockResolvedValue(null);
 
         const response = await GET(
-            new Request('https://m10z.de/api/podcast-download/missing-episode'),
-            makeContext('missing-episode'),
+            new Request('https://m10z.de/api/podcast-download/missing-episode.mp3'),
+            makeContext('missing-episode.mp3'),
         );
 
         expect(response.status).toBe(404);
@@ -116,10 +166,10 @@ describe('podcast download route', () => {
         mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
 
         const response = await GET(
-            new Request('https://m10z.de/api/podcast-download/ep-1', {
+            new Request('https://m10z.de/api/podcast-download/ep-1.mp3', {
                 headers: {range: 'bytes=0-1023'},
             }),
-            makeContext('ep-1'),
+            makeContext('ep-1.mp3'),
         );
 
         expect(response.status).toBe(302);
@@ -130,10 +180,10 @@ describe('podcast download route', () => {
         mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
 
         const response = await GET(
-            new Request('https://m10z.de/api/podcast-download/ep-1', {
+            new Request('https://m10z.de/api/podcast-download/ep-1.mp3', {
                 headers: {range: 'bytes=1-'},
             }),
-            makeContext('ep-1'),
+            makeContext('ep-1.mp3'),
         );
 
         expect(response.status).toBe(302);
@@ -145,10 +195,10 @@ describe('podcast download route', () => {
         mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
 
         const response = await GET(
-            new Request('https://m10z.de/api/podcast-download/ep-1', {
+            new Request('https://m10z.de/api/podcast-download/ep-1.mp3', {
                 headers: {'user-agent': 'PodcatcherApp/1.0'},
             }),
-            makeContext('ep-1'),
+            makeContext('ep-1.mp3'),
         );
 
         expect(response.status).toBe(302);

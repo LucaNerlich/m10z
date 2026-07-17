@@ -18,6 +18,11 @@ export const dynamic = 'force-dynamic';
 // path traversal / injection before the value is used in a Strapi query.
 const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
+// The tracking URL carries a fake `.mp3` extension (see `buildPodcastDownloadPath`) so podcatchers
+// treat the enclosure URL as a valid audio file. Strip it before slug validation/lookup. Since
+// SLUG_PATTERN disallows dots, this is unambiguous and never affects a legitimate slug.
+const TRAILING_MP3_SUFFIX = /\.mp3$/i;
+
 type RouteContext = {
     params: Promise<{slug: string}>;
 };
@@ -45,12 +50,15 @@ function isAllowedDownloadUrl(fileUrl: string): boolean {
 }
 
 /**
- * Redirects a podcast download request to the underlying audio file and records download tracking when enabled.
+ * Redirects a podcast download request to its validated audio file and records download tracking when enabled.
  *
- * Returns 404 for invalid or unknown slugs, or when the resolved audio URL is not allowed.
+ * Removes a trailing `.mp3` suffix before resolving the podcast. Returns `404 Not Found` for invalid or unknown slugs, missing audio files, or disallowed audio URLs.
+ *
+ * @returns A redirect response to the podcast audio file, or a `404 Not Found` response.
  */
 export async function GET(request: Request, {params}: RouteContext) {
-    const {slug} = await params;
+    const {slug: rawSlug} = await params;
+    const slug = rawSlug.replace(TRAILING_MP3_SUFFIX, '');
 
     if (!SLUG_PATTERN.test(slug)) {
         return new NextResponse('Not Found', {status: 404});
