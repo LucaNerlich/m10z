@@ -15,25 +15,25 @@ afterEach(() => {
 });
 
 describe('buildPodcastDownloadPath', () => {
-    test('builds the root-relative endpoint path', () => {
-        expect(buildPodcastDownloadPath('episode-001')).toBe('/api/podcast-download/episode-001');
+    test('builds the root-relative endpoint path with a fake .mp3 suffix', () => {
+        expect(buildPodcastDownloadPath('episode-001')).toBe('/api/podcast-download/episode-001.mp3');
     });
 
-    test('URL-encodes the slug', () => {
-        expect(buildPodcastDownloadPath('a b/c')).toBe('/api/podcast-download/a%20b%2Fc');
+    test('URL-encodes the slug, appending .mp3 after the encoded segment', () => {
+        expect(buildPodcastDownloadPath('a b/c')).toBe('/api/podcast-download/a%20b%2Fc.mp3');
     });
 });
 
 describe('buildPodcastDownloadUrl', () => {
-    test('joins the site URL and the endpoint path', () => {
+    test('joins the site URL and the .mp3-suffixed endpoint path', () => {
         expect(buildPodcastDownloadUrl('https://m10z.de', 'ep-1')).toBe(
-            'https://m10z.de/api/podcast-download/ep-1',
+            'https://m10z.de/api/podcast-download/ep-1.mp3',
         );
     });
 
     test('strips trailing slashes from the site URL', () => {
         expect(buildPodcastDownloadUrl('https://m10z.de///', 'ep-1')).toBe(
-            'https://m10z.de/api/podcast-download/ep-1',
+            'https://m10z.de/api/podcast-download/ep-1.mp3',
         );
     });
 });

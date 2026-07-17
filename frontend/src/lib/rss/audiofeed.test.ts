@@ -69,9 +69,9 @@ describe('generateAudioFeedXml — download tracking', () => {
         expect(url).toBe('https://cdn.example.test/episode-001.mp3');
     });
 
-    test('tracking on → <enclosure> uses the on-domain tracking endpoint URL', () => {
+    test('tracking on → <enclosure> uses the on-domain tracking endpoint URL with a fake .mp3 suffix', () => {
         const {url} = parseEnclosure(render({...baseCfg, downloadTracking: true}));
-        expect(url).toBe('https://m10z.de/api/podcast-download/episode-001');
+        expect(url).toBe('https://m10z.de/api/podcast-download/episode-001.mp3');
     });
 
     test('GUID, length and type are identical whether tracking is on or off', () => {
