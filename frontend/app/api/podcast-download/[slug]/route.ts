@@ -50,9 +50,11 @@ function isAllowedDownloadUrl(fileUrl: string): boolean {
 }
 
 /**
- * Redirects a podcast download request to the underlying audio file and records download tracking when enabled.
+ * Redirects a podcast download request to its validated audio file and records download tracking when enabled.
  *
- * Returns 404 for invalid or unknown slugs, or when the resolved audio URL is not allowed.
+ * Removes a trailing `.mp3` suffix before resolving the podcast. Returns `404 Not Found` for invalid or unknown slugs, missing audio files, or disallowed audio URLs.
+ *
+ * @returns A redirect response to the podcast audio file, or a `404 Not Found` response.
  */
 export async function GET(request: Request, {params}: RouteContext) {
     const {slug: rawSlug} = await params;
