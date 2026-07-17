@@ -126,6 +126,30 @@ describe('podcast download route', () => {
         expect(mocks.afterCallbacks).toHaveLength(0);
     });
 
+    test('accepts a bare inbound slug with no .mp3 suffix (backward compatibility)', async () => {
+        mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
+
+        const response = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1'),
+            makeContext('ep-1'),
+        );
+
+        expect(response.status).toBe(302);
+        expect(response.headers.get('location')).toBe('https://cms.m10z.de/uploads/ep-1.mp3');
+        expect(mocks.fetchPodcastBySlug).toHaveBeenCalledWith('ep-1');
+    });
+
+    test('returns 404 for a slug that is only the .mp3 suffix (empty after stripping)', async () => {
+        const response = await GET(
+            new Request('https://m10z.de/api/podcast-download/.mp3'),
+            makeContext('.mp3'),
+        );
+
+        expect(response.status).toBe(404);
+        expect(mocks.fetchPodcastBySlug).not.toHaveBeenCalled();
+        expect(mocks.afterCallbacks).toHaveLength(0);
+    });
+
     test('returns 404 when the podcast is unknown', async () => {
         mocks.fetchPodcastBySlug.mockResolvedValue(null);
 

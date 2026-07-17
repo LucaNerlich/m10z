@@ -82,6 +82,22 @@ describe('generateAudioFeedXml — download tracking', () => {
         expect(on.length).toBe(off.length);
         expect(on.type).toBe(off.type);
     });
+
+    test('each episode gets its own slug-specific .mp3-suffixed tracking URL', () => {
+        const second: StrapiPodcast = {
+            ...episode,
+            slug: 'episode-002',
+            file: {...episode.file, url: 'https://cdn.example.test/episode-002.mp3'},
+        };
+        const {xml} = generateAudioFeedXml({
+            cfg: {...baseCfg, downloadTracking: true},
+            channel,
+            episodeFooter: null,
+            episodes: [episode, second],
+        });
+        expect(xml).toContain('<enclosure url="https://m10z.de/api/podcast-download/episode-001.mp3"');
+        expect(xml).toContain('<enclosure url="https://m10z.de/api/podcast-download/episode-002.mp3"');
+    });
 });
 
 describe('normalizeEnclosureLengthBytes', () => {

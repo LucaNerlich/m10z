@@ -22,6 +22,16 @@ describe('buildPodcastDownloadPath', () => {
     test('URL-encodes the slug, appending .mp3 after the encoded segment', () => {
         expect(buildPodcastDownloadPath('a b/c')).toBe('/api/podcast-download/a%20b%2Fc.mp3');
     });
+
+    test('appends .mp3 even when the slug already ends in .mp3', () => {
+        // encodeURIComponent does not encode dots, so a slug that already looks like a filename
+        // still gets a second literal ".mp3" appended; the route only strips one trailing suffix.
+        expect(buildPodcastDownloadPath('episode.mp3')).toBe('/api/podcast-download/episode.mp3.mp3');
+    });
+
+    test('handles an empty slug', () => {
+        expect(buildPodcastDownloadPath('')).toBe('/api/podcast-download/.mp3');
+    });
 });
 
 describe('buildPodcastDownloadUrl', () => {

@@ -117,4 +117,34 @@ describe('GET /api/podcast-download/[slug]', () => {
         expect(res.status).toBe(302);
         expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
     });
+
+    test('returns 404 for a slug that is only the .mp3 suffix (empty after stripping)', async () => {
+        const [request, context] = makeRequest('.mp3');
+        const res = await GET(request, context);
+        expect(res.status).toBe(404);
+        expect(fetchPodcastBySlug).not.toHaveBeenCalled();
+    });
+
+    test('accepts a bare inbound slug with no .mp3 suffix (backward compatibility)', async () => {
+        // Requests that predate the fake-suffix change, or come from a client that didn't append it,
+        // must still resolve normally since the strip is a no-op when there is nothing to strip.
+        fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
+        mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
+        isAllowedDownloadTarget.mockReturnValue(true);
+
+        const [request, context] = makeRequest('valid-slug');
+        const res = await GET(request, context);
+
+        expect(res.status).toBe(302);
+        expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
+    });
+
+    test('only strips one trailing .mp3, so a doubled suffix is still rejected', async () => {
+        // TRAILING_MP3_SUFFIX is anchored with a single `$`, so "slug.mp3.mp3" strips to
+        // "slug.mp3" — which still contains a dot and must be rejected by SLUG_PATTERN.
+        const [request, context] = makeRequest('valid-slug.mp3.mp3');
+        const res = await GET(request, context);
+        expect(res.status).toBe(404);
+        expect(fetchPodcastBySlug).not.toHaveBeenCalled();
+    });
 });
