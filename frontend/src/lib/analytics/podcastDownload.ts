@@ -4,14 +4,22 @@
  * The same endpoint backs both the RSS `<enclosure>` URLs and the on-site audio player, so the URL
  * shape and the feature flag live here to keep the feed generator, the route, and the detail page
  * in sync.
+ *
+ * The generated URL carries a fake `.mp3` extension even though the path is actually served by an
+ * API route rather than a static file: some podcatchers (including Apple Podcasts) sniff the
+ * `<enclosure>` URL for a recognizable audio-file extension and reject or mishandle URLs that don't
+ * look like audio files. The route strips the suffix before validating/looking up the slug.
  */
 
 /**
  * Root-relative path of the download-tracking endpoint for an episode. Preferred for same-origin
  * usage like the on-site `<audio>` element.
+ *
+ * Appends a literal `.mp3` suffix after the URL-encoded slug so podcatchers that sniff the
+ * enclosure URL's file extension treat it as a valid audio file (see module doc comment).
  */
 export function buildPodcastDownloadPath(slug: string): string {
-    return `/api/podcast-download/${encodeURIComponent(slug)}`;
+    return `/api/podcast-download/${encodeURIComponent(slug)}.mp3`;
 }
 
 /**
