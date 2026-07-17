@@ -17,15 +17,15 @@
         "test:run": "vitest run"
     },
     "dependencies": {
-        "@strapi/plugin-users-permissions": "^5.50.0",
-        "@strapi/provider-email-mailgun": "^5.50.0",
-        "@strapi/strapi": "^5.50.0",
-        "@strapi/utils": "^5.50.0",
+        "@strapi/plugin-users-permissions": "^5.50.2",
+        "@strapi/provider-email-mailgun": "^5.50.2",
+        "@strapi/strapi": "^5.50.2",
+        "@strapi/utils": "^5.50.2",
         "blurhash": "^2.0.5",
         "form-data": "^4.0.6",
         "markdown-to-txt": "^2.0.1",
         "marked": "^17.0.6",
-        "music-metadata": "^11.13.0",
+        "music-metadata": "^11.14.0",
         "node-fetch": "^3.3.2",
         "pg": "~8.16.3",
         "react": "^18.3.1",
@@ -36,11 +36,11 @@
         "styled-components": "~6.1.19"
     },
     "devDependencies": {
-        "@types/node": "^22.20.0",
+        "@types/node": "^22.20.1",
         "@types/react": "^18.3.31",
         "@types/react-dom": "^18.3.7",
         "dotenv": "^16.6.1",
-        "tsx": "^4.23.0",
+        "tsx": "^4.23.1",
         "typescript": "~5.3.3",
         "vite": "^7.3.6",
         "vitest": "^4.1.10"
