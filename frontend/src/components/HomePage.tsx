@@ -68,9 +68,9 @@ export async function HomePage({page}: {page: number}) {
             <div className={styles.page}>
                 <Card variant="empty">
                     <p>Fehler beim Laden der Inhalte.</p>
-                    <a href="/" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                    <Link href="/" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
                         Erneut versuchen
-                    </a>
+                    </Link>
                 </Card>
             </div>
         );
@@ -93,7 +93,7 @@ export async function HomePage({page}: {page: number}) {
     return (
         <div className={styles.page}>
             <h1 className="visually-hidden">Mindestens 10 Zeichen</h1>
-            <aside className={styles.toc} aria-label="Inhaltsverzeichnis">
+            <nav className={styles.toc} aria-label="Inhaltsverzeichnis">
                 <h2 className={styles.tocTitle}>Inhaltsverzeichnis</h2>
                 {currentItems.length === 0 ? (
                     <p className={styles.empty}>Gerade nichts Neues.</p>
@@ -132,7 +132,7 @@ export async function HomePage({page}: {page: number}) {
                         })}
                     </ul>
                 )}
-            </aside>
+            </nav>
 
             <section className={styles.feed} aria-label="Neueste Inhalte">
                 {currentItems.length === 0 ? (

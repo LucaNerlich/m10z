@@ -54,7 +54,7 @@ export default function Footer() {
             <div className={styles.content}>
                 {sections.map((section) => (
                     <div key={section.title} className={styles.section}>
-                        <span className={styles.sectionTitle}>{section.title}</span>
+                        <h2 className={styles.sectionTitle}>{section.title}</h2>
                         <ul className={styles.linkList}>
                             {section.links.map((link) => (
                                 <li key={link.href}>
@@ -67,6 +67,7 @@ export default function Footer() {
                                             data-umami-event={umamiEventId(['footer', section.title, link.label])}
                                         >
                                             {link.label}
+                                            <span className="visually-hidden"> (öffnet in neuem Fenster)</span>
                                         </a>
                                     ) : (
                                         <Link className={styles.link} href={link.href}>
