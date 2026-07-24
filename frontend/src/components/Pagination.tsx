@@ -29,7 +29,7 @@ export function Pagination({
             <div className={styles.pageInfo}>Seite {currentPage}</div>
             <div className={styles.pageControls}>
                 {isFirstPage ? (
-                    <span className={`${styles.pageButton} ${styles.pageButtonDisabled}`} aria-disabled>
+                    <span className={`${styles.pageButton} ${styles.pageButtonDisabled}`} aria-disabled="true">
                         Zurück
                     </span>
                 ) : previousHref ? (
@@ -46,7 +46,7 @@ export function Pagination({
                     </button>
                 )}
                 {isLastPage ? (
-                    <span className={`${styles.pageButton} ${styles.pageButtonDisabled}`} aria-disabled>
+                    <span className={`${styles.pageButton} ${styles.pageButtonDisabled}`} aria-disabled="true">
                         Weiter
                     </span>
                 ) : nextHref ? (
