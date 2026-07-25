@@ -20,21 +20,21 @@ export function M12GGameDetail({game}: M12GGameDetailProps) {
                 <h1 className={styles.title}>{game.name}</h1>
                 <div className={styles.subline}>
                     <a href={game.link} target="_blank" rel="noreferrer noopener">
-                        Store-Seite öffnen ↗
+                        Store-Seite öffnen ↗<span className="visually-hidden"> (öffnet in neuem Fenster)</span>
                     </a>
                 </div>
             </header>
 
-            <div className={styles.stats}>
+            <dl className={styles.stats}>
                 <div className={styles.stat}>
-                    <span className={styles.statLabel}>Siege</span>
-                    <span className={styles.statValue}>{game.wins}</span>
+                    <dt className={styles.statLabel}>Siege</dt>
+                    <dd className={styles.statValue}>{game.wins}</dd>
                 </div>
                 <div className={styles.stat}>
-                    <span className={styles.statLabel}>Stimmen gesamt</span>
-                    <span className={styles.statValue}>{game.totalVotes}</span>
+                    <dt className={styles.statLabel}>Stimmen gesamt</dt>
+                    <dd className={styles.statValue}>{game.totalVotes}</dd>
                 </div>
-            </div>
+            </dl>
 
             <section className={styles.timelineWrapper}>
                 <h2 className={styles.timelineHeading}>Auftritte</h2>
@@ -48,7 +48,7 @@ export function M12GGameDetail({game}: M12GGameDetailProps) {
                                 ) : null}
                                 {entry.forumThreadUrl ? (
                                     <a href={entry.forumThreadUrl} target="_blank" rel="noreferrer noopener">
-                                        {formatMonthLong(entry.month)}
+                                        {formatMonthLong(entry.month)}<span className="visually-hidden"> (öffnet in neuem Fenster)</span>
                                     </a>
                                 ) : (
                                     formatMonthLong(entry.month)

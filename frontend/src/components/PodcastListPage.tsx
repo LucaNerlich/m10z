@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {fetchPodcastsPage} from '@/src/lib/strapiContent';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {PodcastCard} from '@/src/components/PodcastCard';
@@ -44,9 +45,9 @@ export async function PodcastListPage({
                 <h1>Podcasts</h1>
                 <Card variant="empty">
                     <p>Fehler beim Laden der Podcasts.</p>
-                    <a href="/podcasts" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                    <Link href="/podcasts" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
                         Erneut versuchen
-                    </a>
+                    </Link>
                 </Card>
             </section>
         );

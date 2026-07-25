@@ -44,7 +44,7 @@ export function M12GLeaderboard({entries}: M12GLeaderboardProps) {
                                     href={entry.link}
                                     target="_blank"
                                     rel="noreferrer noopener"
-                                    aria-label={`${entry.name} im Store öffnen`}
+                                    aria-label={`${entry.name} im Store öffnen (öffnet in neuem Fenster)`}
                                 >
                                     ↗
                                 </a>

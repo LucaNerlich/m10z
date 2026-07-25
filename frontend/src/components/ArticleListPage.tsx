@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {fetchArticlesPage} from '@/src/lib/strapiContent';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
@@ -42,9 +43,9 @@ export async function ArticleListPage({
                 <h1>Artikel</h1>
                 <Card variant="empty">
                     <p>Fehler beim Laden der Artikel.</p>
-                    <a href="/artikel" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                    <Link href="/artikel" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
                         Erneut versuchen
-                    </a>
+                    </Link>
                 </Card>
             </section>
         );

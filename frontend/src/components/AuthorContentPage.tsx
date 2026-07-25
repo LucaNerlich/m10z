@@ -132,7 +132,8 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
             <AuthorHeader author={author} />
             <AuthorNav authorSlug={slug} activeSection={props.activeSection} />
 
-            <section title={props.sectionLabel}>
+            <section>
+                <h2 className={styles.sectionTitle}>{props.sectionLabel}</h2>
                 {categorySlug ? (
                     <div className={styles.filterRow}>
                         <Link
