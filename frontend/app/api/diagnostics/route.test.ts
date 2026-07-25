@@ -1,86 +1,111 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
+
 import {GET} from './route';
 
-const {
-    verifySecret,
-    checkRateLimit,
-    getRecentDiagnosticEvents,
-    getAudioFeedRuntimeState,
-    getSchedulerState,
-    getClientIp,
-} =
+const {getRecentDiagnosticEvents, getAudioFeedRuntimeState, getSchedulerState} =
     vi.hoisted(() => ({
-        verifySecret: vi.fn(),
-        checkRateLimit: vi.fn(),
-        getRecentDiagnosticEvents: vi.fn().mockReturnValue([]),
-        getAudioFeedRuntimeState: vi.fn().mockReturnValue({}),
-        getSchedulerState: vi.fn().mockReturnValue({}),
-        getClientIp: vi.fn().mockReturnValue('127.0.0.1'),
+        getRecentDiagnosticEvents: vi.fn(),
+        getAudioFeedRuntimeState: vi.fn(),
+        getSchedulerState: vi.fn(),
     }));
 
-vi.mock('@/src/lib/security/verifySecret', () => ({verifySecret}));
-vi.mock('@/src/lib/security/rateLimit', () => ({checkRateLimit}));
-vi.mock('@/src/lib/diagnostics/runtimeDiagnostics', () => ({getRecentDiagnosticEvents}));
-vi.mock('@/src/lib/rss/audioFeedRouteHandler', () => ({getAudioFeedRuntimeState}));
+vi.mock('@/src/lib/diagnostics/runtimeDiagnostics', () => ({
+    getRecentDiagnosticEvents,
+}));
+
+vi.mock('@/src/lib/rss/audioFeedRouteHandler', () => ({
+    getAudioFeedRuntimeState,
+}));
+
 vi.mock('@/src/lib/rss/articleFeedRouteHandler', () => ({
     getSchedulerState,
-    buildArticleFeedResponse: vi.fn(),
 }));
-vi.mock('@/src/lib/net/getClientIp', () => ({getClientIp}));
 
-function makeRequest(token?: string): Request {
+const SECRET = 'test-diagnostics-secret';
+
+const MOCK_EVENTS = [
+    {ts: 1000, kind: 'fetch', name: 'test', ok: true, durationMs: 5},
+];
+
+const MOCK_AUDIO_STATE = {running: true, intervalMs: 300_000};
+
+const MOCK_ARTICLE_STATE = {running: false, intervalMs: 0};
+
+function request(token?: string, ip = '10.0.0.1'): Request {
     const url = token
         ? `https://m10z.de/api/diagnostics?token=${encodeURIComponent(token)}`
         : 'https://m10z.de/api/diagnostics';
-    return new Request(url, {method: 'GET'});
+    const headers = new Headers({'x-forwarded-for': ip});
+    return new Request(url, {headers});
+}
+
+function requestWithHeader(token: string, ip = '10.0.0.1'): Request {
+    const headers = new Headers({
+        'x-forwarded-for': ip,
+        'x-m10z-diagnostics-token': token,
+    });
+    return new Request('https://m10z.de/api/diagnostics', {headers});
 }
 
 beforeEach(() => {
-    vi.stubEnv('DIAGNOSTICS_TOKEN', 'test-token');
-    checkRateLimit.mockReturnValue({ok: true, retryAfterSeconds: 0});
-    verifySecret.mockReturnValue(false);
+    vi.stubEnv('DIAGNOSTICS_TOKEN', SECRET);
+    getRecentDiagnosticEvents.mockReturnValue(MOCK_EVENTS);
+    getAudioFeedRuntimeState.mockReturnValue(MOCK_AUDIO_STATE);
+    getSchedulerState.mockReturnValue(MOCK_ARTICLE_STATE);
 });
 
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => {
+    vi.unstubAllEnvs();
+});
 
 describe('GET /api/diagnostics', () => {
-    test('returns 401 when no token is provided', async () => {
-        verifySecret.mockReturnValue(false);
-        const res = await GET(makeRequest());
+    test('401 when no token is provided', async () => {
+        const res = await GET(request());
         expect(res.status).toBe(401);
     });
 
-    test('returns 401 when wrong token is provided', async () => {
-        verifySecret.mockReturnValue(false);
-        const res = await GET(makeRequest('wrong-token'));
+    test('401 when wrong token is provided', async () => {
+        const res = await GET(request('wrong-token'));
         expect(res.status).toBe(401);
     });
 
-    test('returns 429 with Retry-After header when rate limit is exceeded', async () => {
-        verifySecret.mockReturnValue(true);
-        checkRateLimit.mockReturnValue({ok: false, retryAfterSeconds: 5});
-
-        const res = await GET(makeRequest('test-token'));
-
-        expect(res.status).toBe(429);
-        expect(res.headers.get('Retry-After')).toBe('5');
-    });
-
-    test('returns 200 with diagnostic JSON when token is valid and within rate limit', async () => {
-        verifySecret.mockReturnValue(true);
-        checkRateLimit.mockReturnValue({ok: true, retryAfterSeconds: 0});
-        getRecentDiagnosticEvents.mockReturnValue([{type: 'test'}]);
-        getAudioFeedRuntimeState.mockReturnValue({running: true});
-        getSchedulerState.mockReturnValue({lastRun: 123});
-
-        const res = await GET(makeRequest('test-token'));
-
+    test('200 with diagnostic data on valid token (query param)', async () => {
+        const res = await GET(request(SECRET));
         expect(res.status).toBe(200);
+
         const body = await res.json();
-        expect(body).toHaveProperty('now');
-        expect(body).toHaveProperty('events');
-        expect(body).toHaveProperty('memory');
-        expect(body).toHaveProperty('schedulers');
-        expect(typeof body.now).toBe('number');
+        expect(body).toMatchObject({
+            now: expect.any(Number),
+            events: MOCK_EVENTS,
+            memory: expect.objectContaining({
+                heapUsed: expect.any(Number),
+                rss: expect.any(Number),
+            }),
+            schedulers: {
+                audioFeed: MOCK_AUDIO_STATE,
+                articleFeed: MOCK_ARTICLE_STATE,
+            },
+        });
+    });
+
+    test('200 when token is provided via x-m10z-diagnostics-token header', async () => {
+        const res = await GET(requestWithHeader(SECRET));
+        expect(res.status).toBe(200);
+
+        const body = await res.json();
+        expect(body).toMatchObject({
+            now: expect.any(Number),
+            events: MOCK_EVENTS,
+        });
+    });
+
+    test('429 when rate limit is exceeded', async () => {
+        const ip = 'rate-limited-diag';
+        let last: Response | undefined;
+        for (let i = 0; i < 31; i++) {
+            last = await GET(request(SECRET, ip));
+        }
+        expect(last?.status).toBe(429);
+        expect(last?.headers.get('Retry-After')).toBeTruthy();
     });
 });
