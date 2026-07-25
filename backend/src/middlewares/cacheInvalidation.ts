@@ -8,6 +8,7 @@
 import {DOCUMENT_INVALIDATION} from '../shared/contracts/invalidation/manifest';
 
 import {queueCacheInvalidation} from '../services/asyncCacheInvalidationQueue';
+import {sendPushNotifications} from '../services/pushNotificationService';
 
 export async function cacheInvalidationMiddleware(
     context: {uid: string; action: string; params?: any},
@@ -31,6 +32,30 @@ export async function cacheInvalidationMiddleware(
 
     for (const target of entry.targets) {
         queueCacheInvalidation(target, strapiInstance);
+    }
+
+    // Fire push notifications for article/podcast publish actions
+    if (context.action === 'publish') {
+        const contentType = context.uid === 'api::article.article' ? 'article'
+            : context.uid === 'api::podcast.podcast' ? 'podcast'
+            : null;
+
+        if (contentType) {
+            const document = context.params?.data ?? context.params?.document ?? {};
+            const articleTitle: string | undefined = document.title;
+            const articleSlug: string | undefined = document.slug;
+
+            if (articleTitle && articleSlug) {
+                const url = contentType === 'article'
+                    ? `https://m10z.de/artikel/${articleSlug}`
+                    : `https://m10z.de/podcasts/${articleSlug}`;
+
+                // Fire-and-forget: don't block the publish response
+                sendPushNotifications(contentType, articleTitle, url, strapiInstance).catch(
+                    (error) => strapiInstance.log.warn('[pushNotifications] Error sending push notification', error)
+                );
+            }
+        }
     }
 
     return result;

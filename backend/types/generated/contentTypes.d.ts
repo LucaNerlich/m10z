@@ -863,6 +863,38 @@ export interface ApiSearchIndexSearchIndex extends Struct.SingleTypeSchema {
     };
 }
 
+export interface ApiPushSubscriptionPushSubscription
+    extends Struct.CollectionTypeSchema {
+    collectionName: 'push_subscriptions';
+    info: {
+        displayName: 'Push Subscription';
+        pluralName: 'push-subscriptions';
+        singularName: 'push-subscription';
+    };
+    options: {
+        draftAndPublish: false;
+    };
+    attributes: {
+        createdAt: Schema.Attribute.DateTime;
+        createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+        endpoint: Schema.Attribute.String &
+            Schema.Attribute.Required &
+            Schema.Attribute.Unique;
+        keys: Schema.Attribute.JSON & Schema.Attribute.Required;
+        locale: Schema.Attribute.String & Schema.Attribute.Private;
+        localizations: Schema.Attribute.Relation<
+            'oneToMany',
+            'api::push-subscription.push-subscription'
+        > &
+            Schema.Attribute.Private;
+        publishedAt: Schema.Attribute.DateTime;
+        updatedAt: Schema.Attribute.DateTime;
+        updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+            Schema.Attribute.Private;
+    };
+}
+
 export interface PluginContentReleasesRelease
     extends Struct.CollectionTypeSchema {
     collectionName: 'strapi_releases';
@@ -1394,6 +1426,7 @@ declare module '@strapi/strapi' {
             'api::imprint.imprint': ApiImprintImprint;
             'api::podcast.podcast': ApiPodcastPodcast;
             'api::privacy.privacy': ApiPrivacyPrivacy;
+            'api::push-subscription.push-subscription': ApiPushSubscriptionPushSubscription;
             'api::search-index.search-index': ApiSearchIndexSearchIndex;
             'plugin::content-releases.release': PluginContentReleasesRelease;
             'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

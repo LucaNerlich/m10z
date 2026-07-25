@@ -1,0 +1,24 @@
+{
+    "kind": "collectionType",
+    "collectionName": "push_subscriptions",
+    "info": {
+        "singularName": "push-subscription",
+        "pluralName": "push-subscriptions",
+        "displayName": "Push Subscription"
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "endpoint": {
+            "type": "string",
+            "required": true,
+            "unique": true
+        },
+        "keys": {
+            "type": "json",
+            "required": true
+        }
+    }
+}

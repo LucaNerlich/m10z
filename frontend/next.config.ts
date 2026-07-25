@@ -134,6 +134,10 @@ const nextConfig: NextConfig = {
                 ...(strapiOriginForCsp ? [strapiOriginForCsp] : []),
                 // Podlove player fetches its chunk manifest/assets from the CDN.
                 ...PODLOVE_CDN_HOSTS,
+                // Web Push notification service endpoints (Firefox, Chrome, Edge).
+                '*.push.services.mozilla.com',
+                '*.notify.windows.com',
+                'fcm.googleapis.com',
             ]).join(' ')}`,
             `media-src ${unique([
                 "'self'",

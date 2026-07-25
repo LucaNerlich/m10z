@@ -33,6 +33,7 @@ export const metadata: Metadata = {
             ],
         },
     },
+    manifest: '/manifest.json',
     openGraph: {
         type: 'website',
         locale: OG_LOCALE,

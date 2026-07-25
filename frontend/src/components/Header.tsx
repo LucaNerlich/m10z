@@ -5,6 +5,7 @@ import React, {Suspense} from 'react';
 import HeaderClient from './HeaderClient';
 import LogoClient from './LogoClient';
 import {SearchLauncher} from './SearchLauncher';
+import {NotificationToggle} from './NotificationToggle';
 import styles from './Header.module.css';
 import {routes} from '@/src/lib/routes';
 
@@ -60,6 +61,7 @@ export default function Header(): React.ReactElement {
 
                 <div className={styles.actions}>
                     <SearchLauncher />
+                    <NotificationToggle />
                     <Suspense
                         fallback={
                             <div className={styles.burgerFallback} aria-hidden>

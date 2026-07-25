@@ -1,0 +1,8 @@
+{
+    "name": "Mindestens 10 Zeichen",
+    "short_name": "M10Z",
+    "start_url": "/",
+    "display": "minimal-ui",
+    "background_color": "#ffffff",
+    "theme_color": "#ff6b35"
+}
