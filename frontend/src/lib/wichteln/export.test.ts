@@ -1,0 +1,89 @@
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
+
+import {generateMarkdown} from './export';
+
+import {type Participant, type Assignment} from '@/app/apps/wichteln/types';
+
+function makeParticipants(
+    overrides: Partial<Participant>[] = []
+): Participant[] {
+    return overrides.map((o, i) => ({
+        id: o.id ?? `id-${i}`,
+        name: o.name ?? `Participant ${i}`,
+        steamProfileUrl: o.steamProfileUrl ?? '',
+    }));
+}
+
+describe('generateMarkdown', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date('2026-07-25T12:00:00Z'));
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    test('includes header and timestamp', () => {
+        const participants = makeParticipants([{id: 'a', name: 'Alice'}]);
+        const assignments: Assignment[] = [{giverId: 'a', receiverId: 'a'}];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).toContain('# Wichteln Ergebnisse');
+        expect(result).toContain('25. Juli 2026');
+    });
+
+    test('lists assignments as giver → receiver', () => {
+        const participants = makeParticipants([
+            {id: 'a', name: 'Alice'},
+            {id: 'b', name: 'Bob'},
+        ]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'b'},
+            {giverId: 'b', receiverId: 'a'},
+        ];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).toContain('**Alice** → **Bob**');
+        expect(result).toContain('**Bob** → **Alice**');
+    });
+
+    test('includes receiver Steam URL when available', () => {
+        const participants = makeParticipants([
+            {id: 'a', name: 'Alice'},
+            {id: 'b', name: 'Bob', steamProfileUrl: 'https://steamcommunity.com/id/bob'},
+        ]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'b'},
+        ];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).toContain('Steam: https://steamcommunity.com/id/bob');
+    });
+
+    test('omits Steam URL when receiver has none', () => {
+        const participants = makeParticipants([
+            {id: 'a', name: 'Alice'},
+            {id: 'b', name: 'Bob', steamProfileUrl: ''},
+        ]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'b'},
+        ];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).toContain('**Alice** → **Bob**');
+        expect(result).not.toContain('Steam:');
+    });
+
+    test('skips assignment when participant is missing from map', () => {
+        const participants = makeParticipants([{id: 'a', name: 'Alice'}]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'missing'},
+        ];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).not.toContain('Alice');
+    });
+
+    test('handles empty assignments', () => {
+        const participants = makeParticipants([{id: 'a', name: 'Alice'}]);
+        const result = generateMarkdown(participants, []);
+        expect(result).toContain('# Wichteln Ergebnisse');
+        expect(result).not.toContain('**Alice**');
+    });
+});
