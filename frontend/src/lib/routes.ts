@@ -21,6 +21,8 @@ export const routes = {
     category: (slug: string) => `/kategorien/${slug}`,
     authors: '/team',
     author: (slug: string) => `/team/${slug}`,
+    apps: '/apps',
+    wichteln: '/apps/wichteln',
     m12g: '/m12g',
     m12gGames: '/m12g/spiele',
     m12gGame: (slug: string) => `/m12g/spiele/${slug}`,
