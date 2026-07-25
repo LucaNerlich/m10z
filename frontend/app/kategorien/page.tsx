@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {type Metadata} from 'next';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
@@ -24,9 +25,9 @@ export default async function CategoriesPage() {
                 <h1>Kategorien</h1>
                 <Card variant="empty">
                     <p>Fehler beim Laden der Kategorien.</p>
-                    <a href="/kategorien" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                    <Link href="/kategorien" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
                         Erneut versuchen
-                    </a>
+                    </Link>
                 </Card>
             </section>
         );

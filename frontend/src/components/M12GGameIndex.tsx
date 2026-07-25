@@ -87,7 +87,7 @@ export function M12GGameIndex({games}: M12GGameIndexProps) {
                                         href={game.link}
                                         target="_blank"
                                         rel="noreferrer noopener"
-                                        aria-label={`${game.name} im Store öffnen`}>
+                                        aria-label={`${game.name} im Store öffnen (öffnet in neuem Fenster)`}>
                                         ↗
                                     </a>
                                     {game.wins > 0 ? (

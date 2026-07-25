@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {type Metadata} from 'next';
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
@@ -27,9 +28,9 @@ export default async function TeamPage() {
                 <h1>Team</h1>
                 <Card variant="empty">
                     <p>Fehler beim Laden der Autoren.</p>
-                    <a href="/team" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                    <Link href="/team" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
                         Erneut versuchen
-                    </a>
+                    </Link>
                 </Card>
             </section>
         );

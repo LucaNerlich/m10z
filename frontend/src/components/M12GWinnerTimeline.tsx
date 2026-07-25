@@ -25,7 +25,7 @@ export function M12GWinnerTimeline({winners}: M12GWinnerTimelineProps) {
                             target="_blank"
                             rel="noreferrer noopener"
                         >
-                            {entry.gameName}
+                            {entry.gameName}<span className='visually-hidden'> (öffnet in neuem Fenster)</span>
                         </a>
                         <span className={styles.votes}>{formatVotes(entry.votes)}</span>
                     </li>

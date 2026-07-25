@@ -11,8 +11,8 @@ export default function PreviewBanner({status = 'draft'}: PreviewBannerProps) {
             : 'Preview Mode - This content is not published.';
 
     return (
-        <output className={styles.banner}>
+        <div className={styles.banner} role="status">
             {message}
-        </output>
+        </div>
     );
 }

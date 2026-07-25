@@ -16,6 +16,7 @@ export default function ChangelogPage() {
     const markdown = readFileSync(path.join(process.cwd(), 'public', 'changelog.md'), 'utf-8');
     return (
         <div data-list-page>
+            <h1>Changelog</h1>
             <Markdown markdown={markdown} />
         </div>
     );
