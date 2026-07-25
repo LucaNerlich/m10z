@@ -3,7 +3,7 @@ import {type Participant, type Assignment} from '@/app/apps/wichteln/types';
 function escapeMarkdown(value: string): string {
     return value
         .replace(/\r?\n/g, ' ')
-        .replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&');
+        .replace(/[\\`*_{}[\]()#+\-!]/g, '\\$&');
 }
 
 export function generateMarkdown(
@@ -33,7 +33,7 @@ export function generateMarkdown(
         const receiver = participantMap.get(assignment.receiverId);
         if (giver && receiver) {
             const profileInfo = receiver.profileUrl
-                ? ` (Profil: ${receiver.profileUrl})`
+                ? ` (Profil: ${escapeMarkdown(receiver.profileUrl)})`
                 : '';
             lines.push(
                 `- **${escapeMarkdown(giver.name)}** → **${escapeMarkdown(receiver.name)}**${profileInfo}`

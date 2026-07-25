@@ -67,7 +67,7 @@ describe('generateMarkdown', () => {
             {giverId: 'a', receiverId: 'b'},
         ];
         const result = generateMarkdown(participants, assignments);
-        expect(result).toContain('Profil: https://www.gog.com/u/e_Lap');
+        expect(result).toContain('Profil: https://www.gog.com/u/e\\_Lap');
     });
 
     test('omits profile URL when receiver has none', () => {
@@ -115,6 +115,20 @@ describe('generateMarkdown', () => {
         ];
         const result = generateMarkdown(participants, assignments);
         expect(result).toContain('Bob Smith');
+    });
+
+    test('escapes markdown metacharacters in profile URL', () => {
+        const participants = makeParticipants([
+            {id: 'a', name: 'Alice'},
+            {id: 'b', name: 'Bob', profileUrl: 'https://example.com/a)b[x](y'},
+        ]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'b'},
+        ];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).toContain(
+            'Profil: https://example.com/a\\)b\\[x\\]\\(y'
+        );
     });
 
     test('handles empty assignments', () => {
