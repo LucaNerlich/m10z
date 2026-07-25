@@ -33,8 +33,11 @@ export function Button({
             className={classes}
             disabled={disabled || loading}
             onClick={onClick}
+            aria-busy={loading || undefined}
         >
-            {loading ? 'Wird ausgeführt…' : children}
+            <span aria-live="polite" role="status">
+                {loading ? 'Wird ausgeführt…' : children}
+            </span>
         </button>
     );
 }

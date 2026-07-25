@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {validateName, validateSteamUrl, isValidHttpUrl} from './validation';
+import {validateName, validateProfileUrl, isValidHttpUrl} from './validation';
 
 describe('validateName', () => {
     test('valid name returns null', () => {
@@ -34,39 +34,55 @@ describe('validateName', () => {
     });
 });
 
-describe('validateSteamUrl', () => {
+describe('validateProfileUrl', () => {
     test('empty string returns null (optional field)', () => {
-        expect(validateSteamUrl('')).toBeNull();
+        expect(validateProfileUrl('')).toBeNull();
     });
 
     test('whitespace-only returns null', () => {
-        expect(validateSteamUrl('   ')).toBeNull();
+        expect(validateProfileUrl('   ')).toBeNull();
     });
 
     test('valid steamcommunity URL returns null', () => {
-        expect(validateSteamUrl('https://steamcommunity.com/id/testuser')).toBeNull();
+        expect(validateProfileUrl('https://steamcommunity.com/id/testuser')).toBeNull();
     });
 
     test('valid steampowered URL returns null', () => {
-        expect(validateSteamUrl('https://store.steampowered.com/app/12345')).toBeNull();
+        expect(validateProfileUrl('https://store.steampowered.com/app/12345')).toBeNull();
+    });
+
+    test('valid GOG URL returns null', () => {
+        expect(validateProfileUrl('https://www.gog.com/u/e_Lap')).toBeNull();
+    });
+
+    test('valid GOG URL without www returns null', () => {
+        expect(validateProfileUrl('https://gog.com/u/e_Lap')).toBeNull();
     });
 
     test('invalid URL returns error', () => {
-        const result = validateSteamUrl('not-a-url');
-        expect(result).toBe('Bitte gib eine gültige URL ein (z.B. https://steamcommunity.com/id/...)');
+        const result = validateProfileUrl('not-a-url');
+        expect(result).toBe(
+            'Bitte gib eine gültige URL ein (z.B. https://steamcommunity.com/id/... oder https://www.gog.com/u/...)'
+        );
     });
 
-    test('non-Steam URL returns error', () => {
-        const result = validateSteamUrl('https://example.com/profile');
-        expect(result).toBe('Bitte gib eine gültige Steam-URL ein');
+    test('non-Steam/GOG URL returns error', () => {
+        const result = validateProfileUrl('https://example.com/profile');
+        expect(result).toBe('Bitte gib eine gültige Steam- oder GOG-URL ein');
     });
 
-    test('www.steamcommunity.com is valid', () => {
-        expect(validateSteamUrl('https://www.steamcommunity.com/id/user')).toBeNull();
+    test('rejects non-http protocols', () => {
+        const result = validateProfileUrl('javascript:alert(1)');
+        expect(result).toBe(
+            'Bitte gib eine gültige URL ein, die mit http:// oder https:// beginnt'
+        );
     });
 
-    test('www.steampowered.com is valid', () => {
-        expect(validateSteamUrl('https://www.steampowered.com/app/123')).toBeNull();
+    test('rejects ftp protocol', () => {
+        const result = validateProfileUrl('ftp://steamcommunity.com/id/test');
+        expect(result).toBe(
+            'Bitte gib eine gültige URL ein, die mit http:// oder https:// beginnt'
+        );
     });
 });
 

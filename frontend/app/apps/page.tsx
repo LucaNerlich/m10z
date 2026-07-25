@@ -22,7 +22,7 @@ const APPS = [
         title: 'Wichteln',
         description:
             'Organisiere deine Wichtelrunde: Teilnehmer verwalten, zufällig zuordnen und Ergebnisse als Markdown exportieren.',
-        href: '/apps/wichteln',
+        href: routes.wichteln,
     },
 ] as const;
 

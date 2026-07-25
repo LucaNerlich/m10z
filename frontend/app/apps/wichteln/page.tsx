@@ -8,7 +8,7 @@ import {EmptyState} from '@/src/components/EmptyState';
 import {getItem, setItem, removeItem} from '@/src/lib/storage/localStorage';
 import {shuffleAndAssign} from '@/src/lib/wichteln/shuffle';
 import {downloadMarkdown} from '@/src/lib/wichteln/export';
-import {validateName, validateSteamUrl} from '@/src/lib/wichteln/validation';
+import {validateName, validateProfileUrl} from '@/src/lib/wichteln/validation';
 import {type Participant, type Assignment} from './types';
 
 import styles from './page.module.css';
@@ -21,8 +21,16 @@ const getIsClientServer = () => false;
 
 type FormErrors = {
     name?: string | null;
-    steamUrl?: string | null;
+    profileUrl?: string | null;
 };
+
+function migrateParticipant(p: Record<string, unknown>): Participant {
+    return {
+        id: String(p.id ?? crypto.randomUUID()),
+        name: String(p.name ?? ''),
+        profileUrl: String(p.profileUrl ?? p.steamProfileUrl ?? ''),
+    };
+}
 
 export default function WichtelnPage() {
     const hydrated = useSyncExternalStore(subscribeNoop, getIsClient, getIsClientServer);
@@ -30,7 +38,7 @@ export default function WichtelnPage() {
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [isShuffling, setIsShuffling] = useState(false);
     const [newName, setNewName] = useState('');
-    const [newSteamUrl, setNewSteamUrl] = useState('');
+    const [newProfileUrl, setNewProfileUrl] = useState('');
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formErrors, setFormErrors] = useState<FormErrors>({});
     const [error, setError] = useState<string | null>(null);
@@ -38,16 +46,16 @@ export default function WichtelnPage() {
     useEffect(() => {
         if (!hydrated) return;
         try {
-            const state = getItem<{
-                participants: Participant[];
-                assignments: Assignment[];
+            const raw = getItem<{
+                participants?: Record<string, unknown>[];
+                assignments?: Assignment[];
             }>(STORAGE_KEY);
-            if (state) {
-                if (Array.isArray(state.participants)) {
-                    setParticipants(state.participants);
+            if (raw) {
+                if (Array.isArray(raw.participants)) {
+                    setParticipants(raw.participants.map(migrateParticipant));
                 }
-                if (Array.isArray(state.assignments)) {
-                    setAssignments(state.assignments);
+                if (Array.isArray(raw.assignments)) {
+                    setAssignments(raw.assignments);
                 }
             }
         } catch {
@@ -78,45 +86,44 @@ export default function WichtelnPage() {
     const addParticipant = useCallback(() => {
         clearError();
         const nameError = validateName(newName);
-        const steamError = validateSteamUrl(newSteamUrl);
-        setFormErrors({name: nameError, steamUrl: steamError});
-        if (nameError) return;
+        const profileError = validateProfileUrl(newProfileUrl);
+        setFormErrors({name: nameError, profileUrl: profileError});
+        if (nameError || profileError) return;
 
         const participant: Participant = {
             id: crypto.randomUUID(),
             name: newName.trim(),
-            steamProfileUrl: newSteamUrl.trim(),
+            profileUrl: newProfileUrl.trim(),
         };
         const updated = [...participants, participant];
         setParticipants(updated);
         setAssignments([]);
         persist(updated, []);
         setNewName('');
-        setNewSteamUrl('');
+        setNewProfileUrl('');
         setEditingId(null);
-    }, [newName, newSteamUrl, participants, persist, clearError]);
+    }, [newName, newProfileUrl, participants, persist, clearError]);
 
     const updateParticipant = useCallback(
         (id: string) => {
             clearError();
             const nameError = validateName(newName);
-            const steamError = validateSteamUrl(newSteamUrl);
-            setFormErrors({name: nameError, steamUrl: steamError});
-            if (nameError) return;
+            const profileError = validateProfileUrl(newProfileUrl);
+            setFormErrors({name: nameError, profileUrl: profileError});
+            if (nameError || profileError) return;
 
             const updated = participants.map((p) =>
                 p.id === id
-                    ? {...p, name: newName.trim(), steamProfileUrl: newSteamUrl.trim()}
+                    ? {...p, name: newName.trim(), profileUrl: newProfileUrl.trim()}
                     : p
             );
             setParticipants(updated);
-            setAssignments([]);
-            persist(updated, []);
+            persist(updated, assignments);
             setNewName('');
-            setNewSteamUrl('');
+            setNewProfileUrl('');
             setEditingId(null);
         },
-        [newName, newSteamUrl, participants, persist, clearError]
+        [newName, newProfileUrl, participants, assignments, persist, clearError]
     );
 
     const deleteParticipant = useCallback(
@@ -129,7 +136,7 @@ export default function WichtelnPage() {
             if (editingId === id) {
                 setEditingId(null);
                 setNewName('');
-                setNewSteamUrl('');
+                setNewProfileUrl('');
                 setFormErrors({});
             }
         },
@@ -140,7 +147,7 @@ export default function WichtelnPage() {
         (participant: Participant) => {
             setEditingId(participant.id);
             setNewName(participant.name);
-            setNewSteamUrl(participant.steamProfileUrl);
+            setNewProfileUrl(participant.profileUrl);
             setFormErrors({});
         },
         []
@@ -149,7 +156,7 @@ export default function WichtelnPage() {
     const cancelEdit = useCallback(() => {
         setEditingId(null);
         setNewName('');
-        setNewSteamUrl('');
+        setNewProfileUrl('');
         setFormErrors({});
     }, []);
 
@@ -192,7 +199,7 @@ export default function WichtelnPage() {
         setAssignments([]);
         setEditingId(null);
         setNewName('');
-        setNewSteamUrl('');
+        setNewProfileUrl('');
         setFormErrors({});
         removeItem(STORAGE_KEY);
     }, []);
@@ -254,25 +261,25 @@ export default function WichtelnPage() {
                         error={formErrors.name}
                     />
                     <Input
-                        id="wichteln-steam-url"
-                        label="Steam-Profil-URL"
+                        id="wichteln-profile-url"
+                        label="Profil-URL (Steam / GOG)"
                         type="url"
-                        value={newSteamUrl}
+                        value={newProfileUrl}
                         onChange={(v) => {
-                            setNewSteamUrl(v);
+                            setNewProfileUrl(v);
                             setFormErrors((prev) => ({
                                 ...prev,
-                                steamUrl: validateSteamUrl(v),
+                                profileUrl: validateProfileUrl(v),
                             }));
                         }}
-                        placeholder="https://steamcommunity.com/id/..."
-                        error={formErrors.steamUrl}
+                        placeholder="https://steamcommunity.com/id/... oder https://www.gog.com/u/..."
+                        error={formErrors.profileUrl}
                     />
                     <div className={styles.formActions}>
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={!!formErrors.name}
+                            disabled={!!formErrors.name || !!formErrors.profileUrl}
                         >
                             {editingId ? 'Speichern' : 'Hinzufügen'}
                         </Button>
@@ -303,14 +310,14 @@ export default function WichtelnPage() {
                                     <span className={styles.participantName}>
                                         {p.name}
                                     </span>
-                                    {p.steamProfileUrl && (
+                                    {p.profileUrl && (
                                         <a
-                                            href={p.steamProfileUrl}
+                                            href={p.profileUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className={styles.participantSteam}
                                         >
-                                            Steam-Profil
+                                            Profil
                                         </a>
                                     )}
                                 </div>
@@ -382,26 +389,25 @@ export default function WichtelnPage() {
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Zuordnungen</h2>
                     <ul className={styles.assignmentList}>
-                        {assignments.map((a) => {
-                            const giver = participants.find(
-                                (p) => p.id === a.giverId
-                            );
-                            const receiver = participants.find(
-                                (p) => p.id === a.receiverId
-                            );
-                            if (!giver || !receiver) return null;
-                            return (
-                                <li key={a.giverId} className={styles.assignmentItem}>
-                                    <span className={styles.assignmentGiver}>
-                                        {giver.name}
-                                    </span>
-                                    <span className={styles.assignmentArrow}>→</span>
-                                    <span className={styles.assignmentReceiver}>
-                                        {receiver.name}
-                                    </span>
-                                </li>
-                            );
-                        })}
+                        {(() => {
+                            const participantMap = new Map(participants.map((p) => [p.id, p]));
+                            return assignments.map((a) => {
+                                const giver = participantMap.get(a.giverId);
+                                const receiver = participantMap.get(a.receiverId);
+                                if (!giver || !receiver) return null;
+                                return (
+                                    <li key={a.giverId} className={styles.assignmentItem}>
+                                        <span className={styles.assignmentGiver}>
+                                            {giver.name}
+                                        </span>
+                                        <span className={styles.assignmentArrow}>→</span>
+                                        <span className={styles.assignmentReceiver}>
+                                            {receiver.name}
+                                        </span>
+                                    </li>
+                                );
+                            });
+                        })()}
                     </ul>
                 </section>
             )}

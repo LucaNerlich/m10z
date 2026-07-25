@@ -1,12 +1,13 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
-import {getItem, removeItem, setItem} from './localStorage';
+import {clearCache, getItem, removeItem, setItem} from './localStorage';
 
 describe('localStorage utilities', () => {
     let store: Record<string, string> = {};
 
     beforeEach(() => {
         store = {};
+        clearCache();
         vi.stubGlobal(
             'window',
             {
@@ -25,6 +26,7 @@ describe('localStorage utilities', () => {
 
     afterEach(() => {
         vi.unstubAllGlobals();
+        clearCache();
     });
 
     describe('setItem', () => {
@@ -74,16 +76,51 @@ describe('localStorage utilities', () => {
 
     describe('round-trip', () => {
         test('set then get returns same value', () => {
-            const data = {participants: [{id: '1', name: 'Alice', steamProfileUrl: ''}]};
+            const data = {participants: [{id: '1', name: 'Alice', profileUrl: ''}]};
             setItem('roundtrip', data);
             const result = getItem<typeof data>('roundtrip');
             expect(result).toEqual(data);
         });
     });
 
+    describe('localStorage throws', () => {
+        beforeEach(() => {
+            clearCache();
+            vi.stubGlobal('window', {
+                localStorage: {
+                    getItem: vi.fn(() => {
+                        throw new Error('storage error');
+                    }),
+                    setItem: vi.fn(() => {
+                        throw new Error('storage error');
+                    }),
+                    removeItem: vi.fn(() => {
+                        throw new Error('storage error');
+                    }),
+                },
+            });
+        });
+
+        test('setItem uses in-memory fallback', () => {
+            setItem('key', 'value');
+            expect(getItem<string>('key')).toBe('value');
+        });
+
+        test('getItem returns null for missing key', () => {
+            expect(getItem('nonexistent')).toBeNull();
+        });
+
+        test('removeItem does not throw when localStorage fails', () => {
+            setItem('key', 'value');
+            removeItem('key');
+            expect(getItem<string>('key')).toBeNull();
+        });
+    });
+
     describe('server-side (no window)', () => {
         beforeEach(() => {
             vi.unstubAllGlobals();
+            clearCache();
         });
 
         test('setItem uses in-memory fallback', () => {

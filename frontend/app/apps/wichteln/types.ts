@@ -1,7 +1,7 @@
 export type Participant = {
     id: string;
     name: string;
-    steamProfileUrl: string;
+    profileUrl: string;
 };
 
 export type Assignment = {

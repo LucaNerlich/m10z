@@ -8,7 +8,7 @@ function makeParticipants(names: string[]): Participant[] {
     return names.map((name) => ({
         id: crypto.randomUUID(),
         name,
-        steamProfileUrl: '',
+        profileUrl: '',
     }));
 }
 

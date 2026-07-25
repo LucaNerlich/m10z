@@ -10,7 +10,7 @@ function makeParticipants(
     return overrides.map((o, i) => ({
         id: o.id ?? `id-${i}`,
         name: o.name ?? `Participant ${i}`,
-        steamProfileUrl: o.steamProfileUrl ?? '',
+        profileUrl: o.profileUrl ?? '',
     }));
 }
 
@@ -46,29 +46,41 @@ describe('generateMarkdown', () => {
         expect(result).toContain('**Bob** → **Alice**');
     });
 
-    test('includes receiver Steam URL when available', () => {
+    test('includes receiver profile URL when available', () => {
         const participants = makeParticipants([
             {id: 'a', name: 'Alice'},
-            {id: 'b', name: 'Bob', steamProfileUrl: 'https://steamcommunity.com/id/bob'},
+            {id: 'b', name: 'Bob', profileUrl: 'https://steamcommunity.com/id/bob'},
         ]);
         const assignments: Assignment[] = [
             {giverId: 'a', receiverId: 'b'},
         ];
         const result = generateMarkdown(participants, assignments);
-        expect(result).toContain('Steam: https://steamcommunity.com/id/bob');
+        expect(result).toContain('Profil: https://steamcommunity.com/id/bob');
     });
 
-    test('omits Steam URL when receiver has none', () => {
+    test('includes GOG URL as profile URL', () => {
         const participants = makeParticipants([
             {id: 'a', name: 'Alice'},
-            {id: 'b', name: 'Bob', steamProfileUrl: ''},
+            {id: 'b', name: 'Bob', profileUrl: 'https://www.gog.com/u/e_Lap'},
+        ]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'b'},
+        ];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).toContain('Profil: https://www.gog.com/u/e_Lap');
+    });
+
+    test('omits profile URL when receiver has none', () => {
+        const participants = makeParticipants([
+            {id: 'a', name: 'Alice'},
+            {id: 'b', name: 'Bob', profileUrl: ''},
         ]);
         const assignments: Assignment[] = [
             {giverId: 'a', receiverId: 'b'},
         ];
         const result = generateMarkdown(participants, assignments);
         expect(result).toContain('**Alice** → **Bob**');
-        expect(result).not.toContain('Steam:');
+        expect(result).not.toContain('Profil:');
     });
 
     test('skips assignment when participant is missing from map', () => {

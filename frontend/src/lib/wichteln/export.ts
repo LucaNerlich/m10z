@@ -26,10 +26,10 @@ export function generateMarkdown(
         const giver = participantMap.get(assignment.giverId);
         const receiver = participantMap.get(assignment.receiverId);
         if (giver && receiver) {
-            const steamInfo = receiver.steamProfileUrl
-                ? ` (Steam: ${receiver.steamProfileUrl})`
+            const profileInfo = receiver.profileUrl
+                ? ` (Profil: ${receiver.profileUrl})`
                 : '';
-            lines.push(`- **${giver.name}** → **${receiver.name}**${steamInfo}`);
+            lines.push(`- **${giver.name}** → **${receiver.name}**${profileInfo}`);
         }
     }
 
