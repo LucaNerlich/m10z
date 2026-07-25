@@ -20,7 +20,7 @@ export function M12GGameDetail({game}: M12GGameDetailProps) {
                 <h1 className={styles.title}>{game.name}</h1>
                 <div className={styles.subline}>
                     <a href={game.link} target="_blank" rel="noreferrer noopener">
-                        Store-Seite öffnen ↗<span className="visually-hidden"> (öffnet in neuem Fenster)</span>
+                        Store-Seite öffnen ↗<span className='visually-hidden'> (öffnet in neuem Fenster)</span>
                     </a>
                 </div>
             </header>
@@ -48,7 +48,7 @@ export function M12GGameDetail({game}: M12GGameDetailProps) {
                                 ) : null}
                                 {entry.forumThreadUrl ? (
                                     <a href={entry.forumThreadUrl} target="_blank" rel="noreferrer noopener">
-                                        {formatMonthLong(entry.month)}<span className="visually-hidden"> (öffnet in neuem Fenster)</span>
+                                        {formatMonthLong(entry.month)}<span className='visually-hidden'> (öffnet in neuem Fenster)</span>
                                     </a>
                                 ) : (
                                     formatMonthLong(entry.month)

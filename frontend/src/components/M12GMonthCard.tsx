@@ -40,7 +40,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                                                 target="_blank"
                                                 rel="noreferrer noopener"
                                             >
-                                                {game.name}<span className="visually-hidden"> (öffnet in neuem Fenster)</span>
+                                                {game.name}<span className='visually-hidden'> (öffnet in neuem Fenster)</span>
                                             </a>
                                             {game.earlyAccess ? (
                                                 <span className={styles.earlyAccess} title="Early Access">EA</span>
@@ -67,7 +67,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                                         target="_blank"
                                         rel="noreferrer noopener"
                                     >
-                                        {game.name}<span className="visually-hidden"> (öffnet in neuem Fenster)</span>
+                                        {game.name}<span className='visually-hidden'> (öffnet in neuem Fenster)</span>
                                     </a>
                                     {game.earlyAccess ? (
                                         <span className={styles.earlyAccess} title="Early Access">EA</span>
@@ -92,7 +92,7 @@ export function M12GMonthCard({month}: M12GMonthCardProps) {
                         rel="noreferrer noopener"
                     >
                         <ChatsCircleIcon size={18} weight="regular" />
-                        Forum-Thread<span className="visually-hidden"> (öffnet in neuem Fenster)</span>
+                        Forum-Thread<span className='visually-hidden'> (öffnet in neuem Fenster)</span>
                     </a>
                 </footer>
             ) : null}
