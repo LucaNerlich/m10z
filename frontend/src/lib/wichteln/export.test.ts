@@ -92,6 +92,31 @@ describe('generateMarkdown', () => {
         expect(result).not.toContain('Alice');
     });
 
+    test('escapes markdown metacharacters in names', () => {
+        const participants = makeParticipants([
+            {id: 'a', name: 'Bob [Star] *Gamer*_01'},
+            {id: 'b', name: 'Alice (Test)'},
+        ]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'b'},
+        ];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).toContain('Bob \\[Star\\] \\*Gamer\\*\\_01');
+        expect(result).toContain('Alice \\(Test\\)');
+    });
+
+    test('normalizes newlines in names', () => {
+        const participants = makeParticipants([
+            {id: 'a', name: 'Bob\nSmith'},
+            {id: 'b', name: 'Alice'},
+        ]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'b'},
+        ];
+        const result = generateMarkdown(participants, assignments);
+        expect(result).toContain('Bob Smith');
+    });
+
     test('handles empty assignments', () => {
         const participants = makeParticipants([{id: 'a', name: 'Alice'}]);
         const result = generateMarkdown(participants, []);

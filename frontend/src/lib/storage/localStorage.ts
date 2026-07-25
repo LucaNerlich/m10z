@@ -56,7 +56,11 @@ export function clearCache(): void {
 
 if (typeof window !== 'undefined') {
     window.addEventListener('storage', (e: StorageEvent) => {
-        if (e.key) inMemoryStore.delete(e.key);
+        if (e.key === null) {
+            inMemoryStore.clear();
+        } else {
+            inMemoryStore.delete(e.key);
+        }
     });
 
     window.addEventListener('visibilitychange', () => {

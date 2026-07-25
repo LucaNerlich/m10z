@@ -1,5 +1,11 @@
 import {type Participant, type Assignment} from '@/app/apps/wichteln/types';
 
+function escapeMarkdown(value: string): string {
+    return value
+        .replace(/\r?\n/g, ' ')
+        .replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&');
+}
+
 export function generateMarkdown(
     participants: Participant[],
     assignments: Assignment[]
@@ -29,7 +35,9 @@ export function generateMarkdown(
             const profileInfo = receiver.profileUrl
                 ? ` (Profil: ${receiver.profileUrl})`
                 : '';
-            lines.push(`- **${giver.name}** → **${receiver.name}**${profileInfo}`);
+            lines.push(
+                `- **${escapeMarkdown(giver.name)}** → **${escapeMarkdown(receiver.name)}**${profileInfo}`
+            );
         }
     }
 
