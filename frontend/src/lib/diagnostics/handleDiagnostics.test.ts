@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
-import {GET} from './route';
+import {handleDiagnosticsGet} from './handleDiagnostics';
 
 const {
     verifySecret,
@@ -35,6 +35,11 @@ function makeRequest(token?: string): Request {
     return new Request(url, {method: 'GET'});
 }
 
+function makeHeaderRequest(token: string): Request {
+    const headers = new Headers({'x-m10z-diagnostics-token': token});
+    return new Request('https://m10z.de/api/diagnostics', {method: 'GET', headers});
+}
+
 beforeEach(() => {
     vi.stubEnv('DIAGNOSTICS_TOKEN', 'test-token');
     checkRateLimit.mockReturnValue({ok: true, retryAfterSeconds: 0});
@@ -43,16 +48,16 @@ beforeEach(() => {
 
 afterEach(() => vi.unstubAllEnvs());
 
-describe('GET /api/diagnostics', () => {
+describe('handleDiagnosticsGet', () => {
     test('returns 401 when no token is provided', async () => {
         verifySecret.mockReturnValue(false);
-        const res = await GET(makeRequest());
+        const res = await handleDiagnosticsGet(makeRequest());
         expect(res.status).toBe(401);
     });
 
     test('returns 401 when wrong token is provided', async () => {
         verifySecret.mockReturnValue(false);
-        const res = await GET(makeRequest('wrong-token'));
+        const res = await handleDiagnosticsGet(makeRequest('wrong-token'));
         expect(res.status).toBe(401);
     });
 
@@ -60,7 +65,7 @@ describe('GET /api/diagnostics', () => {
         verifySecret.mockReturnValue(true);
         checkRateLimit.mockReturnValue({ok: false, retryAfterSeconds: 5});
 
-        const res = await GET(makeRequest('test-token'));
+        const res = await handleDiagnosticsGet(makeRequest('test-token'));
 
         expect(res.status).toBe(429);
         expect(res.headers.get('Retry-After')).toBe('5');
@@ -69,18 +74,32 @@ describe('GET /api/diagnostics', () => {
     test('returns 200 with diagnostic JSON when token is valid and within rate limit', async () => {
         verifySecret.mockReturnValue(true);
         checkRateLimit.mockReturnValue({ok: true, retryAfterSeconds: 0});
-        getRecentDiagnosticEvents.mockReturnValue([{type: 'test'}]);
-        getAudioFeedRuntimeState.mockReturnValue({running: true});
-        getSchedulerState.mockReturnValue({lastRun: 123});
+        getRecentDiagnosticEvents.mockReturnValue([{type: 'test', ts: 1, kind: 'route', name: 'x', ok: true, durationMs: 1}]);
+        getAudioFeedRuntimeState.mockReturnValue({running: true, lastFetchMs: 100});
+        getSchedulerState.mockReturnValue({lastRun: 123, intervalMs: 60000});
 
-        const res = await GET(makeRequest('test-token'));
+        const res = await handleDiagnosticsGet(makeRequest('test-token'));
 
         expect(res.status).toBe(200);
         const body = await res.json();
-        expect(body).toHaveProperty('now');
-        expect(body).toHaveProperty('events');
-        expect(body).toHaveProperty('memory');
-        expect(body).toHaveProperty('schedulers');
+        expect(body).toMatchObject({
+            events: [{type: 'test', ts: 1, kind: 'route', name: 'x', ok: true, durationMs: 1}],
+            schedulers: {
+                audioFeed: {running: true, lastFetchMs: 100},
+                articleFeed: {lastRun: 123, intervalMs: 60000},
+            },
+        });
         expect(typeof body.now).toBe('number');
+        expect(body).toHaveProperty('memory');
+    });
+
+    test('returns 200 when token is provided via x-m10z-diagnostics-token header', async () => {
+        verifySecret.mockReturnValue(true);
+        checkRateLimit.mockReturnValue({ok: true, retryAfterSeconds: 0});
+
+        const res = await handleDiagnosticsGet(makeHeaderRequest('test-token'));
+
+        expect(verifySecret).toHaveBeenCalledWith('test-token', 'test-token');
+        expect(res.status).toBe(200);
     });
 });
