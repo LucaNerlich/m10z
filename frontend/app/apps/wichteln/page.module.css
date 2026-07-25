@@ -1,0 +1,235 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+}
+
+.title {
+    font-size: 28px;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.errorBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--color-primary-soft);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.errorClose {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+.errorClose:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sectionTitle {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.3;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.formActions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.participantList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.participantItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.participantInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.participantName {
+    font-weight: 600;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.participantSteam {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.participantSteam:hover {
+    color: var(--color-link);
+}
+
+.participantActions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.actionButton {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.actionButton:hover {
+    background: var(--color-surface-strong);
+    border-color: var(--color-text-muted);
+}
+
+.actionButton:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.actionButtonDanger {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.actionButtonDanger:hover {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+}
+
+.actionButtonDanger:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.actionGroup {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.hint {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.assignmentList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.assignmentItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+}
+
+.assignmentGiver {
+    font-weight: 600;
+}
+
+.assignmentArrow {
+    color: var(--color-text-muted);
+}
+
+.assignmentReceiver {
+    color: var(--color-text-muted);
+}
+
+@media (max-width: 767px) {
+    .participantItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .participantActions {
+        width: 100%;
+    }
+
+    .actionGroup {
+        flex-direction: column;
+    }
+
+    .actionGroup > * {
+        width: 100%;
+    }
+}
