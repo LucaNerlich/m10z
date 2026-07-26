@@ -18,7 +18,7 @@ export function YoutubeSection({youtube}: YoutubeSectionProps) {
 
     return (
         <section className={styles.youtubeSection}>
-            <h2 className={styles.heading}>YouTube-Videos</h2>
+            <h2>YouTube-Videos</h2>
             {youtube.map((youtubeItem) => {
                 const videoId = extractYouTubeVideoId(youtubeItem.url);
                 if (!videoId) return null;
