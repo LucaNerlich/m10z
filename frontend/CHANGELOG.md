@@ -2,10 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.12.0] - 2026-07-26
+
+### Added
+- A new `/apps` section with a `/apps/wichteln` game for organizing Steam Wichtel (secret santa) rounds, including participant management, shuffle/assignment, localStorage persistence, and Markdown export.
+- The YouTube section on article pages now shows a "YouTube-Videos" heading.
 
 ### Fixed
 - Podcast download-tracking URLs (RSS `<enclosure>` URLs and the on-site audio player) now carry a fake `.mp3` extension (e.g. `/api/podcast-download/some-slug.mp3`), since Apple Podcasts and other podcatchers sniff the `<enclosure>` URL for a recognizable audio-file extension and reject or mishandle URLs that don't look like audio files. The API route strips the suffix before slug validation, and the redirect target and RSS `<guid>` are unaffected.
+- Several semantic HTML and accessibility issues found via an MDN Web Docs audit, across the homepage, footer, changelog, article/podcast list pages, category/team pages, and the M12G components (proper headings, `<nav>`/`<dl>` usage, `Link` instead of raw `<a>`, and visually-hidden "opens in new window" indicators on external links).
+
+### Changed
+- Upgraded dependencies (including Strapi and the frontend `.npmrc` config).
+- Prepared the June 2026 M12G post.
 
 ## [1.11.0] - 2026-07-01
 
