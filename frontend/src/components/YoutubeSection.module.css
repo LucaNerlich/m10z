@@ -8,6 +8,11 @@
     gap: 2rem;
 }
 
+.heading {
+    margin: 0 0 16px;
+    font-size: 1.2rem;
+}
+
 .youtubeSection > div {
     position: relative;
     width: 100%;

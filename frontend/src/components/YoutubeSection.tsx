@@ -17,7 +17,8 @@ export function YoutubeSection({youtube}: YoutubeSectionProps) {
     if (!youtube || youtube.length === 0) return <></>;
 
     return (
-        <div className={styles.youtubeSection}>
+        <section className={styles.youtubeSection}>
+            <h2 className={styles.heading}>YouTube-Videos</h2>
             {youtube.map((youtubeItem) => {
                 const videoId = extractYouTubeVideoId(youtubeItem.url);
                 if (!videoId) return null;
@@ -29,7 +30,7 @@ export function YoutubeSection({youtube}: YoutubeSectionProps) {
                     />
                 );
             })}
-        </div>
+        </section>
     );
 }
 
