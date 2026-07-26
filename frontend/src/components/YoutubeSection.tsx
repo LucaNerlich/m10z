@@ -16,20 +16,23 @@ type YoutubeSectionProps = {
 export function YoutubeSection({youtube}: YoutubeSectionProps) {
     if (!youtube || youtube.length === 0) return <></>;
 
+    const validVideos = youtube
+        .map((item) => ({item, videoId: extractYouTubeVideoId(item.url)}))
+        .filter((entry): entry is {item: StrapiYoutube; videoId: string} => entry.videoId !== null);
+
+    if (validVideos.length === 0) return <></>;
+
     return (
-        <div className={styles.youtubeSection}>
-            {youtube.map((youtubeItem) => {
-                const videoId = extractYouTubeVideoId(youtubeItem.url);
-                if (!videoId) return null;
-                return (
-                    <YoutubeEmbed
-                        key={youtubeItem.id}
-                        videoId={videoId}
-                        title={youtubeItem.title ?? undefined}
-                    />
-                );
-            })}
-        </div>
+        <section className={styles.youtubeSection}>
+            <h2>YouTube-Videos</h2>
+            {validVideos.map(({item, videoId}) => (
+                <YoutubeEmbed
+                    key={item.id}
+                    videoId={videoId}
+                    title={item.title ?? undefined}
+                />
+            ))}
+        </section>
     );
 }
 

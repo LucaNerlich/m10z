@@ -37,10 +37,10 @@
         "rehype-unwrap-images": "^1.0.0",
         "remark-breaks": "^4.0.0",
         "remark-gfm": "^4.0.1",
-        "remark-smartypants": "^3.0.2",
+        "remark-smartypants": "^3.0.3",
         "serialize-javascript": "^7.0.7",
         "swr": "^2.4.2",
-        "undici": "^8.8.0",
+        "undici": "^8.9.0",
         "xml-formatter": "^3.7.0"
     },
     "devDependencies": {

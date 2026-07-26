@@ -30,7 +30,7 @@ export default function YoutubeEmbed(props: Readonly<YoutubeEmbedProps>): React.
 
     return (
         <>
-            {props.title && <h2>{props.title}</h2>}
+            {props.title && <h3>{props.title}</h3>}
             <div>
                 <iframe
                     width={props.width ?? 560}
