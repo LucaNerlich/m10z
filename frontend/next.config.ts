@@ -36,6 +36,7 @@ const nextConfig: NextConfig = {
         optimizePackageImports: ["@phosphor-icons/react"],
     },
     reactCompiler: true,
+    cacheComponents: true,
     images: {
         minimumCacheTTL: process.env.NODE_ENV === 'production' ? 3600 : 60,
         dangerouslyAllowLocalIP: true,

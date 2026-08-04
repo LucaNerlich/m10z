@@ -1,3 +1,4 @@
+import {Suspense} from 'react';
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
@@ -7,8 +8,6 @@ import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {routes} from '@/src/lib/routes';
 
 type RouteParams = {slug: string};
-
-export const dynamicParams = false;
 
 export async function generateStaticParams(): Promise<RouteParams[]> {
     const archive = await getM12GArchive();
@@ -39,7 +38,17 @@ export async function generateMetadata({params}: {params: Promise<RouteParams>})
     });
 }
 
-export default async function M12GGamePage({params}: {params: Promise<RouteParams>}) {
+// `params` is awaited inside the Suspense-wrapped child (not here) so unknown
+// slugs — not covered by generateStaticParams — still get a prerendered App Shell.
+export default function M12GGamePage({params}: {params: Promise<RouteParams>}) {
+    return (
+        <Suspense fallback={null}>
+            <M12GGameContent params={params} />
+        </Suspense>
+    );
+}
+
+async function M12GGameContent({params}: {params: Promise<RouteParams>}) {
     const {slug} = await params;
     const game = await findGame(slug);
     if (!game) notFound();

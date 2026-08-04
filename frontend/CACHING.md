@@ -80,7 +80,7 @@ The application uses a two-tier caching strategy:
 
 Explicit revalidation periods are now applied throughout the codebase as fallback mechanisms to tag-based invalidation. All fetch functions use the `revalidate` option in Next.js fetch's `next` configuration, which works alongside cache tags.
 
-**Important**: The application uses traditional Next.js fetch cache options (`next: { tags, revalidate }`), not the 'use cache' directive. This ensures compatibility with Next.js's standard caching mechanisms.
+**Note**: As of the Cache Components migration (`cacheComponents: true` in `next.config.ts`), the content-fetching layer (`src/lib/strapiContent.ts`, `src/lib/strapi/singleTypes.ts`, `src/lib/m12g/m12gArchive.ts`) uses the `'use cache'` directive with `cacheTag()`/`cacheLife()` rather than the classic `next: { tags, revalidate }` fetch options. The tag naming and revalidate durations described in this document are unchanged — only the mechanism attaching them changed. `cacheLife()` is called with literal objects (`CACHE_LIFE_CONTENT_DETAIL`/`CACHE_LIFE_CONTENT_LIST` in `src/lib/cache/constants.ts`) rather than named profiles, because TypeScript 7's overload resolution for `cacheLife(profile: string)` doesn't reliably narrow custom profile names. The underlying `strapiTransport.ts`/`contentAccess.ts` fetch layer still passes `next: { tags, revalidate }` as well — this is intentionally redundant during the migration and can be removed once every consumer is confirmed migrated.
 
 ### Cache Duration Constants
 
@@ -250,6 +250,16 @@ The search functionality has been migrated from manual `useEffect` + `fetch` pat
 
 See `src/components/SearchModal.tsx` for an example of SWR usage.
 
+## Known Limitations
+
+### `notFound()` returns HTTP 200 instead of 404 under Cache Components
+
+With `cacheComponents: true`, calling `notFound()` (e.g. for an unknown article/podcast/category/author slug, or a failed preview-secret check) renders the correct "not found" content but the HTTP response status is **200**, not 404. This was verified across `/artikel/[slug]`, `/podcasts/[slug]`, `/kategorien/[slug]`, `/m12g/spiele/[slug]`, and `/preview/artikel/[slug]` — including routes with no `generateStaticParams` and no `<Suspense>` boundaries, and even when forcing fully dynamic rendering via `connection()`.
+
+This is not fixable via route segment config: `dynamic`/`dynamicParams` exports are hard build errors under `cacheComponents`, and `instant = false` does not restore the old blocking-render behavior (routes still partially prerender). The root cause is that Cache Components makes the root layout stream by default, and once a response begins streaming, the initial (200) status code is already committed to the client by the time `notFound()` resolves deeper in the tree — a general Next.js streaming-SSR characteristic that Cache Components makes universal rather than something scoped to Suspense boundaries we added.
+
+**Impact**: search engines and status-code-aware tooling (link checkers, monitoring) will see 200 for genuinely missing content instead of 404. Revisit if/when Next.js addresses this upstream.
+
 ## Best Practices
 
 ### Server-Side Caching
@@ -260,7 +270,7 @@ See `src/components/SearchModal.tsx` for an example of SWR usage.
 4. **Always specify both tags and revalidate** - tags for immediate invalidation, revalidate as fallback
 5. **Use cache duration constants** from `src/lib/cache/constants.ts` for consistency
 6. **Prefer tag-based invalidation** over time-based expiration for immediate updates
-7. **Use traditional Next.js fetch options** (`next: { tags, revalidate }`), not the 'use cache' directive
+7. **Use the `'use cache'` directive** (`cacheTag()`/`cacheLife()`) for new content-fetching functions, following the pattern in `src/lib/strapiContent.ts`
 
 ### Client-Side Caching (SWR)
 

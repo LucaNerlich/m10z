@@ -1,8 +1,14 @@
 import {cache} from 'react';
+import {cacheLife, cacheTag} from 'next/cache';
 
 import {type StrapiArticle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/strapi/media';
-import {CACHE_REVALIDATE_CONTENT_PAGE, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {
+    CACHE_LIFE_CONTENT_DETAIL,
+    CACHE_LIFE_CONTENT_LIST,
+    CACHE_REVALIDATE_CONTENT_PAGE,
+    CACHE_REVALIDATE_DEFAULT,
+} from '@/src/lib/cache/constants';
 import {
     buildAuthorPageTags,
     contentBySlugsTag,
@@ -151,18 +157,24 @@ const PODCAST_DESCRIPTOR: ContentDescriptor = {
     listFields: PODCAST_LIST_FIELDS,
 };
 
-function fetchBySlug<T>(desc: ContentDescriptor, slug: string): Promise<T | null> {
+async function fetchBySlug<T>(desc: ContentDescriptor, slug: string): Promise<T | null> {
+    'use cache';
+    const tags = [contentTag(desc.contentType), contentItemTag(desc.contentType, slug)];
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_DETAIL);
+
     const query = buildBySlugQuery({
         slug,
         populate: desc.detailPopulate,
         fields: desc.detailFields,
         status: 'published',
     });
-    return fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: [contentTag(desc.contentType), contentItemTag(desc.contentType, slug)],
+    const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
+        tags,
         revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
         context: {slug, contentType: desc.contentType, populateOptions: desc.detailPopulate},
-    }).then((res) => res.data?.[0] ?? null);
+    });
+    return res.data?.[0] ?? null;
 }
 
 function fetchBySlugForPreview<T>(
@@ -183,6 +195,11 @@ function fetchBySlugForPreview<T>(
 }
 
 async function fetchPage<T>(desc: ContentDescriptor, options: FetchPageOptions): Promise<PaginatedResult<T>> {
+    'use cache';
+    const tags = options.tags ?? [contentTag(desc.contentType), contentListPageTag(desc.contentType)];
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
+
     const page = clampPage(options.page ?? 1);
     const pageSize = clampPageSize(options.pageSize ?? 20);
 
@@ -198,7 +215,7 @@ async function fetchPage<T>(desc: ContentDescriptor, options: FetchPageOptions):
     const res = await fetchJson<{data: T[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
         `${desc.apiPath}?${query}`,
         {
-            tags: options.tags ?? [contentTag(desc.contentType), contentListPageTag(desc.contentType)],
+            tags,
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
@@ -207,6 +224,11 @@ async function fetchPage<T>(desc: ContentDescriptor, options: FetchPageOptions):
 }
 
 async function fetchBySlugs<T>(desc: ContentDescriptor, slugs: string[]): Promise<T[]> {
+    'use cache';
+    const tags = [contentTag(desc.contentType), contentBySlugsTag(desc.contentType)];
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
+
     if (slugs.length === 0) return [];
     if (slugs.length > MAX_SLUGS) {
         throw new Error(
@@ -223,7 +245,7 @@ async function fetchBySlugs<T>(desc: ContentDescriptor, slugs: string[]): Promis
     });
 
     const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: [contentTag(desc.contentType), contentBySlugsTag(desc.contentType)],
+        tags,
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
     return res.data ?? [];
@@ -253,6 +275,11 @@ async function fetchByAuthorPaginated<T>(
     pageSize: number,
     categorySlug?: string,
 ): Promise<PaginatedResult<T>> {
+    'use cache';
+    const tags = buildAuthorPageTags({contentType: desc.contentType, authorSlug, categorySlug});
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
+
     const safePage = clampPage(page);
     const safePageSize = clampPageSize(pageSize);
 
@@ -272,7 +299,7 @@ async function fetchByAuthorPaginated<T>(
     const res = await fetchJson<{data: T[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
         `${desc.apiPath}?${query}`,
         {
-            tags: buildAuthorPageTags({contentType: desc.contentType, authorSlug, categorySlug}),
+            tags,
             revalidate: CACHE_REVALIDATE_DEFAULT,
             context: {slug: authorSlug, contentType: desc.contentType, populateOptions: desc.listPopulate},
         },
@@ -286,6 +313,11 @@ async function fetchRelated<T>(
     categorySlugs: string[],
     excludeSlug: string,
 ): Promise<T[]> {
+    'use cache';
+    const tags = [contentTag(desc.contentType), RELATED_CONTENT_TAG];
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
+
     if (categorySlugs.length === 0) return [];
 
     const query = buildListQuery({
@@ -302,7 +334,7 @@ async function fetchRelated<T>(
     });
 
     const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: [contentTag(desc.contentType), RELATED_CONTENT_TAG],
+        tags,
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
 
@@ -311,9 +343,9 @@ async function fetchRelated<T>(
 
 // ─── Articles ──────────────────────────────────────────────────────────────
 
-export const fetchArticleBySlug = cache(
-    (slug: string): Promise<StrapiArticle | null> => fetchBySlug<StrapiArticle>(ARTICLE_DESCRIPTOR, slug),
-);
+export function fetchArticleBySlug(slug: string): Promise<StrapiArticle | null> {
+    return fetchBySlug<StrapiArticle>(ARTICLE_DESCRIPTOR, slug);
+}
 
 export function fetchArticleBySlugForPreview(
     slug: string,
@@ -322,39 +354,38 @@ export function fetchArticleBySlugForPreview(
     return fetchBySlugForPreview<StrapiArticle>(ARTICLE_DESCRIPTOR, slug, status);
 }
 
-export const fetchArticlesPage = cache(
-    (options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> =>
-        fetchPage<StrapiArticle>(ARTICLE_DESCRIPTOR, options),
-);
+export function fetchArticlesPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiArticle>> {
+    return fetchPage<StrapiArticle>(ARTICLE_DESCRIPTOR, options);
+}
 
-export const fetchArticlesBySlugs = cache(
-    (slugs: string[]): Promise<StrapiArticle[]> => fetchBySlugs<StrapiArticle>(ARTICLE_DESCRIPTOR, slugs),
-);
+export function fetchArticlesBySlugs(slugs: string[]): Promise<StrapiArticle[]> {
+    return fetchBySlugs<StrapiArticle>(ARTICLE_DESCRIPTOR, slugs);
+}
 
+// batchBySlugs itself carries no cache directive (pure fan-out), so keep the
+// request-level memoization here.
 export const fetchArticlesBySlugsBatched = cache(
     (slugs: string[]): Promise<StrapiArticle[]> => batchBySlugs(fetchArticlesBySlugs, slugs),
 );
 
-export const fetchArticlesByAuthorPaginated = cache(
-    (
-        authorSlug: string,
-        page: number,
-        pageSize: number,
-        categorySlug?: string,
-    ): Promise<PaginatedResult<StrapiArticle>> =>
-        fetchByAuthorPaginated<StrapiArticle>(ARTICLE_DESCRIPTOR, authorSlug, page, pageSize, categorySlug),
-);
+export function fetchArticlesByAuthorPaginated(
+    authorSlug: string,
+    page: number,
+    pageSize: number,
+    categorySlug?: string,
+): Promise<PaginatedResult<StrapiArticle>> {
+    return fetchByAuthorPaginated<StrapiArticle>(ARTICLE_DESCRIPTOR, authorSlug, page, pageSize, categorySlug);
+}
 
-export const fetchRelatedArticles = cache(
-    (categorySlugs: string[], excludeSlug: string): Promise<StrapiArticle[]> =>
-        fetchRelated<StrapiArticle>(ARTICLE_DESCRIPTOR, categorySlugs, excludeSlug),
-);
+export function fetchRelatedArticles(categorySlugs: string[], excludeSlug: string): Promise<StrapiArticle[]> {
+    return fetchRelated<StrapiArticle>(ARTICLE_DESCRIPTOR, categorySlugs, excludeSlug);
+}
 
 // ─── Podcasts ──────────────────────────────────────────────────────────────
 
-export const fetchPodcastBySlug = cache(
-    (slug: string): Promise<StrapiPodcast | null> => fetchBySlug<StrapiPodcast>(PODCAST_DESCRIPTOR, slug),
-);
+export function fetchPodcastBySlug(slug: string): Promise<StrapiPodcast | null> {
+    return fetchBySlug<StrapiPodcast>(PODCAST_DESCRIPTOR, slug);
+}
 
 export function fetchPodcastBySlugForPreview(
     slug: string,
@@ -363,33 +394,32 @@ export function fetchPodcastBySlugForPreview(
     return fetchBySlugForPreview<StrapiPodcast>(PODCAST_DESCRIPTOR, slug, status);
 }
 
-export const fetchPodcastsPage = cache(
-    (options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> =>
-        fetchPage<StrapiPodcast>(PODCAST_DESCRIPTOR, options),
-);
+export function fetchPodcastsPage(options: FetchPageOptions = {}): Promise<PaginatedResult<StrapiPodcast>> {
+    return fetchPage<StrapiPodcast>(PODCAST_DESCRIPTOR, options);
+}
 
-export const fetchPodcastsBySlugs = cache(
-    (slugs: string[]): Promise<StrapiPodcast[]> => fetchBySlugs<StrapiPodcast>(PODCAST_DESCRIPTOR, slugs),
-);
+export function fetchPodcastsBySlugs(slugs: string[]): Promise<StrapiPodcast[]> {
+    return fetchBySlugs<StrapiPodcast>(PODCAST_DESCRIPTOR, slugs);
+}
 
+// batchBySlugs itself carries no cache directive (pure fan-out), so keep the
+// request-level memoization here.
 export const fetchPodcastsBySlugsBatched = cache(
     (slugs: string[]): Promise<StrapiPodcast[]> => batchBySlugs(fetchPodcastsBySlugs, slugs),
 );
 
-export const fetchPodcastsByAuthorPaginated = cache(
-    (
-        authorSlug: string,
-        page: number,
-        pageSize: number,
-        categorySlug?: string,
-    ): Promise<PaginatedResult<StrapiPodcast>> =>
-        fetchByAuthorPaginated<StrapiPodcast>(PODCAST_DESCRIPTOR, authorSlug, page, pageSize, categorySlug),
-);
+export function fetchPodcastsByAuthorPaginated(
+    authorSlug: string,
+    page: number,
+    pageSize: number,
+    categorySlug?: string,
+): Promise<PaginatedResult<StrapiPodcast>> {
+    return fetchByAuthorPaginated<StrapiPodcast>(PODCAST_DESCRIPTOR, authorSlug, page, pageSize, categorySlug);
+}
 
-export const fetchRelatedPodcasts = cache(
-    (categorySlugs: string[], excludeSlug: string): Promise<StrapiPodcast[]> =>
-        fetchRelated<StrapiPodcast>(PODCAST_DESCRIPTOR, categorySlugs, excludeSlug),
-);
+export function fetchRelatedPodcasts(categorySlugs: string[], excludeSlug: string): Promise<StrapiPodcast[]> {
+    return fetchRelated<StrapiPodcast>(PODCAST_DESCRIPTOR, categorySlugs, excludeSlug);
+}
 
 // ─── Authors ───────────────────────────────────────────────────────────────
 
@@ -410,7 +440,12 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
     }>;
 };
 
-export const fetchAuthorsList = cache(async (options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> => {
+export async function fetchAuthorsList(options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> {
+    'use cache';
+    const tags = options.tags ?? [contentTag('author'), contentListTag('author')];
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
+
     const limit = options.limit ?? 100;
     const query = buildListQuery({
         page: 1,
@@ -421,13 +456,18 @@ export const fetchAuthorsList = cache(async (options: FetchListOptions = {}): Pr
     });
 
     const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(`/api/authors?${query}`, {
-        tags: options.tags ?? [contentTag('author'), contentListTag('author')],
+        tags,
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
     return res.data ?? [];
-});
+}
 
-export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAuthorWithContent | null> => {
+export async function fetchAuthorBySlug(slug: string): Promise<StrapiAuthorWithContent | null> {
+    'use cache';
+    const tags = [contentTag('author'), contentItemTag('author', slug)];
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_DETAIL);
+
     const query = buildBySlugQuery({
         slug,
         populate: authorBySlugPopulate,
@@ -435,11 +475,11 @@ export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAutho
     });
 
     const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(`/api/authors?${query}`, {
-        tags: [contentTag('author'), contentItemTag('author', slug)],
+        tags,
         revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
     });
     return res.data?.[0] ?? null;
-});
+}
 
 // ─── Categories ────────────────────────────────────────────────────────────
 
@@ -497,7 +537,12 @@ export const fetchCategoryPageData = cache(async (slug: string): Promise<Categor
     };
 });
 
-export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCategoryWithContent | null> => {
+export async function fetchCategoryBySlug(slug: string): Promise<StrapiCategoryWithContent | null> {
+    'use cache';
+    const tags = [contentTag('category'), contentItemTag('category', slug)];
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_DETAIL);
+
     const query = buildBySlugQuery({
         slug,
         populate: categoryWithContentPopulate,
@@ -505,14 +550,21 @@ export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCat
     });
 
     const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(`/api/categories?${query}`, {
-        tags: [contentTag('category'), contentItemTag('category', slug)],
+        tags,
         revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
         context: {slug, contentType: 'category', populateOptions: categoryWithContentPopulate},
     });
     return res.data?.[0] ?? null;
-});
+}
 
-export const fetchCategoriesWithContent = cache(async (options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> => {
+export async function fetchCategoriesWithContent(
+    options: FetchListOptions = {},
+): Promise<StrapiCategoryWithContent[]> {
+    'use cache';
+    const tags = options.tags ?? [contentTag('category'), contentListTag('category')];
+    cacheTag(...tags);
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
+
     const limit = options.limit ?? 100;
     const query = buildListQuery({
         page: 1,
@@ -523,8 +575,8 @@ export const fetchCategoriesWithContent = cache(async (options: FetchListOptions
     });
 
     const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(`/api/categories?${query}`, {
-        tags: options.tags ?? [contentTag('category'), contentListTag('category')],
+        tags,
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
     return res.data ?? [];
-});
+}

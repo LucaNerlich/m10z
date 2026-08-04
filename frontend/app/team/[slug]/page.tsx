@@ -33,15 +33,12 @@ type PageProps = {
 
 /**
  * Pre-generate static params for all published authors at build time.
- * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ * Propagates a CMS-unreachable error to fail the build — an empty array is now a
+ * hard error under Cache Components (no static shell to prerender).
  */
 export async function generateStaticParams() {
-    try {
-        const entries = await fetchPublishedSlugs('authors', [sitemapTag('authors')]);
-        return entries.map(({slug}) => ({slug}));
-    } catch {
-        return [];
-    }
+    const entries = await fetchPublishedSlugs('authors', [sitemapTag('authors')]);
+    return entries.map(({slug}) => ({slug}));
 }
 
 /**

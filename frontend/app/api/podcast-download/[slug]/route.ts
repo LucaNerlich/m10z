@@ -11,9 +11,6 @@ import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {getStrapiApiBaseUrl} from '@/src/lib/strapi';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-
 // Strapi slugs are lowercase, alphanumeric, dash-separated. Reject anything else to prevent
 // path traversal / injection before the value is used in a Strapi query.
 const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;

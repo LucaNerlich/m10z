@@ -1,4 +1,4 @@
-import {cache} from 'react';
+import {cacheLife} from 'next/cache';
 
 import {fsMonthSource} from './fsMonthSource';
 import {buildGameHistory, type GameHistory} from './gameHistory';
@@ -53,6 +53,10 @@ export async function loadArchive(source: MonthSource): Promise<M12GArchive> {
     return buildArchive(await source());
 }
 
-// Request-scoped: load + sort + enrich + aggregate the Months exactly once per
-// render, regardless of how many projections (stats, streaks, game index, …) read it.
-export const getM12GArchive = cache((): Promise<M12GArchive> => loadArchive(fsMonthSource));
+// Filesystem-sourced and static between deploys (no Strapi tag to invalidate it
+// on) — cached indefinitely rather than re-read on every render.
+export async function getM12GArchive(): Promise<M12GArchive> {
+    'use cache';
+    cacheLife('max');
+    return loadArchive(fsMonthSource);
+}

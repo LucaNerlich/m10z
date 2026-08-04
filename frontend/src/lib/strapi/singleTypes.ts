@@ -1,7 +1,7 @@
 import qs from 'qs';
-import {cache} from 'react';
+import {cacheLife, cacheTag} from 'next/cache';
 
-import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {CACHE_LIFE_CONTENT_LIST, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {ABOUT_PAGE_TAG, ABOUT_TAG, feedSourceTag, LEGAL_TAGS} from '@/src/lib/strapi/cacheTags';
 import {type FetchStrapiOptions, fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
@@ -54,19 +54,9 @@ async function getLegalDocWithFallback(
     kind: 'imprint' | 'privacy',
     options: FetchStrapiOptions = {},
 ): Promise<StrapiLegalDoc> {
-    const nowIso = new Date().toISOString();
-    const fallback: StrapiLegalDoc = {
-        id: -1,
-        documentId: `fallback-${kind}`,
-        title: kind === 'imprint' ? 'Impressum' : 'Datenschutz',
-        content:
-            kind === 'imprint'
-                ? 'Das Impressum konnte leider nicht geladen werden. Bitte versuche es später erneut.'
-                : 'Die Datenschutzerklärung konnte leider nicht geladen werden. Bitte versuche es später erneut.',
-        createdAt: nowIso,
-        updatedAt: nowIso,
-        publishedAt: null,
-    };
+    'use cache';
+    cacheTag(...LEGAL_TAGS);
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
 
     try {
         const res = await fetchStrapiSingle<StrapiLegalDoc>(kind, '', {
@@ -77,23 +67,37 @@ async function getLegalDocWithFallback(
         return res.data;
     } catch (err) {
         console.warn(`[legal-doc] Failed to fetch ${kind}: ${err instanceof Error ? err.message : 'unknown error'}`);
-        return fallback;
+        // Built lazily (only on the fallback path) — `new Date()` is a synchronous-IO
+        // call that fails prerendering under Cache Components if evaluated eagerly.
+        const nowIso = new Date().toISOString();
+        return {
+            id: -1,
+            documentId: `fallback-${kind}`,
+            title: kind === 'imprint' ? 'Impressum' : 'Datenschutz',
+            content:
+                kind === 'imprint'
+                    ? 'Das Impressum konnte leider nicht geladen werden. Bitte versuche es später erneut.'
+                    : 'Die Datenschutzerklärung konnte leider nicht geladen werden. Bitte versuche es später erneut.',
+            createdAt: nowIso,
+            updatedAt: nowIso,
+            publishedAt: null,
+        };
     }
 }
 
-export const getImprint = cache(async (options: FetchStrapiOptions = {}) => {
+export function getImprint(options: FetchStrapiOptions = {}) {
     return getLegalDocWithFallback('imprint', {
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
-});
+}
 
-export const getPrivacy = cache(async (options: FetchStrapiOptions = {}) => {
+export function getPrivacy(options: FetchStrapiOptions = {}) {
     return getLegalDocWithFallback('privacy', {
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
-});
+}
 
 function assertIsAbout(data: unknown): asserts data is StrapiAbout {
     if (!data || typeof data !== 'object') throw new Error('Invalid Strapi data');
@@ -108,22 +112,9 @@ function assertIsAbout(data: unknown): asserts data is StrapiAbout {
 }
 
 async function getAboutWithFallback(options: FetchStrapiOptions = {}): Promise<StrapiAbout> {
-    const nowIso = new Date().toISOString();
-    const fallback: StrapiAbout = {
-        id: -1,
-        documentId: 'fallback-about',
-        name: 'Über Uns',
-        alternateName: null,
-        content:
-            'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
-            + '- Artikel-Feed: `/rss.xml`\n'
-            + '- Podcast-Feed: `/audiofeed.xml`\n\n'
-            + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
-        logo: null,
-        createdAt: nowIso,
-        updatedAt: nowIso,
-        publishedAt: null,
-    };
+    'use cache';
+    cacheTag(ABOUT_TAG, ABOUT_PAGE_TAG);
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
 
     try {
         const query = qs.stringify(
@@ -138,16 +129,33 @@ async function getAboutWithFallback(options: FetchStrapiOptions = {}): Promise<S
         return res.data;
     } catch (err) {
         console.warn(`[about] Failed to fetch about: ${err instanceof Error ? err.message : 'unknown error'}`);
-        return fallback;
+        // Built lazily (only on the fallback path) — `new Date()` is a synchronous-IO
+        // call that fails prerendering under Cache Components if evaluated eagerly.
+        const nowIso = new Date().toISOString();
+        return {
+            id: -1,
+            documentId: 'fallback-about',
+            name: 'Über Uns',
+            alternateName: null,
+            content:
+                'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
+                + '- Artikel-Feed: `/rss.xml`\n'
+                + '- Podcast-Feed: `/audiofeed.xml`\n\n'
+                + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
+            logo: null,
+            createdAt: nowIso,
+            updatedAt: nowIso,
+            publishedAt: null,
+        };
     }
 }
 
-export const getAbout = cache(async (options: FetchStrapiOptions = {}) => {
+export function getAbout(options: FetchStrapiOptions = {}) {
     return getAboutWithFallback({
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
-});
+}
 
 function assertIsFeeds(data: unknown): asserts data is StrapiFeedsInfo {
     if (!data || typeof data !== 'object') throw new Error('Invalid Strapi data');
@@ -159,22 +167,9 @@ function assertIsFeeds(data: unknown): asserts data is StrapiFeedsInfo {
 }
 
 async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promise<StrapiFeedsInfo> {
-    const feed = `${process.env.NEXT_PUBLIC_DOMAIN}/rss.xml`;
-    const audioFeed = `${process.env.NEXT_PUBLIC_DOMAIN}/audiofeed.xml`;
-    const nowIso = new Date().toISOString();
-    const fallback: StrapiFeedsInfo = {
-        id: -1,
-        documentId: 'fallback-feeds',
-        title: 'RSS-Feeds',
-        content:
-            'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
-            + `- Artikel-Feed: \`${feed}\`\n`
-            + `- Podcast-Feed: \`${audioFeed}\`\n\n`
-            + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
-        createdAt: nowIso,
-        updatedAt: nowIso,
-        publishedAt: null,
-    };
+    'use cache';
+    cacheTag(feedSourceTag('article'));
+    cacheLife(CACHE_LIFE_CONTENT_LIST);
 
     try {
         const res = await fetchStrapiSingle<StrapiFeedsInfo>('about-feed', '', {
@@ -190,13 +185,30 @@ async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promi
         };
     } catch (err) {
         console.warn(`[feeds] Failed to fetch feeds: ${err instanceof Error ? err.message : 'unknown error'}`);
-        return fallback;
+        // Built lazily (only on the fallback path) — `new Date()` is a synchronous-IO
+        // call that fails prerendering under Cache Components if evaluated eagerly.
+        const feed = `${process.env.NEXT_PUBLIC_DOMAIN}/rss.xml`;
+        const audioFeed = `${process.env.NEXT_PUBLIC_DOMAIN}/audiofeed.xml`;
+        const nowIso = new Date().toISOString();
+        return {
+            id: -1,
+            documentId: 'fallback-feeds',
+            title: 'RSS-Feeds',
+            content:
+                'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
+                + `- Artikel-Feed: \`${feed}\`\n`
+                + `- Podcast-Feed: \`${audioFeed}\`\n\n`
+                + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
+            createdAt: nowIso,
+            updatedAt: nowIso,
+            publishedAt: null,
+        };
     }
 }
 
-export const getFeedsInfo = cache(async (options: FetchStrapiOptions = {}) => {
+export function getFeedsInfo(options: FetchStrapiOptions = {}) {
     return getFeedsInfoWithFallback({
         ...options,
         revalidate: options.revalidate ?? CACHE_REVALIDATE_DEFAULT,
     });
-});
+}

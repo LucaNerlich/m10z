@@ -1,6 +1,8 @@
+import {Suspense} from 'react';
 import {type Metadata} from 'next';
 
 import {ArticleCard} from '@/src/components/ArticleCard';
+import {ArticleListSkeleton} from '@/src/components/ArticleListSkeleton';
 import {AuthorContentPage, generateAuthorContentMetadata} from '@/src/components/AuthorContentPage';
 import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
 import {fetchArticlesByAuthorPaginated} from '@/src/lib/strapiContent';
@@ -14,21 +16,23 @@ export async function generateMetadata({params, searchParams}: PageProps): Promi
     return generateAuthorContentMetadata({params, searchParams, sectionLabel: 'Artikel', sectionPath: 'artikel'});
 }
 
-export default async function AuthorArticlesPage({params, searchParams}: PageProps) {
+export default function AuthorArticlesPage({params, searchParams}: PageProps) {
     return (
-        <AuthorContentPage<StrapiArticle>
-            params={params}
-            searchParams={searchParams}
-            sectionLabel="Artikel"
-            sectionPath="artikel"
-            activeSection="artikel"
-            fetchPage={fetchArticlesByAuthorPaginated}
-            renderCard={(article) => (
-                <ArticleCard key={article.slug} article={article} showAuthors={false} showCategories={true} />
-            )}
-            emptyMessageNoFilter="Keine Artikel von dieser*m Autor*in gefunden."
-            emptyMessageCategoryFilter="Keine Artikel in dieser Kategorie von diesem Autor gefunden."
-        />
+        <Suspense fallback={<ArticleListSkeleton />}>
+            <AuthorContentPage<StrapiArticle>
+                params={params}
+                searchParams={searchParams}
+                sectionLabel="Artikel"
+                sectionPath="artikel"
+                activeSection="artikel"
+                fetchPage={fetchArticlesByAuthorPaginated}
+                renderCard={(article) => (
+                    <ArticleCard key={article.slug} article={article} showAuthors={false} showCategories={true} />
+                )}
+                emptyMessageNoFilter="Keine Artikel von dieser*m Autor*in gefunden."
+                emptyMessageCategoryFilter="Keine Artikel in dieser Kategorie von diesem Autor gefunden."
+            />
+        </Suspense>
     );
 }
 

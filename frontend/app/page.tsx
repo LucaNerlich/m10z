@@ -29,14 +29,20 @@ function parsePageParamFromSearchParams(searchParams: Record<string, string | st
  *
  * @returns A root element with `data-homepage` containing `HomePage` rendered inside `Suspense` with `FeedSkeleton` as the fallback.
  */
-export default async function HomePageWrapper({searchParams}: PageProps) {
-    const sp = await Promise.resolve(searchParams ?? {});
-    const page = parsePageParamFromSearchParams(sp);
+export default function HomePageWrapper({searchParams}: PageProps) {
     return (
         <div data-homepage>
             <Suspense fallback={<FeedSkeleton />}>
-                <HomePage page={page} />
+                <HomePageContent searchParams={searchParams} />
             </Suspense>
         </div>
     );
+}
+
+// Resolves `searchParams` inside the Suspense boundary (rather than in
+// HomePageWrapper) so the rest of the page can still prerender a static shell.
+async function HomePageContent({searchParams}: PageProps) {
+    const sp = await Promise.resolve(searchParams ?? {});
+    const page = parsePageParamFromSearchParams(sp);
+    return <HomePage page={page} />;
 }

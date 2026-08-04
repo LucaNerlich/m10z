@@ -2,6 +2,7 @@ import '../src/styles/global.css';
 import Header from '@/src/components/Header';
 import Footer from '@/src/components/Footer';
 import UmamiAnalytics from '@/src/components/UmamiAnalytics';
+import {Suspense} from 'react';
 import {ScrollRestoration} from '@/src/components/ScrollRestoration';
 import {ContentLayout} from '@/src/components/ContentLayout';
 import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
@@ -81,7 +82,9 @@ export default function RootLayout({
         <body>
         <a href="#main-content" className="skip-to-content">Zum Inhalt springen</a>
         <Script id="theme-init" strategy="beforeInteractive" src="/theme-init.js" />
-        <ScrollRestoration />
+        <Suspense fallback={null}>
+            <ScrollRestoration />
+        </Suspense>
         <Header />
         <main id="main-content">
             <ContentLayout>{children}</ContentLayout>
