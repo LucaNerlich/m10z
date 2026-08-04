@@ -1,3 +1,4 @@
+import {Suspense} from 'react';
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
@@ -55,11 +56,23 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 /**
  * Render the article detail page for the given slug.
  *
+ * `params` is awaited inside the Suspense-wrapped child (not here) so the App Shell
+ * shared across every `<Link>` to this route template isn't tied to one slug.
+ */
+export default function ArticleDetailPage({params}: PageProps) {
+    return (
+        <Suspense fallback={null}>
+            <ArticleDetailContent params={params} />
+        </Suspense>
+    );
+}
+
+/**
  * Fetches the article server-side and returns the ArticleDetail client component. If the slug is invalid, the article does not exist, or a fetch error/404 occurs, this will trigger a 404 response via `notFound()`.
  *
  * @returns The React element that renders the article detail view, or triggers a 404 response.
  */
-export default async function ArticleDetailPage({params}: PageProps) {
+async function ArticleDetailContent({params}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) notFound();

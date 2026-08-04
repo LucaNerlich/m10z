@@ -1,3 +1,4 @@
+import {Suspense} from 'react';
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
@@ -51,12 +52,26 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 }
 
 /**
- * Render the podcast episode detail page for the given route slug; if the slug is invalid or the episode is not found, return a 404.
+ * Render the podcast episode detail page for the given route slug.
+ *
+ * `params` is awaited inside the Suspense-wrapped child (not here) so the App Shell
+ * shared across every `<Link>` to this route template isn't tied to one slug.
+ */
+export default function PodcastDetailPage({params}: PageProps) {
+    return (
+        <Suspense fallback={null}>
+            <PodcastDetailContent params={params} />
+        </Suspense>
+    );
+}
+
+/**
+ * Fetches the episode server-side; if the slug is invalid or the episode is not found, returns a 404.
  *
  * @param params - Route parameters object containing the `slug` string
  * @returns The `PodcastDetail` React element for the resolved episode
  */
-export default async function PodcastDetailPage({params}: PageProps) {
+async function PodcastDetailContent({params}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) notFound();

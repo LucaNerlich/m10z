@@ -1,3 +1,4 @@
+import {Suspense} from 'react';
 import {type Metadata} from 'next';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {notFound} from 'next/navigation';
@@ -58,12 +59,24 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 /**
  * Renders the category detail page for a validated route slug.
  *
+ * `params` is awaited inside the Suspense-wrapped child (not here) so the App Shell
+ * shared across every `<Link>` to this route template isn't tied to one slug.
+ */
+export default function CategoryDetailPage({params}: PageProps) {
+    return (
+        <Suspense fallback={null}>
+            <CategoryDetailContent params={params} />
+        </Suspense>
+    );
+}
+
+/**
  * Validates the incoming `slug` route parameter and returns a 404 page when the slug is invalid; otherwise renders the category detail JSX.
  *
  * @param params - An object providing route parameters (must include `slug`)
  * @returns The page's JSX content when `slug` is valid; invokes a 404 response when `slug` is invalid
  */
-export default async function CategoryDetailPage({params}: PageProps) {
+async function CategoryDetailContent({params}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();

@@ -1,3 +1,4 @@
+import {Suspense} from 'react';
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
@@ -66,12 +67,24 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 /**
  * Render the author page for the given route slug.
  *
+ * `params` is awaited inside the Suspense-wrapped child (not here) so the App Shell
+ * shared across every `<Link>` to this route template isn't tied to one slug.
+ */
+export default function AuthorPage({params}: PageProps) {
+    return (
+        <Suspense fallback={null}>
+            <AuthorPageContent params={params} />
+        </Suspense>
+    );
+}
+
+/**
  * Validates the slug and, if a matching author exists, resolves the author's avatar URL and renders the author's profile including title, optional description, and optional lists of articles and podcasts. If the slug is invalid or no author is found, the function triggers Next.js's notFound response.
  *
  * @param params - A promise resolving to route parameters containing the `slug` string.
  * @returns The page's JSX element containing the author's profile and any associated articles or podcasts.
  */
-export default async function AuthorPage({params}: PageProps) {
+async function AuthorPageContent({params}: PageProps) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();

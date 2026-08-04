@@ -37,6 +37,7 @@ const nextConfig: NextConfig = {
     },
     reactCompiler: true,
     cacheComponents: true,
+    partialPrefetching: true,
     images: {
         minimumCacheTTL: process.env.NODE_ENV === 'production' ? 3600 : 60,
         dangerouslyAllowLocalIP: true,
