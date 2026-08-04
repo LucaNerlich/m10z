@@ -55,13 +55,14 @@ async function getLegalDocWithFallback(
     options: FetchStrapiOptions = {},
 ): Promise<StrapiLegalDoc> {
     'use cache';
-    cacheTag(...LEGAL_TAGS);
+    const tags = options.tags ?? [...LEGAL_TAGS];
+    cacheTag(...tags);
     cacheLife(CACHE_LIFE_CONTENT_LIST);
 
     try {
         const res = await fetchStrapiSingle<StrapiLegalDoc>(kind, '', {
             ...options,
-            tags: options.tags ?? [...LEGAL_TAGS],
+            tags,
         });
         assertIsLegalDoc(res.data);
         return res.data;
@@ -113,7 +114,8 @@ function assertIsAbout(data: unknown): asserts data is StrapiAbout {
 
 async function getAboutWithFallback(options: FetchStrapiOptions = {}): Promise<StrapiAbout> {
     'use cache';
-    cacheTag(ABOUT_TAG, ABOUT_PAGE_TAG);
+    const tags = options.tags ?? [ABOUT_TAG, ABOUT_PAGE_TAG];
+    cacheTag(...tags);
     cacheLife(CACHE_LIFE_CONTENT_LIST);
 
     try {
@@ -123,7 +125,7 @@ async function getAboutWithFallback(options: FetchStrapiOptions = {}): Promise<S
         );
         const res = await fetchStrapiSingle<StrapiAbout>('about', query, {
             ...options,
-            tags: options.tags ?? [ABOUT_TAG, ABOUT_PAGE_TAG],
+            tags,
         });
         assertIsAbout(res.data);
         return res.data;
@@ -168,13 +170,14 @@ function assertIsFeeds(data: unknown): asserts data is StrapiFeedsInfo {
 
 async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promise<StrapiFeedsInfo> {
     'use cache';
-    cacheTag(feedSourceTag('article'));
+    const tags = options.tags ?? [feedSourceTag('article')];
+    cacheTag(...tags);
     cacheLife(CACHE_LIFE_CONTENT_LIST);
 
     try {
         const res = await fetchStrapiSingle<StrapiFeedsInfo>('about-feed', '', {
             ...options,
-            tags: options.tags ?? [feedSourceTag('article')],
+            tags,
         });
         assertIsFeeds(res.data);
         return {
