@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-08-07
+
+### Added
+- Cache invalidation now survives a restart or redeploy: pending invalidation events are persisted to Postgres and redelivered on boot if they weren't confirmed delivered.
+
+### Changed
+- Cache invalidation is now driven by a single shared content-type registry and a single Document Service middleware, replacing the previous mix of hardcoded UID maps and per-content-type lifecycle hooks.
+- Invalidation payloads are now entity-level (type, action, slug, related author/category slugs) instead of coarse target names, so a publish only busts the specific tags it actually affects.
+- The two debounced invalidation queues (cache invalidation, search-index rebuild) are merged into one generic queue with consistent retry/backoff/dead-letter behavior.
+- A search-index rebuild now only counts as failed (and retries) when building the index itself fails; notifying the frontend afterward goes through the same durable, retrying queue instead of a one-shot request.
+
+### Fixed
+- Fixed a leak where only the most recently queued duplicate invalidation event's persisted row was cleaned up after delivery, leaving the others in the table indefinitely.
+- Fixed a startup race where concurrent mutations could each attempt to create the invalidation table at once.
+- Fixed a retry-delay lookup that could produce `undefined` if invalidation delivery were ever configured to retry more than three times.
+
 ## [1.2.1] - 2026-06-05
 
 ### Fixed
