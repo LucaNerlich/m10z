@@ -21,14 +21,21 @@ function expectedSecret(): string | null {
     );
 }
 
+function isValidRelations(value: unknown): value is InvalidationEvent['relations'] {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+    return Object.values(value).every(
+        (slugs) => Array.isArray(slugs) && slugs.every((slug) => typeof slug === 'string'),
+    );
+}
+
 function parseEvent(body: unknown): InvalidationEvent | null {
     if (typeof body !== 'object' || body === null) return null;
     const {type, action, slug, relations} = body as Record<string, unknown>;
     if (typeof type !== 'string' || !isContentTypeKey(type)) return null;
     if (typeof action !== 'string' || !isDocumentAction(action)) return null;
     if (slug !== undefined && typeof slug !== 'string') return null;
-    if (relations !== undefined && (typeof relations !== 'object' || relations === null)) return null;
-    return {type, action, ...(slug ? {slug} : {}), ...(relations ? {relations: relations as InvalidationEvent['relations']} : {})};
+    if (relations !== undefined && !isValidRelations(relations)) return null;
+    return {type, action, ...(slug ? {slug} : {}), ...(relations ? {relations} : {})};
 }
 
 export async function handleInvalidation(request: Request): Promise<Response> {

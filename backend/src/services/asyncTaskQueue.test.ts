@@ -81,4 +81,55 @@ describe('AsyncTaskQueue', () => {
 
         expect(run).toHaveBeenCalledTimes(2);
     });
+
+    test('merges items that dedupe to the same key instead of dropping the older one', async () => {
+        type Item = {key: string; ids: number[]};
+        const run = vi.fn().mockResolvedValue(true);
+        const queue = new AsyncTaskQueue<Item>({
+            name: 'test',
+            keyOf: (item) => item.key,
+            merge: (existing, incoming) => ({key: incoming.key, ids: [...existing.ids, ...incoming.ids]}),
+            run,
+            debounceMs: 1000,
+        });
+
+        queue.enqueue({key: 'a', ids: [1]}, strapi);
+        queue.enqueue({key: 'a', ids: [2]}, strapi);
+        await vi.advanceTimersByTimeAsync(1000);
+
+        expect(run).toHaveBeenCalledTimes(1);
+        expect(run.mock.calls[0][0]).toEqual({key: 'a', ids: [1, 2]});
+    });
+
+    test('logs and treats a rejected run as a failure instead of throwing', async () => {
+        const run = vi.fn().mockRejectedValue(new Error('boom'));
+        const onSettled = vi.fn();
+        const queue = new AsyncTaskQueue<string>({name: 'test', keyOf: (item) => item, run, onSettled, debounceMs: 100});
+
+        queue.enqueue('a', strapi);
+        await vi.advanceTimersByTimeAsync(100);
+
+        expect(onSettled).toHaveBeenCalledWith('a', false, strapi);
+        expect(strapi.log.warn).toHaveBeenCalledWith(expect.stringContaining('threw'), expect.any(Error));
+    });
+
+    test('caps the batch delay to maxWaitMs even if items keep arriving', async () => {
+        const run = vi.fn().mockResolvedValue(true);
+        const queue = new AsyncTaskQueue<string>({
+            name: 'test',
+            keyOf: (item) => item,
+            run,
+            debounceMs: 1000,
+            maxWaitMs: 1500,
+        });
+
+        queue.enqueue('a', strapi);
+        await vi.advanceTimersByTimeAsync(1000);
+        queue.enqueue('b', strapi); // would normally push the run out another 1000ms
+
+        // Without the cap this wouldn't fire until t=2000; the 1500ms deadline (from the
+        // first enqueue) should force it to run by t=1500.
+        await vi.advanceTimersByTimeAsync(500);
+        expect(run).toHaveBeenCalled();
+    });
 });

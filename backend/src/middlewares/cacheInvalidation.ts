@@ -14,16 +14,15 @@
 import {contentTypeByUid, type ContentTypeConfig} from '../shared/contracts/strapi-contract/registry';
 import type {InvalidationEvent} from '../shared/contracts/strapi-contract/invalidationEvent';
 
-import {queueCacheInvalidation} from '../services/cacheInvalidationQueue';
+import {queueCacheInvalidation, type StrapiWithDb} from '../services/cacheInvalidationQueue';
 import {queueSearchIndexRebuild} from '../services/searchIndexQueue';
 
 type DocumentsInstance = {
     findOne: (params: {documentId: string; fields?: string[]; populate?: Record<string, {fields: string[]}>}) => Promise<any>;
 };
 
-type StrapiInstance = {
+type StrapiInstance = StrapiWithDb & {
     documents: (uid: string) => DocumentsInstance;
-    log: {info: (message: string) => void; warn: (message: string, error?: unknown) => void};
 };
 
 type MiddlewareContext = {
@@ -122,9 +121,14 @@ export async function cacheInvalidationMiddleware(
 
     if (context.action !== 'delete') {
         slug = ((result as {slug?: string} | undefined)?.slug) ?? slug;
-        if (config.relations) {
+        // Document Service actions like publish/unpublish don't necessarily return the
+        // entity's scalar fields directly, so fall back to resolving it whenever the slug
+        // is still missing — not just when relations happen to be configured — otherwise
+        // publish/unpublish events could end up with no slug at all.
+        if (!slug || config.relations) {
             const documentId = extractDocumentId(context, result);
             const entity = await resolveEntity(strapiInstance, context.uid, documentId, config.relations);
+            slug = slug ?? ((entity?.slug as string | undefined) ?? undefined);
             relations = extractRelationSlugs(entity, config.relations);
         }
     }

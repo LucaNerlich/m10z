@@ -21,8 +21,16 @@ export type TaskQueueOptions<T> = {
     keyOf: (item: T) => string;
     /** Perform the task; return true on success, false on failure (never throw). */
     run: (item: T, strapi: StrapiLike) => Promise<boolean>;
+    /**
+     * Combine an already-pending item with a newly-enqueued one sharing the same key,
+     * so per-item bookkeeping (e.g. accumulated durable-storage ids) isn't dropped when
+     * dedup coalesces them. Defaults to keeping only the incoming item.
+     */
+    merge?: (existing: T, incoming: T) => T;
     /** Base debounce window in ms before a batch runs. */
     debounceMs?: number;
+    /** Upper bound in ms from the first pending item until a batch must run, regardless of new arrivals. */
+    maxWaitMs?: number;
     /** How many items to process concurrently within a batch. */
     concurrency?: number;
     /** Consecutive failed batches after which pending items for that key are abandoned. */
@@ -38,6 +46,7 @@ const MAX_BACKOFF_MS = 60_000;
 
 export class AsyncTaskQueue<T> {
     private pending = new Map<string, T>();
+    private firstPendingAt: number | null = null;
     private isRunning = false;
     private consecutiveFailures = 0;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -50,7 +59,8 @@ export class AsyncTaskQueue<T> {
             return;
         }
 
-        this.pending.set(this.options.keyOf(item), item);
+        if (this.firstPendingAt === null) this.firstPendingAt = Date.now();
+        this.setPending(item);
         strapi.log.info(
             `[${this.options.name}] queued (debounced ${(this.options.debounceMs ?? DEFAULT_DEBOUNCE_MS) / 1000}s), ${this.pending.size} pending.`,
         );
@@ -60,11 +70,20 @@ export class AsyncTaskQueue<T> {
     /** Re-enqueue items recovered from durable storage on boot, without re-triggering onEnqueue persistence. */
     restore(items: T[], strapi: StrapiLike): void {
         if (items.length === 0) return;
+        if (this.firstPendingAt === null) this.firstPendingAt = Date.now();
         for (const item of items) {
-            this.pending.set(this.options.keyOf(item), item);
+            this.setPending(item);
         }
         strapi.log.info(`[${this.options.name}] restored ${items.length} pending item(s) from durable storage.`);
         this.scheduleRun(strapi);
+    }
+
+    /** Set a pending item, merging with any existing item sharing the same key. */
+    private setPending(item: T): void {
+        const key = this.options.keyOf(item);
+        const existing = this.pending.get(key);
+        const value = existing && this.options.merge ? this.options.merge(existing, item) : item;
+        this.pending.set(key, value);
     }
 
     private clearTimer(): void {
@@ -77,10 +96,16 @@ export class AsyncTaskQueue<T> {
     private scheduleRun(strapi: StrapiLike): void {
         this.clearTimer();
         const base = this.options.debounceMs ?? DEFAULT_DEBOUNCE_MS;
-        const delay =
+        let delay =
             this.consecutiveFailures > 0
                 ? Math.min(base * Math.pow(2, this.consecutiveFailures), MAX_BACKOFF_MS)
                 : base;
+
+        const {maxWaitMs} = this.options;
+        if (maxWaitMs !== undefined && this.firstPendingAt !== null) {
+            const remaining = Math.max(0, maxWaitMs - (Date.now() - this.firstPendingAt));
+            delay = Math.min(delay, remaining);
+        }
 
         this.debounceTimer = setTimeout(() => {
             this.debounceTimer = null;
@@ -95,6 +120,7 @@ export class AsyncTaskQueue<T> {
         this.isRunning = true;
         const items = Array.from(this.pending.values());
         this.pending.clear();
+        this.firstPendingAt = null;
         strapi.log.info(`[${this.options.name}] running ${items.length} item(s).`);
 
         const concurrency = this.options.concurrency ?? DEFAULT_CONCURRENCY;
@@ -105,7 +131,10 @@ export class AsyncTaskQueue<T> {
                 const batch = items.slice(i, i + concurrency);
                 await Promise.all(
                     batch.map(async (item) => {
-                        const succeeded = await this.options.run(item, strapi).catch(() => false);
+                        const succeeded = await this.options.run(item, strapi).catch((error: unknown) => {
+                            strapi.log.warn(`[${this.options.name}] task threw for an item; treating as failure.`, error);
+                            return false;
+                        });
                         this.options.onSettled?.(item, succeeded, strapi);
                         if (succeeded) {
                             succeededCount++;
@@ -134,11 +163,16 @@ export class AsyncTaskQueue<T> {
                     );
                     this.consecutiveFailures = 0;
                 } else {
-                    // Re-queue failed items for the next (backed-off) run, unless superseded
-                    // by a newer enqueue of the same key in the meantime.
+                    // Re-queue failed items for the next (backed-off) run, merging into any
+                    // newer enqueue of the same key rather than silently dropping either side.
                     for (const item of failedItems) {
-                        if (!this.pending.has(this.options.keyOf(item))) {
-                            this.pending.set(this.options.keyOf(item), item);
+                        const key = this.options.keyOf(item);
+                        if (this.pending.has(key)) {
+                            if (this.options.merge) {
+                                this.pending.set(key, this.options.merge(item, this.pending.get(key) as T));
+                            }
+                        } else {
+                            this.pending.set(key, item);
                         }
                     }
                 }

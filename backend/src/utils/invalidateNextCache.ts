@@ -67,6 +67,7 @@ export async function postInvalidationEvent(
 
     const url = `${base}/api/invalidate`;
     const retryDelays = [1000, 2000, 4000];
+    const delayFor = (attempt: number): number => retryDelays[attempt] ?? retryDelays[retryDelays.length - 1];
     const label = describeEvent(event);
 
     for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -83,8 +84,8 @@ export async function postInvalidationEvent(
 
             if (!res.ok) {
                 if (res.status >= 500 && attempt < maxRetries - 1) {
-                    log.warn(`Next invalidation failed (${label}): ${res.status} ${res.statusText}. Retrying in ${retryDelays[attempt]}ms...`);
-                    await delay(retryDelays[attempt]);
+                    log.warn(`Next invalidation failed (${label}): ${res.status} ${res.statusText}. Retrying in ${delayFor(attempt)}ms...`);
+                    await delay(delayFor(attempt));
                     continue;
                 }
                 log.warn(`Next invalidation failed (${label}): ${res.status} ${res.statusText}`);
@@ -96,9 +97,9 @@ export async function postInvalidationEvent(
         } catch (err) {
             if (attempt < maxRetries - 1) {
                 log.warn(
-                    `Next invalidation request error (${label}), attempt ${attempt + 1}/${maxRetries}. Retrying in ${retryDelays[attempt]}ms... Cause: ${formatErrorForLog(err)}`,
+                    `Next invalidation request error (${label}), attempt ${attempt + 1}/${maxRetries}. Retrying in ${delayFor(attempt)}ms... Cause: ${formatErrorForLog(err)}`,
                 );
-                await delay(retryDelays[attempt]);
+                await delay(delayFor(attempt));
                 continue;
             }
             log.warn(`Next invalidation request failed after ${maxRetries} attempts (${label}). Cause: ${formatErrorForLog(err)}`);

@@ -4,7 +4,11 @@ import {CONTENT_TYPE_KEYS, CONTENT_TYPES} from '../shared/contracts/strapi-contr
 
 describe('cache invalidation contract (backend)', () => {
     test('every non-synthetic content type has a unique uid', () => {
-        const uids = CONTENT_TYPE_KEYS.map((key) => CONTENT_TYPES[key].uid).filter((uid): uid is string => Boolean(uid));
+        const nonSyntheticKeys = CONTENT_TYPE_KEYS.filter((key) => key !== 'search-index' && key !== 'sitemap');
+        const uids = nonSyntheticKeys.map((key) => CONTENT_TYPES[key].uid);
+        for (const uid of uids) {
+            expect(uid).toBeTruthy();
+        }
         expect(new Set(uids).size).toBe(uids.length);
     });
 

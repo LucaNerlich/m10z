@@ -156,8 +156,10 @@ export const CONTENT_TYPES: Record<ContentTypeKey, ContentTypeConfig> = {
     },
 };
 
+const CONTENT_TYPE_KEY_SET: ReadonlySet<string> = new Set(CONTENT_TYPE_KEYS);
+
 export function isContentTypeKey(value: string): value is ContentTypeKey {
-    return (CONTENT_TYPE_KEYS as readonly string[]).includes(value);
+    return CONTENT_TYPE_KEY_SET.has(value);
 }
 
 export function contentTypeByUid(uid: string): {key: ContentTypeKey; config: ContentTypeConfig} | undefined {

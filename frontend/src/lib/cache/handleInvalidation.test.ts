@@ -58,10 +58,29 @@ describe('handleInvalidation', () => {
         expect(res.status).toBe(200);
 
         const {tags, pages, paths} = computeRevalidation(event);
+        expect(paths.length).toBeGreaterThan(0);
         expect(await res.json()).toEqual({ok: true, revalidated: [...tags, ...pages, ...paths]});
         for (const tag of tags) expect(revalidateTag).toHaveBeenCalledWith(tag, 'max');
         for (const page of pages) expect(revalidatePath).toHaveBeenCalledWith(page, 'page');
+        for (const path of paths) expect(revalidatePath).toHaveBeenCalledWith(path);
         expect(onInvalidate).toHaveBeenCalledWith('article');
+    });
+
+    test('400 when relations values are not string arrays', async () => {
+        const base = {type: 'article', action: 'publish', slug: 'my-article'};
+        const malformedBodies = [
+            {...base, relations: {authors: 'jane'}},
+            {...base, relations: {authors: [123]}},
+            {...base, relations: {authors: [{slug: 'jane'}]}},
+            {...base, relations: 'not-an-object'},
+            {...base, relations: ['not', 'an', 'object']},
+        ];
+
+        for (const body of malformedBodies) {
+            const res = await handleInvalidation(request({secret: SECRET, ip: 'd1', body}));
+            expect(res.status).toBe(400);
+        }
+        expect(revalidateTag).not.toHaveBeenCalled();
     });
 
     test('429 once the per-type/ip rate limit is exceeded', async () => {
