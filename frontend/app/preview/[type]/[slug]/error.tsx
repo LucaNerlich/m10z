@@ -5,7 +5,7 @@ type ErrorProps = {
     reset: () => void;
 };
 
-export default function PodcastPreviewError({reset}: ErrorProps) {
+export default function PreviewError({reset}: ErrorProps) {
     return (
         <section>
             <h1>Service unavailable</h1>
