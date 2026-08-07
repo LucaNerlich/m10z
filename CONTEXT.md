@@ -80,18 +80,22 @@ All reads cross the transport seam (`strapiTransport`) and attach cache tags fro
 
 ### Cache tag contract
 
-The authoritative vocabulary for Next.js cache tags on Strapi reads. Fetch surfaces
-attach tags here; invalidation taxonomy revalidates them on write. Coarse tags
-(e.g. `strapi:article`) intentionally cover fine-grained list tags. Tag groups for
-invalidation live in `INVALIDATION_TAG_GROUPS` alongside fetch-surface builders.
+The authoritative vocabulary for Next.js cache tags on Strapi reads, in
+`shared/strapi-contract/tags.ts`. Fetch surfaces attach tags here; the invalidate
+route (`computeRevalidation`) revalidates the same tags on write via the same pure
+builder functions, so the two sides cannot drift apart. Coarse tags (e.g.
+`strapi:article`) intentionally cover fine-grained list tags.
 
-### Invalidation manifest
+### Strapi content-type registry
 
-The cross-repo contract in `shared/invalidation/manifest.ts`. Maps Strapi UIDs and
-lifecycle events → invalidation target names → frontend tags/pages/paths. Backend
-imports directly; the frontend syncs a copy via `scripts/sync-shared-contracts.mjs`
-on prebuild/predev. `DOCUMENT_INVALIDATION` drives document middleware;
-`LIFECYCLE_INVALIDATION` drives lifecycle hooks via `contentInvalidationLifecycles`.
+The cross-repo contract in `shared/strapi-contract/registry.ts` — the single source
+of truth for the content-type ↔ cache-invalidation relationship. One entry per
+content type: its Strapi UID, which Document Service actions should trigger
+invalidation, which relation fields to resolve into the invalidation payload, and
+which flat "cascade" tags it always busts. Backend imports directly; the frontend
+syncs a copy via `scripts/sync-shared-contracts.mjs` on prebuild/predev. The backend's
+single Document Service middleware (`cacheInvalidationMiddleware`) is driven entirely
+by this registry — there is no separate lifecycle-hook mechanism.
 
 ### Search index module
 
@@ -102,7 +106,7 @@ queries via Fuse. The API route is a thin HTTP adapter.
 ### Feed registry
 
 Owns RSS feed disk cache, schedulers, and `onInvalidate()` for cache-invalidation
-side effects. Route handlers and `invalidationSideEffects` both call into it.
+side effects. Route handlers and `handleInvalidation` both call into it.
 
 ### Content access read interface
 

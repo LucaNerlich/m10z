@@ -1,5 +1,5 @@
 import {type Metadata} from 'next';
-import {getAbout} from '@/src/lib/strapi';
+import {getAbout} from '@/src/lib/strapi/singleTypes';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {ContentImage} from '@/src/components/ContentImage';

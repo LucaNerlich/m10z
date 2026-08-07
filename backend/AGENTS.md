@@ -97,7 +97,7 @@ types/generated/            # Auto-generated Strapi type definitions (do not edi
 ### Imports
 
 - Relative imports throughout (no path aliases in backend server code).
-- Deep relative paths are acceptable: `../../../../services/asyncCacheInvalidationQueue`.
+- Deep relative paths are acceptable: `../../../../services/cacheInvalidationQueue`.
 - The admin panel (`src/admin/`) uses `@/` alias via Vite config.
 - Group order: External packages → Internal modules.
 
@@ -107,15 +107,15 @@ types/generated/            # Auto-generated Strapi type definitions (do not edi
 |--------------------|------------------|-----------------------------------|
 | Source files        | camelCase        | `cacheInvalidation.ts`            |
 | Functions           | camelCase        | `queueCacheInvalidation`          |
-| Types/Interfaces    | PascalCase       | `SearchRecord`, `InvalidateTarget`|
+| Types/Interfaces    | PascalCase       | `SearchRecord`, `InvalidationEvent`|
 | Constants           | SCREAMING_SNAKE  | `MAX_RETRIES`, `DEBOUNCE_MS`      |
 | Strapi UIDs         | Strapi convention| `api::article.article`            |
 
 ### Exports
 
 - Named exports for functions: `export async function cacheInvalidationMiddleware(...)`.
-- Default exports only where Strapi convention requires them (lifecycles, config, controllers).
-- Type exports: `export type InvalidateTarget = ...`.
+- Default exports only where Strapi convention requires them (config, controllers).
+- Type exports: `export type InvalidationEvent = ...`.
 
 ### Error Handling
 
@@ -151,9 +151,15 @@ types/generated/            # Auto-generated Strapi type definitions (do not edi
 
 ## Architecture
 
-### Middleware & Lifecycle Pipeline
+### Middleware Pipeline
 
-Content mutation → Lifecycle hook (afterCreate/afterUpdate/afterDelete) + Document service middleware → `queueCacheInvalidation()` → 5s debounce → POST to `{FRONTEND_URL}/api/{target}/invalidate` with `x-m10z-invalidation-secret` header.
+Content mutation → Document service middleware (`cacheInvalidationMiddleware`, matched
+against `shared/strapi-contract/registry.ts` by UID) → resolves entity slug + relation
+slugs → `queueCacheInvalidation()` → 5s debounce, durable (Postgres-backed) queue →
+POST to `{FRONTEND_URL}/api/invalidate` with `x-m10z-invalidation-secret` header and a
+JSON body (`{type, action, slug?, relations?}`). There is no separate lifecycle-hook
+mechanism — Strapi 5's Document Service middleware already covers create/update/delete/
+publish/unpublish for both collection and single types.
 
 Three document service middlewares registered in `src/index.ts`:
 1. **wordCount** — Before save: calculates word count from markdown/richtext.
@@ -181,7 +187,7 @@ Pool monitoring logs acquisition/failure events and runs health checks every 60s
 
 See `.env.example` for all variables. Key ones:
 - `FRONTEND_URL` — target for cache invalidation POSTs
-- `FEED_INVALIDATION_TOKEN` — shared secret for cache invalidation auth
+- `STRAPI_INVALIDATION_SECRET` — shared secret for cache invalidation auth
 - `DATABASE_*` — PostgreSQL connection config
 - `APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET` — Strapi secrets
 - `MAILGUN_*` — email provider config

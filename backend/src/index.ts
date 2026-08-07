@@ -32,7 +32,7 @@ export default {
 
         // Validate optional but important environment variables
         const importantVars = [
-            'FEED_INVALIDATION_TOKEN',
+            'STRAPI_INVALIDATION_SECRET',
             'DIAGNOSTICS_TOKEN',
         ];
 

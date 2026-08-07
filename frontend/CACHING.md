@@ -60,14 +60,12 @@ RSS feed endpoints use feed-specific tags and revalidate periods:
 - **Article feed** (`/rss.xml`): Uses `feed:article` tag with `CACHE_REVALIDATE_DEFAULT` (3600s)
 - **Audio feed** (`/audiofeed.xml`): Uses `feed:audio` tag with `CACHE_REVALIDATE_DEFAULT` (3600s)
 
-### Invalidation Endpoints
+### Invalidation Endpoint
 
-Invalidation endpoints revalidate both tag types to ensure consistency:
-
-- **`/api/articlefeed/invalidate`**: Revalidates both `feed:article` and `strapi:article` tags
-- **`/api/audiofeed/invalidate`**: Revalidates both `feed:audio` and `strapi:podcast` tags
-
-This ensures that when content is updated, both the RSS feeds and the content pages are invalidated together.
+There is a single invalidation endpoint, `POST /api/invalidate`. Strapi POSTs an
+entity-level JSON payload (`{type, action, slug?, relations?}`) rather than a bare
+target name, so the frontend knows exactly which entity changed and which related
+authors/categories it belongs to — see "Invalidation Flow" below.
 
 ## Cache Duration
 
@@ -153,10 +151,11 @@ const res = await fetch(url, {
 
 All fetch functions support cache configuration with both tags and revalidate periods:
 
-**Base utilities** (`src/lib/strapi.ts`):
-- `fetchStrapiSingle()`: Accepts `FetchStrapiOptions` with `tags` and `revalidate`
-- `fetchStrapiCollection()`: Accepts `FetchStrapiOptions` with `tags` and `revalidate`
-- `getPrivacy()`, `getImprint()`, `getAbout()`: Default to `CACHE_REVALIDATE_DEFAULT`
+**Transport** (`src/lib/strapiTransport.ts`) and **content access** (`src/lib/strapi/contentAccess.ts`):
+- `fetchJson()` / `fetchJsonNoStore()`: Accept `tags` and `revalidate` (or bypass the cache entirely for preview reads)
+
+**Single-type pages** (`src/lib/strapi/singleTypes.ts`):
+- `getPrivacy()`, `getImprint()`, `getAbout()`, `getFeedsInfo()`: Default to `CACHE_REVALIDATE_DEFAULT`
 
 **Content fetching** (`src/lib/strapiContent.ts`):
 - `fetchAuthorsList()`: Uses `CACHE_REVALIDATE_DEFAULT`
@@ -181,12 +180,31 @@ All functions maintain backward compatibility - revalidate is optional and can b
 
 ### Invalidation Flow
 
-When content is updated in Strapi:
+The content-type ↔ cache contract lives in one place, `shared/strapi-contract/`
+(synced into both apps by `scripts/sync-shared-contracts.mjs`):
 
-1. Backend triggers invalidation endpoint
-2. Invalidation endpoint calls `revalidateTag()` for both feed and content-type tags
-3. Next.js invalidates all cached responses associated with those tags
-4. Next request triggers fresh fetch from Strapi API
+- `registry.ts` — one entry per Strapi content type: its UID, which Document Service
+  actions should trigger invalidation, which relation fields to resolve into the event
+  payload, and which flat "cascade" tags it always busts (feeds, sitemap sections, etc.)
+- `tags.ts` — the pure tag-string builders (`entityTag`, `typeTag`, `listTag`,
+  `authorListTag`, ...), imported identically by the read side (fetchers attach tags)
+  and the write side (the invalidate route computes tags to bust), so the two cannot
+  drift apart.
+- `invalidationEvent.ts` — the `{type, action, slug?, relations?}` payload shape.
+
+End-to-end flow when content is published/updated in Strapi:
+
+1. Strapi's Document Service middleware (`backend/src/middlewares/cacheInvalidation.ts`)
+   matches the mutated content type against the registry, resolves the entity's slug
+   and (for article/podcast) its author/category relation slugs, and enqueues an
+   `InvalidationEvent` on a debounced, durable queue.
+2. The queue POSTs the event to `POST /api/invalidate` with a shared secret.
+3. `computeRevalidation()` (`src/lib/cache/computeRevalidation.ts`) turns the event into
+   an exact set of tags/pages/paths, using the registry's cascade tags plus precise
+   per-relation tags (e.g. only the specific author/category list pages the entity
+   belongs to, not every list).
+4. `handleInvalidation()` calls `revalidateTag()`/`revalidatePath()` for those, and
+   notifies the RSS feed registry so it can schedule a debounced feed rebuild.
 
 ## Client-Side Caching with SWR
 

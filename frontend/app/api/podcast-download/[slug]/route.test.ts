@@ -37,7 +37,7 @@ vi.mock('@/src/lib/analytics/podcastDownload', () => ({
     isPodcastDownloadTrackingEnabled: vi.fn(),
 }));
 vi.mock('@/src/lib/strapi/media', () => ({mediaUrlToAbsolute, normalizeStrapiMedia}));
-vi.mock('@/src/lib/strapi', () => ({getStrapiApiBaseUrl}));
+vi.mock('@/src/lib/strapiTransport', () => ({getStrapiApiBaseUrl}));
 
 function makeRequest(slug: string): [Request, {params: Promise<{slug: string}>}] {
     const request = new Request(`https://m10z.de/api/podcast-download/${slug}`, {method: 'GET'});

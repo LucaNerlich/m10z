@@ -8,7 +8,7 @@ import {
 import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
-import {getStrapiApiBaseUrl} from '@/src/lib/strapi';
+import {getStrapiApiBaseUrl} from '@/src/lib/strapiTransport';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 
 export const runtime = 'nodejs';

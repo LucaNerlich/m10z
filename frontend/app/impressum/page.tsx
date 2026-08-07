@@ -1,6 +1,6 @@
 import {type Metadata} from 'next';
 import {Markdown} from '@/src/lib/markdown/Markdown';
-import {getImprint} from '@/src/lib/strapi';
+import {getImprint} from '@/src/lib/strapi/singleTypes';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
 export const metadata: Metadata = buildStaticListMetadata({
