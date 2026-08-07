@@ -1,6 +1,6 @@
 {
     "name": "m10z-frontend",
-    "version": "1.12.0",
+    "version": "1.13.0",
     "private": true,
     "scripts": {
         "predev": "node scripts/sync-shared-contracts.mjs && node scripts/copy-changelog.mjs",

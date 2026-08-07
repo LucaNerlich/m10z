@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.13.0] - 2026-08-07
+
+### Added
+- Cache invalidation now targets the specific content that changed — including which authors/categories an article or podcast belongs to — instead of broadly invalidating whole content-type lists on every publish.
+
+### Changed
+- Replaced the per-target `/api/{target}/invalidate` routes with a single `POST /api/invalidate` endpoint.
+- Unified the article and podcast preview routes into one, and folded author/category data fetching into the same shared pattern already used for articles/podcasts.
+
+### Fixed
+- The article preview route now shows an error page instead of a misleading "not found" when Strapi is briefly unreachable (matching existing podcast preview behavior).
+- Invalidation requests with malformed data are now rejected with a clean error instead of risking a server error.
+
 ## [1.12.0] - 2026-07-26
 
 ### Added
