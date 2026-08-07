@@ -391,6 +391,49 @@ export const fetchRelatedPodcasts = cache(
         fetchRelated<StrapiPodcast>(PODCAST_DESCRIPTOR, categorySlugs, excludeSlug),
 );
 
+// ─── Authors + Categories ──────────────────────────────────────────────────
+//
+// Authors and categories are read two shared ways (list, by slug) rather than the
+// seven article/podcast share, so they get a lighter descriptor covering just those.
+
+type SimpleDescriptor = {
+    apiPath: string;
+    contentType: 'author' | 'category';
+    listPopulate: object;
+    bySlugPopulate: object;
+    fields: readonly string[];
+};
+
+function fetchEntityList<T>(desc: SimpleDescriptor, options: FetchListOptions = {}): Promise<T[]> {
+    const limit = options.limit ?? 100;
+    const query = buildListQuery({
+        page: 1,
+        pageSize: limit,
+        sort: ['title:asc'],
+        populate: desc.listPopulate,
+        fields: desc.fields,
+    });
+
+    return fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
+        tags: options.tags ?? [contentTag(desc.contentType), contentListTag(desc.contentType)],
+        revalidate: CACHE_REVALIDATE_DEFAULT,
+    }).then((res) => res.data ?? []);
+}
+
+function fetchEntityBySlug<T>(desc: SimpleDescriptor, slug: string): Promise<T | null> {
+    const query = buildBySlugQuery({
+        slug,
+        populate: desc.bySlugPopulate,
+        fields: desc.fields,
+    });
+
+    return fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
+        tags: [contentTag(desc.contentType), contentItemTag(desc.contentType, slug)],
+        revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
+        context: {slug, contentType: desc.contentType, populateOptions: desc.bySlugPopulate},
+    }).then((res) => res.data?.[0] ?? null);
+}
+
 // ─── Authors ───────────────────────────────────────────────────────────────
 
 export type StrapiAuthorWithContent = StrapiAuthor & {
@@ -410,36 +453,23 @@ export type StrapiAuthorWithContent = StrapiAuthor & {
     }>;
 };
 
-export const fetchAuthorsList = cache(async (options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> => {
-    const limit = options.limit ?? 100;
-    const query = buildListQuery({
-        page: 1,
-        pageSize: limit,
-        sort: ['title:asc'],
-        populate: authorListPopulate,
-        fields: AUTHOR_FIELDS_LIST,
-    });
+const AUTHOR_DESCRIPTOR: SimpleDescriptor = {
+    apiPath: '/api/authors',
+    contentType: 'author',
+    listPopulate: authorListPopulate,
+    bySlugPopulate: authorBySlugPopulate,
+    fields: AUTHOR_FIELDS_LIST,
+};
 
-    const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(`/api/authors?${query}`, {
-        tags: options.tags ?? [contentTag('author'), contentListTag('author')],
-        revalidate: CACHE_REVALIDATE_DEFAULT,
-    });
-    return res.data ?? [];
-});
+export const fetchAuthorsList = cache(
+    (options: FetchListOptions = {}): Promise<StrapiAuthorWithContent[]> =>
+        fetchEntityList<StrapiAuthorWithContent>(AUTHOR_DESCRIPTOR, options),
+);
 
-export const fetchAuthorBySlug = cache(async (slug: string): Promise<StrapiAuthorWithContent | null> => {
-    const query = buildBySlugQuery({
-        slug,
-        populate: authorBySlugPopulate,
-        fields: AUTHOR_FIELDS_LIST,
-    });
-
-    const res = await fetchJson<{data: StrapiAuthorWithContent[]}>(`/api/authors?${query}`, {
-        tags: [contentTag('author'), contentItemTag('author', slug)],
-        revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
-    });
-    return res.data?.[0] ?? null;
-});
+export const fetchAuthorBySlug = cache(
+    (slug: string): Promise<StrapiAuthorWithContent | null> =>
+        fetchEntityBySlug<StrapiAuthorWithContent>(AUTHOR_DESCRIPTOR, slug),
+);
 
 // ─── Categories ────────────────────────────────────────────────────────────
 
@@ -471,6 +501,14 @@ export type CategoryPageData = {
     podcasts: StrapiPodcast[];
 };
 
+const CATEGORY_DESCRIPTOR: SimpleDescriptor = {
+    apiPath: '/api/categories',
+    contentType: 'category',
+    listPopulate: categoryWithContentPopulate,
+    bySlugPopulate: categoryWithContentPopulate,
+    fields: CATEGORY_FIELDS_LIST,
+};
+
 export const fetchCategoryPageData = cache(async (slug: string): Promise<CategoryPageData | null> => {
     const category = await fetchCategoryBySlug(slug);
     if (!category) return null;
@@ -497,34 +535,12 @@ export const fetchCategoryPageData = cache(async (slug: string): Promise<Categor
     };
 });
 
-export const fetchCategoryBySlug = cache(async (slug: string): Promise<StrapiCategoryWithContent | null> => {
-    const query = buildBySlugQuery({
-        slug,
-        populate: categoryWithContentPopulate,
-        fields: CATEGORY_FIELDS_LIST,
-    });
+export const fetchCategoryBySlug = cache(
+    (slug: string): Promise<StrapiCategoryWithContent | null> =>
+        fetchEntityBySlug<StrapiCategoryWithContent>(CATEGORY_DESCRIPTOR, slug),
+);
 
-    const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(`/api/categories?${query}`, {
-        tags: [contentTag('category'), contentItemTag('category', slug)],
-        revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
-        context: {slug, contentType: 'category', populateOptions: categoryWithContentPopulate},
-    });
-    return res.data?.[0] ?? null;
-});
-
-export const fetchCategoriesWithContent = cache(async (options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> => {
-    const limit = options.limit ?? 100;
-    const query = buildListQuery({
-        page: 1,
-        pageSize: limit,
-        sort: ['title:asc'],
-        populate: categoryWithContentPopulate,
-        fields: CATEGORY_FIELDS_LIST,
-    });
-
-    const res = await fetchJson<{data: StrapiCategoryWithContent[]}>(`/api/categories?${query}`, {
-        tags: options.tags ?? [contentTag('category'), contentListTag('category')],
-        revalidate: CACHE_REVALIDATE_DEFAULT,
-    });
-    return res.data ?? [];
-});
+export const fetchCategoriesWithContent = cache(
+    (options: FetchListOptions = {}): Promise<StrapiCategoryWithContent[]> =>
+        fetchEntityList<StrapiCategoryWithContent>(CATEGORY_DESCRIPTOR, options),
+);

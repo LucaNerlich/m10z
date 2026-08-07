@@ -3,7 +3,7 @@ import {buildArticleFeed} from '@/src/lib/rss/buildArticleFeed';
 import {type AudioFeedBuildTiming, buildAudioFeed} from '@/src/lib/rss/buildAudioFeed';
 import {createFeedCache, type FeedCache} from '@/src/lib/rss/feedCache';
 
-import {type InvalidationTarget} from '@/src/lib/cache/invalidationTaxonomy';
+import {type ContentTypeKey} from '@/src/lib/shared/strapiContract';
 
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,7 +12,7 @@ declare const module: any;
 type FeedRegistry = {
     article: FeedCache;
     audio: FeedCache;
-    onInvalidate: (target: InvalidationTarget) => void;
+    onInvalidate: (type: ContentTypeKey) => void;
     disposeHmr: () => void;
     resetAudioFeedStateForDiagnostics: (reason?: 'manual') => void;
     getAudioFeedRuntimeState: () => ReturnType<ReturnType<typeof createAudioFeedBuildHealth>['getRuntimeState']>;
@@ -48,10 +48,10 @@ function createRegistry(): FeedRegistry {
     return {
         article,
         audio,
-        onInvalidate(target: InvalidationTarget) {
-            if (target === 'articlefeed') {
+        onInvalidate(type: ContentTypeKey) {
+            if (type === 'article' || type === 'article-feed') {
                 article.scheduleDebouncedRefresh();
-            } else if (target === 'audiofeed') {
+            } else if (type === 'podcast' || type === 'audio-feed') {
                 audio.scheduleDebouncedRefresh();
             }
         },

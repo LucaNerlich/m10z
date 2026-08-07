@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {INVALIDATION_TAXONOMY} from '@/src/lib/cache/invalidationTaxonomy';
+import {CONTENT_TYPE_KEYS, CONTENT_TYPES} from '@/src/lib/shared/strapiContract';
 import {
     ABOUT_PAGE_TAG,
     ABOUT_TAG,
@@ -11,15 +11,21 @@ import {
     contentListTag,
     contentTag,
     FETCH_TAG_SURFACES,
-    LEGAL_TAGS,
+    IMPRINT_TAG,
+    LEGAL_TAG,
+    PRIVACY_TAG,
 } from './cacheTags';
 
+/** Every tag the registry busts on write, across all content types (collection type/list tags + cascadeTags). */
 function allInvalidationTags(): Set<string> {
     const tags = new Set<string>();
-    for (const entry of Object.values(INVALIDATION_TAXONOMY)) {
-        for (const tag of entry.tags) {
-            tags.add(tag);
+    for (const key of CONTENT_TYPE_KEYS) {
+        const config = CONTENT_TYPES[key];
+        if (config.kind === 'collection') {
+            tags.add(contentTag(key as Parameters<typeof contentTag>[0]));
+            tags.add(contentListTag(key as Parameters<typeof contentListTag>[0]));
         }
+        for (const tag of config.cascadeTags ?? []) tags.add(tag);
     }
     return tags;
 }
@@ -59,9 +65,10 @@ describe('cache tag parity', () => {
         expect(tags).toContain('strapi:article:list:author:alice:category:news:page');
     });
 
-    test('legal and about tags match invalidation taxonomy', () => {
-        expect(INVALIDATION_TAXONOMY.about.tags).toEqual(expect.arrayContaining([ABOUT_TAG, ABOUT_PAGE_TAG]));
-        expect(INVALIDATION_TAXONOMY.legal.tags).toEqual(expect.arrayContaining([...LEGAL_TAGS]));
+    test('legal and about tags match the registry', () => {
+        expect(CONTENT_TYPES.about.cascadeTags).toEqual(expect.arrayContaining([ABOUT_TAG, ABOUT_PAGE_TAG]));
+        expect(CONTENT_TYPES.imprint.cascadeTags).toEqual(expect.arrayContaining([LEGAL_TAG, IMPRINT_TAG]));
+        expect(CONTENT_TYPES.privacy.cascadeTags).toEqual(expect.arrayContaining([LEGAL_TAG, PRIVACY_TAG]));
     });
 
     test('coarse tags subsume fine-grained list tags', () => {
