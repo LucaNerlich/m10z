@@ -2,6 +2,7 @@ import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {GET} from '@/app/api/podcast-download/[slug]/route';
+import {resetDownloadDedupForTests} from '@/src/lib/analytics/podcastDownload';
 
 const mocks = vi.hoisted(() => ({
     afterCallbacks: [] as Array<() => void | Promise<void>>,
@@ -58,6 +59,7 @@ beforeEach(() => {
     mocks.afterCallbacks = [];
     mocks.fetchPodcastBySlug.mockReset();
     mocks.sendPodcastDownloadEvent.mockReset();
+    resetDownloadDedupForTests();
 });
 
 afterEach(() => {
@@ -205,5 +207,44 @@ describe('podcast download route', () => {
         expect(response.headers.get('location')).toBe('https://cms.m10z.de/uploads/ep-1.mp3');
         expect(mocks.afterCallbacks).toHaveLength(0);
         expect(mocks.sendPodcastDownloadEvent).not.toHaveBeenCalled();
+    });
+
+    test('deduplicates repeated countable requests for the same slug and client IP', async () => {
+        mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
+
+        for (let i = 0; i < 3; i++) {
+            const response = await GET(
+                new Request('https://m10z.de/api/podcast-download/ep-1.mp3', {
+                    headers: {'x-forwarded-for': '198.51.100.9'},
+                }),
+                makeContext('ep-1.mp3'),
+            );
+            expect(response.status).toBe(302);
+        }
+
+        // Only the first request within the dedup window schedules tracking.
+        expect(mocks.afterCallbacks).toHaveLength(1);
+    });
+
+    test('different client IPs are counted separately', async () => {
+        mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
+
+        const first = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1.mp3', {
+                headers: {'x-forwarded-for': '198.51.100.10'},
+            }),
+            makeContext('ep-1.mp3'),
+        );
+        expect(first.status).toBe(302);
+
+        const second = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1.mp3', {
+                headers: {'x-forwarded-for': '198.51.100.11'},
+            }),
+            makeContext('ep-1.mp3'),
+        );
+        expect(second.status).toBe(302);
+
+        expect(mocks.afterCallbacks).toHaveLength(2);
     });
 });

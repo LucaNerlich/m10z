@@ -14,7 +14,12 @@ export default function UmamiAnalytics(): React.ReactElement {
 
     return (
         <>
-            <Script async src={`${umamiUrl}/script.js`} data-website-id={websiteId} />
+            <Script
+                async
+                src={`${umamiUrl}/script.js`}
+                data-website-id={websiteId}
+                data-do-not-track="true"
+            />
             <Script
                 async
                 src={`${umamiUrl}/recorder.js`}
@@ -22,6 +27,7 @@ export default function UmamiAnalytics(): React.ReactElement {
                 data-sample-rate={sampleRate}
                 data-mask-level={maskLevel}
                 data-max-duration={maxDuration}
+                data-do-not-track="true"
             />
         </>
     );
