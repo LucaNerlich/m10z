@@ -243,9 +243,13 @@ async function fetchAllDocuments<T>(
         const results: T[] = Array.isArray(res) ? res : res?.results ?? res?.data ?? [];
         items.push(...results);
 
+        // Strapi 5's Document Service `findMany()` returns a bare array without pagination
+        // metadata (a v4 entity-service response carries it, but this code always runs
+        // against the v5 document service). Stop paging once the last page came back
+        // shorter than the requested page size.
         const pagination = res?.pagination ?? res?.meta?.pagination;
-        const pageCount = pagination?.pageCount ?? 1;
-        if (page >= pageCount) break;
+        const pageCount = pagination?.pageCount ?? Number.POSITIVE_INFINITY;
+        if (results.length < PAGE_SIZE || page >= pageCount) break;
         page += 1;
     }
 
