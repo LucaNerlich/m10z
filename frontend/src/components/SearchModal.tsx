@@ -58,7 +58,13 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const {results, isLoading, error: searchError} = useSearchQuery(query, 150);
 
     useEffect(() => {
+        // Remember what was focused before the modal opened (the launcher
+        // button) so focus can be restored on close.
+        const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
         inputRef.current?.focus();
+        return () => {
+            previouslyFocused?.focus();
+        };
     }, []);
 
     // Lock body scroll while modal is open; restore on unmount.
@@ -126,9 +132,21 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
             }
         };
 
+        // The Tab handler only cycles focus while focus is already inside the
+        // modal. A focusin guard pulls focus back if it escapes through other
+        // means (programmatic focus, browser extensions), so Tab can never
+        // walk the background page while the dialog is open.
+        const handleFocusIn = (event: FocusEvent) => {
+            if (!modalRef.current) return;
+            if (modalRef.current.contains(event.target as Node)) return;
+            inputRef.current?.focus();
+        };
+
         document.addEventListener('keydown', handleTabKey);
+        document.addEventListener('focusin', handleFocusIn);
         return () => {
             document.removeEventListener('keydown', handleTabKey);
+            document.removeEventListener('focusin', handleFocusIn);
         };
     }, [results.length]);
 
@@ -205,6 +223,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         className={styles.input}
                         type="search"
                         placeholder="Suche nach Artikeln, Podcasts, Kategorien oder Teammitgliedern"
+                        aria-label="Suche"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
