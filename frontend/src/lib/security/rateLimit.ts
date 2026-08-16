@@ -36,13 +36,23 @@ export function checkRateLimit(key: string, cfg: RateLimitConfig): {ok: boolean;
     const existing = buckets.get(key);
 
     if (!existing || existing.resetAtMs <= now) {
-        // Evict the first-inserted entry (Map preserves insertion order) to bound
-        // memory. This is FIFO, not LRU — simpler and sufficient since expired
-        // buckets are cleaned up every 60s by the background timer.
         if (buckets.size >= MAX_BUCKETS) {
-            const iter = buckets.keys();
-            const oldest = iter.next().value;
-            if (oldest !== undefined) buckets.delete(oldest);
+            // Evict only the first-inserted (Map preserves insertion order) bucket
+            // when it is already expired. Evicting a live bucket would silently
+            // reset that key's limit, letting an attacker churn keys to clear
+            // arbitrary buckets or their own limit on demand.
+            const oldestKey = buckets.keys().next().value;
+            const oldest = oldestKey !== undefined ? buckets.get(oldestKey) : undefined;
+            if (oldest !== undefined && oldest.resetAtMs <= now) {
+                buckets.delete(oldestKey as string);
+            } else {
+                // The map is full of live buckets (cleanup lag). Fail closed
+                // instead of evicting a live one or growing without bound.
+                const retryAfterSeconds = oldest
+                    ? Math.max(1, Math.ceil((oldest.resetAtMs - now) / 1000))
+                    : 1;
+                return {ok: false, retryAfterSeconds};
+            }
         }
         buckets.set(key, {count: 1, resetAtMs: now + cfg.windowMs});
         return {ok: true, retryAfterSeconds: 0};

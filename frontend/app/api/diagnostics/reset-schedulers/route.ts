@@ -13,25 +13,40 @@ import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {getClientIp} from '@/src/lib/net/getClientIp';
 
 /**
- * Auth: requires `DIAGNOSTICS_TOKEN` (same as `/api/diagnostics`).
- * - Provide via `?token=...` or `x-m10z-diagnostics-token` header.
+ * Auth: requires `DIAGNOSTICS_TOKEN` (same as `/api/diagnostics`), provided via
+ * the `x-m10z-diagnostics-token` header only.
  *
  * Behavior:
- * - Stops both RSS feed refresh schedulers (audio + article).
- * - Returns a detailed before/after scheduler state snapshot.
+ * - `GET` returns a read-only scheduler state snapshot.
+ * - `POST` stops both RSS feed refresh schedulers (audio + article) and returns
+ *   a detailed before/after scheduler state snapshot.
  *
  * Notes:
  * - In production, schedulers should usually run continuously; this endpoint is primarily for deployments/testing.
  */
 export async function GET(request: Request) {
-    const expected = process.env.DIAGNOSTICS_TOKEN ?? null;
-    const {searchParams} = new URL(request.url);
-    const provided = searchParams.get('token') ?? request.headers.get('x-m10z-diagnostics-token');
+    const unauthorized = checkAuthAndRateLimit(request);
+    if (unauthorized) return unauthorized;
 
-    if (!verifySecret(provided, expected)) {
-        return new NextResponse('Unauthorized', {status: 401});
-    }
+    return stateResponse(false);
+}
 
+export async function POST(request: Request) {
+    const unauthorized = checkAuthAndRateLimit(request);
+    if (unauthorized) return unauthorized;
+
+    const audioBefore = getAudioSchedulerState();
+    const articleBefore = getArticleSchedulerState();
+
+    stopAudioScheduler();
+    stopArticleScheduler();
+
+    return stateResponse(true, {audioBefore, articleBefore});
+}
+
+function checkAuthAndRateLimit(request: Request): NextResponse | null {
+    // Rate-limit before authentication so secret-guessing attempts are
+    // throttled too.
     const ip = getClientIp(request);
     const rl = checkRateLimit(`diag-reset:${ip}`, {windowMs: 60_000, max: 10});
     if (!rl.ok) {
@@ -41,29 +56,47 @@ export async function GET(request: Request) {
         });
     }
 
-    const audioBefore = getAudioSchedulerState();
-    const articleBefore = getArticleSchedulerState();
+    const expected = process.env.DIAGNOSTICS_TOKEN ?? null;
+    const provided = request.headers.get('x-m10z-diagnostics-token');
 
-    stopAudioScheduler();
-    stopArticleScheduler();
+    if (!verifySecret(provided, expected)) {
+        return new NextResponse('Unauthorized', {status: 401});
+    }
 
+    return null;
+}
+
+function stateResponse(
+    stopped: boolean,
+    before?: {audioBefore: ReturnType<typeof getAudioSchedulerState>; articleBefore: ReturnType<typeof getArticleSchedulerState>},
+): NextResponse {
     const audioAfter = getAudioSchedulerState();
     const articleAfter = getArticleSchedulerState();
 
-    return NextResponse.json({
-        now: Date.now(),
-        memory: process.memoryUsage(),
-        audio: {
-            previous: audioBefore,
-            stopped: audioBefore.schedulerStarted || audioBefore.hasTimer,
-            current: audioAfter,
+    const audio = before
+        ? {
+              previous: before.audioBefore,
+              stopped: before.audioBefore.schedulerStarted || before.audioBefore.hasTimer,
+              current: audioAfter,
+          }
+        : {current: audioAfter};
+
+    const article = before
+        ? {
+              previous: before.articleBefore,
+              stopped: before.articleBefore.schedulerStarted || before.articleBefore.hasTimer,
+              current: articleAfter,
+          }
+        : {current: articleAfter};
+
+    return NextResponse.json(
+        {
+            now: Date.now(),
+            memory: process.memoryUsage(),
+            stopped,
+            audio,
+            article,
         },
-        article: {
-            previous: articleBefore,
-            stopped: articleBefore.schedulerStarted || articleBefore.hasTimer,
-            current: articleAfter,
-        },
-    });
+        {headers: {'Cache-Control': 'no-store'}},
+    );
 }
-
-

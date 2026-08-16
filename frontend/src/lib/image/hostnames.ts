@@ -18,7 +18,15 @@ export const ALLOWED_IMAGE_HOSTNAMES = [
 ] as const;
 
 export function getRemotePatterns() {
-    return ALLOWED_IMAGE_HOSTNAMES.map((hostname) => {
+    // The localhost pattern (local Strapi) must never be present in production:
+    // the image optimizer would be allowed to fetch from the app host's
+    // localhost.
+    const hostnames =
+        process.env.NODE_ENV === 'production'
+            ? ALLOWED_IMAGE_HOSTNAMES.filter((hostname) => hostname !== 'localhost')
+            : ALLOWED_IMAGE_HOSTNAMES;
+
+    return hostnames.map((hostname) => {
         if (hostname === 'localhost') {
             return {protocol: 'http' as const, hostname, port: '1337'};
         }

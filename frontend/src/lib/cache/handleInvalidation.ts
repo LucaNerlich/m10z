@@ -8,7 +8,7 @@ import {isContentTypeKey, isDocumentAction, type InvalidationEvent} from '@/src/
 
 import {computeRevalidation} from './computeRevalidation';
 
-const RATE_LIMIT = {windowMs: 60_000, max: 30} as const;
+const RATE_LIMIT = {windowMs: 60_000, max: 120} as const;
 
 function expectedSecret(): string | null {
     // STRAPI_INVALIDATION_SECRET is the current name; the other two are read for
@@ -39,6 +39,19 @@ function parseEvent(body: unknown): InvalidationEvent | null {
 }
 
 export async function handleInvalidation(request: Request): Promise<Response> {
+    // Rate-limit before authentication so brute-force attempts against the
+    // secret are throttled too, and so spoofed-IP churn cannot hide abuse.
+    const ip = getClientIp(request);
+    const rl = checkRateLimit(`invalidate:${ip}`, RATE_LIMIT);
+    if (!rl.ok) {
+        // 503 (not 429) so the backend treats it as retryable: bulk publishes
+        // can legitimately exceed the limit, and the backend only retries 5xx.
+        return new Response('Too Many Requests', {
+            status: 503,
+            headers: {'Retry-After': String(rl.retryAfterSeconds)},
+        });
+    }
+
     const provided = request.headers.get('x-m10z-invalidation-secret');
     if (!verifySecret(provided, expectedSecret())) {
         return new Response('Unauthorized', {status: 401});
@@ -52,15 +65,6 @@ export async function handleInvalidation(request: Request): Promise<Response> {
     }
     if (!event) {
         return new Response('Bad Request', {status: 400});
-    }
-
-    const ip = getClientIp(request);
-    const rl = checkRateLimit(`${event.type}:${ip}`, RATE_LIMIT);
-    if (!rl.ok) {
-        return new Response('Too Many Requests', {
-            status: 429,
-            headers: {'Retry-After': String(rl.retryAfterSeconds)},
-        });
     }
 
     const {tags, pages, paths} = computeRevalidation(event);
