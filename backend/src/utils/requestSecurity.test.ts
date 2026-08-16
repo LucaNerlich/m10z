@@ -1,6 +1,13 @@
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {checkRateLimit, getClientIp, normalizeSecret, verifySecret} from './requestSecurity';
+import {
+    checkRateLimit,
+    getClientIp,
+    normalizeSecret,
+    RATE_LIMIT_MAX_ENTRIES,
+    rateLimitState,
+    verifySecret,
+} from './requestSecurity';
 
 describe('normalizeSecret', () => {
     test('returns null for non-strings and empty/whitespace values', () => {
@@ -28,12 +35,17 @@ describe('verifySecret', () => {
 });
 
 describe('getClientIp', () => {
-    test('uses the first hop of x-forwarded-for', () => {
+    test('prefers the Koa-computed request.ip over the spoofable x-forwarded-for header', () => {
+        expect(
+            getClientIp({request: {ip: '9.9.9.9', headers: {'x-forwarded-for': '203.0.113.7, 10.0.0.1'}}}),
+        ).toBe('9.9.9.9');
+    });
+
+    test('falls back to x-forwarded-for only when no socket IP is available', () => {
         expect(getClientIp({request: {headers: {'x-forwarded-for': '203.0.113.7, 10.0.0.1'}}})).toBe('203.0.113.7');
     });
 
-    test('falls back to request.ip then ctx.ip then "unknown"', () => {
-        expect(getClientIp({request: {ip: '9.9.9.9'}})).toBe('9.9.9.9');
+    test('falls back to ctx.ip then "unknown"', () => {
         expect(getClientIp({ip: '8.8.8.8'})).toBe('8.8.8.8');
         expect(getClientIp({})).toBe('unknown');
     });
@@ -63,5 +75,21 @@ describe('checkRateLimit', () => {
 
         vi.setSystemTime(61_000);
         expect(checkRateLimit(key).ok).toBe(true);
+    });
+
+    test('evicts expired entries once the map exceeds the sweep threshold', () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(0);
+        for (let i = 0; i < RATE_LIMIT_MAX_ENTRIES; i++) {
+            rateLimitState.set(`seed-${i}`, {count: 1, resetAt: 0});
+        }
+        checkRateLimit('sweep-fresh');
+
+        vi.setSystemTime(61_000);
+        checkRateLimit('sweep-fresh-again');
+
+        expect(rateLimitState.size).toBeLessThan(RATE_LIMIT_MAX_ENTRIES);
+        expect(rateLimitState.has('seed-0')).toBe(false);
+        expect(rateLimitState.get('sweep-fresh-again')).toBeDefined();
     });
 });
