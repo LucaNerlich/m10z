@@ -47,6 +47,8 @@ function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: s
             };
         case 'about':
             return {pages: [routes.about], paths: []};
+        case 'about-feed':
+            return {pages: [routes.feeds], paths: []};
         case 'imprint':
         case 'privacy':
             return {pages: [], paths: [routes.imprint, routes.privacy]};
