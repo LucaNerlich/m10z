@@ -52,7 +52,7 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
         }
     })();
 
-    if (href.startsWith('/')) {
+    if (href.startsWith('/') && !href.startsWith('//')) {
         // Relative path - treat as internal
         isInternal = true;
         // Normalize trailing slash (remove for consistency, except root)

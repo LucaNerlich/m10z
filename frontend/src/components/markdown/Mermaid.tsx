@@ -49,12 +49,14 @@ export function Mermaid({chart, className}: MermaidProps) {
     const renderedChartRef = useRef<string>('');
 
     // Initialize Mermaid once. startOnLoad: false prevents auto-scanning the DOM
-    // (we render explicitly). securityLevel: 'loose' allows click handlers and links in diagrams.
+    // (we render explicitly). securityLevel: 'strict' — diagrams never need
+    // click handlers or raw HTML labels, and 'loose' would allow javascript:
+    // links inside the SVG on click.
     useEffect(() => {
         mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
-            securityLevel: 'loose',
+            securityLevel: 'strict',
             fontFamily: 'inherit',
             fontSize: 16,
             flowchart: {

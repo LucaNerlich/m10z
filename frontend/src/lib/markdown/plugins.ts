@@ -44,6 +44,11 @@ export const REHYPE_SANITIZE_SCHEMA = {
             ...(defaultSchema.attributes?.a || []),
             'id',
             ['data*', /^data-/],
+            // Preserve the security attributes rehype-external-links adds
+            // (target="_blank" rel="noopener noreferrer"); without them the
+            // plugin runs before sanitization and its attributes are stripped.
+            'target',
+            'rel',
         ],
         li: [
             ...(defaultSchema.attributes?.li || []),
