@@ -79,7 +79,20 @@ export default async function AuthorPage({params}: PageProps) {
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
 
-    const author = await fetchAuthorBySlug(slug);
+    let author;
+    try {
+        author = await fetchAuthorBySlug(slug);
+    } catch (error) {
+        console.error(`Failed to fetch author "${slug}":`, error);
+        return (
+            <div data-list-page>
+                <section>
+                    <h1>Team</h1>
+                    <EmptyState message="Dieses Teammitglied konnte gerade nicht geladen werden. Bitte später erneut versuchen." />
+                </section>
+            </div>
+        );
+    }
     if (!author) return notFound();
 
     // Fetch a limited page for previews + category signal; totals come from pagination meta.

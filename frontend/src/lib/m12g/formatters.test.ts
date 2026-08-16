@@ -1,4 +1,4 @@
-import {describe, expect, test} from 'vitest';
+import {describe, expect, test, vi} from 'vitest';
 
 import {formatMonthCompact, formatMonthLong, formatMonthShort, formatVotes} from './formatters';
 
@@ -24,6 +24,15 @@ describe('formatMonthLong', () => {
 
     test('invalid month-id falls back to the input', () => {
         expect(formatMonthLong('not-a-month')).toBe('not-a-month');
+    });
+
+    test('labels are independent of the server timezone (west of UTC)', () => {
+        vi.stubEnv('TZ', 'America/New_York');
+        // A negative-offset server renders 2025-12-01T00:00:00Z as 2025-11-30
+        // local time; without timeZone: 'UTC' this prints "November 2025".
+        expect(formatMonthLong('2025-12')).toBe('Dezember 2025');
+        expect(formatMonthShort('2026-01')).toBe('Januar 26');
+        vi.unstubAllEnvs();
     });
 });
 

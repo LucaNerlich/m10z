@@ -1,6 +1,8 @@
 import type {MetadataRoute} from 'next';
 import {headers} from 'next/headers';
 
+import {routes} from '@/src/lib/routes';
+
 export const dynamic = 'force-dynamic';
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
@@ -28,6 +30,8 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
             allow: '/',
             disallow: ['/api/', '/preview/'],
         },
-        sitemap: `${process.env.NEXT_PUBLIC_DOMAIN}/sitemap.xml`,
+        // routes.siteUrl falls back to https://m10z.de when
+        // NEXT_PUBLIC_DOMAIN is unset — never emit "undefined/sitemap.xml".
+        sitemap: `${routes.siteUrl}/sitemap.xml`,
     };
 }

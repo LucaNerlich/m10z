@@ -3,6 +3,7 @@
 import {useEffect, useState} from 'react';
 
 import {type HeadingItem} from '@/src/lib/markdown/extractHeadings';
+import {createHeadingSlugger, slugifyHeadingText} from '@/src/lib/markdown/headingSlug';
 
 import styles from './TableOfContents.module.css';
 
@@ -11,35 +12,57 @@ type TableOfContentsClientProps = {
 };
 
 /**
- * Client-side TOC interactivity: reads heading IDs from the DOM,
- * tracks the active heading via IntersectionObserver, and renders
+ * Client-side TOC interactivity: resolves heading IDs from the DOM the same
+ * way rehype-slug assigned them (document-order slugging with duplicate
+ * suffixes), tracks the active heading via IntersectionObserver, and renders
  * clickable links with active-state highlighting.
  */
 export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
     const [activeIndex, setActiveIndex] = useState(-1);
-    const [headingEls, setHeadingEls] = useState<HTMLElement[]>([]);
+    const [headingEls, setHeadingEls] = useState<Array<HTMLElement | null>>([]);
 
     useEffect(() => {
-        // Find heading elements in the rendered markdown content.
-        // Query by tag name matching the depths we extracted.
+        // Find heading elements in the rendered markdown content. Markdown
+        // `#` headings are demoted to h2 by the Heading component, so only
+        // h2-h6 appear in the DOM.
         const container = document.querySelector('.markdown-content');
         if (!container) return;
 
-        const selectors = [...new Set(headings.map((h) => `h${h.depth}`))].join(', ');
-        const elements = Array.from(container.querySelectorAll<HTMLElement>(selectors));
-        setHeadingEls(elements);
+        // Rebuild the ID assignment rehype-slug performed on the document:
+        // slug every DOM heading in order (raw-HTML and setext headings
+        // included), then resolve each extracted heading by its generated
+        // slug. Positional index mapping breaks when the DOM contains
+        // headings extractHeadings does not see (or when h1s are demoted).
+        const slugger = createHeadingSlugger();
+        const slugQueues = new Map<string, HTMLElement[]>();
+        const domHeadings = Array.from(container.querySelectorAll<HTMLElement>('h2, h3, h4, h5, h6'));
+        for (const el of domHeadings) {
+            const slug = slugger.slug(el.textContent ?? '');
+            const queue = slugQueues.get(slug) ?? [];
+            queue.push(el);
+            slugQueues.set(slug, queue);
+        }
 
+        const resolved = headings.map((heading) => {
+            const slug = slugifyHeadingText(heading.text);
+            const queue = slugQueues.get(slug);
+            if (!queue || queue.length === 0) return null;
+            return queue.shift() ?? null;
+        });
+        setHeadingEls(resolved);
+
+        const elements = resolved.filter((el): el is HTMLElement => el !== null);
         if (elements.length === 0) return;
 
         // The observer fires for headings entering/leaving the top portion
         // of the viewport (below the sticky header, top ~34% of the screen).
         const observer = new IntersectionObserver(
             (entries) => {
-                // Find the topmost visible heading (lowest DOM index)
+                // Find the topmost visible heading (lowest heading index)
                 let minIdx = Infinity;
                 for (const entry of entries) {
                     if (entry.isIntersecting) {
-                        const idx = elements.indexOf(entry.target as HTMLElement);
+                        const idx = resolved.indexOf(entry.target as HTMLElement);
                         if (idx !== -1 && idx < minIdx) {
                             minIdx = idx;
                         }

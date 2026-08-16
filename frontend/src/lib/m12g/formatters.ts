@@ -1,6 +1,8 @@
 const germanPluralRules = new Intl.PluralRules('de-DE');
-const germanLongDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: 'numeric'});
-const germanShortDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: '2-digit'});
+// parseMonthDate builds a UTC instant, so formatters must render in UTC:
+// without timeZone the label shifts one month back on servers west of UTC.
+const germanLongDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: 'numeric', timeZone: 'UTC'});
+const germanShortDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'long', year: '2-digit', timeZone: 'UTC'});
 const germanCompactDateFormatter = new Intl.DateTimeFormat('de-DE', {month: 'short', year: '2-digit'});
 
 function parseMonthDate(monthId: string): Date | null {

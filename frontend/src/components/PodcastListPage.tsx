@@ -53,6 +53,22 @@ export async function PodcastListPage({
         );
     }
 
+    // Out-of-range pages (e.g. /podcasts?page=999) must not be presented as
+    // "no podcasts found" — that is misleading when content exists.
+    if (data && data.items.length === 0 && data.pagination.total > 0 && currentPage > data.pagination.pageCount) {
+        return (
+            <section data-list-page>
+                <h1>Podcasts</h1>
+                <Card variant="empty">
+                    <p>Diese Seite existiert nicht.</p>
+                    <Link href="/podcasts" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                        Zur ersten Seite
+                    </Link>
+                </Card>
+            </section>
+        );
+    }
+
     // Handle empty state
     if (!data || data.items.length === 0) {
         return (

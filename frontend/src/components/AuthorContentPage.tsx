@@ -34,7 +34,10 @@ export async function generateAuthorContentMetadata(args: {
     const sp = await Promise.resolve(args.searchParams ?? {});
     const categorySlug = parseCategoryParam(sp);
 
-    const author = await fetchAuthorBySlug(slug);
+    const author = await fetchAuthorBySlug(slug).catch((error: unknown) => {
+        console.error(`generateAuthorContentMetadata: failed to fetch author "${slug}":`, error);
+        return null;
+    });
     if (!author) return {};
 
     const titleBase = author.title || 'Autor';
@@ -103,12 +106,28 @@ export async function AuthorContentPage<TItem extends {slug: string}>(props: Aut
     const categorySlug = parseCategoryParam(sp);
     const pageSize = props.pageSize ?? 12;
 
-    // Fetch all data in parallel
-    const [category, author, data] = await Promise.all([
-        categorySlug ? fetchCategoryBySlug(categorySlug) : null,
-        fetchAuthorBySlug(slug),
-        props.fetchPage(slug, page, pageSize, categorySlug ?? undefined),
-    ]);
+    // Fetch all data in parallel; degrade to a fallback card instead of the
+    // error boundary when the CMS is unreachable.
+    let category: Awaited<ReturnType<typeof fetchCategoryBySlug>> = null;
+    let author: Awaited<ReturnType<typeof fetchAuthorBySlug>> = null;
+    let data: Awaited<ReturnType<typeof props.fetchPage>>;
+    try {
+        [category, author, data] = await Promise.all([
+            categorySlug ? fetchCategoryBySlug(categorySlug) : null,
+            fetchAuthorBySlug(slug),
+            props.fetchPage(slug, page, pageSize, categorySlug ?? undefined),
+        ]);
+    } catch (error) {
+        console.error(`AuthorContentPage: failed to load data for "${slug}":`, error);
+        return (
+            <div data-list-page>
+                <section>
+                    <h2 className={styles.sectionTitle}>{props.sectionLabel}</h2>
+                    <EmptyState message="Inhalte konnten gerade nicht geladen werden. Bitte später erneut versuchen." />
+                </section>
+            </div>
+        );
+    }
 
     if (!author) return notFound();
 

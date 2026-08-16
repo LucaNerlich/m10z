@@ -20,7 +20,15 @@ export type ImageProps = React.ComponentProps<'img'>;
 export function Image({src, alt = '', title}: ImageProps) {
     if (!src || typeof src !== 'string') return null;
 
-    const url = resolveStrapiImageUrl(src);
+    let url: string;
+    try {
+        url = resolveStrapiImageUrl(src);
+    } catch {
+        // STRAPI_URL (or NEXT_PUBLIC_STRAPI_URL) is unset, so relative media
+        // URLs cannot be resolved. Render the unoptimized path instead of
+        // crashing the whole article through the error boundary.
+        return <img src={src} alt={alt} title={title} />;
+    }
 
     if (isImageHostnameAllowed(url)) {
         return <GalleryImage src={url} alt={alt} caption={title} title={title} />;
