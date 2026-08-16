@@ -2,6 +2,8 @@ import {marked} from 'marked';
 import {JSDOM} from 'jsdom';
 import createDOMPurify from 'dompurify';
 
+import {joinStrapiBaseUrl} from '@/src/lib/image';
+
 /**
  * Markdown -> HTML renderer for RSS descriptions.
  *
@@ -61,6 +63,24 @@ const ALLOWED_ATTR = [
 ];
 
 /**
+ * Resolve a sanitized URL for use inside feed HTML.
+ *
+ * Returns:
+ * - the input unchanged for absolute http(s) URLs and mailto: links,
+ * - the input unchanged for fragment-only anchors (#section),
+ * - an absolute Strapi URL for relative paths (via `joinStrapiBaseUrl`),
+ * - null when the URL is protocol-relative or relative without a configured
+ *   Strapi base URL — callers must drop those attributes.
+ */
+function resolveFeedUrl(raw: string): string | null {
+    if (raw.startsWith('//')) return null;
+    if (/^https?:\/\//i.test(raw)) return raw;
+    if (/^mailto:/i.test(raw)) return raw;
+    if (raw.startsWith('#')) return raw;
+    return joinStrapiBaseUrl(raw);
+}
+
+/**
  * Convert Markdown to sanitized HTML suitable for RSS descriptions.
  *
  * @param markdownText - The Markdown source to convert
@@ -96,12 +116,50 @@ export function markdownToHtml(markdownText: string): string {
             breaks: true,
         }) as string;
 
-        return DOMPurify.sanitize(rawHtml, {
+        const sanitized = DOMPurify.sanitize(rawHtml, {
             ALLOWED_TAGS,
             ALLOWED_ATTR,
             // Disallow data: and javascript: URLs; allow http(s) + mailto.
             ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
         });
+
+        // Rewrite URLs in the sanitized output:
+        // - relative URLs (e.g. /uploads/foo.jpg) are absolutized against the
+        //   Strapi base URL so feed readers resolve them correctly;
+        // - protocol-relative URLs (//host/path) are removed — they would
+        //   resolve against the reader's origin, pulling third-party content.
+        const body = dom.window.document.body;
+        body.innerHTML = sanitized;
+
+        for (const img of Array.from(body.querySelectorAll('img[src]'))) {
+            const src = img.getAttribute('src') ?? '';
+            const resolved = resolveFeedUrl(src);
+            if (resolved === null) img.removeAttribute('src');
+            else img.setAttribute('src', resolved);
+        }
+        for (const img of Array.from(body.querySelectorAll('img[srcset]'))) {
+            const srcset = img.getAttribute('srcset') ?? '';
+            const resolvedSrcset = srcset
+                .split(',')
+                .map((candidate) => {
+                    const [url, ...descriptors] = candidate.trim().split(/\s+/);
+                    if (!url) return null;
+                    const resolved = resolveFeedUrl(url);
+                    return resolved === null ? null : [resolved, ...descriptors].join(' ');
+                })
+                .filter((candidate): candidate is string => candidate !== null)
+                .join(', ');
+            if (resolvedSrcset) img.setAttribute('srcset', resolvedSrcset);
+            else img.removeAttribute('srcset');
+        }
+        for (const anchor of Array.from(body.querySelectorAll('a[href]'))) {
+            const href = anchor.getAttribute('href') ?? '';
+            const resolved = resolveFeedUrl(href);
+            if (resolved === null) anchor.removeAttribute('href');
+            else anchor.setAttribute('href', resolved);
+        }
+
+        return body.innerHTML;
     } catch (err) {
         lastErrorAtMs = Date.now();
         throw err;

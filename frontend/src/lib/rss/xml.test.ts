@@ -23,6 +23,10 @@ describe('escapeXml', () => {
     test('returns empty string for empty input', () => {
         expect(escapeXml('')).toBe('');
     });
+
+    test('strips XML 1.0 control characters that would break feed parsers', () => {
+        expect(escapeXml('a\u0000b\u0008c\u000Bd\u000Ce\u001Ff\uFFFEg\uFFFFh')).toBe('abcdefgh');
+    });
 });
 
 describe('escapeCdata', () => {
@@ -36,6 +40,10 @@ describe('escapeCdata', () => {
 
     test('leaves content without the terminator untouched', () => {
         expect(escapeCdata('<p>hello</p>')).toBe('<p>hello</p>');
+    });
+
+    test('strips XML 1.0 control characters from CDATA content', () => {
+        expect(escapeCdata('a\u0000b\u001Fc]]>d')).toBe('abc]]]]><![CDATA[>d');
     });
 });
 

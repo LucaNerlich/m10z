@@ -1,4 +1,4 @@
-import {describe, expect, test} from 'vitest';
+import {describe, expect, test, vi} from 'vitest';
 
 import {getMarkdownToHtmlState, markdownToHtml} from './markdownToHtml';
 
@@ -53,6 +53,48 @@ describe('markdownToHtml — rel=noopener injection', () => {
     test('does not add rel to links without target="_blank"', () => {
         const html = markdownToHtml('[M10Z](https://m10z.de)');
         expect(html).not.toContain('noopener');
+    });
+});
+
+describe('markdownToHtml — URL resolution for feed readers', () => {
+    test('absolutizes relative image src against the Strapi base URL', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('![alt](/uploads/foo.jpg)');
+        expect(html).toContain('src="https://cms.m10z.de/uploads/foo.jpg"');
+        vi.unstubAllEnvs();
+    });
+
+    test('absolutizes every candidate in a relative srcset', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('<img srcset="/uploads/a.jpg 480w, /uploads/b.jpg 800w">');
+        expect(html).toContain('srcset="https://cms.m10z.de/uploads/a.jpg 480w, https://cms.m10z.de/uploads/b.jpg 800w"');
+        vi.unstubAllEnvs();
+    });
+
+    test('drops protocol-relative URLs from links and images', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('[x](//evil.test/path) <img src="//evil.test/i.png">');
+        expect(html).not.toContain('//evil.test');
+        vi.unstubAllEnvs();
+    });
+
+    test('absolutizes relative link hrefs', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('[doc](/uploads/doc.pdf)');
+        expect(html).toContain('href="https://cms.m10z.de/uploads/doc.pdf"');
+        vi.unstubAllEnvs();
+    });
+
+    test('keeps fragment-only anchors unchanged', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('[x](#section)');
+        expect(html).toContain('href="#section"');
+        vi.unstubAllEnvs();
+    });
+
+    test('drops relative URLs when no Strapi base URL is configured', () => {
+        const html = markdownToHtml('<img src="/uploads/foo.jpg">');
+        expect(html).not.toContain('src="/uploads');
     });
 });
 
