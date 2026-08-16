@@ -20,7 +20,7 @@ import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 
-import {extractFilename, getMimeType, validateUrl} from './audioMigrationUtils';
+import {extractFilename, findExistingFileByName, getMimeType, validateUrl} from './audioMigrationUtils';
 
 // Load environment variables from .env file
 config();
@@ -49,6 +49,8 @@ interface MigrationReport {
 // ============================================================================
 
 const STRAPI_UPLOAD_URL = 'https://cms.m10z.de/api/upload';
+/** Base URL of the CMS, derived from the upload endpoint (used for idempotency lookups). */
+const STRAPI_API_BASE = STRAPI_UPLOAD_URL.replace(/\/api\/upload$/, '');
 const MAX_RETRIES = 3; // Total number of attempts (1 initial + 2 retries)
 const RETRY_DELAYS = [2000, 5000]; // Delays for retries (one less than MAX_RETRIES)
 const BETWEEN_FILE_DELAY_MIN = 1000;
@@ -167,6 +169,17 @@ function randomDelay(min: number, max: number): Promise<void> {
 
 async function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Check whether a file with the given name already exists in the media library,
+ * so re-runs of the migration do not duplicate every upload. Returns `null` when
+ * the file does not exist or the lookup fails (callers then proceed normally).
+ */
+async function lookupExistingFile(filename: string): Promise<{id: number; url: string} | null> {
+    const apiToken = process.env.STRAPI_API_TOKEN;
+    if (!apiToken) return null;
+    return findExistingFileByName(fetch, STRAPI_API_BASE, apiToken, filename);
 }
 
 // ============================================================================
@@ -315,8 +328,25 @@ async function uploadToStrapiWithRetry(
                 );
             }
 
-            // Ensure we fully read the response before closing
-            const json = await response.json();
+            // Ensure we fully read the response before closing. An unreadable body
+            // (e.g. an empty 200) is ambiguous: the upload may still have succeeded
+            // server-side, so verify against the media library before retrying —
+            // retrying blindly would upload the same file a second time.
+            let json: any;
+            try {
+                json = await response.json();
+            } catch (parseError) {
+                const existing = await lookupExistingFile(filename);
+                if (existing) {
+                    log(
+                        `Upload of ${filename} returned an unreadable response, but the file exists in the media library (ID: ${existing.id}) — treating as success.`,
+                    );
+                    return existing;
+                }
+                throw new Error(
+                    `Unexpected Strapi upload response (unreadable body): ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+                );
+            }
 
             // Strapi upload returns an array of uploaded files
             if (!Array.isArray(json) || !json[0] || typeof json[0].id !== 'number') {
@@ -391,6 +421,19 @@ async function processFile(
 
     try {
         status.filename = extractFilename(url);
+
+        // Idempotency: skip files that are already in the media library so a
+        // re-run (e.g. after a partial failure) does not duplicate uploads.
+        const existing = await lookupExistingFile(status.filename);
+        if (existing) {
+            status.status = 'success';
+            status.uploadedFileId = existing.id;
+            log(
+                `[${index + 1}/${total}] Skipping ${status.filename} — already in the media library (ID: ${existing.id})`,
+            );
+            return status;
+        }
+
         status.status = 'downloading';
 
         log(`[${index + 1}/${total}] Processing: ${status.filename}`);
