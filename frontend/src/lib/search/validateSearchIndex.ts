@@ -31,6 +31,11 @@ export function isValidSearchIndexFile(obj: unknown): obj is SearchIndexFile {
             return false;
         }
         if (typeof rec.href !== 'string' || !rec.href) return false;
+        // hrefs are passed to router.push from the search modal — they must
+        // stay internal so a compromised search-index entry cannot turn the
+        // modal into an off-site redirect. Protocol-relative hrefs are
+        // external too.
+        if (!rec.href.startsWith('/') || rec.href.startsWith('//')) return false;
         if (rec.publishedAt !== null && rec.publishedAt !== undefined && typeof rec.publishedAt !== 'string') {
             return false;
         }

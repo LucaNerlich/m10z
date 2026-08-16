@@ -125,7 +125,10 @@ export async function GET(request: Request) {
 
         const fuse = getCachedFuse(augmented);
         const results = fuse.search(trimmedQuery, {limit: 20}).map((match) => ({
-            ...match.item,
+            // Strip the full plain-text content: the modal never renders it,
+            // and shipping whole article bodies on every keystroke is a real
+            // payload cost on mobile connections.
+            ...stripRecordContent([match.item])[0],
             score: match.score ?? null,
         }));
 
