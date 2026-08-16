@@ -45,6 +45,7 @@ describe('postInvalidationEvent', () => {
         expect(url).toBe('https://m10z.de/api/invalidate');
         expect(init.method).toBe('POST');
         expect(init.headers['x-m10z-invalidation-secret']).toBe('secret-token');
+        expect(init.redirect).toBe('error');
         expect(JSON.parse(init.body)).toEqual(event);
     });
 

@@ -80,6 +80,9 @@ export async function postInvalidationEvent(
                 },
                 body: JSON.stringify(event),
                 signal: AbortSignal.timeout(10000),
+                // Never follow redirects: the secret header would be replayed to
+                // whatever host responds (e.g. under a misconfigured http:// URL).
+                redirect: 'error',
             });
 
             if (!res.ok) {
