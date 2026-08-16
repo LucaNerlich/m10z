@@ -61,9 +61,10 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
                 return;
             }
 
-            // Query upload file record
+            // Query upload file record. Strapi 5 documentIds are strings, so coerce
+            // numeric payload ids (legacy v4-style references) before looking up.
             fileRecord = await strapi.documents('plugin::upload.file').findOne({
-                documentId: fileId,
+                documentId: String(fileId),
             });
 
             if (!fileRecord) {
