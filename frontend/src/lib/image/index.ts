@@ -17,7 +17,7 @@
 
 import {ALLOWED_IMAGE_HOSTNAMES} from './hostnames';
 
-export {ALLOWED_IMAGE_HOSTNAMES, getRemotePatterns} from './hostnames';
+export {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp, getRemotePatterns, getStrapiOrigin} from './hostnames';
 
 const HTTP_PROTOCOL_RE = /^https?:\/\//i;
 const LOCALHOST_RE = /^localhost(?::\d+)?/i;

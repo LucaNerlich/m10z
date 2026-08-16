@@ -1,5 +1,5 @@
 import type {NextConfig} from 'next';
-import {ALLOWED_IMAGE_HOSTNAMES, getRemotePatterns} from '@/src/lib/image';
+import {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp, getRemotePatterns} from '@/src/lib/image';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -38,10 +38,11 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     images: {
         minimumCacheTTL: process.env.NODE_ENV === 'production' ? 3600 : 60,
-        // Allow local IPs only outside production: in production the optimizer
-        // must not fetch from the app host's localhost, and Next's private-IP
-        // blocking stays enabled.
-        dangerouslyAllowLocalIP: !isProd,
+        // Allow local IPs outside production, or in production only when the
+        // operator explicitly configured a local Strapi origin (local prod-like
+        // setups). Real production deployments point STRAPI_URL at a public
+        // host and keep Next's private-IP blocking enabled.
+        dangerouslyAllowLocalIP: !isProd || allowLocalImageIp(),
         remotePatterns: getRemotePatterns(),
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],

@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {isImageHostnameAllowed, normalizeSearchImageUrl, resolveStrapiImageUrl} from './index';
+import {allowLocalImageIp, getRemotePatterns, isImageHostnameAllowed, normalizeSearchImageUrl, resolveStrapiImageUrl} from './index';
 
 afterEach(() => {
     vi.unstubAllEnvs();
@@ -63,5 +63,50 @@ describe('isImageHostnameAllowed', () => {
 
     test('does not treat a lookalike suffix as a subdomain', () => {
         expect(isImageHostnameAllowed('https://notm10z.de/a.jpg')).toBe(false);
+    });
+});
+
+describe('getRemotePatterns', () => {
+    test('excludes local hosts when STRAPI_URL is a public origin', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        const patterns = getRemotePatterns();
+        expect(patterns.some((p) => p.hostname === 'localhost')).toBe(false);
+        expect(patterns).toContainEqual({protocol: 'https', hostname: 'cms.m10z.de'});
+    });
+
+    test('includes the exact local origin when STRAPI_URL points at localhost', () => {
+        vi.stubEnv('STRAPI_URL', 'http://localhost:1337');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        const patterns = getRemotePatterns();
+        expect(patterns).toContainEqual({protocol: 'http', hostname: 'localhost', port: '1337'});
+        expect(patterns.filter((p) => p.hostname === 'localhost')).toHaveLength(1);
+    });
+
+    test('includes loopback origin with its port when configured', () => {
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', 'http://127.0.0.1:1338');
+        vi.stubEnv('STRAPI_URL', undefined);
+        const patterns = getRemotePatterns();
+        expect(patterns).toContainEqual({protocol: 'http', hostname: '127.0.0.1', port: '1338'});
+    });
+
+    test('returns no local pattern when no Strapi URL is configured', () => {
+        vi.stubEnv('STRAPI_URL', undefined);
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        expect(getRemotePatterns().some((p) => p.hostname === 'localhost')).toBe(false);
+    });
+});
+
+describe('allowLocalImageIp', () => {
+    test('true only when the configured Strapi origin is local', () => {
+        vi.stubEnv('STRAPI_URL', 'http://localhost:1337');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        expect(allowLocalImageIp()).toBe(true);
+
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        expect(allowLocalImageIp()).toBe(false);
+
+        vi.stubEnv('STRAPI_URL', undefined);
+        expect(allowLocalImageIp()).toBe(false);
     });
 });
