@@ -1,6 +1,13 @@
 import sharp from 'sharp';
 
 /**
+ * Upper bound for the input image before sharp decodes it (32 megapixels).
+ * The nightly cron processes admin-uploaded media, so a crafted image must not
+ * be able to trigger a decompression-bomb decode just to produce a 10x10 blur.
+ */
+const MAX_INPUT_PIXELS = 32_000_000;
+
+/**
  * Generate a base64 data URL from an image buffer for use as Next.js Image blur placeholder.
  * Creates a small blurred version of the image and converts it to a base64 data URL.
  *
@@ -12,7 +19,7 @@ import sharp from 'sharp';
 export async function generateBlurDataUrl(fileBuffer: Buffer, width: number = 10, height: number = 10): Promise<string | null> {
     try {
         // Resize image to small size for blur placeholder (Next.js recommends 10x10)
-        const resizedBuffer = await sharp(fileBuffer)
+        const resizedBuffer = await sharp(fileBuffer, {limitInputPixels: MAX_INPUT_PIXELS})
             .resize(width, height, {
                 fit: 'cover',
             })
