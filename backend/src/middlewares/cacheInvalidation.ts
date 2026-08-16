@@ -32,6 +32,7 @@ type MiddlewareContext = {
         strapi?: StrapiInstance;
         documentId?: string;
         where?: {documentId?: string; id?: string};
+        status?: string;
         data?: Record<string, unknown>;
     };
 };
@@ -91,7 +92,16 @@ export async function cacheInvalidationMiddleware(
 ): Promise<unknown> {
     const match = contentTypeByUid(context.uid);
 
-    if (!match || !match.config.invalidatesOn.includes(context.action as never)) {
+    // A Document Service `update({status: 'published'})` publishes the live entry
+    // without going through the `publish` action (REST/direct API calls). Treat it
+    // as a publish so caches and the search index are busted exactly like the
+    // explicit publish path.
+    const effectiveAction =
+        context.action === 'update' && context.params?.status === 'published'
+            ? 'publish'
+            : context.action;
+
+    if (!match || !match.config.invalidatesOn.includes(effectiveAction as never)) {
         return next();
     }
 
@@ -110,7 +120,7 @@ export async function cacheInvalidationMiddleware(
     let slug: string | undefined;
     let relations: InvalidationEvent['relations'];
 
-    if (context.action === 'delete') {
+    if (effectiveAction === 'delete') {
         const documentId = extractDocumentId(context, undefined);
         const entity = await resolveEntity(strapiInstance, context.uid, documentId, config.relations);
         slug = (entity?.slug as string | undefined) ?? undefined;
@@ -119,7 +129,7 @@ export async function cacheInvalidationMiddleware(
 
     const result = await next();
 
-    if (context.action !== 'delete') {
+    if (effectiveAction !== 'delete') {
         slug = ((result as {slug?: string} | undefined)?.slug) ?? slug;
         // Document Service actions like publish/unpublish don't necessarily return the
         // entity's scalar fields directly, so fall back to resolving it whenever the slug
@@ -135,7 +145,7 @@ export async function cacheInvalidationMiddleware(
 
     const event: InvalidationEvent = {
         type: key,
-        action: context.action as InvalidationEvent['action'],
+        action: effectiveAction as InvalidationEvent['action'],
         ...(slug ? {slug} : {}),
         ...(relations ? {relations} : {}),
     };
