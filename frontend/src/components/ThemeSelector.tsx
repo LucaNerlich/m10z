@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState, useSyncExternalStore} from 'react';
 
-import {applyTheme, getStoredTheme, STORAGE_KEY, type Theme} from '@/src/lib/theme/initTheme';
+import {applyTheme, getStoredTheme, persistTheme, subscribeToTheme, type Theme} from '@/src/lib/theme/initTheme';
 
 import styles from './ThemeSelector.module.css';
 
@@ -23,19 +23,17 @@ const THEME_OPTIONS: ThemeOption[] = [
 ];
 
 const DEFAULT_THEME: Theme = 'system';
-// useSyncExternalStore requires a subscribe function even for "snapshot-only" usage.
-// subscribeNoop never subscribes to updates — we re-read on each render instead.
-const subscribeNoop = () => () => {
-};
 // getIsClient / getIsClientServer discriminate SSR from client for hydration safety.
 const getIsClient = () => true;
 const getIsClientServer = () => false;
 
 export default function ThemeSelector(): React.ReactElement | null {
-    const storedTheme = useSyncExternalStore(subscribeNoop, getStoredTheme, () => DEFAULT_THEME);
+    // subscribeToTheme keeps the snapshot in sync with the header toggle and
+    // cross-tab changes; a no-op subscription would show a stale theme.
+    const storedTheme = useSyncExternalStore(subscribeToTheme, getStoredTheme, () => DEFAULT_THEME);
     const [userTheme, setUserTheme] = useState<Theme | null>(null);
     const theme = userTheme ?? storedTheme;
-    const hydrated = useSyncExternalStore(subscribeNoop, getIsClient, getIsClientServer);
+    const hydrated = useSyncExternalStore(() => () => {}, getIsClient, getIsClientServer);
 
     useEffect(() => {
         applyTheme(theme);
@@ -43,14 +41,7 @@ export default function ThemeSelector(): React.ReactElement | null {
 
     useEffect(() => {
         if (userTheme === null) return;
-
-        if (typeof window !== 'undefined' && window.localStorage) {
-            try {
-                window.localStorage.setItem(STORAGE_KEY, userTheme);
-            } catch (error) {
-                console.warn('Failed to save theme preference to localStorage:', error);
-            }
-        }
+        persistTheme(userTheme);
     }, [userTheme]);
 
     useEffect(() => {
@@ -90,4 +81,3 @@ export default function ThemeSelector(): React.ReactElement | null {
         </div>
     );
 }
-

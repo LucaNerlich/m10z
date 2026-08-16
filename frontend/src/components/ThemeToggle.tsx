@@ -3,12 +3,10 @@
 import {useEffect, useState, useSyncExternalStore} from 'react';
 import {MoonIcon, SunIcon} from '@phosphor-icons/react/dist/ssr';
 
-import {applyTheme, getStoredTheme, resolveEffectiveTheme, STORAGE_KEY, type Theme} from '@/src/lib/theme/initTheme';
+import {applyTheme, getStoredTheme, persistTheme, resolveEffectiveTheme, subscribeToTheme, type Theme} from '@/src/lib/theme/initTheme';
 
 import styles from './ThemeToggle.module.css';
 
-const subscribeNoop = () => () => {
-};
 const getIsClient = () => true;
 const getIsClientServer = () => false;
 
@@ -18,8 +16,8 @@ const getIsClientServer = () => false;
  * For the full theme selector with all options, see ThemeSelector in the footer.
  */
 export function ThemeToggle() {
-    const storedTheme = useSyncExternalStore(subscribeNoop, getStoredTheme, () => 'system' as Theme);
-    const hydrated = useSyncExternalStore(subscribeNoop, getIsClient, getIsClientServer);
+    const storedTheme = useSyncExternalStore(subscribeToTheme, getStoredTheme, () => 'system' as Theme);
+    const hydrated = useSyncExternalStore(() => () => {}, getIsClient, getIsClientServer);
     const [userTheme, setUserTheme] = useState<Theme | null>(null);
     const theme = userTheme ?? storedTheme;
     const effectiveTheme = resolveEffectiveTheme(theme);
@@ -28,11 +26,7 @@ export function ThemeToggle() {
     useEffect(() => {
         if (userTheme === null) return;
         applyTheme(userTheme);
-        try {
-            window.localStorage.setItem(STORAGE_KEY, userTheme);
-        } catch {
-            // Ignore localStorage errors
-        }
+        persistTheme(userTheme);
     }, [userTheme]);
 
     if (!hydrated) return null;
