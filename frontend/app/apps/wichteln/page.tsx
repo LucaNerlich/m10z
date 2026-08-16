@@ -7,8 +7,8 @@ import {Input} from '@/src/components/Input/Input';
 import {EmptyState} from '@/src/components/EmptyState';
 import {getItem, setItem, removeItem} from '@/src/lib/storage/localStorage';
 import {shuffleAndAssign} from '@/src/lib/wichteln/shuffle';
-import {downloadMarkdown} from '@/src/lib/wichteln/export';
-import {validateName, validateProfileUrl} from '@/src/lib/wichteln/validation';
+import {downloadMarkdown, downloadMarkdownForGiver} from '@/src/lib/wichteln/export';
+import {validateName, validateProfileUrl, validateUniqueName} from '@/src/lib/wichteln/validation';
 import {type Participant, type Assignment} from './types';
 
 import styles from './page.module.css';
@@ -85,7 +85,7 @@ export default function WichtelnPage() {
 
     const addParticipant = useCallback(() => {
         clearError();
-        const nameError = validateName(newName);
+        const nameError = validateName(newName) ?? validateUniqueName(participants.map((p) => p.name), newName);
         const profileError = validateProfileUrl(newProfileUrl);
         setFormErrors({name: nameError, profileUrl: profileError});
         if (nameError || profileError) return;
@@ -107,7 +107,12 @@ export default function WichtelnPage() {
     const updateParticipant = useCallback(
         (id: string) => {
             clearError();
-            const nameError = validateName(newName);
+            const nameError =
+                validateName(newName) ??
+                validateUniqueName(
+                    participants.filter((p) => p.id !== id).map((p) => p.name),
+                    newName,
+                );
             const profileError = validateProfileUrl(newProfileUrl);
             setFormErrors({name: nameError, profileUrl: profileError});
             if (nameError || profileError) return;
@@ -388,6 +393,10 @@ export default function WichtelnPage() {
             {assignments.length > 0 && (
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Zuordnungen</h2>
+                    <p className={styles.hint}>
+                        Diese Liste ist nur für die Organisation gedacht. Lade für jeden
+                        Teilnehmer eine eigene Datei herunter, um die Zuordnung geheim zu halten.
+                    </p>
                     <ul className={styles.assignmentList}>
                         {(() => {
                             const participantMap = new Map(participants.map((p) => [p.id, p]));
@@ -404,6 +413,16 @@ export default function WichtelnPage() {
                                         <span className={styles.assignmentReceiver}>
                                             {receiver.name}
                                         </span>
+                                        <button
+                                            type="button"
+                                            className={styles.actionButton}
+                                            onClick={() =>
+                                                downloadMarkdownForGiver(participants, assignments, a.giverId)
+                                            }
+                                            aria-label={`Eigene Datei für ${giver.name} herunterladen`}
+                                        >
+                                            Eigene Datei
+                                        </button>
                                     </li>
                                 );
                             });

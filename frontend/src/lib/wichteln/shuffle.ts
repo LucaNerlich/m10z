@@ -1,16 +1,30 @@
 import {type Participant, type Assignment} from '@/app/apps/wichteln/types';
 
+const UINT32_MAX = 0x100000000;
+
+/**
+ * Cryptographically secure uniform integer in [0, maxExclusive).
+ * Uses rejection sampling to avoid the modulo bias of naive
+ * `getRandomValues(...) % maxExclusive`.
+ */
+function randomInt(maxExclusive: number): number {
+    const limit = Math.floor(UINT32_MAX / maxExclusive) * maxExclusive;
+    const buf = new Uint32Array(1);
+    let value: number;
+    do {
+        crypto.getRandomValues(buf);
+        value = buf[0]!;
+    } while (value >= limit);
+    return value % maxExclusive;
+}
+
 function fisherYatesShuffle<T>(array: T[]): T[] {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = randomInt(i + 1);
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
-}
-
-function isValidDerangement(assignments: Assignment[]): boolean {
-    return assignments.every((a) => a.giverId !== a.receiverId);
 }
 
 export function shuffleAndAssign(participants: Participant[]): Assignment[] {
@@ -18,24 +32,17 @@ export function shuffleAndAssign(participants: Participant[]): Assignment[] {
         throw new Error('Need at least 2 participants');
     }
 
-    const ids = participants.map((p) => p.id);
-    const maxAttempts = 10;
-
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-        const shuffled = fisherYatesShuffle(ids);
-        const assignments: Assignment[] = [];
-        for (let i = 0; i < shuffled.length; i++) {
-            const nextIndex = (i + 1) % shuffled.length;
-            assignments.push({
-                giverId: shuffled[i],
-                receiverId: shuffled[nextIndex],
-            });
-        }
-
-        if (isValidDerangement(assignments)) {
-            return assignments;
-        }
+    // The circular construction (receiver = next in the shuffled cycle) is a
+    // valid derangement for n >= 2 by construction — no retry loop needed.
+    const shuffled = fisherYatesShuffle(participants.map((p) => p.id));
+    const assignments: Assignment[] = [];
+    for (let i = 0; i < shuffled.length; i++) {
+        const nextIndex = (i + 1) % shuffled.length;
+        assignments.push({
+            giverId: shuffled[i]!,
+            receiverId: shuffled[nextIndex]!,
+        });
     }
 
-    throw new Error('Could not create valid assignments. Try adding more participants.');
+    return assignments;
 }
