@@ -213,14 +213,33 @@ export default {
 
         // Set up graceful shutdown handler
         const gracefulShutdown = async (signal: string) => {
+            const isCrash = signal === 'uncaughtException';
             strapi.log.info(`Received ${signal}, starting graceful shutdown...`);
+
+            // Arm the watchdog up front: `close()` only resolves once all connections
+            // have finished, so without an already-armed timer a lingering keep-alive
+            // connection would hang the process forever with no force exit.
+            const shutdownTimeout = setTimeout(() => {
+                strapi.log.warn('Shutdown timeout exceeded, forcing exit');
+                process.exit(1);
+            }, 30000); // 30 second timeout
 
             try {
                 // Stop accepting new requests
                 if (strapi.server?.httpServer) {
                     strapi.log.info('Closing HTTP server...');
+                    const httpServer = strapi.server.httpServer;
+
+                    // Node does not forcibly close keep-alive/upgraded connections;
+                    // sever them after a short grace period so close() can complete.
+                    const closeConnectionsTimer = setTimeout(() => {
+                        if (typeof httpServer.closeAllConnections === 'function') {
+                            httpServer.closeAllConnections();
+                        }
+                    }, 5000);
+
                     await new Promise<void>((resolve, reject) => {
-                        strapi.server.httpServer.close((err: unknown) => {
+                        httpServer.close((err: unknown) => {
                             if (err) {
                                 strapi.log.error('Error closing HTTP server:', err);
                                 reject(err);
@@ -230,13 +249,8 @@ export default {
                             }
                         });
                     });
+                    clearTimeout(closeConnectionsTimer);
                 }
-
-                // Wait for pending operations to complete (with timeout)
-                const shutdownTimeout = setTimeout(() => {
-                    strapi.log.warn('Shutdown timeout exceeded, forcing exit');
-                    process.exit(1);
-                }, 30000); // 30 second timeout
 
                 // Close database connections
                 if (strapi.db) {
@@ -247,7 +261,9 @@ export default {
 
                 clearTimeout(shutdownTimeout);
                 strapi.log.info('Graceful shutdown completed');
-                process.exit(0);
+                // Exit non-zero when shutdown was triggered by a crash so process
+                // supervisors and health checks don't see a clean exit.
+                process.exit(isCrash ? 1 : 0);
             } catch (error) {
                 strapi.log.error('Error during graceful shutdown:', error);
                 process.exit(1);
