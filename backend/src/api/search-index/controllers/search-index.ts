@@ -8,6 +8,17 @@ import {checkRateLimit, getClientIp, verifySecret} from '../../../utils/requestS
 
 export default factories.createCoreController('api::search-index.search-index', () => ({
     async metrics(ctx) {
+        // Rate-limit before any token handling so unauthenticated floods and
+        // token-guessing attempts consume the same budget as authenticated calls.
+        const ip = getClientIp(ctx);
+        const rl = checkRateLimit(`search-index-metrics:${ip}`);
+        if (!rl.ok) {
+            ctx.status = 429;
+            ctx.set('Retry-After', String(rl.retryAfterSeconds));
+            ctx.body = 'Too Many Requests';
+            return;
+        }
+
         const expected = process.env.DIAGNOSTICS_TOKEN ?? null;
         const provided =
             ctx?.request?.query?.token ??
@@ -17,15 +28,6 @@ export default factories.createCoreController('api::search-index.search-index', 
         if (!verifySecret(provided, expected)) {
             ctx.status = 401;
             ctx.body = 'Unauthorized';
-            return;
-        }
-
-        const ip = getClientIp(ctx);
-        const rl = checkRateLimit(`search-index-metrics:${ip}`);
-        if (!rl.ok) {
-            ctx.status = 429;
-            ctx.set('Retry-After', String(rl.retryAfterSeconds));
-            ctx.body = 'Too Many Requests';
             return;
         }
 
