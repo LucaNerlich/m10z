@@ -79,6 +79,42 @@ export function shouldRecordDownloadForRange(range: string | null | undefined): 
     return !RANGE_CONTINUATION.test(range.trim());
 }
 
+// Media players typically probe with `bytes=0-1`, then fetch `bytes=0-…`, and repeat on
+// pause/restart — a single play can issue several countable requests. Deduplicate per
+// slug + client IP within a short window so one play/download records one event.
+const DOWNLOAD_DEDUP_WINDOW_MS = 60_000;
+const MAX_DEDUP_ENTRIES = 1_000;
+
+const recentDownloads = new Map<string, number>();
+
+/**
+ * Whether a download event should be recorded for the given slug + client IP, deduplicated
+ * within a short window. Updates the dedup state on success.
+ */
+export function shouldRecordDownloadDeduped(slug: string, clientIp: string, now: number = Date.now()): boolean {
+    const key = `${slug}:${clientIp}`;
+    const last = recentDownloads.get(key);
+    if (last !== undefined && now - last < DOWNLOAD_DEDUP_WINDOW_MS) {
+        return false;
+    }
+    recentDownloads.set(key, now);
+
+    if (recentDownloads.size > MAX_DEDUP_ENTRIES) {
+        // Bound the map: prune expired entries before they accumulate.
+        for (const [entryKey, timestamp] of recentDownloads) {
+            if (now - timestamp >= DOWNLOAD_DEDUP_WINDOW_MS) {
+                recentDownloads.delete(entryKey);
+            }
+        }
+    }
+    return true;
+}
+
+/** Reset the in-memory dedup state (for tests). */
+export function resetDownloadDedupForTests(): void {
+    recentDownloads.clear();
+}
+
 /**
  * Open-redirect / SSRF guard for the download endpoint: a resolved file URL is only an allowed
  * redirect target when it shares the configured Strapi origin (matching the deployment's protocol)

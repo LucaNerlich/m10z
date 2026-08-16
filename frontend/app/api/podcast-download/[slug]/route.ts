@@ -3,10 +3,12 @@ import {after, NextResponse} from 'next/server';
 import {
     isAllowedDownloadTarget,
     isPodcastDownloadTrackingEnabled,
+    shouldRecordDownloadDeduped,
     shouldRecordDownloadForRange,
 } from '@/src/lib/analytics/podcastDownload';
 import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
+import {getClientIp} from '@/src/lib/net/getClientIp';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {getStrapiApiBaseUrl} from '@/src/lib/strapiTransport';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
@@ -84,9 +86,13 @@ export async function GET(request: Request, {params}: RouteContext) {
     }
 
     // Record the custom event after the response is flushed so it never delays the download.
-    // Only when tracking is enabled (single source of truth), and skip seek/continuation range
-    // requests so a single play or download counts once.
-    if (isPodcastDownloadTrackingEnabled() && shouldRecordDownloadForRange(request.headers.get('range'))) {
+    // Only when tracking is enabled (single source of truth), skip seek/continuation range
+    // requests, and deduplicate per slug + client IP so a single play or download counts once.
+    if (
+        isPodcastDownloadTrackingEnabled() &&
+        shouldRecordDownloadForRange(request.headers.get('range')) &&
+        shouldRecordDownloadDeduped(slug, getClientIp(request))
+    ) {
         after(() => sendPodcastDownloadEvent({slug, title, request}));
     }
 

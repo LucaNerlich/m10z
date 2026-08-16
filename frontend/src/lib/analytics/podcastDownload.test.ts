@@ -7,6 +7,8 @@ import {
     isPodcastDownloadTrackingEnabled,
     normalizeClientUserAgent,
     podcastClientLabel,
+    resetDownloadDedupForTests,
+    shouldRecordDownloadDeduped,
     shouldRecordDownloadForRange,
 } from './podcastDownload';
 
@@ -173,5 +175,30 @@ describe('isAllowedDownloadTarget', () => {
 
     test('rejects everything when no origin or allowlist is configured', () => {
         expect(isAllowedDownloadTarget('https://cms.m10z.de/uploads/ep.mp3', {})).toBe(false);
+    });
+});
+
+describe('shouldRecordDownloadDeduped', () => {
+    test('records the first event and suppresses repeats within the window', () => {
+        resetDownloadDedupForTests();
+        const now = 1_000_000;
+        expect(shouldRecordDownloadDeduped('ep-1', '198.51.100.9', now)).toBe(true);
+        expect(shouldRecordDownloadDeduped('ep-1', '198.51.100.9', now + 10_000)).toBe(false);
+        expect(shouldRecordDownloadDeduped('ep-1', '198.51.100.9', now + 59_000)).toBe(false);
+    });
+
+    test('records again after the dedup window elapses', () => {
+        resetDownloadDedupForTests();
+        const now = 1_000_000;
+        shouldRecordDownloadDeduped('ep-1', '198.51.100.9', now);
+        expect(shouldRecordDownloadDeduped('ep-1', '198.51.100.9', now + 61_000)).toBe(true);
+    });
+
+    test('different slugs or IPs do not dedupe against each other', () => {
+        resetDownloadDedupForTests();
+        const now = 1_000_000;
+        expect(shouldRecordDownloadDeduped('ep-1', '198.51.100.9', now)).toBe(true);
+        expect(shouldRecordDownloadDeduped('ep-2', '198.51.100.9', now)).toBe(true);
+        expect(shouldRecordDownloadDeduped('ep-1', '198.51.100.10', now)).toBe(true);
     });
 });
