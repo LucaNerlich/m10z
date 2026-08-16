@@ -178,6 +178,10 @@ function fetchBySlugForPreview<T>(
     });
     return fetchJsonNoStore<{data: T[]}>(`${desc.apiPath}?${query}`, {
         tags: [],
+        // Drafts must never be readable with the public (unauthenticated) role:
+        // Strapi 5 serves `status=draft` to any caller with find permission,
+        // so preview fetches use the privileged server-only token instead.
+        auth: 'privileged',
         context: {slug, contentType: desc.contentType, populateOptions: desc.detailPopulate},
     }).then((res) => res.data?.[0] ?? null);
 }

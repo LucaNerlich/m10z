@@ -102,6 +102,7 @@ export type ContentFetchOptions = {
     tags: string[];
     revalidate?: number;
     timeout?: number;
+    auth?: 'public' | 'privileged';
     context?: ContentReadOptions['context'];
 };
 
@@ -111,6 +112,7 @@ function toTaggedReadOptions(options: ContentFetchOptions, cache: 'tags' | 'no-s
         revalidate: options.revalidate,
         timeoutMs: options.timeout,
         cache,
+        auth: options.auth,
         context: options.context,
     };
 }
