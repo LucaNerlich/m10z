@@ -53,6 +53,11 @@ function createRegistry(): FeedRegistry {
                 article.scheduleDebouncedRefresh();
             } else if (type === 'podcast' || type === 'audio-feed') {
                 audio.scheduleDebouncedRefresh();
+            } else if (type === 'category' || type === 'author') {
+                // Feeds use category/author fallbacks (cover, banner, names,
+                // descriptions), so metadata edits must rebuild both feeds.
+                article.scheduleDebouncedRefresh();
+                audio.scheduleDebouncedRefresh();
             }
         },
         disposeHmr() {

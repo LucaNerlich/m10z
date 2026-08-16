@@ -91,6 +91,7 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
 
     let cachedFeed: CachedFeed | null = null;
     let inflight: Promise<CachedFeed> | null = null;
+    let pendingRefresh = false;
     let schedulerStarted = false;
     let schedulerStartedAtMs: number | null = null;
     let schedulerTimer: ReturnType<typeof setInterval> | null = null;
@@ -152,6 +153,18 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
         }
     }
 
+    function settleInflightBuild(): void {
+        inflight = null;
+        // If an invalidation landed while this build was running, its debounced
+        // refresh was skipped (refresh() returned the inflight promise). Run
+        // one more build now so a publish is never missed until the next
+        // 30-minute scheduler tick.
+        if (pendingRefresh) {
+            pendingRefresh = false;
+            void refresh().catch(() => undefined);
+        }
+    }
+
     async function refresh(): Promise<CachedFeed> {
         if (inflight) return inflight;
 
@@ -173,7 +186,7 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
             };
             cachedFeed = next;
             await writeFeedToDisk(next);
-            inflight = null;
+            settleInflightBuild();
 
             spec.onBuildSuccess?.({durationMs, built, memoryUsedMB, memoryDeltaMB});
 
@@ -190,7 +203,7 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
 
             return next;
         })().catch((err) => {
-            inflight = null;
+            settleInflightBuild();
             throw err;
         });
 
@@ -266,7 +279,13 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
         if (invalidationTimer) clearTimeoutFn(invalidationTimer);
         invalidationTimer = setTimeoutFn(() => {
             invalidationTimer = null;
-            void refresh().catch(() => undefined);
+            if (inflight) {
+                // A build is already running; settleInflightBuild() will run a
+                // follow-up refresh once it finishes.
+                pendingRefresh = true;
+            } else {
+                void refresh().catch(() => undefined);
+            }
         }, INVALIDATION_DEBOUNCE_MS);
     }
 
@@ -281,6 +300,7 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
     function reset() {
         cachedFeed = null;
         inflight = null;
+        pendingRefresh = false;
         stopScheduler();
         ensureScheduler();
     }
@@ -292,12 +312,6 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
         const ip = getClientIpFn(request);
         const rl = checkRateLimitFn(`feed:${spec.feedKey}:${ip}`, RATE_LIMIT);
         if (!rl.ok) {
-            const fallback = fallbackFeedXml({
-                title: spec.fallback.title,
-                link: SITE_URL,
-                selfLink,
-                description: 'Rate limited. Please try again shortly.',
-            });
             const headers = buildRssHeaders({cacheControl: 'no-store'});
             headers.set('Retry-After', String(rl.retryAfterSeconds));
             recordDiagnosticEvent({
@@ -308,7 +322,9 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
                 durationMs: 0,
                 detail: {retryAfterSeconds: rl.retryAfterSeconds},
             });
-            return new Response(fallback, {status: 429, headers});
+            // Body-less response: an empty-but-valid RSS document would make
+            // podcatchers display the feed as emptied or cache it.
+            return new Response(null, {status: 429, headers});
         }
 
         try {
