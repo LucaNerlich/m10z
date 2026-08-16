@@ -60,7 +60,9 @@ type FetchPageOptions = {
     pageSize?: number;
     tags?: string[];
 };
-const MAX_SLUGS = 150;
+// The backend REST config caps pagination at maxLimit: 100 (backend/config/api.ts).
+// Chunk sizes must stay at or below that limit or Strapi silently truncates results.
+const MAX_SLUGS = 100;
 
 export function normalizePagination(
     meta: {pagination?: Partial<PaginationMeta>} | undefined,
@@ -71,7 +73,7 @@ export function normalizePagination(
     const page = Number.isFinite(raw.page) ? Math.max(1, Math.floor(raw.page as number)) : fallbackPage;
     const pageSize =
         Number.isFinite(raw.pageSize) && (raw.pageSize as number) > 0
-            ? Math.min(200, Math.floor(raw.pageSize as number))
+            ? Math.min(100, Math.floor(raw.pageSize as number))
             : fallbackPageSize;
     const totalRaw = Number.isFinite(raw.total) ? Math.max(0, Math.floor(raw.total as number)) : 0;
     const pageCountRaw =
@@ -100,7 +102,7 @@ export function clampPage(p: number): number {
 }
 
 export function clampPageSize(s: number): number {
-    return Math.max(1, Math.min(200, Math.floor(s)));
+    return Math.max(1, Math.min(100, Math.floor(s)));
 }
 
 // ─── Content-type fetchers (articles + podcasts) ─────────────────────────────

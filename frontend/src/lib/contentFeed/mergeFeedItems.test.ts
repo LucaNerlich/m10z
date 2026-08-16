@@ -28,7 +28,7 @@ describe('mergeFeedItems', () => {
 });
 
 describe('paginateMergedFeed', () => {
-    test('uses sum of source totals for pageCount', () => {
+    test('uses sum of source totals but bounds pageCount to the fetched window', () => {
         const items = mergeFeedItems([article('a', '2024-01-01')], [podcast('p', '2024-02-01')]);
         const result = paginateMergedFeed({
             items,
@@ -37,8 +37,11 @@ describe('paginateMergedFeed', () => {
             articleTotal: 10,
             podcastTotal: 5,
         });
+        // total stays truthful (15) but only 2 items were fetched, so the
+        // feed must not claim 15 pages exist.
         expect(result.pagination.total).toBe(15);
-        expect(result.pagination.pageCount).toBe(15);
+        expect(result.pagination.pageCount).toBe(2);
+        expect(result.hasNextPage).toBe(true);
         expect(result.items).toHaveLength(1);
         expect(result.items[0]?.slug).toBe('p');
     });
@@ -57,12 +60,25 @@ describe('paginateMergedFeed', () => {
         });
         expect(result.items[0]?.slug).toBe('p2');
     });
+
+    test('hasNextPage is false when the page exceeds the fetched window', () => {
+        const items = mergeFeedItems([article('a', '2024-01-01')], [podcast('p', '2024-02-01')]);
+        const result = paginateMergedFeed({
+            items,
+            page: 3,
+            pageSize: 1,
+            articleTotal: 10,
+            podcastTotal: 5,
+        });
+        expect(result.items).toHaveLength(0);
+        expect(result.hasNextPage).toBe(false);
+    });
 });
 
 describe('clamp helpers', () => {
-    test('computeContentFeedFetchSize over-fetches by 5 capped at 200', () => {
+    test('computeContentFeedFetchSize over-fetches by 5 capped at the backend maxLimit (100)', () => {
         expect(computeContentFeedFetchSize(1, 10)).toBe(15);
-        expect(computeContentFeedFetchSize(20, 10)).toBe(200);
+        expect(computeContentFeedFetchSize(20, 10)).toBe(100);
     });
 
     test('clampContentFeedPageSize caps at 100', () => {

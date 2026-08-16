@@ -1,5 +1,7 @@
 import {fetchStrapiCollection} from '@/src/lib/strapi/contentAccess';
 import {buildSlugIndexQuery} from '@/src/lib/strapi-queries';
+import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {getErrorMessage} from '@/src/lib/errors';
 
 type StrapiSlugItem = {
     slug: string;
@@ -20,7 +22,21 @@ export async function fetchPublishedSlugs(
     while (true) {
         const query = buildSlugIndexQuery({page, pageSize});
 
-        const res = await fetchStrapiCollection<StrapiSlugItem>(endpoint, query, {tags});
+        let res: {data?: unknown; meta?: {pagination?: {page?: number; pageCount?: number}}};
+        try {
+            res = await fetchStrapiCollection<StrapiSlugItem>(endpoint, query, {
+                tags,
+                // Without an explicit revalidate the fetch is uncached (Next 15+),
+                // making the tags inert and hammering Strapi on every sitemap
+                // regeneration.
+                revalidate: CACHE_REVALIDATE_DEFAULT,
+            });
+        } catch (error) {
+            // CMS unreachable: degrade to the entries collected so far instead of
+            // failing the whole sitemap/llms.txt generation.
+            console.error(`fetchPublishedSlugs(${endpoint}): ${getErrorMessage(error)}`);
+            break;
+        }
 
         const data = Array.isArray(res.data) ? res.data : [];
         data.forEach(({slug, updatedAt, publishedAt}) => {
@@ -31,7 +47,7 @@ export async function fetchPublishedSlugs(
         const pagination = res.meta?.pagination;
         const done =
             !pagination ||
-            pagination.page >= (pagination.pageCount ?? 0) ||
+            (pagination.page ?? 0) >= (pagination.pageCount ?? 0) ||
             data.length === 0;
         if (done) break;
         page++;

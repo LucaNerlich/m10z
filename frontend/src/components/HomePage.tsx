@@ -44,15 +44,6 @@ function clampPageToData(page: number, totalItems: number): number {
 }
 
 /**
- * Determines whether a subsequent page exists given the current page and total item count.
- *
- * @returns `true` if there are more items after `currentPage`, `false` otherwise.
- */
-function hasNextPage(currentPage: number, totalItems: number): boolean {
-    return currentPage * PAGE_SIZE < totalItems;
-}
-
-/**
  * Render the client-side homepage feed that displays a combined, paginated list of articles and podcasts.
  *
  * Handles loading, error, and empty states and derives the current page from the URL `page` query parameter.
@@ -87,7 +78,9 @@ export async function HomePage({page}: {page: number}) {
     const combinedTotal = data.pagination.total;
     const currentPage = clampPageToData(page, combinedTotal);
     const currentItems = data.items;
-    const nextPage = hasNextPage(currentPage, combinedTotal) ? currentPage + 1 : null;
+    // hasNextPage comes from the response: it is derived from the actually
+    // fetchable window, not from the raw collection totals.
+    const nextPage = data.hasNextPage ? currentPage + 1 : null;
     const prevPage = currentPage > 1 ? currentPage - 1 : null;
 
     return (
