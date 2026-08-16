@@ -9,10 +9,10 @@ import {checkRateLimit, getClientIp, verifySecret} from '../../../utils/requestS
 export default factories.createCoreController('api::search-index.search-index', () => ({
     async metrics(ctx) {
         const expected = process.env.DIAGNOSTICS_TOKEN ?? null;
-        const provided =
-            ctx?.request?.query?.token ??
-            ctx?.query?.token ??
-            ctx?.request?.headers?.['x-m10z-diagnostics-token'];
+        // Accept the token only via a header: query strings end up in access logs,
+        // browser history, and Referer headers, and GET responses may be cached by
+        // intermediaries.
+        const provided = ctx?.request?.headers?.['x-m10z-diagnostics-token'];
 
         if (!verifySecret(provided, expected)) {
             ctx.status = 401;
@@ -55,6 +55,7 @@ export default factories.createCoreController('api::search-index.search-index', 
         //   metrics: SearchIndexMetricsSnapshot | null, // latest snapshot for backward compatibility
         //   history: SearchIndexMetricsHistoryEntry[]   // most-recent-first historical entries
         // }
+        ctx.set('Cache-Control', 'no-store');
         ctx.body = {
             now: Date.now(),
             metrics: getLastSearchIndexMetrics(),
