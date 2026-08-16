@@ -36,4 +36,13 @@ describe('resolveFileWithinPublicDir', () => {
         expect(resolveFileWithinPublicDir(publicDir, '/../../etc/passwd')).toBeNull();
         expect(resolveFileWithinPublicDir(publicDir, '/uploads/../../../etc/passwd')).toBeNull();
     });
+
+    test('returns null for sibling directories sharing the public dir name as a prefix', () => {
+        expect(resolveFileWithinPublicDir(publicDir, '../public-evil/x.mp3')).toBeNull();
+        expect(resolveFileWithinPublicDir(publicDir, '/../public-evil/x.mp3')).toBeNull();
+    });
+
+    test('returns null for sibling directories with a common suffix prefix', () => {
+        expect(resolveFileWithinPublicDir(publicDir, '../public2/x.mp3')).toBeNull();
+    });
 });
