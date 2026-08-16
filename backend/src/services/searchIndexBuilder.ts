@@ -516,28 +516,47 @@ async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<Search
     return payload;
 }
 
+/**
+ * Serializes builds so the version read-modify-write in `saveIndex` cannot race:
+ * the nightly cron calls `rebuildAndInvalidate` directly while a debounced
+ * queue-triggered rebuild may be in flight. Without this chain, both builds read
+ * the same current version, write the same next version, and one snapshot is
+ * silently overwritten.
+ */
+let buildChain: Promise<unknown> = Promise.resolve();
+
 export async function buildAndPersistSearchIndex(
     strapi: Strapi,
     options?: {source?: 'cron' | 'queue' | 'manual'},
 ): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> {
-    const {index, metrics} = await buildIndex(strapi);
-    const saved = await saveIndex(strapi, index);
-    const payloadBytes = Buffer.byteLength(JSON.stringify(saved), 'utf8');
-    metrics.payloadBytes = payloadBytes;
-    metrics.payloadKb = Number((payloadBytes / 1024).toFixed(2));
+    const build = async (): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> => {
+        const {index, metrics} = await buildIndex(strapi);
+        const saved = await saveIndex(strapi, index);
+        const payloadBytes = Buffer.byteLength(JSON.stringify(saved), 'utf8');
+        metrics.payloadBytes = payloadBytes;
+        metrics.payloadKb = Number((payloadBytes / 1024).toFixed(2));
 
-    const snapshot: SearchIndexMetricsSnapshot = {
-        ...metrics,
-        updatedAt: new Date().toISOString(),
-        source: options?.source,
+        const snapshot: SearchIndexMetricsSnapshot = {
+            ...metrics,
+            updatedAt: new Date().toISOString(),
+            source: options?.source,
+        };
+
+        // Clean up old metrics before adding the new snapshot to keep memory bounded.
+        cleanupMetricsHistory();
+        metricsHistory.unshift(snapshot);
+        if (metricsHistory.length > MAX_METRICS_ENTRIES) {
+            metricsHistory = metricsHistory.slice(0, MAX_METRICS_ENTRIES);
+        }
+
+        return {index: saved, metrics};
     };
 
-    // Clean up old metrics before adding the new snapshot to keep memory bounded.
-    cleanupMetricsHistory();
-    metricsHistory.unshift(snapshot);
-    if (metricsHistory.length > MAX_METRICS_ENTRIES) {
-        metricsHistory = metricsHistory.slice(0, MAX_METRICS_ENTRIES);
-    }
-
-    return {index: saved, metrics};
+    // A failed predecessor must not break the chain for later builds.
+    const result = buildChain.then(build, build);
+    buildChain = result.then(
+        () => undefined,
+        () => undefined,
+    );
+    return result;
 }
