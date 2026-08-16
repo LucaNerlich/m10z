@@ -32,6 +32,7 @@ export const CONTENT_TYPE_KEYS = [
     'article-feed',
     'audio-feed',
     'about',
+    'about-feed',
     'imprint',
     'privacy',
     // Synthetic (non-Strapi-backed) types: never matched against a mutation by `uid`,
@@ -131,6 +132,12 @@ export const CONTENT_TYPES: Record<ContentTypeKey, ContentTypeConfig> = {
         kind: 'single',
         invalidatesOn: ['update'],
         cascadeTags: [ABOUT_TAG, ABOUT_PAGE_TAG],
+    },
+    'about-feed': {
+        uid: 'api::about-feed.about-feed',
+        kind: 'single',
+        invalidatesOn: ['update'],
+        cascadeTags: [feedSourceTag('article')],
     },
     imprint: {
         uid: 'api::imprint.imprint',
