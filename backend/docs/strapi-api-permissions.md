@@ -22,16 +22,17 @@ After changing permissions in Strapi, export/sync so these files stay accurate.
 | `api::imprint.imprint`, `api::privacy.privacy` | `find` |
 | `api::search-index.search-index` | `find`, `metrics` |
 | `plugin::upload.content-api` | `find`, `findOne` (media URLs; no upload for anonymous) |
-| `plugin::users-permissions.auth.*` | Standard auth callbacks (register, reset password, etc.) |
+| `plugin::users-permissions.auth.*` | Auth callbacks (forgotPassword, resetPassword, …) — `register` is **not** granted (see below) |
 
-**Not granted to Public:** admin API, content mutation, upload `upload` action (that is on **Authenticated** only).
+**Not granted to Public:** admin API, content mutation, upload `upload` action, and `auth.register`. Registration is intentionally unavailable so nobody can self-register and then use the Authenticated role to upload files into the media library.
 
 ## Authenticated role
 
 The synced [`user-role.authenticated.json`](../config/sync/user-role.authenticated.json) grants the same core `find` / `findOne` actions on articles, podcasts, authors, categories, feeds, legal singles, and upload read as above, plus:
 
-- `plugin::upload.content-api.upload`
 - `plugin::users-permissions.auth.changePassword`, `logout`, `user.me`
+
+`plugin::upload.content-api.upload` was removed from this role: with the users-permissions plugin's `allow_register` defaulting to `true`, a public register permission would have let anyone self-register and then upload files (up to 2GB) into the media library. There is no legitimate public upload flow.
 
 It does **not** include every Public permission in the current export (for example, `api::about-feed.about-feed` and `api::search-index.search-index` appear only on Public). If logged-in users must call those endpoints directly, add the corresponding actions in Strapi and re-export sync.
 

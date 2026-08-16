@@ -121,11 +121,6 @@
       "locale": null
     },
     {
-      "documentId": "e2i3xceoopuov7ibukyr3nhb",
-      "action": "plugin::users-permissions.auth.register",
-      "locale": null
-    },
-    {
       "documentId": "b7xet1ytpz8jx602l637ft1w",
       "action": "plugin::users-permissions.auth.resetPassword",
       "locale": null
