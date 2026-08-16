@@ -21,8 +21,9 @@ describe('clampPageSize', () => {
         [-1, 1],
         [1, 1],
         [50, 50],
-        [200, 200],
-        [250, 200],
+        [100, 100],
+        [200, 100],
+        [250, 100],
         [20.7, 20],
     ])('%d → %d', (input, expected) => {
         expect(clampPageSize(input)).toBe(expected);
@@ -34,8 +35,8 @@ describe('normalizePagination', () => {
         expect(normalizePagination(undefined, 2, 25)).toEqual({page: 2, pageSize: 25, total: 0, pageCount: 1});
     });
 
-    test('clamps pageSize to 200', () => {
-        expect(normalizePagination({pagination: {pageSize: 500}}, 1, 20).pageSize).toBe(200);
+    test('clamps pageSize to the backend maxLimit (100)', () => {
+        expect(normalizePagination({pagination: {pageSize: 500}}, 1, 20).pageSize).toBe(100);
     });
 
     test('derives pageCount from total/pageSize when absent', () => {

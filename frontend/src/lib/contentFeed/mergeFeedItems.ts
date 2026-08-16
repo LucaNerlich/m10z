@@ -51,7 +51,10 @@ export function clampContentFeedPageSize(pageSize: number): number {
 
 export function computeContentFeedFetchSize(page: number, pageSize: number): number {
     const itemsNeeded = page * pageSize;
-    return Math.min(itemsNeeded + 5, 200);
+    // The Strapi REST API silently clamps pageSize to its configured maxLimit
+    // (100). Fetching more than the backend can return makes the merge window
+    // silently smaller than requested, so cap here and stay aligned.
+    return Math.min(itemsNeeded + 5, 100);
 }
 
 function mapArticleToFeedItem(article: StrapiArticle): FeedItem {
@@ -108,7 +111,12 @@ export function paginateMergedFeed(args: {
     const total = args.articleTotal + args.podcastTotal;
     const offset = (safePage - 1) * safePageSize;
     const paginatedItems = args.items.slice(offset, offset + safePageSize);
-    const pageCount = Math.max(1, Math.ceil(total / safePageSize));
+    // The merged list only covers the fetched window (capped by the backend's
+    // REST maxLimit, see computeContentFeedFetchSize). Claiming pages beyond
+    // the window renders empty pages with hasNextPage=true, so bound pageCount
+    // to what is actually fetchable.
+    const fetchablePageCount = Math.max(1, Math.ceil(args.items.length / safePageSize));
+    const pageCount = Math.min(Math.max(1, Math.ceil(total / safePageSize)), fetchablePageCount);
     const hasNextPage = safePage < pageCount;
 
     return {

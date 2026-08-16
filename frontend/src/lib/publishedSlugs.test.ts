@@ -72,4 +72,33 @@ describe('fetchPublishedSlugs', () => {
         expect(entries).toEqual([]);
         expect(seen).toHaveLength(1);
     });
+
+    test('passes an explicit revalidate so the fetch is cached by tags', async () => {
+        const seen = mockTransport({1: {pageCount: 1, data: [{slug: 'a', publishedAt: '2025-01-01'}]}});
+        await fetchPublishedSlugs('articles', ['t']);
+        expect(seen[0]?.cache).toEqual({mode: 'tags', tags: ['t'], revalidate: 3600});
+    });
+
+    test('returns the entries collected so far when the CMS becomes unreachable mid-pagination', async () => {
+        __setStrapiTransport(async <T>(req: StrapiRequest): Promise<T> => {
+            const page = Number(req.path.match(/pagination\[page\]=(\d+)/)?.[1] ?? 1);
+            if (page === 2) throw new Error('ECONNREFUSED');
+            return {
+                data: [{slug: 'a', publishedAt: '2025-01-01'}],
+                meta: {pagination: {page: 1, pageSize: 100, pageCount: 3, total: 3}},
+            } as T;
+        });
+
+        const entries = await fetchPublishedSlugs('articles', ['t']);
+        expect(entries).toEqual([{slug: 'a', lastModified: '2025-01-01'}]);
+    });
+
+    test('returns an empty list when the CMS is unreachable from the start', async () => {
+        __setStrapiTransport(async () => {
+            throw new Error('ECONNREFUSED');
+        });
+
+        const entries = await fetchPublishedSlugs('articles', ['t']);
+        expect(entries).toEqual([]);
+    });
 });
