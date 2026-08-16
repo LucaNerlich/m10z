@@ -25,6 +25,7 @@ type KnexQueryBuilder = {
     orderBy: (column: string, direction: 'asc' | 'desc') => KnexQueryBuilder;
     limit: (count: number) => KnexQueryBuilder;
     select: (...columns: string[]) => Promise<Array<{id: number; payload: string}>>;
+    delete: () => Promise<number>;
 };
 
 type KnexSchema = {
@@ -108,6 +109,11 @@ export async function drainPending(strapi: StrapiDb): Promise<Array<{id: number;
             .orderBy('created_at', 'asc')
             .limit(MAX_DRAIN_BACKLOG)
             .select('id', 'payload');
+
+        // Rows older than the retention window are never drained — delete them so a
+        // long-dead frontend cannot grow the table without bound.
+        await pruneExpired(strapi, cutoff);
+
         return rows.flatMap((row) => {
             try {
                 return [{id: row.id, event: JSON.parse(row.payload) as InvalidationEvent}];
@@ -118,5 +124,16 @@ export async function drainPending(strapi: StrapiDb): Promise<Array<{id: number;
     } catch (error) {
         strapi.log.warn('[pendingInvalidationStore] Failed to drain pending events.', error);
         return [];
+    }
+}
+
+/**
+ * Delete rows whose `created_at` is before the given cutoff (best effort).
+ */
+async function pruneExpired(strapi: StrapiDb, cutoff: Date): Promise<void> {
+    try {
+        await strapi.db.connection(TABLE).where('created_at', '<', cutoff).delete();
+    } catch (error) {
+        strapi.log.warn('[pendingInvalidationStore] Failed to prune expired pending events.', error);
     }
 }

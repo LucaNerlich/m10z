@@ -72,6 +72,26 @@ describe('AsyncTaskQueue', () => {
         expect(onSettled).toHaveBeenCalledWith('a', true, strapi);
     });
 
+    test('calls onAbandoned with the failed items when the retry limit is reached', async () => {
+        const run = vi.fn().mockResolvedValue(false);
+        const onAbandoned = vi.fn();
+        const queue = new AsyncTaskQueue<string>({
+            name: 'test',
+            keyOf: (item) => item,
+            run,
+            onAbandoned,
+            debounceMs: 100,
+            maxFailureRetries: 2,
+        });
+
+        queue.enqueue('a', strapi);
+        await vi.advanceTimersByTimeAsync(100); // attempt 1 fails
+        await vi.advanceTimersByTimeAsync(200); // attempt 2 fails -> abandoned
+
+        expect(onAbandoned).toHaveBeenCalledTimes(1);
+        expect(onAbandoned).toHaveBeenCalledWith(['a'], strapi);
+    });
+
     test('restore seeds pending items and schedules a run without duplicating onEnqueue side effects', async () => {
         const run = vi.fn().mockResolvedValue(true);
         const queue = new AsyncTaskQueue<string>({name: 'test', keyOf: (item) => item, run, debounceMs: 100});
