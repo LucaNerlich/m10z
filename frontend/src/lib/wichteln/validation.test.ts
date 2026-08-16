@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {validateName, validateProfileUrl, isValidHttpUrl} from './validation';
+import {validateName, validateProfileUrl, isValidHttpUrl, validateUniqueName} from './validation';
 
 describe('validateName', () => {
     test('valid name returns null', () => {
@@ -101,5 +101,19 @@ describe('isValidHttpUrl', () => {
 
     test('empty string returns false', () => {
         expect(isValidHttpUrl('')).toBe(false);
+    });
+});
+
+describe('validateUniqueName', () => {
+    test('returns null for a new unique name', () => {
+        expect(validateUniqueName(['Alice', 'Bob'], 'Charlie')).toBeNull();
+    });
+
+    test('rejects an exact duplicate (case-insensitive, trimmed)', () => {
+        expect(validateUniqueName(['Alice', 'Bob'], '  alice ')).toBe('Dieser Name ist bereits vergeben.');
+    });
+
+    test('returns null when the list is empty', () => {
+        expect(validateUniqueName([], 'Alice')).toBeNull();
     });
 });

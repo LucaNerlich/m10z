@@ -1,6 +1,6 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
-import {generateMarkdown} from './export';
+import {generateMarkdown, generateMarkdownForGiver} from './export';
 
 import {type Participant, type Assignment} from '@/app/apps/wichteln/types';
 
@@ -136,5 +136,30 @@ describe('generateMarkdown', () => {
         const result = generateMarkdown(participants, []);
         expect(result).toContain('# Wichteln Ergebnisse');
         expect(result).not.toContain('**Alice**');
+    });
+});
+
+describe('generateMarkdownForGiver', () => {
+    test('contains only the giver assignment', () => {
+        const participants = makeParticipants([
+            {id: 'a', name: 'Alice'},
+            {id: 'b', name: 'Bob'},
+            {id: 'c', name: 'Charlie'},
+        ]);
+        const assignments: Assignment[] = [
+            {giverId: 'a', receiverId: 'b'},
+            {giverId: 'b', receiverId: 'c'},
+            {giverId: 'c', receiverId: 'a'},
+        ];
+
+        const result = generateMarkdownForGiver(participants, assignments, 'a');
+        expect(result).toContain('**Bob**');
+        expect(result).not.toContain('Charlie');
+        expect(result).not.toContain('**Alice** →');
+    });
+
+    test('returns empty string when the giver has no assignment', () => {
+        const participants = makeParticipants([{id: 'a', name: 'Alice'}]);
+        expect(generateMarkdownForGiver(participants, [], 'a')).toBe('');
     });
 });

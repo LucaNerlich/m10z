@@ -16,6 +16,17 @@ export function validateName(name: string): string | null {
     return null;
 }
 
+/**
+ * Check whether a (trimmed, case-insensitive) name already exists among other
+ * participants. Duplicate names make assignments ambiguous because the
+ * assignment list shows names, not ids.
+ */
+export function validateUniqueName(existingNames: readonly string[], name: string): string | null {
+    const trimmed = name.trim().toLowerCase();
+    const isDuplicate = existingNames.some((existing) => existing.trim().toLowerCase() === trimmed);
+    return isDuplicate ? 'Dieser Name ist bereits vergeben.' : null;
+}
+
 export function validateProfileUrl(url: string): string | null {
     const trimmed = url.trim();
     if (trimmed.length === 0) return null;
