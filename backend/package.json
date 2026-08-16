@@ -17,10 +17,10 @@
         "test:run": "vitest run"
     },
     "dependencies": {
-        "@strapi/plugin-users-permissions": "^5.51.2",
-        "@strapi/provider-email-mailgun": "^5.51.2",
-        "@strapi/strapi": "^5.51.2",
-        "@strapi/utils": "^5.51.2",
+        "@strapi/plugin-users-permissions": "^5.52.0",
+        "@strapi/provider-email-mailgun": "^5.52.0",
+        "@strapi/strapi": "^5.52.0",
+        "@strapi/utils": "^5.52.0",
         "blurhash": "^2.0.5",
         "form-data": "^4.0.6",
         "markdown-to-txt": "^2.0.1",
@@ -40,7 +40,7 @@
         "@types/react": "^18.3.31",
         "@types/react-dom": "^18.3.7",
         "dotenv": "^16.6.1",
-        "tsx": "^4.23.9",
+        "tsx": "^4.23.12",
         "typescript": "~5.3.3",
         "vite": "^7.3.6",
         "vitest": "^4.1.10"
