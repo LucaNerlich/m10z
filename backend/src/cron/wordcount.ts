@@ -51,8 +51,8 @@ async function backfillWordCountsForUid({
 
     try {
         const fields: string[] = publishAfterIfDue
-            ? ['slug', richtextField, 'date']
-            : ['slug', richtextField];
+            ? ['slug', richtextField, 'date', 'updatedAt']
+            : ['slug', richtextField, 'updatedAt'];
 
         const findParams: Record<string, unknown> = {
             filters: WORDCOUNT_MISSING_FILTER,
@@ -86,8 +86,36 @@ async function backfillWordCountsForUid({
 
                 const documentId = doc.documentId || doc.id;
 
+                // `update()` writes the draft; publishing it right after would push any
+                // pending, unapproved draft edits (or a future scheduled `date`) live.
+                // Detect a divergent draft before touching anything and skip the publish
+                // in that case — the backfilled wordCount stays on the draft and goes live
+                // when the editor publishes their changes.
+                let hasDivergentDraft = false;
+                if (status === 'published') {
+                    try {
+                        const draft = await strapi.documents(uid).findOne({
+                            documentId,
+                            status: 'draft',
+                            fields: ['updatedAt'],
+                        });
+                        const draftUpdatedAt = draft?.updatedAt ? new Date(draft.updatedAt).getTime() : 0;
+                        const publishedUpdatedAt = doc?.updatedAt ? new Date(doc.updatedAt).getTime() : 0;
+                        // No draft version at all (should not happen for published docs) or a
+                        // draft edited after the last publish both mean: do not publish.
+                        hasDivergentDraft = !draft || draftUpdatedAt > publishedUpdatedAt;
+                    } catch (error) {
+                        strapi.log.warn(
+                            `WordCount backfill: could not verify draft state for ${label} ${doc.slug}; skipping publish.`,
+                            error,
+                        );
+                        hasDivergentDraft = true;
+                    }
+                }
+
                 // Default `update()` writes the draft. For entries we read as `published`, call
-                // `publish()` afterward so the live version matches (same pattern as scheduled publish).
+                // `publish()` afterward so the live version matches (same pattern as scheduled publish)
+                // — but only when the draft has no pending editorial changes.
                 await strapi.documents(uid).update({
                     documentId,
                     data: {
@@ -95,9 +123,13 @@ async function backfillWordCountsForUid({
                     },
                 });
 
-                if (status === 'published') {
+                if (status === 'published' && !hasDivergentDraft) {
                     await strapi.documents(uid).publish({documentId});
                     published++;
+                } else if (status === 'published') {
+                    strapi.log.warn(
+                        `WordCount backfill: skipped publish for ${label} "${doc.slug}" — pending draft changes exist (wordCount written to draft only)`,
+                    );
                 }
 
                 successful++;
