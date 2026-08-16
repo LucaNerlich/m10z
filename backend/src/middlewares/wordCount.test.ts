@@ -37,6 +37,15 @@ describe('countWords', () => {
         expect(countWords('<p>html removed</p> word')).toBe(3);
     });
 
+    test('does not corrupt snake_case identifiers via underscore emphasis rules', () => {
+        expect(countWords('word_one und another_word')).toBe(3);
+        expect(countWords('die datei_x_y ist da')).toBe(4);
+    });
+
+    test('keeps comparison operators that look like HTML tags', () => {
+        expect(countWords('3 < 4 und 5 > 4')).toBe(7);
+    });
+
     test('counts words containing German umlauts', () => {
         expect(countWords('Schöne Größe')).toBe(2);
     });
@@ -67,6 +76,15 @@ describe('extractTextFromRichtext', () => {
 
     test('returns null for an empty doc tree', () => {
         expect(extractTextFromRichtext({type: 'doc', content: []})).toBeNull();
+    });
+
+    test('skips nested empty blocks instead of failing on them', () => {
+        const blocks = [
+            {type: 'paragraph', content: 'Hallo'},
+            {type: 'quote', content: []},
+            {type: 'paragraph', content: 'Welt'},
+        ];
+        expect(extractTextFromRichtext(blocks)).toBe('Hallo Welt');
     });
 
     test('joins text from an array of nodes', () => {

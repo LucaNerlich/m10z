@@ -49,13 +49,15 @@ export function countWords(content: string | null | undefined): number {
         // Remove headers (# ## ### etc.)
         text = text.replace(/^#{1,6}\s+/gm, '');
 
-        // Remove bold (**text** or __text__)
+        // Remove bold (**text** or __text__). The underscore variants must not match
+        // inside snake_case identifiers, so they only count as emphasis when the
+        // underscores are bounded by non-word characters (or string boundaries).
         text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
-        text = text.replace(/__([^_]+)__/g, '$1');
+        text = text.replace(/(^|\W)__([^_]+)__(?=\W|$)/g, '$1$2');
 
         // Remove italic (*text* or _text_)
         text = text.replace(/\*([^*]+)\*/g, '$1');
-        text = text.replace(/_([^_]+)_/g, '$1');
+        text = text.replace(/(^|\W)_([^_]+)_(?=\W|$)/g, '$1$2');
 
         // Remove strikethrough (~~text~~)
         text = text.replace(/~~([^~]+)~~/g, '$1');
@@ -70,8 +72,9 @@ export function countWords(content: string | null | undefined): number {
         // Remove horizontal rules (---, ***, ___)
         text = text.replace(/^[-*_]{3,}$/gm, '');
 
-        // Remove HTML tags if any
-        text = text.replace(/<[^>]+>/g, '');
+        // Remove HTML tags if any — the tag-name requirement keeps comparison
+        // operators like `3 < 4` from being swallowed as a fake tag.
+        text = text.replace(/<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g, '');
 
         // Remove extra whitespace and normalize
         text = text.replace(/\s+/g, ' ').trim();
@@ -141,11 +144,11 @@ export function extractTextFromRichtext(
                         if (typeof item === 'string') return item;
                         if (item && typeof item === 'object') {
                             if (item.text) return item.text;
-                            if (item.content) return extractTextFromRichtext(item.content);
+                            if (item.content) return extractTextFromRichtext(item.content) ?? '';
                         }
                         return '';
                     })
-                    .filter((text) => text.length > 0)
+                    .filter((text) => typeof text === 'string' && text.length > 0)
                     .join(' ');
                 return extracted.length > 0 ? extracted : null;
             }
