@@ -5,7 +5,7 @@
 
 import {generateBlurDataUrl} from '../utils/generateBlurhash';
 import {existsSync, promises as fsPromises} from 'fs';
-import {resolve} from 'path';
+import {resolve, sep} from 'path';
 
 /**
  * Scan uploaded image files and generate blurhash data URLs for those missing a blurhash.
@@ -77,9 +77,10 @@ export async function generateMissingBlurhashes({strapi}: {strapi: any}): Promis
                 const relativePath = fileUrl.startsWith('/') ? fileUrl.slice(1) : fileUrl;
                 const filePath = resolve(publicDir, relativePath);
 
-                // Security: Validate path is within public directory
+                // Security: Validate path is within public directory (separator-aware,
+                // so sibling dirs like `public-evil` do not pass the prefix check)
                 const resolvedPublicDir = resolve(publicDir);
-                if (!filePath.startsWith(resolvedPublicDir)) {
+                if (filePath !== resolvedPublicDir && !filePath.startsWith(resolvedPublicDir + sep)) {
                     strapi.log.warn(`File path outside public directory: ${filePath}`);
                     failed++;
                     continue;

@@ -5,7 +5,7 @@
  * path-traversal guard can be unit-tested without Strapi or the filesystem.
  */
 
-import {resolve} from 'path';
+import {resolve, sep} from 'path';
 
 /**
  * Derive a stable identity string for a Strapi file reference.
@@ -30,7 +30,8 @@ export function normalizeFileIdentity(file: any): string | null {
  * Resolve a Strapi-served file URL to an absolute path inside `publicDir`.
  *
  * Security: guards against path traversal by ensuring the resolved path stays
- * within the resolved public directory.
+ * within the resolved public directory (including against sibling directories
+ * that merely share the directory's name as a prefix).
  *
  * @returns The resolved absolute file path, or `null` if it would escape `publicDir`.
  */
@@ -40,7 +41,7 @@ export function resolveFileWithinPublicDir(publicDir: string, fileUrl: string): 
     const filePath = resolve(publicDir, relativePath);
 
     const resolvedPublicDir = resolve(publicDir);
-    if (!filePath.startsWith(resolvedPublicDir)) {
+    if (filePath !== resolvedPublicDir && !filePath.startsWith(resolvedPublicDir + sep)) {
         return null;
     }
     return filePath;
