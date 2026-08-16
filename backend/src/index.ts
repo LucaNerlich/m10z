@@ -1,6 +1,7 @@
 import {wordCountMiddleware} from './middlewares/wordCount';
 import {durationMiddleware} from './middlewares/duration';
 import {cacheInvalidationMiddleware} from './middlewares/cacheInvalidation';
+import {restorePendingInvalidations} from './services/cacheInvalidationQueue';
 import {configureServerTimeouts} from '../config/server';
 
 export default {
@@ -268,5 +269,14 @@ export default {
             strapi.log.error('Unhandled Rejection at:', promise, 'reason:', reason);
             // Not calling gracefulShutdown here as unhandled rejections are often recoverable
         });
+
+        // Recover invalidation events that were persisted before the last shutdown so
+        // they are delivered after a restart (the whole point of the durable queue).
+        // Failures are logged, never fatal to boot.
+        try {
+            await restorePendingInvalidations(strapi);
+        } catch (error) {
+            strapi.log.warn('Failed to restore pending cache invalidation events.', error);
+        }
     },
 };
