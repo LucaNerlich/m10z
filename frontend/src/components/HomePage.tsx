@@ -76,6 +76,19 @@ export async function HomePage({page}: {page: number}) {
         );
     }
 
+    if (data && data.items.length === 0 && data.pagination.total > 0 && page > data.pagination.pageCount) {
+        return (
+            <div className={styles.page}>
+                <Card variant="empty">
+                    <p>Diese Seite existiert nicht.</p>
+                    <Link href="/" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                        Zur ersten Seite
+                    </Link>
+                </Card>
+            </div>
+        );
+    }
+
     if (!data || data.items.length === 0) {
         return (
             <div className={styles.page}>

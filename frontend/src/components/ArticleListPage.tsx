@@ -51,6 +51,22 @@ export async function ArticleListPage({
         );
     }
 
+    // Out-of-range pages (e.g. /artikel?page=999) must not be presented as
+    // "no articles found" — that is misleading when content exists.
+    if (data && data.items.length === 0 && data.pagination.total > 0 && currentPage > data.pagination.pageCount) {
+        return (
+            <section data-list-page>
+                <h1>Artikel</h1>
+                <Card variant="empty">
+                    <p>Diese Seite existiert nicht.</p>
+                    <Link href="/artikel" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
+                        Zur ersten Seite
+                    </Link>
+                </Card>
+            </section>
+        );
+    }
+
     // Handle empty state
     if (!data || data.items.length === 0) {
         return (
