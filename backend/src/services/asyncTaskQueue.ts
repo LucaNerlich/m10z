@@ -37,6 +37,8 @@ export type TaskQueueOptions<T> = {
     maxFailureRetries?: number;
     /** Called once per item after each run attempt (e.g. to remove it from durable storage on success). */
     onSettled?: (item: T, succeeded: boolean, strapi: StrapiLike) => void;
+    /** Called once per batch with the abandoned items when the retry limit is hit (e.g. to drop their durable-storage rows). */
+    onAbandoned?: (items: T[], strapi: StrapiLike) => void;
 };
 
 const DEFAULT_DEBOUNCE_MS = 5000;
@@ -161,6 +163,7 @@ export class AsyncTaskQueue<T> {
                     strapi.log.warn(
                         `[${this.options.name}] abandoning ${failedItems.length} item(s) after ${maxRetries} consecutive failed batches; will retry on next enqueue.`,
                     );
+                    this.options.onAbandoned?.(failedItems, strapi);
                     this.consecutiveFailures = 0;
                 } else {
                     // Re-queue failed items for the next (backed-off) run, merging into any

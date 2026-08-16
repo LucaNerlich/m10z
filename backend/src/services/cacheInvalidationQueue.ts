@@ -31,6 +31,15 @@ const queue = new AsyncTaskQueue<QueueItem>({
             }
         }
     },
+    onAbandoned: (items, strapi) => {
+        // Dead-lettered items will never be delivered; drop their durable rows so the
+        // table does not accumulate rows for a permanently-down frontend.
+        for (const item of items) {
+            for (const dbId of item.dbIds) {
+                void removePending(strapi as StrapiWithDb, dbId);
+            }
+        }
+    },
 });
 
 export function queueCacheInvalidation(event: InvalidationEvent, strapi: StrapiWithDb | undefined | null): void {
