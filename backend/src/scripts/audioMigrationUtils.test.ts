@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {extractFilename, getMimeType, validateUrl} from './audioMigrationUtils';
+import {extractFilename, findExistingFileByName, getMimeType, validateUrl} from './audioMigrationUtils';
 
 describe('validateUrl', () => {
     test('accepts an HTTPS URL on the allowed domain', () => {
@@ -43,5 +43,38 @@ describe('getMimeType', () => {
     test('falls back to application/octet-stream for unknown extensions', () => {
         expect(getMimeType('archive.xyz')).toBe('application/octet-stream');
         expect(getMimeType('noext')).toBe('application/octet-stream');
+    });
+});
+
+describe('findExistingFileByName', () => {
+    const base = 'https://cms.example.com';
+    const token = 'api-token';
+
+    test('returns the matching file when it exists with the exact name', async () => {
+        const fetchFn = async (url: string) => {
+            expect(url).toBe(`${base}/api/upload/files?filters[name][$eq]=song.mp3`);
+            return {
+                ok: true,
+                json: async () => [{id: 7, name: 'song.mp3', url: '/uploads/song.mp3'}],
+            };
+        };
+
+        const result = await findExistingFileByName(fetchFn as any, base, token, 'song.mp3');
+
+        expect(result).toEqual({id: 7, url: '/uploads/song.mp3'});
+    });
+
+    test('returns null when the response has no matching file', async () => {
+        const fetchFn = async () => ({ok: true, json: async () => [{id: 1, name: 'other.mp3', url: ''}]});
+        expect(await findExistingFileByName(fetchFn as any, base, token, 'song.mp3')).toBeNull();
+    });
+
+    test('returns null on HTTP errors and network failures', async () => {
+        expect(await findExistingFileByName(async () => ({ok: false}) as any, base, token, 'song.mp3')).toBeNull();
+        expect(
+            await findExistingFileByName(async () => {
+                throw new Error('network down');
+            }, base, token, 'song.mp3'),
+        ).toBeNull();
     });
 });

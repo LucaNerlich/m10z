@@ -78,3 +78,33 @@ export function getMimeType(filename: string): string {
 
     return mimeTypes[ext] || 'application/octet-stream';
 }
+
+/**
+ * Look up an already-uploaded media file by name (idempotency check for the
+ * migration script). Pure w.r.t. Strapi: the fetch implementation, API base
+ * URL, and token are passed in, so this is unit-testable without network I/O.
+ *
+ * @returns `{id, url}` when a file with the exact name exists, otherwise `null`
+ * (including when the lookup fails — callers should then proceed normally).
+ */
+export async function findExistingFileByName(
+    fetchFn: (url: string, init?: any) => Promise<any>,
+    apiBase: string,
+    apiToken: string,
+    filename: string,
+): Promise<{id: number; url: string} | null> {
+    try {
+        const query = `filters[name][$eq]=${encodeURIComponent(filename)}`;
+        const res = await fetchFn(`${apiBase}/api/upload/files?${query}`, {
+            method: 'GET',
+            headers: {Authorization: `Bearer ${apiToken}`},
+        });
+        if (!res.ok) return null;
+        const json: any = await res.json();
+        const files = Array.isArray(json) ? json : json?.results ?? [];
+        const match = files.find((f: any) => f?.name === filename && typeof f?.id === 'number');
+        return match ? {id: match.id, url: match.url ?? ''} : null;
+    } catch {
+        return null;
+    }
+}
