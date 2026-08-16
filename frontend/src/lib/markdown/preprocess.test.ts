@@ -36,4 +36,32 @@ describe('preprocessMarkdown', () => {
             '<mark>a</mark> and <ins>b</ins> and <sup>c</sup> and <sub>d</sub>',
         );
     });
+
+    test('leaves fenced code blocks untouched', () => {
+        const source = [
+            '==outside==',
+            '```js',
+            'const x = a == b;',
+            '<br>',
+            '~~not strike~~',
+            '```',
+            '==also outside==',
+        ].join('\n');
+        const expected = [
+            '<mark>outside</mark>',
+            '```js',
+            'const x = a == b;',
+            '<br>',
+            '~~not strike~~',
+            '```',
+            '<mark>also outside</mark>',
+        ].join('\n');
+        expect(preprocessMarkdown(source)).toBe(expected);
+    });
+
+    test('leaves tilde-fenced code blocks untouched', () => {
+        const source = ['~~~', 'H~2~O', '~~~', 'H~2~O'].join('\n');
+        const expected = ['~~~', 'H~2~O', '~~~', 'H<sub>2</sub>O'].join('\n');
+        expect(preprocessMarkdown(source)).toBe(expected);
+    });
 });
