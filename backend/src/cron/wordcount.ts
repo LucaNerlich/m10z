@@ -12,19 +12,13 @@ import {
     publishDraftIfScheduledDateReached,
 } from './scheduledPublish';
 
+// Only target `$null` values. `0` is a legitimate word count (empty or image-only
+// richtext); including `$eq: 0` made those documents match every night, causing
+// endless update() + publish() churn (cache busting and search-index rebuilds).
 const WORDCOUNT_MISSING_FILTER = {
-    $or: [
-        {
-            wordCount: {
-                $null: true,
-            },
-        },
-        {
-            wordCount: {
-                $eq: 0,
-            },
-        },
-    ],
+    wordCount: {
+        $null: true,
+    },
 };
 
 type RichtextField = 'content' | 'shownotes';
