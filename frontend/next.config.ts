@@ -38,7 +38,10 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     images: {
         minimumCacheTTL: process.env.NODE_ENV === 'production' ? 3600 : 60,
-        dangerouslyAllowLocalIP: true,
+        // Allow local IPs only outside production: in production the optimizer
+        // must not fetch from the app host's localhost, and Next's private-IP
+        // blocking stays enabled.
+        dangerouslyAllowLocalIP: !isProd,
         remotePatterns: getRemotePatterns(),
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],

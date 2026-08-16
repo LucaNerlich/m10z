@@ -28,7 +28,7 @@ vi.mock('@/src/lib/rss/articleFeedRouteHandler', () => ({
 }));
 vi.mock('@/src/lib/net/getClientIp', () => ({getClientIp}));
 
-function makeRequest(token?: string): Request {
+function makeQueryParamRequest(token?: string): Request {
     const url = token
         ? `https://m10z.de/api/diagnostics?token=${encodeURIComponent(token)}`
         : 'https://m10z.de/api/diagnostics';
@@ -51,24 +51,41 @@ afterEach(() => vi.unstubAllEnvs());
 describe('handleDiagnosticsGet', () => {
     test('returns 401 when no token is provided', async () => {
         verifySecret.mockReturnValue(false);
-        const res = await handleDiagnosticsGet(makeRequest());
+        const res = await handleDiagnosticsGet(makeHeaderRequest(''));
         expect(res.status).toBe(401);
     });
 
     test('returns 401 when wrong token is provided', async () => {
         verifySecret.mockReturnValue(false);
-        const res = await handleDiagnosticsGet(makeRequest('wrong-token'));
+        const res = await handleDiagnosticsGet(makeHeaderRequest('wrong-token'));
         expect(res.status).toBe(401);
+    });
+
+    test('ignores query-param tokens (header-only authentication)', async () => {
+        verifySecret.mockReturnValue(false);
+        const res = await handleDiagnosticsGet(makeQueryParamRequest('test-token'));
+        expect(res.status).toBe(401);
+        expect(verifySecret).toHaveBeenCalledWith(null, 'test-token');
     });
 
     test('returns 429 with Retry-After header when rate limit is exceeded', async () => {
         verifySecret.mockReturnValue(true);
         checkRateLimit.mockReturnValue({ok: false, retryAfterSeconds: 5});
 
-        const res = await handleDiagnosticsGet(makeRequest('test-token'));
+        const res = await handleDiagnosticsGet(makeHeaderRequest('test-token'));
 
         expect(res.status).toBe(429);
         expect(res.headers.get('Retry-After')).toBe('5');
+    });
+
+    test('checks the rate limit even for unauthenticated requests', async () => {
+        verifySecret.mockReturnValue(false);
+        checkRateLimit.mockReturnValue({ok: false, retryAfterSeconds: 7});
+
+        const res = await handleDiagnosticsGet(makeHeaderRequest('wrong-token'));
+
+        expect(res.status).toBe(429);
+        expect(checkRateLimit).toHaveBeenCalled();
     });
 
     test('returns 200 with diagnostic JSON when token is valid and within rate limit', async () => {
@@ -78,9 +95,10 @@ describe('handleDiagnosticsGet', () => {
         getAudioFeedRuntimeState.mockReturnValue({running: true, lastFetchMs: 100});
         getSchedulerState.mockReturnValue({lastRun: 123, intervalMs: 60000});
 
-        const res = await handleDiagnosticsGet(makeRequest('test-token'));
+        const res = await handleDiagnosticsGet(makeHeaderRequest('test-token'));
 
         expect(res.status).toBe(200);
+        expect(res.headers.get('Cache-Control')).toBe('no-store');
         const body = await res.json();
         expect(body).toMatchObject({
             events: [{type: 'test', ts: 1, kind: 'route', name: 'x', ok: true, durationMs: 1}],

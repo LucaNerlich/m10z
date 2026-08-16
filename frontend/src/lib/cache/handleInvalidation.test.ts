@@ -83,13 +83,23 @@ describe('handleInvalidation', () => {
         expect(revalidateTag).not.toHaveBeenCalled();
     });
 
-    test('429 once the per-type/ip rate limit is exceeded', async () => {
-        const ip = 'rate-limited';
+    test('503 once the per-IP rate limit is exceeded (retryable status for the backend)', async () => {
+        const ip = '203.0.113.9';
         let last: Response | undefined;
-        for (let i = 0; i < 31; i++) {
+        for (let i = 0; i < 121; i++) {
             last = await handleInvalidation(request({secret: SECRET, ip}));
         }
-        expect(last?.status).toBe(429);
+        expect(last?.status).toBe(503);
         expect(last?.headers.get('Retry-After')).toBeTruthy();
+    });
+
+    test('rate limit applies to unauthenticated requests as well', async () => {
+        const ip = '203.0.113.10';
+        let last: Response | undefined;
+        for (let i = 0; i < 121; i++) {
+            last = await handleInvalidation(request({secret: 'nope', ip}));
+        }
+        expect(last?.status).toBe(503);
+        expect(revalidateTag).not.toHaveBeenCalled();
     });
 });

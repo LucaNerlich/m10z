@@ -70,4 +70,22 @@ describe('checkRateLimit', () => {
         expect(checkRateLimit(a, {windowMs: 60_000, max: 3}).ok).toBe(false);
         expect(checkRateLimit(b, {windowMs: 60_000, max: 3}).ok).toBe(true);
     });
+
+    test('map full of live buckets fails closed instead of evicting a live bucket', async () => {
+        // Use a fresh module instance so the 10k filler buckets cannot leak into
+        // other tests (the production Map is module-global and shared).
+        vi.resetModules();
+        const fresh = await import('./rateLimit');
+
+        for (let i = 0; i < 10_000; i++) {
+            fresh.checkRateLimit(`full:${i}`, {windowMs: 60_000, max: 1});
+        }
+
+        const rejected = fresh.checkRateLimit('full:overflow', {windowMs: 60_000, max: 1});
+        expect(rejected.ok).toBe(false);
+        expect(rejected.retryAfterSeconds).toBeGreaterThan(0);
+
+        // The oldest live bucket was not evicted/reset by the overflow attempt.
+        expect(fresh.checkRateLimit('full:0', {windowMs: 60_000, max: 1}).ok).toBe(false);
+    });
 });

@@ -9,14 +9,9 @@ import {getAudioFeedRuntimeState} from '../rss/audioFeedRouteHandler';
 import {getSchedulerState as getArticleFeedSchedulerState} from '../rss/articleFeedRouteHandler';
 
 export async function handleDiagnosticsGet(request: Request): Promise<NextResponse> {
-    const expected = process.env.DIAGNOSTICS_TOKEN ?? null;
-    const {searchParams} = new URL(request.url);
-    const provided = searchParams.get('token') ?? request.headers.get('x-m10z-diagnostics-token');
-
-    if (!verifySecret(provided, expected)) {
-        return new NextResponse('Unauthorized', {status: 401});
-    }
-
+    // Rate-limit before authentication so secret-guessing attempts are
+    // throttled too. The token is header-only: query-string tokens would leak
+    // into proxy/request logs, browser history, and Referer headers.
     const ip = getClientIp(request);
     const rl = checkRateLimit(`diag:${ip}`, {windowMs: 60_000, max: 30});
     if (!rl.ok) {
@@ -26,13 +21,23 @@ export async function handleDiagnosticsGet(request: Request): Promise<NextRespon
         });
     }
 
-    return NextResponse.json({
-        now: Date.now(),
-        events: getRecentDiagnosticEvents(),
-        memory: process.memoryUsage(),
-        schedulers: {
-            audioFeed: getAudioFeedRuntimeState(),
-            articleFeed: getArticleFeedSchedulerState(),
+    const expected = process.env.DIAGNOSTICS_TOKEN ?? null;
+    const provided = request.headers.get('x-m10z-diagnostics-token');
+
+    if (!verifySecret(provided, expected)) {
+        return new NextResponse('Unauthorized', {status: 401});
+    }
+
+    return NextResponse.json(
+        {
+            now: Date.now(),
+            events: getRecentDiagnosticEvents(),
+            memory: process.memoryUsage(),
+            schedulers: {
+                audioFeed: getAudioFeedRuntimeState(),
+                articleFeed: getArticleFeedSchedulerState(),
+            },
         },
-    });
+        {headers: {'Cache-Control': 'no-store'}},
+    );
 }

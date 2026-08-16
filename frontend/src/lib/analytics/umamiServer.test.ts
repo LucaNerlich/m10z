@@ -59,8 +59,8 @@ describe('sendPodcastDownloadEvent', () => {
         expect(init.headers['content-type']).toBe('application/json');
         expect(init.headers['user-agent']).toBe(UMAMI_COLLECTOR_USER_AGENT);
         expect(init.headers['user-agent']).not.toBe(BOT_FLAGGED_USER_AGENT);
-        // Only the first hop of x-forwarded-for is forwarded.
-        expect(init.headers['x-forwarded-for']).toBe('203.0.113.7');
+        // The proxy-appended (last) hop of x-forwarded-for is forwarded.
+        expect(init.headers['x-forwarded-for']).toBe('10.0.0.1');
         expect(init.signal).toBeInstanceOf(AbortSignal);
 
         expect(JSON.parse(init.body)).toEqual({
