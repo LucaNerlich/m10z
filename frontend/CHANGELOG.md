@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.13.1] - 2026-08-17
+
+### Fixed
+- The image optimizer no longer rejects a local Strapi origin in production-like ('next start') setups, while still keeping Next's private-IP blocking enabled for real deployments with a public `STRAPI_URL`.
+- Podcast download tracking no longer double-counts plays, and Umami's Do-Not-Track setting is now respected.
+- Wichteln: duplicate participant names, shuffle randomness, and per-participant export are now handled correctly.
+- Several page-level correctness fixes: timezone handling, table-of-contents anchors, domain fallback, empty states, and CMS outage handling.
+- Search payload correctness, link/href validation, and search-modal focus management.
+- Client-side UX fixes: scroll restoration, cross-tab theme sync, the search keyboard shortcut, and a theme-switching crash.
+- Hardened the markdown pipeline against protocol-relative links and malformed code fences, and tightened the sanitize schema and Mermaid diagram handling.
+- RSS feed fixes: XML validity, URL resolution, refresh race conditions, and rate-limit responses.
+- Strapi list fetches now respect the backend's REST `maxLimit`, and the slug index is cached.
+- Hardened rate limiting, authentication ordering, and image optimizer configuration.
+- The about-page feed is now included in cache invalidation.
+
+### Changed
+- Upgraded Next.js to 16.3.1.
+- Prepared the July 2026 M12G post.
+
 ## [1.13.0] - 2026-08-07
 
 ### Added
