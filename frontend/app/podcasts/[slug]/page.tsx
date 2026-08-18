@@ -66,12 +66,17 @@ export default async function PodcastDetailPage({params}: PageProps) {
 
     const episode = await fetchPodcastBySlug(slug).catch((error: unknown) => {
         const errorMessage = getErrorMessage(error);
+        if (errorMessage.includes('404') || errorMessage.includes('not found')) {
+            return null;
+        }
         if (isTimeoutOrSocketError(error)) {
             console.error(`Socket/timeout error fetching podcast for slug "${slug}":`, errorMessage);
-        } else if (!errorMessage.includes('404') && !errorMessage.includes('not found')) {
+        } else {
             console.error(`Error fetching podcast for slug "${slug}":`, errorMessage);
         }
-        return null;
+        // Transient failure, not a genuine absence: rethrow so Next's ISR keeps
+        // serving the last successfully cached page instead of caching a 404.
+        throw error;
     });
 
     if (!episode) notFound();
