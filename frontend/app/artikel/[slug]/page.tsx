@@ -9,7 +9,7 @@ import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
-import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
+import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 import {contentTag} from '@/src/lib/strapi/cacheTags';
 
@@ -68,13 +68,18 @@ export default async function ArticleDetailPage({params}: PageProps) {
     if (!slug) notFound();
 
     const article = await fetchArticleBySlug(slug).catch((error: unknown) => {
+        if (isNotFoundError(error)) {
+            return null;
+        }
         const errorMessage = getErrorMessage(error);
         if (isTimeoutOrSocketError(error)) {
             console.error(`Socket/timeout error fetching article for slug "${slug}":`, errorMessage);
-        } else if (!errorMessage.includes('404') && !errorMessage.includes('not found')) {
+        } else {
             console.error(`Error fetching article for slug "${slug}":`, errorMessage);
         }
-        return null;
+        // Transient failure, not a genuine absence: rethrow so Next's ISR keeps
+        // serving the last successfully cached page instead of caching a 404.
+        throw error;
     });
 
     if (!article) notFound();

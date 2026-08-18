@@ -5,7 +5,7 @@ import {fetchPodcastBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
 import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
-import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
+import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
@@ -65,13 +65,18 @@ export default async function PodcastDetailPage({params}: PageProps) {
     if (!slug) notFound();
 
     const episode = await fetchPodcastBySlug(slug).catch((error: unknown) => {
+        if (isNotFoundError(error)) {
+            return null;
+        }
         const errorMessage = getErrorMessage(error);
         if (isTimeoutOrSocketError(error)) {
             console.error(`Socket/timeout error fetching podcast for slug "${slug}":`, errorMessage);
-        } else if (!errorMessage.includes('404') && !errorMessage.includes('not found')) {
+        } else {
             console.error(`Error fetching podcast for slug "${slug}":`, errorMessage);
         }
-        return null;
+        // Transient failure, not a genuine absence: rethrow so Next's ISR keeps
+        // serving the last successfully cached page instead of caching a 404.
+        throw error;
     });
 
     if (!episode) notFound();
