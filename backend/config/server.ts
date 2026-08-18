@@ -68,7 +68,8 @@ export default ({env}: any) => ({
                     rule: '0 3 * * *', // Run nightly at 03:00 (server local time)
                 },
             },
-            // Generate wordCount for articles and podcasts missing it - runs once nightly
+            // Generate wordCount for articles and podcasts missing it - runs once nightly.
+            // Patches published rows in place; does not call publish() on live content.
             generateMissingWordCounts: {
                 task: generateMissingWordCounts,
                 options: {

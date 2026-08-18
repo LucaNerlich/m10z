@@ -1,16 +1,20 @@
 /**
  * Cronjob to backfill wordCount for articles and podcasts missing it.
  *
- * Processes published entries and drafts that have never been published (`hasPublishedVersion: false`).
- * For published entries: `update()` then `publish({ documentId})` so the live version picks up wordCount.
- * For never-published drafts: after `update()`, `publish()` when root `date` is due (same as scheduled publish).
+ * Published entries are patched in place on the published row (query engine)
+ * so `publishedAt` / History stay untouched. Never-published drafts are
+ * updated via Document Service; those whose root `date` is due are then
+ * published (same helper as the scheduled-publish cron).
  */
 
 import {countWords, extractTextFromRichtext} from '../middlewares/wordCount';
+import {documentServicePage} from '../utils/documentServicePage';
 import {
     type ContentUid,
     publishDraftIfScheduledDateReached,
 } from './scheduledPublish';
+
+export const WORDCOUNT_BATCH_SIZE = 50;
 
 // Only target `$null` values. `0` is a legitimate word count (empty or image-only
 // richtext); including `$eq: 0` made those documents match every night, causing
@@ -22,6 +26,42 @@ const WORDCOUNT_MISSING_FILTER = {
 };
 
 type RichtextField = 'content' | 'shownotes';
+
+/**
+ * Writes `wordCount` onto the published row only. Leaves `publishedAt` alone
+ * (and keeps `updatedAt` if we have it) so a metadata backfill cannot look like
+ * a republish. Does not touch the draft, so pending editorial edits stay unpublished.
+ *
+ * Uses the Query Engine rather than Document Service: `documents().update()`
+ * always writes the draft, and `update({status: 'published'})` internally calls
+ * `publish()`, which is what caused #688.
+ */
+async function patchPublishedWordCount({
+    strapi,
+    uid,
+    documentId,
+    wordCount,
+    updatedAt,
+}: {
+    strapi: any;
+    uid: ContentUid;
+    documentId: string | number;
+    wordCount: number;
+    updatedAt?: string;
+}): Promise<void> {
+    const data: Record<string, unknown> = {wordCount};
+    if (typeof updatedAt === 'string' && updatedAt.length > 0) {
+        data.updatedAt = updatedAt;
+    }
+
+    await strapi.db.query(uid).updateMany({
+        where: {
+            documentId,
+            publishedAt: {$ne: null},
+        },
+        data,
+    });
+}
 
 async function backfillWordCountsForUid({
     strapi,
@@ -46,14 +86,11 @@ async function backfillWordCountsForUid({
     try {
         const fields: string[] = publishAfterIfDue
             ? ['slug', richtextField, 'date']
-            : ['slug', richtextField];
+            : ['slug', richtextField, 'updatedAt'];
 
         const findParams: Record<string, unknown> = {
             filters: WORDCOUNT_MISSING_FILTER,
-            pagination: {
-                page: 1,
-                pageSize: 50,
-            },
+            ...documentServicePage(1, WORDCOUNT_BATCH_SIZE),
             fields,
             status,
         };
@@ -80,18 +117,23 @@ async function backfillWordCountsForUid({
 
                 const documentId = doc.documentId || doc.id;
 
-                // Default `update()` writes the draft. For entries we read as `published`, call
-                // `publish()` afterward so the live version matches (same pattern as scheduled publish).
-                await strapi.documents(uid).update({
-                    documentId,
-                    data: {
-                        wordCount: wordCount,
-                    },
-                });
-
                 if (status === 'published') {
-                    await strapi.documents(uid).publish({documentId});
-                    published++;
+                    await patchPublishedWordCount({
+                        strapi,
+                        uid,
+                        documentId,
+                        wordCount,
+                        updatedAt: doc.updatedAt,
+                    });
+                } else {
+                    // Default `update()` writes the draft. Never-published drafts only —
+                    // `hasPublishedVersion: false` above — so this cannot push live edits.
+                    await strapi.documents(uid).update({
+                        documentId,
+                        data: {
+                            wordCount: wordCount,
+                        },
+                    });
                 }
 
                 successful++;
@@ -131,7 +173,8 @@ async function backfillWordCountsForUid({
  * Backfills missing wordCount fields for articles and podcasts by computing and updating them.
  *
  * Processes up to 50 published + 50 draft articles and the same for podcasts per invocation.
- * Drafts with `date` in the past are published after wordCount is set (never-published drafts only).
+ * Published rows are patched in place (no `publish()`). Never-published drafts whose
+ * `date` is due are published after wordCount is set.
  */
 export async function generateMissingWordCounts({strapi}: {strapi: any}): Promise<void> {
     try {
@@ -194,7 +237,9 @@ export async function generateMissingWordCounts({strapi}: {strapi: any}): Promis
         } else {
             strapi.log.info(
                 `WordCount backfill completed: ${totalProcessed} processed, ${totalSuccessful} successful, ${totalFailed} failed` +
-                    (totalPublishedAfter > 0 ? `, ${totalPublishedAfter} publish() after backfill` : ''),
+                    (totalPublishedAfter > 0
+                        ? `, ${totalPublishedAfter} never-published draft(s) published after backfill`
+                        : ''),
             );
         }
     } catch (error) {

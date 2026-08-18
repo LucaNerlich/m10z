@@ -3,6 +3,7 @@ import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {
     getSchedulePublishCutoffIso,
     publishDraftIfScheduledDateReached,
+    publishScheduledEntries,
     SCHEDULE_PUBLISH_LEEWAY_MS,
 } from './scheduledPublish';
 
@@ -81,5 +82,60 @@ describe('publishDraftIfScheduledDateReached', () => {
         const {strapi} = makeStrapi(() => Promise.reject(new Error('boom')));
         const result = await publishDraftIfScheduledDateReached({strapi, ...base, date: '2020-01-01T00:00:00.000Z'});
         expect(result).toBe(false);
+    });
+});
+
+describe('publishScheduledEntries pagination', () => {
+    test('uses Document Service limit/start rather than nested pagination', async () => {
+        const findMany = vi.fn(() => Promise.resolve([]));
+        const strapi = {
+            documents: vi.fn(() => ({findMany, publish: vi.fn()})),
+            log: {info: vi.fn(), debug: vi.fn(), error: vi.fn()},
+        };
+
+        await publishScheduledEntries({strapi});
+
+        expect(findMany.mock.calls.length).toBeGreaterThan(0);
+        for (const [params] of findMany.mock.calls) {
+            expect(params.limit).toBe(25);
+            expect(params.start).toBe(0);
+            expect(params.pagination).toBeUndefined();
+        }
+    });
+
+    test('does not skip due drafts when publish() removes drafts while paging', async () => {
+        const PAGE_SIZE = 25;
+        const dueDrafts = Array.from({length: PAGE_SIZE + 10}, (_, i) => ({
+            documentId: `draft-${i + 1}`,
+            slug: `slug-${i + 1}`,
+        }));
+
+        // Simulate Strapi where publishing deletes the corresponding draft rows.
+        const remainingDrafts = dueDrafts.slice();
+
+        const findMany = vi.fn(async (params: any) => {
+            const start = params.start ?? 0;
+            const limit = params.limit ?? PAGE_SIZE;
+            return remainingDrafts.slice(start, start + limit);
+        });
+
+        const publish = vi.fn(async ({documentId}: {documentId: string}) => {
+            const idx = remainingDrafts.findIndex((d) => d.documentId === documentId);
+            if (idx !== -1) remainingDrafts.splice(idx, 1);
+            return {};
+        });
+
+        const strapi = {
+            documents: vi.fn(() => ({findMany, publish})),
+            log: {info: vi.fn(), debug: vi.fn(), error: vi.fn()},
+        };
+
+        await publishScheduledEntries({strapi});
+
+        // All due drafts should have been published exactly once.
+        expect(publish).toHaveBeenCalledTimes(dueDrafts.length);
+        const publishedIds = publish.mock.calls.map((c) => c[0].documentId).sort();
+        const expectedIds = dueDrafts.map((d) => d.documentId).sort();
+        expect(publishedIds).toEqual(expectedIds);
     });
 });

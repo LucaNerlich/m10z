@@ -1,6 +1,7 @@
 import markdownToTxt from 'markdown-to-txt';
 
 import {type SearchIndexFile, type SearchRecord, type SearchRecordType} from '../shared/contracts/search/types';
+import {documentServicePage} from '../utils/documentServicePage';
 
 import {filterAndLimitMetrics} from './metricsHistory';
 
@@ -235,9 +236,9 @@ async function fetchAllDocuments<T>(
 
     while (true) {
         const res = await strapi.documents(uid).findMany({
-            status: 'published',
-            pagination: {page, pageSize: PAGE_SIZE},
             ...params,
+            status: 'published',
+            ...documentServicePage(page, PAGE_SIZE),
         });
 
         const results: T[] = Array.isArray(res) ? res : res?.results ?? res?.data ?? [];
@@ -246,7 +247,8 @@ async function fetchAllDocuments<T>(
         // Strapi 5's Document Service `findMany()` returns a bare array without pagination
         // metadata (a v4 entity-service response carries it, but this code always runs
         // against the v5 document service). Stop paging once the last page came back
-        // shorter than the requested page size.
+        // shorter than the requested page size. `limit`/`start` (not nested
+        // `pagination`) are what actually cap the query.
         const pagination = res?.pagination ?? res?.meta?.pagination;
         const pageCount = pagination?.pageCount ?? Number.POSITIVE_INFINITY;
         if (results.length < PAGE_SIZE || page >= pageCount) break;
@@ -492,7 +494,7 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
 // Uses findFirst if available (Strapi 5), falls back to findMany (Strapi 4 compat).
 async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<SearchIndexFile> {
     const svc = strapi.documents('api::search-index.search-index');
-    const existing = (await (svc.findFirst ? svc.findFirst() : svc.findMany({pagination: {pageSize: 1}}))) as any;
+    const existing = (await (svc.findFirst ? svc.findFirst() : svc.findMany(documentServicePage(1, 1)))) as any;
     const current = Array.isArray(existing) ? existing[0] : existing?.results?.[0] ?? existing?.data?.[0] ?? existing;
     const currentVersion = Number(current?.version) || 0;
     const nextVersion = currentVersion + 1;
