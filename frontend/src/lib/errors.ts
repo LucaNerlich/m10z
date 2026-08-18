@@ -69,3 +69,23 @@ export function isNotFoundError(error: unknown): boolean {
     return message.includes('404') || message.includes('not found');
 }
 
+/**
+ * Detects a stale-build module/chunk loading error: a browser tab that loaded
+ * before a deployment tries to load a JS chunk that no longer exists under the
+ * new build. No in-page retry can fix this — only a full reload against the
+ * current deployment can, since it fetches a fresh HTML shell and chunk graph.
+ *
+ * @param error - The error to check
+ * @returns true if the error message matches a known stale-chunk signature
+ */
+export function isStaleChunkError(error: unknown): boolean {
+    const message = getErrorMessage(error).toLowerCase();
+
+    return (
+        message.includes('loading chunk') ||
+        message.includes('chunkloaderror') ||
+        message.includes('module factory is not available') ||
+        message.includes('failed to fetch dynamically imported module')
+    );
+}
+

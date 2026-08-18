@@ -1,15 +1,32 @@
 'use client';
 
+import {useEffect} from 'react';
+
+import {isStaleChunkError} from '@/src/lib/errors';
+
+const STALE_CHUNK_RELOAD_KEY = 'm10z-stale-chunk-reload';
+
 /**
  * Catches errors thrown by the root layout itself (fonts, JSON-LD, imports).
  * Must render its own <html>/<body> since the root layout is unavailable.
  */
 export default function GlobalError({
+                                        error,
                                         reset,
                                     }: {
     error: Error & {digest?: string};
     reset: () => void;
 }) {
+    useEffect(() => {
+        if (!isStaleChunkError(error)) return;
+        // A tab open across a deployment can reference JS chunks that no
+        // longer exist under the new build; only a full reload recovers.
+        // Guard with sessionStorage to avoid looping if reload doesn't help.
+        if (window.sessionStorage.getItem(STALE_CHUNK_RELOAD_KEY)) return;
+        window.sessionStorage.setItem(STALE_CHUNK_RELOAD_KEY, '1');
+        window.location.reload();
+    }, [error]);
+
     return (
         <html lang="de">
         <body
