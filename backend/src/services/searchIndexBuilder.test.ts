@@ -13,9 +13,10 @@ function makeArticle(i: number) {
 
 function makeStrapi(articleCount: number) {
     const articles = Array.from({length: articleCount}, (_, i) => makeArticle(i + 1));
-    const articleFindMany = vi.fn((params: {pagination: {page: number; pageSize: number}}) => {
-        const {page, pageSize} = params.pagination;
-        return Promise.resolve(articles.slice((page - 1) * pageSize, page * pageSize));
+    const articleFindMany = vi.fn((params: {limit?: number; start?: number}) => {
+        const pageSize = params.limit ?? 100;
+        const start = params.start ?? 0;
+        return Promise.resolve(articles.slice(start, start + pageSize));
     });
     const emptyFindMany = vi.fn(() => Promise.resolve([]));
     const create = vi.fn(() => Promise.resolve({}));

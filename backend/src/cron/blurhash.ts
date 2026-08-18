@@ -3,9 +3,11 @@
  * Runs hourly to process up to 50 images per execution.
  */
 
-import {generateBlurDataUrl} from '../utils/generateBlurhash';
 import {existsSync, promises as fsPromises} from 'fs';
 import {resolve, sep} from 'path';
+
+import {documentServicePage} from '../utils/documentServicePage';
+import {generateBlurDataUrl} from '../utils/generateBlurhash';
 
 /**
  * Scan uploaded image files and generate blurhash data URLs for those missing a blurhash.
@@ -41,10 +43,7 @@ export async function generateMissingBlurhashes({strapi}: {strapi: any}): Promis
                     },
                 ],
             },
-            pagination: {
-                page: 1,
-                pageSize: 50, // Process up to 50 images per hour
-            },
+            ...documentServicePage(1, 50),
         });
 
         if (!files || files.length === 0) {

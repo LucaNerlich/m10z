@@ -171,7 +171,7 @@ Three document service middlewares registered in `src/index.ts`:
 | Time  | Task                          | Batch size |
 |-------|-------------------------------|------------|
 | 03:00 | Generate missing blurhashes   | 50 images  |
-| 03:15 | Backfill word counts          | Up to 50 per status (published/draft) per type; may publish never-published drafts whose `date` is due |
+| 03:15 | Backfill word counts          | Up to 50 per status (published/draft) per type; published rows are patched in place (no `publish()`); may publish never-published drafts whose `date` is due |
 | 03:30 | Rebuild search index          | Full       |
 
 ### Database

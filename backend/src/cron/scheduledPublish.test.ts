@@ -3,6 +3,7 @@ import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {
     getSchedulePublishCutoffIso,
     publishDraftIfScheduledDateReached,
+    publishScheduledEntries,
     SCHEDULE_PUBLISH_LEEWAY_MS,
 } from './scheduledPublish';
 
@@ -81,5 +82,24 @@ describe('publishDraftIfScheduledDateReached', () => {
         const {strapi} = makeStrapi(() => Promise.reject(new Error('boom')));
         const result = await publishDraftIfScheduledDateReached({strapi, ...base, date: '2020-01-01T00:00:00.000Z'});
         expect(result).toBe(false);
+    });
+});
+
+describe('publishScheduledEntries pagination', () => {
+    test('uses Document Service limit/start rather than nested pagination', async () => {
+        const findMany = vi.fn(() => Promise.resolve([]));
+        const strapi = {
+            documents: vi.fn(() => ({findMany, publish: vi.fn()})),
+            log: {info: vi.fn(), debug: vi.fn(), error: vi.fn()},
+        };
+
+        await publishScheduledEntries({strapi});
+
+        expect(findMany.mock.calls.length).toBeGreaterThan(0);
+        for (const [params] of findMany.mock.calls) {
+            expect(params.limit).toBe(25);
+            expect(params.start).toBe(0);
+            expect(params.pagination).toBeUndefined();
+        }
     });
 });

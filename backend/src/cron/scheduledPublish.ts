@@ -8,6 +8,8 @@
  * existing cacheInvalidationMiddleware in the document service pipeline.
  */
 
+import {documentServicePage} from '../utils/documentServicePage';
+
 /** Same leeway as scheduled publish: treat dates up to this far in the future as "due". */
 export const SCHEDULE_PUBLISH_LEEWAY_MS = 2 * 60 * 1000; // 2 minutes into the future
 
@@ -100,10 +102,7 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
                             },
                         },
                         fields: ['slug'],
-                        pagination: {
-                            page,
-                            pageSize: PAGE_SIZE,
-                        },
+                        ...documentServicePage(page, PAGE_SIZE),
                     });
 
                     if (!pageDocuments || pageDocuments.length === 0) {
