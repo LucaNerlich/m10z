@@ -55,3 +55,17 @@ export function isTimeoutOrSocketError(error: unknown): boolean {
     );
 }
 
+/**
+ * Determines if an error represents a genuine "not found" response, as opposed
+ * to a transient failure (timeout, socket error, 5xx) that should be rethrown
+ * so ISR keeps serving the last successfully cached page.
+ *
+ * @param error - The error to check
+ * @returns true if the error message indicates a 404/not-found response
+ */
+export function isNotFoundError(error: unknown): boolean {
+    const message = getErrorMessage(error).toLowerCase();
+
+    return message.includes('404') || message.includes('not found');
+}
+

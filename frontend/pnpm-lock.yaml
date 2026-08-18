@@ -33,7 +33,7 @@ importers:
         specifier: ^11.16.1
         version: 11.16.1
       next:
-        specifier: ~16.2.12
+        specifier: 16.2.12
         version: 16.2.12(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       prism-react-renderer:
         specifier: ^2.4.1
@@ -88,7 +88,7 @@ importers:
         version: 3.7.0
     devDependencies:
       '@next/env':
-        specifier: ~16.2.12
+        specifier: 16.2.12
         version: 16.2.12
       '@types/jsdom':
         specifier: ^27.0.0
@@ -115,7 +115,7 @@ importers:
         specifier: ^4.23.12
         version: 4.23.12
       typescript:
-        specifier: ~6.0.3
+        specifier: 6.0.3
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
