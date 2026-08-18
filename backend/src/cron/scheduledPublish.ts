@@ -88,6 +88,10 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
 
         for (const {uid, label} of CONTENT_TYPES) {
             try {
+                // First collect a stable set of due draft document IDs, then publish that fixed
+                // list. Publishing deletes the draft rows, so mutating while paging can cause
+                // later pages to be skipped.
+                const dueDocs: any[] = [];
                 let page = 1;
                 let pageDocuments: any[];
 
@@ -101,6 +105,8 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
                                 $lte: cutoffDate,
                             },
                         },
+                        // Stable ordering for offset-based paging.
+                        sort: 'documentId:asc',
                         fields: ['slug'],
                         ...documentServicePage(page, PAGE_SIZE),
                     });
@@ -112,41 +118,43 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
                         break;
                     }
 
+                    dueDocs.push(...pageDocuments);
                     strapi.log.info(
-                        `Scheduled publish: found ${pageDocuments.length} ${label}(s) on page ${page}`,
+                        `Scheduled publish: collected ${pageDocuments.length} ${label}(s) on page ${page}`,
                     );
-
-                    const results = await Promise.allSettled(
-                        pageDocuments.map((doc) =>
-                            strapi
-                                .documents(uid)
-                                .publish({documentId: doc.documentId})
-                                .then(() => ({doc, error: null}))
-                                .catch((error: unknown) => {
-                                    throw {doc, error};
-                                }),
-                        ),
-                    );
-
-                    for (const result of results) {
-                        if (result.status === 'fulfilled') {
-                            const {doc} = result.value;
-                            totalPublished++;
-                            strapi.log.info(
-                                `Scheduled publish: published ${label} "${doc.slug}" (${doc.documentId})`,
-                            );
-                        } else {
-                            const {doc, error} = result.reason;
-                            totalFailed++;
-                            strapi.log.error(
-                                `Scheduled publish: failed to publish ${label} "${doc.slug}" (${doc.documentId}):`,
-                                error,
-                            );
-                        }
-                    }
-
                     page++;
                 } while (pageDocuments.length >= PAGE_SIZE);
+
+                if (dueDocs.length === 0) continue;
+
+                const results = await Promise.allSettled(
+                    dueDocs.map((doc) =>
+                        strapi
+                            .documents(uid)
+                            .publish({documentId: doc.documentId})
+                            .then(() => ({doc, error: null}))
+                            .catch((error: unknown) => {
+                                throw {doc, error};
+                            }),
+                    ),
+                );
+
+                for (const result of results) {
+                    if (result.status === 'fulfilled') {
+                        const {doc} = result.value;
+                        totalPublished++;
+                        strapi.log.info(
+                            `Scheduled publish: published ${label} "${doc.slug}" (${doc.documentId})`,
+                        );
+                    } else {
+                        const {doc, error} = result.reason;
+                        totalFailed++;
+                        strapi.log.error(
+                            `Scheduled publish: failed to publish ${label} "${doc.slug}" (${doc.documentId}):`,
+                            error,
+                        );
+                    }
+                }
             } catch (error) {
                 strapi.log.error(`Scheduled publish: error querying ${label}s:`, error);
             }
