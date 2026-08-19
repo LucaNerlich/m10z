@@ -38,7 +38,7 @@ type PlayerProps = {
 export function PodcastPlayer({episode, config}: PlayerProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [scriptReady, setScriptReady] = useState(
-        () => typeof window !== 'undefined' && typeof window.podlovePlayer === 'function'
+        () => typeof window !== 'undefined' && typeof window.podlovePlayer === 'function',
     );
     // The player can only mount client-side (it's a sandboxed iframe/Vue app). We keep it hidden
     // until its bootstrap promise resolves, then fade it in — so the internal boot flicker happens
@@ -95,9 +95,9 @@ export function PodcastPlayer({episode, config}: PlayerProps) {
                     <>
                         <audio
                             controls
-                            preload='metadata'
+                            preload="metadata"
                             className={styles.fallbackAudio}
-                            aria-label='Podcast-Episode abspielen'>
+                            aria-label="Podcast-Episode abspielen">
                             <source src={audioSrc} type={episode.audio[0]?.mimeType ?? 'audio/mpeg'} />
                         </audio>
                         <a href={audioSrc} className={styles.fallbackDownload}>
@@ -112,17 +112,19 @@ export function PodcastPlayer({episode, config}: PlayerProps) {
     return (
         <div className={styles.player}>
             {/* Warm up the CDN connection early so embed.js + chunks load with less delay. */}
-            <link rel='preconnect' href='https://cdn.podlove.org' crossOrigin='anonymous' />
-            <Script
-                src={EMBED_SRC}
-                strategy='afterInteractive'
-                onReady={() => setScriptReady(true)}
-                onError={() => setFailed(true)}
-            />
-            <div
-                ref={containerRef}
-                className={`${styles.mount}${playerReady ? ` ${styles.mountReady}` : ''}`}
-            />
+            <link rel="preconnect" href="https://cdn.podlove.org" crossOrigin="anonymous" />
+            <div className="podlove-container">
+                <Script
+                    src={EMBED_SRC}
+                    strategy="afterInteractive"
+                    onReady={() => setScriptReady(true)}
+                    onError={() => setFailed(true)}
+                />
+                <div
+                    ref={containerRef}
+                    className={`${styles.mount}${playerReady ? ` ${styles.mountReady}` : ''}`}
+                />
+            </div>
         </div>
     );
 }

@@ -24,7 +24,7 @@
 .avatar {
     width: 64px;
     height: 64px;
-    border-radius: 50%;
+    border-radius: var(--border-radius);
     object-fit: cover;
     border: 2px solid var(--color-border);
     transition: border-color 120ms ease;

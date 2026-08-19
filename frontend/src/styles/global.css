@@ -5,6 +5,7 @@
 @import "typography.css";
 @import "components/markdown.css";
 @import "components/fancybox.css";
+@import "components/podlove.css";
 
 html {
     scroll-behavior: smooth;

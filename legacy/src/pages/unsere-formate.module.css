@@ -48,7 +48,7 @@
     width: 60px;
     height: 3px;
     background: var(--ifm-color-primary);
-    border-radius: 2px;
+    border-radius: var(--border-radius);
 }
 
 .sectionDescription {
@@ -67,7 +67,7 @@
 }
 
 .archiveSection {
-    border-radius: 16px;
+    border-radius: var(--border-radius);
     padding: 2rem;
     margin-top: 3rem;
 }

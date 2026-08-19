@@ -9,7 +9,7 @@
     height: 32px;
     width: 240px;
     background: var(--color-surface-strong);
-    border-radius: 999px;
+    border-radius: var(--border-radius);
     animation: pulse 1.2s ease-in-out infinite;
 }
 

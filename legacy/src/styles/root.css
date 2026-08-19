@@ -30,7 +30,7 @@ img:hover, img:active {
 
 /* Custom Additions */
 div > img {
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     margin-bottom: 0 !important;
 }
 

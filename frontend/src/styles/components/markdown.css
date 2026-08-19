@@ -169,7 +169,7 @@
     background-color: var(--color-primary-soft);
     color: var(--color-text);
     padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius);
     font-weight: 500;
 }
 

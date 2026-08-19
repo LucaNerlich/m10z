@@ -1,6 +1,6 @@
 .card {
     border: 1px solid var(--color-border);
-    border-radius: 16px;
+    border-radius: var(--border-radius);
     padding: 18px 20px;
     background: var(--color-surface);
     display: grid;
@@ -65,7 +65,7 @@
 
 .winnerGroup {
     background: color-mix(in srgb, var(--color-primary) 15%, transparent);
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     padding: 6px 10px;
     margin: 0 -10px;
     display: flex;
@@ -102,7 +102,7 @@
     font-weight: 700;
     color: var(--color-primary-strong);
     background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-    border-radius: 999px;
+    border-radius: var(--border-radius);
     padding: 1px 7px;
     white-space: nowrap;
     letter-spacing: 0.03em;
@@ -113,7 +113,7 @@
     font-weight: 600;
     color: var(--color-text-muted);
     background: var(--color-border);
-    border-radius: 999px;
+    border-radius: var(--border-radius);
     padding: 1px 8px;
     white-space: nowrap;
 }

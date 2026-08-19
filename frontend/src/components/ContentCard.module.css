@@ -163,14 +163,14 @@
     height: 20px;
     width: 60px;
     background: var(--color-surface-strong);
-    border-radius: 999px;
+    border-radius: var(--border-radius);
     animation: pulse 1.2s ease-in-out infinite;
 }
 
 .loadingBar {
     height: 12px;
     background: var(--color-surface-strong);
-    border-radius: 999px;
+    border-radius: var(--border-radius);
     animation: pulse 1.2s ease-in-out infinite;
 }
 

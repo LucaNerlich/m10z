@@ -24,7 +24,7 @@
     align-items: center;
     justify-content: center;
     padding: 6px 12px;
-    border-radius: 999px;
+    border-radius: var(--border-radius);
     background: var(--color-surface-strong);
     color: var(--color-primary);
     font-weight: 700;

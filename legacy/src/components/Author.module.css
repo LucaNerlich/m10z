@@ -1,5 +1,5 @@
 .author {
-    border-radius: 12px;
+    border-radius: var(--border-radius);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     border: 1px solid grey;
@@ -29,7 +29,7 @@
 .image {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
+    border-radius: var(--border-radius);
     object-fit: cover;
     border: 3px solid grey;
     transition: all 0.3s ease;
@@ -78,7 +78,7 @@
     background: var(--ifm-color-primary);
     color: white !important;
     text-decoration: none !important;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     font-weight: 500;
     font-size: 0.9rem;
     transition: all 0.2s ease;

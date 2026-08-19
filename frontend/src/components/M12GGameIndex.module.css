@@ -1,6 +1,6 @@
 .wrapper {
     border: 1px solid var(--color-border);
-    border-radius: 16px;
+    border-radius: var(--border-radius);
     padding: 18px 20px;
     background: var(--color-surface);
 }
@@ -114,18 +114,18 @@
 
 .meter::-webkit-meter-bar {
     background: var(--color-border);
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     border: none;
 }
 
 .meter::-webkit-meter-optimum-value {
     background: var(--color-primary);
-    border-radius: 4px;
+    border-radius: var(--border-radius);
 }
 
 .meter::-moz-meter-bar {
     background: var(--color-primary);
-    border-radius: 4px;
+    border-radius: var(--border-radius);
 }
 
 .votesCell {
