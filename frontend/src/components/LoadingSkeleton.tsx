@@ -13,7 +13,7 @@ type LoadingSkeletonProps = {
  * Renders placeholder cards with pulsing animation.
  *
  * Use as an explicit `<Suspense fallback>` inside `page.tsx`. Do not wire this
- * through `app/**/loading.tsx` — those route-level files have caused client
+ * through a route-level loading.tsx file — those have caused client
  * navigations to slug pages to fail to commit on Next 16.2 and 16.3.
  */
 export function LoadingSkeletonGrid({cards = 6, showTitle = true}: LoadingSkeletonProps) {
