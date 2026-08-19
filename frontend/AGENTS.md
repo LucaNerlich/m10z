@@ -1,6 +1,6 @@
 # AGENTS.md — M10Z Frontend
 
-Next.js 16 / React 19 / TypeScript 5.9 frontend for m10z.de (German gaming/tech blog).
+Next.js 16 / React 19 / TypeScript 7 frontend for m10z.de (German gaming/tech blog).
 UI text is German; code and comments are English. See also: root `../AGENTS.md`.
 
 ## Build & Verify Commands
