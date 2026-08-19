@@ -75,6 +75,7 @@ No relative `../` cross-directory imports in components — only `./` for siblin
 ## React / Next.js Patterns
 
 - **Server Components by default** — add `'use client'` only when needed.
+- **Do not add `app/**/loading.tsx`.** Route-level loading files wrap the segment in a special App Router Suspense boundary. On Next 16.2 and 16.3 that boundary can leave client navigations to `[slug]` pages stuck on the skeleton or throw chunk-load errors (`Loading chunk failed`, `module factory is not available`). Use an explicit `<Suspense>` inside `page.tsx` when a fallback is required (e.g. `searchParams` on list pages).
 - **React Compiler** is enabled (`reactCompiler: true`) — manual memoization is allowed but usually unnecessary.
 - **CSS Modules** (`.module.css`) for styling; CSS custom properties (OKLCH) for theming. No Tailwind.
 - **SWR** for client-side data fetching with a global provider.
