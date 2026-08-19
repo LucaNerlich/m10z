@@ -7,7 +7,7 @@ Guidelines for AI agents working on the M10Z codebase.
 M10Z (Mindestens 10 Zeichen) is a German gaming/tech blog at m10z.de.
 UI text is German; code and comments are English.
 
-- **Frontend**: Next.js 16, React 19, TypeScript 5.9, CSS Modules (`frontend/`)
+- **Frontend**: Next.js 16, React 19, TypeScript 7, CSS Modules (`frontend/`)
 - **Backend**: Strapi 5 CMS, PostgreSQL (`backend/`)
 - **Legacy**: Docusaurus 3 — retired, **do not modify** (`legacy/`)
 - **Package manager**: pnpm 10. Node.js ^22. Each workspace is independent (no root pnpm-workspace).
