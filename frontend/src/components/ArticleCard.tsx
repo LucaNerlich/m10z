@@ -10,7 +10,8 @@ import styles from './ContentCard.module.css';
 import placeholderCover from '@/public/images/m10z.jpg';
 import {AuthorList} from './AuthorList';
 import {CategoryList} from './CategoryList';
-import {calculateReadingTime} from '@/src/lib/readingTime';
+import {BookIcon} from '@phosphor-icons/react/dist/ssr';
+import {calculateReadingTimeCompact} from '@/src/lib/readingTime';
 
 type ArticleCardProps = {
     article: StrapiArticle;
@@ -48,7 +49,7 @@ export function ArticleCard({
     const articleUrl = routes.article(article.slug);
 
     // Use wordCount for reading time calculation (no fallback to content)
-    const readingTime = article.wordCount != null ? calculateReadingTime(article.wordCount) : null;
+    const readingTime = article.wordCount != null ? calculateReadingTimeCompact(article.wordCount) : null;
     const effectiveDescription = article.description || article.categories?.[0]?.description;
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
@@ -75,7 +76,10 @@ export function ArticleCard({
                         {formattedDate}
                     </time>
                     {readingTime ? (
-                        <span className={styles.readingTime}>{readingTime}</span>
+                        <span className={styles.readingTime}>
+                            <BookIcon size={14} aria-hidden='true' />
+                            &nbsp;{readingTime}
+                        </span>
                     ) : null}
                 </div>
                 <h2 className={styles.cardTitle}>

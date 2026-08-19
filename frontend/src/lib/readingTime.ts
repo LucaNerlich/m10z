@@ -32,6 +32,16 @@ const REGEX_HTML_TAGS = /<[^>]+>/g;
 const REGEX_WHITESPACE = /\s+/g;
 const REGEX_WORD_SPLIT = /\s+/;
 
+/**
+ * Returns a compact reading time string without the "Lesezeit" suffix.
+ * E.g. "~3 Min." instead of "~3 Min. Lesezeit".
+ */
+export function calculateReadingTimeCompact(
+    markdownOrWordCount: string | number | null | undefined,
+): string {
+    return calculateReadingTime(markdownOrWordCount).replace(' Lesezeit', '');
+}
+
 export function calculateReadingTime(
     markdownOrWordCount: string | number | null | undefined,
 ): string {

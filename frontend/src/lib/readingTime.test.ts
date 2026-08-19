@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {calculateReadingTime} from './readingTime';
+import {calculateReadingTime, calculateReadingTimeCompact} from './readingTime';
 
 describe('calculateReadingTime — numeric input', () => {
     test.each([
@@ -42,6 +42,20 @@ describe('calculateReadingTime — markdown input', () => {
         // "< 1 Min." for non-empty text; that's only for 0-word input).
         const text = '# Heading\n\n**bold** _italic_ ~~strike~~\n\n- item one\n- item two';
         expect(calculateReadingTime(text)).toBe('~1 Min. Lesezeit');
+    });
+});
+
+describe('calculateReadingTimeCompact', () => {
+    test.each([
+        [0, '< 1 Min.'],
+        [250, '~1 Min.'],
+        [1000, '~4 Min.'],
+    ])('%i words → %s', (input, expected) => {
+        expect(calculateReadingTimeCompact(input)).toBe(expected);
+    });
+
+    test('null → minimum without Lesezeit', () => {
+        expect(calculateReadingTimeCompact(null)).toBe('< 1 Min.');
     });
 });
 

@@ -9,7 +9,7 @@ import {buildContentFeed} from '@/src/lib/contentFeed';
 import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
 import {mediaUrlToAbsolute} from '@/src/lib/strapi/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
-import {calculateReadingTime} from '@/src/lib/readingTime';
+import {calculateReadingTimeCompact} from '@/src/lib/readingTime';
 import styles from '@/app/page.module.css';
 import placeholderCover from '@/public/images/m10z.jpg';
 import {umamiEventId} from '@/src/lib/analytics/umami';
@@ -219,12 +219,14 @@ export async function HomePage({page}: {page: number}) {
                                         </Tag>
                                         {item.type === 'article' && item.wordCount != null ? (
                                             <span className={styles.readingTime}>
-                                                {calculateReadingTime(item.wordCount)}
+                                                <BookIcon size={14} aria-hidden='true' />
+                                                &nbsp;{calculateReadingTimeCompact(item.wordCount)}
                                             </span>
                                         ) : null}
                                         {item.type === 'podcast' && item.duration != null ? (
                                             <span className={styles.readingTime}>
-                                               🎶&nbsp;{formatDuration(item.duration)}
+                                                <MusicNoteIcon size={14} aria-hidden='true' />
+                                                &nbsp;{formatDuration(item.duration)}
                                             </span>
                                         ) : null}
                                         <time className={styles.date}>{formatDateShort(item.publishedAt)}</time>
