@@ -208,6 +208,8 @@
 }
 
 .readingTime {
+    display: inline-flex;
+    align-items: center;
     color: var(--color-text-muted);
     font-size: 13px;
     white-space: nowrap;
