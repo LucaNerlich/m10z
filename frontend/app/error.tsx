@@ -19,8 +19,11 @@ export default function Error({
         if (!isStaleChunkError(error)) return;
         // A tab open across a deployment can reference JS chunks that no
         // longer exist under the new build; React's reset() re-renders with
-        // the same (broken) bundle, so only a full reload recovers. Guard
-        // with sessionStorage to avoid looping if the reload doesn't help.
+        // the same (broken) bundle, so only a full reload recovers.
+        // The same signatures also fired during client navigations to slug
+        // pages while route-level loading.tsx files were present — those
+        // files are gone; this reload remains for genuine post-deploy drift.
+        // Guard with sessionStorage to avoid looping if the reload doesn't help.
         if (window.sessionStorage.getItem(STALE_CHUNK_RELOAD_KEY)) return;
         window.sessionStorage.setItem(STALE_CHUNK_RELOAD_KEY, '1');
         window.location.reload();

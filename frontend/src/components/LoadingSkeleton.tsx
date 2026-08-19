@@ -11,6 +11,10 @@ type LoadingSkeletonProps = {
 /**
  * Grid-based skeleton loading state for list pages (articles, podcasts, categories, etc.).
  * Renders placeholder cards with pulsing animation.
+ *
+ * Use as an explicit `<Suspense fallback>` inside `page.tsx`. Do not wire this
+ * through `app/**/loading.tsx` — those route-level files have caused client
+ * navigations to slug pages to fail to commit on Next 16.2 and 16.3.
  */
 export function LoadingSkeletonGrid({cards = 6, showTitle = true}: LoadingSkeletonProps) {
     return (
@@ -41,6 +45,9 @@ export function LoadingSkeletonGrid({cards = 6, showTitle = true}: LoadingSkelet
 /**
  * Detail page skeleton for single article/podcast views.
  * Renders a hero image placeholder, title bar, and content lines.
+ *
+ * Same constraint as `LoadingSkeletonGrid`: explicit `<Suspense>` only, never
+ * `loading.tsx`.
  */
 export function LoadingSkeletonDetail() {
     return (
