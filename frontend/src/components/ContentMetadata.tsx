@@ -4,7 +4,7 @@ import {formatIso8601Duration} from '@/src/lib/jsonld/helpers';
 import {ContentAuthors} from './ContentAuthors';
 import {CategoryList} from './CategoryList';
 import styles from './ContentMetadata.module.css';
-import {MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
+import {BookIcon, MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
 
 type ContentMetadataProps = {
     publishedDate?: string | null;
@@ -38,7 +38,7 @@ export function ContentMetadata({
                 <CategoryList categories={categories} />
             ) : null}
             {readingTime ? (
-                <span className={styles.readingTime}>📖&nbsp;{readingTime}</span>
+                <span className={styles.readingTime}><BookIcon aria-hidden="true" />&nbsp;{readingTime}</span>
             ) : null}
             {duration ? (
                 <time dateTime={formatIso8601Duration(duration)} className={styles.duration}>

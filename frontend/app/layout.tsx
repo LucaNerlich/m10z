@@ -77,6 +77,7 @@ export default function RootLayout({
             lang="de"
             className={`${poppins.variable} ${argon.variable} ${krypton.variable} ${neon.variable} ${radon.variable} ${xenon.variable}`}
             suppressHydrationWarning
+            data-scroll-behavior='smooth'
         >
         <body>
         <a href="#main-content" className="skip-to-content">Zum Inhalt springen</a>
