@@ -117,8 +117,8 @@ export async function HomePage({page}: {page: number}) {
                                         <div className={styles.tocMetadata}>
                                             <Tag
                                                 className={styles.tocTag}
-                                                icon={item.type === 'article' ? <BookIcon size={14} /> :
-                                                    <MusicNoteIcon size={14} />}
+                                                icon={item.type === 'article' ? <BookIcon size={14} aria-hidden='true' /> :
+                                                    <MusicNoteIcon aria-hidden="true" size={14} />}
                                             >
                                                 {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                             </Tag>
@@ -212,8 +212,8 @@ export async function HomePage({page}: {page: number}) {
                                     <div className={styles.metaRow}>
                                         <Tag
                                             className={styles.metaTag}
-                                            icon={item.type === 'article' ? <BookIcon size={14} /> :
-                                                <MusicNoteIcon size={14} />}
+                                            icon={item.type === 'article' ? <BookIcon size={14} aria-hidden='true' /> :
+                                                <MusicNoteIcon aria-hidden="true" size={14} />}
                                         >
                                             {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                         </Tag>

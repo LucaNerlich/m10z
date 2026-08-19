@@ -4,6 +4,7 @@ import {formatIso8601Duration} from '@/src/lib/jsonld/helpers';
 import {ContentAuthors} from './ContentAuthors';
 import {CategoryList} from './CategoryList';
 import styles from './ContentMetadata.module.css';
+import {MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
 
 type ContentMetadataProps = {
     publishedDate?: string | null;
@@ -41,7 +42,7 @@ export function ContentMetadata({
             ) : null}
             {duration ? (
                 <time dateTime={formatIso8601Duration(duration)} className={styles.duration}>
-                    🎶&nbsp;{formatDuration(duration)}
+                    <MusicNoteIcon aria-hidden="true" />&nbsp;{formatDuration(duration)}
                 </time>
             ) : null}
             {publishedDate ? (
