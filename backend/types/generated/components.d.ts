@@ -27,7 +27,7 @@ export interface SingleTypeBaseFeed extends Struct.ComponentSchema {
 }
 
 declare module '@strapi/strapi' {
-    export module Public {
+    export namespace Public {
         export interface ComponentSchemas {
             'collection-type.youtube': CollectionTypeYoutube;
             'single-type.base-feed': SingleTypeBaseFeed;

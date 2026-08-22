@@ -710,21 +710,14 @@
       "locale": null
     },
     {
-      "documentId": "cxof066wbj4433eo7h8lxsoy",
+      "documentId": "g4fu6e8wok93ytcl8oe3znwt",
       "action": "plugin::upload.assets.update",
       "actionParameters": {},
       "subject": null,
       "properties": {},
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "heonnk88unfylrrfjxefusb8",
-      "action": "plugin::upload.configure-view",
-      "actionParameters": {},
-      "subject": null,
-      "properties": {},
-      "conditions": [],
+      "conditions": [
+        "admin::is-creator"
+      ],
       "locale": null
     },
     {
