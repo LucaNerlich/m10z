@@ -2,7 +2,7 @@ import {type Metadata} from 'next';
 import {Suspense} from 'react';
 
 import {ArticleListPage} from '@/src/components/ArticleListPage';
-import {ArticleListSkeleton} from '@/src/components/ArticleListSkeleton';
+import {ContentListSkeleton} from '@/src/components/ContentListSkeleton';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
 export const metadata: Metadata = buildStaticListMetadata({
@@ -26,7 +26,7 @@ export default function ArticlePage({
     searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
 }) {
     return (
-        <Suspense fallback={<ArticleListSkeleton />}>
+        <Suspense fallback={<ContentListSkeleton title="Artikel" />}>
             <ArticleListPage searchParams={searchParams} />
         </Suspense>
     );

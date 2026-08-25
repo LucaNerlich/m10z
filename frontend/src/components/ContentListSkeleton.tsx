@@ -3,15 +3,19 @@ import {Card} from './Card';
 import cardStyles from './ContentCard.module.css';
 import styles from './SkeletonList.module.css';
 
+type ContentListSkeletonProps = {
+    /** Heading shown above the skeleton grid (e.g. "Artikel", "Podcasts"). */
+    title: string;
+};
+
 /**
- * Render a skeleton UI for the Podcasts list showing placeholder cards while content loads.
- *
- * @returns A React element containing a section titled "Podcasts" with a grid of 12 placeholder cards (media, meta, title, and description skeletons).
+ * Skeleton UI for paginated content list pages: a titled grid of placeholder
+ * cards (media, meta, title, and description skeletons) shown while content loads.
  */
-export function PodcastListSkeleton() {
+export function ContentListSkeleton({title}: ContentListSkeletonProps) {
     return (
         <section data-list-page>
-            <h1>Podcasts</h1>
+            <h1>{title}</h1>
             <ContentGrid gap="comfortable">
                 {Array.from({length: 12}).map((_, index) => (
                     <Card key={index}>

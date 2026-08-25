@@ -13,7 +13,8 @@ type StrapiMediaFormat = {
     sizeInBytes?: number;
 };
 
-export type StrapiMedia = {
+// Shared field shape for both flat v5 media objects and wrapped media references.
+type StrapiMediaShape = {
     id?: number;
     documentId?: string;
     name?: string;
@@ -38,7 +39,9 @@ export type StrapiMedia = {
     publishedAt?: string | null;
 };
 
-/** Same payload as StrapiMedia, plus the legacy v4 wrapper shapes the normalizer unwraps. */
+export type StrapiMedia = StrapiMediaShape;
+
+/** Same payload as StrapiMedia, plus the wrapper shapes the normalizer unwraps. */
 export type StrapiMediaRef = StrapiMedia & {
     data?: {attributes?: StrapiMedia} | null;
     attributes?: StrapiMedia;
@@ -131,6 +134,31 @@ export function mediaUrlToAbsolute(args: {
     return joinStrapiBaseUrl(media.url) ?? undefined;
 }
 
+type MediaField = 'cover' | 'banner';
+
+/**
+ * Resolve the media for `field`, preferring the entry's own value and falling
+ * back to the first category. Cover additionally falls back to the category
+ * image; banner only to the category banner.
+ */
+function pickMediaByField(
+    content: StrapiContentMedia | undefined,
+    categories: StrapiCategoryRef[] | undefined,
+    field: MediaField,
+): StrapiMedia | undefined {
+    const primary = normalizeStrapiMedia(content?.[field] ?? undefined);
+    if (primary.url) return primary;
+
+    const firstCategory = categories?.[0];
+    const categoryCandidate = field === 'cover'
+        ? (firstCategory?.cover ?? firstCategory?.image)
+        : firstCategory?.banner;
+    const categoryMedia = normalizeStrapiMedia(categoryCandidate);
+    if (categoryMedia.url) return categoryMedia;
+
+    return undefined;
+}
+
 /**
  * Selects a cover media for content, preferring the entry's cover and falling back to the first category's cover or image.
  *
@@ -139,27 +167,23 @@ export function mediaUrlToAbsolute(args: {
  * @returns The selected `StrapiMedia` (with a valid `url`) if one is found, `undefined` otherwise
  */
 export function pickCoverMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    const primary = normalizeStrapiMedia(content?.cover ?? undefined);
-    if (primary.url) return primary;
-
-    const firstCategory = categories?.[0];
-    const categoryCover = normalizeStrapiMedia(
-        firstCategory?.cover ?? firstCategory?.image ?? undefined,
-    );
-    if (categoryCover.url) return categoryCover;
-
-    return undefined;
+    return pickMediaByField(content, categories, 'cover');
 }
 
 export function pickBannerMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    const primary = normalizeStrapiMedia(content?.banner ?? undefined);
-    if (primary.url) return primary;
+    return pickMediaByField(content, categories, 'banner');
+}
 
-    const firstCategory = categories?.[0];
-    const categoryBanner = normalizeStrapiMedia(firstCategory?.banner ?? undefined);
-    if (categoryBanner.url) return categoryBanner;
+function pickPreferredMedia(
+    content: StrapiContentMedia | undefined,
+    categories: StrapiCategoryRef[] | undefined,
+    preferred: MediaField,
+    fallback: MediaField,
+): StrapiMedia | undefined {
+    const preferredMedia = pickMediaByField(content, categories, preferred);
+    if (preferredMedia?.url) return preferredMedia;
 
-    return undefined;
+    return pickMediaByField(content, categories, fallback);
 }
 
 /**
@@ -168,12 +192,7 @@ export function pickBannerMedia(content?: StrapiContentMedia, categories?: Strap
  * @returns The chosen `StrapiMedia` containing a `url` when available, or `undefined` if neither banner nor cover media exist.
  */
 export function pickBannerOrCoverMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    // Try banner first
-    const banner = pickBannerMedia(content, categories);
-    if (banner?.url) return banner;
-
-    // Fall back to cover
-    return pickCoverMedia(content, categories);
+    return pickPreferredMedia(content, categories, 'banner', 'cover');
 }
 
 /**
@@ -182,12 +201,7 @@ export function pickBannerOrCoverMedia(content?: StrapiContentMedia, categories?
  * @returns The chosen `StrapiMedia` (cover preferred, banner fallback), or `undefined` if no media is available.
  */
 export function pickCoverOrBannerMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    // Try cover first
-    const cover = pickCoverMedia(content, categories);
-    if (cover?.url) return cover;
-
-    // Fall back to banner
-    return pickBannerMedia(content, categories);
+    return pickPreferredMedia(content, categories, 'cover', 'banner');
 }
 
 /**

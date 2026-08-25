@@ -1,5 +1,3 @@
-import Script from 'next/script';
-
 import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {buildPodcastDownloadPath} from '@/src/lib/analytics/podcastDownload';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
@@ -13,17 +11,14 @@ import {normalizeEnclosureLengthBytes} from '@/src/lib/rss/audiofeed';
 import {buildPodloveEpisodeConfig, buildPodlovePlayerConfig} from '@/src/lib/podlove/buildConfig';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
-import {ContentImage} from '@/src/components/ContentImage';
+import {ContentHeroImage} from '@/src/components/ContentHeroImage';
+import {JsonLdScripts} from '@/src/components/JsonLdScripts';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import {YoutubeSection} from '@/src/components/YoutubeSection';
 import {generatePodcastJsonLd} from '@/src/lib/jsonld/podcast';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
-import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/podcasts/[slug]/page.module.css';
-
-// Hoist RegExp pattern to module scope
-const REGEX_LT_ESCAPE = /</g;
 
 type PodcastDetailProps = {
     slug: string;
@@ -51,21 +46,6 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const playerSrc = audioUrl ? buildPodcastDownloadPath(slug) : undefined;
     const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
-
-    // Fallback configuration
-    const fallbackSrc = placeholderCover;
-    const fallbackWidth = 400;
-    const fallbackHeight = 225;
-
-    // Determine final values
-    const mediaUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
-    const imageSrc = mediaUrl ?? fallbackSrc;
-    const imageWidth = optimizedMedia?.width ?? fallbackWidth;
-    const imageHeight = optimizedMedia?.height ?? fallbackHeight;
-    const blurhash = optimizedMedia?.blurhash ?? null;
-    const placeholder = blurhash ? 'blur' : 'empty';
-    const imageAlt = optimizedMedia?.alternativeText ?? podcast.title;
-    const imageTitle = optimizedMedia?.caption ?? undefined;
 
     // Player poster: prefer the episode cover, then its banner, then the first category's image
     // (mirrors the chained image resolution used for other images).
@@ -101,31 +81,14 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
 
     return (
         <article className={styles.episode}>
-            <Script
-                id={`jsonld-podcast-${slug}`}
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(jsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
-                }}
-            />
-            <Script
-                id={`jsonld-breadcrumb-${slug}`}
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(breadcrumbJsonLd).replace(REGEX_LT_ESCAPE, '\\u003c'),
-                }}
+            <JsonLdScripts
+                entries={[
+                    {id: `jsonld-podcast-${slug}`, jsonLd},
+                    {id: `jsonld-breadcrumb-${slug}`, jsonLd: breadcrumbJsonLd},
+                ]}
             />
 
-            <ContentImage
-                src={imageSrc}
-                alt={imageAlt}
-                title={imageTitle}
-                width={imageWidth}
-                height={imageHeight}
-                placeholder={placeholder}
-                blurhash={blurhash}
-                priority={true}
-            />
+            <ContentHeroImage media={optimizedMedia} fallbackAlt={podcast.title} />
             <section className={styles.header}>
                 <ContentMetadata
                     publishedDate={published}
