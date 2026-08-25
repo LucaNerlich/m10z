@@ -43,7 +43,6 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
     let processedHref = href;
     let isInternal = false;
 
-    // Get site origin for comparison (normalized, no trailing slash)
     const siteOrigin = (() => {
         try {
             return new URL(routes.siteUrl).origin;
@@ -53,7 +52,6 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
     })();
 
     if (href.startsWith('/') && !href.startsWith('//')) {
-        // Relative path - treat as internal
         isInternal = true;
         // Normalize trailing slash (remove for consistency, except root)
         if (href !== '/' && href.endsWith('/') && !href.includes('?') && !href.includes('#')) {
@@ -62,53 +60,43 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
             processedHref = href;
         }
     } else {
-        // Absolute URL or protocol-relative - parse and compare origins
         try {
-            // Use siteUrl as base for relative URLs (protocol-relative URLs like //example.com)
+            // Protocol-relative URLs ("//host/path") have no scheme; give them https: so they parse.
             const baseUrl = href.startsWith('//') ? `https:${href}` : href;
             const url = new URL(baseUrl, routes.siteUrl);
 
-            // Compare origins securely (handles protocol, case, subdomain differences)
-            const urlOrigin = url.origin;
-            isInternal = urlOrigin === siteOrigin;
+            isInternal = url.origin === siteOrigin;
 
             if (isInternal) {
-                // Same-site link - extract pathname, search, and hash
                 processedHref = url.pathname + url.search + url.hash;
-                // Ensure leading slash for empty paths
                 if (!processedHref || processedHref === '/') {
                     processedHref = '/';
                 } else if (!processedHref.startsWith('/')) {
                     processedHref = '/' + processedHref;
                 }
             } else {
-                // External link - keep original href
                 processedHref = href;
             }
         } catch {
-            // Non-parseable URL (e.g., mailto:, tel:, javascript:, etc.)
-            // Keep unchanged and treat as external
+            // Non-parseable URL (e.g., mailto:, tel:, javascript:) — keep as external.
             isInternal = false;
             processedHref = href;
         }
     }
 
-    // Build props for Link component - Next.js Link forwards props to underlying <a>
     const linkProps: React.ComponentProps<typeof Link> & Record<string, unknown> = {
         href: processedHref,
     };
 
-    // Forward className
     if (className) {
         linkProps.className = className;
     }
 
-    // Forward id
     if (id) {
         linkProps.id = id;
     }
 
-    // Add security attributes for external links (but not anchor links)
+    // External links open in a new tab; anchors keep in-page behaviour.
     if (!isInternal) {
         linkProps.target = '_blank';
         linkProps.rel = 'noopener noreferrer';
@@ -122,11 +110,9 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
         }
     }
 
-    // Forward aria-* and other anchor attributes - Link will pass them to <a>
+    // Forward only anchor-safe attributes; Link passes them to the underlying <a>.
     Object.keys(props).forEach((key) => {
         const value = (props as Record<string, unknown>)[key];
-        // Forward aria-*, data-*, and standard anchor attributes
-        // Exclude React-specific props and events we don't want to forward
         if (
             key.startsWith('aria-') ||
             key.startsWith('data-') ||

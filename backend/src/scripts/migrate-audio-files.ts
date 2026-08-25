@@ -22,12 +22,7 @@ import path from 'path';
 
 import {extractFilename, findExistingFileByName, getMimeType, validateUrl} from './audioMigrationUtils';
 
-// Load environment variables from .env file
 config();
-
-// ============================================================================
-// Types and Interfaces
-// ============================================================================
 
 interface FileProcessingStatus {
     url: string;
@@ -44,10 +39,6 @@ interface MigrationReport {
     files: FileProcessingStatus[];
 }
 
-// ============================================================================
-// Configuration
-// ============================================================================
-
 const STRAPI_UPLOAD_URL = 'https://cms.m10z.de/api/upload';
 /** Base URL of the CMS, derived from the upload endpoint (used for idempotency lookups). */
 const STRAPI_API_BASE = STRAPI_UPLOAD_URL.replace(/\/api\/upload$/, '');
@@ -59,27 +50,6 @@ const CLIENT_TIMEOUT_MS = 600000; // 10 minutes client-side timeout
 
 // Hardcoded list of 87 audio file URLs
 const AUDIO_FILE_URLS: string[] = [
-    // Placeholder - replace with actual 87 URLs
-    // Example format:
-    // 'https://m10z.picnotes.de/path/to/file1.mp3',
-    // 'https://m10z.picnotes.de/path/to/file2.mp3',
-    // ...
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_006.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_008.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_001.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_010.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_009.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_007.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_002.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_005.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_004.mp3',
-    // 'https://m10z.picnotes.de/Pixelplausch/Pixelplausch_003.mp3',
-    // 'https://m10z.picnotes.de/Quiz/m10z_quiz_4.mp3',
-    // 'https://m10z.picnotes.de/FantastischeFakten/Fakten_001.mp3',
-    // 'https://m10z.picnotes.de/FantastischeFakten/Fakten_002.mp3',
-    // 'https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_002.mp3',
-    // 'https://m10z.picnotes.de/DasGesprocheneWort/DasGesprocheneWort_001.mp3',
-    // 'https://m10z.picnotes.de/Fundbuero/Fundbuero_008.mp3',
     'https://m10z.picnotes.de/Fundbuero/Fundbuero_012.mp3',
     'https://m10z.picnotes.de/Fundbuero/Fundbuero_007.mp3',
     'https://m10z.picnotes.de/Fundbuero/Fundbuero_016.mp3',
@@ -150,10 +120,6 @@ const AUDIO_FILE_URLS: string[] = [
     'https://m10z.picnotes.de/gds/GuertelDerSchmerzen23.mp3',
 ];
 
-// ============================================================================
-// Utility Functions
-// ============================================================================
-
 function log(...args: unknown[]): void {
     console.log('[migrate-audio-files]', ...args);
 }
@@ -181,10 +147,6 @@ async function lookupExistingFile(filename: string): Promise<{id: number; url: s
     if (!apiToken) return null;
     return findExistingFileByName(fetch, STRAPI_API_BASE, apiToken, filename);
 }
-
-// ============================================================================
-// Download Functions
-// ============================================================================
 
 async function downloadFileWithRetry(
     url: string,
@@ -226,10 +188,6 @@ async function downloadFileWithRetry(
     }
 }
 
-// ============================================================================
-// Upload Functions
-// ============================================================================
-
 async function uploadToStrapiWithRetry(
     filePath: string,
     filename: string,
@@ -260,7 +218,6 @@ async function uploadToStrapiWithRetry(
             log(`Large file detected, estimated upload time: ~${estimatedSeconds} seconds`);
         }
 
-        // Create AbortController for client-side timeout
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
             controller.abort();
@@ -322,7 +279,6 @@ async function uploadToStrapiWithRetry(
                     errorDetails = response.statusText;
                 }
 
-                // Log full error details for debugging
                 if (response.status >= 500) {
                     error(`Server error details for ${filename}:`, errorJson || errorDetails);
                 }
@@ -385,8 +341,7 @@ async function uploadToStrapiWithRetry(
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
 
-        // Handle abort/timeout errors
-        let isRetryable = true;
+        // Classify the failure for the operator; every error here is retried.
         if (err instanceof Error) {
             if (err.name === 'AbortError') {
                 error(`Client-side timeout for ${filename} (attempt ${attempt}/${MAX_RETRIES}) - upload took longer than ${CLIENT_TIMEOUT_MS / 1000} seconds`);
@@ -395,11 +350,10 @@ async function uploadToStrapiWithRetry(
                 error(`Note: This may indicate a server-side timeout configuration issue. Large files may need server timeout adjustments.`);
             } else if (errorMessage.includes('499') || errorMessage.includes('Client Closed Request')) {
                 error(`Connection closed for ${filename} (attempt ${attempt}/${MAX_RETRIES}): ${errorMessage}`);
-                // 499 errors are often transient, so retry with longer delay
             }
         }
 
-        if (attempt < MAX_RETRIES && isRetryable) {
+        if (attempt < MAX_RETRIES) {
             const delay = RETRY_DELAYS[attempt - 1];
             error(
                 `Upload failed for ${filename} (attempt ${attempt}/${MAX_RETRIES}): ${errorMessage}`,
@@ -409,15 +363,10 @@ async function uploadToStrapiWithRetry(
             return uploadToStrapiWithRetry(filePath, filename, attempt + 1);
         }
 
-        // Final attempt failed - throw with detailed error
         error(`Upload failed for ${filename} after ${MAX_RETRIES} attempts: ${errorMessage}`);
         throw err;
     }
 }
-
-// ============================================================================
-// Main Migration Logic
-// ============================================================================
 
 async function processFile(
     url: string,
@@ -452,10 +401,8 @@ async function processFile(
 
         const tempFilePath = path.join(tempDir, status.filename);
 
-        // Download file
         await downloadFileWithRetry(url, tempFilePath);
 
-        // Upload to Strapi
         status.status = 'uploading';
         const uploadedFile = await uploadToStrapiWithRetry(
             tempFilePath,
@@ -465,7 +412,6 @@ async function processFile(
         status.status = 'success';
         status.uploadedFileId = uploadedFile.id;
 
-        // Clean up temporary file
         await fs.unlink(tempFilePath).catch((err) => {
             error(`Failed to delete temp file ${tempFilePath}:`, err);
         });
@@ -520,13 +466,11 @@ function printReport(report: MigrationReport): void {
 }
 
 async function main(): Promise<void> {
-    // Validate environment
     if (!process.env.STRAPI_API_TOKEN) {
         error('STRAPI_API_TOKEN environment variable is required');
         process.exit(1);
     }
 
-    // Validate URL list
     if (AUDIO_FILE_URLS.length === 0) {
         error('AUDIO_FILE_URLS array is empty. Please add the 87 file URLs.');
         process.exit(1);
@@ -535,7 +479,6 @@ async function main(): Promise<void> {
     log(`Starting migration of ${AUDIO_FILE_URLS.length} audio files...`);
     log(`Strapi endpoint: ${STRAPI_UPLOAD_URL}`);
 
-    // Create temporary directory
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'm10z-audio-migration-'));
 
     log(`Temporary directory: ${tempDir}`);
@@ -543,14 +486,12 @@ async function main(): Promise<void> {
     const files: FileProcessingStatus[] = [];
 
     try {
-        // Process files sequentially
         for (let i = 0; i < AUDIO_FILE_URLS.length; i++) {
             const url = AUDIO_FILE_URLS[i];
             const status = await processFile(url, tempDir, i, AUDIO_FILE_URLS.length);
             files.push(status);
         }
     } finally {
-        // Cleanup temporary directory
         try {
             const entries = await fs.readdir(tempDir);
             if (entries.length > 0) {
@@ -568,11 +509,9 @@ async function main(): Promise<void> {
         }
     }
 
-    // Generate and print report
     const report = await generateReport(files);
     printReport(report);
 
-    // Exit with error code if any files failed
     if (report.failed > 0) {
         process.exit(1);
     }
@@ -580,7 +519,6 @@ async function main(): Promise<void> {
     log('Migration completed successfully!');
 }
 
-// Run the script
 main().catch((err) => {
     error('Fatal error:', err);
     process.exit(1);

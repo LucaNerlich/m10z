@@ -13,10 +13,9 @@ export function validateSlug(slug: string | null | undefined): string {
         throw new Error('Slug is required');
     }
 
-    // Trim whitespace
     const trimmed = slug.trim();
 
-    // Check length (reasonable limit to prevent DoS)
+    // Length limit keeps cache-tag keys and query strings reasonable.
     if (trimmed.length === 0) {
         throw new Error('Slug cannot be empty');
     }

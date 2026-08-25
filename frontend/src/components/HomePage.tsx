@@ -149,11 +149,11 @@ export async function HomePage({page}: {page: number}) {
                         const coverUrl = mediaUrlToAbsolute({media: item.cover});
                         const bannerUrl = mediaUrlToAbsolute({media: item.banner});
 
-                        // Get blur data URLs from cover and banner
                         const coverBlurDataUrl = item.cover?.blurhash ?? null;
                         const bannerBlurDataUrl = item.banner?.blurhash ?? null;
 
-                        // Determine placeholders - use blur if we have data URL, otherwise empty
+                        // Remote images need an explicit blurDataURL for 'blur'; the
+                        // static fallback import gets one generated at build time.
                         const coverPlaceholder = coverBlurDataUrl ? 'blur' : coverUrl ? 'empty' : 'blur';
                         const bannerPlaceholder = bannerBlurDataUrl ? 'blur' : bannerUrl || coverUrl ? 'empty' : 'blur';
 
@@ -162,7 +162,7 @@ export async function HomePage({page}: {page: number}) {
                         const bannerAlt = item.banner?.alternativeText ?? item.title;
                         const bannerTitle = item.banner?.caption ?? undefined;
 
-                        // Prioritize loading for the first card's images (above the fold)
+                        // Above-the-fold images of the first card load with priority.
                         const isFirstItem = index === 0;
 
                         return (

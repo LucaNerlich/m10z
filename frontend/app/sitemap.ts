@@ -74,7 +74,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         routes.about,
     ]);
 
-    // Assign changeFrequency and priority to static entries by URL
     const staticPriorities: Record<string, {
         changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'];
         priority: number

@@ -14,6 +14,11 @@ import {generateArticleJsonLd} from '@/src/lib/jsonld/article';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import styles from '@/app/artikel/[slug]/page.module.css';
 
+<<<<<<< HEAD
+=======
+const REGEX_LT_ESCAPE = /</g;
+
+>>>>>>> cleanup/8-slop
 type ArticleDetailProps = {
     slug: string;
     article: StrapiArticle | null;
@@ -38,6 +43,21 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
+<<<<<<< HEAD
+=======
+    const fallbackSrc = placeholderCover;
+    const fallbackWidth = 400;
+    const fallbackHeight = 225;
+
+    const mediaUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
+    const imageSrc = mediaUrl ?? fallbackSrc;
+    const imageWidth = optimizedMedia?.width ?? fallbackWidth;
+    const imageHeight = optimizedMedia?.height ?? fallbackHeight;
+    const blurhash = optimizedMedia?.blurhash ?? null;
+    const placeholder = blurhash ? 'blur' : 'empty';
+    const imageAlt = optimizedMedia?.alternativeText ?? article.title;
+    const imageTitle = optimizedMedia?.caption ?? undefined;
+>>>>>>> cleanup/8-slop
     const jsonLd = generateArticleJsonLd(article);
     const breadcrumbItems = [
         {name: 'Startseite', path: '/'},

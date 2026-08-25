@@ -20,6 +20,11 @@ import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
 import styles from '@/app/podcasts/[slug]/page.module.css';
 
+<<<<<<< HEAD
+=======
+const REGEX_LT_ESCAPE = /</g;
+
+>>>>>>> cleanup/8-slop
 type PodcastDetailProps = {
     slug: string;
     podcast: StrapiPodcast | null;
@@ -47,6 +52,22 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
+<<<<<<< HEAD
+=======
+    const fallbackSrc = placeholderCover;
+    const fallbackWidth = 400;
+    const fallbackHeight = 225;
+
+    const mediaUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
+    const imageSrc = mediaUrl ?? fallbackSrc;
+    const imageWidth = optimizedMedia?.width ?? fallbackWidth;
+    const imageHeight = optimizedMedia?.height ?? fallbackHeight;
+    const blurhash = optimizedMedia?.blurhash ?? null;
+    const placeholder = blurhash ? 'blur' : 'empty';
+    const imageAlt = optimizedMedia?.alternativeText ?? podcast.title;
+    const imageTitle = optimizedMedia?.caption ?? undefined;
+
+>>>>>>> cleanup/8-slop
     // Player poster: prefer the episode cover, then its banner, then the first category's image
     // (mirrors the chained image resolution used for other images).
     const coverMedia = normalizeStrapiMedia(podcast.cover);

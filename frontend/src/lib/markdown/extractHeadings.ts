@@ -9,7 +9,6 @@
  * component, so depth values here reflect the raw markdown levels.
  */
 
-// Hoist RegExp to module scope
 const HEADING_REGEX = /^(#{1,6})\s+(.+)$/;
 
 export type HeadingItem = {
