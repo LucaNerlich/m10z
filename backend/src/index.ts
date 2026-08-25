@@ -147,14 +147,9 @@ export default {
     /**
      * Strapi bootstrap: runs before the app starts.
      */
-<<<<<<< HEAD
     async bootstrap({strapi}: {strapi: AppStrapi}) {
         // Add blurhash column to files table if it doesn't exist
         // This ensures the database column exists even if schema extension happens after DB init
-=======
-    async bootstrap({strapi}: {strapi: any}) {
-        // Ensure the blurhash column exists even if the schema extension runs after DB init.
->>>>>>> cleanup/8-slop
         try {
             const db = strapi.db;
             const tableName = 'files';

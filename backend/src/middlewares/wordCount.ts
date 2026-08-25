@@ -23,72 +23,7 @@ import type {
  * @returns `0` for null, empty, or non-string input; otherwise the number of words found
  */
 export function countWords(content: string | null | undefined): number {
-<<<<<<< HEAD
     if (!content || typeof content !== 'string' || content.trim().length === 0) {
-=======
-    try {
-        if (!content || typeof content !== 'string' || content.trim().length === 0) {
-            return 0;
-        }
-
-        // Strip markdown syntax to extract plain text
-        let text = content;
-
-        // Remove fenced code blocks (```code```)
-        text = text.replace(/```[\s\S]*?```/g, '');
-
-        // Remove indented code blocks (4+ spaces at start of line)
-        text = text.replace(/^ {4,}.*$/gm, '');
-
-        // Remove inline code (`code`)
-        text = text.replace(/`[^`]+`/g, '');
-
-        // Remove images but keep alt text: ![alt](url) -> alt
-        text = text.replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1');
-
-        // Remove links but keep text: [text](url) -> text
-        text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-
-        // Remove headers (# ## ### etc.)
-        text = text.replace(/^#{1,6}\s+/gm, '');
-
-        // Remove bold (**text** or __text__). The underscore variants must not match
-        // inside snake_case identifiers, so they only count as emphasis when the
-        // underscores are bounded by non-word characters (or string boundaries).
-        text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
-        text = text.replace(/(^|\W)__([^_]+)__(?=\W|$)/g, '$1$2');
-
-        // Remove italic (*text* or _text_)
-        text = text.replace(/\*([^*]+)\*/g, '$1');
-        text = text.replace(/(^|\W)_([^_]+)_(?=\W|$)/g, '$1$2');
-
-        // Remove strikethrough (~~text~~)
-        text = text.replace(/~~([^~]+)~~/g, '$1');
-
-        // Remove list markers (-, *, +, 1., etc.)
-        text = text.replace(/^[\s]*[-*+]\s+/gm, '');
-        text = text.replace(/^\s*\d+\.\s+/gm, '');
-
-        // Remove blockquote markers (>)
-        text = text.replace(/^>\s+/gm, '');
-
-        // Remove horizontal rules (---, ***, ___)
-        text = text.replace(/^[-*_]{3,}$/gm, '');
-
-        // Remove HTML tags if any — the tag-name requirement keeps comparison
-        // operators like `3 < 4` from being swallowed as a fake tag.
-        text = text.replace(/<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g, '');
-
-        // Remove extra whitespace and normalize
-        text = text.replace(/\s+/g, ' ').trim();
-
-        // Count words by splitting on whitespace and filtering empty strings
-        const words = text.split(/\s+/).filter((word) => word.length > 0);
-        return words.length;
-    } catch (error) {
-        // Pure function without strapi access — never throw; callers log via strapi.
-        console.log('error', error);
->>>>>>> cleanup/8-slop
         return 0;
     }
 
@@ -163,23 +98,14 @@ export function extractTextFromRichtext(
         return richtext;
     }
 
-<<<<<<< HEAD
     // If it's an object (Strapi richtext format), try to extract text
     if (!Array.isArray(richtext) && typeof richtext === 'object') {
         // Strapi v5 richtext might be stored as JSON with structure like { type: 'doc', content: [...] }
         // Try to serialize it to markdown/plain text
-=======
-    if (typeof richtext === 'object') {
-        // Strapi v5 richtext may be a ProseMirror JSON document: { type: 'doc', content: [...] }
->>>>>>> cleanup/8-slop
         try {
             if (richtext.type === 'doc' && Array.isArray(richtext.content)) {
-<<<<<<< HEAD
                 // Recursively extract text from content nodes
                 function extractFromNodes(nodes: RichTextBlock[]): string {
-=======
-                function extractFromNodes(nodes: any[]): string {
->>>>>>> cleanup/8-slop
                     return nodes
                         .map((node) => {
                             if (node.type === 'text' && typeof node.text === 'string') {
@@ -201,25 +127,7 @@ export function extractTextFromRichtext(
                 return extracted.length > 0 ? extracted : null;
             }
 
-<<<<<<< HEAD
             // If it has a toString method, try that
-=======
-            if (Array.isArray(richtext)) {
-                const extracted = richtext
-                    .map((item) => {
-                        if (typeof item === 'string') return item;
-                        if (item && typeof item === 'object') {
-                            if (item.text) return item.text;
-                            if (item.content) return extractTextFromRichtext(item.content) ?? '';
-                        }
-                        return '';
-                    })
-                    .filter((text) => typeof text === 'string' && text.length > 0)
-                    .join(' ');
-                return extracted.length > 0 ? extracted : null;
-            }
-
->>>>>>> cleanup/8-slop
             if (typeof richtext.toString === 'function') {
                 const str = richtext.toString();
                 if (str && str !== '[object Object]') {
@@ -229,12 +137,8 @@ export function extractTextFromRichtext(
 
             // Last resort: JSON syntax inflates the count slightly, but countWords tolerates it.
             return JSON.stringify(richtext);
-<<<<<<< HEAD
         } catch {
             // If extraction fails, return null
-=======
-        } catch (error) {
->>>>>>> cleanup/8-slop
             return null;
         }
     }
@@ -358,7 +262,6 @@ export async function wordCountMiddleware(
     context: DocumentServiceContext,
     next: DocumentServiceNext,
 ): Promise<unknown> {
-<<<<<<< HEAD
     // Only process articles and podcasts for create/update actions
     if (
         (context.contentType?.uid === 'api::article.article' ||
@@ -376,24 +279,6 @@ export async function wordCountMiddleware(
             // failed word count cannot block the save operation.
             await extractWordCount(strapiInstance, data, contentType);
         }
-=======
-    try {
-        if (
-            (context.contentType?.uid === 'api::article.article' ||
-             context.contentType?.uid === 'api::podcast.podcast') &&
-            ['create', 'update'].includes(context.action)
-        ) {
-            const data = context.params?.data;
-            if (data) {
-                const strapiInstance = context.params?.strapi;
-                if (!strapiInstance) return next();
-                const contentType = context.contentType?.uid === 'api::article.article' ? 'article' : 'podcast';
-                await extractWordCount(strapiInstance, data, contentType);
-            }
-        }
-    } catch (error) {
-        // extractWordCount already logged; never block the save.
->>>>>>> cleanup/8-slop
     }
 
     return next();

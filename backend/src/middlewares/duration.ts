@@ -45,7 +45,6 @@ async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): P
         // Check if file is already populated with URL (common in Strapi)
         let fileUrl: string | undefined;
 
-<<<<<<< HEAD
         const rawFile = data.file;
         if (Array.isArray(rawFile)) {
             // A to-many relation carries no single file identity of its own.
@@ -58,12 +57,6 @@ async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): P
             // File object already contains URL
             fileUrl = fileRef.url;
         } else if (fileRef !== undefined) {
-=======
-        if (data.file?.url) {
-            fileUrl = data.file.url;
-            fileRecord = data.file;
-        } else {
->>>>>>> cleanup/8-slop
             // Extract file identifier (can be ID, documentId, or object with id/documentId)
             let fileId: number | string | undefined;
             if (typeof fileRef === 'number' || typeof fileRef === 'string') {
@@ -79,12 +72,8 @@ async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): P
                 return;
             }
 
-<<<<<<< HEAD
             // Query upload file record
             const uploadRecord = await strapi.documents('plugin::upload.file').findOne({
-=======
-            fileRecord = await strapi.documents('plugin::upload.file').findOne({
->>>>>>> cleanup/8-slop
                 documentId: fileId,
             });
 
@@ -93,12 +82,8 @@ async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): P
                 return;
             }
 
-<<<<<<< HEAD
             // Extract file URL from record
             fileUrl = typeof uploadRecord.url === 'string' ? uploadRecord.url : undefined;
-=======
-            fileUrl = fileRecord.url;
->>>>>>> cleanup/8-slop
         }
 
         if (!fileUrl) {
