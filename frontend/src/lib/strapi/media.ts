@@ -38,29 +38,8 @@ export type StrapiMedia = {
     publishedAt?: string | null;
 };
 
-export type StrapiMediaRef = {
-    id?: number;
-    documentId?: string;
-    name?: string;
-    alternativeText?: string | null;
-    caption?: string | null;
-    width?: number;
-    height?: number;
-    formats?: Record<string, StrapiMediaFormat>;
-    hash?: string;
-    ext?: string;
-    mime?: string;
-    size?: number;
-    sizeInBytes?: number;
-    url?: string;
-    previewUrl?: string | null;
-    provider?: string;
-    provider_metadata?: unknown;
-    related?: unknown[]; // keep flexible; Strapi returns heterogeneous relations
-    blurhash?: string | null;
-    createdAt?: string;
-    updatedAt?: string;
-    publishedAt?: string | null;
+/** Same payload as StrapiMedia, plus the legacy v4 wrapper shapes the normalizer unwraps. */
+export type StrapiMediaRef = StrapiMedia & {
     data?: {attributes?: StrapiMedia} | null;
     attributes?: StrapiMedia;
 };

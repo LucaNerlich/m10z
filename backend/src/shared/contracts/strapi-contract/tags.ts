@@ -13,6 +13,15 @@ import type {ContentTypeKey} from './registry';
 /** The subset of content types that appear in author/category-scoped list pages. */
 export type ListableContentType = 'article' | 'podcast';
 
+/** Entity content types exposed through the CMS read API. A subset of ContentTypeKey. */
+export type StrapiContentType = 'article' | 'podcast' | 'author' | 'category';
+
+/** Feed surfaces addressed by `feed:` tags. */
+export type FeedKind = 'article' | 'audio';
+
+/** Sitemap sections addressed by `sitemap:` tags. */
+export type SitemapSection = 'articles' | 'podcasts' | 'authors' | 'categories';
+
 export const ABOUT_TAG = 'strapi:about';
 export const ABOUT_PAGE_TAG = 'about';
 export const LEGAL_TAG = 'legal';
@@ -67,15 +76,15 @@ export function authorCategoryListPageTag(
     return `strapi:${contentType}:list:author:${authorSlug}:category:${categorySlug}:page`;
 }
 
-export function feedTag(kind: 'article' | 'audio'): string {
+export function feedTag(kind: FeedKind): string {
     return `feed:${kind}`;
 }
 
-export function feedSourceTag(kind: 'article' | 'audio'): string {
+export function feedSourceTag(kind: FeedKind): string {
     return kind === 'article' ? 'strapi:article-feed' : 'strapi:audio-feed';
 }
 
-export function sitemapTag(section: 'articles' | 'podcasts' | 'authors' | 'categories'): string {
+export function sitemapTag(section: SitemapSection): string {
     return `sitemap:${section}`;
 }
 
