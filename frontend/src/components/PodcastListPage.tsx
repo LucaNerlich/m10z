@@ -1,30 +1,10 @@
-import Link from 'next/link';
-import {fetchPodcastsPage} from '@/src/lib/strapiContent';
-import {ContentGrid} from '@/src/components/ContentGrid';
-import {PodcastCard} from '@/src/components/PodcastCard';
-import {Card} from '@/src/components/Card';
-import {Pagination} from '@/src/components/Pagination';
+import {PodcastCard} from './PodcastCard';
+import {ContentListPage} from './ContentListPage';
 
-/**
- * Parse the page parameter from URL search parameters, validated as a positive integer.
- *
- * @param searchParams - URL search parameters potentially containing a `page` entry
- * @returns The page number as an integer (minimum 1); returns 1 for missing or invalid values
- */
-function parsePageParam(searchParams: Record<string, string | string[] | undefined>): number {
-    const raw = searchParams.page;
-    const rawString = Array.isArray(raw) ? raw[0] : raw;
-    const parsed = Number(rawString);
-    if (!Number.isFinite(parsed) || parsed < 1) return 1;
-    return Math.max(1, Math.floor(parsed));
-}
+import {fetchPodcastsPage} from '@/src/lib/strapiContent';
 
 /**
  * Render a podcasts listing page with loading, error, empty, and populated states.
- *
- * Fetches paginated podcasts and displays a loading skeleton while loading, an error panel
- * with a retry button when fetching fails, a message when no podcasts are available, or a
- * paginated grid of PodcastCard items when data is present.
  *
  * @returns The page's JSX: either a loading skeleton, an error panel with retry, an empty-state message, or a grid of podcast cards.
  */
@@ -33,77 +13,15 @@ export async function PodcastListPage({
                                       }: {
     searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
 }) {
-    const sp = await Promise.resolve(searchParams ?? {});
-    const currentPage = parsePageParam(sp);
-
-    let data;
-    try {
-        data = await fetchPodcastsPage({page: currentPage, pageSize: 12});
-    } catch {
-        return (
-            <section data-list-page>
-                <h1>Podcasts</h1>
-                <Card variant="empty">
-                    <p>Fehler beim Laden der Podcasts.</p>
-                    <Link href="/podcasts" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
-                        Erneut versuchen
-                    </Link>
-                </Card>
-            </section>
-        );
-    }
-
-    // Out-of-range pages (e.g. /podcasts?page=999) must not be presented as
-    // "no podcasts found" — that is misleading when content exists.
-    if (data && data.items.length === 0 && data.pagination.total > 0 && currentPage > data.pagination.pageCount) {
-        return (
-            <section data-list-page>
-                <h1>Podcasts</h1>
-                <Card variant="empty">
-                    <p>Diese Seite existiert nicht.</p>
-                    <Link href="/podcasts" style={{marginTop: '1rem', padding: '0.5rem 1rem', display: 'inline-block'}}>
-                        Zur ersten Seite
-                    </Link>
-                </Card>
-            </section>
-        );
-    }
-
-    // Handle empty state
-    if (!data || data.items.length === 0) {
-        return (
-            <section data-list-page>
-                <h1>Podcasts</h1>
-                <p>Keine Podcasts gefunden.</p>
-            </section>
-        );
-    }
-
-    const {page, pageCount} = data.pagination;
-    const prevPage = page > 1 ? page - 1 : null;
-    const nextPage = page < pageCount ? page + 1 : null;
-
     return (
-        <section data-list-page>
-            <h1>Podcasts</h1>
-            <ContentGrid gap="comfortable">
-                {data.items.map((podcast) => (
-                    <PodcastCard
-                        key={podcast.slug}
-                        podcast={podcast}
-                        showAuthors={true}
-                        showCategories={true}
-                    />
-                ))}
-            </ContentGrid>
-            {data.items.length > 0 && pageCount > 1 && (
-                <Pagination
-                    currentPage={page}
-                    totalPages={pageCount}
-                    previousHref={prevPage ? `/podcasts?page=${prevPage}` : undefined}
-                    nextHref={nextPage ? `/podcasts?page=${nextPage}` : undefined}
-                />
+        <ContentListPage
+            title="Podcasts"
+            basePath="/podcasts"
+            searchParams={searchParams}
+            fetchPage={fetchPodcastsPage}
+            renderCard={(podcast) => (
+                <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={true} showCategories={true} />
             )}
-        </section>
+        />
     );
 }

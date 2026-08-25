@@ -19,6 +19,14 @@ describe('parsePageParam', () => {
     ])('%j → %i', (params, expected) => {
         expect(parsePageParam(params)).toBe(expected);
     });
+
+    test.each<[Record<string, string | string[] | undefined>, number, number]>([
+        [{}, 50, 1],
+        [{page: '5'}, 50, 5],
+        [{page: '999'}, 50, 50], // clamped to maxPage
+    ])('%j with maxPage=%i → %i', (params, maxPage, expected) => {
+        expect(parsePageParam(params, {maxPage})).toBe(expected);
+    });
 });
 
 describe('parseCategoryParam', () => {
