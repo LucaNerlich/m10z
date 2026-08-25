@@ -283,17 +283,21 @@ async function uploadToStrapiWithRetry(
 
             if (!response.ok) {
                 let errorDetails = '';
-                let errorJson: any = null;
+                let errorJson: unknown = null;
 
                 try {
                     const text = await response.text();
                     // Try to parse as JSON for structured error messages
                     try {
-                        errorJson = JSON.parse(text);
-                        if (errorJson.error) {
+                        errorJson = JSON.parse(text) as unknown;
+                        const errRecord = (errorJson ?? {}) as {
+                            error?: {message?: unknown; details?: unknown};
+                            message?: unknown;
+                        };
+                        if (errRecord.error) {
                             // Strapi error format: { error: { message: "...", details: {...} } }
-                            const errorMsg = errorJson.error.message || '';
-                            const errorDetailsObj = errorJson.error.details || errorJson.error;
+                            const errorMsg = typeof errRecord.error.message === 'string' ? errRecord.error.message : '';
+                            const errorDetailsObj = errRecord.error.details ?? errRecord.error;
                             if (errorMsg) {
                                 errorDetails = errorMsg;
                                 if (errorDetailsObj && typeof errorDetailsObj === 'object') {
@@ -303,10 +307,10 @@ async function uploadToStrapiWithRetry(
                                     }
                                 }
                             } else {
-                                errorDetails = JSON.stringify(errorJson.error);
+                                errorDetails = JSON.stringify(errRecord.error);
                             }
-                        } else if (errorJson.message) {
-                            errorDetails = errorJson.message;
+                        } else if (typeof errRecord.message === 'string') {
+                            errorDetails = errRecord.message;
                         } else {
                             errorDetails = JSON.stringify(errorJson);
                         }
@@ -314,7 +318,7 @@ async function uploadToStrapiWithRetry(
                         // If not JSON, use the text as-is
                         errorDetails = text || response.statusText;
                     }
-                } catch (err) {
+                } catch {
                     errorDetails = response.statusText;
                 }
 
@@ -332,9 +336,13 @@ async function uploadToStrapiWithRetry(
             // (e.g. an empty 200) is ambiguous: the upload may still have succeeded
             // server-side, so verify against the media library before retrying —
             // retrying blindly would upload the same file a second time.
-            let json: any;
+            // Ensure we fully read the response before closing. An unreadable body
+            // (e.g. an empty 200) is ambiguous: the upload may still have succeeded
+            // server-side, so verify against the media library before retrying —
+            // retrying blindly would upload the same file a second time.
+            let parsed: unknown;
             try {
-                json = await response.json();
+                parsed = await response.json();
             } catch (parseError) {
                 const existing = await lookupExistingFile(filename);
                 if (existing) {
@@ -349,13 +357,17 @@ async function uploadToStrapiWithRetry(
             }
 
             // Strapi upload returns an array of uploaded files
-            if (!Array.isArray(json) || !json[0] || typeof json[0].id !== 'number') {
+            if (
+                !Array.isArray(parsed) ||
+                !parsed[0] ||
+                typeof (parsed[0] as {id?: unknown}).id !== 'number'
+            ) {
                 throw new Error(
-                    `Unexpected Strapi upload response format. Expected array with file objects, got: ${JSON.stringify(json)}`,
+                    `Unexpected Strapi upload response format. Expected array with file objects, got: ${JSON.stringify(parsed)}`,
                 );
             }
 
-            const uploadedFile = json[0];
+            const uploadedFile = parsed[0] as {id: number; url?: string};
             log(
                 `Uploaded: ${filename} (ID: ${uploadedFile.id}, URL: ${uploadedFile.url})`,
             );

@@ -14,13 +14,13 @@ export type StrapiLike = {
     };
 };
 
-export type TaskQueueOptions<T> = {
+export type TaskQueueOptions<T, S extends StrapiLike = StrapiLike> = {
     /** Human-readable name used in log messages. */
     name: string;
     /** Stable dedupe key for an item — re-enqueuing the same key coalesces into one pending item. */
     keyOf: (item: T) => string;
     /** Perform the task; return true on success, false on failure (never throw). */
-    run: (item: T, strapi: StrapiLike) => Promise<boolean>;
+    run: (item: T, strapi: S) => Promise<boolean>;
     /**
      * Combine an already-pending item with a newly-enqueued one sharing the same key,
      * so per-item bookkeeping (e.g. accumulated durable-storage ids) isn't dropped when
@@ -36,9 +36,9 @@ export type TaskQueueOptions<T> = {
     /** Consecutive failed batches after which pending items for that key are abandoned. */
     maxFailureRetries?: number;
     /** Called once per item after each run attempt (e.g. to remove it from durable storage on success). */
-    onSettled?: (item: T, succeeded: boolean, strapi: StrapiLike) => void;
+    onSettled?: (item: T, succeeded: boolean, strapi: S) => void;
     /** Called once per batch with the abandoned items when the retry limit is hit (e.g. to drop their durable-storage rows). */
-    onAbandoned?: (items: T[], strapi: StrapiLike) => void;
+    onAbandoned?: (items: T[], strapi: S) => void;
 };
 
 const DEFAULT_DEBOUNCE_MS = 5000;
@@ -46,16 +46,16 @@ const DEFAULT_CONCURRENCY = 5;
 const DEFAULT_MAX_FAILURE_RETRIES = 5;
 const MAX_BACKOFF_MS = 60_000;
 
-export class AsyncTaskQueue<T> {
+export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
     private pending = new Map<string, T>();
     private firstPendingAt: number | null = null;
     private isRunning = false;
     private consecutiveFailures = 0;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-    constructor(private readonly options: TaskQueueOptions<T>) {}
+    constructor(private readonly options: TaskQueueOptions<T, S>) {}
 
-    enqueue(item: T, strapi: StrapiLike | undefined | null): void {
+    enqueue(item: T, strapi: S | undefined | null): void {
         if (!strapi) {
             console.warn(`[${this.options.name}] Missing strapi instance; cannot enqueue.`);
             return;
@@ -70,7 +70,7 @@ export class AsyncTaskQueue<T> {
     }
 
     /** Re-enqueue items recovered from durable storage on boot, without re-triggering onEnqueue persistence. */
-    restore(items: T[], strapi: StrapiLike): void {
+    restore(items: T[], strapi: S): void {
         if (items.length === 0) return;
         if (this.firstPendingAt === null) this.firstPendingAt = Date.now();
         for (const item of items) {
@@ -95,7 +95,7 @@ export class AsyncTaskQueue<T> {
         }
     }
 
-    private scheduleRun(strapi: StrapiLike): void {
+    private scheduleRun(strapi: S): void {
         this.clearTimer();
         const base = this.options.debounceMs ?? DEFAULT_DEBOUNCE_MS;
         let delay =
@@ -116,7 +116,7 @@ export class AsyncTaskQueue<T> {
         }, delay);
     }
 
-    private async runBatch(strapi: StrapiLike): Promise<void> {
+    private async runBatch(strapi: S): Promise<void> {
         if (this.isRunning || this.pending.size === 0) return;
 
         this.isRunning = true;
@@ -170,10 +170,9 @@ export class AsyncTaskQueue<T> {
                     // newer enqueue of the same key rather than silently dropping either side.
                     for (const item of failedItems) {
                         const key = this.options.keyOf(item);
-                        if (this.pending.has(key)) {
-                            if (this.options.merge) {
-                                this.pending.set(key, this.options.merge(item, this.pending.get(key) as T));
-                            }
+                        const existing = this.pending.get(key);
+                        if (existing !== undefined && this.options.merge) {
+                            this.pending.set(key, this.options.merge(item, existing));
                         } else {
                             this.pending.set(key, item);
                         }

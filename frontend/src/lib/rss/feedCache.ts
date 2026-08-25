@@ -258,8 +258,13 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
         schedulerTimer = setIntervalFn(() => {
             void refresh().catch(() => undefined);
         }, FEED_REGENERATE_MS);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (schedulerTimer as any).unref?.();
+        // Node timers expose `.unref()`; DOM typings model the timer as a
+        // number instead, so narrow structurally rather than discarding the
+        // timer type.
+        if (typeof schedulerTimer === 'object' && schedulerTimer !== null) {
+            const nodeTimer = schedulerTimer as {unref?: () => void};
+            nodeTimer.unref?.();
+        }
     }
 
     function stopScheduler() {

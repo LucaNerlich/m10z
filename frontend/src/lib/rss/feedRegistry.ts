@@ -6,8 +6,13 @@ import {createFeedCache, type FeedCache} from '@/src/lib/rss/feedCache';
 import {type ContentTypeKey} from '@/src/lib/shared/strapiContract';
 
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const module: any;
+type HotModule = {
+    hot?: {
+        dispose: (callback: () => void) => void;
+    };
+};
+
+declare const module: HotModule | undefined;
 
 type FeedRegistry = {
     article: FeedCache;

@@ -1,6 +1,6 @@
 import {marked} from 'marked';
 import {JSDOM} from 'jsdom';
-import createDOMPurify from 'dompurify';
+import createDOMPurify, {type WindowLike} from 'dompurify';
 
 import {joinStrapiBaseUrl} from '@/src/lib/image';
 
@@ -96,9 +96,10 @@ export function markdownToHtml(markdownText: string): string {
     jsdomWindowsCreated += 1;
     const window = dom.window;
 
-    // DOMPurify's TS types expect a WindowLike. JSDOM's window is compatible at runtime.
-    // Cast to avoid type mismatch between DOMPurify and JSDOM type definitions.
-    const DOMPurify = createDOMPurify(window as any);
+    // DOMPurify declares its own minimal `WindowLike` contract; JSDOM's window
+    // satisfies it at runtime but its types come from @types/jsdom, so the two
+    // library type worlds are reconciled explicitly here.
+    const DOMPurify = createDOMPurify(window as WindowLike);
     domPurifyInstancesCreated += 1;
 
     // Ensure every <a target="_blank"> gets rel="noopener noreferrer" to

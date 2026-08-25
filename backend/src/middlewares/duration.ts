@@ -8,9 +8,16 @@ import {parseFile} from 'music-metadata';
 import {existsSync} from 'fs';
 
 import {normalizeFileIdentity, resolveFileWithinPublicDir} from './durationFile';
+import type {
+    DocumentServiceContext,
+    DocumentServiceNext,
+    FileReference,
+    PodcastDocument,
+    StrapiInstance,
+} from '../types/middleware';
 
 async function getExistingPodcastFileIdentity(
-    strapi: any,
+    strapi: StrapiInstance,
     documentId?: string | number,
 ): Promise<string | null> {
     if (!documentId) return null;
@@ -33,27 +40,31 @@ async function getExistingPodcastFileIdentity(
  *
  * @param data - The entity data being saved; if a file is present its duration will be assigned to `data.duration` as an integer number of seconds
  */
-async function extractDuration(strapi: any, data: any): Promise<void> {
+async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): Promise<void> {
     try {
         // Check if file is already populated with URL (common in Strapi)
         let fileUrl: string | undefined;
-        let fileRecord: any;
 
-        if (data.file?.url) {
+        const rawFile = data.file;
+        if (Array.isArray(rawFile)) {
+            // A to-many relation carries no single file identity of its own.
+            strapi.log.debug('No file ID found in podcast data');
+            return;
+        }
+        const fileRef: number | string | FileReference | undefined = rawFile;
+
+        if (typeof fileRef === 'object' && fileRef !== null && fileRef.url) {
             // File object already contains URL
-            fileUrl = data.file.url;
-            fileRecord = data.file;
-        } else {
+            fileUrl = fileRef.url;
+        } else if (fileRef !== undefined) {
             // Extract file identifier (can be ID, documentId, or object with id/documentId)
             let fileId: number | string | undefined;
-            if (typeof data.file === 'number') {
-                fileId = data.file;
-            } else if (typeof data.file === 'string') {
-                fileId = data.file;
-            } else if (data.file?.id) {
-                fileId = data.file.id;
-            } else if (data.file?.documentId) {
-                fileId = data.file.documentId;
+            if (typeof fileRef === 'number' || typeof fileRef === 'string') {
+                fileId = fileRef;
+            } else if (fileRef.id) {
+                fileId = fileRef.id;
+            } else if (fileRef.documentId) {
+                fileId = fileRef.documentId;
             }
 
             if (!fileId) {
@@ -62,17 +73,17 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
             }
 
             // Query upload file record
-            fileRecord = await strapi.documents('plugin::upload.file').findOne({
+            const uploadRecord = await strapi.documents('plugin::upload.file').findOne({
                 documentId: fileId,
             });
 
-            if (!fileRecord) {
+            if (!uploadRecord) {
                 strapi.log.warn(`Upload file record not found for ID: ${fileId}`);
                 return;
             }
 
             // Extract file URL from record
-            fileUrl = fileRecord.url;
+            fileUrl = typeof uploadRecord.url === 'string' ? uploadRecord.url : undefined;
         }
 
         if (!fileUrl) {
@@ -130,27 +141,33 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
  * @returns The value returned by the next middleware
  */
 export async function durationMiddleware(
-    context: {uid: string; action: string; params?: any},
-    next: () => Promise<unknown>,
+    context: DocumentServiceContext,
+    next: DocumentServiceNext,
 ): Promise<unknown> {
     // Only process podcast content type for create/update actions
     if (context.uid === 'api::podcast.podcast' && ['create', 'update'].includes(context.action)) {
+        const strapiInstance = context.params?.strapi;
+        // Same guard as the wordCount middleware: without a Strapi instance there is
+        // nothing to query — continue the chain instead of blocking the save.
+        if (!strapiInstance) return next();
+
         try {
             const data = context.params?.data;
-            if (data?.file) {
-                const strapiInstance = context.params?.strapi;
+            // Only podcast payloads carry the `file` relation this middleware needs.
+            if (data && 'file' in data && !Array.isArray(data.file) && data.file) {
+                const podcastData: PodcastDocument = data;
                 if (context.action === 'update') {
                     const documentId =
                         context.params?.documentId ||
                         context.params?.where?.documentId ||
                         context.params?.where?.id ||
-                        data?.documentId ||
-                        data?.id;
+                        podcastData.documentId ||
+                        podcastData.id;
                     const existingIdentity = await getExistingPodcastFileIdentity(
                         strapiInstance,
                         documentId,
                     );
-                    const incomingIdentity = normalizeFileIdentity(data.file);
+                    const incomingIdentity = normalizeFileIdentity(podcastData.file);
                     if (
                         existingIdentity &&
                         incomingIdentity &&
@@ -162,14 +179,11 @@ export async function durationMiddleware(
                         return next();
                     }
                 }
-                await extractDuration(strapiInstance, data);
+                await extractDuration(strapiInstance, podcastData);
             }
         } catch (error) {
             // Log error but don't block the operation
-            const strapiInstance = context.params?.strapi;
-            if (strapiInstance?.log) {
-                strapiInstance.log.warn('Failed to extract podcast duration:', error);
-            }
+            strapiInstance.log.warn('Failed to extract podcast duration:', error);
         }
     }
     return next();
