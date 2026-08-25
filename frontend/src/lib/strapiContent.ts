@@ -493,17 +493,13 @@ export const fetchCategoryPageData = cache(async (slug: string): Promise<Categor
     const articleSlugs = category.articles?.map((a) => a.slug).filter(Boolean) ?? [];
     const podcastSlugs = category.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
 
-    let articles: StrapiArticle[] = [];
-    let podcasts: StrapiPodcast[] = [];
-
-    try {
-        [articles, podcasts] = await Promise.all([
-            fetchArticlesBySlugsBatched(articleSlugs),
-            fetchPodcastsBySlugsBatched(podcastSlugs),
-        ]);
-    } catch {
-        // Graceful degradation — page renders with available content
-    }
+    // No fallback here: failures propagate to the route boundary (the category
+    // page logs them via getErrorMessage and renders notFound) instead of
+    // silently rendering an existing category as empty.
+    const [articles, podcasts] = await Promise.all([
+        fetchArticlesBySlugsBatched(articleSlugs),
+        fetchPodcastsBySlugsBatched(podcastSlugs),
+    ]);
 
     return {
         category,
