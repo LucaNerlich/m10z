@@ -143,8 +143,7 @@ function toPlainText(value: unknown, metrics?: PlainTextMetrics): string | undef
 function extractMediaUrl(mediaRef: any, strapiUrl?: string): string | null {
     if (!strapiUrl || !mediaRef) return null;
 
-    const media = unwrapEntry(mediaRef);
-    const url = media?.url ?? media?.data?.attributes?.url ?? media?.attributes?.url;
+    const url = mediaRef?.url;
     if (!url || typeof url !== 'string' || url.trim().length === 0) return null;
 
     if (/^https?:\/\//i.test(url)) return url;
@@ -172,13 +171,12 @@ function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
 
     const firstCategory = raw?.categories?.[0];
     if (firstCategory) {
-        const category = unwrapEntry(firstCategory);
-        const categoryCover = category?.cover;
+        const categoryCover = firstCategory.cover;
         if (categoryCover) {
             const url = extractMediaUrl(categoryCover, strapiUrl);
             if (url) return url;
         }
-        const categoryBanner = category?.banner;
+        const categoryBanner = firstCategory.banner;
         if (categoryBanner) {
             const url = extractMediaUrl(categoryBanner, strapiUrl);
             if (url) return url;
@@ -218,14 +216,6 @@ function extractCategoryCoverUrl(raw: any, strapiUrl?: string): string | null {
 
 // Strapi v4 wraps fields in `{ attributes: {...} }`, while v5 uses flat objects.
 // This normalizer handles both shapes so the index builder works across versions.
-function unwrapEntry<T extends {attributes?: Record<string, unknown>}>(entry: T): any {
-    if (!entry) return entry;
-    if (entry.attributes && typeof entry.attributes === 'object') {
-        return {...entry.attributes, id: (entry as any).id, documentId: (entry as any).documentId};
-    }
-    return entry;
-}
-
 async function fetchAllDocuments<T>(
     strapi: Strapi,
     uid: string,
@@ -241,40 +231,34 @@ async function fetchAllDocuments<T>(
             ...documentServicePage(page, PAGE_SIZE),
         });
 
-        const results: T[] = Array.isArray(res) ? res : res?.results ?? res?.data ?? [];
+        const results: T[] = Array.isArray(res) ? res : [];
         items.push(...results);
 
-        // Strapi 5's Document Service `findMany()` returns a bare array without pagination
-        // metadata (a v4 entity-service response carries it, but this code always runs
-        // against the v5 document service). Stop paging once the last page came back
+        // Strapi 5's Document Service `findMany()` returns a bare array without
+        // pagination metadata. Stop paging once the last page came back
         // shorter than the requested page size. `limit`/`start` (not nested
         // `pagination`) are what actually cap the query.
-        const pagination = res?.pagination ?? res?.meta?.pagination;
-        const pageCount = pagination?.pageCount ?? Number.POSITIVE_INFINITY;
-        if (results.length < PAGE_SIZE || page >= pageCount) break;
+        if (results.length < PAGE_SIZE) break;
         page += 1;
     }
 
     return items;
 }
 
-function normalizeArticle(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const article = unwrapEntry(raw);
-    const slug = safeText(article?.slug);
-    const title = sanitizeText(article?.title);
+function normalizeArticle(entry: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
+    const slug = safeText(entry?.slug);
+    const title = sanitizeText(entry?.title);
     if (!slug || !title) return null;
 
-    const description = sanitizeText(article?.description) ?? null;
-    const content = toPlainText(article?.content, metrics) ?? null;
+    const description = sanitizeText(entry?.description) ?? null;
+    const content = toPlainText(entry?.content, metrics) ?? null;
     const categories: string[] =
-        article?.categories
-            ?.map((c: any) => unwrapEntry(c))
+        entry?.categories
             ?.map((c: any) => sanitizeText(c?.title) ?? sanitizeText(c?.slug))
             ?.filter(Boolean) ?? [];
     const authors: string[] =
-        article?.authors
-            ?.map((a: any) => unwrapEntry(a))
-            .map((a: any) => sanitizeText(a?.title) ?? sanitizeText(a?.slug))
+        entry?.authors
+            ?.map((a: any) => sanitizeText(a?.title) ?? sanitizeText(a?.slug))
             .filter(Boolean) ??
         [];
 
@@ -286,29 +270,26 @@ function normalizeArticle(raw: any, strapiUrl?: string, metrics?: PlainTextMetri
         description,
         content,
         href: `/artikel/${encodeURIComponent(slug)}`,
-        publishedAt: effectiveDate(article),
+        publishedAt: effectiveDate(entry),
         tags: [...new Set<string>(['Artikel', ...categories, ...authors].filter(Boolean))],
-        coverImageUrl: extractCoverImageUrl(article, strapiUrl),
+        coverImageUrl: extractCoverImageUrl(entry, strapiUrl),
     };
 }
 
-function normalizePodcast(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const podcast = unwrapEntry(raw);
-    const slug = safeText(podcast?.slug);
-    const title = sanitizeText(podcast?.title);
+function normalizePodcast(entry: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
+    const slug = safeText(entry?.slug);
+    const title = sanitizeText(entry?.title);
     if (!slug || !title) return null;
 
-    const description = sanitizeText(podcast?.description) ?? null;
-    const content = toPlainText(podcast?.shownotes, metrics) ?? null;
+    const description = sanitizeText(entry?.description) ?? null;
+    const content = toPlainText(entry?.shownotes, metrics) ?? null;
     const categories: string[] =
-        podcast?.categories
-            ?.map((c: any) => unwrapEntry(c))
+        entry?.categories
             ?.map((c: any) => sanitizeText(c?.title) ?? sanitizeText(c?.slug))
             ?.filter(Boolean) ?? [];
     const authors: string[] =
-        podcast?.authors
-            ?.map((a: any) => unwrapEntry(a))
-            .map((a: any) => sanitizeText(a?.title) ?? sanitizeText(a?.slug))
+        entry?.authors
+            ?.map((a: any) => sanitizeText(a?.title) ?? sanitizeText(a?.slug))
             .filter(Boolean) ??
         [];
 
@@ -320,19 +301,18 @@ function normalizePodcast(raw: any, strapiUrl?: string, metrics?: PlainTextMetri
         description,
         content,
         href: `/podcasts/${encodeURIComponent(slug)}`,
-        publishedAt: effectiveDate(podcast),
+        publishedAt: effectiveDate(entry),
         tags: [...new Set<string>(['Podcast', ...categories, ...authors].filter(Boolean))],
-        coverImageUrl: extractCoverImageUrl(podcast, strapiUrl),
+        coverImageUrl: extractCoverImageUrl(entry, strapiUrl),
     };
 }
 
-function normalizeAuthor(raw: any, strapiUrl?: string): SearchRecord | null {
-    const author = unwrapEntry(raw);
-    const slug = safeText(author?.slug);
-    const title = sanitizeText(author?.title);
+function normalizeAuthor(entry: any, strapiUrl?: string): SearchRecord | null {
+    const slug = safeText(entry?.slug);
+    const title = sanitizeText(entry?.title);
     if (!slug || !title) return null;
 
-    const description = sanitizeText(author?.description) ?? null;
+    const description = sanitizeText(entry?.description) ?? null;
 
     return {
         id: `author:${slug}`,
@@ -342,17 +322,16 @@ function normalizeAuthor(raw: any, strapiUrl?: string): SearchRecord | null {
         description,
         href: `/team/${encodeURIComponent(slug)}`,
         tags: ['Autor-In'],
-        coverImageUrl: extractAuthorAvatarUrl(author, strapiUrl),
+        coverImageUrl: extractAuthorAvatarUrl(entry, strapiUrl),
     };
 }
 
-function normalizeCategory(raw: any, strapiUrl?: string): SearchRecord | null {
-    const category = unwrapEntry(raw);
-    const slug = safeText(category?.slug);
-    const title = sanitizeText(category?.title) ?? slug;
+function normalizeCategory(entry: any, strapiUrl?: string): SearchRecord | null {
+    const slug = safeText(entry?.slug);
+    const title = sanitizeText(entry?.title) ?? slug;
     if (!slug || !title) return null;
 
-    const description = sanitizeText(category?.description) ?? null;
+    const description = sanitizeText(entry?.description) ?? null;
 
     return {
         id: `category:${slug}`,
@@ -362,7 +341,7 @@ function normalizeCategory(raw: any, strapiUrl?: string): SearchRecord | null {
         description,
         href: `/kategorien/${encodeURIComponent(slug)}`,
         tags: ['Kategorie'],
-        coverImageUrl: extractCategoryCoverUrl(category, strapiUrl),
+        coverImageUrl: extractCategoryCoverUrl(entry, strapiUrl),
     };
 }
 

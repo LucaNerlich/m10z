@@ -61,8 +61,6 @@ export type StrapiMediaRef = {
     createdAt?: string;
     updatedAt?: string;
     publishedAt?: string | null;
-    data?: {attributes?: StrapiMedia} | null;
-    attributes?: StrapiMedia;
 };
 
 export type StrapiContentMedia = {
@@ -101,37 +99,33 @@ export type ImageSize = 'thumbnail' | 'small' | 'medium' | 'large';
 
 const IMAGE_SIZES_ORDERED: ImageSize[] = ['thumbnail', 'small', 'medium', 'large'];
 
-// Strapi returns media in three possible shapes depending on version and populate depth:
-//   1. Flat object (v5 default): { url, width, ... }
-//   2. Wrapped in `attributes`: { attributes: { url, width, ... } }
-//   3. Wrapped in `data.attributes`: { data: { attributes: { url, ... } } }
-// This normalizer collapses all three into a flat StrapiMedia object.
+// Strapi 5 returns media as flat objects: { url, width, ... }.
+// This normalizer copies the fields into a plain StrapiMedia object.
 export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): StrapiMedia {
     if (!ref) return {};
-    const attrs = ref.attributes ?? ref.data?.attributes ?? ref;
     return {
-        id: attrs.id,
-        documentId: attrs.documentId,
-        name: attrs.name,
-        alternativeText: attrs.alternativeText,
-        caption: attrs.caption,
-        width: attrs.width,
-        height: attrs.height,
-        formats: attrs.formats,
-        hash: attrs.hash,
-        ext: attrs.ext,
-        mime: attrs.mime,
-        size: attrs.size,
-        sizeInBytes: attrs.sizeInBytes,
-        url: attrs.url,
-        previewUrl: attrs.previewUrl,
-        provider: attrs.provider,
-        provider_metadata: attrs.provider_metadata,
-        related: attrs.related,
-        blurhash: attrs.blurhash,
-        createdAt: attrs.createdAt,
-        updatedAt: attrs.updatedAt,
-        publishedAt: attrs.publishedAt,
+        id: ref.id,
+        documentId: ref.documentId,
+        name: ref.name,
+        alternativeText: ref.alternativeText,
+        caption: ref.caption,
+        width: ref.width,
+        height: ref.height,
+        formats: ref.formats,
+        hash: ref.hash,
+        ext: ref.ext,
+        mime: ref.mime,
+        size: ref.size,
+        sizeInBytes: ref.sizeInBytes,
+        url: ref.url,
+        previewUrl: ref.previewUrl,
+        provider: ref.provider,
+        provider_metadata: ref.provider_metadata,
+        related: ref.related,
+        blurhash: ref.blurhash,
+        createdAt: ref.createdAt,
+        updatedAt: ref.updatedAt,
+        publishedAt: ref.publishedAt,
     };
 }
 

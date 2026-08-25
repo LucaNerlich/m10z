@@ -29,18 +29,6 @@ describe('normalizeStrapiMedia', () => {
         expect(result.width).toBe(100);
         expect(result.mime).toBe('image/jpeg');
     });
-
-    test('unwraps the `attributes` shape', () => {
-        const result = normalizeStrapiMedia({attributes: {url: '/uploads/b.jpg', width: 200}});
-        expect(result.url).toBe('/uploads/b.jpg');
-        expect(result.width).toBe(200);
-    });
-
-    test('unwraps the `data.attributes` shape', () => {
-        const result = normalizeStrapiMedia({data: {attributes: {url: '/uploads/c.jpg', height: 300}}});
-        expect(result.url).toBe('/uploads/c.jpg');
-        expect(result.height).toBe(300);
-    });
 });
 
 describe('mediaUrlToAbsolute', () => {
