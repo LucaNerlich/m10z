@@ -8,7 +8,7 @@
  * and the write side (the invalidate route) — so the two cannot drift apart.
  */
 
-import type {ContentTypeKey} from './registry';
+import type {ContentTypeKey} from './contentTypeKeys';
 
 /** The subset of content types that appear in author/category-scoped list pages. */
 export type ListableContentType = 'article' | 'podcast';

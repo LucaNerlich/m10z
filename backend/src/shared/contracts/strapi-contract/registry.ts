@@ -8,6 +8,7 @@
  * DOCUMENT_INVALIDATION / LIFECYCLE_INVALIDATION / SEARCH_INDEX_REBUILD_UIDS maps.
  */
 
+import {CONTENT_TYPE_KEYS, type ContentTypeKey} from './contentTypeKeys';
 import {
     ABOUT_PAGE_TAG,
     ABOUT_TAG,
@@ -24,25 +25,10 @@ import {
     typeTag,
 } from './tags';
 
-export const CONTENT_TYPE_KEYS = [
-    'article',
-    'podcast',
-    'author',
-    'category',
-    'article-feed',
-    'audio-feed',
-    'about',
-    'about-feed',
-    'imprint',
-    'privacy',
-    // Synthetic (non-Strapi-backed) types: never matched against a mutation by `uid`,
-    // only ever constructed programmatically (by the search-index rebuild queue) to
-    // reuse the same tag-computation path for a couple of flat, cross-cutting caches.
-    'search-index',
-    'sitemap',
-] as const;
-
-export type ContentTypeKey = (typeof CONTENT_TYPE_KEYS)[number];
+// Re-exported so consumers can keep treating `registry` as the single import
+// surface for the contract, while the key vocabulary itself lives leaf-first.
+export {CONTENT_TYPE_KEYS} from './contentTypeKeys';
+export type {ContentTypeKey} from './contentTypeKeys';
 
 export type DocumentAction = 'create' | 'update' | 'delete' | 'publish' | 'unpublish';
 
