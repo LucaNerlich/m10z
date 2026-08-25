@@ -13,9 +13,13 @@ if (typeof setInterval !== 'undefined') {
             }
         }
     }, 60000); // Clean every minute
-    // Don't keep the process alive just for cleanup.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (cleanupTimer as any).unref?.();
+    // Don't keep the process alive just for cleanup. Node timers expose
+    // `.unref()`; DOM typings model the timer as a number instead, so narrow
+    // structurally rather than casting away the timer type entirely.
+    if (typeof cleanupTimer === 'object' && cleanupTimer !== null) {
+        const nodeTimer = cleanupTimer as {unref?: () => void};
+        nodeTimer.unref?.();
+    }
 }
 
 export type RateLimitConfig = {

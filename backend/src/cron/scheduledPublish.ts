@@ -9,6 +9,7 @@
  */
 
 import {documentServicePage} from '../utils/documentServicePage';
+import type {ContentDocument, StrapiInstance} from '../types/middleware';
 
 /** Same leeway as scheduled publish: treat dates up to this far in the future as "due". */
 export const SCHEDULE_PUBLISH_LEEWAY_MS = 2 * 60 * 1000; // 2 minutes into the future
@@ -38,11 +39,11 @@ export async function publishDraftIfScheduledDateReached({
     slug,
     label,
 }: {
-    strapi: any;
+    strapi: StrapiInstance;
     uid: ContentUid;
     documentId: string | number;
     date: string | null | undefined;
-    slug: string;
+    slug: string | null | undefined;
     label: string;
 }): Promise<boolean> {
     const cutoffIso = getSchedulePublishCutoffIso();
@@ -77,7 +78,7 @@ const CONTENT_TYPES: {uid: ContentUid; label: string}[] = [
  *
  * @param strapi - The Strapi instance injected by the cron runner
  */
-export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<void> {
+export async function publishScheduledEntries({strapi}: {strapi: StrapiInstance}): Promise<void> {
     try {
         const cutoffDate = getSchedulePublishCutoffIso();
 
@@ -91,9 +92,9 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
                 // First collect a stable set of due draft document IDs, then publish that fixed
                 // list. Publishing deletes the draft rows, so mutating while paging can cause
                 // later pages to be skipped.
-                const dueDocs: any[] = [];
+                const dueDocs: ContentDocument[] = [];
                 let page = 1;
-                let pageDocuments: any[];
+                let pageDocuments: ContentDocument[] | undefined;
 
                 do {
                     pageDocuments = await strapi.documents(uid).findMany({
@@ -128,15 +129,20 @@ export async function publishScheduledEntries({strapi}: {strapi: any}): Promise<
                 if (dueDocs.length === 0) continue;
 
                 const results = await Promise.allSettled(
-                    dueDocs.map((doc) =>
-                        strapi
+                    dueDocs.map((doc) => {
+                        const targetId = doc.documentId;
+                        if (!targetId) {
+                            // Mirror a failed publish so the per-doc error path below runs.
+                            return Promise.reject({doc, error: new Error('Document has no documentId')});
+                        }
+                        return strapi
                             .documents(uid)
-                            .publish({documentId: doc.documentId})
+                            .publish({documentId: targetId})
                             .then(() => ({doc, error: null}))
                             .catch((error: unknown) => {
                                 throw {doc, error};
-                            }),
-                    ),
+                            });
+                    }),
                 );
 
                 for (const result of results) {

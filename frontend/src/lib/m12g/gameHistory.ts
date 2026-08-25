@@ -149,7 +149,9 @@ function pickBestStreak(byGame: Map<string, string[]>): Streak | null {
     let best: Streak | null = null;
     const names = [...byGame.keys()].sort((a, b) => a.localeCompare(b, 'de-DE'));
     for (const name of names) {
-        const run = findLongestRun(byGame.get(name)!);
+        const winMonths = byGame.get(name);
+        if (!winMonths) continue;
+        const run = findLongestRun(winMonths);
         if (run.length < 2) continue;
         if (!best || run.length > best.length) {
             best = {name, slug: gameSlug(name), length: run.length, months: run.months};

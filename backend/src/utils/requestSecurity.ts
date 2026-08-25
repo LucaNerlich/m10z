@@ -40,6 +40,18 @@ export function verifySecret(provided: unknown, expected: unknown): boolean {
 }
 
 /**
+ * Minimal structural contract for a Koa-like request context (the parts
+ * `getClientIp` relies on), so the helper stays decoupled from Koa's types.
+ */
+type KoaLikeContext = {
+    ip?: string;
+    request?: {
+        ip?: string;
+        headers?: Record<string, string | string[] | undefined>;
+    };
+};
+
+/**
  * Extract the client IP from a Koa-like context.
  *
  * Prefers the Koa-computed `request.ip` (the socket peer, or the client address
@@ -47,7 +59,7 @@ export function verifySecret(provided: unknown, expected: unknown): boolean {
  * proxy as trusted). The raw `x-forwarded-for` header is client-spoofable, so it
  * is only used as a last-resort fallback when no socket IP is available.
  */
-export function getClientIp(ctx: any): string {
+export function getClientIp(ctx: KoaLikeContext | null | undefined): string {
     const socketIp = ctx?.request?.ip ?? ctx?.ip;
     if (typeof socketIp === 'string' && socketIp.length > 0 && socketIp !== 'unknown') {
         return socketIp;

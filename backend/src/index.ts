@@ -1,15 +1,50 @@
 import {wordCountMiddleware} from './middlewares/wordCount';
 import {durationMiddleware} from './middlewares/duration';
 import {cacheInvalidationMiddleware} from './middlewares/cacheInvalidation';
-import {restorePendingInvalidations} from './services/cacheInvalidationQueue';
+import {restorePendingInvalidations, type StrapiWithDb} from './services/cacheInvalidationQueue';
 import {configureServerTimeouts} from '../config/server';
+import type {Server as HttpServer} from 'http';
+import {
+    type DocumentServiceContext,
+    type DocumentServiceNext,
+    type DatabaseLike,
+    type DocumentsService,
+} from './types/middleware';
+
+/**
+ * Structural contract for the Strapi instance as seen from `register`/`bootstrap`:
+ * the invalidation-queue surface plus document service, server, and plugin access
+ * used at boot.
+ */
+type AppStrapi = StrapiWithDb & {
+    log: {
+        debug: (message: string, ...args: unknown[]) => void;
+        info: (message: string, ...args: unknown[]) => void;
+        warn: (message: string, ...args: unknown[]) => void;
+        error: (message: string, ...args: unknown[]) => void;
+    };
+    db?: DatabaseLike;
+    server?: {
+        httpServer?: HttpServer;
+    };
+    documents: DocumentsService;
+    plugin?: (name: string) =>
+        | {
+            contentTypes?: {
+                file?: {
+                    attributes?: Record<string, unknown>;
+                };
+            };
+          }
+        | undefined;
+};
 
 export default {
     /**
      * Register middleware on the Document Service to invalidate
      * the Next.js frontend after successful mutations.
      */
-    register({strapi}: {strapi: any}) {
+    register({strapi}: {strapi: AppStrapi}) {
         // Validate required environment variables at startup
         const requiredEnvVars = [
             'DATABASE_CLIENT',
@@ -51,8 +86,9 @@ export default {
         let retryCount = 0;
 
         const configureServer = () => {
-            if (strapi.server?.httpServer) {
-                configureServerTimeouts(strapi.server.httpServer);
+            const httpServer = strapi.server?.httpServer;
+            if (httpServer) {
+                configureServerTimeouts(httpServer);
                 strapi.log.info('HTTP server timeouts configured (keepAlive: 65s, headers: 66s, request: 120s)');
             } else {
                 retryCount++;
@@ -68,8 +104,9 @@ export default {
         };
         configureServer();
         // Extend upload file schema with blurhash attribute (stores base64 data URL)
-        if (strapi.plugin('upload')?.contentTypes?.file?.attributes) {
-            strapi.plugin('upload').contentTypes.file.attributes.blurhash = {
+        const uploadFileAttributes = strapi.plugin?.('upload')?.contentTypes?.file?.attributes;
+        if (uploadFileAttributes) {
+            uploadFileAttributes.blurhash = {
                 type: 'text', // Use text instead of string for longer base64 data URLs
             };
         }
@@ -79,7 +116,7 @@ export default {
         // 2. durationMiddleware (runs before save)
         // 3. cacheInvalidationMiddleware (runs after save)
 
-        strapi.documents.use(async (context: any, next: any) => {
+        strapi.documents.use(async (context: DocumentServiceContext, next: DocumentServiceNext) => {
             // Pass strapi to context params so middleware can access it
             if (!context.params) {
                 context.params = {};
@@ -88,7 +125,7 @@ export default {
             return wordCountMiddleware(context, next);
         });
 
-        strapi.documents.use(async (context: any, next: any) => {
+        strapi.documents.use(async (context: DocumentServiceContext, next: DocumentServiceNext) => {
             // Pass strapi to context params so middleware can access it
             if (!context.params) {
                 context.params = {};
@@ -97,7 +134,7 @@ export default {
             return durationMiddleware(context, next);
         });
 
-        strapi.documents.use(async (context: any, next: any) => {
+        strapi.documents.use(async (context: DocumentServiceContext, next: DocumentServiceNext) => {
             // Pass strapi to context params so middleware can access it
             if (!context.params) {
                 context.params = {};
@@ -114,7 +151,7 @@ export default {
      * This gives you an opportunity to set up your data model,
      * run jobs, or perform some special logic.
      */
-    async bootstrap({strapi}: {strapi: any}) {
+    async bootstrap({strapi}: {strapi: AppStrapi}) {
         // Add blurhash column to files table if it doesn't exist
         // This ensures the database column exists even if schema extension happens after DB init
         try {
@@ -218,10 +255,11 @@ export default {
 
             try {
                 // Stop accepting new requests
-                if (strapi.server?.httpServer) {
+                const httpServer = strapi.server?.httpServer;
+                if (httpServer) {
                     strapi.log.info('Closing HTTP server...');
                     await new Promise<void>((resolve, reject) => {
-                        strapi.server.httpServer.close((err: unknown) => {
+                        httpServer.close((err: unknown) => {
                             if (err) {
                                 strapi.log.error('Error closing HTTP server:', err);
                                 reject(err);

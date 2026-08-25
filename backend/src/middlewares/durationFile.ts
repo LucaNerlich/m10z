@@ -7,6 +7,8 @@
 
 import {resolve, sep} from 'path';
 
+import type {FileReference} from '../types/middleware';
+
 /**
  * Derive a stable identity string for a Strapi file reference.
  *
@@ -15,14 +17,19 @@ import {resolve, sep} from 'path';
  *
  * @returns A string identity, or `null` when no identity can be derived.
  */
-export function normalizeFileIdentity(file: any): string | null {
+export function normalizeFileIdentity(
+    file: number | string | FileReference | FileReference[] | null | undefined,
+): string | null {
     if (!file) return null;
     if (typeof file === 'string' || typeof file === 'number') {
         return String(file);
     }
-    if (file.documentId) return String(file.documentId);
-    if (file.id) return String(file.id);
-    if (file.url) return `url:${file.url}`;
+    // A populated to-many relation carries no single identity of its own.
+    if (!Array.isArray(file) && typeof file === 'object') {
+        if (file.documentId) return String(file.documentId);
+        if (file.id) return String(file.id);
+        if (file.url) return `url:${file.url}`;
+    }
     return null;
 }
 

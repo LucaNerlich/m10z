@@ -32,12 +32,7 @@ export const populateCategory = {
         cover: populateMedia,
         banner: populateMedia,
     },
-    fields: [...CATEGORY_CONTENT_FIELDS, 'slug', 'date'] as unknown as [
-        'title',
-        'description',
-        'slug',
-        'date',
-    ],
+    fields: [...CATEGORY_CONTENT_FIELDS, 'slug', 'date'],
 };
 
 // ─── Article presets ────────────────────────────────────────────────────────

@@ -27,7 +27,7 @@ export function createFeedStrapiFetcher(tags: string[]): StrapiFeedFetcher {
 }
 
 type StrapiCollectionPage<T> = {
-    data: unknown[];
+    data: T[];
     meta?: {pagination?: {page: number; pageCount: number; total: number}};
 };
 
@@ -55,7 +55,7 @@ export async function fetchAllPaginated<T>(args: {
     const firstRes = await args.fetcher<StrapiCollectionPage<T>>(
         `${args.apiBasePath}?${firstQuery}`,
     );
-    const firstItems = Array.isArray(firstRes.data) ? (firstRes.data as T[]) : [];
+    const firstItems = Array.isArray(firstRes.data) ? firstRes.data : [];
     const all: T[] = firstItems.slice(0, maxItems);
 
     const pagination = firstRes.meta?.pagination;
@@ -79,7 +79,7 @@ export async function fetchAllPaginated<T>(args: {
     );
 
     for (const res of results) {
-        const items = Array.isArray(res.data) ? (res.data as T[]) : [];
+        const items = Array.isArray(res.data) ? res.data : [];
         const remaining = Math.max(0, maxItems - all.length);
         if (remaining <= 0) break;
         all.push(...items.slice(0, remaining));

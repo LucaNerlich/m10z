@@ -1,5 +1,6 @@
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import type {BuildSuccessInfo} from '@/src/lib/rss/feedCache';
+import type {AudioFeedBuildTiming} from '@/src/lib/rss/buildAudioFeed';
 
 const BUILD_HISTORY_LIMIT = 20;
 const SLOW_BUILD_WINDOW = 3;
@@ -8,11 +9,11 @@ const SLOW_BUILD_MULTIPLIER = 2;
 export type AudioFeedBuildHealthState = {
     initialBuildDurationMs: number | null;
     buildDurationsMs: number[];
-    lastBuildTiming: unknown | null;
+    lastBuildTiming: AudioFeedBuildTiming | null;
 };
 
 export type AudioFeedBuildHealth = {
-    recordBuild: (info: BuildSuccessInfo & {lastBuildTiming?: unknown}) => void;
+    recordBuild: (info: BuildSuccessInfo & {lastBuildTiming?: AudioFeedBuildTiming}) => void;
     shouldReset: () => boolean;
     reset: () => void;
     getRuntimeState: (schedulerState: {
@@ -29,7 +30,7 @@ export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildH
         lastBuildTiming: null,
     };
 
-    function recordBuild(info: BuildSuccessInfo & {lastBuildTiming?: unknown}) {
+    function recordBuild(info: BuildSuccessInfo & {lastBuildTiming?: AudioFeedBuildTiming}) {
         const {durationMs, built, memoryUsedMB, memoryDeltaMB, lastBuildTiming} = info;
 
         if (state.initialBuildDurationMs === null) {
