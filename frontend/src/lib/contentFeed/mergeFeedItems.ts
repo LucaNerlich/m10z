@@ -1,6 +1,7 @@
 import type {StrapiMedia} from '@/src/lib/strapi/media';
 import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/strapi/media';
 import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import type {PaginatedResult} from '@/src/lib/strapi/responses';
 import type {StrapiArticle, StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 
 export type FeedItem =
@@ -28,18 +29,8 @@ export type FeedItem =
     href: string;
 };
 
-type ContentFeedPagination = {
-    page: number;
-    pageSize: number;
-    total: number;
-    pageCount: number;
-};
-
-export type ContentFeedResponse = {
-    items: FeedItem[];
-    pagination: ContentFeedPagination;
-    hasNextPage: boolean;
-};
+/** The merged article+podcast feed reuses the canonical paginated-result envelope. */
+export type ContentFeedResponse = PaginatedResult<FeedItem>;
 
 export function clampContentFeedPage(page: number): number {
     return Math.max(1, Math.floor(page || 1));
