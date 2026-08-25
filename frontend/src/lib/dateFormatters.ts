@@ -176,7 +176,7 @@ export function formatDateShort(date: string | null | undefined): string {
  * ensuring dates display consistently regardless of user timezone. Relative date
  * calculations are based on calendar days, not time-of-day differences.
  *
- * Returns '—' for null, undefined, or unparseable date strings. For exact day offsets returns localized labels such as "heute", "gestern", or "morgen"; for other offsets returns a relative description (e.g., "vor 2 Tagen", "in 3 Wochen"). If relative formatting is unavailable or fails, falls back to the short German date format.
+ * Returns '—' for null, undefined, or unparseable date strings. For exact day offsets returns localized labels such as "heute", "gestern", or "morgen"; for other offsets returns a relative description (e.g., "vor 2 Tagen", "in 3 Wochen").
  *
  * WARNING: This function uses `new Date()` for the current time, which can cause
  * hydration mismatches if used during SSR. Only use this function in client-side
@@ -199,26 +199,20 @@ export function formatDateRelative(date: string | null | undefined): string {
     if (diffDays === -1) return 'gestern';
     if (diffDays === 1) return 'morgen';
 
-    // Use Intl.RelativeTimeFormat for other relative dates
-    try {
-        const absDiffDays = Math.abs(diffDays);
+    // Use Intl.RelativeTimeFormat for other relative dates. Inputs are always
+    // finite integers and literal units, so format() cannot throw.
+    const absDiffDays = Math.abs(diffDays);
 
-        if (absDiffDays < 7) {
-            return GERMAN_RELATIVE_TIME_FORMATTER.format(diffDays, 'day');
-        } else if (absDiffDays < 30) {
-            const diffWeeks = Math.round(diffDays / 7);
-            return GERMAN_RELATIVE_TIME_FORMATTER.format(diffWeeks, 'week');
-        } else if (absDiffDays < 365) {
-            const diffMonths = Math.round(diffDays / 30);
-            return GERMAN_RELATIVE_TIME_FORMATTER.format(diffMonths, 'month');
-        } else {
-            const diffYears = Math.round(diffDays / 365);
-            return GERMAN_RELATIVE_TIME_FORMATTER.format(diffYears, 'year');
-        }
-    } catch {
-        // Fallback to short date format if RelativeTimeFormat fails
-        return formatDateShort(date);
+    if (absDiffDays < 7) {
+        return GERMAN_RELATIVE_TIME_FORMATTER.format(diffDays, 'day');
     }
+    if (absDiffDays < 30) {
+        return GERMAN_RELATIVE_TIME_FORMATTER.format(Math.round(diffDays / 7), 'week');
+    }
+    if (absDiffDays < 365) {
+        return GERMAN_RELATIVE_TIME_FORMATTER.format(Math.round(diffDays / 30), 'month');
+    }
+    return GERMAN_RELATIVE_TIME_FORMATTER.format(Math.round(diffDays / 365), 'year');
 }
 
 /**

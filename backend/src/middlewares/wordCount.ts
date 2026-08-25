@@ -17,78 +17,70 @@ import type {
 /**
  * Compute the number of words in markdown or richtext content.
  *
- * Returns 0 for null, empty, non-string input, or when an internal error occurs.
+ * Returns 0 for null, empty, or non-string input.
  *
  * @param content - Markdown or richtext string to count words in
- * @returns `0` for null, empty, non-string input, or on error; otherwise the number of words found
+ * @returns `0` for null, empty, or non-string input; otherwise the number of words found
  */
 export function countWords(content: string | null | undefined): number {
-    try {
-        if (!content || typeof content !== 'string' || content.trim().length === 0) {
-            return 0;
-        }
-
-        // Strip markdown syntax to extract plain text
-        let text = content;
-
-        // Remove fenced code blocks (```code```)
-        text = text.replace(/```[\s\S]*?```/g, '');
-
-        // Remove indented code blocks (4+ spaces at start of line)
-        text = text.replace(/^ {4,}.*$/gm, '');
-
-        // Remove inline code (`code`)
-        text = text.replace(/`[^`]+`/g, '');
-
-        // Remove images but keep alt text: ![alt](url) -> alt
-        text = text.replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1');
-
-        // Remove links but keep text: [text](url) -> text
-        text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-
-        // Remove headers (# ## ### etc.)
-        text = text.replace(/^#{1,6}\s+/gm, '');
-
-        // Remove bold (**text** or __text__). The underscore variants must not match
-        // inside snake_case identifiers, so they only count as emphasis when the
-        // underscores are bounded by non-word characters (or string boundaries).
-        text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
-        text = text.replace(/(^|\W)__([^_]+)__(?=\W|$)/g, '$1$2');
-
-        // Remove italic (*text* or _text_)
-        text = text.replace(/\*([^*]+)\*/g, '$1');
-        text = text.replace(/(^|\W)_([^_]+)_(?=\W|$)/g, '$1$2');
-
-        // Remove strikethrough (~~text~~)
-        text = text.replace(/~~([^~]+)~~/g, '$1');
-
-        // Remove list markers (-, *, +, 1., etc.)
-        text = text.replace(/^[\s]*[-*+]\s+/gm, '');
-        text = text.replace(/^\s*\d+\.\s+/gm, '');
-
-        // Remove blockquote markers (>)
-        text = text.replace(/^>\s+/gm, '');
-
-        // Remove horizontal rules (---, ***, ___)
-        text = text.replace(/^[-*_]{3,}$/gm, '');
-
-        // Remove HTML tags if any — the tag-name requirement keeps comparison
-        // operators like `3 < 4` from being swallowed as a fake tag.
-        text = text.replace(/<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g, '');
-
-        // Remove extra whitespace and normalize
-        text = text.replace(/\s+/g, ' ').trim();
-
-        // Count words by splitting on whitespace and filtering empty strings
-        const words = text.split(/\s+/).filter((word) => word.length > 0);
-        return words.length;
-    } catch (error) {
-        console.log('error', error);
-        // Log error but return 0 - never throw
-        // Note: strapi is not available in this pure function, so we can't log here
-        // Errors will be logged in extractWordCount
+    if (!content || typeof content !== 'string' || content.trim().length === 0) {
         return 0;
     }
+
+    // Strip markdown syntax to extract plain text
+    let text = content;
+
+    // Remove fenced code blocks (```code```)
+    text = text.replace(/```[\s\S]*?```/g, '');
+
+    // Remove indented code blocks (4+ spaces at start of line)
+    text = text.replace(/^ {4,}.*$/gm, '');
+
+    // Remove inline code (`code`)
+    text = text.replace(/`[^`]+`/g, '');
+
+    // Remove images but keep alt text: ![alt](url) -> alt
+    text = text.replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1');
+
+    // Remove links but keep text: [text](url) -> text
+    text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+
+    // Remove headers (# ## ### etc.)
+    text = text.replace(/^#{1,6}\s+/gm, '');
+
+    // Remove bold (**text** or __text__). The underscore variants must not match
+    // inside snake_case identifiers, so they only count as emphasis when the
+    // underscores are bounded by non-word characters (or string boundaries).
+    text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
+    text = text.replace(/(^|\W)__([^_]+)__(?=\W|$)/g, '$1$2');
+
+    // Remove italic (*text* or _text_)
+    text = text.replace(/\*([^*]+)\*/g, '$1');
+    text = text.replace(/(^|\W)_([^_]+)_(?=\W|$)/g, '$1$2');
+
+    // Remove strikethrough (~~text~~)
+    text = text.replace(/~~([^~]+)~~/g, '$1');
+
+    // Remove list markers (-, *, +, 1., etc.)
+    text = text.replace(/^[\s]*[-*+]\s+/gm, '');
+    text = text.replace(/^\s*\d+\.\s+/gm, '');
+
+    // Remove blockquote markers (>)
+    text = text.replace(/^>\s+/gm, '');
+
+    // Remove horizontal rules (---, ***, ___)
+    text = text.replace(/^[-*_]{3,}$/gm, '');
+
+    // Remove HTML tags if any — the tag-name requirement keeps comparison
+    // operators like `3 < 4` from being swallowed as a fake tag.
+    text = text.replace(/<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g, '');
+
+    // Remove extra whitespace and normalize
+    text = text.replace(/\s+/g, ' ').trim();
+
+    // Count words by splitting on whitespace and filtering empty strings
+    const words = text.split(/\s+/).filter((word) => word.length > 0);
+    return words.length;
 }
 
 /**
@@ -280,29 +272,24 @@ export async function wordCountMiddleware(
     context: DocumentServiceContext,
     next: DocumentServiceNext,
 ): Promise<unknown> {
-    try {
-        // Only process articles and podcasts for create/update actions
-        if (
-            (context.contentType?.uid === 'api::article.article' ||
-             context.contentType?.uid === 'api::podcast.podcast') &&
-            ['create', 'update'].includes(context.action)
-        ) {
-            const data = context.params?.data;
-            if (data) {
-                // Get strapi instance from context
-                const strapiInstance = context.params?.strapi;
-                if (!strapiInstance) return next();
-                // Determine contentType based on uid
-                const contentType = context.contentType?.uid === 'api::article.article' ? 'article' : 'podcast';
-                await extractWordCount(strapiInstance, data, contentType);
-            }
+    // Only process articles and podcasts for create/update actions
+    if (
+        (context.contentType?.uid === 'api::article.article' ||
+         context.contentType?.uid === 'api::podcast.podcast') &&
+        ['create', 'update'].includes(context.action)
+    ) {
+        const data = context.params?.data;
+        if (data) {
+            // Get strapi instance from context
+            const strapiInstance = context.params?.strapi;
+            if (!strapiInstance) return next();
+            // Determine contentType based on uid
+            const contentType = context.contentType?.uid === 'api::article.article' ? 'article' : 'podcast';
+            // extractWordCount handles its own errors and never rejects, so a
+            // failed word count cannot block the save operation.
+            await extractWordCount(strapiInstance, data, contentType);
         }
-    } catch (error) {
-        // Log error but continue to next() - never block save operation
-        // Note: strapi may not be available in context, so we can't always log
-        // The error is already handled in extractWordCount
     }
 
-    // Always call next() even if word count calculation failed
     return next();
 }

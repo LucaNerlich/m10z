@@ -72,13 +72,8 @@ export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildH
         }
 
         if (shouldResetNow) {
-            queueMicrotask(() => {
-                try {
-                    onReset();
-                } catch {
-                    // ignore
-                }
-            });
+            // onReset only clears cache/scheduler state; it cannot throw.
+            queueMicrotask(onReset);
         }
     }
 
