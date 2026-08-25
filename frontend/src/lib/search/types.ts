@@ -1,5 +1,1 @@
-export type {
-    SearchIndexFile,
-    SearchRecord,
-    SearchRecordType,
-} from '@/src/lib/shared/search';
+export type {SearchRecord} from '@/src/lib/shared/search';

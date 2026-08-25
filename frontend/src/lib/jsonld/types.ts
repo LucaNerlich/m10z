@@ -3,7 +3,7 @@
  * Based on schema.org vocabulary: https://schema.org/
  */
 
-export interface JsonLdBase {
+interface JsonLdBase {
     '@context': string;
     '@type': string;
 }
@@ -15,13 +15,13 @@ export interface ImageObject extends JsonLdBase {
     height?: number;
 }
 
-export interface OrganizationRef {
+interface OrganizationRef {
     '@type': 'Organization';
     name: string;
     url?: string;
 }
 
-export interface WebSiteRef {
+interface WebSiteRef {
     '@type': 'WebSite';
     name: string;
     url: string;
@@ -97,7 +97,7 @@ export interface WebSite extends JsonLdBase {
     url: string;
 }
 
-export interface BreadcrumbListItem {
+interface BreadcrumbListItem {
     '@type': 'ListItem';
     position: number;
     name: string;
@@ -119,7 +119,7 @@ export interface CollectionPage extends JsonLdBase {
     mainEntity?: ItemList;
 }
 
-export interface ItemList extends JsonLdBase {
+interface ItemList extends JsonLdBase {
     '@type': 'ItemList';
     itemListElement: ItemListItem[];
 }

@@ -35,14 +35,6 @@ export function listTag(type: ContentTypeKey): string {
     return `strapi:${type}:list`;
 }
 
-export function listPageTag(type: ContentTypeKey): string {
-    return `strapi:${type}:list:page`;
-}
-
-export function bySlugsTag(type: ContentTypeKey): string {
-    return `strapi:${type}:by-slugs`;
-}
-
 export function authorListTag(contentType: ListableContentType, authorSlug: string): string {
     return `strapi:${contentType}:list:author:${authorSlug}`;
 }

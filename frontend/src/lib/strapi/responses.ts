@@ -1,4 +1,4 @@
-export type StrapiMeta = {
+type StrapiMeta = {
     [key: string]: unknown;
 };
 

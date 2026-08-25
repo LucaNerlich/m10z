@@ -5,7 +5,7 @@ const BUILD_HISTORY_LIMIT = 20;
 const SLOW_BUILD_WINDOW = 3;
 const SLOW_BUILD_MULTIPLIER = 2;
 
-export type AudioFeedBuildHealthState = {
+type AudioFeedBuildHealthState = {
     initialBuildDurationMs: number | null;
     buildDurationsMs: number[];
     lastBuildTiming: unknown | null;

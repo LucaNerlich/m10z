@@ -32,7 +32,7 @@ export type AudioFeedConfig = {
 
 type TimingOp = 'markdownConversion' | 'guidGeneration' | 'fileMetadata' | 'enclosure';
 
-export type TimingSummary = {
+type TimingSummary = {
     count: number;
     totalMs: number;
     minMs: number;

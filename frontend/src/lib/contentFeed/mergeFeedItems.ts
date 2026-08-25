@@ -28,7 +28,7 @@ export type FeedItem =
     href: string;
 };
 
-export type ContentFeedPagination = {
+type ContentFeedPagination = {
     page: number;
     pageSize: number;
     total: number;

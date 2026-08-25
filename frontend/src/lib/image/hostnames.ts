@@ -21,7 +21,7 @@ export const ALLOWED_IMAGE_HOSTNAMES = [
  * The configured Strapi origin parsed from the environment, or null when
  * unset/unparseable.
  */
-export function getStrapiOrigin(): {protocol: 'http' | 'https'; hostname: string; port?: string} | null {
+function getStrapiOrigin(): {protocol: 'http' | 'https'; hostname: string; port?: string} | null {
     const raw = process.env.STRAPI_URL ?? process.env.NEXT_PUBLIC_STRAPI_URL;
     if (!raw) return null;
     try {

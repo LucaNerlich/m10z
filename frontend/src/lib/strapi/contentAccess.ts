@@ -6,7 +6,6 @@ import type {StrapiCollectionResponse, StrapiSingleResponse} from '@/src/lib/str
 export type {
     FetchStrapiOptions,
     StrapiCollectionResponse,
-    StrapiMeta,
     StrapiSingleResponse,
 } from '@/src/lib/strapi/responses';
 
@@ -58,7 +57,7 @@ function resolveCacheDirective(options: ContentReadOptions): {
  * Single read interface for Content access: normalises endpoint vs /api path shape,
  * attaches cache tags, and routes privileged reads through the transport seam.
  */
-export async function readStrapi<T>(endpointOrPath: string, query: string, options: ContentReadOptions): Promise<T> {
+async function readStrapi<T>(endpointOrPath: string, query: string, options: ContentReadOptions): Promise<T> {
     const path = buildApiPath(endpointOrPath, query);
     const cache = resolveCacheDirective(options);
     return strapiFetch<T>({

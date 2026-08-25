@@ -34,7 +34,7 @@ export type FeedBuilt = {
     itemCount: number;
 };
 
-export type CachedFeed = FeedBuilt & {
+type CachedFeed = FeedBuilt & {
     builtAtMs: number;
 };
 

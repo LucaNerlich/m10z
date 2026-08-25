@@ -2,7 +2,7 @@
  * Type definitions for Strapi middleware context and related types
  */
 
-export interface StrapiLogger {
+interface StrapiLogger {
     debug: (message: string, ...args: any[]) => void;
     info: (message: string, ...args: any[]) => void;
     warn: (message: string, ...args: any[]) => void;
@@ -41,7 +41,7 @@ export interface DocumentServiceContext {
 
 export type DocumentServiceNext = () => Promise<any>;
 
-export type DocumentServiceMiddleware = (
+type DocumentServiceMiddleware = (
     context: DocumentServiceContext,
     next: DocumentServiceNext
 ) => Promise<any>;
@@ -53,7 +53,7 @@ export interface RichTextBlock {
     [key: string]: any;
 }
 
-export interface FileReference {
+interface FileReference {
     id?: string | number;
     documentId?: string;
     name?: string;
