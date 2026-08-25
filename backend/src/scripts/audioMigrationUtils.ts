@@ -8,7 +8,7 @@
 
 import path from 'path';
 
-export const ALLOWED_DOMAIN = 'm10z.picnotes.de';
+const ALLOWED_DOMAIN = 'm10z.picnotes.de';
 
 /**
  * Validate a source URL before downloading.
@@ -84,11 +84,14 @@ export function getMimeType(filename: string): string {
  * migration script). Pure w.r.t. Strapi: the fetch implementation, API base
  * URL, and token are passed in, so this is unit-testable without network I/O.
  *
- * @returns `{id, url}` when a file with the exact name exists, otherwise `null`
- * (including when the lookup fails — callers should then proceed normally).
+ * The fetch contract is deliberately minimal and structural so both the global
+ * fetch and `node-fetch`'s fetch (and test doubles) satisfy it.
  */
 export async function findExistingFileByName(
-    fetchFn: (url: string, init?: any) => Promise<any>,
+    fetchFn: (
+        url: string,
+        init?: {method?: string; headers?: Record<string, string>},
+    ) => Promise<{ok: boolean; json: () => Promise<unknown>}>,
     apiBase: string,
     apiToken: string,
     filename: string,
@@ -100,9 +103,16 @@ export async function findExistingFileByName(
             headers: {Authorization: `Bearer ${apiToken}`},
         });
         if (!res.ok) return null;
-        const json: any = await res.json();
-        const files = Array.isArray(json) ? json : json?.results ?? [];
-        const match = files.find((f: any) => f?.name === filename && typeof f?.id === 'number');
+        const json: unknown = await res.json();
+        const payload = Array.isArray(json) ? json : (json as {results?: unknown} | null)?.results;
+        if (!Array.isArray(payload)) return null;
+        const match = payload.find(
+            (file): file is {id: number; url?: string} =>
+                typeof file === 'object' &&
+                file !== null &&
+                (file as {name?: unknown}).name === filename &&
+                typeof (file as {id?: unknown}).id === 'number',
+        );
         return match ? {id: match.id, url: match.url ?? ''} : null;
     } catch {
         return null;

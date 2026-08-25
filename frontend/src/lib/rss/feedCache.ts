@@ -34,7 +34,7 @@ export type FeedBuilt = {
     itemCount: number;
 };
 
-export type CachedFeed = FeedBuilt & {
+type CachedFeed = FeedBuilt & {
     builtAtMs: number;
 };
 
@@ -153,6 +153,15 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
         }
     }
 
+    // Fire-and-forget rebuild for scheduler/invalidation paths: an unhandled
+    // rejection here could take down the server, so the error is swallowed —
+    // but logged so failed background refreshes stay observable.
+    function refreshInBackground(): void {
+        refresh().catch((err) => {
+            console.warn(`[feedCache] ${spec.feedKey}: background refresh failed`, err);
+        });
+    }
+
     function settleInflightBuild(): void {
         inflight = null;
         // If an invalidation landed while this build was running, its debounced
@@ -161,7 +170,7 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
         // 30-minute scheduler tick.
         if (pendingRefresh) {
             pendingRefresh = false;
-            void refresh().catch(() => undefined);
+            refreshInBackground();
         }
     }
 
@@ -254,12 +263,17 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
         if (schedulerStarted) return;
         schedulerStarted = true;
         schedulerStartedAtMs = Date.now();
-        void refresh().catch(() => undefined);
+        refreshInBackground();
         schedulerTimer = setIntervalFn(() => {
-            void refresh().catch(() => undefined);
+            refreshInBackground();
         }, FEED_REGENERATE_MS);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (schedulerTimer as any).unref?.();
+        // Node timers expose `.unref()`; DOM typings model the timer as a
+        // number instead, so narrow structurally rather than discarding the
+        // timer type.
+        if (typeof schedulerTimer === 'object' && schedulerTimer !== null) {
+            const nodeTimer = schedulerTimer as {unref?: () => void};
+            nodeTimer.unref?.();
+        }
     }
 
     function stopScheduler() {
@@ -284,7 +298,7 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
                 // follow-up refresh once it finishes.
                 pendingRefresh = true;
             } else {
-                void refresh().catch(() => undefined);
+                refreshInBackground();
             }
         }, INVALIDATION_DEBOUNCE_MS);
     }

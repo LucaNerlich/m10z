@@ -18,7 +18,6 @@ import placeholderCover from '@/public/images/m10z.jpg';
  * @returns A plaintext description: the first paragraph of `content` with markdown removed, truncated to 160 characters, or the fallback string `Von und mit Mindestens 10 Zeichen. Wer wir sind und was wir machen.` if empty
  */
 function extractDescription(content: string): string {
-    // Remove markdown headers, links, and formatting
     const plainText = content
         .replace(/^#+\s+/gm, '')
         .replace(/\[([^\]]+)]\([^)]+\)/g, '$1')
@@ -27,7 +26,6 @@ function extractDescription(content: string): string {
         .replace(/`([^`]+)`/g, '$1')
         .trim();
 
-    // Extract first paragraph (up to 160 chars)
     const firstParagraph = plainText.split('\n\n')[0] || plainText;
     const truncated = firstParagraph.length > 160
         ? firstParagraph.substring(0, 157) + '...'
@@ -75,12 +73,10 @@ export default async function AboutUsPage() {
     const logoMedia = about.logo ? normalizeStrapiMedia(about.logo) : null;
     const optimizedMedia = logoMedia ? getOptimalMediaFormat(logoMedia, 'large') : undefined;
 
-    // Fallback configuration
     const fallbackSrc = placeholderCover;
     const fallbackWidth = 400;
     const fallbackHeight = 225;
 
-    // Determine final values
     const mediaUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
     const imageSrc = mediaUrl ?? fallbackSrc;
     const imageWidth = optimizedMedia?.width ?? fallbackWidth;

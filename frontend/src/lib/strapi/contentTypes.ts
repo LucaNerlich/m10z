@@ -18,13 +18,16 @@ export type StrapiArticle = StrapiContentMedia & {
     wordCount?: number | null;
 };
 
+/** Channel header shared by the article and audio feed single types. */
+export type FeedChannel = {
+    title: string;
+    description: string;
+    mail: string;
+    image: StrapiMediaRef;
+};
+
 export type StrapiArticleFeedSingle = {
-    channel: {
-        title: string;
-        description: string;
-        mail: string;
-        image: StrapiMediaRef;
-    };
+    channel: FeedChannel;
 };
 
 export type StrapiPodcast = StrapiContentMedia & {
@@ -41,13 +44,7 @@ export type StrapiPodcast = StrapiContentMedia & {
 };
 
 export type StrapiAudioFeedSingle = {
-    channel: {
-        title: string;
-        description: string;
-        mail: string;
-        image: StrapiMediaRef;
-    };
+    channel: FeedChannel;
     episodeFooter?: string | null;
 };
 
-export type {StrapiAuthor, StrapiCategoryRef, StrapiContentMedia, StrapiMedia, StrapiMediaRef, StrapiYoutube};

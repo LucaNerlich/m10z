@@ -26,9 +26,7 @@ function getNextBaseUrl(): string {
 }
 
 function getSecret(): string | undefined {
-    // STRAPI_INVALIDATION_SECRET is the current name; the other two are read for
-    // backward compatibility during rollout and should be retired once confirmed.
-    return getEnv('STRAPI_INVALIDATION_SECRET') ?? getEnv('FEED_INVALIDATION_TOKEN') ?? getEnv('LEGAL_INVALIDATION_TOKEN');
+    return getEnv('STRAPI_INVALIDATION_SECRET');
 }
 
 function formatErrorForLog(err: unknown): string {

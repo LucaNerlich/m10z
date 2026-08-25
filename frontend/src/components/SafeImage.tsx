@@ -31,13 +31,10 @@ export function SafeImage({
                           }: SafeImageProps) {
     const [hasError, setHasError] = useState(false);
 
-    // Check if hostname is allowed before rendering
-    // This prevents Next.js from throwing configuration errors
     if (!isImageHostnameAllowed(src)) {
         return <ImageWarning src={src} alt={alt} />;
     }
 
-    // If there's a loading error, show warning instead
     if (hasError) {
         return <ImageWarning src={src} alt={alt} />;
     }

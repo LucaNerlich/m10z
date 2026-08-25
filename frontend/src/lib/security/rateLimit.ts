@@ -3,7 +3,7 @@ type Bucket = {count: number; resetAtMs: number};
 const MAX_BUCKETS = 10_000;
 const buckets = new Map<string, Bucket>();
 
-// Add cleanup
+// Periodic cleanup so expired buckets do not accumulate forever.
 if (typeof setInterval !== 'undefined') {
     const cleanupTimer = setInterval(() => {
         const now = Date.now();
@@ -12,10 +12,13 @@ if (typeof setInterval !== 'undefined') {
                 buckets.delete(key);
             }
         }
-    }, 60000); // Clean every minute
-    // Don't keep the process alive just for cleanup.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (cleanupTimer as any).unref?.();
+    }, 60000);
+    // Don't keep the process alive just for cleanup. Node timers expose `.unref()`,
+    // but DOM typings type the timer as a number, so narrow structurally.
+    if (typeof cleanupTimer === 'object' && cleanupTimer !== null) {
+        const nodeTimer = cleanupTimer as {unref?: () => void};
+        nodeTimer.unref?.();
+    }
 }
 
 export type RateLimitConfig = {

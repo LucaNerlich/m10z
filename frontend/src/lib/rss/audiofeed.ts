@@ -32,7 +32,7 @@ export type AudioFeedConfig = {
 
 type TimingOp = 'markdownConversion' | 'guidGeneration' | 'fileMetadata' | 'enclosure';
 
-export type TimingSummary = {
+type TimingSummary = {
     count: number;
     totalMs: number;
     minMs: number;
@@ -58,10 +58,11 @@ export type AudioFeedMarkdownConverter = (args: {
  * @returns The current time in milliseconds — uses `performance.now()` if available, otherwise `Date.now()`.
  */
 function nowMs(): number {
-    // Prefer high-resolution timers when available.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const p = (globalThis as any).performance;
-    if (p && typeof p.now === 'function') return p.now() as number;
+    // Prefer high-resolution timers when available. `performance` is a global in
+    // browsers and Node 16+, but guard at runtime anyway so the fallback keeps
+    // working in stripped-down runtimes.
+    const perf = typeof performance !== 'undefined' ? performance : undefined;
+    if (perf && typeof perf.now === 'function') return perf.now();
     return Date.now();
 }
 
@@ -229,11 +230,9 @@ function renderItem(
         mediaUrlToAbsolute({media: optimizedMedia}) ??
         `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
 
-    // Prepare and Sanitize Content
     const effectiveDescription = episode.description || episode.categories?.[0]?.description;
     const shownotes = (episode.shownotes ?? '').toString();
     const footer = episodeFooter ?? '';
-    // Use shownotes if available, otherwise fall back to root description (with category fallback)
     const descriptionText = shownotes || effectiveDescription || '';
     const tMd0 = nowMs();
     const convert =

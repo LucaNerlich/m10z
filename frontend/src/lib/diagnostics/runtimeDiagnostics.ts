@@ -25,12 +25,8 @@ function pushEvent(ev: DiagnosticEvent) {
 }
 
 export function recordDiagnosticEvent(ev: DiagnosticEvent) {
-    // Keep this extremely cheap; never throw.
-    try {
-        pushEvent(ev);
-    } catch {
-        // ignore
-    }
+    // Bounded in-memory append; cannot throw.
+    pushEvent(ev);
 }
 
 export function getRecentDiagnosticEvents() {

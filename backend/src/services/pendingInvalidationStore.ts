@@ -9,6 +9,7 @@
  */
 
 import type {InvalidationEvent} from '../shared/contracts/strapi-contract/invalidationEvent';
+import type {KnexSchemaBuilder, KnexTableBuilder, KnexTableRowQuery} from '../types/middleware';
 
 const TABLE = 'pending_invalidations';
 
@@ -16,32 +17,12 @@ const TABLE = 'pending_invalidations';
 const RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_DRAIN_BACKLOG = 500;
 
-type WhereEqualityBuilder = {delete: () => Promise<number>};
-
-type KnexQueryBuilder = {
-    insert: (row: Record<string, unknown>) => {returning: (column: string) => Promise<Array<{id: number} | number>>};
-    where(clause: Record<string, unknown>): WhereEqualityBuilder;
-    where(column: string, operator: string, value: unknown): KnexQueryBuilder;
-    orderBy: (column: string, direction: 'asc' | 'desc') => KnexQueryBuilder;
-    limit: (count: number) => KnexQueryBuilder;
-    select: (...columns: string[]) => Promise<Array<{id: number; payload: string}>>;
-    delete: () => Promise<number>;
-};
-
-type KnexSchema = {
-    hasTable: (name: string) => Promise<boolean>;
-    createTable: (name: string, callback: (table: KnexTableBuilder) => void) => Promise<void>;
-};
-
-type KnexTableBuilder = {
-    increments: (name: string) => {primary: () => void};
-    text: (name: string) => {notNullable: () => void};
-    timestamp: (name: string) => {defaultTo: (value: unknown) => void};
-};
-
 export type StrapiDb = {
     db: {
-        connection: ((table: string) => KnexQueryBuilder) & {schema: KnexSchema; fn: {now: () => unknown}};
+        connection: ((table: string) => KnexTableRowQuery) & {
+            schema: KnexSchemaBuilder;
+            fn: {now: () => unknown};
+        };
     };
     log: {info: (message: string) => void; warn: (message: string, error?: unknown) => void};
 };
@@ -115,8 +96,11 @@ export async function drainPending(strapi: StrapiDb): Promise<Array<{id: number;
         await pruneExpired(strapi, cutoff);
 
         return rows.flatMap((row) => {
+            const id = typeof row.id === 'number' ? row.id : null;
+            const payload = typeof row.payload === 'string' ? row.payload : null;
+            if (id === null || payload === null) return [];
             try {
-                return [{id: row.id, event: JSON.parse(row.payload) as InvalidationEvent}];
+                return [{id, event: JSON.parse(payload) as InvalidationEvent}];
             } catch {
                 return [];
             }

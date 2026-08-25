@@ -3,6 +3,7 @@ import {type Metadata} from 'next';
 
 import {HomePage} from '@/src/components/HomePage';
 import {FeedSkeleton} from '@/src/components/FeedSkeleton';
+import {parsePageParam} from '@/src/lib/params';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
 export const metadata: Metadata = buildStaticListMetadata({
@@ -16,13 +17,7 @@ type PageProps = {
     searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
 };
 
-function parsePageParamFromSearchParams(searchParams: Record<string, string | string[] | undefined>): number {
-    const raw = searchParams.page;
-    const rawString = Array.isArray(raw) ? raw[0] : raw;
-    const parsed = Number(rawString);
-    if (!Number.isFinite(parsed) || parsed < 1) return 1;
-    return Math.min(Math.floor(parsed), 50);
-}
+const HOME_MAX_PAGE = 50;
 
 /**
  * Wraps the HomePage component in a Suspense boundary and provides a skeleton fallback.
@@ -31,7 +26,7 @@ function parsePageParamFromSearchParams(searchParams: Record<string, string | st
  */
 export default async function HomePageWrapper({searchParams}: PageProps) {
     const sp = await Promise.resolve(searchParams ?? {});
-    const page = parsePageParamFromSearchParams(sp);
+    const page = parsePageParam(sp, {maxPage: HOME_MAX_PAGE});
     return (
         <div data-homepage>
             <Suspense fallback={<FeedSkeleton />}>

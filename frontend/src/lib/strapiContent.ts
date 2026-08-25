@@ -13,6 +13,7 @@ import {
     RELATED_CONTENT_TAG,
 } from '@/src/lib/strapi/cacheTags';
 import {fetchJson, fetchJsonNoStore} from '@/src/lib/strapi/contentAccess';
+import {type PaginatedResult, type PaginationMeta} from '@/src/lib/strapi/responses';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
 import {
     ARTICLE_DETAIL_FIELDS,
@@ -33,22 +34,11 @@ import {
     podcastDetailPopulate,
     podcastListPopulate,
     podcastRelatedPopulate,
+    type StrapiContentStatus,
 } from '@/src/lib/strapi-queries';
 
 export type {StrapiMediaRef};
-
-export type PaginationMeta = {
-    page: number;
-    pageSize: number;
-    pageCount: number;
-    total: number;
-};
-
-export type PaginatedResult<T> = {
-    items: T[];
-    pagination: PaginationMeta;
-    hasNextPage: boolean;
-};
+export type {PaginatedResult, PaginationMeta} from '@/src/lib/strapi/responses';
 
 type FetchListOptions = {
     limit?: number;
@@ -114,8 +104,6 @@ export function clampPageSize(s: number): number {
 // read behaviour (batching, tags, pagination, fallbacks) lives in one place instead of
 // in mirrored twin functions. The exported per-type fetchers stay the public interface.
 
-type PreviewStatus = 'draft' | 'published';
-
 const RELATED_CONTENT_LIMIT = 5;
 
 type ContentDescriptor = {
@@ -170,7 +158,7 @@ function fetchBySlug<T>(desc: ContentDescriptor, slug: string): Promise<T | null
 function fetchBySlugForPreview<T>(
     desc: ContentDescriptor,
     slug: string,
-    status: PreviewStatus,
+    status: StrapiContentStatus,
 ): Promise<T | null> {
     const query = buildBySlugQuery({
         slug,
@@ -319,7 +307,7 @@ export const fetchArticleBySlug = cache(
 
 export function fetchArticleBySlugForPreview(
     slug: string,
-    status: PreviewStatus = 'draft',
+    status: StrapiContentStatus = 'draft',
 ): Promise<StrapiArticle | null> {
     return fetchBySlugForPreview<StrapiArticle>(ARTICLE_DESCRIPTOR, slug, status);
 }
@@ -329,11 +317,11 @@ export const fetchArticlesPage = cache(
         fetchPage<StrapiArticle>(ARTICLE_DESCRIPTOR, options),
 );
 
-export const fetchArticlesBySlugs = cache(
+const fetchArticlesBySlugs = cache(
     (slugs: string[]): Promise<StrapiArticle[]> => fetchBySlugs<StrapiArticle>(ARTICLE_DESCRIPTOR, slugs),
 );
 
-export const fetchArticlesBySlugsBatched = cache(
+const fetchArticlesBySlugsBatched = cache(
     (slugs: string[]): Promise<StrapiArticle[]> => batchBySlugs(fetchArticlesBySlugs, slugs),
 );
 
@@ -360,7 +348,7 @@ export const fetchPodcastBySlug = cache(
 
 export function fetchPodcastBySlugForPreview(
     slug: string,
-    status: PreviewStatus = 'draft',
+    status: StrapiContentStatus = 'draft',
 ): Promise<StrapiPodcast | null> {
     return fetchBySlugForPreview<StrapiPodcast>(PODCAST_DESCRIPTOR, slug, status);
 }
@@ -370,11 +358,11 @@ export const fetchPodcastsPage = cache(
         fetchPage<StrapiPodcast>(PODCAST_DESCRIPTOR, options),
 );
 
-export const fetchPodcastsBySlugs = cache(
+const fetchPodcastsBySlugs = cache(
     (slugs: string[]): Promise<StrapiPodcast[]> => fetchBySlugs<StrapiPodcast>(PODCAST_DESCRIPTOR, slugs),
 );
 
-export const fetchPodcastsBySlugsBatched = cache(
+const fetchPodcastsBySlugsBatched = cache(
     (slugs: string[]): Promise<StrapiPodcast[]> => batchBySlugs(fetchPodcastsBySlugs, slugs),
 );
 
@@ -438,21 +426,18 @@ function fetchEntityBySlug<T>(desc: SimpleDescriptor, slug: string): Promise<T |
 
 // ─── Authors ───────────────────────────────────────────────────────────────
 
+/** Minimal shape of the article/podcast teasers populated into author/category responses. */
+type NestedContentTeaser = {
+    slug: string;
+    publishedAt?: string | null;
+    title: string;
+    date?: string | null;
+    categories?: StrapiCategoryRef[];
+};
+
 export type StrapiAuthorWithContent = StrapiAuthor & {
-    articles?: Array<{
-        slug: string;
-        publishedAt?: string | null;
-        title: string;
-        date?: string | null;
-        categories?: StrapiCategoryRef[];
-    }>;
-    podcasts?: Array<{
-        slug: string;
-        publishedAt?: string | null;
-        title: string;
-        date?: string | null;
-        categories?: StrapiCategoryRef[];
-    }>;
+    articles?: NestedContentTeaser[];
+    podcasts?: NestedContentTeaser[];
 };
 
 const AUTHOR_DESCRIPTOR: SimpleDescriptor = {
@@ -483,18 +468,8 @@ export type StrapiCategoryWithContent = {
     date?: string | null;
     cover?: StrapiMediaRef | null;
     banner?: StrapiMediaRef | null;
-    articles?: Array<{
-        slug: string;
-        publishedAt?: string | null;
-        title: string;
-        date?: string | null;
-    }>;
-    podcasts?: Array<{
-        slug: string;
-        publishedAt?: string | null;
-        title: string;
-        date?: string | null;
-    }>;
+    articles?: NestedContentTeaser[];
+    podcasts?: NestedContentTeaser[];
 };
 
 export type CategoryPageData = {
@@ -518,17 +493,13 @@ export const fetchCategoryPageData = cache(async (slug: string): Promise<Categor
     const articleSlugs = category.articles?.map((a) => a.slug).filter(Boolean) ?? [];
     const podcastSlugs = category.podcasts?.map((p) => p.slug).filter(Boolean) ?? [];
 
-    let articles: StrapiArticle[] = [];
-    let podcasts: StrapiPodcast[] = [];
-
-    try {
-        [articles, podcasts] = await Promise.all([
-            fetchArticlesBySlugsBatched(articleSlugs),
-            fetchPodcastsBySlugsBatched(podcastSlugs),
-        ]);
-    } catch {
-        // Graceful degradation — page renders with available content
-    }
+    // No fallback here: failures propagate to the route boundary (the category
+    // page logs them via getErrorMessage and renders notFound) instead of
+    // silently rendering an existing category as empty.
+    const [articles, podcasts] = await Promise.all([
+        fetchArticlesBySlugsBatched(articleSlugs),
+        fetchPodcastsBySlugsBatched(podcastSlugs),
+    ]);
 
     return {
         category,

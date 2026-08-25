@@ -3,7 +3,7 @@ import {type M12GGameIndexEntry, type M12GLeaderboardEntry, type M12GMonthWithWi
 // One Month in which a Game was nominated, with that Month's outcome for the Game.
 // Carries enough Month context (title, forum thread) to render a Game's timeline
 // without re-reading the Months — see CONTEXT.md (Game history).
-export type GameAppearance = {
+type GameAppearance = {
     month: string;
     votes: number;
     isWinner: boolean;
@@ -89,7 +89,7 @@ export function toGameIndex(history: GameHistory[]): M12GGameIndexEntry[] {
         .map(({appearances, ...entry}) => ({...entry, months: appearances.map((a) => a.month)}));
 }
 
-export type Streak = {
+type Streak = {
     name: string;
     slug: string;
     length: number;
@@ -149,7 +149,9 @@ function pickBestStreak(byGame: Map<string, string[]>): Streak | null {
     let best: Streak | null = null;
     const names = [...byGame.keys()].sort((a, b) => a.localeCompare(b, 'de-DE'));
     for (const name of names) {
-        const run = findLongestRun(byGame.get(name)!);
+        const winMonths = byGame.get(name);
+        if (!winMonths) continue;
+        const run = findLongestRun(winMonths);
         if (run.length < 2) continue;
         if (!best || run.length > best.length) {
             best = {name, slug: gameSlug(name), length: run.length, months: run.months};

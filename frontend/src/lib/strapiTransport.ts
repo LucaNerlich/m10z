@@ -27,14 +27,14 @@ export function getStrapiApiBaseUrl(): URL {
 // Cache directives are part of the interface, not hidden inside callers.
 // `no-store` fully bypasses the fetch cache (Next treats `revalidate: 0` as
 // "revalidate immediately", not "don't cache") and may still carry tags.
-export type StrapiCacheDirective =
+type StrapiCacheDirective =
     | {mode: 'tags'; tags: string[]; revalidate?: number}
     | {mode: 'no-store'; tags?: string[]};
 
 // Read mode is part of the interface, not a per-caller env lookup. `public` (the
 // default) reads the CMS unauthenticated; `privileged` attaches the server-only
 // STRAPI_API_TOKEN. Callers express intent; the transport owns the secret.
-export type StrapiAuthMode = 'public' | 'privileged';
+type StrapiAuthMode = 'public' | 'privileged';
 
 export type StrapiRequest = {
     // Path relative to the Strapi base URL, query string included, e.g. "/api/articles?…".
@@ -213,7 +213,7 @@ async function fetchOnce<T>(req: StrapiRequest, url: URL, timeout: number): Prom
 
 // The production adapter: real `fetch`, base-URL resolution, timeout, one retry on
 // transient failures, and diagnostics. The deep implementation behind the seam.
-export const defaultStrapiTransport: StrapiTransport = async <T>(req: StrapiRequest): Promise<T> => {
+const defaultStrapiTransport: StrapiTransport = async <T>(req: StrapiRequest): Promise<T> => {
     const timeout = req.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     const url = new URL(req.path, getStrapiApiBaseUrl());
 

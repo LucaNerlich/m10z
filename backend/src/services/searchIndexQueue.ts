@@ -1,6 +1,13 @@
-import {buildAndPersistSearchIndex} from './searchIndexBuilder';
+import {buildAndPersistSearchIndex, type SearchIndexStrapi} from './searchIndexBuilder';
 import {AsyncTaskQueue} from './asyncTaskQueue';
 import {queueCacheInvalidation, type StrapiWithDb} from './cacheInvalidationQueue';
+
+/**
+ * Everything the rebuild pipeline needs from the Strapi instance: the
+ * cache-invalidation queue surface plus the document/log surface of the
+ * index builder.
+ */
+export type RebuildStrapi = StrapiWithDb & SearchIndexStrapi;
 
 /**
  * Rebuild the search index, then queue durable search-index/sitemap invalidation.
@@ -11,9 +18,9 @@ import {queueCacheInvalidation, type StrapiWithDb} from './cacheInvalidationQueu
  * its own retry/dead-letter policy), so a transient notification hiccup doesn't trigger
  * redoing the whole (expensive) rebuild.
  */
-export async function rebuildAndInvalidate(strapi: StrapiWithDb, source: 'cron' | 'queue'): Promise<boolean> {
+export async function rebuildAndInvalidate(strapi: RebuildStrapi, source: 'cron' | 'queue'): Promise<boolean> {
     try {
-        const {metrics} = await buildAndPersistSearchIndex(strapi as any, {source});
+        const {metrics} = await buildAndPersistSearchIndex(strapi, {source});
         strapi.log.info(
             `searchIndexSummary source=${source} articles=${metrics.counts.articles} podcasts=${metrics.counts.podcasts} authors=${metrics.counts.authors} categories=${metrics.counts.categories} total=${metrics.counts.total} buildMs=${metrics.buildMs} fetchMs=${metrics.fetchMs.total} processingMs=${metrics.processingMs} payloadBytes=${metrics.payloadBytes} payloadKb=${metrics.payloadKb}`,
         );
@@ -27,13 +34,13 @@ export async function rebuildAndInvalidate(strapi: StrapiWithDb, source: 'cron' 
     }
 }
 
-const queue = new AsyncTaskQueue<'rebuild'>({
+const queue = new AsyncTaskQueue<'rebuild', RebuildStrapi>({
     name: 'search-index-rebuild',
     keyOf: (item) => item,
-    run: (_item, strapi) => rebuildAndInvalidate(strapi as StrapiWithDb, 'queue'),
+    run: (_item, strapi) => rebuildAndInvalidate(strapi, 'queue'),
 });
 
-export function queueSearchIndexRebuild(strapi: StrapiWithDb | undefined | null): void {
+export function queueSearchIndexRebuild(strapi: RebuildStrapi | undefined | null): void {
     if (!strapi) return;
     queue.enqueue('rebuild', strapi);
 }

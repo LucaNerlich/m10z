@@ -14,30 +14,11 @@
 import {contentTypeByUid, type ContentTypeConfig} from '../shared/contracts/strapi-contract/registry';
 import type {InvalidationEvent} from '../shared/contracts/strapi-contract/invalidationEvent';
 
-import {queueCacheInvalidation, type StrapiWithDb} from '../services/cacheInvalidationQueue';
+import {queueCacheInvalidation} from '../services/cacheInvalidationQueue';
 import {queueSearchIndexRebuild} from '../services/searchIndexQueue';
+import type {DocumentServiceContext, StrapiInstance} from '../types/middleware';
 
-type DocumentsInstance = {
-    findOne: (params: {documentId: string; fields?: string[]; populate?: Record<string, {fields: string[]}>}) => Promise<any>;
-};
-
-type StrapiInstance = StrapiWithDb & {
-    documents: (uid: string) => DocumentsInstance;
-};
-
-type MiddlewareContext = {
-    uid: string;
-    action: string;
-    params?: {
-        strapi?: StrapiInstance;
-        documentId?: string;
-        where?: {documentId?: string; id?: string};
-        status?: string;
-        data?: Record<string, unknown>;
-    };
-};
-
-function extractDocumentId(context: MiddlewareContext, result: unknown): string | undefined {
+function extractDocumentId(context: DocumentServiceContext, result: unknown): string | undefined {
     return (
         context.params?.documentId ??
         context.params?.where?.documentId ??
@@ -87,10 +68,15 @@ async function resolveEntity(
 }
 
 export async function cacheInvalidationMiddleware(
-    context: MiddlewareContext,
+    context: DocumentServiceContext,
     next: () => Promise<unknown>,
 ): Promise<unknown> {
-    const match = contentTypeByUid(context.uid);
+    const uid = context.uid;
+    if (!uid) {
+        // No content type on the context — nothing to invalidate.
+        return next();
+    }
+    const match = contentTypeByUid(uid);
 
     // A Document Service `update({status: 'published'})` publishes the live entry
     // without going through the `publish` action (REST/direct API calls). Treat it
@@ -122,7 +108,7 @@ export async function cacheInvalidationMiddleware(
 
     if (effectiveAction === 'delete') {
         const documentId = extractDocumentId(context, undefined);
-        const entity = await resolveEntity(strapiInstance, context.uid, documentId, config.relations);
+        const entity = await resolveEntity(strapiInstance, uid, documentId, config.relations);
         slug = (entity?.slug as string | undefined) ?? undefined;
         relations = extractRelationSlugs(entity, config.relations);
     }
@@ -137,7 +123,7 @@ export async function cacheInvalidationMiddleware(
         // publish/unpublish events could end up with no slug at all.
         if (!slug || config.relations) {
             const documentId = extractDocumentId(context, result);
-            const entity = await resolveEntity(strapiInstance, context.uid, documentId, config.relations);
+            const entity = await resolveEntity(strapiInstance, uid, documentId, config.relations);
             slug = slug ?? ((entity?.slug as string | undefined) ?? undefined);
             relations = extractRelationSlugs(entity, config.relations);
         }

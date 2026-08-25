@@ -11,14 +11,7 @@ import {computeRevalidation} from './computeRevalidation';
 const RATE_LIMIT = {windowMs: 60_000, max: 120} as const;
 
 function expectedSecret(): string | null {
-    // STRAPI_INVALIDATION_SECRET is the current name; the other two are read for
-    // backward compatibility during rollout and should be retired once confirmed.
-    return (
-        process.env.STRAPI_INVALIDATION_SECRET ??
-        process.env.FEED_INVALIDATION_TOKEN ??
-        process.env.LEGAL_INVALIDATION_TOKEN ??
-        null
-    );
+    return process.env.STRAPI_INVALIDATION_SECRET ?? null;
 }
 
 function isValidRelations(value: unknown): value is InvalidationEvent['relations'] {

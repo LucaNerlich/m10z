@@ -65,7 +65,7 @@ export async function loadSearchIndex(): Promise<SearchIndexFile> {
     return content;
 }
 
-export function buildFuse(records: SearchRecord[]): Fuse<SearchRecord> {
+function buildFuse(records: SearchRecord[]): Fuse<SearchRecord> {
     return new Fuse(records, {
         includeScore: true,
         shouldSort: true,
@@ -115,9 +115,4 @@ export function augmentIndexWithStaticPages(index: SearchIndexFile): SearchIndex
 
 export function stripRecordContent(records: SearchRecord[]): Omit<SearchRecord, 'content'>[] {
     return records.map(({content: _content, ...rest}) => rest);
-}
-
-/** Reset in-memory Fuse cache (for tests). */
-export function resetSearchIndexCache(): void {
-    fuseCache = null;
 }

@@ -13,7 +13,7 @@ function randomInt(maxExclusive: number): number {
     let value: number;
     do {
         crypto.getRandomValues(buf);
-        value = buf[0]!;
+        value = buf[0];
     } while (value >= limit);
     return value % maxExclusive;
 }
@@ -38,10 +38,10 @@ export function shuffleAndAssign(participants: Participant[]): Assignment[] {
     const assignments: Assignment[] = [];
     for (let i = 0; i < shuffled.length; i++) {
         const nextIndex = (i + 1) % shuffled.length;
-        assignments.push({
-            giverId: shuffled[i]!,
-            receiverId: shuffled[nextIndex]!,
-        });
+        const giverId = shuffled[i];
+        const receiverId = shuffled[nextIndex];
+        if (giverId === undefined || receiverId === undefined) continue;
+        assignments.push({giverId, receiverId});
     }
 
     return assignments;

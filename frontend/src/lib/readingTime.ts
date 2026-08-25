@@ -9,10 +9,8 @@
  * @returns Formatted reading time string: "< 1 Min. Lesezeit" or "X Min. Lesezeit"
  */
 
-// Module-level cache for repeated function calls
+// Module-level so the RegExp objects and cache survive across calls
 const readingTimeCache = new Map<string | number, string>();
-
-// Hoist RegExp patterns to module scope
 const REGEX_FENCED_CODE_BLOCKS = /```[\s\S]*?```/g;
 const REGEX_INDENTED_CODE_BLOCKS = /^ {4,}.*$/gm;
 const REGEX_INLINE_CODE = /`[^`]+`/g;
@@ -45,7 +43,6 @@ export function calculateReadingTimeCompact(
 export function calculateReadingTime(
     markdownOrWordCount: string | number | null | undefined,
 ): string {
-    // Check cache first
     if (markdownOrWordCount !== null && markdownOrWordCount !== undefined) {
         const cached = readingTimeCache.get(markdownOrWordCount);
         if (cached !== undefined) {
@@ -55,25 +52,16 @@ export function calculateReadingTime(
 
     let result: string;
 
-    // Handle wordCount number (preferred, faster)
+    // wordCount is preferred (faster); markdown requires stripping first.
     if (typeof markdownOrWordCount === 'number') {
         const wordCount = markdownOrWordCount;
         if (wordCount <= 0) {
             result = '< 1 Min. Lesezeit';
         } else {
-            // Calculate reading time: 250 words per minute, rounded up
             const minutes = Math.ceil(wordCount / 250);
-
-            // Return "< 1 min read" for content with < 1 minute reading time
-            if (minutes < 1) {
-                result = '< 1 Min. Lesezeit';
-            } else {
-                // Return "X min read" for all other cases
-                result = `~${minutes} Min. Lesezeit`;
-            }
+            result = minutes < 1 ? '< 1 Min. Lesezeit' : `~${minutes} Min. Lesezeit`;
         }
     } else if (typeof markdownOrWordCount === 'string') {
-        // Handle markdown string (backward compatibility)
         const markdown = markdownOrWordCount;
         if (!markdown || markdown.trim().length === 0) {
             result = '< 1 Min. Lesezeit';
@@ -130,23 +118,13 @@ export function calculateReadingTime(
             const words = text.split(REGEX_WORD_SPLIT).filter((word) => word.length > 0);
             const wordCount = words.length;
 
-            // Calculate reading time: 250 words per minute, rounded up
             const minutes = Math.ceil(wordCount / 250);
-
-            // Return "< 1 min read" for content with < 1 minute reading time
-            if (minutes < 1) {
-                result = '< 1 Min. Lesezeit';
-            } else {
-                // Return "X min read" for all other cases
-                result = `~${minutes} Min. Lesezeit`;
-            }
+            result = minutes < 1 ? '< 1 Min. Lesezeit' : `~${minutes} Min. Lesezeit`;
         }
     } else {
-        // null or undefined
         result = '< 1 Min. Lesezeit';
     }
 
-    // Cache the result
     if (markdownOrWordCount !== null && markdownOrWordCount !== undefined) {
         readingTimeCache.set(markdownOrWordCount, result);
     }

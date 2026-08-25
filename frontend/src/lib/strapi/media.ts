@@ -1,6 +1,6 @@
 import {joinStrapiBaseUrl} from '@/src/lib/image';
 
-export type StrapiMediaFormat = {
+type StrapiMediaFormat = {
     ext?: string | null;
     url?: string;
     hash?: string;
@@ -13,7 +13,8 @@ export type StrapiMediaFormat = {
     sizeInBytes?: number;
 };
 
-export type StrapiMedia = {
+// Shared field shape for both flat v5 media objects and wrapped media references.
+type StrapiMediaShape = {
     id?: number;
     documentId?: string;
     name?: string;
@@ -38,32 +39,10 @@ export type StrapiMedia = {
     publishedAt?: string | null;
 };
 
-export type StrapiMediaRef = {
-    id?: number;
-    documentId?: string;
-    name?: string;
-    alternativeText?: string | null;
-    caption?: string | null;
-    width?: number;
-    height?: number;
-    formats?: Record<string, StrapiMediaFormat>;
-    hash?: string;
-    ext?: string;
-    mime?: string;
-    size?: number;
-    sizeInBytes?: number;
-    url?: string;
-    previewUrl?: string | null;
-    provider?: string;
-    provider_metadata?: unknown;
-    related?: unknown[]; // keep flexible; Strapi returns heterogeneous relations
-    blurhash?: string | null;
-    createdAt?: string;
-    updatedAt?: string;
-    publishedAt?: string | null;
-    data?: {attributes?: StrapiMedia} | null;
-    attributes?: StrapiMedia;
-};
+export type StrapiMedia = StrapiMediaShape;
+
+/** Media reference as embedded in content payloads (flat Strapi v5 shape). */
+export type StrapiMediaRef = StrapiMedia;
 
 export type StrapiContentMedia = {
     title: string;
@@ -101,37 +80,33 @@ export type ImageSize = 'thumbnail' | 'small' | 'medium' | 'large';
 
 const IMAGE_SIZES_ORDERED: ImageSize[] = ['thumbnail', 'small', 'medium', 'large'];
 
-// Strapi returns media in three possible shapes depending on version and populate depth:
-//   1. Flat object (v5 default): { url, width, ... }
-//   2. Wrapped in `attributes`: { attributes: { url, width, ... } }
-//   3. Wrapped in `data.attributes`: { data: { attributes: { url, ... } } }
-// This normalizer collapses all three into a flat StrapiMedia object.
+// Strapi 5 returns media as flat objects: { url, width, ... }.
+// This normalizer copies the fields into a plain StrapiMedia object.
 export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): StrapiMedia {
     if (!ref) return {};
-    const attrs = ref.attributes ?? ref.data?.attributes ?? ref;
     return {
-        id: attrs.id,
-        documentId: attrs.documentId,
-        name: attrs.name,
-        alternativeText: attrs.alternativeText,
-        caption: attrs.caption,
-        width: attrs.width,
-        height: attrs.height,
-        formats: attrs.formats,
-        hash: attrs.hash,
-        ext: attrs.ext,
-        mime: attrs.mime,
-        size: attrs.size,
-        sizeInBytes: attrs.sizeInBytes,
-        url: attrs.url,
-        previewUrl: attrs.previewUrl,
-        provider: attrs.provider,
-        provider_metadata: attrs.provider_metadata,
-        related: attrs.related,
-        blurhash: attrs.blurhash,
-        createdAt: attrs.createdAt,
-        updatedAt: attrs.updatedAt,
-        publishedAt: attrs.publishedAt,
+        id: ref.id,
+        documentId: ref.documentId,
+        name: ref.name,
+        alternativeText: ref.alternativeText,
+        caption: ref.caption,
+        width: ref.width,
+        height: ref.height,
+        formats: ref.formats,
+        hash: ref.hash,
+        ext: ref.ext,
+        mime: ref.mime,
+        size: ref.size,
+        sizeInBytes: ref.sizeInBytes,
+        url: ref.url,
+        previewUrl: ref.previewUrl,
+        provider: ref.provider,
+        provider_metadata: ref.provider_metadata,
+        related: ref.related,
+        blurhash: ref.blurhash,
+        createdAt: ref.createdAt,
+        updatedAt: ref.updatedAt,
+        publishedAt: ref.publishedAt,
     };
 }
 
@@ -152,6 +127,31 @@ export function mediaUrlToAbsolute(args: {
     return joinStrapiBaseUrl(media.url) ?? undefined;
 }
 
+type MediaField = 'cover' | 'banner';
+
+/**
+ * Resolve the media for `field`, preferring the entry's own value and falling
+ * back to the first category. Cover additionally falls back to the category
+ * image; banner only to the category banner.
+ */
+function pickMediaByField(
+    content: StrapiContentMedia | undefined,
+    categories: StrapiCategoryRef[] | undefined,
+    field: MediaField,
+): StrapiMedia | undefined {
+    const primary = normalizeStrapiMedia(content?.[field] ?? undefined);
+    if (primary.url) return primary;
+
+    const firstCategory = categories?.[0];
+    const categoryCandidate = field === 'cover'
+        ? (firstCategory?.cover ?? firstCategory?.image)
+        : firstCategory?.banner;
+    const categoryMedia = normalizeStrapiMedia(categoryCandidate);
+    if (categoryMedia.url) return categoryMedia;
+
+    return undefined;
+}
+
 /**
  * Selects a cover media for content, preferring the entry's cover and falling back to the first category's cover or image.
  *
@@ -160,27 +160,23 @@ export function mediaUrlToAbsolute(args: {
  * @returns The selected `StrapiMedia` (with a valid `url`) if one is found, `undefined` otherwise
  */
 export function pickCoverMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    const primary = normalizeStrapiMedia(content?.cover ?? undefined);
-    if (primary.url) return primary;
-
-    const firstCategory = categories?.[0];
-    const categoryCover = normalizeStrapiMedia(
-        firstCategory?.cover ?? firstCategory?.image ?? undefined,
-    );
-    if (categoryCover.url) return categoryCover;
-
-    return undefined;
+    return pickMediaByField(content, categories, 'cover');
 }
 
 export function pickBannerMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    const primary = normalizeStrapiMedia(content?.banner ?? undefined);
-    if (primary.url) return primary;
+    return pickMediaByField(content, categories, 'banner');
+}
 
-    const firstCategory = categories?.[0];
-    const categoryBanner = normalizeStrapiMedia(firstCategory?.banner ?? undefined);
-    if (categoryBanner.url) return categoryBanner;
+function pickPreferredMedia(
+    content: StrapiContentMedia | undefined,
+    categories: StrapiCategoryRef[] | undefined,
+    preferred: MediaField,
+    fallback: MediaField,
+): StrapiMedia | undefined {
+    const preferredMedia = pickMediaByField(content, categories, preferred);
+    if (preferredMedia?.url) return preferredMedia;
 
-    return undefined;
+    return pickMediaByField(content, categories, fallback);
 }
 
 /**
@@ -189,12 +185,7 @@ export function pickBannerMedia(content?: StrapiContentMedia, categories?: Strap
  * @returns The chosen `StrapiMedia` containing a `url` when available, or `undefined` if neither banner nor cover media exist.
  */
 export function pickBannerOrCoverMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    // Try banner first
-    const banner = pickBannerMedia(content, categories);
-    if (banner?.url) return banner;
-
-    // Fall back to cover
-    return pickCoverMedia(content, categories);
+    return pickPreferredMedia(content, categories, 'banner', 'cover');
 }
 
 /**
@@ -203,12 +194,7 @@ export function pickBannerOrCoverMedia(content?: StrapiContentMedia, categories?
  * @returns The chosen `StrapiMedia` (cover preferred, banner fallback), or `undefined` if no media is available.
  */
 export function pickCoverOrBannerMedia(content?: StrapiContentMedia, categories?: StrapiCategoryRef[]): StrapiMedia | undefined {
-    // Try cover first
-    const cover = pickCoverMedia(content, categories);
-    if (cover?.url) return cover;
-
-    // Fall back to banner
-    return pickBannerMedia(content, categories);
+    return pickPreferredMedia(content, categories, 'cover', 'banner');
 }
 
 /**

@@ -8,6 +8,7 @@ import {resolve, sep} from 'path';
 
 import {documentServicePage} from '../utils/documentServicePage';
 import {generateBlurDataUrl} from '../utils/generateBlurhash';
+import type {ContentDocument, StrapiInstance} from '../types/middleware';
 
 /**
  * Scan uploaded image files and generate blurhash data URLs for those missing a blurhash.
@@ -16,12 +17,12 @@ import {generateBlurDataUrl} from '../utils/generateBlurhash';
  *
  * @param strapi - The Strapi application instance used to query/update upload documents, access configured directories, and emit logs
  */
-export async function generateMissingBlurhashes({strapi}: {strapi: any}): Promise<void> {
+export async function generateMissingBlurhashes({strapi}: {strapi: StrapiInstance}): Promise<void> {
     try {
         strapi.log.info('Starting hourly blurhash generation for missing images...');
 
         // Find images without blurhash
-        const files = await strapi.documents('plugin::upload.file').findMany({
+        const files: ContentDocument[] = await strapi.documents('plugin::upload.file').findMany({
             filters: {
                 $and: [
                     {
@@ -96,8 +97,14 @@ export async function generateMissingBlurhashes({strapi}: {strapi: any}): Promis
                 const blurDataUrl = await generateBlurDataUrl(fileBuffer);
 
                 if (blurDataUrl) {
+                    const documentId = file.documentId ?? file.id;
+                    if (documentId === undefined) {
+                        strapi.log.warn(`File ${fileUrl} has no documentId/id, skipping update`);
+                        failed++;
+                        continue;
+                    }
                     await strapi.documents('plugin::upload.file').update({
-                        documentId: file.documentId || file.id,
+                        documentId,
                         data: {
                             blurhash: blurDataUrl,
                         },

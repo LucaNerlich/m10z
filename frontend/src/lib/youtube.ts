@@ -12,7 +12,7 @@
  * - https://www.youtube-nocookie.com/embed/VIDEO_ID
  * - https://youtube.com/live/VIDEO_ID
  */
-export const YOUTUBE_URL_REGEX =
+const YOUTUBE_URL_REGEX =
     /(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|live\/)|youtu\.be\/|youtube-nocookie\.com\/embed\/)([a-zA-Z0-9_-]{11})(?:[?&#].*)?/i;
 
 /**

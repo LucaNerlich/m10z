@@ -9,6 +9,7 @@
 
 import {countWords, extractTextFromRichtext} from '../middlewares/wordCount';
 import {documentServicePage} from '../utils/documentServicePage';
+import type {ContentDocument, StrapiInstance} from '../types/middleware';
 import {
     type ContentUid,
     publishDraftIfScheduledDateReached,
@@ -28,6 +29,18 @@ const WORDCOUNT_MISSING_FILTER = {
 type RichtextField = 'content' | 'shownotes';
 
 /**
+ * Resolve a stable document id, throwing inside the per-document try block when
+ * neither identifier exists (same failure accounting as any other per-doc error).
+ */
+function requireDocumentId(doc: ContentDocument): string | number {
+    const id = doc.documentId ?? doc.id;
+    if (id === undefined || id === null) {
+        throw new Error(`Document "${doc.slug ?? '(unknown)'}" has neither documentId nor id`);
+    }
+    return id;
+}
+
+/**
  * Writes `wordCount` onto the published row only. Leaves `publishedAt` alone
  * (and keeps `updatedAt` if we have it) so a metadata backfill cannot look like
  * a republish. Does not touch the draft, so pending editorial edits stay unpublished.
@@ -43,11 +56,11 @@ async function patchPublishedWordCount({
     wordCount,
     updatedAt,
 }: {
-    strapi: any;
+    strapi: StrapiInstance;
     uid: ContentUid;
     documentId: string | number;
     wordCount: number;
-    updatedAt?: string;
+    updatedAt?: string | null;
 }): Promise<void> {
     const data: Record<string, unknown> = {wordCount};
     if (typeof updatedAt === 'string' && updatedAt.length > 0) {
@@ -71,7 +84,7 @@ async function backfillWordCountsForUid({
     status,
     publishAfterIfDue,
 }: {
-    strapi: any;
+    strapi: StrapiInstance;
     uid: ContentUid;
     label: string;
     richtextField: RichtextField;
@@ -115,7 +128,7 @@ async function backfillWordCountsForUid({
                 const content = extractTextFromRichtext(richtextValue);
                 const wordCount = countWords(content);
 
-                const documentId = doc.documentId || doc.id;
+                const documentId = requireDocumentId(doc);
 
                 if (status === 'published') {
                     await patchPublishedWordCount({
@@ -176,7 +189,7 @@ async function backfillWordCountsForUid({
  * Published rows are patched in place (no `publish()`). Never-published drafts whose
  * `date` is due are published after wordCount is set.
  */
-export async function generateMissingWordCounts({strapi}: {strapi: any}): Promise<void> {
+export async function generateMissingWordCounts({strapi}: {strapi: StrapiInstance}): Promise<void> {
     try {
         strapi.log.info('Starting wordCount backfill for articles and podcasts...');
 

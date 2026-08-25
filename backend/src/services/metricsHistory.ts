@@ -7,8 +7,8 @@
 
 export type MetricsHistoryEntry = {updatedAt: string};
 
-export const DEFAULT_METRICS_LIMIT = 30;
-export const MAX_METRICS_LIMIT = 1000;
+const DEFAULT_METRICS_LIMIT = 30;
+const MAX_METRICS_LIMIT = 1000;
 
 /**
  * Filter metrics entries to an inclusive `[from, to]` `updatedAt` range and cap

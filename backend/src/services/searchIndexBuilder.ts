@@ -5,18 +5,30 @@ import {documentServicePage} from '../utils/documentServicePage';
 
 import {filterAndLimitMetrics} from './metricsHistory';
 
-type Strapi = {
+/**
+ * Minimal structural contract for the Strapi instance as used by the search-index
+ * builder (documents reads/writes plus info logging). Callers pass the full
+ * Strapi app; this only names what is actually touched.
+ */
+export type SearchIndexStrapi = {
     documents: (
         uid: string,
     ) => {
-        findMany: (params?: Record<string, unknown>) => Promise<any>;
-        findFirst?: (params?: Record<string, unknown>) => Promise<any>;
-        update: (params: {documentId: string | number; data: Record<string, unknown>}) => Promise<any>;
-        create: (params: {data: Record<string, unknown>}) => Promise<any>;
+        findMany: (params?: Record<string, unknown>) => Promise<unknown>;
+        findFirst?: (params?: Record<string, unknown>) => Promise<unknown>;
+        update: (params: {documentId: string | number; data: Record<string, unknown>}) => Promise<unknown>;
+        create: (params: {data: Record<string, unknown>}) => Promise<unknown>;
     };
     log: {
-        info: (message: string) => void;
+        info: (message: string, ...args: unknown[]) => void;
     };
+};
+
+/** Existing search-index single-type document, as far as `saveIndex` relies on it. */
+type ExistingIndexDoc = {
+    id?: number | string;
+    documentId?: string;
+    version?: unknown;
 };
 
 type SearchIndexMetrics = {
@@ -118,10 +130,34 @@ function sanitizeText(value: unknown): string | undefined {
     return cleaned.length > 0 ? cleaned : undefined;
 }
 
-function effectiveDate(raw: any): string | null {
-    const override = safeText(raw?.date);
+/**
+ * Normalized flat Strapi v5 document payload consumed by the index normalizers.
+ * Nested relations (cover/banner/avatar/categories/authors) are flattened
+ * documents as returned by the Document Service populate depth used here.
+ */
+type IndexEntry = {
+    id?: number | string;
+    documentId?: string;
+    url?: unknown;
+    slug?: unknown;
+    title?: unknown;
+    description?: unknown;
+    date?: unknown;
+    publishedAt?: unknown;
+    updatedAt?: unknown;
+    content?: unknown;
+    shownotes?: unknown;
+    cover?: IndexEntry | null;
+    banner?: IndexEntry | null;
+    avatar?: IndexEntry | null;
+    categories?: readonly IndexEntry[];
+    authors?: readonly IndexEntry[];
+};
+
+function effectiveDate(raw: IndexEntry): string | null {
+    const override = safeText(raw.date);
     if (override) return override;
-    return safeText(raw?.publishedAt) ?? null;
+    return safeText(raw.publishedAt) ?? null;
 }
 
 function toPlainText(value: unknown, metrics?: PlainTextMetrics): string | undefined {
@@ -140,11 +176,10 @@ function toPlainText(value: unknown, metrics?: PlainTextMetrics): string | undef
     return text.slice(0, maxLen);
 }
 
-function extractMediaUrl(mediaRef: any, strapiUrl?: string): string | null {
+function extractMediaUrl(mediaRef: IndexEntry, strapiUrl?: string): string | null {
     if (!strapiUrl || !mediaRef) return null;
 
-    const media = unwrapEntry(mediaRef);
-    const url = media?.url ?? media?.data?.attributes?.url ?? media?.attributes?.url;
+    const url = mediaRef.url;
     if (!url || typeof url !== 'string' || url.trim().length === 0) return null;
 
     if (/^https?:\/\//i.test(url)) return url;
@@ -155,30 +190,29 @@ function extractMediaUrl(mediaRef: any, strapiUrl?: string): string | null {
 
 // Fallback chain: cover → banner → first category's cover → first category's banner.
 // Ensures search results always show an image even when the entry itself has none.
-function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
+function extractCoverImageUrl(raw: IndexEntry, strapiUrl?: string): string | null {
     if (!strapiUrl) return null;
 
-    const rootCover = raw?.cover;
+    const rootCover = raw.cover;
     if (rootCover) {
         const url = extractMediaUrl(rootCover, strapiUrl);
         if (url) return url;
     }
 
-    const rootBanner = raw?.banner;
+    const rootBanner = raw.banner;
     if (rootBanner) {
         const url = extractMediaUrl(rootBanner, strapiUrl);
         if (url) return url;
     }
 
-    const firstCategory = raw?.categories?.[0];
+    const firstCategory = raw.categories?.[0];
     if (firstCategory) {
-        const category = unwrapEntry(firstCategory);
-        const categoryCover = category?.cover;
+        const categoryCover = firstCategory.cover;
         if (categoryCover) {
             const url = extractMediaUrl(categoryCover, strapiUrl);
             if (url) return url;
         }
-        const categoryBanner = category?.banner;
+        const categoryBanner = firstCategory.banner;
         if (categoryBanner) {
             const url = extractMediaUrl(categoryBanner, strapiUrl);
             if (url) return url;
@@ -188,10 +222,10 @@ function extractCoverImageUrl(raw: any, strapiUrl?: string): string | null {
     return null;
 }
 
-function extractAuthorAvatarUrl(raw: any, strapiUrl?: string): string | null {
+function extractAuthorAvatarUrl(raw: IndexEntry, strapiUrl?: string): string | null {
     if (!strapiUrl) return null;
 
-    const avatar = raw?.avatar;
+    const avatar = raw.avatar;
     if (avatar) {
         return extractMediaUrl(avatar, strapiUrl);
     }
@@ -199,16 +233,16 @@ function extractAuthorAvatarUrl(raw: any, strapiUrl?: string): string | null {
     return null;
 }
 
-function extractCategoryCoverUrl(raw: any, strapiUrl?: string): string | null {
+function extractCategoryCoverUrl(raw: IndexEntry, strapiUrl?: string): string | null {
     if (!strapiUrl) return null;
 
-    const rootCover = raw?.cover;
+    const rootCover = raw.cover;
     if (rootCover) {
         const url = extractMediaUrl(rootCover, strapiUrl);
         if (url) return url;
     }
 
-    const rootBanner = raw?.banner;
+    const rootBanner = raw.banner;
     if (rootBanner) {
         return extractMediaUrl(rootBanner, strapiUrl);
     }
@@ -216,157 +250,125 @@ function extractCategoryCoverUrl(raw: any, strapiUrl?: string): string | null {
     return null;
 }
 
-// Strapi v4 wraps fields in `{ attributes: {...} }`, while v5 uses flat objects.
-// This normalizer handles both shapes so the index builder works across versions.
-function unwrapEntry<T extends {attributes?: Record<string, unknown>}>(entry: T): any {
-    if (!entry) return entry;
-    if (entry.attributes && typeof entry.attributes === 'object') {
-        return {...entry.attributes, id: (entry as any).id, documentId: (entry as any).documentId};
-    }
-    return entry;
-}
-
-async function fetchAllDocuments<T>(
-    strapi: Strapi,
+// Strapi 5's Document Service `findMany()` returns flat documents as a bare array.
+async function fetchAllDocuments(
+    strapi: SearchIndexStrapi,
     uid: string,
     params: Record<string, unknown>,
-): Promise<T[]> {
-    const items: T[] = [];
+): Promise<IndexEntry[]> {
+    const items: IndexEntry[] = [];
     let page = 1;
 
     while (true) {
-        const res = await strapi.documents(uid).findMany({
+        const res = (await strapi.documents(uid).findMany({
             ...params,
             status: 'published',
             ...documentServicePage(page, PAGE_SIZE),
-        });
+        })) as IndexEntry[];
 
-        const results: T[] = Array.isArray(res) ? res : res?.results ?? res?.data ?? [];
-        items.push(...results);
+        items.push(...res);
 
-        // Strapi 5's Document Service `findMany()` returns a bare array without pagination
-        // metadata (a v4 entity-service response carries it, but this code always runs
-        // against the v5 document service). Stop paging once the last page came back
-        // shorter than the requested page size. `limit`/`start` (not nested
-        // `pagination`) are what actually cap the query.
-        const pagination = res?.pagination ?? res?.meta?.pagination;
-        const pageCount = pagination?.pageCount ?? Number.POSITIVE_INFINITY;
-        if (results.length < PAGE_SIZE || page >= pageCount) break;
+        // Stop paging once the last page came back shorter than the requested
+        // page size. `limit`/`start` (not nested `pagination`) are what actually
+        // cap the query.
+        if (res.length < PAGE_SIZE) break;
         page += 1;
     }
 
     return items;
 }
 
-function normalizeArticle(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const article = unwrapEntry(raw);
-    const slug = safeText(article?.slug);
-    const title = sanitizeText(article?.title);
+function relationTitles(entry: IndexEntry): string[] {
+    return (entry.categories ?? [])
+        .map((c) => sanitizeText(c.title) ?? sanitizeText(c.slug))
+        .filter((t): t is string => Boolean(t));
+}
+
+function authorNames(entry: IndexEntry): string[] {
+    return (entry.authors ?? [])
+        .map((a) => sanitizeText(a.title) ?? sanitizeText(a.slug))
+        .filter((t): t is string => Boolean(t));
+}
+
+function normalizeArticle(article: IndexEntry, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
+    const slug = safeText(article.slug);
+    const title = sanitizeText(article.title);
     if (!slug || !title) return null;
 
-    const description = sanitizeText(article?.description) ?? null;
-    const content = toPlainText(article?.content, metrics) ?? null;
-    const categories: string[] =
-        article?.categories
-            ?.map((c: any) => unwrapEntry(c))
-            ?.map((c: any) => sanitizeText(c?.title) ?? sanitizeText(c?.slug))
-            ?.filter(Boolean) ?? [];
-    const authors: string[] =
-        article?.authors
-            ?.map((a: any) => unwrapEntry(a))
-            .map((a: any) => sanitizeText(a?.title) ?? sanitizeText(a?.slug))
-            .filter(Boolean) ??
-        [];
+    const categories = relationTitles(article);
+    const authors = authorNames(article);
 
     return {
         id: `article:${slug}`,
         type: 'article',
         slug,
         title,
-        description,
-        content,
+        description: sanitizeText(article.description) ?? null,
+        content: toPlainText(article.content, metrics) ?? null,
         href: `/artikel/${encodeURIComponent(slug)}`,
         publishedAt: effectiveDate(article),
-        tags: [...new Set<string>(['Artikel', ...categories, ...authors].filter(Boolean))],
+        tags: [...new Set<string>(['Artikel', ...categories, ...authors])],
         coverImageUrl: extractCoverImageUrl(article, strapiUrl),
     };
 }
 
-function normalizePodcast(raw: any, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const podcast = unwrapEntry(raw);
-    const slug = safeText(podcast?.slug);
-    const title = sanitizeText(podcast?.title);
+function normalizePodcast(podcast: IndexEntry, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
+    const slug = safeText(podcast.slug);
+    const title = sanitizeText(podcast.title);
     if (!slug || !title) return null;
 
-    const description = sanitizeText(podcast?.description) ?? null;
-    const content = toPlainText(podcast?.shownotes, metrics) ?? null;
-    const categories: string[] =
-        podcast?.categories
-            ?.map((c: any) => unwrapEntry(c))
-            ?.map((c: any) => sanitizeText(c?.title) ?? sanitizeText(c?.slug))
-            ?.filter(Boolean) ?? [];
-    const authors: string[] =
-        podcast?.authors
-            ?.map((a: any) => unwrapEntry(a))
-            .map((a: any) => sanitizeText(a?.title) ?? sanitizeText(a?.slug))
-            .filter(Boolean) ??
-        [];
+    const categories = relationTitles(podcast);
+    const authors = authorNames(podcast);
 
     return {
         id: `podcast:${slug}`,
         type: 'podcast',
         slug,
         title,
-        description,
-        content,
+        description: sanitizeText(podcast.description) ?? null,
+        content: toPlainText(podcast.shownotes, metrics) ?? null,
         href: `/podcasts/${encodeURIComponent(slug)}`,
         publishedAt: effectiveDate(podcast),
-        tags: [...new Set<string>(['Podcast', ...categories, ...authors].filter(Boolean))],
+        tags: [...new Set<string>(['Podcast', ...categories, ...authors])],
         coverImageUrl: extractCoverImageUrl(podcast, strapiUrl),
     };
 }
 
-function normalizeAuthor(raw: any, strapiUrl?: string): SearchRecord | null {
-    const author = unwrapEntry(raw);
-    const slug = safeText(author?.slug);
-    const title = sanitizeText(author?.title);
+function normalizeAuthor(author: IndexEntry, strapiUrl?: string): SearchRecord | null {
+    const slug = safeText(author.slug);
+    const title = sanitizeText(author.title);
     if (!slug || !title) return null;
-
-    const description = sanitizeText(author?.description) ?? null;
 
     return {
         id: `author:${slug}`,
         type: 'author',
         slug,
         title,
-        description,
+        description: sanitizeText(author.description) ?? null,
         href: `/team/${encodeURIComponent(slug)}`,
         tags: ['Autor-In'],
         coverImageUrl: extractAuthorAvatarUrl(author, strapiUrl),
     };
 }
 
-function normalizeCategory(raw: any, strapiUrl?: string): SearchRecord | null {
-    const category = unwrapEntry(raw);
-    const slug = safeText(category?.slug);
-    const title = sanitizeText(category?.title) ?? slug;
+function normalizeCategory(category: IndexEntry, strapiUrl?: string): SearchRecord | null {
+    const slug = safeText(category.slug);
+    const title = sanitizeText(category.title) ?? slug;
     if (!slug || !title) return null;
-
-    const description = sanitizeText(category?.description) ?? null;
 
     return {
         id: `category:${slug}`,
         type: 'category',
         slug,
         title,
-        description,
+        description: sanitizeText(category.description) ?? null,
         href: `/kategorien/${encodeURIComponent(slug)}`,
         tags: ['Kategorie'],
         coverImageUrl: extractCategoryCoverUrl(category, strapiUrl),
     };
 }
 
-async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> {
+async function buildIndex(strapi: SearchIndexStrapi): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> {
     const strapiUrl = process.env.BASE_DOMAIN;
     const buildStartedAt = Date.now();
 
@@ -454,7 +456,7 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
         ...podcastsRaw.map((raw) => normalizePodcast(raw, strapiUrl, textMetrics)),
         ...authorsRaw.map((raw) => normalizeAuthor(raw, strapiUrl)),
         ...categoriesRaw.map((raw) => normalizeCategory(raw, strapiUrl)),
-    ].filter(Boolean) as SearchRecord[];
+    ].filter((record): record is SearchRecord => record !== null);
 
     const index = {
         version: 0,
@@ -492,18 +494,26 @@ async function buildIndex(strapi: Strapi): Promise<{index: SearchIndexFile; metr
 
 // Persists the index as a Strapi single-type document with monotonically increasing version.
 // Uses findFirst if available (Strapi 5), falls back to findMany (Strapi 4 compat).
-async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<SearchIndexFile> {
+async function saveIndex(strapi: SearchIndexStrapi, index: SearchIndexFile): Promise<SearchIndexFile> {
     const svc = strapi.documents('api::search-index.search-index');
-    const existing = (await (svc.findFirst ? svc.findFirst() : svc.findMany(documentServicePage(1, 1)))) as any;
-    const current = Array.isArray(existing) ? existing[0] : existing?.results?.[0] ?? existing?.data?.[0] ?? existing;
+    const existing: unknown = await (svc.findFirst ? svc.findFirst() : svc.findMany(documentServicePage(1, 1)));
+    const list = Array.isArray(existing)
+        ? existing
+        : typeof existing === 'object' && existing !== null
+            ? ((existing as {results?: unknown[]}).results ??
+              (existing as {data?: unknown[]}).data ??
+              [existing])
+            : [];
+    const current = (list[0] ?? null) as ExistingIndexDoc | null;
     const currentVersion = Number(current?.version) || 0;
     const nextVersion = currentVersion + 1;
 
     const payload = {...index, version: nextVersion};
 
-    if (current && (current.documentId || current.id)) {
+    const existingId = current ? (current.documentId ?? current.id) : undefined;
+    if (current && existingId !== undefined && existingId !== null) {
         await svc.update({
-            documentId: current.documentId ?? current.id,
+            documentId: existingId,
             data: {
                 content: payload,
                 version: nextVersion,
@@ -532,7 +542,7 @@ async function saveIndex(strapi: Strapi, index: SearchIndexFile): Promise<Search
 let buildChain: Promise<unknown> = Promise.resolve();
 
 export async function buildAndPersistSearchIndex(
-    strapi: Strapi,
+    strapi: SearchIndexStrapi,
     options?: {source?: 'cron' | 'queue' | 'manual'},
 ): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> {
     const build = async (): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> => {

@@ -9,15 +9,7 @@ type SWRProviderProps = {
 };
 
 /**
- * SWR provider component that wraps the application with global SWR configuration.
- *
- * This provider:
- * - Applies secure fetcher function
- * - Configures global SWR settings (revalidation, deduplication, retry logic)
- * - Handles errors securely without exposing sensitive information
- *
- * @param children - The application content to wrap
- * @returns SWRConfig wrapper component
+ * Global SWR provider: applies the secure fetcher and shared revalidation/retry settings.
  */
 export function SWRProvider({children}: SWRProviderProps): React.ReactElement {
     return <SWRConfig value={swrConfig}>{children}</SWRConfig>;

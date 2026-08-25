@@ -14,7 +14,7 @@ function keyOf(item: QueueItem): string {
     return `${type}:${action}:${slug ?? ''}`;
 }
 
-const queue = new AsyncTaskQueue<QueueItem>({
+const queue = new AsyncTaskQueue<QueueItem, StrapiWithDb>({
     name: 'cache-invalidation',
     keyOf,
     // Repeated events for the same key within the debounce window coalesce into one
@@ -23,11 +23,9 @@ const queue = new AsyncTaskQueue<QueueItem>({
     merge: (existing, incoming) => ({event: incoming.event, dbIds: [...existing.dbIds, ...incoming.dbIds]}),
     run: (item, strapi) => postInvalidationEvent(item.event, strapi.log),
     onSettled: (item, succeeded, strapi) => {
-        // `strapi` here is only typed as the generic queue's StrapiLike, but every enqueue
-        // in this module passes a StrapiWithDb — safe to widen back for the db-backed cleanup.
         if (succeeded) {
             for (const dbId of item.dbIds) {
-                void removePending(strapi as StrapiWithDb, dbId);
+                void removePending(strapi, dbId);
             }
         }
     },
@@ -36,7 +34,7 @@ const queue = new AsyncTaskQueue<QueueItem>({
         // table does not accumulate rows for a permanently-down frontend.
         for (const item of items) {
             for (const dbId of item.dbIds) {
-                void removePending(strapi as StrapiWithDb, dbId);
+                void removePending(strapi, dbId);
             }
         }
     },
