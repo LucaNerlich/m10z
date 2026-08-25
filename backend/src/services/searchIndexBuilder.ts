@@ -24,17 +24,6 @@ export type SearchIndexStrapi = {
     };
 };
 
-/**
- * Response shapes tolerated by `fetchAllDocuments`: Strapi 5 returns a bare
- * array, older/entity-service responses wrap items and pagination metadata.
- */
-type DocumentPage<T> = T[] | {
-    results?: T[];
-    data?: T[];
-    pagination?: {pageCount?: number};
-    meta?: {pagination?: {pageCount?: number}};
-};
-
 /** Existing search-index single-type document, as far as `saveIndex` relies on it. */
 type ExistingIndexDoc = {
     id?: number | string;
@@ -142,8 +131,9 @@ function sanitizeText(value: unknown): string | undefined {
 }
 
 /**
- * Normalized entry shape consumed by the index normalizers. Covers both Strapi v4
- * (`{attributes: {...}}` wrapper) and v5 (flat) payloads after `unwrapEntry`.
+ * Normalized flat Strapi v5 document payload consumed by the index normalizers.
+ * Nested relations (cover/banner/avatar/categories/authors) are flattened
+ * documents as returned by the Document Service populate depth used here.
  */
 type IndexEntry = {
     id?: number | string;
@@ -157,14 +147,11 @@ type IndexEntry = {
     updatedAt?: unknown;
     content?: unknown;
     shownotes?: unknown;
-    cover?: unknown;
-    banner?: unknown;
-    avatar?: unknown;
-    categories?: readonly unknown[];
-    authors?: readonly unknown[];
-    // v4 wrapper shapes tolerated by `extractMediaUrl`
-    data?: {attributes?: {url?: unknown}};
-    attributes?: Record<string, unknown>;
+    cover?: IndexEntry | null;
+    banner?: IndexEntry | null;
+    avatar?: IndexEntry | null;
+    categories?: readonly IndexEntry[];
+    authors?: readonly IndexEntry[];
 };
 
 function effectiveDate(raw: IndexEntry): string | null {
@@ -189,11 +176,10 @@ function toPlainText(value: unknown, metrics?: PlainTextMetrics): string | undef
     return text.slice(0, maxLen);
 }
 
-function extractMediaUrl(mediaRef: unknown, strapiUrl?: string): string | null {
+function extractMediaUrl(mediaRef: IndexEntry, strapiUrl?: string): string | null {
     if (!strapiUrl || !mediaRef) return null;
 
-    const media = unwrapEntry(mediaRef);
-    const url = media.url ?? media.data?.attributes?.url ?? media.attributes?.url;
+    const url = mediaRef.url;
     if (!url || typeof url !== 'string' || url.trim().length === 0) return null;
 
     if (/^https?:\/\//i.test(url)) return url;
@@ -221,13 +207,12 @@ function extractCoverImageUrl(raw: IndexEntry, strapiUrl?: string): string | nul
 
     const firstCategory = raw.categories?.[0];
     if (firstCategory) {
-        const category = unwrapEntry(firstCategory);
-        const categoryCover = category.cover;
+        const categoryCover = firstCategory.cover;
         if (categoryCover) {
             const url = extractMediaUrl(categoryCover, strapiUrl);
             if (url) return url;
         }
-        const categoryBanner = category.banner;
+        const categoryBanner = firstCategory.banner;
         if (categoryBanner) {
             const url = extractMediaUrl(categoryBanner, strapiUrl);
             if (url) return url;
@@ -265,23 +250,13 @@ function extractCategoryCoverUrl(raw: IndexEntry, strapiUrl?: string): string | 
     return null;
 }
 
-// Strapi v4 wraps fields in `{ attributes: {...} }`, while v5 uses flat objects.
-// This normalizer handles both shapes so the index builder works across versions.
-function unwrapEntry(entry: unknown): IndexEntry {
-    if (!entry || typeof entry !== 'object') return {};
-    const record = entry as IndexEntry & {attributes?: Record<string, unknown>};
-    if (record.attributes && typeof record.attributes === 'object') {
-        return {...record.attributes, id: record.id, documentId: record.documentId};
-    }
-    return record;
-}
-
+// Strapi 5's Document Service `findMany()` returns flat documents as a bare array.
 async function fetchAllDocuments(
     strapi: SearchIndexStrapi,
     uid: string,
     params: Record<string, unknown>,
-): Promise<unknown[]> {
-    const items: unknown[] = [];
+): Promise<IndexEntry[]> {
+    const items: IndexEntry[] = [];
     let page = 1;
 
     while (true) {
@@ -289,19 +264,14 @@ async function fetchAllDocuments(
             ...params,
             status: 'published',
             ...documentServicePage(page, PAGE_SIZE),
-        })) as DocumentPage<unknown>;
+        })) as IndexEntry[];
 
-        const results: unknown[] = Array.isArray(res) ? res : res.results ?? res.data ?? [];
-        items.push(...results);
+        items.push(...res);
 
-        // Strapi 5's Document Service `findMany()` returns a bare array without pagination
-        // metadata (a v4 entity-service response carries it, but this code always runs
-        // against the v5 document service). Stop paging once the last page came back
-        // shorter than the requested page size. `limit`/`start` (not nested
-        // `pagination`) are what actually cap the query.
-        const pagination = Array.isArray(res) ? undefined : res.pagination ?? res.meta?.pagination;
-        const pageCount = pagination?.pageCount ?? Number.POSITIVE_INFINITY;
-        if (results.length < PAGE_SIZE || page >= pageCount) break;
+        // Stop paging once the last page came back shorter than the requested
+        // page size. `limit`/`start` (not nested `pagination`) are what actually
+        // cap the query.
+        if (res.length < PAGE_SIZE) break;
         page += 1;
     }
 
@@ -310,20 +280,17 @@ async function fetchAllDocuments(
 
 function relationTitles(entry: IndexEntry): string[] {
     return (entry.categories ?? [])
-        .map((c) => unwrapEntry(c))
         .map((c) => sanitizeText(c.title) ?? sanitizeText(c.slug))
         .filter((t): t is string => Boolean(t));
 }
 
 function authorNames(entry: IndexEntry): string[] {
     return (entry.authors ?? [])
-        .map((a) => unwrapEntry(a))
         .map((a) => sanitizeText(a.title) ?? sanitizeText(a.slug))
         .filter((t): t is string => Boolean(t));
 }
 
-function normalizeArticle(raw: unknown, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const article = unwrapEntry(raw);
+function normalizeArticle(article: IndexEntry, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
     const slug = safeText(article.slug);
     const title = sanitizeText(article.title);
     if (!slug || !title) return null;
@@ -345,8 +312,7 @@ function normalizeArticle(raw: unknown, strapiUrl?: string, metrics?: PlainTextM
     };
 }
 
-function normalizePodcast(raw: unknown, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
-    const podcast = unwrapEntry(raw);
+function normalizePodcast(podcast: IndexEntry, strapiUrl?: string, metrics?: PlainTextMetrics): SearchRecord | null {
     const slug = safeText(podcast.slug);
     const title = sanitizeText(podcast.title);
     if (!slug || !title) return null;
@@ -368,8 +334,7 @@ function normalizePodcast(raw: unknown, strapiUrl?: string, metrics?: PlainTextM
     };
 }
 
-function normalizeAuthor(raw: unknown, strapiUrl?: string): SearchRecord | null {
-    const author = unwrapEntry(raw);
+function normalizeAuthor(author: IndexEntry, strapiUrl?: string): SearchRecord | null {
     const slug = safeText(author.slug);
     const title = sanitizeText(author.title);
     if (!slug || !title) return null;
@@ -386,8 +351,7 @@ function normalizeAuthor(raw: unknown, strapiUrl?: string): SearchRecord | null 
     };
 }
 
-function normalizeCategory(raw: unknown, strapiUrl?: string): SearchRecord | null {
-    const category = unwrapEntry(raw);
+function normalizeCategory(category: IndexEntry, strapiUrl?: string): SearchRecord | null {
     const slug = safeText(category.slug);
     const title = sanitizeText(category.title) ?? slug;
     if (!slug || !title) return null;

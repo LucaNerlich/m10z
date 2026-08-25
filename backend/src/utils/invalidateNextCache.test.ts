@@ -14,15 +14,11 @@ afterEach(() => {
 function stubConfiguredEnv() {
     vi.stubEnv('FRONTEND_URL', 'https://m10z.de');
     vi.stubEnv('STRAPI_INVALIDATION_SECRET', 'secret-token');
-    vi.stubEnv('FEED_INVALIDATION_TOKEN', undefined);
-    vi.stubEnv('LEGAL_INVALIDATION_TOKEN', undefined);
 }
 
 describe('postInvalidationEvent', () => {
     test('returns false and skips the request when no secret is configured', async () => {
         vi.stubEnv('STRAPI_INVALIDATION_SECRET', undefined);
-        vi.stubEnv('FEED_INVALIDATION_TOKEN', undefined);
-        vi.stubEnv('LEGAL_INVALIDATION_TOKEN', undefined);
         const fetchMock = vi.fn();
         vi.stubGlobal('fetch', fetchMock);
 
