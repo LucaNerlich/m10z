@@ -108,22 +108,16 @@ export default {
     },
 
     /**
-     * An asynchronous bootstrap function that runs before
-     * your application gets started.
-     *
-     * This gives you an opportunity to set up your data model,
-     * run jobs, or perform some special logic.
+     * Strapi bootstrap: runs before the app starts.
      */
     async bootstrap({strapi}: {strapi: any}) {
-        // Add blurhash column to files table if it doesn't exist
-        // This ensures the database column exists even if schema extension happens after DB init
+        // Ensure the blurhash column exists even if the schema extension runs after DB init.
         try {
             const db = strapi.db;
             const tableName = 'files';
             const columnName = 'blurhash';
 
-            // Check if column exists by querying the information schema
-            // Use parameterized query to avoid SQL injection
+            // Parameterized query to avoid SQL injection
             const columnCheck = await db.connection.raw(`
                 SELECT column_name
                 FROM information_schema.columns
@@ -135,7 +129,6 @@ export default {
             const columnExists = columnCheck.rows && columnCheck.rows.length > 0;
 
             if (!columnExists) {
-                // Add the blurhash column
                 await db.connection.raw(`
                     ALTER TABLE ??
                         ADD COLUMN ?? TEXT
@@ -171,7 +164,6 @@ export default {
                     };
                 };
 
-                // Event handler for failed connection acquisition
                 pool.on('acquireFail', (err: Error) => {
                     const metrics = getPoolMetrics();
                     strapi.log.error('Database connection acquisition failed', {
@@ -195,9 +187,8 @@ export default {
                         if (metrics.total > poolMax) {
                             strapi.log.warn(`Database pool exceeds max connections (${poolMax}) - potential connection leak`, metrics);
                         }
-                    }, 60000); // Every 60 seconds
+                    }, 60000);
 
-                    // Clear interval on application shutdown
                     process.on('SIGTERM', () => {
                         clearInterval(healthInterval);
                     });

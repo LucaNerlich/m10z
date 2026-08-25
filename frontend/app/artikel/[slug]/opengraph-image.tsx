@@ -32,11 +32,10 @@ export default async function Image({params}: {params: Promise<{slug: string}>})
                 description = article.description ?? undefined;
             }
         } catch {
-            // Fall back to default title
+            // Keep the default title
         }
     }
 
-    // Truncate long titles and descriptions
     const displayTitle = title.length > 80 ? title.slice(0, 77) + '...' : title;
     const displayDescription = description
         ? description.length > 120

@@ -20,12 +20,10 @@ interface YoutubeEmbedProps {
 export default function YoutubeEmbed(props: Readonly<YoutubeEmbedProps>): React.ReactElement {
     if (!props.videoId) return <></>;
 
-    // Validate videoId by constructing a watch URL and using toYouTubeEmbedUrl helper
-    // This ensures the videoId matches YouTube's expected format
+    // Round-trip the id through toYouTubeEmbedUrl to reject malformed video ids.
     const watchUrl = `https://www.youtube.com/watch?v=${props.videoId}`;
     const embedUrl = toYouTubeEmbedUrl(watchUrl, true);
 
-    // If validation fails, return empty element
     if (!embedUrl) return <></>;
 
     return (

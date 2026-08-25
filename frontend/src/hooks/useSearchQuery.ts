@@ -14,13 +14,8 @@ type SearchQueryResponse = {
 /**
  * SWR hook for performing search queries with automatic debouncing.
  *
- * This hook:
- * - Fetches search results from `/api/search-index?q=...`
- * - Only fetches when query length > 0 (conditional fetching)
- * - Automatically debounces the query to avoid excessive API calls
- * - Handles loading states, errors, and caching
- * - Caches results per query string
- * - Uses SWR's deduplication to prevent duplicate requests
+ * Fetches from `/api/search-index?q=...` once the debounced query reaches the
+ * minimum match length, caching results per query string.
  *
  * @param query - The search query string (will be trimmed automatically)
  * @param debounceMs - Debounce delay in milliseconds (default: 150ms)
@@ -34,7 +29,6 @@ type SearchQueryResponse = {
 export function useSearchQuery(query: string, debounceMs: number = 150) {
     const [debouncedQuery, setDebouncedQuery] = useState<string>('');
 
-    // Debounce the query value
     useEffect(() => {
         const trimmed = query.trim();
         const timeoutId = setTimeout(() => {
@@ -44,8 +38,8 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
         return () => clearTimeout(timeoutId);
     }, [query, debounceMs]);
 
-    // Use SWR with conditional key - only fetch when debouncedQuery length > 0
-    // Match Fuse config (minMatchCharLength: 2) and avoid hammering the server for 1-char queries.
+    // 2 chars matches the Fuse client config (minMatchCharLength) and avoids
+    // hammering the server for 1-char queries.
     const shouldFetch = debouncedQuery.length >= 2;
     const swrKey = shouldFetch ? `${SEARCH_INDEX_URL}?q=${encodeURIComponent(debouncedQuery)}` : null;
 
@@ -63,8 +57,7 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
     );
 
     // Return empty results immediately if query is empty (before debounce completes)
-    if (query.trim().length === 0) {
-        return {
+    if (query.trim().length === 0) {        return {
             results: [],
             total: 0,
             error: undefined,

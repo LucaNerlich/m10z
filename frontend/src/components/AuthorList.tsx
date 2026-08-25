@@ -36,7 +36,6 @@ export function AuthorList({
                            }: AuthorListProps) {
     if (authors.length === 0) return null;
 
-    // Sort authors alphabetically by name
     const sortedAuthors = [...authors].sort((a, b) => {
         const nameA = (a.title ?? 'Unbekannter Autor').toLowerCase();
         const nameB = (b.title ?? 'Unbekannter Autor').toLowerCase();
@@ -79,7 +78,6 @@ export function AuthorList({
         );
     }
 
-    // Inline layout
     const authorNames = displayAuthors.map(author => author.title ?? 'Unbekannter Autor');
     const formattedParts = formatAuthorList(authorNames);
     let authorIndex = 0;
@@ -113,7 +111,6 @@ export function AuthorList({
                         </span>
                     );
                 } else {
-                    // part.type === 'literal'
                     return (
                         <span key={`separator-${partIndex}`} className={styles.separator}>
                             {part.value}

@@ -35,9 +35,8 @@ export function ScrollRestoration(): null {
         if (window.location.hash) {
             return;
         }
-        // Scroll to top when route changes
-        // Use requestAnimationFrame to defer scrolling until after the browser paint cycle
-        // This ensures the sticky header's position is recalculated correctly after the new page DOM is rendered
+        // rAF defers scrolling until after the browser paint cycle, so the sticky
+        // header's position is recalculated correctly after the new page DOM renders.
         requestAnimationFrame(() => {
             window.scrollTo({
                 top: 0,

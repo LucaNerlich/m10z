@@ -13,21 +13,7 @@ type CoverImageProps = {
     priority?: boolean;
 };
 
-/**
- * Reusable cover image component for articles and podcasts.
- * Displays an optimized cover image with consistent styling.
- * Supports base64 blur placeholder for better loading experience.
- *
- * @param src - Image URL
- * @param alt - Alt text for accessibility
- * @param width - Image width
- * @param height - Image height
- * @param className - Optional additional CSS class
- * @param placeholder - Placeholder type ('blur' or 'empty'), defaults to 'empty'
- * @param blurhash - Optional base64 data URL to use as blur placeholder (from backend)
- * @param priority - If true, the image will be considered high priority and preloaded
- * @returns A cover image container with the image
- */
+/** Optimized cover image with consistent styling and optional blur placeholder. */
 export function ContentImage({
                                  src,
                                  alt,
@@ -39,7 +25,6 @@ export function ContentImage({
                                  title,
                                  priority = false,
                              }: CoverImageProps) {
-    // Use blurhash directly as blurDataURL if provided and placeholder is 'blur'
     const imagePlaceholder = blurhash && placeholder === 'blur' ? 'blur' : placeholder;
     const blurDataUrlProp = blurhash && placeholder === 'blur' ? {blurDataURL: blurhash} : {};
 

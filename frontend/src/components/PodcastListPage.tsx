@@ -69,7 +69,6 @@ export async function PodcastListPage({
         );
     }
 
-    // Handle empty state
     if (!data || data.items.length === 0) {
         return (
             <section data-list-page>

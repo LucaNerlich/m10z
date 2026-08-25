@@ -22,7 +22,6 @@ import {PodcastPlayer} from '@/app/podcasts/[slug]/Player';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/podcasts/[slug]/page.module.css';
 
-// Hoist RegExp pattern to module scope
 const REGEX_LT_ESCAPE = /</g;
 
 type PodcastDetailProps = {
@@ -52,12 +51,10 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
-    // Fallback configuration
     const fallbackSrc = placeholderCover;
     const fallbackWidth = 400;
     const fallbackHeight = 225;
 
-    // Determine final values
     const mediaUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
     const imageSrc = mediaUrl ?? fallbackSrc;
     const imageWidth = optimizedMedia?.width ?? fallbackWidth;

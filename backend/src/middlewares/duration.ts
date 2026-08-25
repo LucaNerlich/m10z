@@ -40,7 +40,6 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
         let fileRecord: any;
 
         if (data.file?.url) {
-            // File object already contains URL
             fileUrl = data.file.url;
             fileRecord = data.file;
         } else {
@@ -61,7 +60,6 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
                 return;
             }
 
-            // Query upload file record
             fileRecord = await strapi.documents('plugin::upload.file').findOne({
                 documentId: fileId,
             });
@@ -71,7 +69,6 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
                 return;
             }
 
-            // Extract file URL from record
             fileUrl = fileRecord.url;
         }
 
@@ -101,12 +98,10 @@ async function extractDuration(strapi: any, data: any): Promise<void> {
             return;
         }
 
-        // Extract metadata using music-metadata
         const metadata = await parseFile(filePath);
         const duration = metadata.format?.duration;
 
         if (duration && typeof duration === 'number' && duration > 0) {
-            // Convert to integer seconds and set in data
             data.duration = Math.round(duration);
             strapi.log.info(`Extracted duration: ${data.duration} seconds for file: ${fileUrl}`);
         } else {

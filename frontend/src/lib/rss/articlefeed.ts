@@ -72,15 +72,12 @@ export function generateArticleFeedXml(args: {
             const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
             const optimizedMediaUrl = mediaUrlToAbsolute({media: optimizedMedia});
 
-            // Prepare and Sanitize Content
             const title = escapeXml(a.title);
             // Fall back to the first category's description when the article has no explicit description.
             const effectiveDescription = a.description || a.categories?.[0]?.description;
             const description = escapeXml(effectiveDescription ?? '');
             const html = markdownToHtml(a.content ?? '');
             const cdataContent = escapeCdata(html);
-
-            // todo add youtube urls
 
             const guid = sha256Hex(link);
 

@@ -11,7 +11,7 @@ import {
     type StrapiCategoryRef,
     type StrapiContentMedia,
     type StrapiMedia,
-} from './media';
+} from '@/src/lib/strapi/media';
 
 afterEach(() => {
     vi.unstubAllEnvs();

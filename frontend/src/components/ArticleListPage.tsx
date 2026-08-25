@@ -67,7 +67,6 @@ export async function ArticleListPage({
         );
     }
 
-    // Handle empty state
     if (!data || data.items.length === 0) {
         return (
             <section data-list-page>

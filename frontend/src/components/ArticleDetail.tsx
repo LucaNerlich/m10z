@@ -16,7 +16,6 @@ import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from '@/app/artikel/[slug]/page.module.css';
 
-// Hoist RegExp pattern to module scope
 const REGEX_LT_ESCAPE = /</g;
 
 type ArticleDetailProps = {
@@ -43,12 +42,10 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
     const bannerOrCoverMedia = pickBannerOrCoverMedia(article, article.categories);
     const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
 
-    // Fallback configuration
     const fallbackSrc = placeholderCover;
     const fallbackWidth = 400;
     const fallbackHeight = 225;
 
-    // Determine final values
     const mediaUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : undefined;
     const imageSrc = mediaUrl ?? fallbackSrc;
     const imageWidth = optimizedMedia?.width ?? fallbackWidth;

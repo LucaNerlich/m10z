@@ -8,7 +8,6 @@ import {SWRProvider} from './SWRProvider';
 
 const shortcutKeySearch = 'K';
 
-// Hoist RegExp pattern to module scope
 const REGEX_APPLE_PLATFORM = /Mac|iPhone|iPad|iPod/;
 
 const subscribeNoop = () => () => {
