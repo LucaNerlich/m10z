@@ -14,9 +14,6 @@ importers:
       '@phosphor-icons/react':
         specifier: ^2.1.10
         version: 2.1.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      blurhash:
-        specifier: ^2.0.5
-        version: 2.0.5
       dompurify:
         specifier: ^3.4.13
         version: 3.4.13
@@ -83,13 +80,7 @@ importers:
       undici:
         specifier: ^8.10.0
         version: 8.10.0
-      xml-formatter:
-        specifier: ^3.7.0
-        version: 3.7.0
     devDependencies:
-      '@next/env':
-        specifier: 16.3.1
-        version: 16.3.1
       '@types/jsdom':
         specifier: ^27.0.0
         version: 27.0.0
@@ -1062,9 +1053,6 @@ packages:
 
   bidi-js@1.0.3:
     resolution: {integrity: sha512-RKshQI1R3YQ+n9YJz2QQ147P66ELpa1FQEg20Dk8oW9t2KgLbpDLLp9aGZ7y8WHSshDknG0bknqGw5/tyCs5tw==}
-
-  blurhash@2.0.5:
-    resolution: {integrity: sha512-cRygWd7kGBQO3VEhPiTgq4Wc43ctsM+o46urrmPOiuAe+07fzlSB9OJVdpgDL0jPqXUVQ9ht7aq7kxOeJHRK+w==}
 
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
@@ -2285,17 +2273,9 @@ packages:
       utf-8-validate:
         optional: true
 
-  xml-formatter@3.7.0:
-    resolution: {integrity: sha512-+8qTc3zv2UcJ1v9IsSIce37Dl4MQG14Cp7tWrwmy202UaI1wqRukw5QMX1JHsV+DX64yw77EgGsj2s5wGvuMbQ==}
-    engines: {node: '>= 16'}
-
   xml-name-validator@5.0.0:
     resolution: {integrity: sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg==}
     engines: {node: '>=18'}
-
-  xml-parser-xo@4.1.6:
-    resolution: {integrity: sha512-mXbSNSM+rIwndoxSwmFa83bOdeP8G/cOGr7XvxA67X7ebCzoAuVez9JYDCDub3zRDNBZxIbfjuXLSsamr7NfwQ==}
-    engines: {node: '>= 20'}
 
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
@@ -3001,8 +2981,6 @@ snapshots:
   bidi-js@1.0.3:
     dependencies:
       require-from-string: 2.0.2
-
-  blurhash@2.0.5: {}
 
   call-bind-apply-helpers@1.0.2:
     dependencies:
@@ -4598,13 +4576,7 @@ snapshots:
 
   ws@8.21.3: {}
 
-  xml-formatter@3.7.0:
-    dependencies:
-      xml-parser-xo: 4.1.6
-
   xml-name-validator@5.0.0: {}
-
-  xml-parser-xo@4.1.6: {}
 
   xmlchars@2.2.0: {}
 

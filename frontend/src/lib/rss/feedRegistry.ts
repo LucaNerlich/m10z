@@ -14,7 +14,6 @@ type FeedRegistry = {
     audio: FeedCache;
     onInvalidate: (type: ContentTypeKey) => void;
     disposeHmr: () => void;
-    resetAudioFeedStateForDiagnostics: (reason?: 'manual') => void;
     getAudioFeedRuntimeState: () => ReturnType<ReturnType<typeof createAudioFeedBuildHealth>['getRuntimeState']>;
 };
 
@@ -63,9 +62,6 @@ function createRegistry(): FeedRegistry {
         disposeHmr() {
             article.stopScheduler();
             audio.stopScheduler();
-        },
-        resetAudioFeedStateForDiagnostics(reason: 'manual' = 'manual') {
-            resetAudioFeedBuildHealthForDiagnostics(audioBuildHealth, () => audio.reset(), reason);
         },
         getAudioFeedRuntimeState() {
             return audioBuildHealth.getRuntimeState(audio.getSchedulerState());

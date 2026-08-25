@@ -9,8 +9,3 @@ export type Assignment = {
     receiverId: string;
 };
 
-export type WichtelnState = {
-    participants: Participant[];
-    assignments: Assignment[];
-    timestamp: number;
-};

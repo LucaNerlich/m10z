@@ -3,7 +3,7 @@ import {type M12GGameIndexEntry, type M12GLeaderboardEntry, type M12GMonthWithWi
 // One Month in which a Game was nominated, with that Month's outcome for the Game.
 // Carries enough Month context (title, forum thread) to render a Game's timeline
 // without re-reading the Months — see CONTEXT.md (Game history).
-export type GameAppearance = {
+type GameAppearance = {
     month: string;
     votes: number;
     isWinner: boolean;
@@ -89,7 +89,7 @@ export function toGameIndex(history: GameHistory[]): M12GGameIndexEntry[] {
         .map(({appearances, ...entry}) => ({...entry, months: appearances.map((a) => a.month)}));
 }
 
-export type Streak = {
+type Streak = {
     name: string;
     slug: string;
     length: number;

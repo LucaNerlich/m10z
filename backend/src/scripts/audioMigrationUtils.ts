@@ -8,7 +8,7 @@
 
 import path from 'path';
 
-export const ALLOWED_DOMAIN = 'm10z.picnotes.de';
+const ALLOWED_DOMAIN = 'm10z.picnotes.de';
 
 /**
  * Validate a source URL before downloading.

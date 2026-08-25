@@ -37,15 +37,15 @@ export function contentBySlugsTag(type: StrapiContentType): string {
     return `strapi:${type}:by-slugs`;
 }
 
-export function contentAuthorListTag(contentType: 'article' | 'podcast', authorSlug: string): string {
+function contentAuthorListTag(contentType: 'article' | 'podcast', authorSlug: string): string {
     return `strapi:${contentType}:list:author:${authorSlug}`;
 }
 
-export function contentAuthorListPageTag(contentType: 'article' | 'podcast', authorSlug: string): string {
+function contentAuthorListPageTag(contentType: 'article' | 'podcast', authorSlug: string): string {
     return `strapi:${contentType}:list:author:${authorSlug}:page`;
 }
 
-export function contentAuthorCategoryListTag(
+function contentAuthorCategoryListTag(
     contentType: 'article' | 'podcast',
     authorSlug: string,
     categorySlug: string,
@@ -53,7 +53,7 @@ export function contentAuthorCategoryListTag(
     return `strapi:${contentType}:list:author:${authorSlug}:category:${categorySlug}`;
 }
 
-export function contentAuthorCategoryListPageTag(
+function contentAuthorCategoryListPageTag(
     contentType: 'article' | 'podcast',
     authorSlug: string,
     categorySlug: string,

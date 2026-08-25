@@ -5,7 +5,7 @@ export interface M12GGame {
     earlyAccess?: boolean;
 }
 
-export interface M12GMonth {
+interface M12GMonth {
     month: string;
     title?: string;
     forumThreadUrl?: string;

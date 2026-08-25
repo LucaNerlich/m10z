@@ -40,7 +40,7 @@ export type PodloveEpisodeConfig = {
     files?: PodloveFileAsset[];
 };
 
-export type PodloveThemeTokens = {
+type PodloveThemeTokens = {
     brand?: string;
     brandDark?: string;
     brandDarkest?: string;
@@ -51,22 +51,22 @@ export type PodloveThemeTokens = {
     alt?: string;
 };
 
-export type PodloveShareChannel = 'facebook' | 'twitter' | 'whats-app' | 'linkedin' | 'pinterest' | 'xing' | 'mail' | 'link';
+type PodloveShareChannel = 'facebook' | 'twitter' | 'whats-app' | 'linkedin' | 'pinterest' | 'xing' | 'mail' | 'link';
 
-export type PodloveShareConfig = {
+type PodloveShareConfig = {
     channels: PodloveShareChannel[];
     sharePlaytime?: boolean;
     outlet?: string;
 };
 
-export type PodloveSubscribeClient = {
+type PodloveSubscribeClient = {
     /** Client id, e.g. `apple-podcasts`, `pocket-casts`, `overcast`, `rss`. */
     id: string;
     /** Optional client-specific service identifier (e.g. Apple podcast id or feed URL). */
     service?: string;
 };
 
-export type PodloveSubscribeButtonConfig = {
+type PodloveSubscribeButtonConfig = {
     /** RSS feed URL the subscribe overlay links to. */
     feed: string;
     /** Ordered list of supported podcast clients; only platform-relevant ones are shown. */

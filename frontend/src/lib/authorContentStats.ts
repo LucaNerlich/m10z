@@ -1,7 +1,7 @@
 import {type StrapiCategoryRef} from '@/src/lib/strapi/media';
 import {type PaginatedResult} from '@/src/lib/strapiContent';
 
-export type CategoryCount = {
+type CategoryCount = {
     slug: string;
     title: string;
     count: number;

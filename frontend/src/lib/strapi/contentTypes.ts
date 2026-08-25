@@ -50,4 +50,3 @@ export type StrapiAudioFeedSingle = {
     episodeFooter?: string | null;
 };
 
-export type {StrapiAuthor, StrapiCategoryRef, StrapiContentMedia, StrapiMedia, StrapiMediaRef, StrapiYoutube};

@@ -4,10 +4,10 @@
  * The blocking script in public/theme-init.js contains its own implementation for FOUC prevention.
  */
 
-export const STORAGE_KEY = 'm10z-theme';
+const STORAGE_KEY = 'm10z-theme';
 
 export type Theme = 'system' | 'light' | 'night' | 'dark' | 'paper' | 'hacker' | 'rainbow' | 'oled';
-export type EffectiveTheme = 'light' | 'night' | 'dark' | 'paper' | 'hacker' | 'rainbow' | 'oled';
+type EffectiveTheme = 'light' | 'night' | 'dark' | 'paper' | 'hacker' | 'rainbow' | 'oled';
 
 const THEME_OPTIONS: Theme[] = ['system', 'light', 'night', 'dark', 'paper', 'hacker', 'rainbow', 'oled'];
 
@@ -20,12 +20,12 @@ const THEME_CHANGE_EVENT = 'm10z-theme-change';
  *
  * @returns `'dark'` if the system prefers a dark color scheme, `'light'` otherwise (`'light'` in non-browser environments).
  */
-export function getSystemTheme(): 'light' | 'dark' {
+function getSystemTheme(): 'light' | 'dark' {
     if (typeof window === 'undefined') return 'light';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-export function resolveEffectiveTheme(theme: Theme): EffectiveTheme {
+function resolveEffectiveTheme(theme: Theme): EffectiveTheme {
     if (theme === 'system') {
         return getSystemTheme();
     }

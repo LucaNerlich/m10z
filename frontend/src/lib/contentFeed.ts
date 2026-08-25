@@ -7,7 +7,7 @@ import {
     paginateMergedFeed,
 } from '@/src/lib/contentFeed/mergeFeedItems';
 
-export type {ContentFeedResponse, FeedItem} from '@/src/lib/contentFeed/mergeFeedItems';
+export type {ContentFeedResponse} from '@/src/lib/contentFeed/mergeFeedItems';
 
 export interface ContentFeedOptions {
     tags?: string[];

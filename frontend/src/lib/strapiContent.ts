@@ -329,11 +329,11 @@ export const fetchArticlesPage = cache(
         fetchPage<StrapiArticle>(ARTICLE_DESCRIPTOR, options),
 );
 
-export const fetchArticlesBySlugs = cache(
+const fetchArticlesBySlugs = cache(
     (slugs: string[]): Promise<StrapiArticle[]> => fetchBySlugs<StrapiArticle>(ARTICLE_DESCRIPTOR, slugs),
 );
 
-export const fetchArticlesBySlugsBatched = cache(
+const fetchArticlesBySlugsBatched = cache(
     (slugs: string[]): Promise<StrapiArticle[]> => batchBySlugs(fetchArticlesBySlugs, slugs),
 );
 
@@ -370,11 +370,11 @@ export const fetchPodcastsPage = cache(
         fetchPage<StrapiPodcast>(PODCAST_DESCRIPTOR, options),
 );
 
-export const fetchPodcastsBySlugs = cache(
+const fetchPodcastsBySlugs = cache(
     (slugs: string[]): Promise<StrapiPodcast[]> => fetchBySlugs<StrapiPodcast>(PODCAST_DESCRIPTOR, slugs),
 );
 
-export const fetchPodcastsBySlugsBatched = cache(
+const fetchPodcastsBySlugsBatched = cache(
     (slugs: string[]): Promise<StrapiPodcast[]> => batchBySlugs(fetchPodcastsBySlugs, slugs),
 );
 

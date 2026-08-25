@@ -5,7 +5,7 @@
 /**
  * German locale identifier for list formatting.
  */
-export const GERMAN_LOCALE = 'de-DE';
+const GERMAN_LOCALE = 'de-DE';
 
 /**
  * Formats an array of author names into locale-aware list parts using Intl.ListFormat.

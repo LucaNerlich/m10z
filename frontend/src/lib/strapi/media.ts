@@ -1,6 +1,6 @@
 import {joinStrapiBaseUrl} from '@/src/lib/image';
 
-export type StrapiMediaFormat = {
+type StrapiMediaFormat = {
     ext?: string | null;
     url?: string;
     hash?: string;
