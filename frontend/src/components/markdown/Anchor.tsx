@@ -3,7 +3,29 @@ import Link from 'next/link';
 import {routes} from '@/src/lib/routes';
 import {umamiEventId, umamiExternalLinkEvent} from '@/src/lib/analytics/umami';
 
-export type AnchorProps = React.ComponentProps<'a'>;
+export type AnchorProps = React.ComponentProps<'a'> & {
+    'data-umami-event'?: string;
+};
+
+/** Anchor props minus the ones destructured in the component. */
+type AnchorRestProps = Omit<AnchorProps, 'href' | 'children' | 'className' | 'id'>;
+
+// Attributes that are safe (and meaningful) to forward from a markdown link to
+// the Next.js <Link> that renders it.
+const FORWARDED_ANCHOR_ATTRIBUTES = new Set([
+    'title',
+    'download',
+    'tabIndex',
+    'role',
+    'hrefLang',
+    'ping',
+    'referrerPolicy',
+    'type',
+]);
+
+function isForwardableAnchorAttribute(key: string): boolean {
+    return key.startsWith('aria-') || key.startsWith('data-') || FORWARDED_ANCHOR_ATTRIBUTES.has(key);
+}
 
 /**
  * Render a secure markdown link that normalizes URLs and chooses internal Next.js navigation or a safe external anchor.
@@ -25,7 +47,7 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
     // Using Next.js <Link> for hash-only navigation can cause scroll-to-top behavior
     // and prevents native "jump to element" scrolling (e.g. GFM footnotes).
     if (href.startsWith('#')) {
-        const existingUmamiEvent = (props as Record<string, unknown>)['data-umami-event'];
+        const existingUmamiEvent = props['data-umami-event'];
         const umamiProps =
             existingUmamiEvent == null
                 ? {'data-umami-event': umamiEventId(['anchor', href.replace(/^#/, '') || 'link'])}
@@ -84,7 +106,7 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
         }
     }
 
-    const linkProps: React.ComponentProps<typeof Link> & Record<string, unknown> = {
+    const linkProps: React.ComponentProps<typeof Link> & {'data-umami-event'?: string} = {
         href: processedHref,
     };
 
@@ -103,7 +125,7 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
     }
 
     // Add Umami events for non-page links (external), unless explicitly provided.
-    const existingUmamiEvent = (props as Record<string, unknown>)['data-umami-event'];
+    const existingUmamiEvent = props['data-umami-event'];
     if (existingUmamiEvent == null) {
         if (!isInternal) {
             linkProps['data-umami-event'] = umamiExternalLinkEvent(processedHref, 'outbound');
@@ -111,16 +133,11 @@ export function Anchor({href, children, className, id, ...props}: AnchorProps) {
     }
 
     // Forward only anchor-safe attributes; Link passes them to the underlying <a>.
-    Object.keys(props).forEach((key) => {
-        const value = (props as Record<string, unknown>)[key];
-        if (
-            key.startsWith('aria-') ||
-            key.startsWith('data-') ||
-            ['title', 'download', 'tabIndex', 'role', 'hrefLang', 'ping', 'referrerPolicy', 'type'].includes(key)
-        ) {
-            linkProps[key] = value;
-        }
-    });
+    const forwardedProps = Object.fromEntries(
+        Object.keys(props)
+            .filter(isForwardableAnchorAttribute)
+            .map((key) => [key, props[key as keyof AnchorRestProps]]),
+    ) as Partial<AnchorProps>;
 
-    return <Link {...linkProps}>{children}</Link>;
+    return <Link {...linkProps} {...forwardedProps}>{children}</Link>;
 }

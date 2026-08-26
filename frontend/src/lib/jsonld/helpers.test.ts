@@ -127,12 +127,63 @@ describe('authorToPerson', () => {
 
 describe('stringifyJsonLd', () => {
     test('removes undefined values recursively', () => {
-        const result = stringifyJsonLd({a: 1, b: undefined, c: {d: undefined, e: 2}});
-        expect(JSON.parse(result)).toEqual({a: 1, c: {e: 2}});
+        const result = stringifyJsonLd({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: 'Test',
+            url: 'https://example.com/post',
+            publisher: {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'Example',
+                url: 'https://example.com',
+            },
+            description: undefined,
+            image: [
+                {
+                    '@context': 'https://schema.org',
+                    '@type': 'ImageObject',
+                    url: 'https://example.com/img.jpg',
+                    width: undefined,
+                    height: 2,
+                },
+            ],
+        });
+        expect(JSON.parse(result)).toEqual({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: 'Test',
+            url: 'https://example.com/post',
+            publisher: {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'Example',
+                url: 'https://example.com',
+            },
+            image: [
+                {
+                    '@context': 'https://schema.org',
+                    '@type': 'ImageObject',
+                    url: 'https://example.com/img.jpg',
+                    height: 2,
+                },
+            ],
+        });
     });
 
     test('escapes characters that could break out of a script tag', () => {
-        const result = stringifyJsonLd({headline: 'pwn </script><script>alert(1)</script>'});
+        const result = stringifyJsonLd({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: 'pwn </script><script>alert(1)</script>',
+            url: 'https://example.com/post',
+            publisher: {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'Example',
+                url: 'https://example.com',
+            },
+        });
         expect(result).not.toContain('</script>');
         // Still round-trips to the original value.
         expect(JSON.parse(result).headline).toBe('pwn </script><script>alert(1)</script>');

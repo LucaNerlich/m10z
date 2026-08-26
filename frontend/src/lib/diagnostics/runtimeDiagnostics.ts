@@ -1,3 +1,18 @@
+/**
+ * JSON-serializable value tree for event detail payloads. `undefined` is
+ * tolerated because several events record optional numeric fields (e.g.
+ * `bytesRead`); the diagnostics route serializes events with
+ * `JSON.stringify`, which drops `undefined` properties.
+ */
+type DiagnosticDetailValue =
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | DiagnosticDetailValue[]
+    | {[key: string]: DiagnosticDetailValue};
+
 export type DiagnosticEvent = {
     ts: number; // epoch ms
     kind: 'fetch' | 'route';
@@ -11,7 +26,7 @@ export type DiagnosticEvent = {
      * - `memoryUsedMB`: heap used at the end of an operation (derived from `process.memoryUsage().heapUsed`).
      * - `memoryDeltaMB`: heapUsed delta across an operation (end - start).
      */
-    detail?: Record<string, unknown>;
+    detail?: Record<string, DiagnosticDetailValue>;
 };
 
 const MAX_EVENTS = 200;

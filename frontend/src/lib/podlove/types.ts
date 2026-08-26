@@ -100,3 +100,17 @@ export type PodlovePlayerConfig = {
     /** Subscribe button overlay; when omitted, no subscribe button is rendered. */
     'subscribe-button'?: PodloveSubscribeButtonConfig;
 };
+
+/**
+ * Redux-like store that the global `podlovePlayer` promise resolves to once the
+ * player is initialized. The player state tree is not modeled here because the
+ * M10Z embed never consumes it — only the documented `subscribe`/`getState`/
+ * `dispatch` API is typed.
+ *
+ * @see https://docs.podlove.org/podlove-web-player/v5/extensions/runtime-api/
+ */
+export type PodlovePlayerStore = {
+    dispatch: (action: {type: string; payload?: unknown}) => void;
+    subscribe: (listener: () => void) => () => void;
+    getState: () => unknown;
+};

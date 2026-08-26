@@ -1,4 +1,5 @@
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {type StrapiPopulate} from '@/src/lib/strapi-queries/populate';
 import {strapiFetch} from '@/src/lib/strapiTransport';
 
 import type {
@@ -22,7 +23,7 @@ export type ContentReadOptions = {
     context?: {
         slug?: string;
         contentType?: string;
-        populateOptions?: unknown;
+        populateOptions?: StrapiPopulate;
     };
     diagnosticName?: string;
 };

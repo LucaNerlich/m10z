@@ -1,6 +1,7 @@
 import {fetchStrapiCollection} from '@/src/lib/strapi/contentAccess';
 import {type StrapiCollectionResponse} from '@/src/lib/strapi/responses';
 import {buildSlugIndexQuery} from '@/src/lib/strapi-queries';
+import {type StrapiCollectionResponse} from '@/src/lib/strapi/responses';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {getErrorMessage} from '@/src/lib/errors';
 

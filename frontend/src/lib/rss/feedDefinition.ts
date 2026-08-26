@@ -3,7 +3,7 @@ import qs from 'qs';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {normalizeBaseUrl} from '@/src/lib/rss/feedRoute';
 import {fetchAllPaginated, fetchFeedSingle, type StrapiFeedFetcher} from '@/src/lib/rss/feedFetcher';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapi-queries/populate';
+import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory, type StrapiPopulate} from '@/src/lib/strapi-queries/populate';
 import {buildFeedListQuery} from '@/src/lib/strapi-queries/queries';
 import {getEffectiveDate, type PublishableWithContentDate} from '@/src/lib/effectiveDate';
 import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiMediaRef} from '@/src/lib/strapi/media';
@@ -34,7 +34,7 @@ export const feedListPopulate = {
 // Build a paginated list-query string for a feed (sorted newest-first, published only).
 export function createFeedListQuery(args: {
     fields: readonly string[];
-    populate: object;
+    populate: StrapiPopulate;
 }): (page: number, pageSize: number) => string {
     return buildFeedListQuery(args);
 }

@@ -1,4 +1,5 @@
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
+import {type StrapiPopulate} from '@/src/lib/strapi-queries/populate';
 
 // The one seam every Strapi request crosses. Owns base-URL resolution, optional
 // Bearer auth, Next cache directives, timeout, a single transient-failure retry,
@@ -46,7 +47,7 @@ export type StrapiRequest = {
     token?: string;
     timeoutMs?: number;
     diagnosticName?: string;
-    context?: {slug?: string; contentType?: string; populateOptions?: unknown};
+    context?: {slug?: string; contentType?: string; populateOptions?: StrapiPopulate};
 };
 
 export type StrapiTransport = <T>(req: StrapiRequest) => Promise<T>;

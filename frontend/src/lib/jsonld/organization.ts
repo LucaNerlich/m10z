@@ -16,7 +16,7 @@ export function generateOrganizationJsonLd(): Organization {
         routes.discord,
         routes.forum,
         routes.linktree,
-    ].filter(Boolean) as string[];
+    ].filter(Boolean);
 
     return {
         '@context': 'https://schema.org',

@@ -35,6 +35,7 @@ import {
     podcastListPopulate,
     podcastRelatedPopulate,
     type StrapiContentStatus,
+    type StrapiPopulate,
 } from '@/src/lib/strapi-queries';
 
 export type {StrapiMediaRef};
@@ -109,12 +110,12 @@ const RELATED_CONTENT_LIMIT = 5;
 type ContentDescriptor = {
     apiPath: string;
     contentType: 'article' | 'podcast';
-    detailPopulate: object;
-    listPopulate: object;
-    relatedPopulate: object;
+    detailPopulate: StrapiPopulate;
+    listPopulate: StrapiPopulate;
+    relatedPopulate: StrapiPopulate;
     // by-slugs reuses the detail population for Articles (authors are needed there) but
     // the lighter list population for Podcasts — preserved from the original fetchers.
-    bySlugsPopulate: object;
+    bySlugsPopulate: StrapiPopulate;
     detailFields: readonly string[];
     listFields: readonly string[];
 };
@@ -389,8 +390,8 @@ export const fetchRelatedPodcasts = cache(
 type SimpleDescriptor = {
     apiPath: string;
     contentType: 'author' | 'category';
-    listPopulate: object;
-    bySlugPopulate: object;
+    listPopulate: StrapiPopulate;
+    bySlugPopulate: StrapiPopulate;
     fields: readonly string[];
 };
 

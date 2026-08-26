@@ -12,6 +12,27 @@ type AudioFeedBuildHealthState = {
     lastBuildTiming: AudioFeedBuildTiming | null;
 };
 
+type AudioFeedBuildTrend = 'unknown' | 'increasing' | 'decreasing' | 'stable';
+
+/** Snapshot of the audio feed build health, exposed via the diagnostics routes. */
+export type AudioFeedRuntimeState = {
+    schedulerStarted: boolean;
+    hasTimer: boolean;
+    schedulerStartedAtMs: number | null;
+    uptimeMs: number;
+    initialBuildDurationMs: number | null;
+    buildCount: number;
+    recentBuildDurationsMs: number[];
+    trend: AudioFeedBuildTrend;
+    threshold: {
+        window: number;
+        multiplier: number;
+        thresholdMs: number | null;
+        wouldTrigger: boolean;
+    };
+    lastBuildTiming: AudioFeedBuildTiming | null;
+};
+
 export type AudioFeedBuildHealth = {
     recordBuild: (info: BuildSuccessInfo & {lastBuildTiming?: AudioFeedBuildTiming}) => void;
     shouldReset: () => boolean;
@@ -20,7 +41,7 @@ export type AudioFeedBuildHealth = {
         schedulerStarted: boolean;
         hasTimer: boolean;
         schedulerStartedAtMs: number | null;
-    }) => Record<string, unknown>;
+    }) => AudioFeedRuntimeState;
 };
 
 export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildHealth {
@@ -94,7 +115,7 @@ export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildH
         schedulerStarted: boolean;
         hasTimer: boolean;
         schedulerStartedAtMs: number | null;
-    }) {
+    }): AudioFeedRuntimeState {
         const now = Date.now();
         const uptimeMs = schedulerState.schedulerStartedAtMs ? now - schedulerState.schedulerStartedAtMs : 0;
         const last3 = state.buildDurationsMs.slice(-SLOW_BUILD_WINDOW);
@@ -105,7 +126,7 @@ export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildH
         const wouldTrigger =
             hasEnough && thresholdMs !== null ? last3.every((d) => d > thresholdMs) : false;
 
-        const trend =
+        const trend: AudioFeedBuildTrend =
             state.buildDurationsMs.length >= 5
                 ? (() => {
                     const first = state.buildDurationsMs[0] ?? 0;
