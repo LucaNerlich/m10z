@@ -3,6 +3,7 @@ import {Suspense} from 'react';
 
 import {ContentListSkeleton} from '@/src/components/ContentListSkeleton';
 import {PodcastListPage} from '@/src/components/PodcastListPage';
+import {type PageSearchParams} from '@/src/lib/params';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
 export const metadata: Metadata = buildStaticListMetadata({
@@ -23,7 +24,7 @@ export const metadata: Metadata = buildStaticListMetadata({
 export default function PodcastsPage({
                                          searchParams,
                                      }: {
-    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+    searchParams?: Promise<PageSearchParams>;
 }) {
     return (
         <Suspense fallback={<ContentListSkeleton title="Podcasts" />}>

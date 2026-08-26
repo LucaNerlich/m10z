@@ -19,18 +19,13 @@ export function initializeFetchAgent(): void {
         return;
     }
 
-    try {
-        const agent = new Agent({
-            keepAliveTimeout: 60000, // 60 seconds
-            keepAliveMaxTimeout: 300000, // 300 seconds (5 minutes)
-            connections: 100,
-            pipelining: 1,
-        });
+    const agent = new Agent({
+        keepAliveTimeout: 60000,
+        keepAliveMaxTimeout: 300000,
+        connections: 100,
+        pipelining: 1,
+    });
 
-        setGlobalDispatcher(agent);
-    } catch (error) {
-        // Log warning but don't throw - fetch will fall back to default behavior
-        console.warn('Failed to initialize fetch agent (using default fetch behavior):', error);
-    }
+    setGlobalDispatcher(agent);
 }
 

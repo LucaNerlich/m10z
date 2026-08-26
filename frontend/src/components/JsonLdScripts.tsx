@@ -1,12 +1,14 @@
 import Script from 'next/script';
 
+import {type JsonLd} from '@/src/lib/jsonld/types';
+
 // Hoist RegExp pattern to module scope
 const LT_ESCAPE_PATTERN = /</g;
 
 type JsonLdScriptEntry = {
     /** Unique Script element id (e.g. `jsonld-article-${slug}`). */
     id: string;
-    jsonLd: unknown;
+    jsonLd: JsonLd;
 };
 
 type JsonLdScriptsProps = {

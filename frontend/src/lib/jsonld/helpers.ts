@@ -1,4 +1,4 @@
-import {type ImageObject, type Person} from './types';
+import {type ImageObject, type JsonLd, type Person} from './types';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor, type StrapiMedia} from '@/src/lib/strapi/media';
 import {OG_SITE_NAME} from '@/src/lib/metadata/constants';
@@ -105,6 +105,15 @@ export function authorToPerson(author: StrapiAuthor): Person {
 }
 
 /**
+ * Convert an optional list of Strapi authors into a list of Person objects,
+ * or `undefined` when the list is empty/missing. Shared by the article and
+ * podcast JSON-LD generators.
+ */
+export function authorsToPeople(authors: StrapiAuthor[] | null | undefined): Person[] | undefined {
+    return authors?.length ? authors.map((author) => authorToPerson(author)) : undefined;
+}
+
+/**
  * Convert a Strapi media entry into an ImageObject or an absolute image URL.
  *
  * @param media - The Strapi media record to convert
@@ -155,10 +164,8 @@ export function imagesEqual(image1: ImageObject | string | undefined, image2: Im
  * @param jsonLd - The JSON-LD object to stringify
  * @returns A stable, sanitized JSON string representation safe for use in script tags
  */
-export function stringifyJsonLd(jsonLd: unknown): string {
-    // Remove undefined values and ensure stable ordering
+export function stringifyJsonLd(jsonLd: JsonLd): string {
     const cleaned = JSON.parse(JSON.stringify(jsonLd, (key, value) => {
-        // Remove undefined values
         if (value === undefined) return undefined;
         return value;
     }));

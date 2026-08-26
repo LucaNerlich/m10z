@@ -2,9 +2,7 @@ import {MetadataRoute} from 'next';
 
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {contentTag, sitemapTag} from '@/src/lib/strapi/cacheTags';
-import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
-
-type SitemapEntry = {slug: string; lastModified?: string};
+import {fetchPublishedSlugs, type PublishedSlugEntry} from '@/src/lib/publishedSlugs';
 
 function createLanguageAlternates(url: string) {
     return {
@@ -16,7 +14,7 @@ function createLanguageAlternates(url: string) {
 }
 
 function buildDynamicEntries(
-    entries: SitemapEntry[],
+    entries: PublishedSlugEntry[],
     buildPath: (slug: string) => string,
     changeFrequency?: MetadataRoute.Sitemap[number]['changeFrequency'],
     priority?: number,

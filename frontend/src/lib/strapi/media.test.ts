@@ -4,10 +4,12 @@ import {
     getOptimalMediaFormat,
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
+    pickAndOptimizeImage,
     pickBannerMedia,
     pickBannerOrCoverMedia,
     pickCoverMedia,
     pickCoverOrBannerMedia,
+    resolveAuthorAvatarUrl,
     type StrapiCategoryRef,
     type StrapiContentMedia,
     type StrapiMedia,
@@ -165,5 +167,55 @@ describe('getOptimalMediaFormat', () => {
         expect(result.url).toBe('/only.jpg');
         expect(result.mime).toBe('image/png');
         expect('formats' in result).toBe(false);
+    });
+});
+
+describe('pickAndOptimizeImage', () => {
+    const content: StrapiContentMedia = {
+        title: 'T',
+        cover: {url: '/cover.jpg', blurhash: 'hash1'},
+        banner: {url: '/banner.jpg', blurhash: 'hash2'},
+    };
+
+    test('prefers banner by default and returns media + url', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        const {media, url} = pickAndOptimizeImage(content, undefined, 'medium');
+        expect(media?.url).toBe('/banner.jpg');
+        expect(media?.blurhash).toBe('hash2');
+        expect(url).toBe('https://cms.m10z.de/banner.jpg');
+    });
+
+    test('prefers cover when requested', () => {
+        const {media} = pickAndOptimizeImage(content, undefined, 'medium', 'cover');
+        expect(media?.url).toBe('/cover.jpg');
+    });
+
+    test('falls back to the first category media', () => {
+        const categories: StrapiCategoryRef[] = [{slug: 'c', banner: {url: '/cat-banner.jpg'}}];
+        const {media} = pickAndOptimizeImage({title: 'T'}, categories, 'medium');
+        expect(media?.url).toBe('/cat-banner.jpg');
+    });
+
+    test('returns undefined media and url when no image exists', () => {
+        const {media, url} = pickAndOptimizeImage({title: 'T'}, [], 'medium');
+        expect(media).toBeUndefined();
+        expect(url).toBeUndefined();
+    });
+});
+
+describe('resolveAuthorAvatarUrl', () => {
+    test('returns undefined when the author has no avatar', () => {
+        expect(resolveAuthorAvatarUrl(null)).toBeUndefined();
+        expect(resolveAuthorAvatarUrl({id: 1, title: 'A'})).toBeUndefined();
+        expect(resolveAuthorAvatarUrl({id: 1, title: 'A', avatar: {}})).toBeUndefined();
+    });
+
+    test('resolves an absolute avatar URL', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        expect(
+            resolveAuthorAvatarUrl({id: 1, title: 'A', avatar: {url: '/uploads/avatar.jpg'}}),
+        ).toBe('https://cms.m10z.de/uploads/avatar.jpg');
     });
 });

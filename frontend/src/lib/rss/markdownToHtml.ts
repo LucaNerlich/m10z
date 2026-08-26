@@ -112,10 +112,13 @@ export function markdownToHtml(markdownText: string): string {
 
     try {
         // Marked output can include HTML; we sanitize after conversion.
+        // `async: false` selects the synchronous parse overload, so the result
+        // is a plain string (not a Promise).
         const rawHtml = marked.parse(markdownText, {
+            async: false,
             gfm: true,
             breaks: true,
-        }) as string;
+        });
 
         const sanitized = DOMPurify.sanitize(rawHtml, {
             ALLOWED_TAGS,
@@ -165,12 +168,8 @@ export function markdownToHtml(markdownText: string): string {
         lastErrorAtMs = Date.now();
         throw err;
     } finally {
-        try {
-            window.close();
-            jsdomWindowsClosed += 1;
-        } catch {
-            // ignore
-        }
+        window.close();
+        jsdomWindowsClosed += 1;
     }
 }
 

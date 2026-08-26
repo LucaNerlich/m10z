@@ -106,7 +106,6 @@ export function Mermaid({chart, className}: MermaidProps) {
                 dispatch({type: 'error', message: `Failed to render Mermaid diagram: ${errorMessage}`});
                 console.error('Mermaid rendering error:', err);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chart]);
 
     if (error) {

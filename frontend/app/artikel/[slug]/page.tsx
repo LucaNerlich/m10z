@@ -5,29 +5,23 @@ import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {fetchArticleBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
-import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
+import {deriveContentDescription} from '@/src/lib/metadata/excerpt';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
 import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {type SlugPageParams} from '@/src/lib/params';
 import {contentTag} from '@/src/lib/strapi/cacheTags';
-
-type PageProps = {
-    params: Promise<{slug: string}>;
-};
 
 /**
  * Pre-generate static params for all published articles at build time.
- * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ * `fetchPublishedSlugs` degrades to the entries collected so far (possibly
+ * empty) when the CMS is unreachable, allowing ISR at runtime.
  */
 export async function generateStaticParams() {
-    try {
-        const entries = await fetchPublishedSlugs('articles', [contentTag('article')]);
-        return entries.map(({slug}) => ({slug}));
-    } catch {
-        return [];
-    }
+    const entries = await fetchPublishedSlugs('articles', [contentTag('article')]);
+    return entries.map(({slug}) => ({slug}));
 }
 
 /**
@@ -36,14 +30,14 @@ export async function generateStaticParams() {
  * @param params - Page route params containing a `slug` that identifies the article
  * @returns A Metadata object with `title`, `description`, `alternates` (canonical URL), `openGraph` (type 'article', `locale`, `siteName`, `url`, `title`, `description`, `images`, `publishedTime`, `modifiedTime`, `authors`), `twitter` (card, `title`, `description`, `images`), and `authors`; or an empty object if the slug is invalid or the article cannot be found.
  */
-export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+export async function generateMetadata({params}: SlugPageParams): Promise<Metadata> {
     return buildContentSlugMetadata({
         params,
         canonicalPath: (slug) => `/artikel/${slug}`,
         contentLabel: 'article',
         fetchBySlug: fetchArticleBySlug,
         getTitle: (article) => article.title,
-        getDescription: (article) => article.description?.trim() || deriveExcerpt(article.content),
+        getDescription: (article) => deriveContentDescription(article.description, article.content),
         ogType: 'article',
         getMediaSource: (article) => article,
         getAuthors: (article) => article.authors?.map((a) => a.title).filter(Boolean) as string[] | undefined,
@@ -62,7 +56,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
  *
  * @returns The React element that renders the article detail view, or triggers a 404 response.
  */
-export default async function ArticleDetailPage({params}: PageProps) {
+export default async function ArticleDetailPage({params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) notFound();
@@ -85,9 +79,17 @@ export default async function ArticleDetailPage({params}: PageProps) {
     if (!article) notFound();
 
     const categorySlugs = article.categories?.map((c) => c.slug).filter(Boolean) as string[] ?? [];
+    // Related content is optional enrichment: a failure here must not take the
+    // whole article page down, but it must stay observable.
     const [relatedArticles, relatedPodcasts] = await Promise.all([
-        fetchRelatedArticles(categorySlugs, slug).catch(() => []),
-        fetchRelatedPodcasts(categorySlugs, slug).catch(() => []),
+        fetchRelatedArticles(categorySlugs, slug).catch((error: unknown) => {
+            console.error(`Failed to fetch related articles for slug "${slug}":`, getErrorMessage(error));
+            return [];
+        }),
+        fetchRelatedPodcasts(categorySlugs, slug).catch((error: unknown) => {
+            console.error(`Failed to fetch related podcasts for slug "${slug}":`, getErrorMessage(error));
+            return [];
+        }),
     ]);
 
     return (

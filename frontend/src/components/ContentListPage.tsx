@@ -5,19 +5,18 @@ import {ContentGrid} from './ContentGrid';
 import {Card} from './Card';
 import {Pagination} from './Pagination';
 
-import {parsePageParam} from '@/src/lib/params';
+import {parsePageParam, type PageSearchParamsInput} from '@/src/lib/params';
+import {getErrorMessage} from '@/src/lib/errors';
 import {type PaginatedResult} from '@/src/lib/strapiContent';
 
 const PAGE_SIZE = 12;
-
-type SearchParams = Record<string, string | string[] | undefined>;
 
 type ContentListPageProps<TItem extends {slug: string}> = {
     /** Heading and noun used in the German state messages (e.g. "Artikel"). */
     title: string;
     /** Route prefix for pagination, retry, and reset links (e.g. "/artikel"). */
     basePath: string;
-    searchParams?: SearchParams | Promise<SearchParams>;
+    searchParams?: PageSearchParamsInput;
     fetchPage: (options: {page: number; pageSize: number}) => Promise<PaginatedResult<TItem>>;
     renderCard: (item: TItem) => ReactNode;
 };
@@ -41,7 +40,8 @@ export async function ContentListPage<TItem extends {slug: string}>({
     let data;
     try {
         data = await fetchPage({page: currentPage, pageSize: PAGE_SIZE});
-    } catch {
+    } catch (error) {
+        console.error(`ContentListPage: failed to load ${title} for page ${currentPage}:`, getErrorMessage(error));
         return (
             <section data-list-page>
                 <h1>{title}</h1>
@@ -71,7 +71,6 @@ export async function ContentListPage<TItem extends {slug: string}>({
         );
     }
 
-    // Handle empty state
     if (!data || data.items.length === 0) {
         return (
             <section data-list-page>

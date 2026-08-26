@@ -7,6 +7,7 @@ import {Input} from '@/src/components/Input/Input';
 import {EmptyState} from '@/src/components/EmptyState';
 import {getItem, setItem, removeItem} from '@/src/lib/storage/localStorage';
 import {shuffleAndAssign} from '@/src/lib/wichteln/shuffle';
+import {parseWichtelnStorage} from '@/src/lib/wichteln/storage';
 import {downloadMarkdown, downloadMarkdownForGiver} from '@/src/lib/wichteln/export';
 import {validateName, validateProfileUrl, validateUniqueName} from '@/src/lib/wichteln/validation';
 import {type Participant, type Assignment} from './types';
@@ -24,14 +25,6 @@ type FormErrors = {
     profileUrl?: string | null;
 };
 
-function migrateParticipant(p: Record<string, unknown>): Participant {
-    return {
-        id: String(p.id ?? crypto.randomUUID()),
-        name: String(p.name ?? ''),
-        profileUrl: String(p.profileUrl ?? p.steamProfileUrl ?? ''),
-    };
-}
-
 export default function WichtelnPage() {
     const hydrated = useSyncExternalStore(subscribeNoop, getIsClient, getIsClientServer);
     const [participants, setParticipants] = useState<Participant[]>([]);
@@ -46,17 +39,10 @@ export default function WichtelnPage() {
     useEffect(() => {
         if (!hydrated) return;
         try {
-            const raw = getItem<{
-                participants?: Record<string, unknown>[];
-                assignments?: Assignment[];
-            }>(STORAGE_KEY);
-            if (raw) {
-                if (Array.isArray(raw.participants)) {
-                    setParticipants(raw.participants.map(migrateParticipant));
-                }
-                if (Array.isArray(raw.assignments)) {
-                    setAssignments(raw.assignments);
-                }
+            const parsed = parseWichtelnStorage(getItem<unknown>(STORAGE_KEY));
+            if (parsed) {
+                setParticipants(parsed.participants);
+                setAssignments(parsed.assignments);
             }
         } catch {
             removeItem(STORAGE_KEY);
@@ -68,15 +54,11 @@ export default function WichtelnPage() {
             newParticipants: Participant[],
             newAssignments: Assignment[]
         ) => {
-            try {
-                setItem(STORAGE_KEY, {
-                    participants: newParticipants,
-                    assignments: newAssignments,
-                    timestamp: Date.now(),
-                });
-            } catch {
-                setError('Fehler beim Speichern. Speicher könnte voll sein.');
-            }
+            setItem(STORAGE_KEY, {
+                participants: newParticipants,
+                assignments: newAssignments,
+                timestamp: Date.now(),
+            });
         },
         []
     );
@@ -172,23 +154,14 @@ export default function WichtelnPage() {
             return;
         }
         setIsShuffling(true);
-        try {
-            const result = shuffleAndAssign(participants);
-            setAssignments(result);
-            persist(participants, result);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Zuordnung fehlgeschlagen.');
-        } finally {
-            setIsShuffling(false);
-        }
+        const result = shuffleAndAssign(participants);
+        setAssignments(result);
+        persist(participants, result);
+        setIsShuffling(false);
     }, [participants, persist, clearError]);
 
     const handleExport = useCallback(() => {
-        try {
-            downloadMarkdown(participants, assignments);
-        } catch {
-            setError('Export fehlgeschlagen.');
-        }
+        downloadMarkdown(participants, assignments);
     }, [participants, assignments]);
 
     const handleResetAssignments = useCallback(() => {

@@ -3,7 +3,7 @@
 import {useEffect, useRef, useState} from 'react';
 import Script from 'next/script';
 
-import {type PodloveEpisodeConfig, type PodlovePlayerConfig} from '@/src/lib/podlove/types';
+import {type PodloveEpisodeConfig, type PodlovePlayerConfig, type PodlovePlayerStore} from '@/src/lib/podlove/types';
 import styles from './Player.module.css';
 
 declare global {
@@ -12,7 +12,7 @@ declare global {
             element: string | HTMLElement,
             episode: PodloveEpisodeConfig | string,
             config: PodlovePlayerConfig | string,
-        ) => Promise<unknown>;
+        ) => Promise<PodlovePlayerStore>;
     }
 }
 

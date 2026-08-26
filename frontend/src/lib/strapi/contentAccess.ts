@@ -1,7 +1,12 @@
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {type StrapiPopulate} from '@/src/lib/strapi-queries/populate';
 import {strapiFetch} from '@/src/lib/strapiTransport';
 
-import type {StrapiCollectionResponse, StrapiSingleResponse} from '@/src/lib/strapi/responses';
+import type {
+    FetchStrapiOptions,
+    StrapiCollectionResponse,
+    StrapiSingleResponse,
+} from '@/src/lib/strapi/responses';
 
 export type {
     FetchStrapiOptions,
@@ -18,7 +23,7 @@ export type ContentReadOptions = {
     context?: {
         slug?: string;
         contentType?: string;
-        populateOptions?: unknown;
+        populateOptions?: StrapiPopulate;
     };
     diagnosticName?: string;
 };
@@ -133,7 +138,7 @@ export async function fetchJsonNoStore<T>(pathWithQuery: string, options: Conten
 export async function fetchStrapiSingle<TData>(
     endpoint: string,
     query: string = '',
-    options: {tags?: string[]; revalidate?: number} = {},
+    options: FetchStrapiOptions = {},
 ): Promise<StrapiSingleResponse<TData>> {
     return readSingle<TData>(endpoint, query, {
         tags: options.tags ?? [],
@@ -145,7 +150,7 @@ export async function fetchStrapiSingle<TData>(
 export async function fetchStrapiCollection<TData>(
     endpoint: string,
     query: string = '',
-    options: {tags?: string[]; revalidate?: number} = {},
+    options: FetchStrapiOptions = {},
 ): Promise<StrapiCollectionResponse<TData>> {
     return readCollection<TData>(endpoint, query, {
         tags: options.tags ?? [],

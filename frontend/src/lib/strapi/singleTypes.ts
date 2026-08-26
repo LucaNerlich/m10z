@@ -6,7 +6,11 @@ import {ABOUT_PAGE_TAG, ABOUT_TAG, feedSourceTag, LEGAL_TAGS} from '@/src/lib/st
 import {type FetchStrapiOptions, fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
 
-export type StrapiLegalDoc = {
+/**
+ * Shared shape for Strapi single types that carry a title and a Markdown body
+ * (imprint, privacy, and feeds-info pages).
+ */
+export type StrapiTextPage = {
     id: number;
     documentId: string;
     title: string;
@@ -15,6 +19,8 @@ export type StrapiLegalDoc = {
     updatedAt: string;
     publishedAt: string | null;
 };
+
+export type StrapiLegalDoc = StrapiTextPage;
 
 export type StrapiAbout = {
     id: number;
@@ -28,15 +34,7 @@ export type StrapiAbout = {
     publishedAt: string | null;
 };
 
-export type StrapiFeedsInfo = {
-    id: number;
-    documentId: string;
-    title: string;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string | null;
-};
+export type StrapiFeedsInfo = StrapiTextPage;
 
 function assertIsLegalDoc(data: unknown): asserts data is StrapiLegalDoc {
     if (!data || typeof data !== 'object') throw new Error('Invalid Strapi data');
@@ -158,6 +156,15 @@ function assertIsFeeds(data: unknown): asserts data is StrapiFeedsInfo {
     }
 }
 
+/**
+ * Normalize the feeds single-type `content` field. The backend schema types it
+ * as richtext, so the CMS may return it as a string (markdown), as structured
+ * blocks, or omit it entirely; only a markdown string is renderable.
+ */
+function feedsContentToString(content: unknown): string {
+    return typeof content === 'string' ? content : '';
+}
+
 async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promise<StrapiFeedsInfo> {
     const feed = `${process.env.NEXT_PUBLIC_DOMAIN}/rss.xml`;
     const audioFeed = `${process.env.NEXT_PUBLIC_DOMAIN}/audiofeed.xml`;
@@ -184,9 +191,7 @@ async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promi
         assertIsFeeds(res.data);
         return {
             ...res.data,
-            content: typeof (res.data as {
-                content?: unknown
-            }).content === 'string' ? (res.data as StrapiFeedsInfo).content : '',
+            content: feedsContentToString(res.data.content),
         };
     } catch (err) {
         console.warn(`[feeds] Failed to fetch feeds: ${err instanceof Error ? err.message : 'unknown error'}`);

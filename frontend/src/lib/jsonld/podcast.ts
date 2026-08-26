@@ -1,15 +1,14 @@
-import {type AudioObject, type Person, type PodcastEpisode, type PodcastSeries} from './types';
+import {type AudioObject, type PodcastEpisode, type PodcastSeries} from './types';
 import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {authorToPerson, formatIso8601Date, formatIso8601Duration, mediaToImage} from './helpers';
+import {authorsToPeople, formatIso8601Date, formatIso8601Duration, mediaToImage} from './helpers';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {
-    getOptimalMediaFormat,
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
-    pickCoverOrBannerMedia,
+    pickAndOptimizeImage,
 } from '@/src/lib/strapi/media';
-import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
+import {deriveContentDescription} from '@/src/lib/metadata/excerpt';
 import {CONTENT_LANGUAGE} from '@/src/lib/metadata/constants';
 import {categoryTitlesToKeywords} from '@/src/lib/metadata/keywords';
 
@@ -39,13 +38,10 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
         }
         : undefined;
 
-    const preferredMedia = pickCoverOrBannerMedia(podcast, podcast.categories);
-    const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
+    const {media: optimizedMedia} = pickAndOptimizeImage(podcast, podcast.categories, 'medium', 'cover');
     const coverImage = mediaToImage(optimizedMedia);
 
-    const authors: Person[] | undefined = podcast.authors?.length
-        ? podcast.authors.map((author) => authorToPerson(author))
-        : undefined;
+    const authors = authorsToPeople(podcast.authors);
 
     const partOfSeries: PodcastSeries = {
         '@context': 'https://schema.org',
@@ -55,7 +51,7 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
         image: absoluteRoute('/images/m10z.jpg'),
     };
 
-    const description = podcast.description?.trim() || deriveExcerpt(podcast.shownotes);
+    const description = deriveContentDescription(podcast.description, podcast.shownotes);
     const keywords = categoryTitlesToKeywords(podcast.categories);
 
     return {

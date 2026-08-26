@@ -1,11 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-    getOptimalMediaFormat,
-    mediaUrlToAbsolute,
-    normalizeStrapiMedia,
-    type StrapiAuthor,
-} from '@/src/lib/strapi/media';
+import {resolveAuthorAvatarUrl, type StrapiAuthor} from '@/src/lib/strapi/media';
 import {formatAuthorList} from '@/src/lib/listFormatters';
 import {routes} from '@/src/lib/routes';
 import styles from './AuthorList.module.css';
@@ -49,8 +44,7 @@ export function AuthorList({
         return (
             <div className={styles.blockList}>
                 {displayAuthors.map((author, index) => {
-                    const avatarMedia = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
-                    const avatarUrl = mediaUrlToAbsolute({media: avatarMedia});
+                    const avatarUrl = resolveAuthorAvatarUrl(author);
                     const authorUrl = routes.author(author.slug ?? '');
                     const authorTitle = author.title ?? 'Unbekannter Autor';
 
@@ -87,8 +81,7 @@ export function AuthorList({
             {formattedParts.map((part, partIndex) => {
                 if (part.type === 'element') {
                     const author = displayAuthors[authorIndex];
-                    const avatarMedia = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
-                    const avatarUrl = mediaUrlToAbsolute({media: avatarMedia});
+                    const avatarUrl = resolveAuthorAvatarUrl(author);
                     const authorUrl = routes.author(author.slug ?? '');
                     const authorTitle = author.title ?? 'Unbekannter Autor';
                     const currentIndex = authorIndex;

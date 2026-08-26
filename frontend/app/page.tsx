@@ -3,7 +3,7 @@ import {type Metadata} from 'next';
 
 import {HomePage} from '@/src/components/HomePage';
 import {FeedSkeleton} from '@/src/components/FeedSkeleton';
-import {parsePageParam} from '@/src/lib/params';
+import {parsePageParam, type PageSearchParams} from '@/src/lib/params';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 
 export const metadata: Metadata = buildStaticListMetadata({
@@ -13,10 +13,6 @@ export const metadata: Metadata = buildStaticListMetadata({
     ogImageAlt: 'Mindestens 10 Zeichen Logo',
 });
 
-type PageProps = {
-    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
-};
-
 const HOME_MAX_PAGE = 50;
 
 /**
@@ -24,7 +20,7 @@ const HOME_MAX_PAGE = 50;
  *
  * @returns A root element with `data-homepage` containing `HomePage` rendered inside `Suspense` with `FeedSkeleton` as the fallback.
  */
-export default async function HomePageWrapper({searchParams}: PageProps) {
+export default async function HomePageWrapper({searchParams}: {searchParams?: Promise<PageSearchParams>}) {
     const sp = await Promise.resolve(searchParams ?? {});
     const page = parsePageParam(sp, {maxPage: HOME_MAX_PAGE});
     return (

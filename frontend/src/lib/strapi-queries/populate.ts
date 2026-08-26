@@ -6,6 +6,19 @@
  * edit — not five.
  */
 
+/**
+ * A Strapi REST `populate` tree, e.g. `{cover: {fields: ['url']}, youtube: true,
+ * file: {populate: '*'}}`. Leaf values are `true`/`false` (populate all/none),
+ * `'*'` (populate all relations), or a component/relation config with `fields`
+ * and a nested `populate`.
+ */
+export type StrapiPopulateValue =
+    | boolean
+    | '*'
+    | {fields?: readonly string[]; populate?: StrapiPopulateValue | StrapiPopulate};
+
+export type StrapiPopulate = Record<string, StrapiPopulateValue>;
+
 export const MEDIA_FIELDS = [
     'url',
     'width',

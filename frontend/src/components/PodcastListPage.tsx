@@ -1,6 +1,7 @@
 import {PodcastCard} from './PodcastCard';
 import {ContentListPage} from './ContentListPage';
 
+import {type PageSearchParamsInput} from '@/src/lib/params';
 import {fetchPodcastsPage} from '@/src/lib/strapiContent';
 
 /**
@@ -11,7 +12,7 @@ import {fetchPodcastsPage} from '@/src/lib/strapiContent';
 export async function PodcastListPage({
                                           searchParams,
                                       }: {
-    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+    searchParams?: PageSearchParamsInput;
 }) {
     return (
         <ContentListPage

@@ -7,7 +7,7 @@ import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/r
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {normalizeSearchImageUrl} from '@/src/lib/image';
-import {type SearchRecord} from '@/src/lib/search/types';
+import {type SearchRecord, type SearchResult} from '@/src/lib/search/types';
 import {umamiEventId} from '@/src/lib/analytics/umami';
 
 import {Tag} from './Tag';
@@ -16,8 +16,6 @@ import styles from './SearchModal.module.css';
 type SearchModalProps = {
     onClose: () => void;
 };
-
-type ResultItem = SearchRecord & {score?: number | null};
 
 const TYPE_LABEL: Record<SearchRecord['type'], string> = {
     article: 'Artikel',
@@ -54,7 +52,6 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const resultsId = useId();
     const shouldScrollRef = useRef(false);
 
-    // Use SWR hook for search queries with automatic debouncing and caching
     const {results, isLoading, error: searchError} = useSearchQuery(query, 150);
 
     useEffect(() => {
@@ -185,7 +182,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         return null;
     }, [searchError, isLoading, query, results.length]);
 
-    const selectResult = (item: ResultItem) => {
+    const selectResult = (item: SearchResult) => {
         router.push(item.href);
         onClose();
     };

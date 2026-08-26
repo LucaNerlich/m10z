@@ -137,3 +137,20 @@ export interface ProfilePage extends JsonLdBase {
     isPartOf?: WebSiteRef;
 }
 
+/**
+ * Union of every top-level JSON-LD document the site embeds. Used to type the
+ * shared serializer (`stringifyJsonLd`) and the `<JsonLdScripts>` component.
+ */
+export type JsonLd =
+    | ImageObject
+    | Person
+    | Organization
+    | AudioObject
+    | PodcastSeries
+    | BlogPosting
+    | PodcastEpisode
+    | WebSite
+    | BreadcrumbList
+    | CollectionPage
+    | ProfilePage;
+

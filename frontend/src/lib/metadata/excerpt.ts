@@ -41,3 +41,17 @@ export function deriveExcerpt(markdown: string | null | undefined, maxChars: num
     if (!plain) return undefined;
     return truncateAtBoundary(plain, maxChars);
 }
+
+/**
+ * Description fallback chain shared by content pages and JSON-LD generators:
+ * an explicit (trimmed) description wins, otherwise an excerpt is derived from
+ * the Markdown body.
+ */
+export function deriveContentDescription(
+    description: string | null | undefined,
+    markdown: string | null | undefined,
+): string | undefined {
+    const trimmed = description?.trim();
+    if (trimmed) return trimmed;
+    return deriveExcerpt(markdown);
+}

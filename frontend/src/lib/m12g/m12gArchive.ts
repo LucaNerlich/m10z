@@ -2,7 +2,7 @@ import {cache} from 'react';
 
 import {fsMonthSource} from './fsMonthSource';
 import {buildGameHistory, type GameHistory} from './gameHistory';
-import {type M12GMonthWithWinner} from './types';
+import {type M12GMonthWithWinner, type MonthSource} from './types';
 
 // The finalized record of every Month plus the Game histories derived from them —
 // see CONTEXT.md (Archive). Every M12G view is a pure projection of this object.
@@ -11,9 +11,6 @@ export type M12GArchive = {
     months: M12GMonthWithWinner[];
     gameHistory: GameHistory[];
 };
-
-// The swappable source of Months: the filesystem in production, fixtures in tests.
-export type MonthSource = () => Promise<M12GMonthWithWinner[]>;
 
 // Marks the games that won the previous Month and were nominated again this Month.
 // Assumes `chronological` is already sorted oldest-first — buildArchive owns that sort,

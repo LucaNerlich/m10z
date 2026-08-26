@@ -10,6 +10,10 @@
  */
 
 import {createPrivilegedFeedReader} from '@/src/lib/strapi/contentAccess';
+import {
+    type StrapiCollectionResponse,
+    type StrapiSingleResponse,
+} from '@/src/lib/strapi/responses';
 
 const DEFAULT_PAGE_SIZE = 100;
 const DEFAULT_MAX_PAGES = 50;
@@ -25,11 +29,6 @@ export type StrapiFeedFetcher = <T>(pathWithQuery: string) => Promise<T>;
 export function createFeedStrapiFetcher(tags: string[]): StrapiFeedFetcher {
     return createPrivilegedFeedReader(tags);
 }
-
-type StrapiCollectionPage<T> = {
-    data: T[];
-    meta?: {pagination?: {page: number; pageCount: number; total: number}};
-};
 
 /**
  * Walk a Strapi collection endpoint, capping at `maxItems` total items and
@@ -52,27 +51,28 @@ export async function fetchAllPaginated<T>(args: {
     const maxItems = args.resolveMaxItems?.() ?? DEFAULT_MAX_ITEMS;
 
     const firstQuery = args.buildQueryString(1, pageSize);
-    const firstRes = await args.fetcher<StrapiCollectionPage<T>>(
+    const firstRes = await args.fetcher<StrapiCollectionResponse<T>>(
         `${args.apiBasePath}?${firstQuery}`,
     );
     const firstItems = Array.isArray(firstRes.data) ? firstRes.data : [];
     const all: T[] = firstItems.slice(0, maxItems);
 
     const pagination = firstRes.meta?.pagination;
+    const pageCount = pagination?.pageCount ?? 1;
     if (
         !pagination ||
-        pagination.pageCount <= 1 ||
+        pageCount <= 1 ||
         firstItems.length === 0 ||
         all.length >= maxItems
     ) {
         return all;
     }
 
-    const lastPage = Math.min(pagination.pageCount, maxPages);
+    const lastPage = Math.min(pageCount, maxPages);
     const pageNumbers = Array.from({length: lastPage - 1}, (_, i) => i + 2);
     const results = await Promise.all(
         pageNumbers.map((p) =>
-            args.fetcher<StrapiCollectionPage<T>>(
+            args.fetcher<StrapiCollectionResponse<T>>(
                 `${args.apiBasePath}?${args.buildQueryString(p, pageSize)}`,
             ),
         ),
@@ -95,6 +95,6 @@ export async function fetchFeedSingle<T>(
     fetcher: StrapiFeedFetcher,
     apiPathWithQuery: string,
 ): Promise<T> {
-    const res = await fetcher<{data: T}>(apiPathWithQuery);
+    const res = await fetcher<StrapiSingleResponse<T>>(apiPathWithQuery);
     return res.data;
 }

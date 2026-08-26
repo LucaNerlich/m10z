@@ -1,11 +1,11 @@
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import {getEffectiveDate, sortByDateDesc} from '@/src/lib/effectiveDate';
 import {
-    getOptimalMediaFormat,
-    mediaUrlToAbsolute,
-    normalizeStrapiMedia,
-    pickCoverOrBannerMedia,
-} from '@/src/lib/strapi/media';
+    buildFeedEtagSeed,
+    latestPublishedDate,
+    resolveChannelImageUrl,
+} from '@/src/lib/rss/feedDefinition';
+import {pickAndOptimizeImage} from '@/src/lib/strapi/media';
 import {type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/strapi/contentTypes';
 import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
 
@@ -29,22 +29,14 @@ export function generateArticleFeedXml(args: {
 }): {xml: string; etagSeed: string; lastModified: Date | null} {
     const {siteUrl, channel, articles} = args;
 
-    const sorted = [...articles].sort((a, b) => {
-        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
-        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
-        return bd - ad;
-    });
+    const sorted = sortByDateDesc(articles);
 
-    const latestRaw = getEffectiveDate(sorted[0]);
-    const latestPublishedAt = latestRaw ? new Date(latestRaw) : null;
+    const latestPublishedAt = latestPublishedDate(sorted);
     // Use the latest published date so the XML (and ETag) stays stable between rebuilds
     // when content hasn't changed. Fallback to current time aligns with audio feed pattern.
     const buildDate = latestPublishedAt ?? new Date();
 
-    const channelImage = normalizeStrapiMedia(channel.image);
-    const channelImageUrl =
-        mediaUrlToAbsolute({media: channelImage}) ??
-        `${siteUrl}/images/m10z.jpg`;
+    const channelImageUrl = resolveChannelImageUrl(channel.image, siteUrl, '/images/m10z.jpg');
     const header =
         `<?xml version="1.0" encoding="UTF-8"?>` +
         `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">` +
@@ -68,9 +60,12 @@ export function generateArticleFeedXml(args: {
             const pubRaw = getEffectiveDate(a);
             const pub = pubRaw ? new Date(pubRaw) : new Date(0);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
-            const preferredMedia = pickCoverOrBannerMedia(a, a.categories);
-            const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
-            const optimizedMediaUrl = mediaUrlToAbsolute({media: optimizedMedia});
+            const {media: optimizedMedia, url: optimizedMediaUrl} = pickAndOptimizeImage(
+                a,
+                a.categories,
+                'medium',
+                'cover',
+            );
 
             const title = escapeXml(a.title);
             // Fall back to the first category's description when the article has no explicit description.
@@ -100,7 +95,7 @@ export function generateArticleFeedXml(args: {
     const footer = `</channel></rss>`;
     // ETag seed: itemCount + latestPublishedAt. The full XML is also hashed by the caller,
     // so the seed serves as a quick-change indicator while the XML hash catches content edits.
-    const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
+    const etagSeed = buildFeedEtagSeed(sorted.length, latestPublishedAt);
 
     return {xml: `${header}${items}${footer}`, etagSeed, lastModified: latestPublishedAt};
 }

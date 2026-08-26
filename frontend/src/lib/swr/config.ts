@@ -30,15 +30,9 @@ export async function fetcher<T = unknown>(url: string): Promise<T> {
 }
 
 /**
- * Global SWR configuration for the application.
- *
- * Configuration options:
- * - `revalidateOnFocus: false` - Don't refetch on window focus (prevents unnecessary requests for search)
- * - `revalidateOnReconnect: true` - Refetch when network reconnects (ensures fresh data after offline)
- * - `dedupingInterval: 2000` - Deduplicate requests within 2 seconds (prevents duplicate requests)
- * - `errorRetryCount: 3` - Retry failed requests up to 3 times
- * - `errorRetryInterval: 5000` - Wait 5 seconds between retries
- * - `shouldRetryOnError: true` - Enable automatic retry on errors
+ * Global SWR configuration: no refetch on focus (search results stay put while
+ * the user types), refetch on reconnect, 2s request deduplication, and limited
+ * retries that skip timeouts/socket errors and rate-limit/gateway failures.
  */
 export const swrConfig: SWRConfiguration = {
     fetcher,

@@ -4,28 +4,22 @@ import {notFound} from 'next/navigation';
 import {fetchPodcastBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
-import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
+import {deriveContentDescription} from '@/src/lib/metadata/excerpt';
 import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {type SlugPageParams} from '@/src/lib/params';
 import {contentTag} from '@/src/lib/strapi/cacheTags';
-
-type PageProps = {
-    params: Promise<{slug: string}>;
-};
 
 /**
  * Pre-generate static params for all published podcasts at build time.
- * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ * `fetchPublishedSlugs` degrades to the entries collected so far (possibly
+ * empty) when the CMS is unreachable, allowing ISR at runtime.
  */
 export async function generateStaticParams() {
-    try {
-        const entries = await fetchPublishedSlugs('podcasts', [contentTag('podcast')]);
-        return entries.map(({slug}) => ({slug}));
-    } catch {
-        return [];
-    }
+    const entries = await fetchPublishedSlugs('podcasts', [contentTag('podcast')]);
+    return entries.map(({slug}) => ({slug}));
 }
 
 /**
@@ -40,14 +34,14 @@ export async function generateStaticParams() {
  * @param params - Route params resolving to an object with a `slug` string
  * @returns A Metadata object with title, description, alternates.canonical, `openGraph`, and `twitter` fields, or an empty object if metadata cannot be generated
  */
-export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+export async function generateMetadata({params}: SlugPageParams): Promise<Metadata> {
     return buildContentSlugMetadata({
         params,
         canonicalPath: (slug) => `/podcasts/${slug}`,
         contentLabel: 'podcast',
         fetchBySlug: fetchPodcastBySlug,
         getTitle: (episode) => episode.title,
-        getDescription: (episode) => episode.description?.trim() || deriveExcerpt(episode.shownotes),
+        getDescription: (episode) => deriveContentDescription(episode.description, episode.shownotes),
         ogType: 'article',
         getMediaSource: (episode) => episode,
     });
@@ -59,7 +53,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
  * @param params - Route parameters object containing the `slug` string
  * @returns The `PodcastDetail` React element for the resolved episode
  */
-export default async function PodcastDetailPage({params}: PageProps) {
+export default async function PodcastDetailPage({params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) notFound();
@@ -82,9 +76,17 @@ export default async function PodcastDetailPage({params}: PageProps) {
     if (!episode) notFound();
 
     const categorySlugs = episode.categories?.map((c) => c.slug).filter(Boolean) as string[] ?? [];
+    // Related content is optional enrichment: a failure here must not take the
+    // whole podcast page down, but it must stay observable.
     const [relatedArticles, relatedPodcasts] = await Promise.all([
-        fetchRelatedArticles(categorySlugs, slug).catch(() => []),
-        fetchRelatedPodcasts(categorySlugs, slug).catch(() => []),
+        fetchRelatedArticles(categorySlugs, slug).catch((error: unknown) => {
+            console.error(`Failed to fetch related articles for slug "${slug}":`, getErrorMessage(error));
+            return [];
+        }),
+        fetchRelatedPodcasts(categorySlugs, slug).catch((error: unknown) => {
+            console.error(`Failed to fetch related podcasts for slug "${slug}":`, getErrorMessage(error));
+            return [];
+        }),
     ]);
 
     return (

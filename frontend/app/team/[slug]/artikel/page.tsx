@@ -3,11 +3,11 @@ import {type Metadata} from 'next';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {AuthorContentPage, generateAuthorContentMetadata} from '@/src/components/AuthorContentPage';
 import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
+import {type PageSearchParams, type SlugPageParams} from '@/src/lib/params';
 import {fetchArticlesByAuthorPaginated} from '@/src/lib/strapiContent';
 
-type PageProps = {
-    params: Promise<{slug: string}>;
-    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+type PageProps = SlugPageParams & {
+    searchParams?: Promise<PageSearchParams>;
 };
 
 export async function generateMetadata({params, searchParams}: PageProps): Promise<Metadata> {

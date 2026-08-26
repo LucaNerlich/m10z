@@ -4,13 +4,12 @@ import {notFound} from 'next/navigation';
 import {M12GGameDetail} from '@/src/components/M12GGameDetail';
 import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
+import {type SlugPageParams, type SlugParams} from '@/src/lib/params';
 import {routes} from '@/src/lib/routes';
-
-type RouteParams = {slug: string};
 
 export const dynamicParams = false;
 
-export async function generateStaticParams(): Promise<RouteParams[]> {
+export async function generateStaticParams(): Promise<SlugParams[]> {
     const archive = await getM12GArchive();
     return archive.gameHistory.map((g) => ({slug: g.slug}));
 }
@@ -20,7 +19,7 @@ async function findGame(slug: string) {
     return archive.gameHistory.find((g) => g.slug === slug) ?? null;
 }
 
-export async function generateMetadata({params}: {params: Promise<RouteParams>}): Promise<Metadata> {
+export async function generateMetadata({params}: SlugPageParams): Promise<Metadata> {
     const {slug} = await params;
     const game = await findGame(slug);
     if (!game) {
@@ -39,7 +38,7 @@ export async function generateMetadata({params}: {params: Promise<RouteParams>})
     });
 }
 
-export default async function M12GGamePage({params}: {params: Promise<RouteParams>}) {
+export default async function M12GGamePage({params}: SlugPageParams) {
     const {slug} = await params;
     const game = await findGame(slug);
     if (!game) notFound();

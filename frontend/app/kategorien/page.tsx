@@ -3,6 +3,7 @@ import {type Metadata} from 'next';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
+import {getErrorMessage} from '@/src/lib/errors';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {CategoryCard} from '@/src/components/CategoryCard';
 import {Card} from '@/src/components/Card';
@@ -19,7 +20,8 @@ export default async function CategoriesPage() {
     let categories;
     try {
         categories = await fetchCategoriesWithContent();
-    } catch {
+    } catch (error) {
+        console.error('CategoriesPage: failed to load categories:', getErrorMessage(error));
         return (
             <section data-list-page>
                 <h1>Kategorien</h1>

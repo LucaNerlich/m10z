@@ -31,8 +31,6 @@ type StrapiMediaShape = {
     url?: string;
     previewUrl?: string | null;
     provider?: string;
-    provider_metadata?: unknown;
-    related?: unknown[]; // keep flexible; Strapi returns heterogeneous relations
     blurhash?: string | null;
     createdAt?: string;
     updatedAt?: string;
@@ -101,8 +99,6 @@ export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): St
         url: ref.url,
         previewUrl: ref.previewUrl,
         provider: ref.provider,
-        provider_metadata: ref.provider_metadata,
-        related: ref.related,
         blurhash: ref.blurhash,
         createdAt: ref.createdAt,
         updatedAt: ref.updatedAt,
@@ -198,6 +194,56 @@ export function pickCoverOrBannerMedia(content?: StrapiContentMedia, categories?
 }
 
 /**
+ * Result of resolving the preferred image for content: the optimized media
+ * object (for blurhash/dimensions/alt text) plus its absolute URL.
+ */
+export type ResolvedContentImage = {
+    media: StrapiMedia | undefined;
+    url: string | undefined;
+};
+
+/**
+ * Resolve the preferred image for content (entry + category fallbacks), optimize
+ * it for the requested size, and produce its absolute URL in one step.
+ *
+ * Collapses the `pick…Media` → `getOptimalMediaFormat` → `mediaUrlToAbsolute`
+ * chain that cards, detail pages, feeds, and metadata generators all repeat.
+ *
+ * @param content - Content whose `cover`/`banner` is checked first
+ * @param categories - Category references used as media fallback
+ * @param size - Requested image format size
+ * @param prefer - Which image to prefer: `'banner'` (cards/detail, default) or `'cover'` (feeds)
+ * @returns The optimized media object and its absolute URL; both `undefined` when no image exists
+ */
+export function pickAndOptimizeImage(
+    content: StrapiContentMedia | undefined,
+    categories: StrapiCategoryRef[] | undefined,
+    size: ImageSize,
+    prefer: 'banner' | 'cover' = 'banner',
+): ResolvedContentImage {
+    const picked =
+        prefer === 'banner'
+            ? pickBannerOrCoverMedia(content, categories)
+            : pickCoverOrBannerMedia(content, categories);
+    if (!picked) return {media: undefined, url: undefined};
+
+    const media = getOptimalMediaFormat(picked, size);
+    return {media, url: mediaUrlToAbsolute({media})};
+}
+
+/**
+ * Resolve an author's avatar URL at the requested size, or `undefined` when the
+ * author has no avatar. Used by author cards, headers, and author lists.
+ */
+export function resolveAuthorAvatarUrl(
+    author: StrapiAuthor | null | undefined,
+    size: ImageSize = 'small',
+): string | undefined {
+    const avatar = getOptimalMediaFormat(normalizeStrapiMedia(author?.avatar), size);
+    return mediaUrlToAbsolute({media: avatar});
+}
+
+/**
  * Selects the optimal image format from a StrapiMedia object based on the requested size.
  *
  * Searches for the requested format size in media.formats. If not found, falls back to the next larger size.
@@ -215,15 +261,12 @@ export function getOptimalMediaFormat(
 
     const formats = media.formats;
     if (!formats || typeof formats !== 'object') {
-        // No formats available, return original media without formats property
         const {formats: _, ...rest} = media;
         return rest;
     }
 
-    // Find the requested size index
     const requestedIndex = IMAGE_SIZES_ORDERED.indexOf(requestedSize);
     if (requestedIndex === -1) {
-        // Invalid size requested, return original media without formats
         const {formats: _, ...rest} = media;
         return rest;
     }
@@ -234,7 +277,6 @@ export function getOptimalMediaFormat(
         const size = IMAGE_SIZES_ORDERED[i];
         const format = formats[size];
         if (format && format.url) {
-            // Found a matching format, merge format properties with root metadata
             return {
                 id: media.id,
                 documentId: media.documentId,
@@ -251,8 +293,6 @@ export function getOptimalMediaFormat(
                 sizeInBytes: format.sizeInBytes ?? media.sizeInBytes,
                 previewUrl: media.previewUrl,
                 provider: media.provider,
-                provider_metadata: media.provider_metadata,
-                related: media.related,
                 blurhash: media.blurhash,
                 createdAt: media.createdAt,
                 updatedAt: media.updatedAt,
@@ -261,7 +301,6 @@ export function getOptimalMediaFormat(
         }
     }
 
-    // No matching format found, return original media without formats property
     const {formats: _, ...rest} = media;
     return rest;
 }

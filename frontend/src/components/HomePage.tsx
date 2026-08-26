@@ -10,25 +10,12 @@ import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
 import {mediaUrlToAbsolute} from '@/src/lib/strapi/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTimeCompact} from '@/src/lib/readingTime';
+import {getErrorMessage} from '@/src/lib/errors';
 import styles from '@/app/page.module.css';
 import placeholderCover from '@/public/images/m10z.jpg';
 import {umamiEventId} from '@/src/lib/analytics/umami';
 
 const PAGE_SIZE = 10;
-const MAX_PAGE = 50;
-
-/**
- * Determine the requested page number from URL search parameters, validated and clamped to the allowed range.
- *
- * @param searchParams - URL search parameters potentially containing a `page` entry
- * @returns The page number as an integer between 1 and `MAX_PAGE` (inclusive); returns 1 for missing, non‑finite, or out‑of‑range values
- */
-function parsePageParam(searchParams: URLSearchParams): number {
-    const raw = searchParams.get('page');
-    const parsed = Number(raw);
-    if (!Number.isFinite(parsed) || parsed < 1) return 1;
-    return Math.min(Math.floor(parsed), MAX_PAGE);
-}
 
 /**
  * Clamp a requested page number to the valid range for the available items.
@@ -54,7 +41,8 @@ export async function HomePage({page}: {page: number}) {
     let data;
     try {
         data = await buildContentFeed(page, PAGE_SIZE, {tags: [HOME_PAGE_TAG]});
-    } catch {
+    } catch (error) {
+        console.error(`HomePage: failed to build content feed for page ${page}:`, getErrorMessage(error));
         return (
             <div className={styles.page}>
                 <Card variant="empty">

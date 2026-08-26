@@ -28,11 +28,12 @@ https://nextjs.org/docs/app/api-reference/file-conventions/route#non-ui-response
 
 ### API Routes
 
-- /api - server-side api endpoints
-- /api/audiofeed - generate podcast rss xml feed
-- /api/audiofeed/invalidate
-- /api/articlefeed - generate article rss xml feed
-- /api/articlefeed/invalidate
+- /api/invalidate - cache invalidation endpoint (POST, called by Strapi)
+- /api/search-index - full index or search queries (`?q=...`)
+- /api/contentfeed - merged, paginated article + podcast JSON feed
+- /api/podcast-download/[slug] - download tracking redirect for podcast audio
+- /api/diagnostics - runtime diagnostics (rate-limited, token-protected)
+- /api/sitemap - redirects to /sitemap.xml
 
 ## Content Parsing
 

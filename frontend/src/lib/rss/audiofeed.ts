@@ -1,10 +1,15 @@
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import {getEffectiveDate, sortByDateDesc} from '@/src/lib/effectiveDate';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {
-    getOptimalMediaFormat,
+    buildFeedEtagSeed,
+    latestPublishedDate,
+    resolveChannelImageUrl,
+} from '@/src/lib/rss/feedDefinition';
+import {normalizeBaseUrl} from '@/src/lib/rss/feedRoute';
+import {
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
-    pickCoverOrBannerMedia,
+    pickAndOptimizeImage,
     type StrapiMedia,
 } from '@/src/lib/strapi/media';
 import {type StrapiAudioFeedSingle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
@@ -15,7 +20,7 @@ export type {StrapiAudioFeedSingle, StrapiPodcast};
 
 export type AudioFeedConfig = {
     siteUrl: string; // e.g. https://m10z.de
-    // Constants that exist in the legacy template; keep stable.
+    // Keep these values stable: podcatchers and existing subscribers depend on them.
     ttlSeconds: number;
     language: string;
     copyright: string;
@@ -171,7 +176,7 @@ function renderChannelHeader(
         `            <title>${escapeXml(channel.title)}</title>` +
         `            <link>${escapeXml(cfg.siteUrl)}</link>` +
         `        </image>` +
-        `        <atom:link href="${escapeXml(cfg.siteUrl.replace(/\/+$/, ''))}/audiofeed.xml" rel="self" type="application/rss+xml"/>` +
+        `        <atom:link href="${escapeXml(normalizeBaseUrl(cfg.siteUrl))}/audiofeed.xml" rel="self" type="application/rss+xml"/>` +
         `        <podcast:guid>${escapeXml(cfg.podcastGuid)}</podcast:guid>` +
         `        <pubDate>${formatRssDate(pubDate)}</pubDate>`;
 }
@@ -224,11 +229,10 @@ function renderItem(
     const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
     const pubDate = formatRssDate(pub);
 
-    const preferredMedia = pickCoverOrBannerMedia(episode, episode.categories);
-    const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
+    const preferredMedia = pickAndOptimizeImage(episode, episode.categories, 'medium', 'cover');
     const itunesImageHref =
-        mediaUrlToAbsolute({media: optimizedMedia}) ??
-        `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
+        preferredMedia.url ??
+        `${normalizeBaseUrl(cfg.siteUrl)}/images/m10z.jpg`;
 
     const effectiveDescription = episode.description || episode.categories?.[0]?.description;
     const shownotes = (episode.shownotes ?? '').toString();
@@ -248,7 +252,7 @@ function renderItem(
     const cdataFooter = escapeCdata(htmlFooter ? '<br/>' + htmlFooter : '');
     const description = `${cdataShownotes}${cdataFooter}`;
 
-    const link = `${cfg.siteUrl.replace(/\/+$/, '')}/podcasts/${encodeURIComponent(episode.slug)}`;
+    const link = `${normalizeBaseUrl(cfg.siteUrl)}/podcasts/${encodeURIComponent(episode.slug)}`;
 
     const tGuid0 = nowMs();
     const guid = sha256Hex(enclosureUrl);
@@ -314,19 +318,11 @@ export function generateAudioFeedXml(args: {
         }
         : internalCollector;
 
-    const channelImage = normalizeStrapiMedia(channel.image);
-    const channelImageUrl =
-        mediaUrlToAbsolute({media: channelImage}) ??
-        `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
+    const channelImageUrl = resolveChannelImageUrl(channel.image, cfg.siteUrl, '/images/m10z.jpg');
 
-    const sorted = [...episodes].sort((a, b) => {
-        const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;
-        const bd = toDateTimestamp(getEffectiveDate(b)) ?? 0;
-        return bd - ad;
-    });
+    const sorted = sortByDateDesc(episodes);
 
-    const latestDateRaw = getEffectiveDate(sorted[0]);
-    const latestPublishedAt = latestDateRaw ? new Date(latestDateRaw) : null;
+    const latestPublishedAt = latestPublishedDate(sorted);
     // Use the latest published date for channel pubDate to avoid changing on every request.
     // Fallback to current time (not Unix epoch) aligns with RSS best practices and article feed pattern.
     const channelPubDate = latestPublishedAt ?? new Date();
@@ -344,7 +340,7 @@ export function generateAudioFeedXml(args: {
         .join('');
     const footer = `</channel></rss>`;
 
-    const etagSeed = `${sorted.length}:${latestPublishedAt?.toISOString() ?? 'none'}`;
+    const etagSeed = buildFeedEtagSeed(sorted.length, latestPublishedAt);
 
     return {
         xml: `${header}${items}${footer}`,

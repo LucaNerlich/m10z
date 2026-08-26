@@ -32,11 +32,40 @@ type SearchIndexCache = {
 
 let fuseCache: SearchIndexCache | null = null;
 
+// The /api/search-index endpoint wraps the generated index in a Strapi
+// single-type envelope: `{data: {attributes: {content: <index>}}}`. Older
+// deployments served the index flat (`{content: <index>}` or the bare index),
+// so all three shapes are unwrapped in order.
+type SearchIndexApiEnvelope = {
+    data?: {attributes?: {content?: unknown}} | null;
+    content?: unknown;
+};
+
+type SearchIndexApiWrapper = {
+    attributes?: {content?: unknown} | null;
+    content?: unknown;
+};
+
+/**
+ * Unwrap the search index from its Strapi envelope. Prefers
+ * `data.attributes.content`, then `data.content`, then a top-level `content`,
+ * and finally returns the body unchanged (which the caller validates).
+ */
 function unwrapSearchIndex(body: unknown): unknown {
-    const record = body as {data?: {attributes?: {content?: unknown}; content?: unknown}; content?: unknown};
-    const data = record?.data ?? body;
-    const attrs = (data as {attributes?: {content?: unknown}})?.attributes ?? data;
-    return (attrs as {content?: unknown})?.content ?? (body as {content?: unknown})?.content ?? body;
+    if (typeof body !== 'object' || body === null) return body;
+    const envelope = body as SearchIndexApiEnvelope;
+
+    const data: unknown = envelope.data ?? body;
+    if (typeof data === 'object' && data !== null) {
+        const dataWrapper = data as SearchIndexApiWrapper;
+        const attrs: unknown = dataWrapper.attributes ?? data;
+        if (typeof attrs === 'object' && attrs !== null) {
+            const content = (attrs as SearchIndexApiWrapper).content;
+            if (content !== undefined && content !== null) return content;
+        }
+    }
+
+    return envelope.content ?? body;
 }
 
 export async function loadSearchIndex(): Promise<SearchIndexFile> {
