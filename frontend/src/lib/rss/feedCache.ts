@@ -38,6 +38,51 @@ type CachedFeed = FeedBuilt & {
     builtAtMs: number;
 };
 
+/** Contents of the `.meta.json` sidecar written next to each cached feed. */
+type FeedDiskMeta = {
+    etag: string;
+    builtAtMs: number;
+    lastModified: Date | null;
+    itemCount: number;
+};
+
+/**
+ * Parse and validate a feed `.meta.json` sidecar. Older builds used
+ * `episodeCount` instead of `itemCount`, so both keys are accepted. Returns
+ * `null` for unreadable, malformed, or incomplete files.
+ */
+function parseFeedDiskMeta(metaRaw: string): FeedDiskMeta | null {
+    let parsed: unknown;
+    try {
+        parsed = JSON.parse(metaRaw);
+    } catch {
+        return null;
+    }
+    if (typeof parsed !== 'object' || parsed === null) return null;
+
+    const meta = parsed as Record<string, unknown>;
+    if (typeof meta.etag !== 'string' || meta.etag.length === 0) return null;
+    if (typeof meta.builtAtMs !== 'number' || !Number.isFinite(meta.builtAtMs) || meta.builtAtMs <= 0) {
+        return null;
+    }
+
+    const lastModifiedRaw = meta.lastModified ?? null;
+    if (lastModifiedRaw !== null && typeof lastModifiedRaw !== 'string') return null;
+
+    const itemCountRaw = meta.itemCount ?? meta.episodeCount;
+    const itemCount =
+        typeof itemCountRaw === 'number' && Number.isFinite(itemCountRaw) && itemCountRaw > 0
+            ? Math.floor(itemCountRaw)
+            : 0;
+
+    return {
+        etag: meta.etag,
+        builtAtMs: meta.builtAtMs,
+        lastModified: typeof lastModifiedRaw === 'string' ? new Date(lastModifiedRaw) : null,
+        itemCount,
+    };
+}
+
 export type BuildSuccessInfo = {
     durationMs: number;
     built: FeedBuilt;
@@ -133,20 +178,14 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
                 fsImpl.readFile(xmlPath, 'utf8'),
                 fsImpl.readFile(metaPath, 'utf8'),
             ]);
-            const meta = JSON.parse(metaRaw) as {
-                etag?: string;
-                builtAtMs?: number;
-                lastModified?: string | null;
-                itemCount?: number;
-                episodeCount?: number;
-            };
-            if (!meta.etag || !meta.builtAtMs) return null;
+            const meta = parseFeedDiskMeta(metaRaw);
+            if (!meta) return null;
             return {
                 xml,
                 etag: meta.etag,
                 builtAtMs: meta.builtAtMs,
-                lastModified: meta.lastModified ? new Date(meta.lastModified) : null,
-                itemCount: meta.itemCount ?? meta.episodeCount ?? 0,
+                lastModified: meta.lastModified,
+                itemCount: meta.itemCount,
             };
         } catch {
             return null;

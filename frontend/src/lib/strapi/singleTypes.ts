@@ -158,6 +158,15 @@ function assertIsFeeds(data: unknown): asserts data is StrapiFeedsInfo {
     }
 }
 
+/**
+ * Normalize the feeds single-type `content` field. The backend schema types it
+ * as richtext, so the CMS may return it as a string (markdown), as structured
+ * blocks, or omit it entirely; only a markdown string is renderable.
+ */
+function feedsContentToString(content: unknown): string {
+    return typeof content === 'string' ? content : '';
+}
+
 async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promise<StrapiFeedsInfo> {
     const feed = `${process.env.NEXT_PUBLIC_DOMAIN}/rss.xml`;
     const audioFeed = `${process.env.NEXT_PUBLIC_DOMAIN}/audiofeed.xml`;
@@ -184,9 +193,7 @@ async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promi
         assertIsFeeds(res.data);
         return {
             ...res.data,
-            content: typeof (res.data as {
-                content?: unknown
-            }).content === 'string' ? (res.data as StrapiFeedsInfo).content : '',
+            content: feedsContentToString(res.data.content),
         };
     } catch (err) {
         console.warn(`[feeds] Failed to fetch feeds: ${err instanceof Error ? err.message : 'unknown error'}`);

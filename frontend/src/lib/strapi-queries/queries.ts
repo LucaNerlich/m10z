@@ -14,14 +14,28 @@
 
 import qs from 'qs';
 
+import {type StrapiPopulate} from './populate';
+
 const QS_OPTS = {encodeValuesOnly: true} as const;
 
 export type StrapiContentStatus = 'published' | 'draft';
 
+/**
+ * A Strapi REST filter tree, e.g. `{slug: {$eq: 'x'}}` or
+ * `{categories: {slug: {$in: ['a', 'b']}}}`. Leaf values are scalars or
+ * operator objects; arrays cover `$in`/`$notIn` operands.
+ */
+export type StrapiFilter =
+    | string
+    | number
+    | boolean
+    | StrapiFilter[]
+    | {[key: string]: StrapiFilter};
+
 /** Build a query for fetching a single entity by slug (`pageSize: 1`). */
 export function buildBySlugQuery(args: {
     slug: string;
-    populate: object;
+    populate: StrapiPopulate;
     fields: readonly string[];
     status?: StrapiContentStatus;
 }): string {
@@ -41,7 +55,7 @@ export function buildBySlugQuery(args: {
 export function buildBySlugsQuery(args: {
     slugs: string[];
     pageSize: number;
-    populate: object;
+    populate: StrapiPopulate;
     fields: readonly string[];
     status?: StrapiContentStatus;
 }): string {
@@ -61,11 +75,11 @@ export function buildBySlugsQuery(args: {
 export function buildListQuery(args: {
     page: number;
     pageSize: number;
-    populate: object;
+    populate: StrapiPopulate;
     fields: readonly string[];
     sort?: readonly string[];
     status?: StrapiContentStatus;
-    filters?: Record<string, unknown>;
+    filters?: StrapiFilter;
 }): string {
     return qs.stringify(
         {
@@ -95,7 +109,7 @@ export function buildSlugIndexQuery(args: {page: number; pageSize: number}): str
 /** Build a curried feed list query (sorted by publishedAt, published only). */
 export function buildFeedListQuery(args: {
     fields: readonly string[];
-    populate: object;
+    populate: StrapiPopulate;
 }): (page: number, pageSize: number) => string {
     return (page: number, pageSize: number) =>
         buildListQuery({

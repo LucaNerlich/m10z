@@ -31,8 +31,6 @@ type StrapiMediaShape = {
     url?: string;
     previewUrl?: string | null;
     provider?: string;
-    provider_metadata?: unknown;
-    related?: unknown[]; // keep flexible; Strapi returns heterogeneous relations
     blurhash?: string | null;
     createdAt?: string;
     updatedAt?: string;
@@ -101,8 +99,6 @@ export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): St
         url: ref.url,
         previewUrl: ref.previewUrl,
         provider: ref.provider,
-        provider_metadata: ref.provider_metadata,
-        related: ref.related,
         blurhash: ref.blurhash,
         createdAt: ref.createdAt,
         updatedAt: ref.updatedAt,
@@ -251,8 +247,6 @@ export function getOptimalMediaFormat(
                 sizeInBytes: format.sizeInBytes ?? media.sizeInBytes,
                 previewUrl: media.previewUrl,
                 provider: media.provider,
-                provider_metadata: media.provider_metadata,
-                related: media.related,
                 blurhash: media.blurhash,
                 createdAt: media.createdAt,
                 updatedAt: media.updatedAt,

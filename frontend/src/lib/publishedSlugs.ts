@@ -1,5 +1,6 @@
 import {fetchStrapiCollection} from '@/src/lib/strapi/contentAccess';
 import {buildSlugIndexQuery} from '@/src/lib/strapi-queries';
+import {type StrapiCollectionResponse} from '@/src/lib/strapi/responses';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {getErrorMessage} from '@/src/lib/errors';
 
@@ -22,7 +23,7 @@ export async function fetchPublishedSlugs(
     while (true) {
         const query = buildSlugIndexQuery({page, pageSize});
 
-        let res: {data?: unknown; meta?: {pagination?: {page?: number; pageCount?: number}}};
+        let res: StrapiCollectionResponse<StrapiSlugItem>;
         try {
             res = await fetchStrapiCollection<StrapiSlugItem>(endpoint, query, {
                 tags,

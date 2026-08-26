@@ -1,4 +1,4 @@
-import {type ImageObject, type Person} from './types';
+import {type ImageObject, type JsonLd, type Person} from './types';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiAuthor, type StrapiMedia} from '@/src/lib/strapi/media';
 import {OG_SITE_NAME} from '@/src/lib/metadata/constants';
@@ -155,7 +155,7 @@ export function imagesEqual(image1: ImageObject | string | undefined, image2: Im
  * @param jsonLd - The JSON-LD object to stringify
  * @returns A stable, sanitized JSON string representation safe for use in script tags
  */
-export function stringifyJsonLd(jsonLd: unknown): string {
+export function stringifyJsonLd(jsonLd: JsonLd): string {
     // Remove undefined values and ensure stable ordering
     const cleaned = JSON.parse(JSON.stringify(jsonLd, (key, value) => {
         // Remove undefined values

@@ -24,11 +24,38 @@ type FormErrors = {
     profileUrl?: string | null;
 };
 
-function migrateParticipant(p: Record<string, unknown>): Participant {
+/**
+ * Data persisted under STORAGE_KEY. `participants` is kept as `unknown[]`
+ * because older app versions stored a different participant shape
+ * (`steamProfileUrl`); each entry is normalized by `migrateParticipant`.
+ */
+type WichtelnStorage = {
+    participants: unknown[];
+    assignments: Assignment[];
+};
+
+function isAssignment(value: unknown): value is Assignment {
+    if (typeof value !== 'object' || value === null) return false;
+    const record = value as Record<string, unknown>;
+    return typeof record.giverId === 'string' && typeof record.receiverId === 'string';
+}
+
+function isWichtelnStorage(value: unknown): value is WichtelnStorage {
+    if (typeof value !== 'object' || value === null) return false;
+    const record = value as Record<string, unknown>;
+    return (
+        Array.isArray(record.participants) &&
+        Array.isArray(record.assignments) &&
+        record.assignments.every(isAssignment)
+    );
+}
+
+function migrateParticipant(p: unknown): Participant {
+    const record = typeof p === 'object' && p !== null ? (p as Record<string, unknown>) : {};
     return {
-        id: String(p.id ?? crypto.randomUUID()),
-        name: String(p.name ?? ''),
-        profileUrl: String(p.profileUrl ?? p.steamProfileUrl ?? ''),
+        id: String(record.id ?? crypto.randomUUID()),
+        name: String(record.name ?? ''),
+        profileUrl: String(record.profileUrl ?? record.steamProfileUrl ?? ''),
     };
 }
 
@@ -46,17 +73,10 @@ export default function WichtelnPage() {
     useEffect(() => {
         if (!hydrated) return;
         try {
-            const raw = getItem<{
-                participants?: Record<string, unknown>[];
-                assignments?: Assignment[];
-            }>(STORAGE_KEY);
-            if (raw) {
-                if (Array.isArray(raw.participants)) {
-                    setParticipants(raw.participants.map(migrateParticipant));
-                }
-                if (Array.isArray(raw.assignments)) {
-                    setAssignments(raw.assignments);
-                }
+            const raw = getItem<unknown>(STORAGE_KEY);
+            if (raw && isWichtelnStorage(raw)) {
+                setParticipants(raw.participants.map(migrateParticipant));
+                setAssignments(raw.assignments);
             }
         } catch {
             removeItem(STORAGE_KEY);
