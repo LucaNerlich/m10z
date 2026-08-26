@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {getLineClampCSS, getLineClampCustomProperty} from './textUtils';
+import {getLineClampCSS} from './textUtils';
 
 describe('getLineClampCSS', () => {
     test('returns the expected CSS shape', () => {
@@ -24,16 +24,5 @@ describe('getLineClampCSS', () => {
 
     test('floors fractional input', () => {
         expect(getLineClampCSS(3.7).WebkitLineClamp).toBe(3);
-    });
-});
-
-describe('getLineClampCustomProperty', () => {
-    test('returns CSS variable string', () => {
-        expect(getLineClampCustomProperty(4)).toBe('--line-clamp: 4');
-    });
-
-    test('shares the same clamping rules', () => {
-        expect(getLineClampCustomProperty(0)).toBe('--line-clamp: 1');
-        expect(getLineClampCustomProperty(99)).toBe('--line-clamp: 10');
     });
 });

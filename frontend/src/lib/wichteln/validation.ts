@@ -48,12 +48,3 @@ export function validateProfileUrl(url: string): string | null {
         return 'Bitte gib eine gültige URL ein (z.B. https://steamcommunity.com/id/... oder https://www.gog.com/u/...)';
     }
 }
-
-export function isValidHttpUrl(value: string): boolean {
-    try {
-        const url = new URL(value);
-        return url.protocol === 'http:' || url.protocol === 'https:';
-    } catch {
-        return false;
-    }
-}

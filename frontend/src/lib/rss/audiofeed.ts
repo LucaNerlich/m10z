@@ -228,7 +228,7 @@ function renderItem(
     const optimizedMedia = preferredMedia ? getOptimalMediaFormat(preferredMedia, 'medium') : undefined;
     const itunesImageHref =
         mediaUrlToAbsolute({media: optimizedMedia}) ??
-        `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
+        `${cfg.siteUrl.replace(/\/+$/, '')}/images/m10z.jpg`;
 
     const effectiveDescription = episode.description || episode.categories?.[0]?.description;
     const shownotes = (episode.shownotes ?? '').toString();
@@ -317,7 +317,7 @@ export function generateAudioFeedXml(args: {
     const channelImage = normalizeStrapiMedia(channel.image);
     const channelImageUrl =
         mediaUrlToAbsolute({media: channelImage}) ??
-        `${cfg.siteUrl.replace(/\/+$/, '')}/static/img/formate/cover/m10z.jpg`;
+        `${cfg.siteUrl.replace(/\/+$/, '')}/images/m10z.jpg`;
 
     const sorted = [...episodes].sort((a, b) => {
         const ad = toDateTimestamp(getEffectiveDate(a)) ?? 0;

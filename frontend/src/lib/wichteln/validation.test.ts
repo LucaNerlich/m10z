@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {validateName, validateProfileUrl, isValidHttpUrl, validateUniqueName} from './validation';
+import {validateName, validateProfileUrl, validateUniqueName} from './validation';
 
 describe('validateName', () => {
     test('valid name returns null', () => {
@@ -83,24 +83,6 @@ describe('validateProfileUrl', () => {
         expect(result).toBe(
             'Bitte gib eine gültige URL ein, die mit http:// oder https:// beginnt'
         );
-    });
-});
-
-describe('isValidHttpUrl', () => {
-    test('valid https URL returns true', () => {
-        expect(isValidHttpUrl('https://example.com')).toBe(true);
-    });
-
-    test('valid http URL returns true', () => {
-        expect(isValidHttpUrl('http://example.com')).toBe(true);
-    });
-
-    test('invalid string returns false', () => {
-        expect(isValidHttpUrl('not-a-url')).toBe(false);
-    });
-
-    test('empty string returns false', () => {
-        expect(isValidHttpUrl('')).toBe(false);
     });
 });
 

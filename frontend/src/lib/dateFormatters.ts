@@ -1,34 +1,12 @@
 /**
  * German locale date formatting utilities.
  *
- * Provides functions for formatting dates in German locale (de-DE) with
- * support for full, short, and relative date formats.
+ * Provides functions for formatting dates in German locale (de-DE).
  *
  * Uses manual formatting instead of toLocaleDateString to ensure consistent
  * output on server and client regardless of locale configuration, preventing
  * React hydration mismatches.
  */
-
-const GERMAN_LOCALE = 'de-DE';
-const GERMAN_RELATIVE_TIME_FORMATTER = new Intl.RelativeTimeFormat(GERMAN_LOCALE, {numeric: 'auto'});
-
-/**
- * German month names (full).
- */
-const GERMAN_MONTHS_FULL: readonly string[] = [
-    'Januar',
-    'Februar',
-    'März',
-    'April',
-    'Mai',
-    'Juni',
-    'Juli',
-    'August',
-    'September',
-    'Oktober',
-    'November',
-    'Dezember',
-] as const;
 
 /**
  * German month names (abbreviated).
@@ -47,20 +25,6 @@ const GERMAN_MONTHS_SHORT: readonly string[] = [
     'Nov.',
     'Dez.',
 ] as const;
-
-/**
- * Formats a Date object into German full date format manually.
- *
- * @param dateObj - Date object (must be valid, already parsed)
- * @returns Formatted date string in format "15. Januar 2024"
- */
-function formatGermanDateFull(dateObj: Date): string {
-    const year = dateObj.getUTCFullYear();
-    const month = dateObj.getUTCMonth(); // 0-11
-    const day = dateObj.getUTCDate();
-
-    return `${day}. ${GERMAN_MONTHS_FULL[month]} ${year}`;
-}
 
 /**
  * Formats a Date object into German short date format manually.
@@ -109,22 +73,6 @@ function parseDateAsUtcDateOnly(date: string): Date {
 }
 
 /**
- * Formats a date string into a full German date format.
- *
- * Example: "15. Januar 2024"
- *
- * @param date - Date string (ISO 8601 or any valid date string), or null/undefined
- * @returns Formatted date string, or '—' if date is invalid or missing
- */
-export function formatDateFull(date: string | null | undefined): string {
-    if (!date) return '—';
-    const dateObj = parseDateAsUtcDateOnly(date);
-    if (Number.isNaN(dateObj.getTime())) return '—';
-
-    return formatGermanDateFull(dateObj);
-}
-
-/**
  * Formats a date string into a short German date format.
  *
  * Example: "15. Jan. 2024"
@@ -138,49 +86,6 @@ export function formatDateShort(date: string | null | undefined): string {
     if (Number.isNaN(dateObj.getTime())) return '—';
 
     return formatGermanDateShort(dateObj);
-}
-
-/**
- * Produce a German human-friendly relative label for the given date.
- *
- * Relative date calculations are based on calendar days, not time-of-day
- * differences. For exact day offsets returns localized labels such as "heute",
- * "gestern", or "morgen"; for other offsets returns a relative description
- * (e.g., "vor 2 Tagen", "in 3 Wochen").
- *
- * WARNING: Uses `new Date()` for the current time, which can cause hydration
- * mismatches during SSR. Only use in client-side components or after hydration.
- *
- * @param date - Date string (ISO 8601 or any valid date string), or null/undefined
- * @returns A German relative date string, or '—' for invalid input
- */
-export function formatDateRelative(date: string | null | undefined): string {
-    if (!date) return '—';
-    const dateObj = parseDateAsUtcDateOnly(date);
-    if (Number.isNaN(dateObj.getTime())) return '—';
-
-    const now = new Date();
-    const diffMs = dateObj.getTime() - now.getTime();
-    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) return 'heute';
-    if (diffDays === -1) return 'gestern';
-    if (diffDays === 1) return 'morgen';
-
-    // Use Intl.RelativeTimeFormat for other relative dates. Inputs are always
-    // finite integers and literal units, so format() cannot throw.
-    const absDiffDays = Math.abs(diffDays);
-
-    if (absDiffDays < 7) {
-        return GERMAN_RELATIVE_TIME_FORMATTER.format(diffDays, 'day');
-    }
-    if (absDiffDays < 30) {
-        return GERMAN_RELATIVE_TIME_FORMATTER.format(Math.round(diffDays / 7), 'week');
-    }
-    if (absDiffDays < 365) {
-        return GERMAN_RELATIVE_TIME_FORMATTER.format(Math.round(diffDays / 30), 'month');
-    }
-    return GERMAN_RELATIVE_TIME_FORMATTER.format(Math.round(diffDays / 365), 'year');
 }
 
 /**
