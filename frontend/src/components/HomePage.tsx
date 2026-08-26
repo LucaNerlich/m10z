@@ -10,6 +10,7 @@ import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
 import {mediaUrlToAbsolute} from '@/src/lib/strapi/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTimeCompact} from '@/src/lib/readingTime';
+import {getErrorMessage} from '@/src/lib/errors';
 import styles from '@/app/page.module.css';
 import placeholderCover from '@/public/images/m10z.jpg';
 import {umamiEventId} from '@/src/lib/analytics/umami';
@@ -54,7 +55,8 @@ export async function HomePage({page}: {page: number}) {
     let data;
     try {
         data = await buildContentFeed(page, PAGE_SIZE, {tags: [HOME_PAGE_TAG]});
-    } catch {
+    } catch (error) {
+        console.error(`HomePage: failed to build content feed for page ${page}:`, getErrorMessage(error));
         return (
             <div className={styles.page}>
                 <Card variant="empty">

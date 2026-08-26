@@ -4,6 +4,7 @@ import {join} from 'node:path';
 
 import {fetchArticleBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
+import {getErrorMessage} from '@/src/lib/errors';
 
 export const alt = 'Artikel-Vorschaubild';
 export const size = {width: 1200, height: 630};
@@ -31,8 +32,9 @@ export default async function Image({params}: {params: Promise<{slug: string}>})
                 title = article.title;
                 description = article.description ?? undefined;
             }
-        } catch {
-            // Keep the default title
+        } catch (error) {
+            // Fall back to the generic branded card, but keep the failure observable.
+            console.error(`OG image: failed to fetch article for slug "${slug}":`, getErrorMessage(error));
         }
     }
 

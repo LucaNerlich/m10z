@@ -68,15 +68,11 @@ export default function WichtelnPage() {
             newParticipants: Participant[],
             newAssignments: Assignment[]
         ) => {
-            try {
-                setItem(STORAGE_KEY, {
-                    participants: newParticipants,
-                    assignments: newAssignments,
-                    timestamp: Date.now(),
-                });
-            } catch {
-                setError('Fehler beim Speichern. Speicher könnte voll sein.');
-            }
+            setItem(STORAGE_KEY, {
+                participants: newParticipants,
+                assignments: newAssignments,
+                timestamp: Date.now(),
+            });
         },
         []
     );
@@ -172,23 +168,14 @@ export default function WichtelnPage() {
             return;
         }
         setIsShuffling(true);
-        try {
-            const result = shuffleAndAssign(participants);
-            setAssignments(result);
-            persist(participants, result);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Zuordnung fehlgeschlagen.');
-        } finally {
-            setIsShuffling(false);
-        }
+        const result = shuffleAndAssign(participants);
+        setAssignments(result);
+        persist(participants, result);
+        setIsShuffling(false);
     }, [participants, persist, clearError]);
 
     const handleExport = useCallback(() => {
-        try {
-            downloadMarkdown(participants, assignments);
-        } catch {
-            setError('Export fehlgeschlagen.');
-        }
+        downloadMarkdown(participants, assignments);
     }, [participants, assignments]);
 
     const handleResetAssignments = useCallback(() => {

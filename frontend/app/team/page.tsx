@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {type Metadata} from 'next';
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
+import {getErrorMessage} from '@/src/lib/errors';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {AuthorCard} from '@/src/components/AuthorCard';
 import {Card} from '@/src/components/Card';
@@ -22,7 +23,8 @@ export default async function TeamPage() {
     let authors;
     try {
         authors = await fetchAuthorsList();
-    } catch {
+    } catch (error) {
+        console.error('TeamPage: failed to load authors:', getErrorMessage(error));
         return (
             <section data-list-page>
                 <h1>Team</h1>

@@ -2,6 +2,7 @@ import {ImageResponse} from 'next/og';
 
 import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
 import {computeM12GStats} from '@/src/lib/m12g/m12gStats';
+import {getErrorMessage} from '@/src/lib/errors';
 
 export const alt = 'M12G Statistik – Mindestens 10 Zeichen';
 export const size = {width: 1200, height: 630};
@@ -13,8 +14,9 @@ export default async function Image() {
         const archive = await getM12GArchive();
         const stats = computeM12GStats(archive);
         top3 = stats.leaderboard.slice(0, 3).map((e) => ({name: e.name, totalVotes: e.totalVotes}));
-    } catch {
-        // Fall back to a generic card if data can't be loaded.
+    } catch (error) {
+        // Fall back to a generic card if data can't be loaded, but keep the failure observable.
+        console.error('M12G OG image: failed to load archive:', getErrorMessage(error));
     }
 
     function truncate(name: string, limit: number): string {
