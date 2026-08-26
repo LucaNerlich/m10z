@@ -1,8 +1,8 @@
 import {describe, expect, test} from 'vitest';
 
 import {game, month} from './m12gFixtures';
-import {buildArchive, loadArchive, type MonthSource} from './m12gArchive';
-import {type M12GMonthWithWinner} from './types';
+import {buildArchive, loadArchive} from './m12gArchive';
+import {type M12GMonthWithWinner, type MonthSource} from './types';
 
 // In-memory MonthSource adapter — the test-side counterpart to the filesystem reader.
 function fromMonths(months: M12GMonthWithWinner[]): MonthSource {

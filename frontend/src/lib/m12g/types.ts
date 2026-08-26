@@ -43,6 +43,11 @@ export interface M12GWinnerEntry {
     votes: number;
 }
 
+// The swappable source of Months: the filesystem in production, fixtures in tests.
+// Lives here (not in m12gArchive) so adapters and the archive can share it
+// without importing the archive module.
+export type MonthSource = () => Promise<M12GMonthWithWinner[]>;
+
 export interface M12GStats {
     totalMonths: number;
     totalUniqueGames: number;
