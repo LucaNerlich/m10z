@@ -1,7 +1,7 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 
-import {type MonthSource} from '@/src/lib/m12g/m12gArchive';
+import {type MonthSource} from '@/src/lib/m12g/types';
 import {parseMonth} from '@/src/lib/m12g/parseMonth';
 import {type M12GMonthWithWinner} from '@/src/lib/m12g/types';
 
