@@ -15,20 +15,6 @@ import placeholderCover from '@/public/images/m10z.jpg';
 import {umamiEventId} from '@/src/lib/analytics/umami';
 
 const PAGE_SIZE = 10;
-const MAX_PAGE = 50;
-
-/**
- * Determine the requested page number from URL search parameters, validated and clamped to the allowed range.
- *
- * @param searchParams - URL search parameters potentially containing a `page` entry
- * @returns The page number as an integer between 1 and `MAX_PAGE` (inclusive); returns 1 for missing, non‑finite, or out‑of‑range values
- */
-function parsePageParam(searchParams: URLSearchParams): number {
-    const raw = searchParams.get('page');
-    const parsed = Number(raw);
-    if (!Number.isFinite(parsed) || parsed < 1) return 1;
-    return Math.min(Math.floor(parsed), MAX_PAGE);
-}
 
 /**
  * Clamp a requested page number to the valid range for the available items.

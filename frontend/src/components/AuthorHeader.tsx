@@ -1,10 +1,5 @@
 import Image from 'next/image';
-import {
-    getOptimalMediaFormat,
-    mediaUrlToAbsolute,
-    normalizeStrapiMedia,
-    type StrapiAuthor,
-} from '@/src/lib/strapi/media';
+import {resolveAuthorAvatarUrl, type StrapiAuthor} from '@/src/lib/strapi/media';
 import styles from './AuthorHeader.module.css';
 
 type AuthorHeaderProps = {
@@ -20,8 +15,7 @@ type AuthorHeaderProps = {
  * @returns The header element containing the author's avatar and textual information
  */
 export function AuthorHeader({author}: AuthorHeaderProps) {
-    const avatar = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
-    const avatarUrl = mediaUrlToAbsolute({media: avatar});
+    const avatarUrl = resolveAuthorAvatarUrl(author);
     const avatarWidth = 80;
     const avatarHeight = 80;
 

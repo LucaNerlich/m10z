@@ -5,7 +5,7 @@ import {
     getOptimalMediaFormat,
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
-    pickBannerOrCoverMedia,
+    pickAndOptimizeImage,
 } from '@/src/lib/strapi/media';
 import {normalizeEnclosureLengthBytes} from '@/src/lib/rss/audiofeed';
 import {buildPodloveEpisodeConfig, buildPodlovePlayerConfig} from '@/src/lib/podlove/buildConfig';
@@ -44,8 +44,7 @@ export function PodcastDetail({slug, podcast: initialPodcast}: PodcastDetailProp
     // when the listener presses play (and for the Files-tab download), which is what records the
     // event. `undefined` when the episode has no audio file, in which case no player is rendered.
     const playerSrc = audioUrl ? buildPodcastDownloadPath(slug) : undefined;
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
+    const {media: optimizedMedia} = pickAndOptimizeImage(podcast, podcast.categories, 'large');
 
     // Player poster: prefer the episode cover, then its banner, then the first category's image
     // (mirrors the chained image resolution used for other images).

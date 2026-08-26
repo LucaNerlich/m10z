@@ -2,6 +2,7 @@ import {describe, expect, test} from 'vitest';
 
 import {
     authorToPerson,
+    authorsToPeople,
     buildImageObject,
     formatIso8601Date,
     formatIso8601Duration,
@@ -135,5 +136,22 @@ describe('stringifyJsonLd', () => {
         expect(result).not.toContain('</script>');
         // Still round-trips to the original value.
         expect(JSON.parse(result).headline).toBe('pwn </script><script>alert(1)</script>');
+    });
+});
+
+describe('authorsToPeople', () => {
+    test('returns undefined for missing or empty author lists', () => {
+        expect(authorsToPeople(null)).toBeUndefined();
+        expect(authorsToPeople(undefined)).toBeUndefined();
+        expect(authorsToPeople([])).toBeUndefined();
+    });
+
+    test('converts every author to a Person', () => {
+        const people = authorsToPeople([
+            {id: 1, title: 'Jane', slug: 'jane'},
+            {id: 2, title: 'Bob', slug: 'bob'},
+        ]);
+        expect(people?.map((p) => p.name)).toEqual(['Jane', 'Bob']);
+        expect(people?.[0].url).toMatch(/\/team\/jane$/);
     });
 });

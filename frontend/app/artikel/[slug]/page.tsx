@@ -5,7 +5,7 @@ import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {fetchArticleBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
-import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
+import {deriveContentDescription} from '@/src/lib/metadata/excerpt';
 import {formatIso8601Date} from '@/src/lib/jsonld/helpers';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
@@ -40,7 +40,7 @@ export async function generateMetadata({params}: SlugPageParams): Promise<Metada
         contentLabel: 'article',
         fetchBySlug: fetchArticleBySlug,
         getTitle: (article) => article.title,
-        getDescription: (article) => article.description?.trim() || deriveExcerpt(article.content),
+        getDescription: (article) => deriveContentDescription(article.description, article.content),
         ogType: 'article',
         getMediaSource: (article) => article,
         getAuthors: (article) => article.authors?.map((a) => a.title).filter(Boolean) as string[] | undefined,

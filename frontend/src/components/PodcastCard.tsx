@@ -1,16 +1,11 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import {type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, pickBannerOrCoverMedia} from '@/src/lib/strapi/media';
-import {MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
-import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
-import {getLineClampCSS} from '@/src/lib/textUtils';
+import {formatDuration} from '@/src/lib/dateFormatters';
 import {routes} from '@/src/lib/routes';
-import styles from './ContentCard.module.css';
-import placeholderCover from '@/public/images/m10z.jpg';
-import {AuthorList} from './AuthorList';
-import {CategoryList} from './CategoryList';
+import {MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
+
+import {ContentCard} from './ContentCard';
+import cardStyles from './ContentCard.module.css';
 
 type PodcastCardProps = {
     podcast: StrapiPodcast;
@@ -23,8 +18,7 @@ type PodcastCardProps = {
 /**
  * Card component for displaying podcast episode previews.
  *
- * Displays cover image, title, date, description, optional duration, and optional author/category lists.
- * Uses semantic HTML with article element and proper link structure.
+ * Episode-specific bits (duration chip, "Anhören" CTA) are mapped onto the shared `ContentCard` layout.
  */
 export function PodcastCard({
                                 podcast,
@@ -33,68 +27,28 @@ export function PodcastCard({
                                 descriptionLines = 3,
                                 className,
                             }: PodcastCardProps) {
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(podcast, podcast.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
-    const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
-    const blurhash = optimizedMedia?.blurhash ?? null;
-    const effectiveDate = getEffectiveDate(podcast);
-    const formattedDate = formatDateShort(effectiveDate);
-    const podcastUrl = routes.podcast(podcast.slug);
-    const effectiveDescription = podcast.description || podcast.categories?.[0]?.description;
-
-    const cardClasses = [styles.card, className].filter(Boolean).join(' ');
-
     return (
-        <article className={cardClasses}>
-            <div className={styles.media}>
-                <Link href={podcastUrl} className={styles.mediaLink}
-                      aria-label={`Podcast-Cover anzeigen: ${podcast.title}`}>
-                    <Image
-                        src={imageUrl ?? placeholderCover}
-                        alt={podcast.title}
-                        width={optimizedMedia?.width ?? 400}
-                        height={optimizedMedia?.height ?? 225}
-                        className={styles.cover}
-                        placeholder={blurhash ? 'blur' : 'empty'}
-                        blurDataURL={blurhash ?? undefined}
-                    />
-                </Link>
-            </div>
-            <div className={styles.cardBody}>
-                <div className={styles.metaRow}>
-                    <time className={styles.date} dateTime={effectiveDate ?? undefined}>
-                        {formattedDate}
-                    </time>
-                    {podcast.duration ? (
-                        <span className={styles.duration}>
-                            <MusicNoteIcon size={14} aria-hidden='true' />
-                            &nbsp;{formatDuration(podcast.duration)}
-                        </span>
-                    ) : null}
-                </div>
-                <h2 className={styles.cardTitle}>
-                    <Link href={podcastUrl} className={styles.cardLink}>
-                        {podcast.title}
-                    </Link>
-                </h2>
-                {effectiveDescription ? (
-                    <p className={styles.description} style={getLineClampCSS(descriptionLines)}>
-                        {effectiveDescription}
-                    </p>
-                ) : null}
-                {showAuthors && podcast.authors && podcast.authors.length > 0 ? (
-                    <AuthorList authors={podcast.authors} showAvatars={false} layout="inline" />
-                ) : null}
-                {showCategories && podcast.categories && podcast.categories.length > 0 ? (
-                    <CategoryList categories={podcast.categories} />
-                ) : null}
-                <div className={styles.cardActions}>
-                    <Link href={podcastUrl} className={styles.readMore}>
-                        Anhören
-                    </Link>
-                </div>
-            </div>
-        </article>
+        <ContentCard
+            title={podcast.title}
+            description={podcast.description}
+            date={getEffectiveDate(podcast)}
+            cover={podcast.cover}
+            banner={podcast.banner}
+            categories={podcast.categories}
+            authors={podcast.authors}
+            href={routes.podcast(podcast.slug)}
+            mediaAltPrefix="Podcast-Cover"
+            ctaLabel="Anhören"
+            meta={podcast.duration ? (
+                <span className={cardStyles.duration}>
+                    <MusicNoteIcon size={14} aria-hidden='true' />
+                    &nbsp;{formatDuration(podcast.duration)}
+                </span>
+            ) : null}
+            showAuthors={showAuthors}
+            showCategories={showCategories}
+            descriptionLines={descriptionLines}
+            className={className}
+        />
     );
 }
-

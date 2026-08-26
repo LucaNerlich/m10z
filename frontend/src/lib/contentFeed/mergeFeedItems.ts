@@ -1,6 +1,6 @@
 import type {StrapiMedia} from '@/src/lib/strapi/media';
 import {getOptimalMediaFormat, pickBannerMedia, pickCoverMedia} from '@/src/lib/strapi/media';
-import {getEffectiveDate, toDateTimestamp} from '@/src/lib/effectiveDate';
+import {getEffectiveDate, sortByDateDesc} from '@/src/lib/effectiveDate';
 import type {PaginatedResult} from '@/src/lib/strapi/responses';
 import type {StrapiArticle, StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 
@@ -73,11 +73,7 @@ export function mergeFeedItems(articles: StrapiArticle[], podcasts: StrapiPodcas
     const articleItems = articles.map(mapArticleToFeedItem);
     const podcastItems = podcasts.map(mapPodcastToFeedItem);
 
-    return [...articleItems, ...podcastItems].sort((a, b) => {
-        const ad = toDateTimestamp(a.publishedAt) ?? 0;
-        const bd = toDateTimestamp(b.publishedAt) ?? 0;
-        return bd - ad;
-    });
+    return sortByDateDesc([...articleItems, ...podcastItems]);
 }
 
 export function paginateMergedFeed(args: {

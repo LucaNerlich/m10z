@@ -1,8 +1,8 @@
-import {type BlogPosting, type ImageObject, type Person} from './types';
+import {type BlogPosting, type ImageObject} from './types';
 import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {authorToPerson, formatIso8601Date, imagesEqual, mediaToImage} from './helpers';
-import {deriveExcerpt, stripMarkdown} from '@/src/lib/metadata/excerpt';
+import {authorsToPeople, formatIso8601Date, imagesEqual, mediaToImage} from './helpers';
+import {deriveContentDescription, stripMarkdown} from '@/src/lib/metadata/excerpt';
 import {generateOrganizationJsonLd} from './organization';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {pickBannerMedia, pickCoverMedia} from '@/src/lib/strapi/media';
@@ -31,13 +31,11 @@ export function generateArticleJsonLd(article: StrapiArticle): BlogPosting {
     const bannerImage = mediaToImage(bannerMedia);
     if (bannerImage && !imagesEqual(bannerImage, coverImage)) images.push(bannerImage);
 
-    const authors: Person[] | undefined = article.authors?.length
-        ? article.authors.map((author) => authorToPerson(author))
-        : undefined;
+    const authors = authorsToPeople(article.authors);
 
     const publisher = generateOrganizationJsonLd();
 
-    const description = article.description?.trim() || deriveExcerpt(article.content);
+    const description = deriveContentDescription(article.description, article.content);
     const articleSection = primaryCategoryTitle(article.categories);
 
     const MAX_ARTICLE_BODY_CHARS = 10_000;

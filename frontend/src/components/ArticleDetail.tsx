@@ -1,6 +1,6 @@
 import {type StrapiArticle} from '@/src/lib/strapi/contentTypes';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
-import {getOptimalMediaFormat, pickBannerOrCoverMedia} from '@/src/lib/strapi/media';
+import {pickAndOptimizeImage} from '@/src/lib/strapi/media';
 import {calculateReadingTime} from '@/src/lib/readingTime';
 import {extractHeadings} from '@/src/lib/markdown/extractHeadings';
 import {ContentMetadata} from '@/src/components/ContentMetadata';
@@ -35,8 +35,7 @@ export function ArticleDetail({slug, article: initialArticle}: ArticleDetailProp
 
     const published = getEffectiveDate(article);
     const readingTime = calculateReadingTime(article.content ?? '');
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(article, article.categories);
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'large') : undefined;
+    const {media: optimizedMedia} = pickAndOptimizeImage(article, article.categories, 'large');
 
     const jsonLd = generateArticleJsonLd(article);
     const breadcrumbItems = [

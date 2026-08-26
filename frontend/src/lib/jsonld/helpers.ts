@@ -105,6 +105,15 @@ export function authorToPerson(author: StrapiAuthor): Person {
 }
 
 /**
+ * Convert an optional list of Strapi authors into a list of Person objects,
+ * or `undefined` when the list is empty/missing. Shared by the article and
+ * podcast JSON-LD generators.
+ */
+export function authorsToPeople(authors: StrapiAuthor[] | null | undefined): Person[] | undefined {
+    return authors?.length ? authors.map((author) => authorToPerson(author)) : undefined;
+}
+
+/**
  * Convert a Strapi media entry into an ImageObject or an absolute image URL.
  *
  * @param media - The Strapi media record to convert

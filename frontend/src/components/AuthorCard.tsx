@@ -1,11 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-    getOptimalMediaFormat,
-    mediaUrlToAbsolute,
-    normalizeStrapiMedia,
-    type StrapiAuthor,
-} from '@/src/lib/strapi/media';
+import {resolveAuthorAvatarUrl, type StrapiAuthor} from '@/src/lib/strapi/media';
+import {formatContentCounts} from '@/src/lib/contentCounts';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
 import styles from './AuthorCard.module.css';
@@ -18,28 +14,13 @@ type AuthorCardProps = {
 };
 
 /**
- * Formats content counts into German text.
- */
-function formatContentCounts(articleCount?: number, podcastCount?: number): string {
-    const parts: string[] = [];
-    if (articleCount !== undefined && articleCount > 0) {
-        parts.push(`${articleCount} ${articleCount === 1 ? 'Artikel' : 'Artikel'}`);
-    }
-    if (podcastCount !== undefined && podcastCount > 0) {
-        parts.push(`${podcastCount} ${podcastCount === 1 ? 'Podcast' : 'Podcasts'}`);
-    }
-    return parts.join(', ') || 'Keine Inhalte';
-}
-
-/**
  * Card component for displaying author information.
  *
  * Displays avatar, title, description, and content counts.
  * Links to author detail page.
  */
 export function AuthorCard({author, articleCount, podcastCount, className}: AuthorCardProps) {
-    const avatarMedia = getOptimalMediaFormat(normalizeStrapiMedia(author.avatar), 'small');
-    const avatarUrl = mediaUrlToAbsolute({media: avatarMedia});
+    const avatarUrl = resolveAuthorAvatarUrl(author);
     const authorUrl = routes.author(author.slug ?? '');
 
     const cardClasses = [styles.card, className].filter(Boolean).join(' ');
