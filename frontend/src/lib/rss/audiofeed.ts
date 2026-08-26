@@ -232,7 +232,7 @@ function renderItem(
     const preferredMedia = pickAndOptimizeImage(episode, episode.categories, 'medium', 'cover');
     const itunesImageHref =
         preferredMedia.url ??
-        `${normalizeBaseUrl(cfg.siteUrl)}/static/img/formate/cover/m10z.jpg`;
+        `${normalizeBaseUrl(cfg.siteUrl)}/images/m10z.jpg`;
 
     const effectiveDescription = episode.description || episode.categories?.[0]?.description;
     const shownotes = (episode.shownotes ?? '').toString();
@@ -318,7 +318,7 @@ export function generateAudioFeedXml(args: {
         }
         : internalCollector;
 
-    const channelImageUrl = resolveChannelImageUrl(channel.image, cfg.siteUrl, '/static/img/formate/cover/m10z.jpg');
+    const channelImageUrl = resolveChannelImageUrl(channel.image, cfg.siteUrl, '/images/m10z.jpg');
 
     const sorted = sortByDateDesc(episodes);
 
