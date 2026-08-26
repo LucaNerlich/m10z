@@ -58,16 +58,17 @@ export async function fetchAllPaginated<T>(args: {
     const all: T[] = firstItems.slice(0, maxItems);
 
     const pagination = firstRes.meta?.pagination;
+    const pageCount = pagination?.pageCount ?? 1;
     if (
         !pagination ||
-        pagination.pageCount <= 1 ||
+        pageCount <= 1 ||
         firstItems.length === 0 ||
         all.length >= maxItems
     ) {
         return all;
     }
 
-    const lastPage = Math.min(pagination.pageCount, maxPages);
+    const lastPage = Math.min(pageCount, maxPages);
     const pageNumbers = Array.from({length: lastPage - 1}, (_, i) => i + 2);
     const results = await Promise.all(
         pageNumbers.map((p) =>
