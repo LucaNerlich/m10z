@@ -11,11 +11,8 @@ import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
 import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {type SlugPageParams} from '@/src/lib/params';
 import {contentTag} from '@/src/lib/strapi/cacheTags';
-
-type PageProps = {
-    params: Promise<{slug: string}>;
-};
 
 /**
  * Pre-generate static params for all published articles at build time.
@@ -36,7 +33,7 @@ export async function generateStaticParams() {
  * @param params - Page route params containing a `slug` that identifies the article
  * @returns A Metadata object with `title`, `description`, `alternates` (canonical URL), `openGraph` (type 'article', `locale`, `siteName`, `url`, `title`, `description`, `images`, `publishedTime`, `modifiedTime`, `authors`), `twitter` (card, `title`, `description`, `images`), and `authors`; or an empty object if the slug is invalid or the article cannot be found.
  */
-export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+export async function generateMetadata({params}: SlugPageParams): Promise<Metadata> {
     return buildContentSlugMetadata({
         params,
         canonicalPath: (slug) => `/artikel/${slug}`,
@@ -62,7 +59,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
  *
  * @returns The React element that renders the article detail view, or triggers a 404 response.
  */
-export default async function ArticleDetailPage({params}: PageProps) {
+export default async function ArticleDetailPage({params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) notFound();

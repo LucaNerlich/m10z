@@ -23,13 +23,10 @@ import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateAuthorProfileJsonLd} from '@/src/lib/jsonld/author';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {type SlugPageParams} from '@/src/lib/params';
 import {sitemapTag} from '@/src/lib/strapi/cacheTags';
 import Script from 'next/script';
 import styles from './page.module.css';
-
-type PageProps = {
-    params: Promise<{slug: string}>;
-};
 
 /**
  * Pre-generate static params for all published authors at build time.
@@ -52,7 +49,7 @@ export async function generateStaticParams() {
  * @param params - An object (awaitable) whose resolved `slug` value identifies the author route.
  * @returns A `Metadata` object containing the page `title`, `description`, canonical alternate URL, `openGraph` data (type `'profile'`, `locale: 'de'`, `siteName`, URL, `title`, `description`, and `images` when available) and `twitter` card data; or an empty object if no valid slug or author is found.
  */
-export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+export async function generateMetadata({params}: SlugPageParams): Promise<Metadata> {
     return buildContentSlugMetadata({
         params,
         canonicalPath: (slug) => `/team/${slug}`,
@@ -74,7 +71,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
  * @param params - A promise resolving to route parameters containing the `slug` string.
  * @returns The page's JSX element containing the author's profile and any associated articles or podcasts.
  */
-export default async function AuthorPage({params}: PageProps) {
+export default async function AuthorPage({params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();

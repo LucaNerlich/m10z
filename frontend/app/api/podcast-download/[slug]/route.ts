@@ -12,6 +12,7 @@ import {getClientIp} from '@/src/lib/net/getClientIp';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {getStrapiApiBaseUrl} from '@/src/lib/strapiTransport';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
+import {type SlugPageParams} from '@/src/lib/params';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,10 +25,6 @@ const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 // treat the enclosure URL as a valid audio file. Strip it before slug validation/lookup. Since
 // SLUG_PATTERN disallows dots, this is unambiguous and never affects a legitimate slug.
 const TRAILING_MP3_SUFFIX = /\.mp3$/i;
-
-type RouteContext = {
-    params: Promise<{slug: string}>;
-};
 
 /**
  * Determines whether a download URL is allowed for redirection.
@@ -58,7 +55,7 @@ function isAllowedDownloadUrl(fileUrl: string): boolean {
  *
  * @returns A redirect response to the podcast audio file, or a `404 Not Found` response.
  */
-export async function GET(request: Request, {params}: RouteContext) {
+export async function GET(request: Request, {params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = rawSlug.replace(TRAILING_MP3_SUFFIX, '');
 

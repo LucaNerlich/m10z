@@ -1,6 +1,7 @@
 import {ArticleCard} from './ArticleCard';
 import {ContentListPage} from './ContentListPage';
 
+import {type PageSearchParamsInput} from '@/src/lib/params';
 import {fetchArticlesPage} from '@/src/lib/strapiContent';
 
 /**
@@ -11,7 +12,7 @@ import {fetchArticlesPage} from '@/src/lib/strapiContent';
 export async function ArticleListPage({
                                           searchParams,
                                       }: {
-    searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
+    searchParams?: PageSearchParamsInput;
 }) {
     return (
         <ContentListPage

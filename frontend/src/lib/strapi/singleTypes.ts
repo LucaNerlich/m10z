@@ -6,7 +6,11 @@ import {ABOUT_PAGE_TAG, ABOUT_TAG, feedSourceTag, LEGAL_TAGS} from '@/src/lib/st
 import {type FetchStrapiOptions, fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
 
-export type StrapiLegalDoc = {
+/**
+ * Shared shape for Strapi single types that carry a title and a Markdown body
+ * (imprint, privacy, and feeds-info pages).
+ */
+export type StrapiTextPage = {
     id: number;
     documentId: string;
     title: string;
@@ -15,6 +19,8 @@ export type StrapiLegalDoc = {
     updatedAt: string;
     publishedAt: string | null;
 };
+
+export type StrapiLegalDoc = StrapiTextPage;
 
 export type StrapiAbout = {
     id: number;
@@ -28,15 +34,7 @@ export type StrapiAbout = {
     publishedAt: string | null;
 };
 
-export type StrapiFeedsInfo = {
-    id: number;
-    documentId: string;
-    title: string;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string | null;
-};
+export type StrapiFeedsInfo = StrapiTextPage;
 
 function assertIsLegalDoc(data: unknown): asserts data is StrapiLegalDoc {
     if (!data || typeof data !== 'object') throw new Error('Invalid Strapi data');

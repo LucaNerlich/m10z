@@ -12,18 +12,16 @@ import {Pagination} from '@/src/components/Pagination';
 import {Tag} from '@/src/components/Tag';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {parseCategoryParam, parsePageParam} from '@/src/lib/params';
+import {parseCategoryParam, parsePageParam, type PageSearchParamsInput, type SlugParams} from '@/src/lib/params';
 import {absoluteRoute} from '@/src/lib/routes';
 import {getOptimalMediaFormat} from '@/src/lib/strapi/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {fetchAuthorBySlug, fetchCategoryBySlug, type PaginatedResult} from '@/src/lib/strapiContent';
 import styles from './AuthorContentPage.module.css';
 
-type SearchParams = Record<string, string | string[] | undefined>;
-
 export async function generateAuthorContentMetadata(args: {
-    params: Promise<{slug: string}>;
-    searchParams?: SearchParams | Promise<SearchParams>;
+    params: Promise<SlugParams>;
+    searchParams?: PageSearchParamsInput;
     sectionLabel: 'Artikel' | 'Podcasts';
     sectionPath: 'artikel' | 'podcasts';
 }): Promise<Metadata> {
@@ -79,8 +77,8 @@ export async function generateAuthorContentMetadata(args: {
 }
 
 export type AuthorContentPageProps<TItem extends {slug: string}> = {
-    params: Promise<{slug: string}>;
-    searchParams?: SearchParams | Promise<SearchParams>;
+    params: Promise<SlugParams>;
+    searchParams?: PageSearchParamsInput;
 
     sectionLabel: 'Artikel' | 'Podcasts';
     sectionPath: 'artikel' | 'podcasts';
