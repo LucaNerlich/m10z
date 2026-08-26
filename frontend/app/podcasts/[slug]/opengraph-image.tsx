@@ -4,6 +4,7 @@ import {join} from 'node:path';
 
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
+import {type SlugPageParams} from '@/src/lib/params';
 
 export const alt = 'Podcast-Vorschaubild';
 export const size = {width: 1200, height: 630};
@@ -15,7 +16,7 @@ export const contentType = 'image/png';
  * Displays the episode title on a gradient background with M10Z branding.
  * Falls back to a generic branded card if the episode cannot be fetched.
  */
-export default async function Image({params}: {params: Promise<{slug: string}>}) {
+export default async function Image({params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
 

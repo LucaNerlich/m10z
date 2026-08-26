@@ -9,11 +9,8 @@ import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/li
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
+import {type SlugPageParams} from '@/src/lib/params';
 import {contentTag} from '@/src/lib/strapi/cacheTags';
-
-type PageProps = {
-    params: Promise<{slug: string}>;
-};
 
 /**
  * Pre-generate static params for all published podcasts at build time.
@@ -40,7 +37,7 @@ export async function generateStaticParams() {
  * @param params - Route params resolving to an object with a `slug` string
  * @returns A Metadata object with title, description, alternates.canonical, `openGraph`, and `twitter` fields, or an empty object if metadata cannot be generated
  */
-export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+export async function generateMetadata({params}: SlugPageParams): Promise<Metadata> {
     return buildContentSlugMetadata({
         params,
         canonicalPath: (slug) => `/podcasts/${slug}`,
@@ -59,7 +56,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
  * @param params - Route parameters object containing the `slug` string
  * @returns The `PodcastDetail` React element for the resolved episode
  */
-export default async function PodcastDetailPage({params}: PageProps) {
+export default async function PodcastDetailPage({params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) notFound();

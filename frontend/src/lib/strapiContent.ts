@@ -460,14 +460,10 @@ export const fetchAuthorBySlug = cache(
 
 // ─── Categories ────────────────────────────────────────────────────────────
 
-export type StrapiCategoryWithContent = {
+export type StrapiCategoryWithContent = StrapiCategoryRef & {
     id: number;
     slug: string;
-    title?: string | null;
-    description?: string | null;
     date?: string | null;
-    cover?: StrapiMediaRef | null;
-    banner?: StrapiMediaRef | null;
     articles?: NestedContentTeaser[];
     podcasts?: NestedContentTeaser[];
 };

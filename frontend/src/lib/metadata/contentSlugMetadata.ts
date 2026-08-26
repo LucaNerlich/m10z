@@ -6,6 +6,7 @@ import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {absoluteRoute} from '@/src/lib/routes';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {getOptimalMediaFormat, pickBannerOrCoverMedia, type StrapiMediaRef} from '@/src/lib/strapi/media';
+import {type SlugParams} from '@/src/lib/params';
 
 type MediaSource = {
     title?: string | null;
@@ -15,7 +16,7 @@ type MediaSource = {
 };
 
 type ContentSlugMetadataInput<T extends MediaSource> = {
-    params: Promise<{slug: string}>;
+    params: Promise<SlugParams>;
     canonicalPath: (slug: string) => string;
     contentLabel: string;
     fetchBySlug: (slug: string) => Promise<T | null>;

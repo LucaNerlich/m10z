@@ -1,22 +1,13 @@
 import Link from 'next/link';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
-import {type StrapiMediaRef} from '@/src/lib/strapiContent';
-import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
+import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiCategoryRef} from '@/src/lib/strapi/media';
 import {ContentImage} from '@/src/components/ContentImage';
 import placeholderCover from '@/public/images/m10z.jpg';
 import styles from './CategoryCard.module.css';
 
-type CategoryCardCategory = {
-    slug?: string | null;
-    title?: string | null;
-    description?: string | null;
-    cover?: StrapiMediaRef | null;
-    banner?: StrapiMediaRef | null;
-};
-
 type CategoryCardProps = {
-    category: CategoryCardCategory;
+    category: StrapiCategoryRef;
     articleCount?: number;
     podcastCount?: number;
     className?: string;

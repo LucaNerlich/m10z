@@ -1,12 +1,12 @@
 import {useEffect, useState} from 'react';
 import useSWR from 'swr';
-import {type SearchRecord} from '@/src/lib/search/types';
+import {type SearchResult} from '@/src/lib/search/types';
 import {fetcher} from '@/src/lib/swr/config';
 
 const SEARCH_INDEX_URL = '/api/search-index';
 
 type SearchQueryResponse = {
-    results: Array<SearchRecord & {score?: number | null}>;
+    results: SearchResult[];
     total: number;
     query: string;
 };

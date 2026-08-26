@@ -14,12 +14,9 @@ import {generateCategoryJsonLd} from '@/src/lib/jsonld/category';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 import {sitemapTag} from '@/src/lib/strapi/cacheTags';
+import {type SlugPageParams} from '@/src/lib/params';
 import Script from 'next/script';
 import styles from './page.module.css';
-
-type PageProps = {
-    params: Promise<{slug: string}>;
-};
 
 /**
  * Pre-generate static params for all published categories at build time.
@@ -43,7 +40,7 @@ export async function generateStaticParams() {
  * @param params - Route parameters object. Expects `params.slug` to identify the category.
  * @returns The assembled `Metadata` for the category page (title, description, alternates, `openGraph`, `twitter`, and `robots`).
  */
-export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+export async function generateMetadata({params}: SlugPageParams): Promise<Metadata> {
     return buildContentSlugMetadata({
         params,
         canonicalPath: (slug) => `/kategorien/${slug}`,
@@ -66,7 +63,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
  * @param params - An object providing route parameters (must include `slug`)
  * @returns The page's JSX content when `slug` is valid; invokes a 404 response when `slug` is invalid
  */
-export default async function CategoryDetailPage({params}: PageProps) {
+export default async function CategoryDetailPage({params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = validateSlugSafe(rawSlug);
     if (!slug) return notFound();
