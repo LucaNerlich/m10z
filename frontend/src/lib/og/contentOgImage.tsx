@@ -14,9 +14,16 @@ export const OG_IMAGE_SIZE = {width: 1200, height: 630} as const;
 const OG_BACKGROUND = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)';
 const OG_ACCENT_COLOR = '#ff6b35';
 
-/** Load the Poppins Bold font used by the branded OG cards. */
+let ogFontLoad: Promise<Buffer> | null = null;
+
+/**
+ * Load the Poppins Bold font used by the branded OG cards. The in-flight
+ * promise is cached at module scope so concurrent and subsequent image
+ * renders reuse the same read instead of re-reading the font file.
+ */
 export function loadOgFont(): Promise<Buffer> {
-    return readFile(join(process.cwd(), 'public/fonts/Poppins-Bold.woff2'));
+    ogFontLoad ??= readFile(join(process.cwd(), 'public/fonts/Poppins-Bold.woff2'));
+    return ogFontLoad;
 }
 
 /** Truncate text to `limit` characters, ending with `ellipsis` (default "…"). */

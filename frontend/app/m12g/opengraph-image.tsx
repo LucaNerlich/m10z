@@ -1,12 +1,12 @@
 import {ImageResponse} from 'next/og';
 
-import {OgImageFrame, truncateToLength} from '@/src/lib/og/contentOgImage';
+import {OgImageFrame, OG_IMAGE_SIZE, truncateToLength} from '@/src/lib/og/contentOgImage';
 import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
 import {computeM12GStats} from '@/src/lib/m12g/m12gStats';
 import {getErrorMessage} from '@/src/lib/errors';
 
 export const alt = 'M12G Statistik – Mindestens 10 Zeichen';
-export const size = {width: 1200, height: 630};
+export const size = OG_IMAGE_SIZE;
 export const contentType = 'image/png';
 
 export default async function Image() {

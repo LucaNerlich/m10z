@@ -1,6 +1,8 @@
 import {describe, expect, test, vi} from 'vitest';
 
-import {createFeedCache, type FeedBuilt} from './feedCache';
+import {createFeedCache, type FeedBuilt, type FeedCacheDeps} from './feedCache';
+
+type FsReadFile = NonNullable<FeedCacheDeps['fs']>['readFile'];
 
 describe('createFeedCache', () => {
     test('refresh builds and caches feed from spec.build', async () => {
@@ -135,5 +137,99 @@ describe('createFeedCache', () => {
         expect(build).toHaveBeenCalledTimes(2);
         resolvers.resolveBuild?.(built2);
         expect(await cache.refresh()).toMatchObject({itemCount: 2});
+    });
+
+    test('rejects a disk sidecar with an invalid lastModified timestamp', async () => {
+        const build = vi.fn(
+            async (): Promise<FeedBuilt> => ({
+                xml: '<rss/>',
+                etag: '"fresh"',
+                lastModified: null,
+                itemCount: 0,
+            }),
+        );
+
+        const cache = createFeedCache(
+            {
+                feedKey: 'test',
+                diskFileName: 'test-invalid-meta.xml',
+                fallback: {title: 'Test', selfPath: '/test.xml'},
+                build,
+            },
+            {
+                feedCacheDir: '/tmp/feed-cache-invalid-meta',
+                setIntervalFn: (() => 1) as unknown as typeof setInterval,
+                clearIntervalFn: vi.fn(),
+                fs: {
+                    mkdir: vi.fn(async () => undefined),
+                    writeFile: vi.fn(async () => undefined),
+                    readFile: vi.fn(async (filePath: unknown) => {
+                        if (String(filePath).endsWith('.meta.json')) {
+                            return JSON.stringify({
+                                etag: '"disk"',
+                                builtAtMs: 1_700_000_000_000,
+                                lastModified: 'not-a-date',
+                                itemCount: 3,
+                            });
+                        }
+                        return '<rss><v>1</v></rss>';
+                    }) as unknown as FsReadFile,
+                    rename: vi.fn(async () => undefined),
+                },
+            },
+        );
+
+        const response = await cache.handle(new Request('http://localhost/test.xml'));
+        expect(response.status).toBe(200);
+        expect(build).toHaveBeenCalledOnce();
+        expect(response.headers.get('ETag')).toBe('"fresh"');
+        expect(await response.text()).toBe('<rss/>');
+    });
+
+    test('serves a disk sidecar with a valid lastModified timestamp', async () => {
+        const build = vi.fn(
+            async (): Promise<FeedBuilt> => ({
+                xml: '<rss/>',
+                etag: '"fresh"',
+                lastModified: null,
+                itemCount: 0,
+            }),
+        );
+
+        const cache = createFeedCache(
+            {
+                feedKey: 'test',
+                diskFileName: 'test-valid-meta.xml',
+                fallback: {title: 'Test', selfPath: '/test.xml'},
+                build,
+            },
+            {
+                feedCacheDir: '/tmp/feed-cache-valid-meta',
+                setIntervalFn: (() => 1) as unknown as typeof setInterval,
+                clearIntervalFn: vi.fn(),
+                fs: {
+                    mkdir: vi.fn(async () => undefined),
+                    writeFile: vi.fn(async () => undefined),
+                    readFile: vi.fn(async (filePath: unknown) => {
+                        if (String(filePath).endsWith('.meta.json')) {
+                            return JSON.stringify({
+                                etag: '"disk"',
+                                builtAtMs: 1_700_000_000_000,
+                                lastModified: '2024-01-01T00:00:00.000Z',
+                                itemCount: 3,
+                            });
+                        }
+                        return '<rss><v>1</v></rss>';
+                    }) as unknown as FsReadFile,
+                    rename: vi.fn(async () => undefined),
+                },
+            },
+        );
+
+        const response = await cache.handle(new Request('http://localhost/test.xml'));
+        expect(response.status).toBe(200);
+        expect(build).toHaveBeenCalledOnce();
+        expect(response.headers.get('ETag')).toBe('"disk"');
+        expect(await response.text()).toBe('<rss><v>1</v></rss>');
     });
 });

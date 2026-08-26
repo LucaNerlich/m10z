@@ -69,6 +69,9 @@ function parseFeedDiskMeta(metaRaw: string): FeedDiskMeta | null {
     const lastModifiedRaw = meta.lastModified ?? null;
     if (lastModifiedRaw !== null && typeof lastModifiedRaw !== 'string') return null;
 
+    const lastModified = typeof lastModifiedRaw === 'string' ? new Date(lastModifiedRaw) : null;
+    if (lastModified !== null && !Number.isFinite(lastModified.getTime())) return null;
+
     const itemCountRaw = meta.itemCount ?? meta.episodeCount;
     const itemCount =
         typeof itemCountRaw === 'number' && Number.isFinite(itemCountRaw) && itemCountRaw > 0
@@ -78,7 +81,7 @@ function parseFeedDiskMeta(metaRaw: string): FeedDiskMeta | null {
     return {
         etag: meta.etag,
         builtAtMs: meta.builtAtMs,
-        lastModified: typeof lastModifiedRaw === 'string' ? new Date(lastModifiedRaw) : null,
+        lastModified,
         itemCount,
     };
 }
