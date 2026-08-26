@@ -24,16 +24,3 @@ export function getLineClampCSS(lines: number): CSSProperties {
     };
 }
 
-/**
- * Returns a CSS custom property string for line-clamp value.
- *
- * Useful for setting CSS custom properties in CSS modules or inline styles.
- *
- * @param lines - Number of lines to clamp (1-10)
- * @returns CSS custom property string `--line-clamp: {lines}`
- */
-export function getLineClampCustomProperty(lines: number): string {
-    const clampedLines = Math.max(1, Math.min(10, Math.floor(lines)));
-    return `--line-clamp: ${clampedLines}`;
-}
-

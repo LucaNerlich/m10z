@@ -19,7 +19,7 @@ export type StrapiArticle = StrapiContentMedia & {
 };
 
 /** Channel header shared by the article and audio feed single types. */
-export type FeedChannel = {
+type FeedChannel = {
     title: string;
     description: string;
     mail: string;
