@@ -4,7 +4,7 @@ import {notFound} from 'next/navigation';
 import {fetchPodcastBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
-import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
+import {deriveContentDescription} from '@/src/lib/metadata/excerpt';
 import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import {RelatedContent} from '@/src/components/RelatedContent';
@@ -47,7 +47,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
         contentLabel: 'podcast',
         fetchBySlug: fetchPodcastBySlug,
         getTitle: (episode) => episode.title,
-        getDescription: (episode) => episode.description?.trim() || deriveExcerpt(episode.shownotes),
+        getDescription: (episode) => deriveContentDescription(episode.description, episode.shownotes),
         ogType: 'article',
         getMediaSource: (episode) => episode,
     });

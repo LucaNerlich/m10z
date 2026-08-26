@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {deriveExcerpt} from './excerpt';
+import {deriveContentDescription, deriveExcerpt} from './excerpt';
 
 describe('deriveExcerpt', () => {
     test('returns undefined for empty or whitespace-only input', () => {
@@ -32,5 +32,21 @@ describe('deriveExcerpt', () => {
         const result = deriveExcerpt('a'.repeat(500), 50);
         // No spaces to break on, so it hard-cuts at maxChars then adds the ellipsis.
         expect(result).toBe(`${'a'.repeat(50)}…`);
+    });
+});
+
+describe('deriveContentDescription', () => {
+    test('prefers the explicit description (trimmed)', () => {
+        expect(deriveContentDescription('  Explicit  ', '# markdown body')).toBe('Explicit');
+    });
+
+    test('falls back to an excerpt of the markdown body', () => {
+        expect(deriveContentDescription(null, '# Title\n\nBody')).toBe('Title Body');
+        expect(deriveContentDescription('   ', 'Body')).toBe('Body');
+    });
+
+    test('returns undefined when both inputs are empty', () => {
+        expect(deriveContentDescription(undefined, undefined)).toBeUndefined();
+        expect(deriveContentDescription('', '')).toBeUndefined();
     });
 });

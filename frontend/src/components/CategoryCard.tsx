@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import {getLineClampCSS} from '@/src/lib/textUtils';
 import {routes} from '@/src/lib/routes';
+import {formatContentCounts} from '@/src/lib/contentCounts';
 import {type StrapiMediaRef} from '@/src/lib/strapiContent';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {ContentImage} from '@/src/components/ContentImage';
@@ -21,20 +22,6 @@ type CategoryCardProps = {
     podcastCount?: number;
     className?: string;
 };
-
-/**
- * Formats content counts into German text.
- */
-function formatContentCounts(articleCount?: number, podcastCount?: number): string {
-    const parts: string[] = [];
-    if (articleCount !== undefined && articleCount > 0) {
-        parts.push(`${articleCount} Artikel`);
-    }
-    if (podcastCount !== undefined && podcastCount > 0) {
-        parts.push(`${podcastCount} ${podcastCount === 1 ? 'Podcast' : 'Podcasts'}`);
-    }
-    return parts.join(', ') || 'Keine Inhalte';
-}
 
 /**
  * Render a category card with optional cover image, title, description, and content counts.

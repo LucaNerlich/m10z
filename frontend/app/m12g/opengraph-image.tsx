@@ -1,5 +1,6 @@
 import {ImageResponse} from 'next/og';
 
+import {OgImageFrame, truncateToLength} from '@/src/lib/og/contentOgImage';
 import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
 import {computeM12GStats} from '@/src/lib/m12g/m12gStats';
 
@@ -17,50 +18,9 @@ export default async function Image() {
         // Fall back to a generic card if data can't be loaded.
     }
 
-    function truncate(name: string, limit: number): string {
-        return name.length > limit ? name.slice(0, limit - 1) + '…' : name;
-    }
-
     return new ImageResponse(
         (
-            <div
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: '60px',
-                    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-                    color: '#ffffff',
-                }}>
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: '6px',
-                        background: '#ff6b35',
-                    }}
-                />
-
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: '40px',
-                        left: '60px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                    }}>
-                    <div style={{fontSize: '24px', fontWeight: 700, color: '#ff6b35', letterSpacing: '0.02em'}}>
-                        m10z.de
-                    </div>
-                    <div style={{fontSize: '18px', color: 'rgba(255, 255, 255, 0.5)', marginLeft: '8px'}}>
-                        M12G
-                    </div>
-                </div>
-
+            <OgImageFrame label="M12G">
                 <div
                     style={{
                         display: 'flex',
@@ -104,7 +64,7 @@ export default async function Image() {
                                             flex: 1,
                                             overflow: 'hidden',
                                         }}>
-                                        {truncate(entry.name, 38)}
+                                        {truncateToLength(entry.name, 38)}
                                     </div>
                                     <div
                                         style={{
@@ -118,7 +78,7 @@ export default async function Image() {
                         </div>
                     )}
                 </div>
-            </div>
+            </OgImageFrame>
         ),
         size,
     );

@@ -5,7 +5,7 @@ import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {absoluteRoute} from '@/src/lib/routes';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
-import {getOptimalMediaFormat, pickBannerOrCoverMedia, type StrapiMediaRef} from '@/src/lib/strapi/media';
+import {pickAndOptimizeImage, type StrapiMediaRef} from '@/src/lib/strapi/media';
 
 type MediaSource = {
     title?: string | null;
@@ -30,11 +30,11 @@ type ContentSlugMetadataInput<T extends MediaSource> = {
 };
 
 function resolveCoverImage(source: MediaSource): ReturnType<typeof formatOpenGraphImage> | undefined {
-    const bannerOrCoverMedia = pickBannerOrCoverMedia(
+    const {media: optimizedMedia} = pickAndOptimizeImage(
         {title: source.title ?? '', cover: source.cover, banner: source.banner},
         source.categories,
+        'medium',
     );
-    const optimizedMedia = bannerOrCoverMedia ? getOptimalMediaFormat(bannerOrCoverMedia, 'medium') : undefined;
     return optimizedMedia ? formatOpenGraphImage(optimizedMedia) : undefined;
 }
 
