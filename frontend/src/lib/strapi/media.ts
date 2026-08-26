@@ -215,15 +215,12 @@ export function getOptimalMediaFormat(
 
     const formats = media.formats;
     if (!formats || typeof formats !== 'object') {
-        // No formats available, return original media without formats property
         const {formats: _, ...rest} = media;
         return rest;
     }
 
-    // Find the requested size index
     const requestedIndex = IMAGE_SIZES_ORDERED.indexOf(requestedSize);
     if (requestedIndex === -1) {
-        // Invalid size requested, return original media without formats
         const {formats: _, ...rest} = media;
         return rest;
     }
@@ -234,7 +231,6 @@ export function getOptimalMediaFormat(
         const size = IMAGE_SIZES_ORDERED[i];
         const format = formats[size];
         if (format && format.url) {
-            // Found a matching format, merge format properties with root metadata
             return {
                 id: media.id,
                 documentId: media.documentId,
@@ -261,7 +257,6 @@ export function getOptimalMediaFormat(
         }
     }
 
-    // No matching format found, return original media without formats property
     const {formats: _, ...rest} = media;
     return rest;
 }

@@ -75,10 +75,6 @@ export function isNotFoundError(error: unknown): boolean {
  * new build. No in-page retry can fix this — only a full reload against the
  * current deployment can, since it fetches a fresh HTML shell and chunk graph.
  *
- * The same signatures used to fire during App Router client navigations into
- * `[slug]` segments that had a route-level `loading.tsx`. Those files were
- * removed; remaining hits should be genuine post-deploy chunk drift.
- *
  * @param error - The error to check
  * @returns true if the error message matches a known stale-chunk signature
  */

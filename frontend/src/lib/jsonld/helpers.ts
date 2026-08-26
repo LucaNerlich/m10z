@@ -156,9 +156,7 @@ export function imagesEqual(image1: ImageObject | string | undefined, image2: Im
  * @returns A stable, sanitized JSON string representation safe for use in script tags
  */
 export function stringifyJsonLd(jsonLd: unknown): string {
-    // Remove undefined values and ensure stable ordering
     const cleaned = JSON.parse(JSON.stringify(jsonLd, (key, value) => {
-        // Remove undefined values
         if (value === undefined) return undefined;
         return value;
     }));

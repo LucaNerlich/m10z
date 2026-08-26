@@ -43,7 +43,6 @@ export function computeFeedEtag(etagSeed: string, xml: string): string {
 }
 
 // Fetch a feed's channel single-type and its full paginated item list in parallel.
-// The single building block both handlers used to wire by hand.
 export async function fetchFeedSourceData<TSingle, TItem>(args: {
     fetcher: StrapiFeedFetcher;
     singlePathWithQuery: string;

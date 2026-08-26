@@ -113,7 +113,7 @@ type ContentDescriptor = {
     listPopulate: object;
     relatedPopulate: object;
     // by-slugs reuses the detail population for Articles (authors are needed there) but
-    // the lighter list population for Podcasts — preserved from the original fetchers.
+    // the lighter list population for Podcasts.
     bySlugsPopulate: object;
     detailFields: readonly string[];
     listFields: readonly string[];

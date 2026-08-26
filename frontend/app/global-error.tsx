@@ -22,8 +22,6 @@ export default function GlobalError({
         // A tab open across a deployment can reference JS chunks that no
         // longer exist under the new build; only a full reload recovers.
         // Guard with sessionStorage to avoid looping if reload doesn't help.
-        // Route-level loading.tsx files used to trigger the same signatures
-        // during slug-page client navigations; those files are gone.
         if (window.sessionStorage.getItem(STALE_CHUNK_RELOAD_KEY)) return;
         window.sessionStorage.setItem(STALE_CHUNK_RELOAD_KEY, '1');
         window.location.reload();

@@ -5,8 +5,7 @@ import dynamic from 'next/dynamic';
 import {Highlight} from 'prism-react-renderer';
 import styles from './Code.module.css';
 
-// Lazy-load Mermaid component to reduce bundle size
-// Mermaid library is ~2MB and only needed for diagrams
+// Lazy-load Mermaid: the library is ~2MB and only needed for diagrams.
 const Mermaid = dynamic(
     () => import('./Mermaid').then(mod => ({default: mod.Mermaid})),
     {
@@ -36,7 +35,6 @@ export function Code({className = '', children, inline = false, ...props}: CodeP
     const languageMatch = className.match(/language-(\w+)/);
     const language = languageMatch ? languageMatch[1] : '';
 
-    // For inline code or code without language, render plain code element
     if (inline || !language) {
         return (
             <code className={className} {...props}>
@@ -45,13 +43,11 @@ export function Code({className = '', children, inline = false, ...props}: CodeP
         );
     }
 
-    // Handle Mermaid diagrams
     if (language === 'mermaid' || language === 'mermaidjs') {
         const codeString = typeof children === 'string' ? children : String(children || '');
         return <Mermaid chart={codeString} />;
     }
 
-    // For code blocks with language, use prism-react-renderer
     const codeString = typeof children === 'string' ? children : String(children || '');
 
     // Extract safe HTML attributes for pre element (exclude ref and element-specific props)
