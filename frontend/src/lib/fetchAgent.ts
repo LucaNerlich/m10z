@@ -20,8 +20,8 @@ export function initializeFetchAgent(): void {
     }
 
     const agent = new Agent({
-        keepAliveTimeout: 60000, // 60 seconds
-        keepAliveMaxTimeout: 300000, // 300 seconds (5 minutes)
+        keepAliveTimeout: 60000,
+        keepAliveMaxTimeout: 300000,
         connections: 100,
         pipelining: 1,
     });

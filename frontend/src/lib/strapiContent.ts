@@ -114,7 +114,7 @@ type ContentDescriptor = {
     listPopulate: StrapiPopulate;
     relatedPopulate: StrapiPopulate;
     // by-slugs reuses the detail population for Articles (authors are needed there) but
-    // the lighter list population for Podcasts — preserved from the original fetchers.
+    // the lighter list population for Podcasts.
     bySlugsPopulate: StrapiPopulate;
     detailFields: readonly string[];
     listFields: readonly string[];

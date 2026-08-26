@@ -20,7 +20,7 @@ export type {StrapiAudioFeedSingle, StrapiPodcast};
 
 export type AudioFeedConfig = {
     siteUrl: string; // e.g. https://m10z.de
-    // Constants that exist in the legacy template; keep stable.
+    // Keep these values stable: podcatchers and existing subscribers depend on them.
     ttlSeconds: number;
     language: string;
     copyright: string;

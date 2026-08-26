@@ -133,7 +133,7 @@ export function buildPodlovePlayerConfig(): PodlovePlayerConfig {
         },
         'subscribe-button': {
             feed: feedUrl,
-            // Only the plain RSS link for now (no app deep-links).
+            // Only the plain RSS link (no app deep-links).
             clients: [{id: 'rss', service: feedUrl}],
         },
     };

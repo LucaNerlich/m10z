@@ -52,7 +52,6 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const resultsId = useId();
     const shouldScrollRef = useRef(false);
 
-    // Use SWR hook for search queries with automatic debouncing and caching
     const {results, isLoading, error: searchError} = useSearchQuery(query, 150);
 
     useEffect(() => {
