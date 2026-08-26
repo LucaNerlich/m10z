@@ -168,12 +168,8 @@ export function markdownToHtml(markdownText: string): string {
         lastErrorAtMs = Date.now();
         throw err;
     } finally {
-        try {
-            window.close();
-            jsdomWindowsClosed += 1;
-        } catch {
-            // ignore
-        }
+        window.close();
+        jsdomWindowsClosed += 1;
     }
 }
 

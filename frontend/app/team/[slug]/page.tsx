@@ -30,15 +30,12 @@ import styles from './page.module.css';
 
 /**
  * Pre-generate static params for all published authors at build time.
- * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ * `fetchPublishedSlugs` degrades to the entries collected so far (possibly
+ * empty) when the CMS is unreachable, allowing ISR at runtime.
  */
 export async function generateStaticParams() {
-    try {
-        const entries = await fetchPublishedSlugs('authors', [sitemapTag('authors')]);
-        return entries.map(({slug}) => ({slug}));
-    } catch {
-        return [];
-    }
+    const entries = await fetchPublishedSlugs('authors', [sitemapTag('authors')]);
+    return entries.map(({slug}) => ({slug}));
 }
 
 /**

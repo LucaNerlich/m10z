@@ -16,15 +16,12 @@ import {contentTag} from '@/src/lib/strapi/cacheTags';
 
 /**
  * Pre-generate static params for all published articles at build time.
- * Returns an empty array if the CMS is unreachable, allowing ISR at runtime.
+ * `fetchPublishedSlugs` degrades to the entries collected so far (possibly
+ * empty) when the CMS is unreachable, allowing ISR at runtime.
  */
 export async function generateStaticParams() {
-    try {
-        const entries = await fetchPublishedSlugs('articles', [contentTag('article')]);
-        return entries.map(({slug}) => ({slug}));
-    } catch {
-        return [];
-    }
+    const entries = await fetchPublishedSlugs('articles', [contentTag('article')]);
+    return entries.map(({slug}) => ({slug}));
 }
 
 /**
@@ -82,9 +79,17 @@ export default async function ArticleDetailPage({params}: SlugPageParams) {
     if (!article) notFound();
 
     const categorySlugs = article.categories?.map((c) => c.slug).filter(Boolean) as string[] ?? [];
+    // Related content is optional enrichment: a failure here must not take the
+    // whole article page down, but it must stay observable.
     const [relatedArticles, relatedPodcasts] = await Promise.all([
-        fetchRelatedArticles(categorySlugs, slug).catch(() => []),
-        fetchRelatedPodcasts(categorySlugs, slug).catch(() => []),
+        fetchRelatedArticles(categorySlugs, slug).catch((error: unknown) => {
+            console.error(`Failed to fetch related articles for slug "${slug}":`, getErrorMessage(error));
+            return [];
+        }),
+        fetchRelatedPodcasts(categorySlugs, slug).catch((error: unknown) => {
+            console.error(`Failed to fetch related podcasts for slug "${slug}":`, getErrorMessage(error));
+            return [];
+        }),
     ]);
 
     return (

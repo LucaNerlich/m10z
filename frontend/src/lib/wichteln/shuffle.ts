@@ -40,7 +40,6 @@ export function shuffleAndAssign(participants: Participant[]): Assignment[] {
         const nextIndex = (i + 1) % shuffled.length;
         const giverId = shuffled[i];
         const receiverId = shuffled[nextIndex];
-        if (giverId === undefined || receiverId === undefined) continue;
         assignments.push({giverId, receiverId});
     }
 

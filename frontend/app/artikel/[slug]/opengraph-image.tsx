@@ -2,6 +2,7 @@ import {buildContentOgImageResponse, OG_IMAGE_SIZE} from '@/src/lib/og/contentOg
 
 import {fetchArticleBySlug} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
+import {getErrorMessage} from '@/src/lib/errors';
 import {type SlugPageParams} from '@/src/lib/params';
 
 export const alt = 'Artikel-Vorschaubild';
@@ -28,8 +29,9 @@ export default async function Image({params}: SlugPageParams) {
                 title = article.title;
                 description = article.description ?? undefined;
             }
-        } catch {
-            // Keep the default title
+        } catch (error) {
+            // Fall back to the generic branded card, but keep the failure observable.
+            console.error(`OG image: failed to fetch article for slug "${slug}":`, getErrorMessage(error));
         }
     }
 
