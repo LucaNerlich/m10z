@@ -18,11 +18,11 @@
     "dependencies": {
         "@fancyapps/ui": "^6.1.14",
         "@phosphor-icons/react": "^2.1.10",
-        "dompurify": "^3.4.13",
+        "dompurify": "^3.4.14",
         "fuse.js": "^7.5.0",
         "jsdom": "^27.4.0",
         "marked": "^17.0.6",
-        "mermaid": "^11.16.1",
+        "mermaid": "^11.17.2",
         "next": "16.3.1",
         "prism-react-renderer": "^2.4.1",
         "qs": "^6.15.3",
@@ -46,12 +46,12 @@
         "@types/node": "^25.9.5",
         "@types/qs": "^6.15.1",
         "@types/react": "^19.2.18",
-        "@types/react-dom": "^19.2.4",
+        "@types/react-dom": "^19.2.5",
         "@types/serialize-javascript": "^5.0.4",
         "babel-plugin-react-compiler": "^1.0.0",
         "tsx": "^4.23.12",
         "typescript": "7.0.2",
-        "vitest": "^4.1.10"
+        "vitest": "^4.1.11"
     },
     "engines": {
         "node": "^22",
