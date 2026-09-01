@@ -1,7 +1,10 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
-import {handleInvalidation} from './handleInvalidation';
+
+import {type InvalidationEvent} from '@/src/lib/shared/strapiContract';
+import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
+
 import {computeRevalidation} from './computeRevalidation';
-import type {InvalidationEvent} from '@/src/lib/shared/strapiContract';
+import {handleInvalidation} from './handleInvalidation';
 
 const {revalidateTag, revalidatePath, onInvalidate} = vi.hoisted(() => ({
     revalidateTag: vi.fn(),
@@ -60,7 +63,10 @@ describe('handleInvalidation', () => {
         const {tags, pages, paths} = computeRevalidation(event);
         expect(paths.length).toBeGreaterThan(0);
         expect(await res.json()).toEqual({ok: true, revalidated: [...tags, ...pages, ...paths]});
-        for (const tag of tags) expect(revalidateTag).toHaveBeenCalledWith(tag, 'max');
+        expect(revalidateTag).toHaveBeenCalledTimes(tags.length);
+        for (const tag of tags) {
+            expect(revalidateTag).toHaveBeenCalledWith(tag, tag === HOME_PAGE_TAG ? {expire: 0} : 'max');
+        }
         for (const page of pages) expect(revalidatePath).toHaveBeenCalledWith(page, 'page');
         for (const path of paths) expect(revalidatePath).toHaveBeenCalledWith(path);
         expect(onInvalidate).toHaveBeenCalledWith('article');

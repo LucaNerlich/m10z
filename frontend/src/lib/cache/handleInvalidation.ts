@@ -5,6 +5,7 @@ import {checkRateLimit} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {feedRegistry} from '@/src/lib/rss/feedRegistry';
 import {isContentTypeKey, isDocumentAction, type InvalidationEvent} from '@/src/lib/shared/strapiContract';
+import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
 
 import {computeRevalidation} from './computeRevalidation';
 
@@ -62,7 +63,7 @@ export async function handleInvalidation(request: Request): Promise<Response> {
 
     const {tags, pages, paths} = computeRevalidation(event);
     for (const tag of tags) {
-        revalidateTag(tag, 'max');
+        revalidateTag(tag, tag === HOME_PAGE_TAG ? {expire: 0} : 'max');
     }
     for (const page of pages) {
         revalidatePath(page, 'page');

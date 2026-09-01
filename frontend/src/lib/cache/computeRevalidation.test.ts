@@ -1,17 +1,30 @@
 import {describe, expect, test} from 'vitest';
 
-import {computeRevalidation} from './computeRevalidation';
 import {authorCategoryListTag, authorListTag, entityTag, listTag, typeTag} from '@/src/lib/shared/strapiContract';
+import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
+
+import {computeRevalidation} from './computeRevalidation';
 
 describe('computeRevalidation', () => {
     test('article publish busts type/list/entity tags plus cascade tags', () => {
         const {tags, pages, paths} = computeRevalidation({type: 'article', action: 'publish', slug: 'my-article'});
 
         expect(tags).toEqual(
-            expect.arrayContaining([typeTag('article'), listTag('article'), entityTag('article', 'my-article')]),
+            expect.arrayContaining([
+                typeTag('article'),
+                listTag('article'),
+                entityTag('article', 'my-article'),
+                HOME_PAGE_TAG,
+            ]),
         );
         expect(pages).toEqual(expect.arrayContaining(['/artikel', '/artikel/[slug]']));
         expect(paths).toContain('/artikel/my-article');
+    });
+
+    test('podcast publish busts the homepage cache tag', () => {
+        const {tags} = computeRevalidation({type: 'podcast', action: 'publish', slug: 'my-podcast'});
+
+        expect(tags).toContain(HOME_PAGE_TAG);
     });
 
     test('article publish with author/category relations busts the precise scoped list tags', () => {
