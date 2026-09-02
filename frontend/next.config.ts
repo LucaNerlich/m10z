@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
     },
     async redirects() {
         return [
+            // SEO / similar wordings
+            {source: '/formate', destination: '/kategorien', permanent: true},
+            {source: '/about', destination: '/ueber-uns', permanent: true},
+            {source: '/rss', destination: '/feeds', permanent: true},
+
             // Legacy Docusaurus pages -> Next.js routes
             {source: '/content/imprint', destination: '/impressum', permanent: true},
             {source: '/content/privacy', destination: '/datenschutz', permanent: true},
