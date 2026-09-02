@@ -31,13 +31,20 @@ function hasContent(category: StrapiCategoryWithContent): boolean {
 export function isCategoryRecentlyActive(category: StrapiCategoryWithContent, now: Date = new Date()): boolean {
     const months = getCategoryActiveMonths();
     const cutoff = new Date(now);
+    const cutoffDay = cutoff.getUTCDate();
+    cutoff.setUTCDate(1);
     cutoff.setUTCMonth(cutoff.getUTCMonth() - months);
+    const lastDayOfCutoffMonth = new Date(
+        Date.UTC(cutoff.getUTCFullYear(), cutoff.getUTCMonth() + 1, 0)
+    ).getUTCDate();
+    cutoff.setUTCDate(Math.min(cutoffDay, lastDayOfCutoffMonth));
+    const nowTimestamp = now.getTime();
 
     const items: PublishableWithContentDate[] = [...(category.articles ?? []), ...(category.podcasts ?? [])];
 
     return items.some((item) => {
         const timestamp = toDateTimestamp(getEffectiveDate(item));
-        return timestamp !== null && timestamp >= cutoff.getTime();
+        return timestamp !== null && timestamp >= cutoff.getTime() && timestamp <= nowTimestamp;
     });
 }
 

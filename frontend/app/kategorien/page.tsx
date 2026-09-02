@@ -41,7 +41,7 @@ export default async function CategoriesPage() {
     return (
         <section data-list-page>
             <h1>Kategorien</h1>
-            {categories.length === 0 ? (
+            {active.length === 0 && archived.length === 0 ? (
                 <p>Keine Kategorien gefunden.</p>
             ) : (
                 <>

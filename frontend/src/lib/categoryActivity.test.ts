@@ -1,7 +1,8 @@
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {getCategoryActiveMonths, isCategoryRecentlyActive, splitCategoriesByActivity} from './categoryActivity';
 import {type StrapiCategoryWithContent} from '@/src/lib/strapiContent';
+
+import {getCategoryActiveMonths, isCategoryRecentlyActive, splitCategoriesByActivity} from './categoryActivity';
 
 const NOW = new Date('2026-09-02T12:00:00Z');
 
@@ -71,6 +72,19 @@ describe('isCategoryRecentlyActive', () => {
     test('content exactly at the cutoff counts as active', () => {
         const c = category({articles: [{slug: 'a', title: 'A', date: '2026-03-02T12:00:00Z'}]});
         expect(isCategoryRecentlyActive(c, NOW)).toBe(true);
+    });
+
+    test('clamps a month-end cutoff to the last day of the target month', () => {
+        const c = category({articles: [{slug: 'a', title: 'A', date: '2026-02-28T12:00:00Z'}]});
+        expect(isCategoryRecentlyActive(c, new Date('2026-08-31T12:00:00Z'))).toBe(true);
+    });
+
+    test.each([
+        {date: '2026-09-03T12:00:00Z'},
+        {publishedAt: '2026-09-03T12:00:00Z'},
+    ])('content with a future effective date is not active', (contentDate) => {
+        const c = category({articles: [{slug: 'a', title: 'A', ...contentDate}]});
+        expect(isCategoryRecentlyActive(c, NOW)).toBe(false);
     });
 
     test('items without a valid date are ignored', () => {
