@@ -50,7 +50,7 @@ export default async function CategoriesPage() {
                 <>
                     {active.length > 0 ? (
                         <>
-                            <h2 title={`Kategorien mit Inhalten aus ${activeWindowLabel}`}>Aktiv</h2>
+                            {/*<h2 title={`Kategorien mit Inhalten aus ${activeWindowLabel}`}>Aktiv</h2>*/}
                             <ContentGrid gap="comfortable">
                                 {active.map((category) => (
                                     <CategoryCard
