@@ -4,10 +4,12 @@ import {type Metadata} from 'next';
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {getErrorMessage} from '@/src/lib/errors';
-import {splitCategoriesByActivity} from '@/src/lib/categoryActivity';
+import {getCategoryActiveWindowLabel, splitCategoriesByActivity} from '@/src/lib/categoryActivity';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {CategoryCard} from '@/src/components/CategoryCard';
 import {Card} from '@/src/components/Card';
+
+import styles from './page.module.css';
 
 export const metadata: Metadata = buildStaticListMetadata({
     title: 'Kategorien',
@@ -37,6 +39,7 @@ export default async function CategoriesPage() {
     }
 
     const {active, archived} = splitCategoriesByActivity(categories);
+    const activeWindowLabel = getCategoryActiveWindowLabel();
 
     return (
         <section data-list-page>
@@ -47,7 +50,7 @@ export default async function CategoriesPage() {
                 <>
                     {active.length > 0 ? (
                         <>
-                            <h2>Aktiv</h2>
+                            <h2 title={`Kategorien mit Inhalten aus ${activeWindowLabel}`}>Aktiv</h2>
                             <ContentGrid gap="comfortable">
                                 {active.map((category) => (
                                     <CategoryCard
@@ -62,7 +65,12 @@ export default async function CategoriesPage() {
                     ) : null}
                     {archived.length > 0 ? (
                         <>
-                            <h2>Archiv</h2>
+                            <h2
+                                title={`Kategorien ohne neue Inhalte in ${activeWindowLabel}`}
+                                className={styles.archiveHeading}
+                            >
+                                Archiv
+                            </h2>
                             <ContentGrid gap="comfortable">
                                 {archived.map((category) => (
                                     <CategoryCard

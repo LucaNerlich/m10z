@@ -2,7 +2,7 @@ import {afterEach, describe, expect, test, vi} from 'vitest';
 
 import {type StrapiCategoryWithContent} from '@/src/lib/strapiContent';
 
-import {getCategoryActiveMonths, isCategoryRecentlyActive, splitCategoriesByActivity} from './categoryActivity';
+import {getCategoryActiveMonths, getCategoryActiveWindowLabel, isCategoryRecentlyActive, splitCategoriesByActivity} from './categoryActivity';
 
 const NOW = new Date('2026-09-02T12:00:00Z');
 
@@ -35,6 +35,27 @@ describe('getCategoryActiveMonths', () => {
             vi.stubEnv('CATEGORY_ACTIVE_MONTHS', value);
             expect(getCategoryActiveMonths()).toBe(6);
         }
+    });
+});
+
+describe('getCategoryActiveWindowLabel', () => {
+    afterEach(() => {
+        vi.unstubAllEnvs();
+    });
+
+    test('formats the default window', () => {
+        vi.stubEnv('CATEGORY_ACTIVE_MONTHS', undefined);
+        expect(getCategoryActiveWindowLabel()).toBe('den letzten 6 Monaten');
+    });
+
+    test('formats a custom window', () => {
+        vi.stubEnv('CATEGORY_ACTIVE_MONTHS', '12');
+        expect(getCategoryActiveWindowLabel()).toBe('den letzten 12 Monaten');
+    });
+
+    test('uses singular for one month', () => {
+        vi.stubEnv('CATEGORY_ACTIVE_MONTHS', '1');
+        expect(getCategoryActiveWindowLabel()).toBe('dem letzten Monat');
     });
 });
 

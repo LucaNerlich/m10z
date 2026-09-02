@@ -17,6 +17,15 @@ export function getCategoryActiveMonths(): number {
     return parsed;
 }
 
+/**
+ * Human-readable dative label of the active window for German UI text,
+ * e.g. "den letzten 6 Monaten" or "dem letzten Monat".
+ */
+export function getCategoryActiveWindowLabel(): string {
+    const months = getCategoryActiveMonths();
+    return months === 1 ? 'dem letzten Monat' : `den letzten ${months} Monaten`;
+}
+
 function hasContent(category: StrapiCategoryWithContent): boolean {
     return Boolean(
         (category.articles && category.articles.length > 0) || (category.podcasts && category.podcasts.length > 0),
