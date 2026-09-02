@@ -4,6 +4,7 @@ import {type Metadata} from 'next';
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {getErrorMessage} from '@/src/lib/errors';
+import {splitCategoriesByActivity} from '@/src/lib/categoryActivity';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {CategoryCard} from '@/src/components/CategoryCard';
 import {Card} from '@/src/components/Card';
@@ -35,22 +36,46 @@ export default async function CategoriesPage() {
         );
     }
 
+    const {active, archived} = splitCategoriesByActivity(categories);
+
     return (
         <section data-list-page>
             <h1>Kategorien</h1>
             {categories.length === 0 ? (
                 <p>Keine Kategorien gefunden.</p>
             ) : (
-                <ContentGrid gap="comfortable">
-                    {categories.map((category) => (
-                        <CategoryCard
-                            key={category.slug ?? category.id}
-                            category={category}
-                            articleCount={category.articles?.length}
-                            podcastCount={category.podcasts?.length}
-                        />
-                    ))}
-                </ContentGrid>
+                <>
+                    {active.length > 0 ? (
+                        <>
+                            <h2>Aktiv</h2>
+                            <ContentGrid gap="comfortable">
+                                {active.map((category) => (
+                                    <CategoryCard
+                                        key={category.slug ?? category.id}
+                                        category={category}
+                                        articleCount={category.articles?.length}
+                                        podcastCount={category.podcasts?.length}
+                                    />
+                                ))}
+                            </ContentGrid>
+                        </>
+                    ) : null}
+                    {archived.length > 0 ? (
+                        <>
+                            <h2>Archiv</h2>
+                            <ContentGrid gap="comfortable">
+                                {archived.map((category) => (
+                                    <CategoryCard
+                                        key={category.slug ?? category.id}
+                                        category={category}
+                                        articleCount={category.articles?.length}
+                                        podcastCount={category.podcasts?.length}
+                                    />
+                                ))}
+                            </ContentGrid>
+                        </>
+                    ) : null}
+                </>
             )}
         </section>
     );
