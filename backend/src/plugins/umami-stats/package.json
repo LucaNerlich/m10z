@@ -1,0 +1,11 @@
+{
+    "name": "umami-stats",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Strapi admin dashboard widget showing Umami website statistics and podcast-download events.",
+    "strapi": {
+        "name": "umami-stats",
+        "description": "Umami website statistics widget for the Strapi admin dashboard.",
+        "kind": "plugin"
+    }
+}

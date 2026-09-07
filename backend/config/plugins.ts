@@ -1,5 +1,9 @@
 const {env} = require('@strapi/utils')
 export default () => ({
+    'umami-stats': {
+        enabled: true,
+        resolve: './src/plugins/umami-stats',
+    },
     email: {
         enabled: true,
         config: {
