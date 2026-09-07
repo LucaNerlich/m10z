@@ -17,7 +17,19 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "noEmit": true,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        // pnpm keeps Strapi's admin packages nested in the virtual store, so
+        // the bundler-resolved bare import below needs an explicit type location.
+        // Typecheck-only: vite/esbuild ignore `paths`, the admin build still
+        // resolves it from Strapi's own dependency tree (explicit vite alias).
+        // Refresh the store hash when the @strapi/design-system version changes
+        // (a stale path fails loudly with TS2307 for the mapped package).
+        "baseUrl": ".",
+        "paths": {
+            "@strapi/design-system": [
+                "../../node_modules/.pnpm/@strapi+design-system@2.2.4_@babel+runtime@7.29.7_@codemirror+autocomplete@6.20.0_@code_320add7968e2e06fe20b24199f99155f/node_modules/@strapi/design-system"
+            ]
+        }
     },
     "include": [
         "../plugins/**/admin/src/**/*",
