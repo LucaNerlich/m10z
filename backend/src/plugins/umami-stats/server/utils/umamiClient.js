@@ -16,6 +16,7 @@ const {
     CACHE_TTL_MS,
     TOP_SLUGS_LIMIT,
     buildEventValuesUrl,
+    buildLoginUrl,
     buildStatsUrl,
     createAuthError,
     createUpstreamError,
@@ -60,7 +61,7 @@ function createUmamiClient({fetchImpl, now, log} = {}) {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), timeoutMs);
         try {
-            const response = await fetchFn(url, {method, headers, body, signal: controller.signal});
+            const response = await fetchFn(url, {method, headers, body, redirect: 'error', signal: controller.signal});
             if (response.status === 401) {
                 return {unauthorized: true, data: null};
             }
@@ -86,7 +87,7 @@ function createUmamiClient({fetchImpl, now, log} = {}) {
 
     async function login(config) {
         logger.debug('[umami-stats] Authenticating with the Umami API.');
-        const {data, unauthorized} = await requestJson(`${config.host}/api/auth/login`, {
+        const {data, unauthorized} = await requestJson(buildLoginUrl(config), {
             method: 'POST',
             headers: {'content-type': 'application/json'},
             body: JSON.stringify({username: config.username, password: config.password}),

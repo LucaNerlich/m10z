@@ -7,7 +7,7 @@ const NOW = Date.UTC(2026, 8, 7, 12, 0, 0);
 
 const silentLog = {debug: () => {}, info: () => {}, warn: () => {}, error: () => {}};
 
-type LoggedCall = {url: string; init: {method?: string; headers?: Record<string, string>; body?: string}};
+type LoggedCall = {url: string; init: {method?: string; headers?: Record<string, string>; body?: string; redirect?: string}};
 
 function jsonResponse(data: unknown, status = 200) {
     return {ok: status >= 200 && status < 300, status, json: async () => data};
@@ -64,6 +64,7 @@ describe('createUmamiClient.getDashboard', () => {
         const logins = calls.filter((call) => call.url.endsWith('/api/auth/login'));
         const gets = calls.filter((call) => call.init.method === 'GET');
         expect(logins).toHaveLength(1);
+        expect(calls.every((call) => call.init.redirect === 'error')).toBe(true);
         // 3 ranges x (stats + event-data/values)
         expect(gets).toHaveLength(6);
         expect(payload.cacheHit).toBe(false);

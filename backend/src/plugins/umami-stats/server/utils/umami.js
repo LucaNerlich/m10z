@@ -41,7 +41,11 @@ const CACHE_TTL_MS = 10 * 60 * 1000;
  */
 function getRangeBounds(nowMs) {
     const sixMonthsAgo = new Date(nowMs);
+    const originalDay = sixMonthsAgo.getUTCDate();
+    sixMonthsAgo.setUTCDate(1);
     sixMonthsAgo.setUTCMonth(sixMonthsAgo.getUTCMonth() - 6);
+    const finalDay = new Date(Date.UTC(sixMonthsAgo.getUTCFullYear(), sixMonthsAgo.getUTCMonth() + 1, 0)).getUTCDate();
+    sixMonthsAgo.setUTCDate(Math.min(originalDay, finalDay));
     return {
         '7d': {startAt: nowMs - 7 * DAY_MS, endAt: nowMs},
         '30d': {startAt: nowMs - 30 * DAY_MS, endAt: nowMs},
@@ -50,22 +54,25 @@ function getRangeBounds(nowMs) {
 }
 
 /**
- * Normalize the configured Umami host (strip whitespace/trailing slashes).
+ * Normalize the configured Umami host to an HTTPS origin.
  *
  * @param {unknown} value raw `UMAMI_HOST` value
  * @returns {string | null} normalized host or null when missing/invalid
  */
 function normalizeHost(value) {
     if (typeof value !== 'string') return null;
-    const trimmed = value.trim().replace(/\/+$/, '');
-    if (!/^https?:\/\//i.test(trimmed)) return null;
     try {
-        const url = new URL(trimmed);
-        if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
-        return trimmed;
+        const url = new URL(value.trim());
+        if (url.protocol !== 'https:' || !/^\/+$/u.test(url.pathname) || url.search || url.hash) return null;
+        return url.origin;
     } catch {
         return null;
     }
+}
+
+/** Build the authentication URL from the validated Umami origin. */
+function buildLoginUrl(config) {
+    return new URL('/api/auth/login', config.host).toString();
 }
 
 /**
@@ -199,6 +206,7 @@ module.exports = {
     SLUG_PROPERTY,
     TOP_SLUGS_LIMIT,
     buildEventValuesUrl,
+    buildLoginUrl,
     buildStatsUrl,
     createAuthError,
     createConfigError,

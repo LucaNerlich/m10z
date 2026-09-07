@@ -13,21 +13,21 @@ export const UmamiChartIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement>>
     return (
         <svg
             ref={ref}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="1em"
-            height="1em"
-            fill="none"
-            stroke="currentColor"
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 24 24'
+            width='1em'
+            height='1em'
+            fill='none'
+            stroke='currentColor'
             strokeWidth={2}
-            strokeLinecap="round"
-            aria-hidden="true"
+            strokeLinecap='round'
+            aria-hidden='true'
             {...props}
         >
-            <line x1="4" y1="20" x2="4" y2="12" />
-            <line x1="10" y1="20" x2="10" y2="4" />
-            <line x1="16" y1="20" x2="16" y2="9" />
-            <line x1="2" y1="20" x2="22" y2="20" />
+            <line x1='4' y1='20' x2='4' y2='12' />
+            <line x1='10' y1='20' x2='10' y2='4' />
+            <line x1='16' y1='20' x2='16' y2='9' />
+            <line x1='2' y1='20' x2='22' y2='20' />
         </svg>
     );
 });

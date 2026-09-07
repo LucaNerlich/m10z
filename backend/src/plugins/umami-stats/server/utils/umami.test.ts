@@ -7,6 +7,7 @@ import {
     SLUG_PROPERTY,
     TOP_SLUGS_LIMIT,
     buildEventValuesUrl,
+    buildLoginUrl,
     buildStatsUrl,
     createAuthError,
     createConfigError,
@@ -35,21 +36,33 @@ describe('getRangeBounds', () => {
         expect(bounds['6m'].endAt).toBe(NOW);
         expect(new Date(bounds['6m'].startAt).toISOString()).toBe('2026-03-07T12:00:00.000Z');
     });
+
+    test('clamps end-of-month dates to the target month', () => {
+        const august31 = Date.UTC(2026, 7, 31, 12, 0, 0);
+
+        expect(new Date(getRangeBounds(august31)['6m'].startAt).toISOString()).toBe('2026-02-28T12:00:00.000Z');
+    });
 });
 
 describe('normalizeHost', () => {
-    test('accepts http(s) hosts and strips trailing slashes and whitespace', () => {
+    test('accepts HTTPS origins and strips trailing slashes and whitespace', () => {
         expect(normalizeHost('https://umami.m10z.de///')).toBe('https://umami.m10z.de');
-        expect(normalizeHost('  http://localhost:3000  ')).toBe('http://localhost:3000');
+        expect(normalizeHost('  https://umami.m10z.de  ')).toBe('https://umami.m10z.de');
     });
 
-    test('rejects missing protocols, other schemes, and non-strings', () => {
+    test('rejects HTTP, missing protocols, other schemes, and non-strings', () => {
+        expect(normalizeHost('http://umami.m10z.de')).toBeNull();
         expect(normalizeHost('umami.m10z.de')).toBeNull();
         expect(normalizeHost('ftp://umami.m10z.de')).toBeNull();
         expect(normalizeHost('https://')).toBeNull();
         expect(normalizeHost('')).toBeNull();
         expect(normalizeHost(null)).toBeNull();
         expect(normalizeHost(undefined)).toBeNull();
+    });
+
+    test('rejects non-root paths so every endpoint shares the same API root', () => {
+        expect(normalizeHost('https://umami.m10z.de/analytics')).toBeNull();
+        expect(normalizeHost('https://umami.m10z.de/?tenant=m10z')).toBeNull();
     });
 });
 
@@ -93,6 +106,10 @@ describe('URL builders', () => {
 
     test('buildStatsUrl targets the website stats endpoint', () => {
         expect(buildStatsUrl(config, 1000, 2000)).toBe('https://umami.m10z.de/api/websites/site-1/stats?startAt=1000&endAt=2000');
+    });
+
+    test('buildLoginUrl targets the same API root as statistics requests', () => {
+        expect(buildLoginUrl(config)).toBe('https://umami.m10z.de/api/auth/login');
     });
 
     test('buildEventValuesUrl filters the podcast-download slug property', () => {

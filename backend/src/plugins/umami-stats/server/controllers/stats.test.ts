@@ -63,14 +63,17 @@ describe('stats controller', () => {
     });
 
     test('maps unknown failures to 500 without leaking details', async () => {
-        const {controller, ctx} = setup(async () => {
-            throw new Error('db password=hunter2 exploded');
+        const secret = 'hunter2';
+        const {controller, ctx, log} = setup(async () => {
+            throw new Error(`db password=${secret} exploded`);
         });
 
         await controller.getStats(ctx);
 
         expect(ctx.status).toBe(500);
         expect(ctx.body).toMatchObject({error: {code: 'UMAMI_ERROR'}});
-        expect(JSON.stringify(ctx.body)).not.toContain('hunter2');
+        expect(JSON.stringify(ctx.body)).not.toContain(secret);
+        expect(log.error).toHaveBeenCalledWith('[umami-stats] Failed to load dashboard (code=UMAMI_ERROR, status=500).');
+        expect(JSON.stringify(log.error.mock.calls)).not.toContain(secret);
     });
 });

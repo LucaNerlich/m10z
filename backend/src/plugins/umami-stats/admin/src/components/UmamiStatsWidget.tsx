@@ -15,26 +15,26 @@ const RANGE_LABELS: Record<RangeKey, string> = {
     '6m': '6 Monate',
 };
 
-interface RangeStats {
+type RangeStats = {
     startAt: string;
     endAt: string;
     pageviews: number;
     visitors: number;
     visits: number;
     podcastDownloads: number;
-}
+};
 
-interface TopSlug {
+type TopSlug = {
     slug: string;
     downloads: number;
-}
+};
 
-interface DashboardPayload {
+type DashboardPayload = {
     ranges: Record<RangeKey, RangeStats>;
     topSlugs: Record<RangeKey, Array<TopSlug>>;
     cachedAt: string;
     cacheTtlSeconds: number;
-}
+};
 
 type Status = 'loading' | 'unconfigured' | 'forbidden' | 'error' | 'empty' | 'ready';
 
@@ -68,12 +68,23 @@ function isRangeStats(value: unknown): value is RangeStats {
     );
 }
 
-function isDashboardPayload(value: unknown): value is DashboardPayload {
+function isTopSlug(value: unknown): value is TopSlug {
+    if (!value || typeof value !== 'object') return false;
+    const candidate = value as Record<string, unknown>;
+    return typeof candidate.slug === 'string' && typeof candidate.downloads === 'number';
+}
+
+export function isDashboardPayload(value: unknown): value is DashboardPayload {
     if (!value || typeof value !== 'object') return false;
     const candidate = value as {ranges?: unknown; topSlugs?: unknown};
     if (!candidate.ranges || typeof candidate.ranges !== 'object') return false;
+    if (!candidate.topSlugs || typeof candidate.topSlugs !== 'object') return false;
     const ranges = candidate.ranges as Record<string, unknown>;
-    return RANGE_ORDER.every((key) => isRangeStats(ranges[key]));
+    const topSlugs = candidate.topSlugs as Record<string, unknown>;
+    return RANGE_ORDER.every((key) => {
+        const slugEntries = topSlugs[key];
+        return isRangeStats(ranges[key]) && Array.isArray(slugEntries) && slugEntries.every(isTopSlug);
+    });
 }
 
 /**

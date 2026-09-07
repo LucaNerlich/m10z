@@ -15,11 +15,12 @@ module.exports = ({strapi}) => ({
             ctx.body = await service.getDashboard();
         } catch (error) {
             const status = error && typeof error.status === 'number' ? error.status : 500;
-            strapi.log.error(`[umami-stats] Failed to load dashboard: ${(error && error.message) || error}`);
+            const code = error && typeof error.code === 'string' ? error.code : 'UMAMI_ERROR';
+            strapi.log.error(`[umami-stats] Failed to load dashboard (code=${code}, status=${status}).`);
             ctx.status = status;
             ctx.body = {
                 error: {
-                    code: (error && error.code) || 'UMAMI_ERROR',
+                    code,
                     message: 'Website statistics could not be loaded.',
                 },
             };
