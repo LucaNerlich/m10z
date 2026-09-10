@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "prebuild": "node scripts/sync-shared-contracts.mjs",
-        "build": "vitest run && strapi build",
+        "build": "vitest run && strapi build --sourcemap",
         "console": "strapi console",
         "predev": "node scripts/sync-shared-contracts.mjs",
         "dev": "strapi develop",
