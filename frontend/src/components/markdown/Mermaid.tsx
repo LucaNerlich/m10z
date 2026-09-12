@@ -4,6 +4,7 @@ import React, {useEffect, useReducer, useRef} from 'react';
 import mermaid from 'mermaid';
 import styles from './Mermaid.module.css';
 import {umamiEventId} from '@/src/lib/analytics/umami';
+import {mermaidSvgToDataUrl} from '@/src/lib/markdown/mermaidSvg';
 
 export type MermaidProps = {
     chart: string;
@@ -96,9 +97,18 @@ export function Mermaid({chart, className}: MermaidProps) {
                 if (containerRef.current) {
                     containerRef.current.innerHTML = svg;
                     renderedChartRef.current = trimmedChart;
-                    // Encode the SVG as a data URL for the Fancybox lightbox preview.
-                    const encodedSvg = encodeURIComponent(svg);
-                    dispatch({type: 'rendered', dataUrl: `data:image/svg+xml;charset=utf-8,${encodedSvg}`});
+                    // Build the Fancybox href from the parsed SVG, not the raw string.
+                    // 1. Mermaid returns HTML-flavoured markup for `htmlLabels` (e.g. an
+                    //    unclosed `<br>` inside `<foreignObject>`). That parses fine inline
+                    //    via innerHTML but is invalid XML, so the browser refuses to decode
+                    //    it as a standalone `image/svg+xml` image. Re-serializing the parsed
+                    //    element with XMLSerializer makes it well-formed.
+                    // 2. Mermaid sizes many diagram types with `width="100%"` + `max-width`,
+                    //    which also breaks once the SVG is loaded as an `<img>`; the helper
+                    //    normalizes the intrinsic size.
+                    const svgElement = containerRef.current.querySelector('svg');
+                    const exportableSvg = svgElement ? new XMLSerializer().serializeToString(svgElement) : svg;
+                    dispatch({type: 'rendered', dataUrl: mermaidSvgToDataUrl(exportableSvg)});
                 }
             })
             .catch((err) => {
