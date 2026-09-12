@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "\"/Users/nerlich/.local/bin/scout\" hook session --host cursor"
+      }
+    ]
+  },
+  "version": 1
+}
