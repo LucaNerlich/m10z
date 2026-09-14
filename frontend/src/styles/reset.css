@@ -1,6 +1,9 @@
-/* 1. Use a more-intuitive box-sizing model */
+/* 1. Use a more-intuitive box-sizing model.
+   Squircle corners sitewide: `corner-shape` only affects non-zero
+   `border-radius` and is ignored by browsers without support. */
 *, *::before, *::after {
     box-sizing: border-box;
+    corner-shape: squircle;
 }
 
 /* 2. Remove default margin */
