@@ -142,9 +142,40 @@ export async function durationMiddleware(
     context: DocumentServiceContext,
     next: DocumentServiceNext,
 ): Promise<unknown> {
-    // Only process podcast content type for create/update actions
-    if (context.uid === 'api::podcast.podcast' && ['create', 'update'].includes(context.action)) {
-        const strapiInstance = context.params?.strapi;
+    if (context.uid !== 'api::podcast.podcast') return next();
+
+    const strapiInstance = context.params?.strapi;
+
+    // Strapi's admin "Duplicate" action runs a dedicated `clone` document-service action —
+    // it never passes through the `create`/`update` branch below, so a duplicate always
+    // inherited whatever duration was stored on the source entry verbatim, stale or not
+    // (there's no backfill cron for duration, unlike wordCount). Recompute it here from the
+    // source's own file and inject it into `data` (the same object the clone implementation
+    // merges into every cloned entry) so the copy gets a freshly-computed value.
+    if (context.action === 'clone') {
+        if (strapiInstance) {
+            try {
+                const sourceDocumentId = context.params?.documentId;
+                const source = await strapiInstance
+                    .documents('api::podcast.podcast')
+                    .findOne({documentId: sourceDocumentId, populate: ['file']});
+                if (source?.file) {
+                    const probe: PodcastDocument = {file: source.file as FileReference};
+                    await extractDuration(strapiInstance, probe);
+                    if (probe.duration !== undefined) {
+                        if (!context.params) context.params = {};
+                        context.params.data = {...context.params.data, duration: probe.duration};
+                    }
+                }
+            } catch (error) {
+                strapiInstance.log.warn('Failed to recalculate duration for podcast clone:', error);
+            }
+        }
+        return next();
+    }
+
+    // Only process create/update actions
+    if (['create', 'update'].includes(context.action)) {
         // Same guard as the wordCount middleware: without a Strapi instance there is
         // nothing to query — continue the chain instead of blocking the save.
         if (!strapiInstance) return next();

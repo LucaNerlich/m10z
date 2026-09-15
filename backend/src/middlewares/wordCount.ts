@@ -262,19 +262,48 @@ export async function wordCountMiddleware(
     context: DocumentServiceContext,
     next: DocumentServiceNext,
 ): Promise<unknown> {
-    // Only process articles and podcasts for create/update actions
-    if (
-        (context.contentType?.uid === 'api::article.article' ||
-         context.contentType?.uid === 'api::podcast.podcast') &&
-        ['create', 'update'].includes(context.action)
-    ) {
+    const uid = context.contentType?.uid;
+    if (uid !== 'api::article.article' && uid !== 'api::podcast.podcast') {
+        return next();
+    }
+
+    const contentType = uid === 'api::article.article' ? 'article' : 'podcast';
+    const strapiInstance = context.params?.strapi;
+
+    // Strapi's admin "Duplicate" action runs a dedicated `clone` document-service action —
+    // it never passes through the `create`/`update` branch below, so a duplicate always
+    // inherited whatever wordCount was stored on the source entry verbatim, stale or not.
+    // Recompute it here from the source's own content/shownotes and inject it into `data`
+    // (the same object the clone implementation merges into every cloned entry) so the
+    // copy gets a freshly-computed value, bypassing the partial-update guard in
+    // `extractWordCount` since the source always has its richtext field.
+    if (context.action === 'clone') {
+        if (strapiInstance) {
+            try {
+                const sourceDocumentId = context.params?.documentId;
+                const source = await strapiInstance.documents(uid).findOne({documentId: sourceDocumentId});
+                if (source) {
+                    const probe: ArticleDocument | PodcastDocument =
+                        contentType === 'article'
+                            ? {content: source.content as ArticleDocument['content']}
+                            : {shownotes: source.shownotes as PodcastDocument['shownotes']};
+                    await extractWordCount(strapiInstance, probe, contentType);
+                    if (probe.wordCount !== undefined) {
+                        if (!context.params) context.params = {};
+                        context.params.data = {...context.params.data, wordCount: probe.wordCount};
+                    }
+                }
+            } catch (error) {
+                strapiInstance.log.warn(`Failed to recalculate wordCount for ${contentType} clone:`, error);
+            }
+        }
+        return next();
+    }
+
+    if (['create', 'update'].includes(context.action)) {
         const data = context.params?.data;
         if (data) {
-            // Get strapi instance from context
-            const strapiInstance = context.params?.strapi;
             if (!strapiInstance) return next();
-            // Determine contentType based on uid
-            const contentType = context.contentType?.uid === 'api::article.article' ? 'article' : 'podcast';
             // extractWordCount handles its own errors and never rejects, so a
             // failed word count cannot block the save operation.
             await extractWordCount(strapiInstance, data, contentType);

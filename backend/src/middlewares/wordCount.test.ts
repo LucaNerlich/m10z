@@ -1,6 +1,6 @@
 import {describe, expect, test, vi} from 'vitest';
 
-import {countWords, extractTextFromRichtext, extractWordCount} from './wordCount';
+import {countWords, extractTextFromRichtext, extractWordCount, wordCountMiddleware} from './wordCount';
 
 describe('countWords', () => {
     test('returns 0 for empty, whitespace, null, or non-string input', () => {
@@ -122,5 +122,86 @@ describe('extractWordCount', () => {
         const data: Record<string, unknown> = {content: null};
         await extractWordCount(makeStrapi(), data as never, 'article');
         expect(data.wordCount).toBe(0);
+    });
+});
+
+/**
+ * Strapi's "Duplicate" admin action runs a `clone` document-service action, which merges
+ * `context.params.data` into every cloned entry — so the recompute must load the *source*
+ * entry (by `context.params.documentId`) and inject the computed value into that same
+ * `data` object before `next()` runs the actual clone.
+ */
+function makeCloneStrapi(sourceEntry: Record<string, unknown>) {
+    const findOne = vi.fn(async () => sourceEntry);
+    const strapi = {
+        documents: vi.fn(() => ({findOne})),
+        log: {info: vi.fn(), warn: vi.fn(), error: vi.fn()},
+    };
+    return {strapi, findOne};
+}
+
+describe('wordCountMiddleware clone handling', () => {
+    test('injects wordCount computed from the source podcast shownotes into data', async () => {
+        const {strapi, findOne} = makeCloneStrapi({shownotes: 'one two three'});
+        const next = vi.fn(async () => ({entries: [{documentId: 'clone-1'}]}));
+        const context = {
+            uid: 'api::podcast.podcast',
+            action: 'clone',
+            contentType: {uid: 'api::podcast.podcast', modelName: 'podcast'},
+            params: {strapi: strapi as never, documentId: 'source-1'},
+        };
+
+        await wordCountMiddleware(context, next);
+
+        expect(findOne).toHaveBeenCalledWith({documentId: 'source-1'});
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(context.params.data).toEqual({wordCount: 3});
+    });
+
+    test('injects wordCount computed from the source article content into data', async () => {
+        const {strapi} = makeCloneStrapi({content: 'alpha beta'});
+        const next = vi.fn(async () => ({entries: [{documentId: 'clone-2'}]}));
+        const context = {
+            uid: 'api::article.article',
+            action: 'clone',
+            contentType: {uid: 'api::article.article', modelName: 'article'},
+            params: {strapi: strapi as never, documentId: 'source-2'},
+        };
+
+        await wordCountMiddleware(context, next);
+
+        expect(context.params.data).toEqual({wordCount: 2});
+    });
+
+    test('preserves any other override fields already present on data', async () => {
+        const {strapi} = makeCloneStrapi({content: 'alpha beta'});
+        const next = vi.fn(async () => ({entries: [{documentId: 'clone-3'}]}));
+        const context = {
+            uid: 'api::article.article',
+            action: 'clone',
+            contentType: {uid: 'api::article.article', modelName: 'article'},
+            params: {strapi: strapi as never, documentId: 'source-3', data: {title: 'Copy'}},
+        };
+
+        await wordCountMiddleware(context, next);
+
+        expect(context.params.data).toEqual({title: 'Copy', wordCount: 2});
+    });
+
+    test('leaves non-article/podcast content types untouched on clone', async () => {
+        const {strapi, findOne} = makeCloneStrapi({});
+        const next = vi.fn(async () => ({entries: [{documentId: 'clone-4'}]}));
+
+        await wordCountMiddleware(
+            {
+                uid: 'api::author.author',
+                action: 'clone',
+                contentType: {uid: 'api::author.author', modelName: 'author'},
+                params: {strapi: strapi as never},
+            },
+            next,
+        );
+
+        expect(findOne).not.toHaveBeenCalled();
     });
 });
