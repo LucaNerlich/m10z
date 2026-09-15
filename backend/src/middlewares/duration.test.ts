@@ -49,6 +49,28 @@ describe('durationMiddleware clone handling', () => {
         expect(context.params.data).toEqual({duration: 42});
     });
 
+    test('prefers a file override already submitted with the clone over the source file', async () => {
+        // The content-manager sends unsaved form edits (e.g. a newly picked file) as the
+        // clone's `data` override — that must win, not the source's still-old file.
+        const {strapi, findOne} = makeCloneStrapi({file: {url: '/uploads/old-episode.mp3'}});
+        const next = vi.fn(async () => ({entries: [{documentId: 'clone-override'}]}));
+        const context = {
+            uid: 'api::podcast.podcast',
+            action: 'clone',
+            params: {
+                strapi: strapi as never,
+                documentId: 'source-override',
+                data: {file: {url: '/uploads/new-episode.mp3'}},
+            },
+        };
+
+        await durationMiddleware(context, next);
+
+        expect(findOne).not.toHaveBeenCalled();
+        expect(mockedParseFile).toHaveBeenCalledWith(expect.stringContaining('new-episode.mp3'));
+        expect(context.params.data).toEqual({file: {url: '/uploads/new-episode.mp3'}, duration: 42});
+    });
+
     test('preserves any other override fields already present on data', async () => {
         const {strapi} = makeCloneStrapi({file: {url: '/uploads/episode.mp3'}});
         const next = vi.fn(async () => ({entries: [{documentId: 'clone-2'}]}));

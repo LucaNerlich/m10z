@@ -173,6 +173,24 @@ describe('wordCountMiddleware clone handling', () => {
         expect(context.params.data).toEqual({wordCount: 2});
     });
 
+    test('prefers a content override already submitted with the clone over the source content', async () => {
+        // The content-manager sends unsaved form edits as the clone's `data` override — that
+        // must win, not the source's still-old content/shownotes.
+        const {strapi, findOne} = makeCloneStrapi({shownotes: 'one two three'});
+        const next = vi.fn(async () => ({entries: [{documentId: 'clone-override'}]}));
+        const context = {
+            uid: 'api::podcast.podcast',
+            action: 'clone',
+            contentType: {uid: 'api::podcast.podcast', modelName: 'podcast'},
+            params: {strapi: strapi as never, documentId: 'source-override', data: {shownotes: 'alpha'}},
+        };
+
+        await wordCountMiddleware(context, next);
+
+        expect(findOne).not.toHaveBeenCalled();
+        expect(context.params.data).toEqual({shownotes: 'alpha', wordCount: 1});
+    });
+
     test('preserves any other override fields already present on data', async () => {
         const {strapi} = makeCloneStrapi({content: 'alpha beta'});
         const next = vi.fn(async () => ({entries: [{documentId: 'clone-3'}]}));

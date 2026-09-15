@@ -273,25 +273,32 @@ export async function wordCountMiddleware(
     // Strapi's admin "Duplicate" action runs a dedicated `clone` document-service action —
     // it never passes through the `create`/`update` branch below, so a duplicate always
     // inherited whatever wordCount was stored on the source entry verbatim, stale or not.
-    // Recompute it here from the source's own content/shownotes and inject it into `data`
-    // (the same object the clone implementation merges into every cloned entry) so the
-    // copy gets a freshly-computed value, bypassing the partial-update guard in
-    // `extractWordCount` since the source always has its richtext field.
+    // Recompute it here and inject it into `data` (the same object the clone implementation
+    // merges into every cloned entry), bypassing the partial-update guard in
+    // `extractWordCount`. The clone submission itself may already override the richtext field
+    // (the content-manager sends unsaved form edits as the clone's data override) — that must
+    // win over the source's stored content/shownotes, otherwise a duplicate created to swap in
+    // new text would have its wordCount recomputed from the old, merely-inherited body instead
+    // of the one actually being saved.
     if (context.action === 'clone') {
         if (strapiInstance) {
             try {
-                const sourceDocumentId = context.params?.documentId;
-                const source = await strapiInstance.documents(uid).findOne({documentId: sourceDocumentId});
-                if (source) {
-                    const probe: ArticleDocument | PodcastDocument =
-                        contentType === 'article'
-                            ? {content: source.content as ArticleDocument['content']}
-                            : {shownotes: source.shownotes as PodcastDocument['shownotes']};
-                    await extractWordCount(strapiInstance, probe, contentType);
-                    if (probe.wordCount !== undefined) {
-                        if (!context.params) context.params = {};
-                        context.params.data = {...context.params.data, wordCount: probe.wordCount};
-                    }
+                const richtextField = contentType === 'article' ? 'content' : 'shownotes';
+                const overrideValue = (context.params?.data as Record<string, unknown> | undefined)?.[richtextField];
+
+                let probe: ArticleDocument | PodcastDocument;
+                if (overrideValue !== undefined) {
+                    probe = {[richtextField]: overrideValue} as ArticleDocument | PodcastDocument;
+                } else {
+                    const sourceDocumentId = context.params?.documentId;
+                    const source = await strapiInstance.documents(uid).findOne({documentId: sourceDocumentId});
+                    probe = {[richtextField]: source?.[richtextField]} as ArticleDocument | PodcastDocument;
+                }
+
+                await extractWordCount(strapiInstance, probe, contentType);
+                if (probe.wordCount !== undefined) {
+                    if (!context.params) context.params = {};
+                    context.params.data = {...context.params.data, wordCount: probe.wordCount};
                 }
             } catch (error) {
                 strapiInstance.log.warn(`Failed to recalculate wordCount for ${contentType} clone:`, error);

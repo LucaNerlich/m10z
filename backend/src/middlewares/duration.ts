@@ -155,12 +155,24 @@ export async function durationMiddleware(
     if (context.action === 'clone') {
         if (strapiInstance) {
             try {
-                const sourceDocumentId = context.params?.documentId;
-                const source = await strapiInstance
-                    .documents('api::podcast.podcast')
-                    .findOne({documentId: sourceDocumentId, populate: ['file']});
-                if (source?.file) {
-                    const probe: PodcastDocument = {file: source.file as FileReference};
+                // The clone submission itself may already override `file` (the content-manager
+                // sends unsaved form edits — including a newly picked file — as the clone's data
+                // override), which must win over the source's file: otherwise a duplicate created
+                // to swap in a new episode's audio would have its duration recomputed from the old,
+                // merely-inherited file instead of the one actually being attached.
+                const overrideFile = (context.params?.data as PodcastDocument | undefined)?.file;
+                let probeFile: FileReference | undefined;
+                if (overrideFile && !Array.isArray(overrideFile)) {
+                    probeFile = overrideFile as FileReference;
+                } else {
+                    const sourceDocumentId = context.params?.documentId;
+                    const source = await strapiInstance
+                        .documents('api::podcast.podcast')
+                        .findOne({documentId: sourceDocumentId, populate: ['file']});
+                    probeFile = source?.file as FileReference | undefined;
+                }
+                if (probeFile) {
+                    const probe: PodcastDocument = {file: probeFile};
                     await extractDuration(strapiInstance, probe);
                     if (probe.duration !== undefined) {
                         if (!context.params) context.params = {};
