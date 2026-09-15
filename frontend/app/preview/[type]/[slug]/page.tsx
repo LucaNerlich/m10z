@@ -1,3 +1,5 @@
+import crypto from 'node:crypto';
+
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 import {headers} from 'next/headers';
@@ -20,9 +22,15 @@ function isPreviewType(value: string): value is PreviewType {
     return value === 'artikel' || value === 'podcasts';
 }
 
+// Mirrors backend/config/admin.ts's preview.config.handler route-to-uid mapping,
+// used to recompute the same per-document HMAC the link was generated with.
+function previewTypeToUid(type: PreviewType): string {
+    return type === 'artikel' ? 'api::article.article' : 'api::podcast.podcast';
+}
+
 type PageProps = {
     params: Promise<{type: string; slug: string}>;
-    searchParams: Promise<{secret?: string; status?: string}>;
+    searchParams: Promise<{token?: string; status?: string}>;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -48,9 +56,12 @@ async function resolvePreviewContext(
     const rl = checkRateLimit(`preview:${ip}`, {windowMs: 60_000, max: 20});
     if (!rl.ok) notFound();
 
-    const {secret, status} = await searchParams;
-    const expected = process.env.STRAPI_PREVIEW_SECRET ?? null;
-    if (!verifySecret(secret ?? null, expected)) {
+    const {token, status} = await searchParams;
+    const secret = process.env.STRAPI_PREVIEW_SECRET;
+    const expected = secret
+        ? crypto.createHmac('sha256', secret).update(`${previewTypeToUid(rawType)}:${slug}`).digest('hex')
+        : null;
+    if (!verifySecret(token ?? null, expected)) {
         notFound();
     }
 

@@ -1,3 +1,5 @@
+import crypto from 'node:crypto';
+
 export default ({env}: any) => {
     const clientUrl = env('CLIENT_URL');
 
@@ -61,10 +63,14 @@ export default ({env}: any) => {
                     const secret = env('STRAPI_PREVIEW_SECRET');
                     if (!secret) return null;
 
+                    // Bind the token to this document (uid+slug) so a leaked link cannot be
+                    // reused to unlock any other draft article/podcast.
+                    const token = crypto.createHmac('sha256', secret).update(`${uid}:${slug}`).digest('hex');
+
                     // Normalize Strapi's status values to the two states the frontend understands.
                     const previewStatus = status === 'published' ? 'published' : 'draft';
                     const query = new URLSearchParams({
-                        secret,
+                        token,
                         status: previewStatus,
                     });
                     return `${clientUrl}${route}?${query.toString()}`;

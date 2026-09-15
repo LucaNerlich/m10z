@@ -15,5 +15,15 @@ module.exports = () => {
         controllers,
         services,
         routes,
+        async bootstrap({strapi}) {
+            await strapi.admin.services.permission.actionProvider.registerMany([
+                {
+                    section: 'plugins',
+                    displayName: 'Read dashboard statistics',
+                    uid: 'stats.getStats',
+                    pluginName: 'umami-stats',
+                },
+            ]);
+        },
     };
 };
