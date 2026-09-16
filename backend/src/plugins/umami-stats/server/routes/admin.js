@@ -5,7 +5,7 @@
  * admin users only). The widget calls `GET /umami-stats/stats` through the
  * admin fetch client, which targets the Strapi server origin.
  * Non-super-admin roles additionally need the generated
- * `plugin::umami-stats.stats.getStats` permission, otherwise they receive
+ * `plugin::umami-stats.stats.get-stats` permission, otherwise they receive
  * 403 and the widget renders its NoPermissions state.
  */
 'use strict';
@@ -20,7 +20,7 @@ module.exports = {
             config: {
                 policies: [
                     'admin::isAuthenticatedAdmin',
-                    {name: 'admin::hasPermissions', config: {actions: ['plugin::umami-stats.stats.getStats']}},
+                    {name: 'admin::hasPermissions', config: {actions: ['plugin::umami-stats.stats.get-stats']}},
                 ],
             },
         },

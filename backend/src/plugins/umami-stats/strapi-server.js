@@ -20,7 +20,8 @@ module.exports = () => {
                 {
                     section: 'plugins',
                     displayName: 'Read dashboard statistics',
-                    uid: 'stats.getStats',
+                    // Strapi's action uid must be lowercase letters/dots/hyphens only.
+                    uid: 'stats.get-stats',
                     pluginName: 'umami-stats',
                 },
             ]);
