@@ -18,7 +18,10 @@ module.exports = {
             path: '/stats',
             handler: 'stats.getStats',
             config: {
-                policies: ['admin::isAuthenticatedAdmin'],
+                policies: [
+                    'admin::isAuthenticatedAdmin',
+                    {name: 'admin::hasPermissions', config: {actions: ['plugin::umami-stats.stats.getStats']}},
+                ],
             },
         },
     ],

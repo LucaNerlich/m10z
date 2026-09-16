@@ -10,11 +10,17 @@ on:
     # https://crontab.guru -> at 09:00
     - cron: '0 * * * *'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   merge_schedule:
     runs-on: ubuntu-latest
     steps:
-      - uses: gr2m/merge-schedule-action@v2
+      # Pinned to a commit SHA (not the mutable v2 tag) because this step is
+      # granted a merge-capable PAT below.
+      - uses: gr2m/merge-schedule-action@a9b6ddcf1282dfd66907bda8e7941dff59f03bad # v2.7.0
         with:
           # Merge method to use. Possible values are merge, squash or
           # rebase. Default is merge.
