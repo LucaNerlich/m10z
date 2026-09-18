@@ -40,6 +40,14 @@ export default ({env}: any) => ({
         keys: env.array('APP_KEYS'),
     },
     /**
+     * Built-in MCP server (Strapi 5.47+). Opt-in via STRAPI_MCP_ENABLED.
+     * Authenticates with Admin tokens; endpoint is POST /mcp.
+     * @see https://docs.strapi.io/cms/features/strapi-mcp-server
+     */
+    mcp: {
+        enabled: env.bool('STRAPI_MCP_ENABLED', false),
+    },
+    /**
      * HTTP server configuration.
      * Note: Timeout settings (keepAliveTimeout, headersTimeout, requestTimeout) are
      * Server instance properties that must be set after the server is created.

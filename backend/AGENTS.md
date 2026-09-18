@@ -188,6 +188,7 @@ Pool monitoring logs acquisition/failure events and runs health checks every 60s
 See `.env.example` for all variables. Key ones:
 - `FRONTEND_URL` — target for cache invalidation POSTs
 - `STRAPI_INVALIDATION_SECRET` — shared secret for cache invalidation auth
+- `STRAPI_MCP_ENABLED` — enable built-in MCP server at `/mcp` (default `false`)
 - `DATABASE_*` — PostgreSQL connection config
 - `APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET` — Strapi secrets
 - `MAILGUN_*` — email provider config

@@ -1,0 +1,18 @@
+{
+    "mcpServers": {
+        "strapi-local": {
+            "type": "streamable-http",
+            "url": "http://localhost:1337/mcp",
+            "headers": {
+                "Authorization": "Bearer ${env:STRAPI_MCP_ADMIN_TOKEN_LOCAL}"
+            }
+        },
+        "strapi-prod": {
+            "type": "streamable-http",
+            "url": "https://cms.m10z.de/mcp",
+            "headers": {
+                "Authorization": "Bearer ${env:STRAPI_MCP_ADMIN_TOKEN_PROD}"
+            }
+        }
+    }
+}
