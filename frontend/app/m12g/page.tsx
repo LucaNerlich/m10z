@@ -154,8 +154,7 @@ export default async function M12GPage() {
                 lead={
                     <>
                         {pluralize(stats.totalMonths, 'Monat', 'Monate')} Community-Abstimmung,{' '}
-                        {formatInteger(stats.totalUniqueGames)} nominierte Spiele und {formatVotes(stats.totalVotes)}{' '}
-                        – M12G in Zahlen.
+                        {formatInteger(stats.totalUniqueGames)} nominierte Spiele und {formatVotes(stats.totalVotes)}.
                     </>
                 }
                 meta={`Zuletzt abgestimmt: ${formatMonthLong(monthsNewestFirst[0].month)}`}

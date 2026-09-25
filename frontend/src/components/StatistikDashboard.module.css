@@ -3,7 +3,6 @@
 }
 
 .lead {
-    max-width: 60ch;
     margin: 8px 0 0;
     font-size: 1.1rem;
     color: var(--color-text);
