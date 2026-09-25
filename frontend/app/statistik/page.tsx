@@ -193,7 +193,7 @@ export default async function StatistikPage() {
                 lead={
                     <>
                         {formatInteger(totals.articles)} Artikel, {formatInteger(totals.podcasts)} Podcast-Folgen und
-                        jede Menge Zeichen – Mindestens 10 Zeichen in Zahlen.
+                        jede Menge Zeichen.
                     </>
                 }
                 meta={
