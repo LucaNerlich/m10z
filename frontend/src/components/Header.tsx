@@ -17,6 +17,7 @@ const secondaryLinks = [
     {label: 'Kategorien & Formate', href: routes.categories},
     {label: 'AutorInnen', href: routes.authors},
     {label: 'Mindestens 12 Games', href: routes.m12g},
+    {label: 'Statistiken', href: routes.statistik},
     {label: 'Über Uns', href: routes.about},
     {label: 'RSS-Feeds', href: '/feeds'},
     {label: 'Forum 🔗', href: 'https://forum.m10z.de'},
