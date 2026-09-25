@@ -12,6 +12,7 @@ import {type Metadata, type Viewport} from 'next';
 import Script from 'next/script';
 import {routes} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {getStaleChunkListenerScript} from '@/src/lib/staleChunkReload';
 import React from 'react';
 
 export const metadata: Metadata = {
@@ -49,6 +50,8 @@ export const metadata: Metadata = {
     },
 };
 
+const STALE_CHUNK_LISTENER_SCRIPT = getStaleChunkListenerScript();
+
 export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
@@ -79,6 +82,11 @@ export default function RootLayout({
             suppressHydrationWarning
             data-scroll-behavior='smooth'
         >
+        <head>
+            {/* Inline (not next/script) so it runs before any Next.js chunk: recovers from stale-chunk
+                failures that break hydration or never reach an error boundary. */}
+            <script id='stale-chunk-reload' dangerouslySetInnerHTML={{__html: STALE_CHUNK_LISTENER_SCRIPT}} />
+        </head>
         <body>
         <a href="#main-content" className="skip-to-content">Zum Inhalt springen</a>
         <Script id="theme-init" strategy="beforeInteractive" src="/theme-init.js" />
