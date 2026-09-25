@@ -1,0 +1,81 @@
+.list {
+    --tone: var(--color-primary);
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.list[data-tone='podcast'] {
+    --tone: var(--statistik-podcast, var(--color-secondary));
+}
+
+.item {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: calc(var(--border-radius) * 0.75);
+}
+
+.item:first-child {
+    background: color-mix(in oklch, var(--tone) 12%, transparent);
+}
+
+.rank {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--tone);
+    border: 2px solid color-mix(in oklch, var(--tone) 60%, transparent);
+    font-variant-numeric: tabular-nums;
+}
+
+.item:first-child .rank {
+    color: var(--color-surface);
+    background: var(--tone);
+    border-color: var(--tone);
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.title:hover,
+.title:focus-visible {
+    color: var(--tone);
+    text-decoration: underline;
+}
+
+.date {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+}

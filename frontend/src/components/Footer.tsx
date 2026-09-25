@@ -19,6 +19,7 @@ const sections: FooterSection[] = [
             {label: 'Kategorien & Formate', href: routes.categories},
             {label: 'AutorInnen', href: routes.authors},
             {label: 'M12G', href: routes.m12g},
+            {label: 'Statistik', href: routes.statistik},
             {label: 'Über Uns', href: routes.about},
         ],
     },

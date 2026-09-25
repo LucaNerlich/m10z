@@ -1,0 +1,63 @@
+.bar {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-surface);
+    overflow: hidden;
+}
+
+/* Same divider technique as M12GStatsBar: borders pulled onto the container edge and clipped. */
+.stat {
+    position: relative;
+    flex: 1 1 170px;
+    min-width: 0;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 4px;
+    border-left: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-border);
+    margin-left: -1px;
+    margin-top: -1px;
+}
+
+.stat[data-accent]::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--color-primary);
+}
+
+.stat[data-accent='podcast']::before {
+    background: var(--statistik-podcast, var(--color-secondary));
+}
+
+.value {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+@media (max-width: 640px) {
+    .stat {
+        flex-basis: 140px;
+        padding: 12px 14px;
+    }
+
+    .value {
+        font-size: 1.4rem;
+    }
+}

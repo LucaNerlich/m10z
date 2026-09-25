@@ -80,6 +80,9 @@ importers:
       undici:
         specifier: ^8.10.2
         version: 8.10.2
+      yaml:
+        specifier: ^2.9.1
+        version: 2.9.1
     devDependencies:
       '@types/jsdom':
         specifier: ^27.0.0
@@ -110,7 +113,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@25.9.6)(jsdom@27.4.0)(vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13))
+        version: 4.1.11(@types/node@25.9.6)(jsdom@27.4.0)(vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
 
 packages:
 
@@ -2286,6 +2289,11 @@ packages:
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
 
+  yaml@2.9.1:
+    resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -2938,13 +2946,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.11(vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13))':
+  '@vitest/mocker@4.1.11(vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)
+      vite: 8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1)
 
   '@vitest/pretty-format@4.1.11':
     dependencies:
@@ -4524,7 +4532,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13):
+  vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -4536,11 +4544,12 @@ snapshots:
       esbuild: 0.28.2
       fsevents: 2.3.3
       tsx: 4.23.13
+      yaml: 2.9.1
 
-  vitest@4.1.11(@types/node@25.9.6)(jsdom@27.4.0)(vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)):
+  vitest@4.1.11(@types/node@25.9.6)(jsdom@27.4.0)(vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13))
+      '@vitest/mocker': 4.1.11(vite@8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -4557,7 +4566,7 @@ snapshots:
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)
+      vite: 8.0.11(@types/node@25.9.6)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.6
@@ -4592,5 +4601,7 @@ snapshots:
   xml-name-validator@5.0.0: {}
 
   xmlchars@2.2.0: {}
+
+  yaml@2.9.1: {}
 
   zwitch@2.0.4: {}

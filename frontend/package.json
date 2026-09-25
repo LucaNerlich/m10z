@@ -10,6 +10,7 @@
         "start": "next start",
         "snapshot:feeds": "tsx scripts/feed-snapshot.ts",
         "snapshot:feeds:write": "tsx scripts/feed-snapshot.ts --write",
+        "snapshot:statistik": "tsx scripts/statistik-snapshot.ts",
         "pretest": "node scripts/sync-shared-contracts.mjs",
         "test": "vitest",
         "pretest:run": "node scripts/sync-shared-contracts.mjs",
@@ -39,7 +40,8 @@
         "remark-smartypants": "^3.0.3",
         "serialize-javascript": "^7.1.1",
         "swr": "^2.5.1",
-        "undici": "^8.10.2"
+        "undici": "^8.10.2",
+        "yaml": "^2.9.1"
     },
     "devDependencies": {
         "@types/jsdom": "^27.0.0",
