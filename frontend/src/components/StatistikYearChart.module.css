@@ -52,12 +52,12 @@
 
 .articles {
     flex-basis: 0;
-    background: var(--color-primary);
+    background: var(--statistik-primary);
 }
 
 .podcasts {
     flex-basis: 0;
-    background: var(--statistik-podcast, var(--color-secondary));
+    background: var(--statistik-secondary);
 }
 
 .gapBar {

@@ -8,7 +8,7 @@
     overflow: hidden;
 }
 
-/* Same divider technique as M12GStatsBar: borders pulled onto the container edge and clipped. */
+/* Dividers: borders pulled onto the container edge and clipped. */
 .stat {
     position: relative;
     flex: 1 1 170px;
@@ -24,16 +24,16 @@
     margin-top: -1px;
 }
 
-.stat[data-accent]::before {
+.stat[data-tone]::before {
     content: '';
     position: absolute;
     inset: 0 auto 0 0;
     width: 3px;
-    background: var(--color-primary);
+    background: var(--statistik-primary);
 }
 
-.stat[data-accent='podcast']::before {
-    background: var(--statistik-podcast, var(--color-secondary));
+.stat[data-tone='secondary']::before {
+    background: var(--statistik-secondary);
 }
 
 .value {

@@ -2,9 +2,12 @@ import {type ReactNode} from 'react';
 
 import styles from './StatistikPanel.module.css';
 
+/** Colour role shared by all Statistik components: primary (articles) or secondary (podcasts). */
+export type StatistikTone = 'primary' | 'secondary';
+
 type StatistikPanelProps = {
     title: string;
-    description?: string;
+    description?: ReactNode;
     legend?: boolean;
     className?: string;
     children: ReactNode;
@@ -29,11 +32,11 @@ export function StatistikLegend() {
     return (
         <ul className={styles.legend}>
             <li>
-                <span className={`${styles.swatch} ${styles.swatchArticle}`} aria-hidden='true' />
+                <span className={`${styles.swatch} ${styles.swatchPrimary}`} aria-hidden='true' />
                 Artikel
             </li>
             <li>
-                <span className={`${styles.swatch} ${styles.swatchPodcast}`} aria-hidden='true' />
+                <span className={`${styles.swatch} ${styles.swatchSecondary}`} aria-hidden='true' />
                 Podcasts
             </li>
         </ul>

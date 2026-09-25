@@ -39,6 +39,7 @@ export interface M12GMonthParticipation {
 export interface M12GWinnerEntry {
     month: string;
     gameName: string;
+    slug: string;
     gameLink: string;
     votes: number;
 }
@@ -56,4 +57,14 @@ export interface M12GStats {
     leaderboard: M12GLeaderboardEntry[];
     winnerTimeline: M12GWinnerEntry[];
     monthlyParticipation: M12GMonthParticipation[];
+}
+
+// Record-breaking Months and Games. Every field is null when there is nothing to report
+// (no Months, or — for `mostWins` — no Game that won more than once).
+export interface M12GRecords {
+    busiestMonth: {month: string; totalVotes: number} | null;
+    // Smallest lead of the winner over the runner-up; 0 when several Games tied for the win.
+    closestRace: {month: string; margin: number; winnerCount: number} | null;
+    strongestWin: {month: string; gameName: string; slug: string; votes: number} | null;
+    mostWins: {name: string; slug: string; wins: number} | null;
 }

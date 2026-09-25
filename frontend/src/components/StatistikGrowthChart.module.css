@@ -35,11 +35,11 @@
 }
 
 .totalArea {
-    fill: color-mix(in oklch, var(--statistik-podcast, var(--color-secondary)) 30%, transparent);
+    fill: color-mix(in oklch, var(--statistik-secondary) 30%, transparent);
 }
 
 .articleArea {
-    fill: color-mix(in oklch, var(--color-primary) 38%, transparent);
+    fill: color-mix(in oklch, var(--statistik-primary) 38%, transparent);
 }
 
 .totalLine,
@@ -50,11 +50,11 @@
 }
 
 .totalLine {
-    stroke: var(--statistik-podcast, var(--color-secondary));
+    stroke: var(--statistik-secondary);
 }
 
 .articleLine {
-    stroke: var(--color-primary);
+    stroke: var(--statistik-primary);
 }
 
 .endBadge {
@@ -66,7 +66,7 @@
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--color-surface);
-    background: var(--statistik-podcast, var(--color-secondary));
+    background: var(--statistik-secondary);
     font-variant-numeric: tabular-nums;
 }
 

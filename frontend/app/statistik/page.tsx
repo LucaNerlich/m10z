@@ -1,3 +1,4 @@
+import {CalendarCheckIcon, FireIcon, HourglassIcon, RocketLaunchIcon, TrophyIcon} from '@phosphor-icons/react/dist/ssr';
 import {type Metadata} from 'next';
 
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
@@ -5,23 +6,31 @@ import {routes} from '@/src/lib/routes';
 import {getStatistikDashboard} from '@/src/lib/statistik/statistikSource';
 import {
     GERMAN_WEEKDAYS,
+    formatCalendarDate,
+    formatDecimal,
+    formatHours,
     formatInteger,
     formatMinutes,
+    formatMonthKey,
     formatSnapshotDate,
     pluralize,
 } from '@/src/lib/statistik/statistikFormat';
-import {type StatistikBreakdownEntry} from '@/src/lib/statistik/types';
+import {
+    type StatistikBreakdownEntry,
+    type StatistikRecords as StatistikRecordsData,
+    type StatistikTopEntry,
+    type StatistikTotals,
+} from '@/src/lib/statistik/types';
 import {EmptyState} from '@/src/components/EmptyState';
 import {StatistikBarList, type StatistikBarListItem} from '@/src/components/StatistikBarList';
+import {StatistikColumns, StatistikDashboard, StatistikIntro} from '@/src/components/StatistikDashboard';
 import {StatistikGrowthChart} from '@/src/components/StatistikGrowthChart';
 import {StatistikHeatmap} from '@/src/components/StatistikHeatmap';
 import {StatistikPanel} from '@/src/components/StatistikPanel';
-import {StatistikRecords} from '@/src/components/StatistikRecords';
-import {StatistikStatsBar} from '@/src/components/StatistikStatsBar';
-import {StatistikTopList} from '@/src/components/StatistikTopList';
+import {StatistikRecords, type StatistikRecordCard} from '@/src/components/StatistikRecords';
+import {StatistikStatsBar, type StatistikStat} from '@/src/components/StatistikStatsBar';
+import {StatistikTopList, type StatistikTopListItem} from '@/src/components/StatistikTopList';
 import {StatistikYearChart} from '@/src/components/StatistikYearChart';
-
-import styles from './page.module.css';
 
 const BREAKDOWN_LIMIT = 12;
 
@@ -48,8 +57,8 @@ function toBreakdownItems(
         // Two authors may share a display name; the slug keeps them apart.
         label: (nameCounts.get(entry.name) ?? 0) > 1 ? `${entry.name} (${entry.slug})` : entry.name,
         href: href(entry.slug),
-        articles: entry.articles,
-        podcasts: entry.podcasts,
+        primary: entry.articles,
+        secondary: entry.podcasts,
         value: entry.total,
         title: `${entry.name}: ${describeCounts(entry)}`,
     }));
@@ -57,6 +66,89 @@ function toBreakdownItems(
 
 function limitDescription(total: number, noun: string): string | undefined {
     return total > BREAKDOWN_LIMIT ? `Die ${BREAKDOWN_LIMIT} aktivsten von ${formatInteger(total)} ${noun}.` : undefined;
+}
+
+function buildStats(totals: StatistikTotals): StatistikStat[] {
+    return [
+        {key: 'total', label: 'Veröffentlichungen', value: formatInteger(totals.total)},
+        {key: 'articles', label: 'Artikel', value: formatInteger(totals.articles), tone: 'primary'},
+        {key: 'podcasts', label: 'Podcast-Folgen', value: formatInteger(totals.podcasts), tone: 'secondary'},
+        {key: 'words', label: 'Geschriebene Wörter', value: formatInteger(totals.articleWords), tone: 'primary'},
+        {key: 'runtime', label: 'Podcast-Laufzeit', value: formatHours(totals.podcastSeconds), tone: 'secondary'},
+        {key: 'avgWords', label: 'Ø Wörter pro Artikel', value: formatInteger(totals.avgWordsPerArticle)},
+        {key: 'avgDuration', label: 'Ø Folgenlänge', value: formatMinutes(totals.avgPodcastSeconds)},
+        {key: 'perMonth', label: 'Ø pro Monat', value: formatDecimal(totals.avgReleasesPerMonth)},
+        {key: 'authors', label: 'Aktive AutorInnen', value: formatInteger(totals.activeAuthors)},
+        {key: 'categories', label: 'Kategorien', value: formatInteger(totals.activeCategories)},
+    ];
+}
+
+function buildRecordCards(records: StatistikRecordsData, totals: StatistikTotals): StatistikRecordCard[] {
+    const cards: StatistikRecordCard[] = [];
+
+    if (records.busiestMonth) {
+        cards.push({
+            key: 'month',
+            icon: <FireIcon weight='duotone' />,
+            label: 'Aktivster Monat',
+            value: formatMonthKey(records.busiestMonth.month),
+            detail: pluralize(records.busiestMonth.total, 'Veröffentlichung', 'Veröffentlichungen'),
+        });
+    }
+    if (records.busiestYear) {
+        cards.push({
+            key: 'year',
+            icon: <TrophyIcon weight='duotone' />,
+            label: 'Stärkstes Jahr',
+            value: String(records.busiestYear.year),
+            detail: pluralize(records.busiestYear.total, 'Veröffentlichung', 'Veröffentlichungen'),
+        });
+    }
+    if (records.longestMonthStreak) {
+        cards.push({
+            key: 'streak',
+            icon: <CalendarCheckIcon weight='duotone' />,
+            label: 'Längste Serie',
+            value: pluralize(records.longestMonthStreak.months, 'Monat', 'Monate'),
+            detail: `ohne Pause, ${formatMonthKey(records.longestMonthStreak.from)} – ${formatMonthKey(records.longestMonthStreak.to)}`,
+        });
+    }
+    if (records.longestGap && records.longestGap.days > 0) {
+        cards.push({
+            key: 'gap',
+            icon: <HourglassIcon weight='duotone' />,
+            label: 'Längste Pause',
+            value: `${formatInteger(records.longestGap.days)} Tage`,
+            detail: `${formatCalendarDate(records.longestGap.from)} – ${formatCalendarDate(records.longestGap.to)}`,
+        });
+    }
+    if (totals.firstReleaseDate) {
+        cards.push({
+            key: 'first',
+            icon: <RocketLaunchIcon weight='duotone' />,
+            label: 'Erste Veröffentlichung',
+            value: formatCalendarDate(totals.firstReleaseDate),
+            detail: totals.latestReleaseDate
+                ? `zuletzt am ${formatCalendarDate(totals.latestReleaseDate)}`
+                : 'seitdem nichts Neues',
+        });
+    }
+
+    return cards;
+}
+
+function toTopListItems(
+    entries: StatistikTopEntry[],
+    href: (slug: string) => string,
+    formatValue: (value: number) => string
+): StatistikTopListItem[] {
+    return entries.map((entry) => ({
+        key: entry.slug,
+        title: entry.title,
+        href: href(entry.slug),
+        meta: <time dateTime={entry.date}>{formatCalendarDate(entry.date)}</time>,
+        value: formatValue(entry.value),
+    }));
 }
 
 export default async function StatistikPage() {
@@ -76,8 +168,8 @@ export default async function StatistikPage() {
     const weekdayItems: StatistikBarListItem[] = dashboard.weekdays.map((weekday) => ({
         key: String(weekday.weekday),
         label: GERMAN_WEEKDAYS[weekday.weekday] ?? String(weekday.weekday),
-        articles: weekday.articles,
-        podcasts: weekday.podcasts,
+        primary: weekday.articles,
+        secondary: weekday.podcasts,
         value: weekday.total,
         title: `${GERMAN_WEEKDAYS[weekday.weekday]}: ${describeCounts(weekday)}`,
     }));
@@ -96,28 +188,32 @@ export default async function StatistikPage() {
 
     return (
         <div data-list-page>
-            <header className={styles.intro}>
-                <h1>Statistik</h1>
-                <p className={styles.lead}>
-                    {formatInteger(totals.articles)} Artikel, {formatInteger(totals.podcasts)} Podcast-Folgen und
-                    jede Menge Zeichen – Mindestens 10 Zeichen in Zahlen.
-                </p>
-                <p className={styles.meta}>
-                    Stand: <time dateTime={dashboard.generatedAt}>{formatSnapshotDate(dashboard.generatedAt)}</time>
-                </p>
-            </header>
+            <StatistikIntro
+                title='Statistik'
+                lead={
+                    <>
+                        {formatInteger(totals.articles)} Artikel, {formatInteger(totals.podcasts)} Podcast-Folgen und
+                        jede Menge Zeichen – Mindestens 10 Zeichen in Zahlen.
+                    </>
+                }
+                meta={
+                    <>
+                        Stand: <time dateTime={dashboard.generatedAt}>{formatSnapshotDate(dashboard.generatedAt)}</time>
+                    </>
+                }
+            />
 
-            <div className={styles.dashboard}>
-                <StatistikStatsBar totals={totals} />
-                <StatistikRecords records={dashboard.records} totals={totals} />
+            <StatistikDashboard>
+                <StatistikStatsBar stats={buildStats(totals)} />
+                <StatistikRecords cards={buildRecordCards(dashboard.records, totals)} />
                 <StatistikHeatmap heatmap={dashboard.heatmap} />
 
-                <div className={styles.columns}>
+                <StatistikColumns>
                     <StatistikYearChart years={dashboard.years} />
                     <StatistikGrowthChart points={dashboard.cumulative} />
-                </div>
+                </StatistikColumns>
 
-                <div className={styles.columns3}>
+                <StatistikColumns narrow>
                     <StatistikPanel
                         title='Wochentage'
                         description='An welchen Tagen erscheinen neue Inhalte?'
@@ -125,33 +221,32 @@ export default async function StatistikPage() {
                         <StatistikBarList items={weekdayItems} highlightMax />
                     </StatistikPanel>
                     <StatistikPanel title='Artikellänge' description='Verteilung der Wortanzahl pro Artikel.'>
-                        <StatistikBarList items={wordItems} tone='article' highlightMax />
+                        <StatistikBarList items={wordItems} tone='primary' highlightMax />
                     </StatistikPanel>
                     <StatistikPanel title='Folgenlänge' description='Verteilung der Laufzeit pro Podcast-Folge.'>
-                        <StatistikBarList items={durationItems} tone='podcast' highlightMax />
+                        <StatistikBarList items={durationItems} tone='secondary' highlightMax />
                     </StatistikPanel>
-                </div>
+                </StatistikColumns>
 
-                <div className={styles.columns}>
+                <StatistikColumns>
                     <StatistikPanel title='Die längsten Artikel'>
                         <StatistikTopList
-                            entries={dashboard.longestArticles}
-                            href={routes.article}
-                            formatValue={(value) => `${formatInteger(value)} Wörter`}
-                            tone='article'
+                            items={toTopListItems(
+                                dashboard.longestArticles,
+                                routes.article,
+                                (value) => `${formatInteger(value)} Wörter`
+                            )}
                         />
                     </StatistikPanel>
                     <StatistikPanel title='Die längsten Podcasts'>
                         <StatistikTopList
-                            entries={dashboard.longestPodcasts}
-                            href={routes.podcast}
-                            formatValue={formatMinutes}
-                            tone='podcast'
+                            items={toTopListItems(dashboard.longestPodcasts, routes.podcast, formatMinutes)}
+                            tone='secondary'
                         />
                     </StatistikPanel>
-                </div>
+                </StatistikColumns>
 
-                <div className={styles.columns}>
+                <StatistikColumns>
                     <StatistikPanel
                         title='Kategorien'
                         description={limitDescription(dashboard.categories.length, 'Kategorien')}
@@ -164,8 +259,8 @@ export default async function StatistikPage() {
                         legend>
                         <StatistikBarList items={toBreakdownItems(dashboard.authors, routes.author)} />
                     </StatistikPanel>
-                </div>
-            </div>
+                </StatistikColumns>
+            </StatistikDashboard>
         </div>
     );
 }

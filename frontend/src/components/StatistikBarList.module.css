@@ -46,17 +46,17 @@ a.label:focus-visible {
     overflow: hidden;
 }
 
-.article,
-.podcast {
+.primary,
+.secondary {
     flex: 1 1 0;
 }
 
-.article {
-    background: var(--color-primary);
+.primary {
+    background: var(--statistik-primary);
 }
 
-.podcast {
-    background: var(--statistik-podcast, var(--color-secondary));
+.secondary {
+    background: var(--statistik-secondary);
 }
 
 .value {

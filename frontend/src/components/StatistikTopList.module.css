@@ -1,5 +1,5 @@
 .list {
-    --tone: var(--color-primary);
+    --tone: var(--statistik-primary);
     display: grid;
     gap: 4px;
     margin: 0;
@@ -7,17 +7,21 @@
     list-style: none;
 }
 
-.list[data-tone='podcast'] {
-    --tone: var(--statistik-podcast, var(--color-secondary));
+.list[data-tone='secondary'] {
+    --tone: var(--statistik-secondary);
 }
 
 .item {
     display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 12px;
     padding: 8px 10px;
     border-radius: calc(var(--border-radius) * 0.75);
+}
+
+.list[data-ranked] .item {
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
 }
 
 .item:first-child {
@@ -49,6 +53,13 @@
     min-width: 0;
 }
 
+.titleRow {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+}
+
 .title {
     display: -webkit-box;
     overflow: hidden;
@@ -67,7 +78,19 @@
     text-decoration: underline;
 }
 
-.date {
+.external {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+}
+
+.external:hover,
+.external:focus-visible {
+    color: var(--tone);
+}
+
+.meta {
     font-size: 0.8rem;
     color: var(--color-text-muted);
 }

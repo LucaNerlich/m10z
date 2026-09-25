@@ -2,15 +2,16 @@ import Link from 'next/link';
 
 import {formatInteger} from '@/src/lib/statistik/statistikFormat';
 
+import {type StatistikTone} from './StatistikPanel';
 import styles from './StatistikBarList.module.css';
 
 export type StatistikBarListItem = {
     key: string;
     label: string;
     href?: string;
-    /** When both are given the bar is split into article/podcast segments. */
-    articles?: number;
-    podcasts?: number;
+    /** When both are given the bar is split into primary/secondary segments. */
+    primary?: number;
+    secondary?: number;
     value: number;
     title?: string;
 };
@@ -18,18 +19,18 @@ export type StatistikBarListItem = {
 type StatistikBarListProps = {
     items: StatistikBarListItem[];
     /** Single-colour bars when the items are not split into segments. */
-    tone?: 'article' | 'podcast';
+    tone?: StatistikTone;
     /** Highlights the item(s) with the highest value. */
     highlightMax?: boolean;
 };
 
-export function StatistikBarList({items, tone = 'article', highlightMax = false}: StatistikBarListProps) {
+export function StatistikBarList({items, tone = 'primary', highlightMax = false}: StatistikBarListProps) {
     const max = Math.max(1, ...items.map((item) => item.value));
 
     return (
         <ul className={styles.list}>
             {items.map((item) => {
-                const split = item.articles !== undefined && item.podcasts !== undefined;
+                const split = item.primary !== undefined && item.secondary !== undefined;
                 return (
                     <li
                         key={item.key}
@@ -47,11 +48,11 @@ export function StatistikBarList({items, tone = 'article', highlightMax = false}
                             <span className={styles.fill} style={{width: `${(item.value / max) * 100}%`}}>
                                 {split ? (
                                     <>
-                                        <span className={styles.article} style={{flexGrow: item.articles}} />
-                                        <span className={styles.podcast} style={{flexGrow: item.podcasts}} />
+                                        <span className={styles.primary} style={{flexGrow: item.primary}} />
+                                        <span className={styles.secondary} style={{flexGrow: item.secondary}} />
                                     </>
                                 ) : (
-                                    <span className={tone === 'podcast' ? styles.podcast : styles.article} />
+                                    <span className={styles[tone]} />
                                 )}
                             </span>
                         </span>

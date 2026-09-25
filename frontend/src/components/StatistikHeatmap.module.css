@@ -60,7 +60,7 @@
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--color-text);
-    background: color-mix(in oklch, var(--color-primary) var(--heat), var(--color-surface-strong));
+    background: color-mix(in oklch, var(--statistik-primary) var(--heat), var(--color-surface-strong));
     transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
@@ -132,7 +132,7 @@
     width: 100%;
     min-height: 2px;
     border-radius: 4px 4px 0 0;
-    background: color-mix(in oklch, var(--color-primary) 55%, var(--color-surface-strong));
+    background: color-mix(in oklch, var(--statistik-primary) 55%, var(--color-surface-strong));
 }
 
 .monthTotalValue {
