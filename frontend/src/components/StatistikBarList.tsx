@@ -45,16 +45,18 @@ export function StatistikBarList({items, tone = 'primary', highlightMax = false}
                             <span className={styles.label}>{item.label}</span>
                         )}
                         <span className={styles.track} aria-hidden='true'>
-                            <span className={styles.fill} style={{width: `${(item.value / max) * 100}%`}}>
-                                {split ? (
-                                    <>
-                                        <span className={styles.primary} style={{flexGrow: item.primary}} />
-                                        <span className={styles.secondary} style={{flexGrow: item.secondary}} />
-                                    </>
-                                ) : (
-                                    <span className={styles[tone]} />
-                                )}
-                            </span>
+                            {item.value > 0 ? (
+                                <span className={styles.fill} style={{width: `${(item.value / max) * 100}%`}}>
+                                    {split ? (
+                                        <>
+                                            <span className={styles.primary} style={{flexGrow: item.primary}} />
+                                            <span className={styles.secondary} style={{flexGrow: item.secondary}} />
+                                        </>
+                                    ) : (
+                                        <span className={styles[tone]} />
+                                    )}
+                                </span>
+                            ) : null}
                         </span>
                         <span className={styles.value}>{formatInteger(item.value)}</span>
                         {item.title ? <span className='visually-hidden'>{item.title}</span> : null}
