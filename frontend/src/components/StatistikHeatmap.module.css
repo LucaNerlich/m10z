@@ -86,9 +86,22 @@
     color: var(--color-surface);
 }
 
-.cell[data-level]:not([data-level='0']):hover {
+.cell[data-level]:not([data-level='0']):hover,
+.cell:has(.cellLink:focus-visible) {
     transform: scale(1.12);
     box-shadow: 0 0 0 2px var(--color-text);
+}
+
+.cellLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    color: inherit;
+    text-decoration: none;
+    outline: none;
 }
 
 .cell[data-out-of-range] {

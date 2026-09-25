@@ -27,6 +27,7 @@ export const routes = {
     m12gGames: '/m12g/spiele',
     m12gGame: (slug: string) => `/m12g/spiele/${slug}`,
     statistik: '/statistik',
+    statistikMonth: (month: string) => `/statistik/${month}`,
     audioFeed: '/audiofeed.xml',
     articleFeed: '/rss.xml',
     llmsTxt: '/llms.txt',

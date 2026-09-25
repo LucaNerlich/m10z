@@ -272,6 +272,28 @@ async function fetchByAuthorPaginated<T>(
     return toPaginatedResult(res, safePage, safePageSize);
 }
 
+// Upper bound for one date window; a month has never come close (the busiest had ~20).
+const DATE_RANGE_LIMIT = 100;
+
+async function fetchInDateRange<T>(desc: ContentDescriptor, from: string, to: string): Promise<T[]> {
+    const query = buildListQuery({
+        page: 1,
+        pageSize: DATE_RANGE_LIMIT,
+        sort: ['date:desc'],
+        status: 'published',
+        filters: {date: {$gte: from, $lt: to}},
+        populate: desc.listPopulate,
+        fields: desc.listFields,
+    });
+
+    const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
+        tags: [contentTag(desc.contentType), contentListPageTag(desc.contentType)],
+        revalidate: CACHE_REVALIDATE_DEFAULT,
+    });
+
+    return res.data ?? [];
+}
+
 async function fetchRelated<T>(
     desc: ContentDescriptor,
     categorySlugs: string[],
@@ -341,6 +363,12 @@ export const fetchRelatedArticles = cache(
         fetchRelated<StrapiArticle>(ARTICLE_DESCRIPTOR, categorySlugs, excludeSlug),
 );
 
+/** Published articles whose `date` lies in `[from, to)` (ISO timestamps), newest first. */
+export const fetchArticlesInDateRange = cache(
+    (from: string, to: string): Promise<StrapiArticle[]> =>
+        fetchInDateRange<StrapiArticle>(ARTICLE_DESCRIPTOR, from, to),
+);
+
 // ─── Podcasts ──────────────────────────────────────────────────────────────
 
 export const fetchPodcastBySlug = cache(
@@ -380,6 +408,12 @@ export const fetchPodcastsByAuthorPaginated = cache(
 export const fetchRelatedPodcasts = cache(
     (categorySlugs: string[], excludeSlug: string): Promise<StrapiPodcast[]> =>
         fetchRelated<StrapiPodcast>(PODCAST_DESCRIPTOR, categorySlugs, excludeSlug),
+);
+
+/** Published podcasts whose `date` lies in `[from, to)` (ISO timestamps), newest first. */
+export const fetchPodcastsInDateRange = cache(
+    (from: string, to: string): Promise<StrapiPodcast[]> =>
+        fetchInDateRange<StrapiPodcast>(PODCAST_DESCRIPTOR, from, to),
 );
 
 // ─── Authors + Categories ──────────────────────────────────────────────────

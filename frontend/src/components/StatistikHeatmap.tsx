@@ -1,3 +1,6 @@
+import Link from 'next/link';
+
+import {routes} from '@/src/lib/routes';
 import {type StatistikHeatmap as StatistikHeatmapData} from '@/src/lib/statistik/types';
 import {
     GERMAN_MONTHS,
@@ -27,7 +30,7 @@ export function StatistikHeatmap({heatmap}: StatistikHeatmapProps) {
     return (
         <StatistikPanel
             title='Aktivität nach Monat'
-            description='Jede Zelle ist ein Monat – je kräftiger, desto mehr Artikel und Podcasts erschienen.'>
+            description='Jede Zelle ist ein Monat. Ein Klick zeigt alle Inhalte des Monats.'>
             <div className={styles.scroller}>
                 <div
                     className={styles.grid}
@@ -76,6 +79,7 @@ export function StatistikHeatmap({heatmap}: StatistikHeatmapProps) {
                                     const label = cell.inRange
                                         ? describeCell(cell.month, cell.articles, cell.podcasts)
                                         : `${formatMonthKey(cell.month)}: außerhalb des Zeitraums`;
+                                    const linked = cell.inRange && cell.total > 0;
                                     return (
                                         <span
                                             key={cell.month}
@@ -84,8 +88,16 @@ export function StatistikHeatmap({heatmap}: StatistikHeatmapProps) {
                                             data-out-of-range={cell.inRange ? undefined : ''}
                                             role='cell'
                                             title={label}
-                                            aria-label={label}>
-                                            {cell.total > 0 ? cell.total : null}
+                                            aria-label={linked ? undefined : label}>
+                                            {linked ? (
+                                                <Link
+                                                    href={routes.statistikMonth(cell.month)}
+                                                    className={styles.cellLink}
+                                                    aria-label={`${label} – alle anzeigen`}
+                                                    prefetch={false}>
+                                                    {cell.total}
+                                                </Link>
+                                            ) : null}
                                         </span>
                                     );
                                 })}

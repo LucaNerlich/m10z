@@ -3,6 +3,8 @@ import {MetadataRoute} from 'next';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {contentTag, sitemapTag} from '@/src/lib/strapi/cacheTags';
 import {fetchPublishedSlugs, type PublishedSlugEntry} from '@/src/lib/publishedSlugs';
+import {monthsWithContent} from '@/src/lib/statistik/statistikMonth';
+import {getStatistikDashboard} from '@/src/lib/statistik/statistikSource';
 
 function createLanguageAlternates(url: string) {
     return {
@@ -49,12 +51,14 @@ function buildStaticEntries(urls: string[]): MetadataRoute.Sitemap {
  * @returns An array of sitemap items containing static routes and dynamic entries for articles, podcasts, categories, and authors
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const [articles, podcasts, categories, authors] = await Promise.all([
+    const [articles, podcasts, categories, authors, statistik] = await Promise.all([
         fetchPublishedSlugs('articles', [sitemapTag('articles'), contentTag('article')]),
         fetchPublishedSlugs('podcasts', [sitemapTag('podcasts'), contentTag('podcast')]),
         fetchPublishedSlugs('categories', [sitemapTag('categories')]),
         fetchPublishedSlugs('authors', [sitemapTag('authors')]),
+        getStatistikDashboard(),
     ]);
+    const statistikMonths = statistik ? monthsWithContent(statistik.heatmap) : [];
 
     const staticEntries = buildStaticEntries([
         routes.home,
@@ -106,6 +110,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...buildDynamicEntries(podcasts, routes.podcast, 'weekly', 0.8),
         ...buildDynamicEntries(categories, routes.category, 'monthly', 0.5),
         ...buildDynamicEntries(authors, routes.author, 'monthly', 0.5),
+        ...buildDynamicEntries(
+            statistikMonths.map((slug) => ({slug})),
+            routes.statistikMonth,
+            'monthly',
+            0.3,
+        ),
     ];
 
     return [...staticEntries, ...dynamicEntries];
