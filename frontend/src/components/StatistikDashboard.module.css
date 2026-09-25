@@ -1,0 +1,40 @@
+.intro {
+    margin-bottom: 28px;
+}
+
+.lead {
+    margin: 8px 0 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.meta {
+    margin: 6px 0 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.dashboard {
+    --statistik-primary: var(--color-primary);
+    --statistik-secondary: color-mix(in oklch, oklch(0.6 0.11 250) 65%, var(--color-text-muted));
+    display: grid;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+.narrow {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+
+/* ContentLayout adds `section + section` spacing for list pages (specificity 0,2,3);
+   grid gaps handle it here, so the repeated class outranks it. */
+.dashboard.dashboard.dashboard section {
+    margin-top: 0;
+}

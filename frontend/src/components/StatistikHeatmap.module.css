@@ -1,0 +1,225 @@
+.scroller {
+    overflow-x: auto;
+    margin: 0 -4px;
+    padding: 0 4px 4px;
+}
+
+.grid {
+    display: grid;
+    gap: 5px;
+    min-width: 440px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 3.4rem repeat(12, minmax(0, 1fr)) 2.8rem;
+    gap: 5px;
+    align-items: center;
+}
+
+.corner,
+.monthLabel,
+.totalLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.monthLabel abbr {
+    text-decoration: none;
+}
+
+.yearLabel {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.total {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: right;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.cell,
+.scaleCell {
+    --heat: 0%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text);
+    background: color-mix(in oklch, var(--statistik-primary) var(--heat), var(--color-surface-strong));
+    transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.cell[data-level='1'],
+.scaleCell[data-level='1'] {
+    --heat: 28%;
+}
+
+.cell[data-level='2'],
+.scaleCell[data-level='2'] {
+    --heat: 50%;
+}
+
+.cell[data-level='3'],
+.scaleCell[data-level='3'] {
+    --heat: 74%;
+    color: var(--color-surface);
+}
+
+.cell[data-level='4'],
+.scaleCell[data-level='4'] {
+    --heat: 100%;
+    color: var(--color-surface);
+}
+
+.cell[data-level]:not([data-level='0']):hover,
+.cell:has(.cellLink:focus-visible) {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 2px var(--color-text);
+}
+
+.cellLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    color: inherit;
+    text-decoration: none;
+    outline: none;
+}
+
+.cell[data-out-of-range] {
+    background: transparent;
+    border: 1px dashed var(--color-border);
+}
+
+.gap {
+    grid-column: 2 / span 12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    border: 1px dashed var(--color-border);
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+    background: repeating-linear-gradient(
+        135deg,
+        transparent 0 8px,
+        color-mix(in oklch, var(--color-border) 35%, transparent) 8px 9px
+    );
+}
+
+.footerRow {
+    align-items: end;
+    margin-top: 6px;
+}
+
+.monthTotal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 56px;
+}
+
+.monthTotalBar {
+    width: 100%;
+    min-height: 2px;
+    border-radius: 4px 4px 0 0;
+    background: color-mix(in oklch, var(--statistik-primary) 55%, var(--color-surface-strong));
+}
+
+.monthTotalValue {
+    margin-top: 3px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.scale {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.scaleCell {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+}
+
+.scaleMax {
+    margin-left: auto;
+}
+
+@media (max-width: 640px) {
+    .cell {
+        height: 26px;
+        font-size: 0.7rem;
+    }
+
+    .gap {
+        height: 26px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cell {
+        transition: none;
+    }
+}
+
+.monthShort {
+    display: none;
+}
+
+@media (max-width: 560px) {
+    .grid {
+        gap: 3px;
+        min-width: 300px;
+    }
+
+    .row {
+        grid-template-columns: 2.9rem repeat(12, minmax(0, 1fr)) 1.8rem;
+        gap: 3px;
+    }
+
+    .monthLong {
+        display: none;
+    }
+
+    .monthShort {
+        display: inline;
+    }
+
+    .cell {
+        font-size: 0.6rem;
+    }
+
+    .monthTotalValue {
+        font-size: 0.6rem;
+    }
+}

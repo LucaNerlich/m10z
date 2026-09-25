@@ -1,6 +1,7 @@
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
+import {isBuildPhase} from '@/src/lib/buildPhase';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {fetchArticleBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
@@ -73,6 +74,9 @@ export default async function ArticleDetailPage({params}: SlugPageParams) {
         }
         // Transient failure, not a genuine absence: rethrow so Next's ISR keeps
         // serving the last successfully cached page instead of caching a 404.
+        // During `next build` there is no cached page and a throw aborts the whole
+        // build, so degrade to a 404 that ISR/invalidation replaces later.
+        if (isBuildPhase()) return null;
         throw error;
     });
 

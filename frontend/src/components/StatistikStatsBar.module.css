@@ -1,36 +1,48 @@
 .bar {
     display: flex;
     flex-wrap: wrap;
+    margin: 0;
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     background: var(--color-surface);
     overflow: hidden;
 }
 
-/*
- * Flexbox strip: on wide screens all stats sit in one row; when they wrap
- * (mobile), flex-grow makes the last row's items stretch to fill the width, so
- * there are never empty cells. Dividers are drawn with top/left borders pulled
- * onto the container edge via negative margins, then clipped by overflow:hidden.
- */
+/* Dividers: borders pulled onto the container edge and clipped. */
 .stat {
-    flex: 1 1 140px;
+    position: relative;
+    flex: 1 1 170px;
     min-width: 0;
-    padding: 14px 18px;
+    padding: 16px 18px;
     display: flex;
-    flex-direction: column;
-    gap: 3px;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 4px;
     border-left: 1px solid var(--color-border);
     border-top: 1px solid var(--color-border);
     margin-left: -1px;
     margin-top: -1px;
 }
 
+.stat[data-tone]::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--statistik-primary);
+}
+
+.stat[data-tone='secondary']::before {
+    background: var(--statistik-secondary);
+}
+
 .value {
-    font-size: 1.6rem;
+    margin: 0;
+    font-size: 1.7rem;
     font-weight: 700;
     line-height: 1.1;
     color: var(--color-text);
+    font-variant-numeric: tabular-nums;
 }
 
 .label {
@@ -39,19 +51,9 @@
     font-weight: 500;
 }
 
-.streakLink {
-    color: var(--color-text);
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.streakLink:hover {
-    color: var(--color-primary);
-}
-
 @media (max-width: 640px) {
     .stat {
-        flex-basis: 130px;
+        flex-basis: 140px;
         padding: 12px 14px;
     }
 

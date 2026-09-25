@@ -1,0 +1,94 @@
+.chart {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    height: 240px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.column {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.gapColumn {
+    flex-grow: 0.6;
+}
+
+.value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.track {
+    flex: 1;
+    width: 100%;
+    max-width: 64px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 3px;
+    border-radius: 6px 6px 3px 3px;
+    overflow: hidden;
+    transition: filter 120ms ease;
+}
+
+.column:hover .stack {
+    filter: brightness(1.12);
+}
+
+.articles {
+    flex-basis: 0;
+    background: var(--statistik-primary);
+}
+
+.podcasts {
+    flex-basis: 0;
+    background: var(--statistik-secondary);
+}
+
+.gapBar {
+    flex: 1;
+    width: 100%;
+    max-width: 64px;
+    margin-top: calc(0.85rem * 1.5 + 6px);
+    border-bottom: 2px dashed var(--color-border);
+}
+
+.year {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .chart {
+        gap: 6px;
+        height: 200px;
+    }
+
+    .year {
+        font-size: 0.7rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stack {
+        transition: none;
+    }
+}

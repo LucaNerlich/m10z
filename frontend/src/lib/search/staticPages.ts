@@ -17,6 +17,16 @@ export function getStaticPageRecords(): SearchRecord[] {
             tags: ['Seite', 'M12G', 'Community', 'Statistik', 'Games'],
         },
         {
+            id: 'page:statistik',
+            type: 'page',
+            slug: 'statistik',
+            title: 'Statistik',
+            description: 'Zahlen und Fakten zu allen Artikeln und Podcasts von Mindestens 10 Zeichen.',
+            content: 'Statistik Dashboard Veröffentlichungen Artikel Podcasts Wörter Laufzeit Heatmap Aktivität Jahre Kategorien AutorInnen Rekorde',
+            href: '/statistik',
+            tags: ['Seite', 'Statistik', 'Artikel', 'Podcasts'],
+        },
+        {
             id: 'page:impressum',
             type: 'page',
             slug: 'impressum',
