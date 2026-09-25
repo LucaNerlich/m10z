@@ -75,7 +75,12 @@ async function callTool<T>(name: string, toolArgs: Record<string, unknown>): Pro
             'Content-Type': 'application/json',
             'Accept': 'application/json, text/event-stream',
         },
-        body: JSON.stringify({jsonrpc: '2.0', id: requestId, method: 'tools/call', params: {name, arguments: toolArgs}}),
+        body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: requestId,
+            method: 'tools/call',
+            params: {name, arguments: toolArgs},
+        }),
     });
     if (!response.ok) throw new Error(`MCP ${name} failed with HTTP ${response.status}`);
 
@@ -129,8 +134,8 @@ async function main(): Promise<void> {
 
     console.log(
         `Snapshot: ${snapshot.articles.length}/${articles.length} Artikel, ` +
-            `${snapshot.podcasts.length}/${podcasts.length} Podcasts, ` +
-            `${snapshot.authors.length} Autor:innen, ${snapshot.categories.length} Kategorien.`,
+        `${snapshot.podcasts.length}/${podcasts.length} Podcasts, ` +
+        `${snapshot.authors.length} Autor:innen, ${snapshot.categories.length} Kategorien.`,
     );
 
     if (dryRun) {
