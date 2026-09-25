@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 
-import {buildStatistikSnapshot, parseStatistikSnapshot, serializeStatistikSnapshot} from './snapshot';
+import {buildStatistikSnapshot, parseStatistikSnapshot, serializeStatistikSnapshot} from '@/src/lib/statistik/snapshot';
 
 const source = {
     generatedAt: '2024-03-15T10:00:00.000Z',
@@ -83,15 +83,37 @@ describe('parseStatistikSnapshot', () => {
         const yaml = [
             'version: 1',
             'generatedAt: 2024-01-01T00:00:00.000Z',
+            'authors: []',
+            'categories: []',
             'articles:',
             '  - slug: a',
             '    title: A',
             '    date: not-a-date',
+            'podcasts: []',
         ].join('\n');
         expect(() => parseStatistikSnapshot(yaml)).toThrow('articles[0].date');
     });
 
     it('rejects a non-object document', () => {
         expect(() => parseStatistikSnapshot('- 1\n- 2\n')).toThrow(/snapshot/);
+    });
+
+    it.each(['articles', 'podcasts', 'authors', 'categories'])(
+        'rejects a missing or non-list %s collection',
+        (collection) => {
+            const yaml = 'version: 1\ngeneratedAt: 2024-01-01T00:00:00.000Z\nauthors: []\ncategories: []\narticles: []\npodcasts: []\n';
+            const withoutCollection = yaml.replace(`${collection}: []\n`, '');
+            expect(() => parseStatistikSnapshot(withoutCollection)).toThrow(collection);
+            expect(() => parseStatistikSnapshot(yaml.replace(`${collection}: []`, `${collection}: null`))).toThrow(collection);
+            expect(() => parseStatistikSnapshot(yaml.replace(`${collection}: []`, `${collection}: invalid`))).toThrow(collection);
+        },
+    );
+
+    it('accepts empty collections', () => {
+        expect(
+            parseStatistikSnapshot(
+                'version: 1\ngeneratedAt: 2024-01-01T00:00:00.000Z\nauthors: []\ncategories: []\narticles: []\npodcasts: []\n',
+            ).articles,
+        ).toEqual([]);
     });
 });

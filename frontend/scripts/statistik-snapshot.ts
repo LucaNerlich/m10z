@@ -15,7 +15,8 @@
  * Overrides: STRAPI_MCP_URL, STRAPI_MCP_TOKEN, STATISTIK_SNAPSHOT_OUT.
  */
 
-import {mkdir, writeFile} from 'node:fs/promises';
+import {randomUUID} from 'node:crypto';
+import {mkdir, rename, rm, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 
 import {
@@ -34,9 +35,12 @@ const useLocal = args.has('--local');
 const dryRun = args.has('--dry-run');
 
 const endpoint = process.env.STRAPI_MCP_URL ?? (useLocal ? 'http://localhost:1337/mcp' : 'https://cms.m10z.de/mcp');
+const endpointUrl = URL.canParse(endpoint) ? new URL(endpoint) : null;
+const localHttp =
+    endpointUrl?.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(endpointUrl.hostname);
 const token =
     process.env.STRAPI_MCP_TOKEN ??
-    (useLocal ? process.env.STRAPI_MCP_ADMIN_TOKEN_LOCAL : process.env.STRAPI_MCP_ADMIN_TOKEN_PROD);
+    (useLocal || localHttp ? process.env.STRAPI_MCP_ADMIN_TOKEN_LOCAL : process.env.STRAPI_MCP_ADMIN_TOKEN_PROD);
 const outFile = process.env.STATISTIK_SNAPSHOT_OUT ?? path.join(__dirname, '..', 'public', 'statistik', 'snapshot.yaml');
 
 type ListPayload<T> = {
@@ -45,6 +49,7 @@ type ListPayload<T> = {
 };
 
 type JsonRpcResponse = {
+    id?: number | string | null;
     result?: {
         isError?: boolean;
         structuredContent?: unknown;
@@ -55,19 +60,24 @@ type JsonRpcResponse = {
 
 let requestId = 0;
 
-/** The MCP Streamable HTTP transport may answer with plain JSON or a single SSE `message` event. */
-function parseRpcBody(body: string, contentType: string): JsonRpcResponse {
+/** The MCP Streamable HTTP transport may answer with plain JSON or multiple SSE events. */
+function parseRpcBody(body: string, contentType: string, id: number): JsonRpcResponse {
     if (!contentType.includes('text/event-stream')) return JSON.parse(body) as JsonRpcResponse;
-    const data = body
-        .split('\n')
-        .filter((line) => line.startsWith('data:'))
-        .map((line) => line.slice(5).trim())
-        .join('');
-    return JSON.parse(data) as JsonRpcResponse;
+    for (const frame of body.split(/\r?\n\r?\n/)) {
+        const data = frame
+            .split(/\r?\n/)
+            .filter((line) => line.startsWith('data:'))
+            .map((line) => line.slice(5).trimStart())
+            .join('\n');
+        if (!data) continue;
+        const rpc = JSON.parse(data) as JsonRpcResponse;
+        if (rpc.id === id) return rpc;
+    }
+    throw new Error(`MCP response for request ${id} was missing`);
 }
 
 async function callTool<T>(name: string, toolArgs: Record<string, unknown>): Promise<T> {
-    requestId += 1;
+    const id = ++requestId;
     const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -77,14 +87,14 @@ async function callTool<T>(name: string, toolArgs: Record<string, unknown>): Pro
         },
         body: JSON.stringify({
             jsonrpc: '2.0',
-            id: requestId,
+            id,
             method: 'tools/call',
             params: {name, arguments: toolArgs},
         }),
     });
     if (!response.ok) throw new Error(`MCP ${name} failed with HTTP ${response.status}`);
 
-    const rpc = parseRpcBody(await response.text(), response.headers.get('content-type') ?? '');
+    const rpc = parseRpcBody(await response.text(), response.headers.get('content-type') ?? '', id);
     if (rpc.error) throw new Error(`MCP ${name} failed: ${rpc.error.message}`);
     if (!rpc.result || rpc.result.isError) throw new Error(`MCP ${name} returned an error result`);
 
@@ -95,20 +105,47 @@ async function callTool<T>(name: string, toolArgs: Record<string, unknown>): Pro
 }
 
 async function listAll<T>(tool: string, extraArgs: Record<string, unknown> = {}): Promise<T[]> {
-    const all: T[] = [];
-    for (let page = 1; page <= MAX_PAGES; page += 1) {
+    const first = await callTool<ListPayload<T>>(tool, {pageSize: PAGE_SIZE, page: 1, ...extraArgs});
+    const all = [...first.results];
+    if (first.results.length === 0) return all;
+
+    if (first.pagination) {
+        const pageCount = first.pagination.pageCount;
+        if (pageCount <= 1) return all;
+        const lastPage = Math.min(Math.ceil(pageCount), MAX_PAGES);
+        const remaining = await Promise.all(
+            Array.from({length: lastPage - 1}, (_, index) =>
+                callTool<ListPayload<T>>(tool, {pageSize: PAGE_SIZE, page: index + 2, ...extraArgs}),
+            ),
+        );
+        for (const payload of remaining) {
+            all.push(...payload.results);
+            if (payload.results.length === 0) return all;
+        }
+        if (pageCount <= MAX_PAGES) return all;
+        throw new Error(`${tool}: more than ${MAX_PAGES} pages — aborting`);
+    }
+
+    if (first.results.length < PAGE_SIZE) return all;
+    for (let page = 2; page <= MAX_PAGES; page += 1) {
         const payload = await callTool<ListPayload<T>>(tool, {pageSize: PAGE_SIZE, page, ...extraArgs});
         all.push(...payload.results);
-        const pageCount = payload.pagination?.pageCount ?? 1;
-        if (page >= pageCount || payload.results.length === 0) return all;
+        if (payload.results.length < PAGE_SIZE) return all;
     }
     throw new Error(`${tool}: more than ${MAX_PAGES} pages — aborting`);
 }
 
 async function main(): Promise<void> {
+    if (!endpointUrl) throw new Error('MCP endpoint must be an absolute HTTP or HTTPS URL');
+    if (
+        endpointUrl.protocol !== 'https:' &&
+        (!localHttp || !process.env.STRAPI_MCP_ADMIN_TOKEN_LOCAL || token !== process.env.STRAPI_MCP_ADMIN_TOKEN_LOCAL)
+    ) {
+        throw new Error('MCP endpoint must use HTTPS, or local HTTP with STRAPI_MCP_ADMIN_TOKEN_LOCAL');
+    }
     if (!token) {
         throw new Error(
-            `Missing MCP token. Set ${useLocal ? 'STRAPI_MCP_ADMIN_TOKEN_LOCAL' : 'STRAPI_MCP_ADMIN_TOKEN_PROD'} (or STRAPI_MCP_TOKEN).`,
+            `Missing MCP token. Set ${useLocal || localHttp ? 'STRAPI_MCP_ADMIN_TOKEN_LOCAL' : 'STRAPI_MCP_ADMIN_TOKEN_PROD'} (or STRAPI_MCP_TOKEN).`,
         );
     }
     console.log(`Fetching published content from ${endpoint} …`);
@@ -143,7 +180,13 @@ async function main(): Promise<void> {
         return;
     }
     await mkdir(path.dirname(outFile), {recursive: true});
-    await writeFile(outFile, yaml, 'utf8');
+    const tempFile = path.join(path.dirname(outFile), `.${path.basename(outFile)}.${randomUUID()}.tmp`);
+    try {
+        await writeFile(tempFile, yaml, {encoding: 'utf8', flag: 'wx'});
+        await rename(tempFile, outFile);
+    } finally {
+        await rm(tempFile, {force: true});
+    }
     console.log(`Wrote ${path.relative(process.cwd(), outFile)} (${Buffer.byteLength(yaml)} bytes).`);
 }
 

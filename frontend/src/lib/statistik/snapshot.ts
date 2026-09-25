@@ -9,7 +9,7 @@ import {
     type StatistikPerson,
     type StatistikPodcast,
     type StatistikSnapshot,
-} from './types';
+} from '@/src/lib/statistik/types';
 
 // ---- Raw Strapi documents (as returned by the Strapi MCP `list_*` tools) ----
 
@@ -177,7 +177,6 @@ function readStringArray(record: Record<string, unknown>, key: string, path: str
 
 function readList<T>(record: Record<string, unknown>, key: string, map: (item: Record<string, unknown>, path: string) => T): T[] {
     const value = record[key];
-    if (value === null || value === undefined) return [];
     if (!Array.isArray(value)) fail(key, 'a list');
     return value.map((item, index) => {
         const path = `${key}[${index}]`;
