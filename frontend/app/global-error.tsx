@@ -1,10 +1,10 @@
 'use client';
 
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 
+import {trackClientError} from '@/src/lib/analytics/clientErrorTracking';
 import {isStaleChunkError} from '@/src/lib/errors';
-
-const STALE_CHUNK_RELOAD_KEY = 'm10z-stale-chunk-reload';
+import {reloadForStaleChunk} from '@/src/lib/staleChunkReload';
 
 /**
  * Catches errors thrown by the root layout itself (fonts, JSON-LD, imports).
@@ -17,15 +17,25 @@ export default function GlobalError({
     error: Error & {digest?: string};
     reset: () => void;
 }) {
+    const staleChunk = isStaleChunkError(error);
+    const [reloadBlocked, setReloadBlocked] = useState(false);
+
     useEffect(() => {
-        if (!isStaleChunkError(error)) return;
-        // A tab open across a deployment can reference JS chunks that no
-        // longer exist under the new build; only a full reload recovers.
-        // Guard with sessionStorage to avoid looping if reload doesn't help.
-        if (window.sessionStorage.getItem(STALE_CHUNK_RELOAD_KEY)) return;
-        window.sessionStorage.setItem(STALE_CHUNK_RELOAD_KEY, '1');
-        window.location.reload();
-    }, [error]);
+        // A stale chunk cannot be fixed by reset(); only a full reload against
+        // the current deployment recovers (guarded against reload loops).
+        const reloaded = staleChunk ? reloadForStaleChunk() : false;
+        trackClientError(error, {source: 'global-error', reloaded, staleChunk});
+        if (staleChunk && !reloaded) setReloadBlocked(true);
+    }, [error, staleChunk]);
+
+    // Avoid flashing the error UI while the recovery reload is pending.
+    if (staleChunk && !reloadBlocked) {
+        return (
+            <html lang="de">
+            <body style={{margin: 0, background: '#111'}} aria-busy="true" />
+            </html>
+        );
+    }
 
     return (
         <html lang="de">

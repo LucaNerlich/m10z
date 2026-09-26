@@ -70,22 +70,45 @@ export function isNotFoundError(error: unknown): boolean {
 }
 
 /**
+ * Lower-case message fragments that identify a stale-build chunk/module load
+ * failure across bundlers and browsers:
+ * - `failed to load chunk` — Turbopack (`next build` default) ChunkLoadError
+ * - `loading chunk` / `chunkloaderror` — webpack ChunkLoadError
+ * - `module factory is not available` — Turbopack module missing from the
+ *   loaded chunk graph (HTML and chunks from different builds)
+ * - `failed to fetch dynamically imported module` (Chromium),
+ *   `error loading dynamically imported module` (Firefox),
+ *   `importing a module script failed` (Safari) — native `import()` failures
+ */
+export const STALE_CHUNK_ERROR_SIGNATURES: readonly string[] = [
+    'failed to load chunk',
+    'loading chunk',
+    'chunkloaderror',
+    'module factory is not available',
+    'failed to fetch dynamically imported module',
+    'error loading dynamically imported module',
+    'importing a module script failed',
+];
+
+/**
  * Detects a stale-build module/chunk loading error: a browser tab that loaded
  * before a deployment tries to load a JS chunk that no longer exists under the
  * new build. No in-page retry can fix this — only a full reload against the
  * current deployment can, since it fetches a fresh HTML shell and chunk graph.
  *
+ * Checks the error name as well as the message: Turbopack throws
+ * `name = 'ChunkLoadError'` with a message of `Failed to load chunk …`.
+ *
  * @param error - The error to check
- * @returns true if the error message matches a known stale-chunk signature
+ * @returns true if the error matches a known stale-chunk signature
  */
 export function isStaleChunkError(error: unknown): boolean {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ChunkLoadError') {
+        return true;
+    }
+
     const message = getErrorMessage(error).toLowerCase();
 
-    return (
-        message.includes('loading chunk') ||
-        message.includes('chunkloaderror') ||
-        message.includes('module factory is not available') ||
-        message.includes('failed to fetch dynamically imported module')
-    );
+    return STALE_CHUNK_ERROR_SIGNATURES.some((signature) => message.includes(signature));
 }
 

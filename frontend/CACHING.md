@@ -206,6 +206,16 @@ End-to-end flow when content is published/updated in Strapi:
 4. `handleInvalidation()` calls `revalidateTag()`/`revalidatePath()` for those, and
    notifies the RSS feed registry so it can schedule a debounced feed rebuild.
 
+**Detail pages are never expired by route pattern.** `/artikel/[slug]` and
+`/podcasts/[slug]` are the only ISR pages. `revalidatePath('/artikel/[slug]', 'page')`
+would hard-expire *every* cached detail page, turning the next visit to any old page
+into a blocking server render against Strapi (the source of intermittent "page does
+not load" errors). Instead their data tags (`strapi:article`, `strapi:podcast`,
+`related-content`) are busted with `revalidateTag(tag, 'max')`, so visitors get the
+cached page (`x-nextjs-cache: STALE`) while it regenerates in the background. Only
+the changed entity's own path (e.g. `/artikel/my-article`) is hard-expired, so a
+publish, unpublish or delete shows up immediately.
+
 ## Client-Side Caching with SWR
 
 The application uses [SWR](https://swr.vercel.app/) for client-side data fetching and caching. SWR provides automatic caching, request deduplication, background revalidation, and error handling.

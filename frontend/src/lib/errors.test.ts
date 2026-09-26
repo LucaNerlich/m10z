@@ -74,9 +74,27 @@ describe('isStaleChunkError', () => {
             true,
         ],
         ['Failed to fetch dynamically imported module: https://example.com/chunk.js', true],
+        [
+            'Failed to load chunk /_next/static/chunks/0abc123.js from module 4567: TypeError: Failed to fetch',
+            true,
+        ],
+        ['error loading dynamically imported module: https://example.com/chunk.js', true],
+        ['Importing a module script failed.', true],
         ['Strapi request failed: 500 Internal Server Error', false],
         ['404 not found', false],
     ])('"%s" → %s', (msg, expected) => {
         expect(isStaleChunkError(new Error(msg))).toBe(expected);
+    });
+
+    test('matches Turbopack ChunkLoadError by name regardless of message', () => {
+        const error = new Error('something unexpected');
+        error.name = 'ChunkLoadError';
+        expect(isStaleChunkError(error)).toBe(true);
+    });
+
+    test('non-error values → false', () => {
+        expect(isStaleChunkError(null)).toBe(false);
+        expect(isStaleChunkError(undefined)).toBe(false);
+        expect(isStaleChunkError({name: 'TypeError'})).toBe(false);
     });
 });

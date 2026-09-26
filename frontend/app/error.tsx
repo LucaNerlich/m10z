@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import React from 'react';
 
+import {trackClientError} from '@/src/lib/analytics/clientErrorTracking';
 import {isStaleChunkError} from '@/src/lib/errors';
+import {reloadForStaleChunk} from '@/src/lib/staleChunkReload';
 import styles from '../src/styles/components/status.module.css';
-
-const STALE_CHUNK_RELOAD_KEY = 'm10z-stale-chunk-reload';
 
 export default function Error({
                                   error,
@@ -15,16 +15,23 @@ export default function Error({
     error: Error & {digest?: string};
     reset: () => void;
 }) {
+    const staleChunk = isStaleChunkError(error);
+    const [reloadBlocked, setReloadBlocked] = React.useState(false);
+
     React.useEffect(() => {
-        if (!isStaleChunkError(error)) return;
-        // A tab open across a deployment can reference JS chunks that no
-        // longer exist under the new build; React's reset() re-renders with
-        // the same (broken) bundle, so only a full reload recovers.
-        // Guard with sessionStorage to avoid looping if the reload doesn't help.
-        if (window.sessionStorage.getItem(STALE_CHUNK_RELOAD_KEY)) return;
-        window.sessionStorage.setItem(STALE_CHUNK_RELOAD_KEY, '1');
-        window.location.reload();
-    }, [error]);
+        // A stale chunk (tab open across a deployment, or HTML and chunks
+        // served by different containers) cannot be fixed by reset(), which
+        // re-renders with the same broken bundle — only a full reload recovers.
+        const reloaded = staleChunk ? reloadForStaleChunk() : false;
+        trackClientError(error, {source: 'error-boundary', reloaded, staleChunk});
+        if (staleChunk && !reloaded) setReloadBlocked(true);
+    }, [error, staleChunk]);
+
+    // While the recovery reload is pending, render a neutral placeholder so the
+    // error UI does not flash before the working page loads.
+    if (staleChunk && !reloadBlocked) {
+        return <div className={styles.container} aria-busy='true' />;
+    }
 
     return (
         <div className={styles.container}>

@@ -16,28 +16,34 @@ function isListable(type: ContentTypeKey): type is ListableContentType {
     return type === 'article' || type === 'podcast';
 }
 
+/**
+ * Pages/paths to hard-expire for an event.
+ *
+ * Deliberately never lists the `/artikel/[slug]` or `/podcasts/[slug]` patterns: those
+ * are the only ISR pages, and `revalidatePath(pattern, 'page')` hard-expires *every*
+ * cached detail page at once, so the next visit to any of them — even a years-old
+ * one — becomes a blocking server render against Strapi. Their data is already covered
+ * by tags (`strapi:article`, `strapi:podcast`, `related-content`, per-slug entity tags)
+ * that `handleInvalidation` busts with `revalidateTag(tag, 'max')`, i.e.
+ * stale-while-revalidate: visitors keep getting the cached page while a fresh one is
+ * rendered in the background. Only the changed entity's own path is hard-expired, so
+ * a publish/unpublish/delete is visible (or 404s) immediately.
+ */
 function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: string[]; paths: string[]} {
     switch (type) {
         case 'article':
             return {
-                pages: [routes.articles, `${routes.articles}/[slug]`, routes.home, routes.categories, `${routes.categories}/[slug]`],
+                pages: [routes.articles, routes.home, routes.categories, `${routes.categories}/[slug]`],
                 paths: [...(slug ? [routes.article(slug)] : []), routes.articleFeed, '/sitemap.xml', '/sitemap'],
             };
         case 'podcast':
             return {
-                pages: [routes.podcasts, `${routes.podcasts}/[slug]`, routes.home, routes.categories, `${routes.categories}/[slug]`],
+                pages: [routes.podcasts, routes.home, routes.categories, `${routes.categories}/[slug]`],
                 paths: [...(slug ? [routes.podcast(slug)] : []), routes.audioFeed, '/sitemap.xml', '/sitemap'],
             };
         case 'author':
             return {
-                pages: [
-                    routes.articles,
-                    `${routes.articles}/[slug]`,
-                    routes.podcasts,
-                    `${routes.podcasts}/[slug]`,
-                    `${routes.authors}/[slug]`,
-                    routes.home,
-                ],
+                pages: [routes.articles, routes.podcasts, `${routes.authors}/[slug]`, routes.home],
                 paths: [],
             };
         case 'category':
@@ -54,12 +60,12 @@ function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: s
             return {pages: [], paths: [routes.imprint, routes.privacy]};
         case 'article-feed':
             return {
-                pages: [routes.home, routes.articles, `${routes.articles}/[slug]`, routes.categories, `${routes.categories}/[slug]`],
+                pages: [routes.home, routes.articles, routes.categories, `${routes.categories}/[slug]`],
                 paths: [routes.articleFeed],
             };
         case 'audio-feed':
             return {
-                pages: [routes.home, routes.podcasts, `${routes.podcasts}/[slug]`, routes.categories, `${routes.categories}/[slug]`],
+                pages: [routes.home, routes.podcasts, routes.categories, `${routes.categories}/[slug]`],
                 paths: [routes.audioFeed],
             };
         case 'search-index':
