@@ -1,7 +1,14 @@
 import {describe, expect, test} from 'vitest';
 
-import {authorCategoryListTag, authorListTag, entityTag, listTag, typeTag} from '@/src/lib/shared/strapiContract';
-import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
+import {
+    authorCategoryListTag,
+    authorListTag,
+    CONTENT_TYPE_KEYS,
+    entityTag,
+    listTag,
+    typeTag,
+} from '@/src/lib/shared/strapiContract';
+import {HOME_PAGE_TAG, RELATED_CONTENT_TAG} from '@/src/lib/strapi/cacheTags';
 
 import {computeRevalidation} from './computeRevalidation';
 
@@ -17,8 +24,31 @@ describe('computeRevalidation', () => {
                 HOME_PAGE_TAG,
             ]),
         );
-        expect(pages).toEqual(expect.arrayContaining(['/artikel', '/artikel/[slug]']));
+        expect(pages).toContain('/artikel');
         expect(paths).toContain('/artikel/my-article');
+    });
+
+    test('never hard-expires every detail page, only the changed entity path', () => {
+        for (const type of CONTENT_TYPE_KEYS) {
+            const {pages} = computeRevalidation({type, action: 'update', slug: 'x'});
+            expect(pages).not.toContain('/artikel/[slug]');
+            expect(pages).not.toContain('/podcasts/[slug]');
+        }
+        expect(computeRevalidation({type: 'podcast', action: 'unpublish', slug: 'ep'}).paths).toContain(
+            '/podcasts/ep'
+        );
+    });
+
+    // Detail pages are cached under the type tags of fetchArticleBySlug/fetchPodcastBySlug
+    // and the related-content tag of fetchRelated*, so these must be stale-marked instead.
+    test.each([
+        ['article', [typeTag('article'), RELATED_CONTENT_TAG]],
+        ['podcast', [typeTag('podcast'), RELATED_CONTENT_TAG]],
+        ['author', [typeTag('article'), typeTag('podcast')]],
+        ['category', [typeTag('article'), typeTag('podcast')]],
+    ] as const)('%s events stale-mark the tags detail pages are cached under', (type, expected) => {
+        const {tags} = computeRevalidation({type, action: 'update', slug: 'x'});
+        expect(tags).toEqual(expect.arrayContaining([...expected]));
     });
 
     test('podcast publish busts the homepage cache tag', () => {
