@@ -15,7 +15,8 @@
 - /kategorien/[slug] - Category Detail Page
 - /team - team page + m10z introduction
 - /statistik - stats dashboard, rendered from `public/statistik/snapshot.yaml`
-  (refresh via `pnpm run snapshot:statistik`, see `.github/agents/statistik.agent.md`)
+  (refresh via the Statistik Snapshot GitHub Action or `pnpm run snapshot:statistik`;
+  see `.github/agents/statistik.agent.md`)
 
 ### Feed Endpoints
 https://nextjs.org/docs/app/api-reference/file-conventions/route#non-ui-responses

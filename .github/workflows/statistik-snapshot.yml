@@ -1,0 +1,79 @@
+# Refresh frontend/public/statistik/snapshot.yaml from the production Strapi MCP.
+# Manual or monthly. Opens a PR when the snapshot changes.
+#
+# Required secrets:
+#   STRAPI_MCP_ADMIN_TOKEN_PROD — Bearer token for https://cms.m10z.de/mcp
+#   PAT — classic/fine-grained token with contents + pull-requests write
+#         (same secret as merge-schedule; lets the PR trigger CI)
+name: Statistik Snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 1st of each month, 06:00 UTC
+    - cron: '0 6 1 * *'
+
+concurrency:
+  group: statistik-snapshot
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        # Pinned to a commit SHA (not the mutable v5 tag) because later
+        # steps push a branch and open a PR with a write-capable token.
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.0.0
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          # Match frontend/package.json packageManager field.
+          version: 10.33.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate statistik snapshot
+        working-directory: frontend
+        env:
+          STRAPI_MCP_ADMIN_TOKEN_PROD: ${{ secrets.STRAPI_MCP_ADMIN_TOKEN_PROD }}
+        run: pnpm run snapshot:statistik
+
+      - name: Open PR if snapshot changed
+        # Pinned to a commit SHA (not the mutable v8 tag) because this
+        # step pushes a branch and opens/updates a pull request.
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ secrets.PAT }}
+          branch: chore/statistik-snapshot
+          delete-branch: true
+          commit-message: 'chore(statistik): refresh snapshot'
+          title: 'chore(statistik): refresh snapshot'
+          body: |
+            Automated refresh of `frontend/public/statistik/snapshot.yaml`
+            from the production Strapi MCP (`pnpm run snapshot:statistik`).
+
+            Please sanity-check the diff (counts should only grow; fields
+            stay limited to slugs, names, titles, dates, word counts and
+            durations). See `.github/agents/statistik.agent.md`.
+          add-paths: |
+            frontend/public/statistik/snapshot.yaml
