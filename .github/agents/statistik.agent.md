@@ -13,10 +13,26 @@ committed YAML snapshot:
 frontend/public/statistik/snapshot.yaml
 ```
 
-This agent refreshes that file by hand whenever the numbers should be updated (e.g. once a
-month, or after a big release). It is intentionally not part of the build or a cron job.
+This agent refreshes that file whenever the numbers should be updated (e.g. after a big
+release). Routine refreshes are handled by GitHub Actions. It is intentionally not part of
+the frontend build.
 
-## Recommended: run the generator script
+## Recommended: GitHub Action
+
+The **Statistik Snapshot** workflow (`.github/workflows/statistik-snapshot.yml`) runs the
+generator against production and commits `snapshot.yaml` directly to `main` when it changes.
+
+- **Manual:** Actions → Statistik Snapshot → Run workflow
+- **Schedule:** every Sunday at 22:00 UTC
+
+Required repository secrets:
+
+| Secret                         | Purpose                                              |
+|--------------------------------|------------------------------------------------------|
+| `STRAPI_MCP_ADMIN_TOKEN_PROD`  | Bearer token for `https://cms.m10z.de/mcp`            |
+| `PAT`                          | Write token for pushing to `main` (same as merge-schedule)|
+
+## Alternative: run the generator script locally
 
 The script pulls everything via the Strapi MCP endpoint (`https://cms.m10z.de/mcp`, the same
 server as `strapi-prod` in `.cursor/mcp.json`), normalises it, validates it and writes the
@@ -26,7 +42,7 @@ YAML deterministically (sorted, minimal fields).
 cd frontend
 pnpm run snapshot:statistik -- --dry-run   # summary only, nothing is written
 pnpm run snapshot:statistik                # writes public/statistik/snapshot.yaml
-pnpm run snapshot:statistik -- --local     # against http://localhost:1337/mcp
+pnpm run snapshot:statistik -- --local     # against local Strapi MCP
 ```
 
 Authentication uses the MCP admin token from the environment. **Never print, log or commit
@@ -40,7 +56,7 @@ the token.**
 | `STRAPI_MCP_URL`               | Endpoint override (e.g. a staging instance)         |
 | `STATISTIK_SNAPSHOT_OUT`       | Output file override (relative to the current dir)  |
 
-## Alternative: use the MCP tools directly
+## Fallback: use the MCP tools directly
 
 If the script cannot be run (e.g. an agent environment without shell access but with the
 `strapi-prod` MCP server), build the same file with the MCP tools:
@@ -72,13 +88,13 @@ Keep the snapshot a faithful mirror of prod. Don't remove entries by hand. Outli
 should not count (currently the 2018 article `pyre`) are listed in `STATISTIK_EXCLUDED` in
 `frontend/src/lib/statistik/statistikStats.ts` and filtered out when the page is rendered.
 
-## Review and commit
+## Review and commit (local regenerations)
 
 1. `git diff frontend/public/statistik/snapshot.yaml`. Sanity-check that counts only grow,
    and that nothing beyond slugs, names, titles, dates, word counts and durations ended up
    in the file.
-2. `cd frontend && pnpm run test:run && pnpm run build`
-3. Optionally, look at `http://localhost:3000/statistik` with `pnpm run dev`.
+2. `cd frontend && pnpm run test:run && pnpm run build`.
+3. Optionally, look at local `/statistik` with `pnpm run dev`.
 4. Commit only the snapshot file, e.g. `chore(statistik): refresh snapshot`.
 
 The page reads the file on the server (`src/lib/statistik/statistikSource.ts`), so deploying
