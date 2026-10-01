@@ -1,17 +1,17 @@
 # Refresh frontend/public/statistik/snapshot.yaml from the production Strapi MCP.
-# Manual or monthly. Opens a PR when the snapshot changes.
+# Commits directly to main when the snapshot changes.
 #
 # Required secrets:
 #   STRAPI_MCP_ADMIN_TOKEN_PROD — Bearer token for https://cms.m10z.de/mcp
-#   PAT — classic/fine-grained token with contents + pull-requests write
-#         (same secret as merge-schedule; lets the PR trigger CI)
+#   PAT — classic/fine-grained token with contents write
+#         (same secret as merge-schedule; push to main must use a PAT so CI runs)
 name: Statistik Snapshot
 
 on:
   workflow_dispatch:
   schedule:
-    # 1st of each month, 06:00 UTC
-    - cron: '0 6 1 * *'
+    # Sunday 22:00 UTC (Sunday night)
+    - cron: '0 22 * * 0'
 
 concurrency:
   group: statistik-snapshot
@@ -26,13 +26,13 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write
-      pull-requests: write
     steps:
-      - name: Checkout
+      - name: Checkout main
         # Pinned to a commit SHA (not the mutable v5 tag) because later
-        # steps push a branch and open a PR with a write-capable token.
+        # steps push directly to main with a write-capable token.
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.0.0
         with:
+          ref: main
           token: ${{ secrets.PAT }}
 
       - name: Setup pnpm
@@ -58,22 +58,11 @@ jobs:
           STRAPI_MCP_ADMIN_TOKEN_PROD: ${{ secrets.STRAPI_MCP_ADMIN_TOKEN_PROD }}
         run: pnpm run snapshot:statistik
 
-      - name: Open PR if snapshot changed
-        # Pinned to a commit SHA (not the mutable v8 tag) because this
-        # step pushes a branch and opens/updates a pull request.
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - name: Commit snapshot to main
+        # Pinned to a commit SHA (not the mutable v7 tag) because this
+        # step pushes commits to main.
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
         with:
-          token: ${{ secrets.PAT }}
-          branch: chore/statistik-snapshot
-          delete-branch: true
-          commit-message: 'chore(statistik): refresh snapshot'
-          title: 'chore(statistik): refresh snapshot'
-          body: |
-            Automated refresh of `frontend/public/statistik/snapshot.yaml`
-            from the production Strapi MCP (`pnpm run snapshot:statistik`).
-
-            Please sanity-check the diff (counts should only grow; fields
-            stay limited to slugs, names, titles, dates, word counts and
-            durations). See `.github/agents/statistik.agent.md`.
-          add-paths: |
-            frontend/public/statistik/snapshot.yaml
+          commit_message: 'chore(statistik): refresh snapshot'
+          file_pattern: frontend/public/statistik/snapshot.yaml
+          branch: main

@@ -13,23 +13,24 @@ committed YAML snapshot:
 frontend/public/statistik/snapshot.yaml
 ```
 
-This agent refreshes that file whenever the numbers should be updated (e.g. once a month,
-or after a big release). It is intentionally not part of the frontend build.
+This agent refreshes that file whenever the numbers should be updated (e.g. after a big
+release). Routine refreshes are handled by GitHub Actions. It is intentionally not part of
+the frontend build.
 
 ## Recommended: GitHub Action
 
 The **Statistik Snapshot** workflow (`.github/workflows/statistik-snapshot.yml`) runs the
-generator against production and opens a PR when `snapshot.yaml` changes.
+generator against production and commits `snapshot.yaml` directly to `main` when it changes.
 
 - **Manual:** Actions → Statistik Snapshot → Run workflow
-- **Schedule:** 1st of each month at 06:00 UTC
+- **Schedule:** every Sunday at 22:00 UTC
 
 Required repository secrets:
 
 | Secret                         | Purpose                                              |
 |--------------------------------|------------------------------------------------------|
 | `STRAPI_MCP_ADMIN_TOKEN_PROD`  | Bearer token for `https://cms.m10z.de/mcp`            |
-| `PAT`                          | Write token for the PR branch (same as merge-schedule)|
+| `PAT`                          | Write token for pushing to `main` (same as merge-schedule)|
 
 ## Alternative: run the generator script locally
 
@@ -87,16 +88,14 @@ Keep the snapshot a faithful mirror of prod. Don't remove entries by hand. Outli
 should not count (currently the 2018 article `pyre`) are listed in `STATISTIK_EXCLUDED` in
 `frontend/src/lib/statistik/statistikStats.ts` and filtered out when the page is rendered.
 
-## Review and commit
-
-For Action-created PRs (and local regenerations):
+## Review and commit (local regenerations)
 
 1. `git diff frontend/public/statistik/snapshot.yaml`. Sanity-check that counts only grow,
    and that nothing beyond slugs, names, titles, dates, word counts and durations ended up
    in the file.
-2. `cd frontend && pnpm run test:run && pnpm run build` (CI covers this on Action PRs).
+2. `cd frontend && pnpm run test:run && pnpm run build`.
 3. Optionally, look at local `/statistik` with `pnpm run dev`.
-4. Merge / commit only the snapshot file, e.g. `chore(statistik): refresh snapshot`.
+4. Commit only the snapshot file, e.g. `chore(statistik): refresh snapshot`.
 
 The page reads the file on the server (`src/lib/statistik/statistikSource.ts`), so deploying
 the new snapshot is all that's needed. No cache invalidation is involved.
