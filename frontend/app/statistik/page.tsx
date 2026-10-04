@@ -75,11 +75,11 @@ function buildStats(totals: StatistikTotals): StatistikStat[] {
         {key: 'podcasts', label: 'Podcast-Folgen', value: formatInteger(totals.podcasts), tone: 'secondary'},
         {key: 'words', label: 'Geschriebene Wörter', value: formatInteger(totals.articleWords), tone: 'primary'},
         {key: 'runtime', label: 'Podcast-Laufzeit', value: formatHours(totals.podcastSeconds), tone: 'secondary'},
-        {key: 'avgWords', label: 'Ø Wörter pro Artikel', value: formatInteger(totals.avgWordsPerArticle)},
-        {key: 'avgDuration', label: 'Ø Folgenlänge', value: formatMinutes(totals.avgPodcastSeconds)},
-        {key: 'perMonth', label: 'Ø pro Monat', value: formatDecimal(totals.avgReleasesPerMonth)},
-        {key: 'authors', label: 'Aktive AutorInnen', value: formatInteger(totals.activeAuthors)},
-        {key: 'categories', label: 'Kategorien', value: formatInteger(totals.activeCategories)},
+        {key: 'avgWords', label: 'Ø Wörter pro Artikel', value: formatInteger(totals.avgWordsPerArticle), tone: 'primary'},
+        {key: 'avgDuration', label: 'Ø Folgenlänge', value: formatMinutes(totals.avgPodcastSeconds), tone: 'secondary'},
+        {key: 'perMonth', label: 'Ø pro Monat', value: formatDecimal(totals.avgReleasesPerMonth), tone: 'primary'},
+        {key: 'authors', label: 'Aktive AutorInnen', value: formatInteger(totals.activeAuthors), tone: 'secondary'},
+        {key: 'categories', label: 'Kategorien', value: formatInteger(totals.activeCategories), tone: 'primary'},
     ];
 }
 
