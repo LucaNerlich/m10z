@@ -22,7 +22,12 @@
     background: var(--color-surface);
 }
 
-/* Tone accent: inside the cell, never competing with the container border. */
+/*
+ * Tone accent lives inside the cell (left: 0 of the surface), so the bar's
+ * 1px gray border stays visible on every side — including when a toned cell
+ * starts a wrapped row. Do not pull cells onto the container edge with
+ * negative margins; that clips the accent into the outer border (#711).
+ */
 .stat[data-tone]::before {
     content: '';
     position: absolute;
