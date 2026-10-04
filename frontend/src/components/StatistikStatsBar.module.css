@@ -24,10 +24,11 @@
     margin-top: -1px;
 }
 
+/* Tone accents sit 1px inside the cell so they never merge with the container border when a toned cell starts a wrapped row. */
 .stat[data-tone]::before {
     content: '';
     position: absolute;
-    inset: 0 auto 0 0;
+    inset: 0 auto 0 1px;
     width: 3px;
     background: var(--statistik-primary);
 }
