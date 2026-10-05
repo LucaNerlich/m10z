@@ -1,7 +1,7 @@
 # M10Z Statistik-Snapshot — generiert von `pnpm run snapshot:statistik` (siehe .github/agents/statistik.agent.md).
 # Nicht von Hand bearbeiten.
 version: 1
-generatedAt: 2026-09-25T13:56:04.732Z
+generatedAt: 2026-10-05T06:44:45.530Z
 authors:
   - slug: adrian
     name: Adrian
@@ -680,7 +680,7 @@ articles:
       - gaming-stories
     wordCount: 1024
   - slug: kreativitaet-inklusive
-    title: Kreativität Inklusive
+    title: Kreativität inklusive
     date: 2026-09-21T19:30:00.000Z
     authors:
       - simon
@@ -694,7 +694,23 @@ articles:
       - faehrmann
     categories:
       - kolumne
-    wordCount: 2012
+    wordCount: 1956
+  - slug: alter-zocker-oder-zu-alt-zum-zocken-teil-2
+    title: Alter Zocker oder zu alt zum Zocken? – Teil 2
+    date: 2026-09-26T18:00:00.000Z
+    authors:
+      - faehrmann
+    categories:
+      - kolumne
+    wordCount: 2031
+  - slug: warum-ich-horror-spielen-nicht-ueber-den-weg-traue
+    title: Warum ich Horror-Spielen nicht über den Weg traue
+    date: 2026-10-03T09:00:00.000Z
+    authors:
+      - faehrmann
+    categories:
+      - kolumne
+    wordCount: 2179
 podcasts:
   - slug: m10z-1
     title: Mindestens 10 Zeichen 1
@@ -1466,7 +1482,7 @@ podcasts:
       - pixelplausch
     duration: 2839
   - slug: pile-of-joy-001
-    title: "Pile of Joy #001 Weihnachtsfolge - Unsere Geheimstipps 2025"
+    title: "Pile of Joy #001 | Weihnachtsfolge – Unsere Geheimtipps 2025"
     date: 2025-11-28T23:00:00.000Z
     authors:
       - sz
@@ -1539,7 +1555,7 @@ podcasts:
       - erfahrungssache
     duration: 2008
   - slug: pile-of-joy-002
-    title: "Pile of Joy #002 Genre Shuffle | Choose your own adventure - Dispatch & As Dusk Falls"
+    title: "Pile of Joy #002 Genre Shuffle | Choose Your Own Adventure – Dispatch und As Dusk Falls"
     date: 2026-01-09T23:00:00.000Z
     authors:
       - sz
@@ -1556,7 +1572,7 @@ podcasts:
       - gaming-stories
     duration: 476
   - slug: pile-of-joy-003
-    title: "Pile of Joy #003 Genre Shuffle | Action RTS - Diplomacy is Not an Option & Kingdom Eighties"
+    title: "Pile of Joy #003 Genre Shuffle | Action-RTS – Diplomacy is Not an Option und Kingdom Eighties"
     date: 2026-01-18T23:00:00.000Z
     authors:
       - sz
@@ -1603,7 +1619,7 @@ podcasts:
       - erfahrungssache
     duration: 3625
   - slug: pile-of-joy-004
-    title: "Pile of Joy #004 Genre Shuffle | Turn-Based Tactics - Mutant Year Zero: Road to Eden & Inkulinati"
+    title: "Pile of Joy #004 Genre Shuffle | Turn-Based-Tactics – Mutant Year Zero: Road to Eden und Inkulinati"
     date: 2026-01-30T23:00:00.000Z
     authors:
       - sz
@@ -1631,7 +1647,7 @@ podcasts:
       - erfahrungssache
     duration: 3236
   - slug: pile-of-joy-005
-    title: "Pile of Joy #005 Genre Shuffle | Pinball - Yoku's Island Express & Rollers of the Realm"
+    title: "Pile of Joy #005 Genre Shuffle | Pinball – Yoku’s Island Express und Rollers of the Realm"
     date: 2026-02-08T23:00:00.000Z
     authors:
       - sz
@@ -1640,7 +1656,7 @@ podcasts:
       - pile-of-joy
     duration: 3884
   - slug: pile-of-joy-006
-    title: "Pile of Joy #006 Genre Shuffle | Spelling - Drak(c)ula, Dungeons & Keyboards, Wordle 2 & Letter Quest: Grimm's Journey Remastered"
+    title: "Pile of Joy #006 Genre Shuffle | Spelling – Drak(c)ula, Dungeons & Keyboards, Wordle 2 und Letter Quest: Grimm’s Journey Remastered"
     date: 2026-02-13T23:00:00.000Z
     authors:
       - sz
@@ -1718,7 +1734,7 @@ podcasts:
       - pixelplausch
     duration: 3088
   - slug: pile-of-joy-007
-    title: "Pile of Joy #007 Genre Shuffle | Medical Sim - Two Point Hospital & The Infectious Madness of Doctor Dekker"
+    title: "Pile of Joy #007 Genre Shuffle | Medical-Sim – Two Point Hospital und The Infectious Madness of Doctor Dekker"
     date: 2026-03-12T23:00:00.000Z
     authors:
       - sz
@@ -1803,7 +1819,7 @@ podcasts:
       - pixelplausch
     duration: 3869
   - slug: pile-of-joy-008
-    title: "Pile of Joy #008 Genre Shuffle | First Person Shooter - Metal: Hellsinger & Deathloop"
+    title: "Pile of Joy #008 Genre Shuffle | First-Person-Shooter – Metal: Hellsinger und Deathloop"
     date: 2026-04-14T22:00:00.000Z
     authors:
       - sz
@@ -1839,7 +1855,7 @@ podcasts:
       - gaming-stories
     duration: 422
   - slug: pile-of-joy-009
-    title: "Pile of Joy #009 Genre Shuffle | Mahjong - Vampire Romance, EcoMahjong & Mahjong Soul"
+    title: "Pile of Joy #009 Genre Shuffle | Mahjong – Vampire Romance, EcoMahjong und Mahjong Soul"
     date: 2026-04-25T22:00:00.000Z
     authors:
       - sz
@@ -1869,7 +1885,7 @@ podcasts:
       - pixelplausch
     duration: 3900
   - slug: pile-of-joy-010
-    title: "Pile of Joy #010 Genre Shuffle | Typing - Cryptmaster, Final Sentence und noch vieles vieles mehr!"
+    title: "Pile of Joy #010 Genre Shuffle | Typing – Cryptmaster, Final Sentence und noch vieles, vieles mehr!"
     date: 2026-05-09T22:00:00.000Z
     authors:
       - sz
@@ -1918,7 +1934,7 @@ podcasts:
       - pixelplausch
     duration: 4173
   - slug: pile-of-joy-011
-    title: "Pile of Joy #011 Genre Shuffle | MMORPG - Herr der Ringe Online / LotRO"
+    title: "Pile of Joy #011 Genre Shuffle | MMORPG – Herr der Ringe Online / LotRO"
     date: 2026-05-30T22:00:00.000Z
     authors:
       - sz
@@ -1966,7 +1982,7 @@ podcasts:
       - gaming-stories
     duration: 584
   - slug: pile-of-joy-012
-    title: "Pile of Joy #012 Genre Shuffle | Visual Novel - Zero Time Dilemma, Until Then, Videoverse und noch vieles mehr."
+    title: "Pile of Joy #012 Genre Shuffle | Visual Novel – Zero Time Dilemma, Until Then, Videoverse und noch vieles mehr."
     date: 2026-06-26T22:00:00.000Z
     authors:
       - sz
@@ -1996,7 +2012,7 @@ podcasts:
       - pixelplausch
     duration: 5794
   - slug: pile-of-joy-013
-    title: "Pile of Joy #013 Genre Shuffle | 3D-Plattformer - Super Mario Odyssey, Super Meat Boy 3D, The Knightling & Bomb Rush Cyberfunk"
+    title: "Pile of Joy #013 Genre Shuffle | 3D‑Plattformer – Super Mario Odyssey, Super Meat Boy 3D, The Knightling und Bomb Rush Cyberfunk"
     date: 2026-07-10T22:00:00.000Z
     authors:
       - sz
@@ -2044,7 +2060,7 @@ podcasts:
       - zocken-ohne-zaster
     duration: 3852
   - slug: pile-of-joy-014
-    title: "Pile of Joy #014 Genre Shuffle | Escape Room - Escape Simulator 2 & Escape Academy"
+    title: "Pile of Joy #014 Genre Shuffle | Escape Room – Escape Simulator 2 und Escape Academy"
     date: 2026-08-03T22:00:00.000Z
     authors:
       - sz
@@ -2141,7 +2157,7 @@ podcasts:
       - das-gesprochene-wort
     duration: 950
   - slug: pile-of-joy-015
-    title: "Pile of Joy #015 Gamescom 2026 Spezial!"
+    title: "Pile of Joy #015 | Gamescom-2026-Spezial!"
     date: 2026-09-13T22:00:00.000Z
     authors:
       - sz
@@ -2158,7 +2174,7 @@ podcasts:
       - gaming-stories
     duration: 577
   - slug: pile-of-joy-016
-    title: "Pile of Joy #016 Genre Shuffle | Card Battler - Vampire Crawlers & Black Book"
+    title: "Pile of Joy #016 Genre Shuffle | Card Battler – Vampire Crawlers und Black Book"
     date: 2026-09-20T19:15:00.000Z
     authors:
       - sz
@@ -2175,3 +2191,14 @@ podcasts:
     categories:
       - fundbuero
     duration: 3497
+  - slug: pp-24
+    title: M10Z Pixelplausch 24
+    date: 2026-09-29T17:00:00.000Z
+    authors:
+      - georg
+      - jan
+      - marcel
+      - tom
+    categories:
+      - pixelplausch
+    duration: 4463
