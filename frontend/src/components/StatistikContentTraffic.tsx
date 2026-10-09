@@ -5,27 +5,24 @@ import {formatInteger} from '@/src/lib/statistik/statistikFormat';
 import {StatistikBarList, type StatistikBarListItem} from './StatistikBarList';
 import {StatistikColumns} from './StatistikDashboard';
 import {StatistikPanel} from './StatistikPanel';
-import {StatistikStatsBar, type StatistikStat} from './StatistikStatsBar';
 
 type StatistikContentTrafficProps = {
     traffic: UmamiTrafficStats;
 };
 
 /**
- * Article pageviews and podcast-download events, below the site-wide reach panel.
+ * Per-article pageviews and per-podcast downloads, below the site-wide reach panel.
  */
 export function StatistikContentTraffic({traffic}: StatistikContentTrafficProps) {
     const {articles, podcasts} = traffic.content;
 
-    const articleStats: StatistikStat[] = [
-        {key: 'pageviews', label: 'Seitenaufrufe', value: formatInteger(articles.pageviews), tone: 'primary'},
-        {key: 'visitors', label: 'Besucher', value: formatInteger(articles.visitors), tone: 'primary'},
-        {key: 'visits', label: 'Besuche', value: formatInteger(articles.visits), tone: 'primary'},
-    ];
-
-    const podcastStats: StatistikStat[] = [
-        {key: 'downloads', label: 'Downloads', value: formatInteger(podcasts.downloads), tone: 'secondary'},
-    ];
+    const topArticles: StatistikBarListItem[] = articles.topArticles.map((article) => ({
+        key: article.slug,
+        label: article.slug,
+        href: routes.article(article.slug),
+        value: article.pageviews,
+        title: `${article.slug}: ${formatInteger(article.pageviews)} Seitenaufrufe`,
+    }));
 
     const topEpisodes: StatistikBarListItem[] = podcasts.topEpisodes.map((episode) => ({
         key: episode.slug,
@@ -35,19 +32,22 @@ export function StatistikContentTraffic({traffic}: StatistikContentTrafficProps)
         title: `${episode.slug}: ${formatInteger(episode.downloads)} Downloads`,
     }));
 
+    if (topArticles.length === 0 && topEpisodes.length === 0) {
+        return null;
+    }
+
     return (
         <StatistikColumns>
-            <StatistikPanel
-                title='Artikel'
-                description='Seitenaufrufe auf Artikelseiten in den letzten 30 Tagen.'>
-                <StatistikStatsBar stats={articleStats} />
-            </StatistikPanel>
-            <StatistikPanel
-                title='Podcasts'
-                description='Downloads über das Umami-Event „podcast-download“ in den letzten 30 Tagen.'>
-                <StatistikStatsBar stats={podcastStats} />
-                {topEpisodes.length > 0 ? <StatistikBarList items={topEpisodes} tone='secondary' /> : null}
-            </StatistikPanel>
+            {topArticles.length > 0 ? (
+                <StatistikPanel title='Artikel' description='Seitenaufrufe pro Artikel'>
+                    <StatistikBarList items={topArticles} tone='primary' />
+                </StatistikPanel>
+            ) : null}
+            {topEpisodes.length > 0 ? (
+                <StatistikPanel title='Podcasts' description='Downloads pro Podcast'>
+                    <StatistikBarList items={topEpisodes} tone='secondary' />
+                </StatistikPanel>
+            ) : null}
         </StatistikColumns>
     );
 }

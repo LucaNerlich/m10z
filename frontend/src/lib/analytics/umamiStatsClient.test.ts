@@ -45,8 +45,8 @@ function standardFetch(failures: {site?: boolean; articles?: boolean; podcasts?:
         expect(init.headers).toMatchObject({authorization: 'Bearer tok-1'});
         expect(init.cache).toBe('no-store');
         if (
-            (failures.site && url.includes('/stats') && !url.includes('path=')) ||
-            (failures.articles && url.includes('path=')) ||
+            (failures.site && url.includes('/stats')) ||
+            (failures.articles && url.includes('/metrics')) ||
             (failures.podcasts && url.includes('/event-data/values'))
         ) {
             return jsonResponse(null, 503);
@@ -60,11 +60,16 @@ function standardFetch(failures: {site?: boolean; articles?: boolean; podcasts?:
                 {value: '../bad', total: 99},
             ]);
         }
+        if (url.includes('/metrics')) {
+            expect(url).toContain('type=path');
+            expect(url).toContain('eventType=1');
+            return jsonResponse([
+                {x: '/artikel/beta', y: 5},
+                {x: '/artikel', y: 99},
+                {x: '/artikel/alpha', y: 12},
+            ]);
+        }
         if (url.includes('/stats')) {
-            if (url.includes('path=')) {
-                expect(url).toContain('eventType=1');
-                return jsonResponse({pageviews: 20, visitors: 8, visits: 10});
-            }
             return jsonResponse({
                 pageviews: {value: 100, prev: 90},
                 visitors: {value: 40, prev: 30},
@@ -81,7 +86,7 @@ afterEach(() => {
 });
 
 describe('createUmamiStatsClient.getTrafficStats', () => {
-    test('logs in once and returns the 30d range', async () => {
+    test('logs in once and returns site-wide stats plus content breakdowns', async () => {
         const {calls, fetchImpl} = standardFetch();
         const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
 
@@ -95,8 +100,10 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
         expect(payload.cacheTtlSeconds).toBe(600);
         expect(payload.cachedAt).toBe(new Date(NOW).toISOString());
         expect(payload.ranges['30d']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
-        expect(payload.content.articles).toEqual({pageviews: 20, visitors: 8, visits: 10});
-        expect(payload.content.podcasts.downloads).toBe(17);
+        expect(payload.content.articles.topArticles).toEqual([
+            {slug: 'alpha', pageviews: 12},
+            {slug: 'beta', pageviews: 5},
+        ]);
         expect(payload.content.podcasts.topEpisodes).toEqual([
             {slug: 'ep-a', downloads: 12},
             {slug: 'ep-b', downloads: 5},
@@ -114,19 +121,21 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
         const payload = await client.getTrafficStats(CONFIG);
 
         expect(payload.ranges['30d']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
-        expect(payload.content.articles).toEqual(
-            failures.articles ? {pageviews: 0, visitors: 0, visits: 0} : {pageviews: 20, visitors: 8, visits: 10}
+        expect(payload.content.articles.topArticles).toEqual(
+            failures.articles
+                ? []
+                : [
+                      {slug: 'alpha', pageviews: 12},
+                      {slug: 'beta', pageviews: 5},
+                  ]
         );
-        expect(payload.content.podcasts).toEqual(
+        expect(payload.content.podcasts.topEpisodes).toEqual(
             failures.podcasts
-                ? {downloads: 0, topEpisodes: []}
-                : {
-                      downloads: 17,
-                      topEpisodes: [
-                          {slug: 'ep-a', downloads: 12},
-                          {slug: 'ep-b', downloads: 5},
-                      ],
-                  }
+                ? []
+                : [
+                      {slug: 'ep-a', downloads: 12},
+                      {slug: 'ep-b', downloads: 5},
+                  ]
         );
     });
 
@@ -147,6 +156,9 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
             if (url.endsWith('/api/auth/login')) {
                 loginCount += 1;
                 return jsonResponse({token: `tok-${loginCount}`});
+            }
+            if (url.includes('/metrics') || url.includes('/event-data/values')) {
+                return jsonResponse([]);
             }
             statsHits += 1;
             if (statsHits === 1) {

@@ -1,10 +1,12 @@
 import {describe, expect, test} from 'vitest';
 
 import {
+    ARTICLE_METRICS_FETCH_LIMIT,
     ARTICLE_PATH_FILTER,
     PODCAST_DOWNLOAD_EVENT,
     SLUG_PROPERTY,
-    buildArticleStatsUrl,
+    articleSlugFromPath,
+    buildArticleMetricsUrl,
     buildEventValuesUrl,
     buildLoginUrl,
     buildStatsUrl,
@@ -14,7 +16,7 @@ import {
     normalizeWebsiteId,
     parseStatsPayload,
     readUmamiStatsConfig,
-    sumEventTotals,
+    toTopArticlePageviews,
     toTopPodcastDownloads,
 } from './umamiStats';
 
@@ -133,11 +135,13 @@ describe('URL builders', () => {
         );
     });
 
-    test('buildArticleStatsUrl filters pageviews to article paths', () => {
-        const url = new URL(buildArticleStatsUrl(config, 1000, 2000));
-        expect(url.pathname).toBe('/api/websites/site-1/stats');
+    test('buildArticleMetricsUrl ranks article paths', () => {
+        const url = new URL(buildArticleMetricsUrl(config, 1000, 2000));
+        expect(url.pathname).toBe('/api/websites/site-1/metrics');
+        expect(url.searchParams.get('type')).toBe('path');
         expect(url.searchParams.get('path')).toBe(ARTICLE_PATH_FILTER);
         expect(url.searchParams.get('eventType')).toBe('1');
+        expect(url.searchParams.get('limit')).toBe(String(ARTICLE_METRICS_FETCH_LIMIT));
         expect(url.searchParams.get('startAt')).toBe('1000');
     });
 
@@ -198,6 +202,32 @@ describe('normalizeCount / parseStatsPayload', () => {
     });
 });
 
+describe('article path metrics', () => {
+    test('articleSlugFromPath keeps only /artikel/:slug', () => {
+        expect(articleSlugFromPath('/artikel/foo-bar')).toBe('foo-bar');
+        expect(articleSlugFromPath('/artikel/foo-bar?x=1')).toBe('foo-bar');
+        expect(articleSlugFromPath('/artikel')).toBeNull();
+        expect(articleSlugFromPath('/artikel/')).toBeNull();
+        expect(articleSlugFromPath('/podcasts/foo')).toBeNull();
+        expect(articleSlugFromPath('/artikel/../etc')).toBeNull();
+    });
+
+    test('lists top articles and drops the list page / invalid paths', () => {
+        const rows = [
+            {x: '/artikel/beta', y: 5},
+            {x: '/artikel', y: 99},
+            {x: '/artikel/alpha', y: 12},
+            {x: '/artikel/bad/path', y: 40},
+            {x: '/artikel/gamma', y: '3'},
+        ];
+        expect(toTopArticlePageviews(rows, 2)).toEqual([
+            {slug: 'alpha', pageviews: 12},
+            {slug: 'beta', pageviews: 5},
+        ]);
+        expect(toTopArticlePageviews(null)).toEqual([]);
+    });
+});
+
 describe('podcast download events', () => {
     const rows = [
         {value: 'ep-b', total: 5},
@@ -206,11 +236,6 @@ describe('podcast download events', () => {
         {value: '../etc', total: 40},
         {value: 'ep-c', total: '3'},
     ];
-
-    test('sums only rows with a valid slug', () => {
-        expect(sumEventTotals(rows)).toBe(20);
-        expect(sumEventTotals(null)).toBe(0);
-    });
 
     test('lists the top episodes and drops invalid slugs', () => {
         expect(toTopPodcastDownloads(rows, 2)).toEqual([
