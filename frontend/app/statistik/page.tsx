@@ -24,6 +24,7 @@ import {
 } from '@/src/lib/statistik/types';
 import {EmptyState} from '@/src/components/EmptyState';
 import {StatistikBarList, type StatistikBarListItem} from '@/src/components/StatistikBarList';
+import {StatistikContentTraffic} from '@/src/components/StatistikContentTraffic';
 import {StatistikColumns, StatistikDashboard, StatistikIntro} from '@/src/components/StatistikDashboard';
 import {StatistikGrowthChart} from '@/src/components/StatistikGrowthChart';
 import {StatistikHeatmap} from '@/src/components/StatistikHeatmap';
@@ -166,6 +167,7 @@ export default async function StatistikPage() {
                 {traffic ? (
                     <StatistikDashboard>
                         <StatistikTrafficPanel traffic={traffic} />
+                        <StatistikContentTraffic traffic={traffic} />
                     </StatistikDashboard>
                 ) : null}
                 <EmptyState message='Aktuell liegen keine Statistikdaten vor.' />
@@ -218,6 +220,8 @@ export default async function StatistikPage() {
                 <StatistikStatsBar stats={buildStats(totals)} />
                 <StatistikRecords cards={buildRecordCards(dashboard.records, totals)} />
                 <StatistikHeatmap heatmap={dashboard.heatmap} />
+
+                {traffic ? <StatistikContentTraffic traffic={traffic} /> : null}
 
                 <StatistikColumns>
                     <StatistikYearChart years={dashboard.years} />

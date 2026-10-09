@@ -11,13 +11,16 @@
  */
 
 import {
-    type UmamiPublicRangeKey,
     type UmamiStatsConfig,
     type UmamiTrafficStats,
+    buildArticleStatsUrl,
+    buildEventValuesUrl,
     buildLoginUrl,
     buildStatsUrl,
     getPublicRangeBounds,
     parseStatsPayload,
+    sumEventTotals,
+    toTopPodcastDownloads,
 } from '@/src/lib/analytics/umamiStats';
 import {CACHE_REVALIDATE_UMAMI} from '@/src/lib/cache/constants';
 
@@ -161,31 +164,36 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
     }
 
     /**
-     * Fetch aggregated traffic stats for every public range.
+     * Site-wide stats plus article pageviews and podcast-download events (30 days).
      */
     async function getTrafficStats(config: UmamiStatsConfig): Promise<UmamiTrafficStats> {
         const nowMs = nowFn();
-        const bounds = getPublicRangeBounds(nowMs);
-        const entries = await Promise.all(
-            (Object.entries(bounds) as Array<[UmamiPublicRangeKey, {startAt: number; endAt: number}]>).map(
-                async ([key, {startAt, endAt}]) => {
-                    const raw = await authorizedGet(config, buildStatsUrl(config, startAt, endAt));
-                    const counts = parseStatsPayload(raw);
-                    return [
-                        key,
-                        {
-                            startAt: new Date(startAt).toISOString(),
-                            endAt: new Date(endAt).toISOString(),
-                            ...counts,
-                        },
-                    ] as const;
-                }
-            )
-        );
+        const {startAt, endAt} = getPublicRangeBounds(nowMs)['30d'];
+        const [raw, [articleResult, eventResult]] = await Promise.all([
+            authorizedGet(config, buildStatsUrl(config, startAt, endAt)),
+            Promise.allSettled([
+                authorizedGet(config, buildArticleStatsUrl(config, startAt, endAt)),
+                authorizedGet(config, buildEventValuesUrl(config, startAt, endAt)),
+            ]),
+        ]);
+        const articleRaw = articleResult.status === 'fulfilled' ? articleResult.value : null;
+        const eventRows = eventResult.status === 'fulfilled' ? eventResult.value : null;
 
-        const ranges = Object.fromEntries(entries) as UmamiTrafficStats['ranges'];
         return {
-            ranges,
+            ranges: {
+                '30d': {
+                    startAt: new Date(startAt).toISOString(),
+                    endAt: new Date(endAt).toISOString(),
+                    ...parseStatsPayload(raw),
+                },
+            },
+            content: {
+                articles: parseStatsPayload(articleRaw),
+                podcasts: {
+                    downloads: sumEventTotals(eventRows),
+                    topEpisodes: toTopPodcastDownloads(eventRows),
+                },
+            },
             cachedAt: new Date(nowMs).toISOString(),
             cacheTtlSeconds: CACHE_REVALIDATE_UMAMI,
         };

@@ -34,7 +34,7 @@ function setupFetch(impl: (url: string, init: LoggedCall['init']) => unknown) {
     return {calls, fetchImpl};
 }
 
-function standardFetch() {
+function standardFetch(failures: {site?: boolean; articles?: boolean; podcasts?: boolean} = {}) {
     return setupFetch((url, init) => {
         if (url.endsWith('/api/auth/login')) {
             expect(init.method).toBe('POST');
@@ -44,7 +44,27 @@ function standardFetch() {
         }
         expect(init.headers).toMatchObject({authorization: 'Bearer tok-1'});
         expect(init.cache).toBe('no-store');
+        if (
+            (failures.site && url.includes('/stats') && !url.includes('path=')) ||
+            (failures.articles && url.includes('path=')) ||
+            (failures.podcasts && url.includes('/event-data/values'))
+        ) {
+            return jsonResponse(null, 503);
+        }
+        if (url.includes('/event-data/values')) {
+            expect(url).toContain('event=podcast-download');
+            expect(url).toContain('propertyName=slug');
+            return jsonResponse([
+                {value: 'ep-b', total: 5},
+                {value: 'ep-a', total: 12},
+                {value: '../bad', total: 99},
+            ]);
+        }
         if (url.includes('/stats')) {
+            if (url.includes('path=')) {
+                expect(url).toContain('eventType=1');
+                return jsonResponse({pageviews: 20, visitors: 8, visits: 10});
+            }
             return jsonResponse({
                 pageviews: {value: 100, prev: 90},
                 visitors: {value: 40, prev: 30},
@@ -71,10 +91,53 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
         const gets = calls.filter((call) => call.init.method === 'GET');
         expect(logins).toHaveLength(1);
         expect(calls.every((call) => call.init.redirect === 'error')).toBe(true);
-        expect(gets).toHaveLength(1);
+        expect(gets).toHaveLength(3);
         expect(payload.cacheTtlSeconds).toBe(600);
         expect(payload.cachedAt).toBe(new Date(NOW).toISOString());
         expect(payload.ranges['30d']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
+        expect(payload.content.articles).toEqual({pageviews: 20, visitors: 8, visits: 10});
+        expect(payload.content.podcasts.downloads).toBe(17);
+        expect(payload.content.podcasts.topEpisodes).toEqual([
+            {slug: 'ep-a', downloads: 12},
+            {slug: 'ep-b', downloads: 5},
+        ]);
+    });
+
+    test.each([
+        {articles: true, podcasts: false},
+        {articles: false, podcasts: true},
+        {articles: true, podcasts: true},
+    ])('preserves site-wide stats and successful content when requests fail: %j', async (failures) => {
+        const {fetchImpl} = standardFetch(failures);
+        const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
+
+        const payload = await client.getTrafficStats(CONFIG);
+
+        expect(payload.ranges['30d']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
+        expect(payload.content.articles).toEqual(
+            failures.articles ? {pageviews: 0, visitors: 0, visits: 0} : {pageviews: 20, visitors: 8, visits: 10}
+        );
+        expect(payload.content.podcasts).toEqual(
+            failures.podcasts
+                ? {downloads: 0, topEpisodes: []}
+                : {
+                      downloads: 17,
+                      topEpisodes: [
+                          {slug: 'ep-a', downloads: 12},
+                          {slug: 'ep-b', downloads: 5},
+                      ],
+                  }
+        );
+    });
+
+    test('throws when site-wide stats fail even if content requests succeed', async () => {
+        const {fetchImpl} = standardFetch({site: true});
+        const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
+
+        await expect(client.getTrafficStats(CONFIG)).rejects.toMatchObject({
+            code: 'UMAMI_UPSTREAM',
+            upstreamStatus: 503,
+        });
     });
 
     test('retries once after a 401 by re-authenticating', async () => {

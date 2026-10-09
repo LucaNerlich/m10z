@@ -1,6 +1,11 @@
 import {describe, expect, test} from 'vitest';
 
 import {
+    ARTICLE_PATH_FILTER,
+    PODCAST_DOWNLOAD_EVENT,
+    SLUG_PROPERTY,
+    buildArticleStatsUrl,
+    buildEventValuesUrl,
     buildLoginUrl,
     buildStatsUrl,
     getPublicRangeBounds,
@@ -9,6 +14,8 @@ import {
     normalizeWebsiteId,
     parseStatsPayload,
     readUmamiStatsConfig,
+    sumEventTotals,
+    toTopPodcastDownloads,
 } from './umamiStats';
 
 const NOW = Date.UTC(2026, 8, 7, 12, 0, 0);
@@ -126,6 +133,20 @@ describe('URL builders', () => {
         );
     });
 
+    test('buildArticleStatsUrl filters pageviews to article paths', () => {
+        const url = new URL(buildArticleStatsUrl(config, 1000, 2000));
+        expect(url.pathname).toBe('/api/websites/site-1/stats');
+        expect(url.searchParams.get('path')).toBe(ARTICLE_PATH_FILTER);
+        expect(url.searchParams.get('eventType')).toBe('1');
+        expect(url.searchParams.get('startAt')).toBe('1000');
+    });
+
+    test('buildEventValuesUrl filters the podcast-download slug property', () => {
+        expect(buildEventValuesUrl(config, 1000, 2000)).toBe(
+            `https://umami.m10z.de/api/websites/site-1/event-data/values?startAt=1000&endAt=2000&event=${PODCAST_DOWNLOAD_EVENT}&propertyName=${SLUG_PROPERTY}`
+        );
+    });
+
     test('buildLoginUrl targets the same API root as statistics requests', () => {
         expect(buildLoginUrl(config)).toBe('https://umami.m10z.de/api/auth/login');
     });
@@ -174,5 +195,27 @@ describe('normalizeCount / parseStatsPayload', () => {
             })
         ).toEqual({pageviews: 3018, visitors: 100, visits: 140});
         expect(parseStatsPayload(null)).toEqual({pageviews: 0, visitors: 0, visits: 0});
+    });
+});
+
+describe('podcast download events', () => {
+    const rows = [
+        {value: 'ep-b', total: 5},
+        {value: 'ep-a', total: 12},
+        {value: '  ', total: 99},
+        {value: '../etc', total: 40},
+        {value: 'ep-c', total: '3'},
+    ];
+
+    test('sums only rows with a valid slug', () => {
+        expect(sumEventTotals(rows)).toBe(20);
+        expect(sumEventTotals(null)).toBe(0);
+    });
+
+    test('lists the top episodes and drops invalid slugs', () => {
+        expect(toTopPodcastDownloads(rows, 2)).toEqual([
+            {slug: 'ep-a', downloads: 12},
+            {slug: 'ep-b', downloads: 5},
+        ]);
     });
 });
