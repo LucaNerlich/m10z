@@ -144,6 +144,13 @@ describe('normalizeCount / parseStatsPayload', () => {
         expect(normalizeCount('42')).toBe(42);
     });
 
+    test('reads modern Umami {value, prev} metric objects', () => {
+        expect(normalizeCount({value: 3018, prev: 3508})).toBe(3018);
+        expect(normalizeCount({value: '42', prev: 1})).toBe(42);
+        expect(normalizeCount({value: -3, prev: 9})).toBe(0);
+        expect(normalizeCount({prev: 9})).toBe(0);
+    });
+
     test('maps garbage to zero', () => {
         expect(normalizeCount(-1)).toBe(0);
         expect(normalizeCount(NaN)).toBe(0);
@@ -159,6 +166,13 @@ describe('normalizeCount / parseStatsPayload', () => {
             visitors: 4,
             visits: 5,
         });
+        expect(
+            parseStatsPayload({
+                pageviews: {value: 3018, prev: 3508},
+                visitors: {value: 100, prev: 120},
+                visits: {value: 140, prev: 160},
+            })
+        ).toEqual({pageviews: 3018, visitors: 100, visits: 140});
         expect(parseStatsPayload(null)).toEqual({pageviews: 0, visitors: 0, visits: 0});
     });
 });

@@ -5,6 +5,7 @@
  * - GET /api/websites/:id/stats → pageviews, visitors, visits for public ranges
  *
  * Import only from server modules (`umamiStatsSource` gates with `server-only`).
+ * Fetches use `cache: 'no-store'`; TTL lives in the outer `unstable_cache`.
  * Secrets are never logged. Failures throw coded errors so the soft-fail
  * source can return null without leaking credentials.
  */
@@ -65,25 +66,19 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
             headers?: Record<string, string>;
             body?: string;
             timeoutMs: number;
-            /** When set, Next.js Data Cache may store successful GETs. */
-            nextCache?: {revalidate: number; tags: string[]};
         }
     ): Promise<JsonResult> {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), options.timeoutMs);
         try {
-            const init: RequestInit & {next?: {revalidate: number; tags: string[]}} = {
+            const init: RequestInit = {
                 method: options.method,
                 headers: options.headers,
                 body: options.body,
                 redirect: 'error',
                 signal: controller.signal,
+                cache: 'no-store',
             };
-            if (options.nextCache) {
-                init.next = options.nextCache;
-            } else {
-                init.cache = 'no-store';
-            }
 
             const response = await fetchFn(url, init);
             if (response.status === 401) {
@@ -151,7 +146,6 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
                 method: 'GET',
                 headers: {authorization: `Bearer ${token}`},
                 timeoutMs: STATS_TIMEOUT_MS,
-                nextCache: {revalidate: CACHE_REVALIDATE_UMAMI, tags: ['umami:stats']},
             });
 
         let result = await attempt(await getToken(config));

@@ -43,8 +43,14 @@ function standardFetch() {
             return jsonResponse({token: 'tok-1'});
         }
         expect(init.headers).toMatchObject({authorization: 'Bearer tok-1'});
+        expect(init.cache).toBe('no-store');
         if (url.includes('/stats')) {
-            return jsonResponse({pageviews: 100, visitors: 40, visits: 50, bounces: 10});
+            return jsonResponse({
+                pageviews: {value: 100, prev: 90},
+                visitors: {value: 40, prev: 30},
+                visits: {value: 50, prev: 45},
+                bounces: 10,
+            });
         }
         throw new Error(`unexpected URL: ${url}`);
     });

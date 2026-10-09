@@ -163,6 +163,11 @@ export default async function StatistikPage() {
         return (
             <div data-list-page>
                 <h1>Statistik</h1>
+                {traffic ? (
+                    <StatistikDashboard>
+                        <StatistikTrafficPanel traffic={traffic} />
+                    </StatistikDashboard>
+                ) : null}
                 <EmptyState message='Aktuell liegen keine Statistikdaten vor.' />
             </div>
         );
