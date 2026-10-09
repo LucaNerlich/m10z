@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.14.0] - 2026-10-09
+
+### Added
+- Public `/statistik` dashboard with publication counts, heatmaps, growth charts, and category/author breakdowns, driven by a committed content snapshot (refreshed weekly via CI).
+- Live Umami traffic on `/statistik`: site-wide visitors/visits/pageviews, article pageviews on `/artikel`, and podcast downloads from the `podcast-download` event (soft-fails when Umami is unavailable).
+- Strapi admin “Umami-Statistiken” widget for website views and podcast-download breakdowns.
+- `/kategorien` now splits categories into active and archived sections.
+- September 2026 M12G draft from the forum poll.
+
+### Changed
+- Sitewide `corner-shape` squircle styling and larger border radii.
+- Reading and listening time display aligned across content cards and detail pages.
+- Upgraded TypeScript to 7 (and related frontend tooling); continued Strapi and dependency upgrades on the CMS side.
+
+### Fixed
+- Stale-chunk recovery after deploys now actually reloads instead of stranding the tab on an error UI.
+- Client navigations to slug pages no longer get stuck; transient Strapi errors are no longer cached as 404s.
+- Statistik stats-bar tone accents no longer eat or merge with the container border on wrapped mobile rows.
+- Homepage cache invalidation on publish; Mermaid diagrams open in the Fancybox lightbox again.
+- Word-count cron no longer republishes live content; duration/word count recalculate correctly when duplicating articles/podcasts.
+- Security audit findings resolved across frontend and backend.
+
 ## [1.13.1] - 2026-08-17
 
 ### Fixed
