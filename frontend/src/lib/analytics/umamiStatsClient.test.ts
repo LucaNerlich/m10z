@@ -44,7 +44,20 @@ function standardFetch() {
         }
         expect(init.headers).toMatchObject({authorization: 'Bearer tok-1'});
         expect(init.cache).toBe('no-store');
+        if (url.includes('/event-data/values')) {
+            expect(url).toContain('event=podcast-download');
+            expect(url).toContain('propertyName=slug');
+            return jsonResponse([
+                {value: 'ep-b', total: 5},
+                {value: 'ep-a', total: 12},
+                {value: '../bad', total: 99},
+            ]);
+        }
         if (url.includes('/stats')) {
+            if (url.includes('path=')) {
+                expect(url).toContain('eventType=1');
+                return jsonResponse({pageviews: 20, visitors: 8, visits: 10});
+            }
             return jsonResponse({
                 pageviews: {value: 100, prev: 90},
                 visitors: {value: 40, prev: 30},
@@ -71,10 +84,16 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
         const gets = calls.filter((call) => call.init.method === 'GET');
         expect(logins).toHaveLength(1);
         expect(calls.every((call) => call.init.redirect === 'error')).toBe(true);
-        expect(gets).toHaveLength(1);
+        expect(gets).toHaveLength(3);
         expect(payload.cacheTtlSeconds).toBe(600);
         expect(payload.cachedAt).toBe(new Date(NOW).toISOString());
         expect(payload.ranges['30d']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
+        expect(payload.content.articles).toEqual({pageviews: 20, visitors: 8, visits: 10});
+        expect(payload.content.podcasts.downloads).toBe(17);
+        expect(payload.content.podcasts.topEpisodes).toEqual([
+            {slug: 'ep-a', downloads: 12},
+            {slug: 'ep-b', downloads: 5},
+        ]);
     });
 
     test('retries once after a 401 by re-authenticating', async () => {
