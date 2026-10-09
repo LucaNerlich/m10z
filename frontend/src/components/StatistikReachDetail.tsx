@@ -123,7 +123,8 @@ export function StatistikReachDetail({
                 </p>
             </StatistikPanel>
 
-            <StatistikColumns>
+            {/* Remount lists when the range changes so Soft Navigation cannot leave stale rows. */}
+            <StatistikColumns key={rangeKey}>
                 <StatistikPanel
                     title='Artikel'
                     description={

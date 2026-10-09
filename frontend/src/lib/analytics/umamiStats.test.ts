@@ -233,6 +233,7 @@ describe('article path metrics', () => {
     test('articleSlugFromPath keeps only /artikel/:slug', () => {
         expect(articleSlugFromPath('/artikel/foo-bar')).toBe('foo-bar');
         expect(articleSlugFromPath('/artikel/foo-bar?x=1')).toBe('foo-bar');
+        expect(articleSlugFromPath('/artikel/foo%2Dbar')).toBe('foo-bar');
         expect(articleSlugFromPath('/artikel')).toBeNull();
         expect(articleSlugFromPath('/artikel/')).toBeNull();
         expect(articleSlugFromPath('/podcasts/foo')).toBeNull();
@@ -253,6 +254,19 @@ describe('article path metrics', () => {
         ]);
         expect(toTopArticlePageviews(null)).toEqual([]);
     });
+
+    test('sums path variants that resolve to the same slug', () => {
+        const rows = [
+            {x: '/artikel/directwerk', y: 27},
+            {x: '/artikel/directwerk/', y: 2},
+            {x: '/artikel/directwerk?ref=nav', y: 1},
+            {x: '/artikel/memewar-flotsam', y: 11},
+        ];
+        expect(toTopArticlePageviews(rows, 10)).toEqual([
+            {slug: 'directwerk', pageviews: 30},
+            {slug: 'memewar-flotsam', pageviews: 11},
+        ]);
+    });
 });
 
 describe('podcast download events', () => {
@@ -267,6 +281,22 @@ describe('podcast download events', () => {
     test('lists the top episodes and drops invalid slugs', () => {
         expect(toTopPodcastDownloads(rows, 2)).toEqual([
             {slug: 'ep-a', downloads: 12},
+            {slug: 'ep-b', downloads: 5},
+        ]);
+    });
+
+    test('sums repeated event-data rows for the same slug', () => {
+        expect(
+            toTopPodcastDownloads(
+                [
+                    {value: 'ep-a', total: 12},
+                    {value: 'ep-a', total: 3},
+                    {value: 'ep-b', total: 5},
+                ],
+                10
+            )
+        ).toEqual([
+            {slug: 'ep-a', downloads: 15},
             {slug: 'ep-b', downloads: 5},
         ]);
     });
