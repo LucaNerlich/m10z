@@ -39,12 +39,12 @@ export function StatistikContentTraffic({traffic}: StatistikContentTrafficProps)
     return (
         <StatistikColumns>
             {topArticles.length > 0 ? (
-                <StatistikPanel title='Artikel' description='Seitenaufrufe pro Artikel'>
+                <StatistikPanel title='Artikel' description='Seitenaufrufe pro Artikel in den letzten 30 Tagen'>
                     <StatistikBarList items={topArticles} tone='primary' />
                 </StatistikPanel>
             ) : null}
             {topEpisodes.length > 0 ? (
-                <StatistikPanel title='Podcasts' description='Downloads pro Podcast'>
+                <StatistikPanel title='Podcasts' description='Downloads pro Podcast in den letzten 30 Tagen'>
                     <StatistikBarList items={topEpisodes} tone='secondary' />
                 </StatistikPanel>
             ) : null}
