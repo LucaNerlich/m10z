@@ -36,6 +36,9 @@ import {StatistikYearChart} from '@/src/components/StatistikYearChart';
 
 const BREAKDOWN_LIMIT = 12;
 
+/** Align ISR with Umami traffic cache (~10 min); editorial snapshot stays file-based. */
+export const revalidate = 600;
+
 export const metadata: Metadata = buildStaticListMetadata({
     title: 'Statistik',
     description: 'Zahlen und Fakten zu allen Artikeln und Podcasts von Mindestens 10 Zeichen.',
