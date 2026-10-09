@@ -45,3 +45,15 @@ export const CACHE_REVALIDATE_CONTENT_PAGE = 900;
  */
 export const CACHE_REVALIDATE_SEARCH = 3600;
 
+/**
+ * Cache revalidation period for live Umami traffic stats on `/statistik`.
+ *
+ * Aligns with the Strapi `umami-stats` plugin's 10-minute in-process TTL.
+ *
+ * Duration: 600 seconds (10 minutes)
+ */
+export const CACHE_REVALIDATE_UMAMI = 600;
+
+/** Next.js cache tag for Umami traffic stats (fetch / unstable_cache). */
+export const UMAMI_STATS_CACHE_TAG = 'umami:stats';
+

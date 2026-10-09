@@ -1,6 +1,7 @@
 import {CalendarCheckIcon, FireIcon, HourglassIcon, RocketLaunchIcon, TrophyIcon} from '@phosphor-icons/react/dist/ssr';
 import {type Metadata} from 'next';
 
+import {getUmamiTrafficStats} from '@/src/lib/analytics/umamiStatsSource';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {routes} from '@/src/lib/routes';
 import {getStatistikDashboard} from '@/src/lib/statistik/statistikSource';
@@ -30,9 +31,13 @@ import {StatistikPanel} from '@/src/components/StatistikPanel';
 import {StatistikRecords, type StatistikRecordCard} from '@/src/components/StatistikRecords';
 import {StatistikStatsBar, type StatistikStat} from '@/src/components/StatistikStatsBar';
 import {StatistikTopList, type StatistikTopListItem} from '@/src/components/StatistikTopList';
+import {StatistikTrafficPanel} from '@/src/components/StatistikTrafficPanel';
 import {StatistikYearChart} from '@/src/components/StatistikYearChart';
 
 const BREAKDOWN_LIMIT = 12;
+
+/** Align ISR with Umami traffic cache (~10 min); editorial snapshot stays file-based. */
+export const revalidate = 600;
 
 export const metadata: Metadata = buildStaticListMetadata({
     title: 'Statistik',
@@ -152,12 +157,17 @@ function toTopListItems(
 }
 
 export default async function StatistikPage() {
-    const dashboard = await getStatistikDashboard();
+    const [dashboard, traffic] = await Promise.all([getStatistikDashboard(), getUmamiTrafficStats()]);
 
     if (!dashboard || dashboard.totals.total === 0) {
         return (
             <div data-list-page>
                 <h1>Statistik</h1>
+                {traffic ? (
+                    <StatistikDashboard>
+                        <StatistikTrafficPanel traffic={traffic} />
+                    </StatistikDashboard>
+                ) : null}
                 <EmptyState message='Aktuell liegen keine Statistikdaten vor.' />
             </div>
         );
@@ -204,6 +214,7 @@ export default async function StatistikPage() {
             />
 
             <StatistikDashboard>
+                {traffic ? <StatistikTrafficPanel traffic={traffic} /> : null}
                 <StatistikStatsBar stats={buildStats(totals)} />
                 <StatistikRecords cards={buildRecordCards(dashboard.records, totals)} />
                 <StatistikHeatmap heatmap={dashboard.heatmap} />

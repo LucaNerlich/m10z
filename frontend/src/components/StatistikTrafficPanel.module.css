@@ -1,0 +1,14 @@
+.panel {
+    /* Slightly stronger surface so traffic reads as a distinct band above editorial stats. */
+    background: linear-gradient(
+        165deg,
+        color-mix(in oklch, var(--statistik-primary) 10%, var(--color-surface)) 0%,
+        var(--color-surface) 55%
+    );
+}
+
+.meta {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
