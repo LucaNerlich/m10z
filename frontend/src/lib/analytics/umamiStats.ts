@@ -251,13 +251,20 @@ export function buildArticleMetricsUrl(
 
 /**
  * Extract an article slug from an Umami path (`/artikel/:slug` only; list page ignored).
+ * Decodes percent-encoding so `/artikel/foo%2Dbar` and `/artikel/foo-bar` collapse.
  */
 export function articleSlugFromPath(path: unknown): string | null {
     if (typeof path !== 'string') return null;
     const pathname = path.trim().split(/[?#]/u)[0] ?? '';
     const match = pathname.match(/^\/artikel\/([^/]+)\/?$/u);
     if (!match) return null;
-    return validateSlugSafe(match[1]);
+    let segment = match[1];
+    try {
+        segment = decodeURIComponent(segment);
+    } catch {
+        // Keep the raw segment; validateSlugSafe rejects unsafe values.
+    }
+    return validateSlugSafe(segment);
 }
 
 /**
@@ -306,35 +313,49 @@ export function parseStatsPayload(raw: unknown): {pageviews: number; visitors: n
 
 /**
  * Top articles by pageviews from `/metrics?type=path` rows (`{x: path, y: count}`).
+ *
+ * Umami often returns several path variants for one article (`/artikel/slug`,
+ * trailing-slash / encoding differences). Summing by slug keeps React list keys
+ * unique — duplicate keys were multiplying rows when switching `?zeitraum=`.
  */
 export function toTopArticlePageviews(rows: unknown, limit = CONTENT_TOP_LIMIT): UmamiArticlePageview[] {
     const max = typeof limit === 'number' && limit > 0 ? Math.floor(limit) : CONTENT_TOP_LIMIT;
     if (!Array.isArray(rows)) return [];
-    return rows
-        .flatMap((row) => {
-            if (!row || typeof row !== 'object') return [];
-            const slug = articleSlugFromPath((row as {x?: unknown}).x);
-            if (!slug) return [];
-            return [{slug, pageviews: normalizeCount((row as {y?: unknown}).y)}];
-        })
-        .sort((a, b) => b.pageviews - a.pageviews)
+
+    const bySlug = new Map<string, number>();
+    for (const row of rows) {
+        if (!row || typeof row !== 'object') continue;
+        const slug = articleSlugFromPath((row as {x?: unknown}).x);
+        if (!slug) continue;
+        bySlug.set(slug, (bySlug.get(slug) ?? 0) + normalizeCount((row as {y?: unknown}).y));
+    }
+
+    return [...bySlug.entries()]
+        .map(([slug, pageviews]) => ({slug, pageviews}))
+        .sort((a, b) => b.pageviews - a.pageviews || a.slug.localeCompare(b.slug))
         .slice(0, max);
 }
 
 /**
  * Top podcast episodes by download count.
+ *
+ * Aggregates by slug so repeated event-data rows do not create duplicate list keys.
  */
 export function toTopPodcastDownloads(rows: unknown, limit = CONTENT_TOP_LIMIT): UmamiPodcastDownload[] {
     const max = typeof limit === 'number' && limit > 0 ? Math.floor(limit) : CONTENT_TOP_LIMIT;
     if (!Array.isArray(rows)) return [];
-    return rows
-        .flatMap((row) => {
-            if (!row || typeof row !== 'object') return [];
-            const value = (row as {value?: unknown}).value;
-            const slug = typeof value === 'string' ? validateSlugSafe(value) : null;
-            if (!slug) return [];
-            return [{slug, downloads: normalizeCount((row as {total?: unknown}).total)}];
-        })
-        .sort((a, b) => b.downloads - a.downloads)
+
+    const bySlug = new Map<string, number>();
+    for (const row of rows) {
+        if (!row || typeof row !== 'object') continue;
+        const value = (row as {value?: unknown}).value;
+        const slug = typeof value === 'string' ? validateSlugSafe(value) : null;
+        if (!slug) continue;
+        bySlug.set(slug, (bySlug.get(slug) ?? 0) + normalizeCount((row as {total?: unknown}).total));
+    }
+
+    return [...bySlug.entries()]
+        .map(([slug, downloads]) => ({slug, downloads}))
+        .sort((a, b) => b.downloads - a.downloads || a.slug.localeCompare(b.slug))
         .slice(0, max);
 }
