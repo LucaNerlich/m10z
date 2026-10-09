@@ -14,6 +14,23 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /** Public Statistik ranges: last 30 days is the primary display window. */
 export const UMAMI_PUBLIC_RANGE_KEYS = ['30d'] as const;
 
+/**
+ * Detail page (`/statistik/reichweite`) time windows.
+ * Queried via `?zeitraum=` — default is `30d`.
+ */
+export const UMAMI_DETAIL_RANGE_KEYS = ['7d', '30d', '6m'] as const;
+
+export type UmamiPublicRangeKey = (typeof UMAMI_PUBLIC_RANGE_KEYS)[number];
+
+export type UmamiDetailRangeKey = (typeof UMAMI_DETAIL_RANGE_KEYS)[number];
+
+/** German labels for detail range keys (UI + query param docs). */
+export const UMAMI_DETAIL_RANGE_LABELS: Record<UmamiDetailRangeKey, string> = {
+    '7d': '7 Tage',
+    '30d': '30 Tage',
+    '6m': '6 Monate',
+};
+
 /** Umami contains-operator filter (`c.`) so `/artikel` and `/artikel/:slug` both count. */
 export const ARTICLE_PATH_FILTER = 'c./artikel';
 
@@ -29,10 +46,14 @@ export const SLUG_PROPERTY = 'slug';
 /** How many top articles / episodes the content panels list. */
 export const CONTENT_TOP_LIMIT = 10;
 
+/** How many articles / episodes the detail page lists per range. */
+export const CONTENT_DETAIL_LIMIT = 50;
+
 /** How many path rows to request before filtering to `/artikel/:slug`. */
 export const ARTICLE_METRICS_FETCH_LIMIT = 40;
 
-export type UmamiPublicRangeKey = (typeof UMAMI_PUBLIC_RANGE_KEYS)[number];
+/** Larger path pull for the detail page (before slug filtering). */
+export const ARTICLE_METRICS_DETAIL_FETCH_LIMIT = 200;
 
 export type UmamiStatsConfig = {
     host: string;
@@ -75,6 +96,18 @@ export type UmamiTrafficStats = {
     cacheTtlSeconds: number;
 };
 
+/** One detail-page window: site totals plus long article/podcast rankings. */
+export type UmamiReachDetailRange = UmamiRangeStats & {
+    articles: UmamiArticlePageview[];
+    podcasts: UmamiPodcastDownload[];
+};
+
+export type UmamiReachDetailStats = {
+    ranges: Record<UmamiDetailRangeKey, UmamiReachDetailRange>;
+    cachedAt: string;
+    cacheTtlSeconds: number;
+};
+
 /**
  * Compute `{startAt, endAt}` timestamps (ms) for every public range.
  *
@@ -84,6 +117,26 @@ export function getPublicRangeBounds(nowMs: number): Record<UmamiPublicRangeKey,
     return {
         '30d': {startAt: nowMs - 30 * DAY_MS, endAt: nowMs},
     };
+}
+
+/**
+ * Compute `{startAt, endAt}` for the detail page windows (7d / 30d / ~6 months).
+ *
+ * @param nowMs reference timestamp (injectable for tests)
+ */
+export function getDetailRangeBounds(nowMs: number): Record<UmamiDetailRangeKey, {startAt: number; endAt: number}> {
+    return {
+        '7d': {startAt: nowMs - 7 * DAY_MS, endAt: nowMs},
+        '30d': {startAt: nowMs - 30 * DAY_MS, endAt: nowMs},
+        // 183 days ≈ half a year including leap-year mid-years.
+        '6m': {startAt: nowMs - 183 * DAY_MS, endAt: nowMs},
+    };
+}
+
+/** Parse `?zeitraum=` into a known detail range; unknown values fall back to 30 days. */
+export function parseDetailRangeKey(raw: string | null | undefined): UmamiDetailRangeKey {
+    if (raw === '7d' || raw === '30d' || raw === '6m') return raw;
+    return '30d';
 }
 
 /**

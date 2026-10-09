@@ -13,12 +13,19 @@
  */
 
 import {
+    ARTICLE_METRICS_DETAIL_FETCH_LIMIT,
+    CONTENT_DETAIL_LIMIT,
+    type UmamiDetailRangeKey,
+    type UmamiReachDetailRange,
+    type UmamiReachDetailStats,
     type UmamiStatsConfig,
     type UmamiTrafficStats,
+    UMAMI_DETAIL_RANGE_KEYS,
     buildArticleMetricsUrl,
     buildEventValuesUrl,
     buildLoginUrl,
     buildStatsUrl,
+    getDetailRangeBounds,
     getPublicRangeBounds,
     parseStatsPayload,
     toTopArticlePageviews,
@@ -203,5 +210,72 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
         };
     }
 
-    return {getTrafficStats};
+    /**
+     * Multi-range detail payload for `/statistik/reichweite` (7d / 30d / 6m).
+     * Each range fetches site totals + long article/podcast lists independently;
+     * a failed content request leaves that list empty without hiding other ranges.
+     */
+    async function getReachDetailStats(config: UmamiStatsConfig): Promise<UmamiReachDetailStats> {
+        const nowMs = nowFn();
+        const bounds = getDetailRangeBounds(nowMs);
+
+        const entries = await Promise.all(
+            UMAMI_DETAIL_RANGE_KEYS.map(async (key): Promise<[UmamiDetailRangeKey, UmamiReachDetailRange]> => {
+                const {startAt, endAt} = bounds[key];
+                const [siteResult, articleResult, eventResult] = await Promise.allSettled([
+                    authorizedGet(config, buildStatsUrl(config, startAt, endAt)),
+                    authorizedGet(
+                        config,
+                        buildArticleMetricsUrl(config, startAt, endAt, ARTICLE_METRICS_DETAIL_FETCH_LIMIT)
+                    ),
+                    authorizedGet(config, buildEventValuesUrl(config, startAt, endAt)),
+                ]);
+
+                // Auth failures must surface so the soft-fail source can omit the page.
+                for (const result of [siteResult, articleResult, eventResult]) {
+                    if (
+                        result.status === 'rejected' &&
+                        result.reason instanceof UmamiClientError &&
+                        result.reason.code === 'UMAMI_AUTH'
+                    ) {
+                        throw result.reason;
+                    }
+                }
+
+                if (siteResult.status === 'rejected') {
+                    // Site-wide failure for one window should not blank the whole page;
+                    // content lists may still be useful.
+                    logger.warn(`[umami-stats] Site stats failed for range ${key}.`);
+                }
+
+                const site =
+                    siteResult.status === 'fulfilled'
+                        ? parseStatsPayload(siteResult.value)
+                        : {pageviews: 0, visitors: 0, visits: 0};
+                const articleRows = articleResult.status === 'fulfilled' ? articleResult.value : null;
+                const eventRows = eventResult.status === 'fulfilled' ? eventResult.value : null;
+
+                return [
+                    key,
+                    {
+                        startAt: new Date(startAt).toISOString(),
+                        endAt: new Date(endAt).toISOString(),
+                        ...site,
+                        articles: toTopArticlePageviews(articleRows, CONTENT_DETAIL_LIMIT),
+                        podcasts: toTopPodcastDownloads(eventRows, CONTENT_DETAIL_LIMIT),
+                    },
+                ];
+            })
+        );
+
+        const ranges = Object.fromEntries(entries) as Record<UmamiDetailRangeKey, UmamiReachDetailRange>;
+
+        return {
+            ranges,
+            cachedAt: new Date(nowMs).toISOString(),
+            cacheTtlSeconds: CACHE_REVALIDATE_UMAMI,
+        };
+    }
+
+    return {getTrafficStats, getReachDetailStats};
 }

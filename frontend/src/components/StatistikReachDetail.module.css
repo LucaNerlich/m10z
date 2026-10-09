@@ -1,0 +1,47 @@
+.rangeNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 8px;
+}
+
+.rangeLink {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+
+.rangeLink:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.rangeLink:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.rangeLinkActive {
+    border-color: var(--color-primary);
+    background: color-mix(in oklch, var(--statistik-primary, var(--color-primary)) 14%, var(--color-surface));
+    color: var(--color-primary);
+}
+
+.meta {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.empty {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+}

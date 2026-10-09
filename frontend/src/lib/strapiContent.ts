@@ -344,7 +344,8 @@ const fetchArticlesBySlugs = cache(
     (slugs: string[]): Promise<StrapiArticle[]> => fetchBySlugs<StrapiArticle>(ARTICLE_DESCRIPTOR, slugs),
 );
 
-const fetchArticlesBySlugsBatched = cache(
+/** Batched article lookup by slug (used by Statistik reach detail titles). */
+export const fetchArticlesBySlugsBatched = cache(
     (slugs: string[]): Promise<StrapiArticle[]> => batchBySlugs(fetchArticlesBySlugs, slugs),
 );
 
@@ -391,7 +392,8 @@ const fetchPodcastsBySlugs = cache(
     (slugs: string[]): Promise<StrapiPodcast[]> => fetchBySlugs<StrapiPodcast>(PODCAST_DESCRIPTOR, slugs),
 );
 
-const fetchPodcastsBySlugsBatched = cache(
+/** Batched podcast lookup by slug (used by Statistik reach detail titles). */
+export const fetchPodcastsBySlugsBatched = cache(
     (slugs: string[]): Promise<StrapiPodcast[]> => batchBySlugs(fetchPodcastsBySlugs, slugs),
 );
 

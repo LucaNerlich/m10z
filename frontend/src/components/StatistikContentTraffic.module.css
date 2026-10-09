@@ -1,0 +1,25 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.more {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.more a {
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.more a:hover {
+    text-decoration: underline;
+}
+
+.more a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
