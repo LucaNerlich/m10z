@@ -1,4 +1,7 @@
+import Link from 'next/link';
+
 import {type UmamiTrafficStats} from '@/src/lib/analytics/umamiStats';
+import {routes} from '@/src/lib/routes';
 import {formatInteger, formatSnapshotDate} from '@/src/lib/statistik/statistikFormat';
 
 import {StatistikPanel} from './StatistikPanel';
@@ -34,6 +37,8 @@ export function StatistikTrafficPanel({traffic}: StatistikTrafficPanelProps) {
             <p className={styles.meta}>
                 Aktualisiert ca. alle 10 Minuten · Stand:{' '}
                 <time dateTime={traffic.cachedAt}>{formatSnapshotDate(traffic.cachedAt)}</time>
+                {' · '}
+                <Link href={routes.statistikReach}>Artikel & Podcasts im Detail</Link>
             </p>
         </StatistikPanel>
     );
