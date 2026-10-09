@@ -56,7 +56,8 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
     const nowFn = now ?? Date.now;
     const logger = log ?? {warn: () => {}};
 
-    let tokenCache: {token: string; at: number} | null = null;
+    /** Bearer token; cleared on 401 (no age-based expiry — Umami renews via retry). */
+    let tokenCache: string | null = null;
     let loginInflight: Promise<string> | null = null;
 
     async function requestJson(
@@ -126,12 +127,12 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
             logger.warn('[umami-stats] Umami login response did not contain a token.');
             throw new UmamiClientError('UMAMI_UPSTREAM', 'Umami login response did not contain a token.');
         }
-        tokenCache = {token, at: nowFn()};
+        tokenCache = token;
         return token;
     }
 
     async function getToken(config: UmamiStatsConfig): Promise<string> {
-        if (tokenCache) return tokenCache.token;
+        if (tokenCache) return tokenCache;
         if (!loginInflight) {
             loginInflight = login(config).finally(() => {
                 loginInflight = null;
