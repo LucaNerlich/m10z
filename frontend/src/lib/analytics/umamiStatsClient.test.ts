@@ -203,3 +203,57 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
         expect(JSON.stringify(warnings)).not.toContain('user');
     });
 });
+
+describe('createUmamiStatsClient.getReachDetailStats', () => {
+    test('loads three ranges with longer article/podcast lists', async () => {
+        const {calls, fetchImpl} = standardFetch();
+        const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
+
+        const payload = await client.getReachDetailStats(CONFIG);
+
+        const logins = calls.filter((call) => call.url.endsWith('/api/auth/login'));
+        const gets = calls.filter((call) => call.init.method === 'GET');
+        expect(logins).toHaveLength(1);
+        // 3 ranges × (stats + metrics + event-data)
+        expect(gets).toHaveLength(9);
+        expect(gets.some((call) => call.url.includes('limit=200'))).toBe(true);
+        expect(payload.ranges['7d'].articles).toEqual([
+            {slug: 'alpha', pageviews: 12},
+            {slug: 'beta', pageviews: 5},
+        ]);
+        expect(payload.ranges['30d'].podcasts).toEqual([
+            {slug: 'ep-a', downloads: 12},
+            {slug: 'ep-b', downloads: 5},
+        ]);
+        expect(payload.ranges['6m']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
+    });
+
+    test('keeps other ranges when one range site-stats request fails', async () => {
+        let statsHits = 0;
+        const {fetchImpl} = setupFetch((url, init) => {
+            if (url.endsWith('/api/auth/login')) {
+                return jsonResponse({token: 'tok-1'});
+            }
+            expect(init.headers).toMatchObject({authorization: 'Bearer tok-1'});
+            if (url.includes('/event-data/values')) {
+                return jsonResponse([{value: 'ep-a', total: 3}]);
+            }
+            if (url.includes('/metrics')) {
+                return jsonResponse([{x: '/artikel/alpha', y: 4}]);
+            }
+            if (url.includes('/stats')) {
+                statsHits += 1;
+                if (statsHits === 1) return jsonResponse(null, 503);
+                return jsonResponse({pageviews: 10, visitors: 5, visits: 6});
+            }
+            throw new Error(`unexpected URL: ${url}`);
+        });
+        const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
+
+        const payload = await client.getReachDetailStats(CONFIG);
+
+        expect(payload.ranges['7d']).toMatchObject({pageviews: 0, visitors: 0, visits: 0});
+        expect(payload.ranges['7d'].articles).toEqual([{slug: 'alpha', pageviews: 4}]);
+        expect(payload.ranges['30d']).toMatchObject({pageviews: 10, visitors: 5, visits: 6});
+    });
+});

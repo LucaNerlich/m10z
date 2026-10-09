@@ -1,6 +1,7 @@
 import {describe, expect, test} from 'vitest';
 
 import {
+    ARTICLE_METRICS_DETAIL_FETCH_LIMIT,
     ARTICLE_METRICS_FETCH_LIMIT,
     ARTICLE_PATH_FILTER,
     PODCAST_DOWNLOAD_EVENT,
@@ -10,10 +11,12 @@ import {
     buildEventValuesUrl,
     buildLoginUrl,
     buildStatsUrl,
+    getDetailRangeBounds,
     getPublicRangeBounds,
     normalizeCount,
     normalizeUmamiHost,
     normalizeWebsiteId,
+    parseDetailRangeKey,
     parseStatsPayload,
     readUmamiStatsConfig,
     toTopArticlePageviews,
@@ -28,6 +31,25 @@ describe('getPublicRangeBounds', () => {
         expect(getPublicRangeBounds(NOW)).toEqual({
             '30d': {startAt: NOW - 30 * DAY_MS, endAt: NOW},
         });
+    });
+});
+
+describe('getDetailRangeBounds / parseDetailRangeKey', () => {
+    test('computes 7d, 30d, and ~6-month windows', () => {
+        expect(getDetailRangeBounds(NOW)).toEqual({
+            '7d': {startAt: NOW - 7 * DAY_MS, endAt: NOW},
+            '30d': {startAt: NOW - 30 * DAY_MS, endAt: NOW},
+            '6m': {startAt: NOW - 183 * DAY_MS, endAt: NOW},
+        });
+    });
+
+    test('accepts known zeitraum keys and defaults unknowns to 30d', () => {
+        expect(parseDetailRangeKey('7d')).toBe('7d');
+        expect(parseDetailRangeKey('30d')).toBe('30d');
+        expect(parseDetailRangeKey('6m')).toBe('6m');
+        expect(parseDetailRangeKey('1y')).toBe('30d');
+        expect(parseDetailRangeKey(undefined)).toBe('30d');
+        expect(parseDetailRangeKey(null)).toBe('30d');
     });
 });
 
@@ -143,6 +165,11 @@ describe('URL builders', () => {
         expect(url.searchParams.get('eventType')).toBe('1');
         expect(url.searchParams.get('limit')).toBe(String(ARTICLE_METRICS_FETCH_LIMIT));
         expect(url.searchParams.get('startAt')).toBe('1000');
+    });
+
+    test('buildArticleMetricsUrl accepts a larger detail-page limit', () => {
+        const url = new URL(buildArticleMetricsUrl(config, 1000, 2000, ARTICLE_METRICS_DETAIL_FETCH_LIMIT));
+        expect(url.searchParams.get('limit')).toBe(String(ARTICLE_METRICS_DETAIL_FETCH_LIMIT));
     });
 
     test('buildEventValuesUrl filters the podcast-download slug property', () => {

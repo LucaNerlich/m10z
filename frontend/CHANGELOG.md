@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- `/statistik/reichweite`: detailed Umami rankings for articles and podcasts across 7 days, 30 days, and 6 months (linked from the Statistik overview panels).
+
 ## [1.14.0] - 2026-10-09
 
 ### Added

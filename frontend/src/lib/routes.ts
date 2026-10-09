@@ -28,6 +28,8 @@ export const routes = {
     m12gGame: (slug: string) => `/m12g/spiele/${slug}`,
     statistik: '/statistik',
     statistikMonth: (month: string) => `/statistik/${month}`,
+    /** Live Umami article/podcast breakdowns (static segment; must not clash with `[monat]`). */
+    statistikReach: '/statistik/reichweite',
     audioFeed: '/audiofeed.xml',
     articleFeed: '/rss.xml',
     llmsTxt: '/llms.txt',

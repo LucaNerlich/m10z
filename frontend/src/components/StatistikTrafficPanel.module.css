@@ -12,3 +12,18 @@
     font-size: 0.8rem;
     color: var(--color-text-muted);
 }
+
+.meta a {
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.meta a:hover {
+    text-decoration: underline;
+}
+
+.meta a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}

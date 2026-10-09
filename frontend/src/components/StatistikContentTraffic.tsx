@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import {type UmamiTrafficStats} from '@/src/lib/analytics/umamiStats';
 import {routes} from '@/src/lib/routes';
 import {formatInteger} from '@/src/lib/statistik/statistikFormat';
@@ -5,6 +7,7 @@ import {formatInteger} from '@/src/lib/statistik/statistikFormat';
 import {StatistikBarList, type StatistikBarListItem} from './StatistikBarList';
 import {StatistikColumns} from './StatistikDashboard';
 import {StatistikPanel} from './StatistikPanel';
+import styles from './StatistikContentTraffic.module.css';
 
 type StatistikContentTrafficProps = {
     traffic: UmamiTrafficStats;
@@ -37,17 +40,22 @@ export function StatistikContentTraffic({traffic}: StatistikContentTrafficProps)
     }
 
     return (
-        <StatistikColumns>
-            {topArticles.length > 0 ? (
-                <StatistikPanel title='Artikel' description='Seitenaufrufe pro Artikel in den letzten 30 Tagen'>
-                    <StatistikBarList items={topArticles} tone='primary' />
-                </StatistikPanel>
-            ) : null}
-            {topEpisodes.length > 0 ? (
-                <StatistikPanel title='Podcasts' description='Downloads pro Podcast in den letzten 30 Tagen'>
-                    <StatistikBarList items={topEpisodes} tone='secondary' />
-                </StatistikPanel>
-            ) : null}
-        </StatistikColumns>
+        <div className={styles.section}>
+            <StatistikColumns>
+                {topArticles.length > 0 ? (
+                    <StatistikPanel title='Artikel' description='Seitenaufrufe pro Artikel in den letzten 30 Tagen'>
+                        <StatistikBarList items={topArticles} tone='primary' />
+                    </StatistikPanel>
+                ) : null}
+                {topEpisodes.length > 0 ? (
+                    <StatistikPanel title='Podcasts' description='Downloads pro Podcast in den letzten 30 Tagen'>
+                        <StatistikBarList items={topEpisodes} tone='secondary' />
+                    </StatistikPanel>
+                ) : null}
+            </StatistikColumns>
+            <p className={styles.more}>
+                <Link href={routes.statistikReach}>Mehr Artikel & Podcasts · weitere Zeiträume</Link>
+            </p>
+        </div>
     );
 }
