@@ -39,6 +39,7 @@
         "remark-gfm": "^4.0.1",
         "remark-smartypants": "^3.0.3",
         "serialize-javascript": "^7.1.2",
+        "server-only": "^0.0.1",
         "swr": "^2.5.1",
         "undici": "^8.11.2",
         "yaml": "^2.9.1"

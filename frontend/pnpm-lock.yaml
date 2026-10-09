@@ -74,6 +74,9 @@ importers:
       serialize-javascript:
         specifier: ^7.1.2
         version: 7.1.2
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       swr:
         specifier: ^2.5.1
         version: 2.5.1(react@19.3.0)
@@ -1978,6 +1981,9 @@ packages:
   serialize-javascript@7.1.2:
     resolution: {integrity: sha512-GL2BWwVa6JydKO6l/ljVgjAZF4QJ3S7dWDWi53s5GZT8PJzD2fNxi67HANQGKAqPrwEpL5ba7gUBGi0Ls/sEoQ==}
     engines: {node: '>=20.0.0'}
+
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
   sharp@0.35.4:
     resolution: {integrity: sha512-n++8XWcj+jCOr2IOl7h8LbKnGBDY4aPbmprMONBNFdn0ImXqpGVv5zliDs0V9HbmbCQLpbuo2ej9rAoOQTvMDA==}
@@ -4300,6 +4306,8 @@ snapshots:
     optional: true
 
   serialize-javascript@7.1.2: {}
+
+  server-only@0.0.1: {}
 
   sharp@0.35.4(@types/node@25.9.8):
     dependencies:
