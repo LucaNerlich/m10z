@@ -2,7 +2,9 @@
  * Minimal Umami API client for the public Statistik page.
  *
  * - POST /api/auth/login → bearer token (in-memory, renewed on 401)
- * - GET /api/websites/:id/stats → pageviews, visitors, visits for public ranges
+ * - GET /api/websites/:id/stats → site-wide pageviews / visitors / visits
+ * - GET /api/websites/:id/metrics?type=path → per-article pageviews
+ * - GET /api/websites/:id/event-data/values → podcast-download breakdown
  *
  * Import only from server modules (`umamiStatsSource` gates with `server-only`).
  * Fetches use `cache: 'no-store'`; TTL lives in the outer `unstable_cache`.
@@ -13,13 +15,13 @@
 import {
     type UmamiStatsConfig,
     type UmamiTrafficStats,
-    buildArticleStatsUrl,
+    buildArticleMetricsUrl,
     buildEventValuesUrl,
     buildLoginUrl,
     buildStatsUrl,
     getPublicRangeBounds,
     parseStatsPayload,
-    sumEventTotals,
+    toTopArticlePageviews,
     toTopPodcastDownloads,
 } from '@/src/lib/analytics/umamiStats';
 import {CACHE_REVALIDATE_UMAMI} from '@/src/lib/cache/constants';
@@ -164,7 +166,8 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
     }
 
     /**
-     * Site-wide stats plus article pageviews and podcast-download events (30 days).
+     * Site-wide stats plus per-article paths and podcast-download events (30 days).
+     * Content requests settle independently so a failed panel does not hide site-wide reach.
      */
     async function getTrafficStats(config: UmamiStatsConfig): Promise<UmamiTrafficStats> {
         const nowMs = nowFn();
@@ -172,11 +175,11 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
         const [raw, [articleResult, eventResult]] = await Promise.all([
             authorizedGet(config, buildStatsUrl(config, startAt, endAt)),
             Promise.allSettled([
-                authorizedGet(config, buildArticleStatsUrl(config, startAt, endAt)),
+                authorizedGet(config, buildArticleMetricsUrl(config, startAt, endAt)),
                 authorizedGet(config, buildEventValuesUrl(config, startAt, endAt)),
             ]),
         ]);
-        const articleRaw = articleResult.status === 'fulfilled' ? articleResult.value : null;
+        const articleRows = articleResult.status === 'fulfilled' ? articleResult.value : null;
         const eventRows = eventResult.status === 'fulfilled' ? eventResult.value : null;
 
         return {
@@ -188,9 +191,10 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
                 },
             },
             content: {
-                articles: parseStatsPayload(articleRaw),
+                articles: {
+                    topArticles: toTopArticlePageviews(articleRows),
+                },
                 podcasts: {
-                    downloads: sumEventTotals(eventRows),
                     topEpisodes: toTopPodcastDownloads(eventRows),
                 },
             },
