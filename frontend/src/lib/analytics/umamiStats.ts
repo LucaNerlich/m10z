@@ -1,15 +1,32 @@
 /**
  * Pure helpers for reading Umami website stats (no network, no Next imports).
  *
- * Mirrors `backend/src/plugins/umami-stats/server/utils/umami.js` for the
- * public Statistik page: login + GET /api/websites/:id/stats only (no podcast
- * event breakdown on the public surface).
+ * Public Statistik uses:
+ * - GET /api/websites/:id/stats — site-wide and article pageviews (`path` contains `/artikel`)
+ * - GET /api/websites/:id/event-data/values — podcast-download custom events
  */
+
+import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Public Statistik ranges: last 30 days is the primary display window. */
 export const UMAMI_PUBLIC_RANGE_KEYS = ['30d'] as const;
+
+/** Umami contains-operator filter (`c.`) so `/artikel` and `/artikel/:slug` both count. */
+export const ARTICLE_PATH_FILTER = 'c./artikel';
+
+/** Umami event type for pageviews (excludes custom events on the same path). */
+export const PAGEVIEW_EVENT_TYPE = '1';
+
+/** Custom event recorded for podcast downloads (see `umamiServer.ts`). */
+export const PODCAST_DOWNLOAD_EVENT = 'podcast-download';
+
+/** Event-data property holding the episode slug. */
+export const SLUG_PROPERTY = 'slug';
+
+/** How many top episodes the podcast panel lists. */
+export const PODCAST_TOP_LIMIT = 5;
 
 export type UmamiPublicRangeKey = (typeof UMAMI_PUBLIC_RANGE_KEYS)[number];
 
@@ -28,8 +45,26 @@ export type UmamiRangeStats = {
     visits: number;
 };
 
+export type UmamiPodcastDownload = {
+    slug: string;
+    downloads: number;
+};
+
+export type UmamiContentStats = {
+    articles: {
+        pageviews: number;
+        visitors: number;
+        visits: number;
+    };
+    podcasts: {
+        downloads: number;
+        topEpisodes: UmamiPodcastDownload[];
+    };
+};
+
 export type UmamiTrafficStats = {
     ranges: Record<UmamiPublicRangeKey, UmamiRangeStats>;
+    content: UmamiContentStats;
     cachedAt: string;
     cacheTtlSeconds: number;
 };
@@ -117,15 +152,50 @@ export function buildLoginUrl(config: Pick<UmamiStatsConfig, 'host'>): string {
 
 /**
  * Build the website-stats URL for one range.
+ * Optional filters use Umami's `operator.value` query form (e.g. `path=c./artikel`).
  */
 export function buildStatsUrl(
     config: Pick<UmamiStatsConfig, 'host' | 'websiteId'>,
     startAt: number,
-    endAt: number
+    endAt: number,
+    filters?: Record<string, string>
 ): string {
     const url = new URL(`/api/websites/${encodeURIComponent(config.websiteId)}/stats`, config.host);
     url.searchParams.set('startAt', String(startAt));
     url.searchParams.set('endAt', String(endAt));
+    if (filters) {
+        for (const [key, value] of Object.entries(filters)) {
+            url.searchParams.set(key, value);
+        }
+    }
+    return url.toString();
+}
+
+/** Stats filtered to article pageviews (`/artikel` and `/artikel/:slug`). */
+export function buildArticleStatsUrl(
+    config: Pick<UmamiStatsConfig, 'host' | 'websiteId'>,
+    startAt: number,
+    endAt: number
+): string {
+    return buildStatsUrl(config, startAt, endAt, {
+        path: ARTICLE_PATH_FILTER,
+        eventType: PAGEVIEW_EVENT_TYPE,
+    });
+}
+
+/**
+ * Per-slug podcast-download totals for one range.
+ */
+export function buildEventValuesUrl(
+    config: Pick<UmamiStatsConfig, 'host' | 'websiteId'>,
+    startAt: number,
+    endAt: number
+): string {
+    const url = new URL(`/api/websites/${encodeURIComponent(config.websiteId)}/event-data/values`, config.host);
+    url.searchParams.set('startAt', String(startAt));
+    url.searchParams.set('endAt', String(endAt));
+    url.searchParams.set('event', PODCAST_DOWNLOAD_EVENT);
+    url.searchParams.set('propertyName', SLUG_PROPERTY);
     return url.toString();
 }
 
@@ -155,4 +225,36 @@ export function parseStatsPayload(raw: unknown): {pageviews: number; visitors: n
         visitors: normalizeCount(safe.visitors),
         visits: normalizeCount(safe.visits),
     };
+}
+
+/**
+ * Sum podcast-download totals. Only rows with a valid episode slug count.
+ */
+export function sumEventTotals(rows: unknown): number {
+    if (!Array.isArray(rows)) return 0;
+    return rows.reduce((sum, row) => {
+        if (!row || typeof row !== 'object') return sum;
+        const value = (row as {value?: unknown}).value;
+        const slug = typeof value === 'string' ? validateSlugSafe(value) : null;
+        if (!slug) return sum;
+        return sum + normalizeCount((row as {total?: unknown}).total);
+    }, 0);
+}
+
+/**
+ * Top podcast episodes by download count.
+ */
+export function toTopPodcastDownloads(rows: unknown, limit = PODCAST_TOP_LIMIT): UmamiPodcastDownload[] {
+    const max = typeof limit === 'number' && limit > 0 ? Math.floor(limit) : PODCAST_TOP_LIMIT;
+    if (!Array.isArray(rows)) return [];
+    return rows
+        .flatMap((row) => {
+            if (!row || typeof row !== 'object') return [];
+            const value = (row as {value?: unknown}).value;
+            const slug = typeof value === 'string' ? validateSlugSafe(value) : null;
+            if (!slug) return [];
+            return [{slug, downloads: normalizeCount((row as {total?: unknown}).total)}];
+        })
+        .sort((a, b) => b.downloads - a.downloads)
+        .slice(0, max);
 }

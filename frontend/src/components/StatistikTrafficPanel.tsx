@@ -26,8 +26,7 @@ export function StatistikTrafficPanel({traffic}: StatistikTrafficPanelProps) {
             title='Website-Reichweite'
             description={
                 <>
-                    Live-Zahlen der letzten 30 Tage (Umami) — getrennt von den Veröffentlichungsstatistiken
-                    unten.
+                    Besucher der gesamten Website, letzte 30 Tage.
                 </>
             }
             className={styles.panel}>
