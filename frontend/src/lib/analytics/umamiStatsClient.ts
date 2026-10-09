@@ -169,11 +169,15 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
     async function getTrafficStats(config: UmamiStatsConfig): Promise<UmamiTrafficStats> {
         const nowMs = nowFn();
         const {startAt, endAt} = getPublicRangeBounds(nowMs)['30d'];
-        const [raw, articleRaw, eventRows] = await Promise.all([
+        const [raw, [articleResult, eventResult]] = await Promise.all([
             authorizedGet(config, buildStatsUrl(config, startAt, endAt)),
-            authorizedGet(config, buildArticleStatsUrl(config, startAt, endAt)),
-            authorizedGet(config, buildEventValuesUrl(config, startAt, endAt)),
+            Promise.allSettled([
+                authorizedGet(config, buildArticleStatsUrl(config, startAt, endAt)),
+                authorizedGet(config, buildEventValuesUrl(config, startAt, endAt)),
+            ]),
         ]);
+        const articleRaw = articleResult.status === 'fulfilled' ? articleResult.value : null;
+        const eventRows = eventResult.status === 'fulfilled' ? eventResult.value : null;
 
         return {
             ranges: {

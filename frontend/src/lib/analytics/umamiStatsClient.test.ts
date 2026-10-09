@@ -34,7 +34,7 @@ function setupFetch(impl: (url: string, init: LoggedCall['init']) => unknown) {
     return {calls, fetchImpl};
 }
 
-function standardFetch() {
+function standardFetch(failures: {site?: boolean; articles?: boolean; podcasts?: boolean} = {}) {
     return setupFetch((url, init) => {
         if (url.endsWith('/api/auth/login')) {
             expect(init.method).toBe('POST');
@@ -44,6 +44,13 @@ function standardFetch() {
         }
         expect(init.headers).toMatchObject({authorization: 'Bearer tok-1'});
         expect(init.cache).toBe('no-store');
+        if (
+            (failures.site && url.includes('/stats') && !url.includes('path=')) ||
+            (failures.articles && url.includes('path=')) ||
+            (failures.podcasts && url.includes('/event-data/values'))
+        ) {
+            return jsonResponse(null, 503);
+        }
         if (url.includes('/event-data/values')) {
             expect(url).toContain('event=podcast-download');
             expect(url).toContain('propertyName=slug');
@@ -94,6 +101,43 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
             {slug: 'ep-a', downloads: 12},
             {slug: 'ep-b', downloads: 5},
         ]);
+    });
+
+    test.each([
+        {articles: true, podcasts: false},
+        {articles: false, podcasts: true},
+        {articles: true, podcasts: true},
+    ])('preserves site-wide stats and successful content when requests fail: %j', async (failures) => {
+        const {fetchImpl} = standardFetch(failures);
+        const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
+
+        const payload = await client.getTrafficStats(CONFIG);
+
+        expect(payload.ranges['30d']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
+        expect(payload.content.articles).toEqual(
+            failures.articles ? {pageviews: 0, visitors: 0, visits: 0} : {pageviews: 20, visitors: 8, visits: 10}
+        );
+        expect(payload.content.podcasts).toEqual(
+            failures.podcasts
+                ? {downloads: 0, topEpisodes: []}
+                : {
+                      downloads: 17,
+                      topEpisodes: [
+                          {slug: 'ep-a', downloads: 12},
+                          {slug: 'ep-b', downloads: 5},
+                      ],
+                  }
+        );
+    });
+
+    test('throws when site-wide stats fail even if content requests succeed', async () => {
+        const {fetchImpl} = standardFetch({site: true});
+        const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
+
+        await expect(client.getTrafficStats(CONFIG)).rejects.toMatchObject({
+            code: 'UMAMI_UPSTREAM',
+            upstreamStatus: 503,
+        });
     });
 
     test('retries once after a 401 by re-authenticating', async () => {
