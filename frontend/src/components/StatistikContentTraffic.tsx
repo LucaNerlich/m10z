@@ -45,6 +45,7 @@ export function StatistikContentTraffic({traffic}: StatistikContentTrafficProps)
                 {topArticles.length > 0 ? (
                     <StatistikPanel title='Artikel' description='Seitenaufrufe pro Artikel in den letzten 30 Tagen'>
                         <StatistikBarList items={topArticles} tone='primary' />
+                        <p className={styles.hint}>Natürlich ohne Aufrufe von Personen mit Adblockern.</p>
                     </StatistikPanel>
                 ) : null}
                 {topEpisodes.length > 0 ? (

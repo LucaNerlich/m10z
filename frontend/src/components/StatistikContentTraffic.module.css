@@ -4,6 +4,12 @@
     gap: 12px;
 }
 
+.hint {
+    margin: 10px 0 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
 .more {
     margin: 0;
     font-size: 0.95rem;
