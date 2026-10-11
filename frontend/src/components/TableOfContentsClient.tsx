@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from 'react';
 
-import {type HeadingItem} from '@/src/lib/markdown/extractHeadings';
+import {type HeadingItem, renderedHeadingDepth} from '@/src/lib/markdown/extractHeadings';
 import {createHeadingSlugger, slugifyHeadingText} from '@/src/lib/markdown/headingSlug';
 
 import styles from './TableOfContents.module.css';
@@ -96,10 +96,11 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
                 {headings.map((heading, index) => {
                     const el = headingEls[index];
                     const href = el?.id ? `#${el.id}` : undefined;
+                    const renderedDepth = renderedHeadingDepth(heading.depth);
                     const depthClass =
-                        heading.depth === 2
+                        renderedDepth === 2
                             ? styles.depth2
-                            : heading.depth === 3
+                            : renderedDepth === 3
                                 ? styles.depth3
                                 : styles.depth4;
                     const linkClass = [

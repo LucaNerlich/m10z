@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {extractHeadings} from './extractHeadings';
+import {extractHeadings, renderedHeadingDepth} from './extractHeadings';
 
 describe('extractHeadings', () => {
     test('extracts ATX headings with their depth', () => {
@@ -42,5 +42,20 @@ describe('extractHeadings', () => {
 
     test('skips lines that are not ATX headings', () => {
         expect(extractHeadings('Just a paragraph\nwith two lines')).toEqual([]);
+    });
+});
+
+describe('renderedHeadingDepth', () => {
+    test('demotes a raw h1 to h2, matching the renderer', () => {
+        expect(renderedHeadingDepth(1)).toBe(2);
+    });
+
+    test('leaves a raw h2 at h2, so both raw levels 1 and 2 are flush', () => {
+        expect(renderedHeadingDepth(2)).toBe(2);
+    });
+
+    test('leaves deeper levels unchanged', () => {
+        expect(renderedHeadingDepth(3)).toBe(3);
+        expect(renderedHeadingDepth(4)).toBe(4);
     });
 });

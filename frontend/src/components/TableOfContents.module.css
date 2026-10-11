@@ -45,8 +45,9 @@
     color: var(--color-primary);
 }
 
-/* Indentation by heading depth.
-   h1 in markdown is demoted to h2, so effective depths are 2-4.
+/* Indentation by rendered heading depth (see `renderedHeadingDepth`).
+   Markdown h1 is demoted to h2, so raw depths 1 and 2 both render as h2 and
+   are flush; a raw depth of 3 renders as h3 (indented), 4 as h4 (double).
    depth-2 = flush, depth-3 = indented, depth-4 = double-indented. */
 .depth2 {
     padding-left: 0;

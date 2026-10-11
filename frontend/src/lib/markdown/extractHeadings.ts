@@ -63,3 +63,17 @@ export function extractHeadings(markdown: string, maxDepth = 3): HeadingItem[] {
 
     return headings;
 }
+
+/**
+ * Depth a heading extracted by `extractHeadings` actually renders at.
+ *
+ * The Markdown renderer demotes `h1` to `h2` so the page keeps a single `h1`
+ * (the article title) and leaves deeper levels untouched. A raw markdown
+ * depth of 1 therefore renders as `h2`, the same level as a raw depth of 2.
+ *
+ * @param markdownDepth - Raw ATX heading depth (1-6) as returned by `extractHeadings`
+ * @returns Rendered heading depth (2-6)
+ */
+export function renderedHeadingDepth(markdownDepth: number): number {
+    return Math.max(markdownDepth, 2);
+}
