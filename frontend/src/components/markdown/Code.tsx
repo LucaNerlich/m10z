@@ -3,6 +3,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import {Highlight} from 'prism-react-renderer';
+import {type ExtraProps} from 'react-markdown';
 import styles from './Code.module.css';
 
 // Lazy-load Mermaid: the library is ~2MB and only needed for diagrams.
@@ -14,7 +15,7 @@ const Mermaid = dynamic(
     },
 );
 
-export type CodeProps = React.ComponentProps<'code'> & {
+export type CodeProps = React.ComponentProps<'code'> & ExtraProps & {
     inline?: boolean;
 };
 
@@ -30,7 +31,8 @@ export type CodeProps = React.ComponentProps<'code'> & {
  * @param inline - When true, always render as inline code regardless of `className`.
  * @returns A React element containing either plain inline code, a syntax-highlighted code block, or a Mermaid diagram.
  */
-export function Code({className = '', children, inline = false, ...props}: CodeProps) {
+// react-markdown passes its internal hast `node`; drop it so it never reaches the DOM.
+export function Code({className = '', children, inline = false, node: _node, ...props}: CodeProps) {
     // Extract language from className (format: "language-{lang}")
     const languageMatch = className.match(/language-(\w+)/);
     const language = languageMatch ? languageMatch[1] : '';

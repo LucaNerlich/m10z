@@ -1,14 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
+import {type ExtraProps} from 'react-markdown';
 import {routes} from '@/src/lib/routes';
 import {umamiEventId, umamiExternalLinkEvent} from '@/src/lib/analytics/umami';
 
-export type AnchorProps = React.ComponentProps<'a'> & {
+export type AnchorProps = React.ComponentProps<'a'> & ExtraProps & {
     'data-umami-event'?: string;
 };
 
 /** Anchor props minus the ones destructured in the component. */
-type AnchorRestProps = Omit<AnchorProps, 'href' | 'children' | 'className' | 'id'>;
+type AnchorRestProps = Omit<AnchorProps, 'href' | 'children' | 'className' | 'id' | 'node'>;
 
 // Attributes that are safe (and meaningful) to forward from a markdown link to
 // the Next.js <Link> that renders it.
@@ -34,7 +35,8 @@ function isForwardableAnchorAttribute(key: string): boolean {
  *
  * @returns A React element — either a Next.js `Link` configured for internal navigation or an `<a>` element configured for external/anchor targets.
  */
-export function Anchor({href, children, className, id, ...props}: AnchorProps) {
+// react-markdown passes its internal hast `node`; drop it so it never reaches the DOM.
+export function Anchor({href, children, className, id, node: _node, ...props}: AnchorProps) {
     if (!href) {
         return (
             <a href={href} className={className} id={id} {...props}>
