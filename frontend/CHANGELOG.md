@@ -2,10 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.15.0] - 2026-10-11
 
 ### Added
+- Per-article and per-podcast Umami breakdowns on the Statistik pages.
 - `/statistik/reichweite`: detailed Umami rankings for articles and podcasts across 7 days, 30 days, and 6 months (linked from the Statistik overview panels).
+
+### Changed
+- Dependency upgrades.
+
+### Fixed
+- Article table-of-contents indentation now matches the rendered heading levels: `#` and `##` headings are flush and `###` headings are indented.
+- React-Markdown's internal `node` prop is no longer rendered as a stray `node="[object Object]"` attribute on headings, links, and code.
+- Statistik: article bars no longer duplicate when switching the Zeitraum filter, and the Artikel panel now hints when the data is likely hidden by an adblocker.
 
 ## [1.14.0] - 2026-10-09
 
