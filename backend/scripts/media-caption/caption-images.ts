@@ -69,6 +69,11 @@ const MAX_TOKENS = 4000;
 const IMAGE_MAX_EDGE = 768;
 const IMAGE_QUALITY = 72;
 const IMAGE_FETCH_CONCURRENCY = 4;
+// Stalled requests must not hang the run. The gateway gets a longer budget than
+// the MCP/image calls because model inference is the slow step.
+const MCP_REQUEST_TIMEOUT_MS = 90_000;
+const IMAGE_FETCH_TIMEOUT_MS = 60_000;
+const GATEWAY_REQUEST_TIMEOUT_MS = 180_000;
 const WRITE_DELAY_MS = 250;
 const MCP_MAX_PAGES = 200;
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
@@ -155,6 +160,7 @@ async function callTool<T>(
                     method: 'tools/call',
                     params: {name, arguments: toolArgs},
                 }),
+                signal: AbortSignal.timeout(MCP_REQUEST_TIMEOUT_MS),
             });
             if (!response.ok)
                 throw new Error(
@@ -259,6 +265,7 @@ async function downloadImageBuffer(url: string): Promise<Buffer> {
         async () => {
             const response = await fetch(url, {
                 headers: {'User-Agent': USER_AGENT},
+                signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS),
             });
             if (!response.ok)
                 throw new Error(
@@ -348,12 +355,17 @@ async function callGateway(input: {
                 {role: 'user', content: input.content},
             ],
         }),
+        signal: AbortSignal.timeout(GATEWAY_REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {
-        const body = await response.text().catch(() => '');
+        // Never read or log the gateway response body (it may echo request
+        // context); cancel it so the connection can be reused, and keep only
+        // the HTTP status in the error.
+        const body = response.body;
+        if (body) await body.cancel().catch(() => undefined);
         throw new Error(
-            `opencode go request failed (HTTP ${response.status}): ${body.slice(0, 200)}`
+            `opencode go request failed with HTTP ${response.status}`
         );
     }
 
