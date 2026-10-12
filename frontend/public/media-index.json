@@ -1,7 +1,7 @@
 {
     "version": 1,
     "baseUrl": "https://cms.m10z.de",
-    "generatedAt": "2026-10-12T18:41:34.382Z",
+    "generatedAt": "2026-10-12T18:42:39.693Z",
     "entries": {
         "uploads/01_5ec66cf3a6.png": {
             "alt": "Screenshot eines Retro-Ego-Shooters mit HUD-Anzeige, Munition, Gesundheit und Gegnern im Korridor.",
@@ -759,6 +759,14 @@
             "alt": "Mikrofon und rotes Audio-Interface auf einem Tisch, daneben Teetasse, Kekse und das Teebuch mit einem lächelnden Mann",
             "caption": "Ein kleiner Plausch im Haus des Tees"
         },
+        "uploads/Thumb2_6852fb6456.png": {
+            "alt": "Cover von The Operative: No One Lives Forever mit Agentin in weißem Outfit und Flag-O-Tron-Fernseher",
+            "caption": "Agentin Cate Archer und der Flag-O-Tron: das Cover zum Fundbüro-Beitrag."
+        },
+        "uploads/Thumb_02e61121d3.png": {
+            "alt": "Banner zum Spiel The Operative: No One Lives Forever mit Agentin, Fernseher Flag-O-Tron und Fundbüro-Logo",
+            "caption": "Das Fundbüro widmet sich dem Retro-Klassiker The Operative: No One Lives Forever."
+        },
         "uploads/Titelbild_M10_Z_Marcel_Spezial_Banner_973e28e179.png": {
             "alt": "Illustration eines Mannes mit Kopfhörern vor einem Bildschirm, auf seinem Shirt steht M10Z, dahinter rotes Gekritzel",
             "caption": "Das Special-Banner zeigt Marcel als gezeichneten Charakter im typischen M10Z-Look."
@@ -935,6 +943,10 @@
             "alt": "Junge springt durch eine Fantasiewelt und greift nach einem Puzzleteil, Titel Braid Anniversary Edition",
             "caption": "Braid Anniversary Edition: die Neuauflage des Puzzle-Platformers mit überarbeiteter Grafik."
         },
+        "uploads/brainbug22_3705a0f1f1.png": {
+            "alt": "Comic-Illustration eines Mannes mit rotem Haar, buschigen Brauen und Schlips",
+            "caption": "Georg als Comicfigur: Porträt mit kräftigen Konturen, Schraffuren und kritischem Blick"
+        },
         "uploads/bulletstorm_example_ac00760e59.jpg": {
             "alt": "Ausschnitt aus einem Artikel über die Entwicklung der roten Fässer in Bulletstorm, inklusive Vergleichsabbildungen.",
             "caption": "Der Artikel erklärt, warum in Bulletstorm rote statt grüner Fässer zum Einsatz kamen."
@@ -1083,9 +1095,17 @@
             "alt": "Cover von The House in Fata Morgana mit zwei Figuren und dem Spieltitel.",
             "caption": "Key Art zum Visual Novel The House in Fata Morgana mit zwei Charakteren."
         },
+        "uploads/fb_17_5bd28a79e1.png": {
+            "alt": "Spielszene aus Pariah mit Eve Williams, bewaffneter Figur und Logo auf blauem Hintergrund",
+            "caption": "Pariah trifft auf Eve Williams and the Secret of the Trunk – Figuren aus zwei Spielwelten."
+        },
         "uploads/feed_builder_c529823967.png": {
             "alt": "Screenshot des Feed-Builders mit Formular zum Anlegen neuer Feeds und Liste bestehender Feeds.",
             "caption": "Der Feed-Builder ermöglicht das Anlegen und Verwalten individualisierter RSS-Feeds."
+        },
+        "uploads/file_00000000a55861f48a0f45c43daa5a88_c7e1b33905.png": {
+            "alt": "Lächelnder Mann mit Brille und Kurzhaarfrisur vor Wasser und Hafenkulisse.",
+            "caption": "Jan genießt das sonnige Wetter am Hafen."
         },
         "uploads/forever_1e06ce335f.jpeg": {
             "alt": "Logo von World of Warcraft Forever auf blauem Hintergrund mit Wappen.",
@@ -1135,9 +1155,217 @@
             "alt": "Screenshot-Vergleich: Beyond Normandy: Assignment Berlin und Wild West and Wizards mit Daumen hoch und runter.",
             "caption": "Zwei Spiele im Direktvergleich, bewertet mit Daumen hoch und Daumen runter."
         },
+        "uploads/fundbuero_014_1becc2ecfd.png": {
+            "alt": "Artworks von Beneath a Steel Sky und Beasts of Maravilla Island: Mann in Blau, Roboter und Fluggerät.",
+            "caption": "Beneath a Steel Sky und Beasts of Maravilla Island – zwei Artworks aus dem Fundbüro."
+        },
+        "uploads/fundbuero_015_dea0b189bf.png": {
+            "alt": "Geteilte Spielecover: links Big Pharma mit Ärzteteam, rechts The Oregon Trail Classic Edition mit Planwagen",
+            "caption": "Zwei Titel aus dem Fundbüro: die Aufbausimulation Big Pharma und die Klassiker-Neuauflage The Oregon Trail."
+        },
+        "uploads/fundbuero_016_ae369ca062.png": {
+            "alt": "Geteilte Spielecover von Meterhead: links futuristisches Rennspiel, rechts Kampfpanzer mit Wellenform",
+            "caption": "Meterhead – High Velocity Entertainment: Rennspiel-Action trifft auf schweres Gerät."
+        },
+        "uploads/fundbuero_018_3639e281be.jpg": {
+            "alt": "Felvidek: Ritter in Rüstung links, rechts Burgbelagerung mit Schriftzug Diplomacy is not an Option",
+            "caption": "Felvidek kombiniert düsteres Mittelalter-Rollenspiel mit der Aufbauschlacht Diplomacy is not an Option."
+        },
+        "uploads/gaming_stories_001_banner_podcast_733f7c64b7.jpg": {
+            "alt": "Braunes Buch „Gaming Stories“ neben gelbem Pixel-Pac-Man und vier Geistern auf goldenem Hintergrund.",
+            "caption": "Das Banner zur ersten Folge von Gaming Stories: ein Buch, Pac-Man und die vier Geister als Blickfang."
+        },
+        "uploads/gaming_stories_001_banner_text_14ba3d3db8.jpg": {
+            "alt": "Gaming-Stories-Buch mit Gamepad-Relief, Pac-Man und vier Geister-Spielfiguren auf blauem Band",
+            "caption": "Gaming Stories: Pac-Man und seine Geister laden zum Stöbern in der Rubrik ein."
+        },
+        "uploads/gaming_stories_001_cover_podcast_5a9f75c102.jpg": {
+            "alt": "Buch „Gaming Stories“ auf beleuchteter Tastatur, dazu Pac-Man und die vier Pixel-Geister.",
+            "caption": "Das Podcast-Cover zur ersten Gaming-Stories-Folge mit Buch, Pac-Man und Geistern."
+        },
+        "uploads/gaming_stories_001_cover_text_92ef98559a.jpg": {
+            "alt": "Buch „Gaming Stories“ auf beleuchteter Tastatur, daneben Pac-Man-Figur und vier Pixel-Geister.",
+            "caption": "Das Artikel-Cover zu Gaming Stories zeigt das Buch auf einer leuchtenden Tastatur."
+        },
+        "uploads/gaming_stories_002_banner_audio_d6d5ab2b13.jpg": {
+            "alt": "Altes Buch „Gaming Stories“ mit Gamepad-Symbol, daneben ein goldener Gürtel mit Schriftzug M10Z.",
+            "caption": "Podcast-Banner: Das Buch Gaming Stories und der M10Z-Gürtel als Symbole für die Sendung."
+        },
+        "uploads/gaming_stories_002_banner_text_d733fe7bb9.jpg": {
+            "alt": "Buch „Gaming Stories“ neben einem Wrestling-Gürtel mit M10Z-Logo und kleinen Tasten.",
+            "caption": "Das Artikel-Banner zur zweiten Folge zeigt das Buch neben einem M10Z-Meisterschaftsgürtel."
+        },
+        "uploads/gaming_stories_002_cover_audio2_6adce383cf.jpg": {
+            "alt": "Buchcover „Gaming Stories“ mit Gamepad, Gürtel und Tastatur vor warmem Gelb.",
+            "caption": "Podcast-Cover: Gaming Stories mit Buch, Gürtel und Tastatur in Gelbtönen."
+        },
+        "uploads/gaming_stories_002_cover_text2_96b236bbcd.jpg": {
+            "alt": "Buchcover „Gaming Stories“ mit Gamepad, Gürtel und blau beleuchteter Tastatur.",
+            "caption": "Artikel-Cover: Gaming Stories mit Buch, Gürtel und Tastatur im Hintergrund."
+        },
+        "uploads/gaming_stories_003_echo_banner_article_cb42079082.jpg": {
+            "alt": "Buchcover „Gaming Stories – Echo“ mit Gamepad, umgeben von Retro-Spielmotiven und Fear-Machine-Banner.",
+            "caption": "Artikel-Banner: Gaming Stories Echo mit Retro-Collage und Fear-Machine-Element."
+        },
+        "uploads/gaming_stories_003_echo_banner_podcast_068098aa4d.jpg": {
+            "alt": "Braunes Buch Gaming Stories – ECHO mit Controller-Prägung, umgeben von Sepia-Skizzen und Fear-Machine-Motiven.",
+            "caption": "Key-Art der ECHO-Folge: das Gaming-Stories-Buch trifft auf The Fabulous Fear Machine."
+        },
+        "uploads/gaming_stories_003_echo_cover_article_4614553e1a.jpg": {
+            "alt": "Buch Gaming Stories – ECHO auf blau beleuchteter Tastatur vor Sepia-Skizzen und Fear-Machine-Banner.",
+            "caption": "Artikel-Cover der ECHO-Folge mit dem Gaming-Stories-Buch auf der Tastatur."
+        },
+        "uploads/gaming_stories_003_echo_cover_podcast_83b906a112.jpg": {
+            "alt": "Buch Gaming Stories – ECHO vor Sepia-Skizzen, oben das M10Z-Logo, rechts das Fear-Machine-Motiv.",
+            "caption": "Podcast-Cover der ECHO-Folge mit M10Z-Logo und Fear-Machine-Motiv."
+        },
+        "uploads/gaming_stories_004_banner_article_c3e85f29aa.jpg": {
+            "alt": "Buch Gaming Stories mit Controller-Prägung neben goldgerahmtem Porträt eines bärtigen Mannes mit Augenklappe.",
+            "caption": "Banner zur vierten Folge mit dem Gaming-Stories-Buch und einem Porträt im Goldrahmen."
+        },
+        "uploads/gaming_stories_004_banner_podcast_c6a37e0f88.jpg": {
+            "alt": "Buch „Gaming Stories“ neben einem gerahmten Porträt eines bärtigen Mannes mit Augenmalen",
+            "caption": "Das Podcast-Banner zur vierten Folge der Gaming Stories mit Buchmotiv und Charakterporträt."
+        },
+        "uploads/gaming_stories_004_cover_article_76ffa03081.jpg": {
+            "alt": "Braunes Buch „Gaming Stories“ mit Lesezeichen, daneben gerahmtes Porträt eines bärtigen Mannes",
+            "caption": "Das Artikel-Cover der Gaming Stories zeigt das Buchmotiv vor einer Tastatur mit beleuchteten Tasten."
+        },
+        "uploads/gaming_stories_004_cover_podcast_b2b616a9e7.jpg": {
+            "alt": "Buch „Gaming Stories“ mit Gamepad-Symbol und gerahmtes Porträt eines bärtigen Mannes",
+            "caption": "Das Podcast-Cover der Gaming Stories kombiniert das Buchmotiv mit einem Charakterporträt."
+        },
+        "uploads/gaming_stories_005_banner_article_ca4f380288.jpg": {
+            "alt": "Buch „Gaming Stories“ neben einer blauen Diskette mit der Aufschrift F5",
+            "caption": "Das Artikel-Banner zur fünften Folge zeigt das Buchmotiv und eine Diskette mit der Aufschrift F5."
+        },
+        "uploads/gaming_stories_005_banner_podcast_24fdc1cf80.jpg": {
+            "alt": "Braunes Buch mit goldenem Titel Gaming Stories und Gamepad-Skizze neben blauer Diskette mit Aufschrift F5.",
+            "caption": "Gaming Stories: Das Buchcover trifft auf Diskette und Tastenkappen."
+        },
+        "uploads/gaming_stories_005_cover_article_e05e64ede4.jpg": {
+            "alt": "Buch Gaming Stories mit Gamepad-Skizze, daneben blaue Diskette F5 auf blau beleuchteter Tastatur.",
+            "caption": "Das Artikel-Cover zeigt das Gaming-Stories-Buch über einer leuchtenden Tastatur."
+        },
+        "uploads/gaming_stories_005_cover_podcast_5f5f4f094e.jpg": {
+            "alt": "Buch Gaming Stories mit Gamepad-Skizze und blaue Diskette F5 auf blau leuchtender Tastatur, gelber Streifen.",
+            "caption": "Podcast-Cover mit Gaming-Stories-Buch, Diskette und Tastatur im Hintergrund."
+        },
+        "uploads/gaming_stories_006_banner_article_25ddcb88ba.jpg": {
+            "alt": "Buch Gaming Stories –ECHO– mit Gamepad, daneben Atom Eve und Skizzen von Burg, VR-Brille und UFO.",
+            "caption": "Gaming Stories –ECHO– mit Atom Eve und Retro-Skizzen aus der Spielewelt."
+        },
+        "uploads/gaming_stories_006_banner_podcast_6bbb4b7c07.jpg": {
+            "alt": "Braunes Buch 'Gaming Stories – Echo', daneben Atom Eve und Logo, Hintergrund mit Retro-Gaming-Skizzen.",
+            "caption": "Podcast-Banner: Gaming Stories – Echo mit Superheldin Atom Eve."
+        },
+        "uploads/gaming_stories_006_cover_article_27b72c21b0.jpg": {
+            "alt": "Titelbild: Braunes Buch 'Gaming Stories – Echo', Atom Eve und Logo vor Retro-Skizzen.",
+            "caption": "Artikel-Cover: Gaming Stories – Echo mit Atom Eve."
+        },
+        "uploads/gaming_stories_006_cover_podcast_9327187a39.jpg": {
+            "alt": "Braunes Buch 'Gaming Stories – Echo', Atom Eve und Logo, Hintergrund mit Gaming-Skizzen.",
+            "caption": "Podcast-Cover: Gaming Stories – Echo mit Atom Eve."
+        },
+        "uploads/gaming_stories_007_banner_article_c1d2b0ca8f.jpg": {
+            "alt": "Buch 'Gaming Stories' neben einer Level-Karte mit Start, Schlüssel, Boss und Secret.",
+            "caption": "Artikel-Banner: Gaming Stories 007 mit Level-Karte und Buch."
+        },
+        "uploads/gaming_stories_007_banner_podcast_713042e02e.jpg": {
+            "alt": "Buch 'GAMING STORIES' mit Controller-Symbol, daneben Dungeon-Karte, gelber Streifen, M10Z-Logo",
+            "caption": "Podcast-Banner: 'Gaming Stories' mit Buch, Dungeon-Karte und M10Z-Logo."
+        },
+        "uploads/gaming_stories_007_cover_article_c2cae359d1.jpg": {
+            "alt": "Buch 'GAMING STORIES' mit Controller-Symbol, daneben Dungeon-Karte, darunter beleuchtete Tastatur",
+            "caption": "Artikel-Cover: 'Gaming Stories' mit Buch, Karte und Tastatur im Hintergrund."
+        },
+        "uploads/gaming_stories_007_cover_podcast_75d754c46b.jpg": {
+            "alt": "Braunes Buchcover „Gaming Stories“ mit Controller-Symbol, daneben eine Level-Karte auf einer Tastatur.",
+            "caption": "Das Buch „Gaming Stories“ liegt auf einer Tastatur, daneben eine handgezeichnete Karte mit Start, Schlüssel, Boss und Secret."
+        },
+        "uploads/gaming_stories_008_banner_article_294f75a3c6.jpg": {
+            "alt": "Buch „Gaming Stories“ neben einem dunklen Bildschirm mit rotem Schriftzug „YOU DIED“ und Tasten M10Z.",
+            "caption": "Auch in der Artikelgrafik bleibt der Tod im Spiel allgegenwärtig: „YOU DIED“ leuchtet neben dem Buch."
+        },
+        "uploads/gaming_stories_008_banner_podcast_50a70739d5.jpg": {
+            "alt": "Braunes Buch \"Gaming Stories\" mit Controller-Symbol neben dunkler Ritter-Szene und rotem \"YOU DIED\"-Schriftzug.",
+            "caption": "Podcast-Banner zu Gaming Stories 008 mit Buchmotiv und \"You Died\"-Szene aus Dark Souls."
+        },
+        "uploads/gaming_stories_008_cover_article_dd31fcdbea.jpg": {
+            "alt": "Braunes Buch \"Gaming Stories\" mit Controller-Symbol vor Tastatur und \"YOU DIED\"-Einblendung.",
+            "caption": "Artikel-Cover der Gaming-Stories-Ausgabe 008 mit Buch und \"You Died\"-Motiv."
+        },
+        "uploads/gaming_stories_008_cover_podcast_7311a44098.jpg": {
+            "alt": "Buchcover \"Gaming Stories\" mit Controller-Symbol neben \"YOU DIED\"-Schriftzug und Tastatur.",
+            "caption": "Podcast-Cover der Gaming-Stories-Ausgabe 008 mit \"You Died\"-Motiv."
+        },
+        "uploads/gaming_stories_009_banner_article_fb3703b3fc.jpg": {
+            "alt": "Buch \"Gaming Stories X-Ray\" neben explodierender roter Tonne mit Fragezeichen und Spiele-Icons.",
+            "caption": "Artikel-Banner zur Gaming-Stories-Ausgabe 009 mit X-Ray-Motiv und explodierender Tonne."
+        },
+        "uploads/gaming_stories_009_banner_podcast_32ddb8e206.jpg": {
+            "alt": "Gaming Stories X-Ray: Ledernes Buch mit Controller-Skizze, Explosion mit Fass und Fragezeichen, Technik-Hintergrund.",
+            "caption": "Das Banner zur Podcast-Folge Gaming Stories X-Ray mit Buchmotiv und explodierendem Fragezeichen-Fass."
+        },
+        "uploads/gaming_stories_009_cover_article_c96a74b4cd.jpg": {
+            "alt": "Gaming Stories X-Ray: Buch mit Controller, explodierendes Fass mit Fragezeichen, Tastatur im Hintergrund.",
+            "caption": "Titelbild zum Artikel Gaming Stories X-Ray: Buch, Explosion und Tastatur im Dark-Tech-Look."
+        },
+        "uploads/gaming_stories_009_cover_podcast_90c407ec95.jpg": {
+            "alt": "Gaming Stories X-Ray: Buchcover mit Controller, Explosion eines Fasses, blaue Tastatur, goldener Balken.",
+            "caption": "Podcast-Cover zu Gaming Stories X-Ray mit Buch, Explosion und Tastatur im Hintergrund."
+        },
+        "uploads/gaming_stories_010_banner_article_1f29c53c04.jpg": {
+            "alt": "Gaming Stories: Buch mit Controller-Skizze, daneben Retro-Arcade-Bildschirm mit Game Over und Continue-Auswahl.",
+            "caption": "Banner zum Artikel Gaming Stories mit Buchmotiv und Game-Over-Screen im Retro-Stil."
+        },
+        "uploads/gaming_stories_010_banner_podcast_9da648a1c9.jpg": {
+            "alt": "Braunes Buch mit Aufschrift Gaming Stories neben einem Bildschirm mit Game Over und Continue-Auswahl",
+            "caption": "Das Banner zur Podcast-Folge: Gaming-Stories-Buch trifft auf Arcade-Bildschirm mit Game Over."
+        },
+        "uploads/gaming_stories_010_cover_article_8f86dc4524.jpg": {
+            "alt": "Gaming-Stories-Buch liegt auf einer Tastatur, daneben ein Game-Over-Bildschirm mit Continue-Auswahl",
+            "caption": "Titelbild zum Artikel: Das Gaming-Stories-Buch auf beleuchteter Tastatur, dazu ein Game-Over-Element."
+        },
+        "uploads/gaming_stories_010_cover_podcast_9ed0af101e.jpg": {
+            "alt": "Gaming-Stories-Buch über einer Tastatur, daneben ein Game-Over-Bildschirm mit Continue-Auswahl",
+            "caption": "Cover zur Podcast-Folge von Gaming Stories mit Buchmotiv und Game-Over-Grafik im Retro-Look."
+        },
+        "uploads/gaming_stories_banner_0974e68291.jpg": {
+            "alt": "Gaming-Stories-Buch mit Gamepad-Relief auf Holztisch, daneben Schriftzug und Tastaturkappen",
+            "caption": "Kurze Geschichten aus der Welt der Videospiele – das ist Gaming Stories auf m10z."
+        },
         "uploads/gaming_stories_f64c682963.jpg": {
             "alt": "Gaming Stories",
             "caption": "Gaming Stories"
+        },
+        "uploads/geheime_perlen_91dbba0e07.jpg": {
+            "alt": "Illustration mit Schriftzug Des Game Passes geheime Perlen, Gamepad an Angelrute und Muschel",
+            "caption": "Titelgrafik zu Des Game Passes geheime Perlen: Ein Gamepad hängt an der Angel über einer Muschel."
+        },
+        "uploads/geheime_perlen_f35e2c85ca.jpg": {
+            "alt": "Grafik zu „Des Game Passes geheime Perlen“ mit Muschel, Perle und hängendem Gamepad",
+            "caption": "Versteckte Game-Pass-Perlen: M10Z-Perle in der Muschel und ein am Haken baumelndes Gamepad"
+        },
+        "uploads/ginyfreebird_18171b37c6.jpg": {
+            "alt": "Schwarz-weißes Porträt einer Frau mit dunklem, verwuscheltem Haar und leichtem Lächeln",
+            "caption": "Porträtaufnahme in Schwarz-Weiß mit wachem Blick vor Blättern einer Zimmerpflanze"
+        },
+        "uploads/gothic_remake_5763f578d5.jpg": {
+            "alt": "Key-Art des Gothic Remake: vier Helden mit Axt, Schwert, Magie und Bogen im Gewitterlicht",
+            "caption": "Gothic Remake: Die Heldengruppe posiert vor rotem Gewitterhimmel, unten das Logo des Spiels"
+        },
+        "uploads/guestavatar_1c52701248.webp": {
+            "alt": "Kleiner Roboter mit Pilzkappe als Kopf und großen blauen Augen steht auf moosigem Boden, umgeben von Schmetterlingen.",
+            "caption": "Der niedliche Roboter in einer magischen Waldumgebung wirkt wie ein freundlicher Begleiter."
+        },
+        "uploads/halo_campaign_evolved_e0975053bc.jpg": {
+            "alt": "Master Chief in grüner Rüstung mit Helm, darunter der Schriftzug HALO: Campaign Evolved.",
+            "caption": "Der ikonische Spartaner posiert vor der Kulisse des Halo-Universums."
+        },
+        "uploads/halo_crash_605a45eba9.webp": {
+            "alt": "Dunkle Spielszene aus Halo mit den Spielernamen VIRGIL und HAVOC über den Charakteren.",
+            "caption": "Eine düstere Szene aus dem Halo-Mehrspielermodus mit Teamkollegen."
         },
         "uploads/header_3604a7420e.jpg": {
             "alt": "Nahaufnahme eines Gesichts mit Schutzbrille, in deren Gläsern Flammen reflektiert werden, darunter der Schriftzug FROSTPUNK 2.",
@@ -1147,15 +1375,137 @@
             "alt": "The Doors of Trithius: Held im roten Umhang auf einer Steintreppe, umgeben von dunklen Kreaturen.",
             "caption": "The Doors of Trithius: Der Held steigt zum Torbogen empor, während im Schatten Kreaturen lauern."
         },
+        "uploads/header_9a4c5ea767.jpg": {
+            "alt": "Der Schriftzug Gothic in metallischem Look über einem gehörnten Schädel-Emblem.",
+            "caption": "Das Logo des legendären Rollenspiels Gothic vor schwarzem Hintergrund."
+        },
         "uploads/header_f2001645d4.jpg": {
             "alt": "Logo von Dragon Quest III HD-2D Remake mit dem Helden und einem Schloss im Hintergrund.",
             "caption": "Das Artwork zu Dragon Quest III HD-2D Remake zeigt den Helden vor einer Schlosskulisse."
         },
+        "uploads/hitbox_banner_24876dbe86.jpg": {
+            "alt": "Alte Schreibmaschine mit Papier 'Hitbox', daneben PS5-Controller, Buch 'Gaming Stories' und M10Z-Logo.",
+            "caption": "Der Banner zum Format Hitbox kombiniert Schreibmaschine, Controller und Gaming-Buch."
+        },
+        "uploads/hitbox_cover_3669f11e48.jpg": {
+            "alt": "Schreibmaschine mit Papier 'Hitbox' und Untertitel Essays, Porträts, Perspektiven, daneben PS5-Controller und Buch.",
+            "caption": "Das Cover zeigt die Schreibmaschine mit Hitbox-Schriftzug, PS5-Controller und Gaming-Buch."
+        },
+        "uploads/hl2_example_97ca1b7004.jpg": {
+            "alt": "Screenshot aus Half-Life 2: Spielfigur in dunkler Gasse neben weißem Auto, HUD mit Lebensanzeige.",
+            "caption": "Szene aus Half-Life 2: Gordon Freeman in einer düsteren Gasse mit einem weißen Wagen."
+        },
+        "uploads/homepage_91a8793fa0.png": {
+            "alt": "Startseite der Podcast-Plattform Directwerk mit Slogan und Audio-Player.",
+            "caption": "Die Directwerk-Webseite präsentiert den Slogan 'Deine Inhalte. Deine Hörer. Deine Daten.' und einen Beispiel-Player."
+        },
+        "uploads/knew_the_beginning_61af5cc755.jpg": {
+            "alt": "Comic-Illustration: Mann mit rotem Haar und großem Blick, daneben Schriftzug '…knew the Beginning'.",
+            "caption": "Titelillustration zu '…knew the Beginning' mit einem besorgten Charakter."
+        },
+        "uploads/kolumne_banner_aaa_33536e557d.jpg": {
+            "alt": "Explodierende AAA-Buchstaben mit Soldaten, umgeben von Feuer und Rauch, Banner der Kolumne.",
+            "caption": "Die Kolumne 'Spielraum im Kopf' nimmt das AAA-Segment unter die Lupe."
+        },
+        "uploads/kolumne_banner_alter_zocker_1_94dd6aa187.jpg": {
+            "alt": "Geteiltes Bild: Älterer Zocker mit Controller und entspannt, daneben zweifelnder Mann mit Fragezeichen.",
+            "caption": "Alter Zocker oder zu alt zum Zocken? Die Kolumne 'Spielraum im Kopf' geht der Frage nach."
+        },
+        "uploads/kolumne_banner_alter_zocker_2_1672f42288.jpg": {
+            "alt": "Geteiltes Bild: entspannter Senior mit Controller und überforderter Senior mit leerem Akku-Symbol.",
+            "caption": "Alter Zocker oder zu alt zum Zocken – zwei Generationen im Vergleich."
+        },
+        "uploads/kolumne_banner_crafting_d53f2b4905.jpg": {
+            "alt": "Frau blickt hoffnungsvoll zwischen Bergen von Crafting-Materialien und einem Menü nach oben.",
+            "caption": "Crafting im Spiel: Aus vielen Zutaten entsteht am Ende ein nützliches Item."
+        },
+        "uploads/kolumne_banner_horror_games_b4e9eeeb8d.jpg": {
+            "alt": "Kreatur mit langen Klauen und glühenden Augen kriecht im Kerzenlicht unter einem Tisch hervor.",
+            "caption": "Horror-Games setzen auf enge Räume, Dunkelheit und plötzliche Schreckmomente."
+        },
+        "uploads/kolumne_banner_leid_in_videospielen_90e4127d70.jpg": {
+            "alt": "Traurige Hundekreatur mit leerer Lebensleiste vor Ruinen bei Sonnenuntergang.",
+            "caption": "Leid in Videospielen: Wenn Verlust und Niederlage zur Geschichte gehören."
+        },
+        "uploads/kolumne_cover_aaa_89d2793020.jpg": {
+            "alt": "Riesige Buchstaben AAA als Gebäude, eines explodiert in Flammen, davor drei Figuren in Exoskeletten an Kabeln",
+            "caption": "Die AAA-Industrie in Flammen: Die Kolumne zeigt das Buchstaben-Trio als einstürzende Hochhäuser."
+        },
+        "uploads/kolumne_cover_alter_zocker_1_12485ec248.jpg": {
+            "alt": "Älterer Mann mit Sonnenbrille und grauem Bart zockt entspannt im Sessel, Füße hochgelegt, Controller in der Hand",
+            "caption": "Alter Zocker oder...? Die Kolumne über Gaming im Alter – Teil 1 mit Controller und Kaffeetasse."
+        },
+        "uploads/kolumne_cover_alter_zocker_2_b8567576e1.jpg": {
+            "alt": "Älterer Mann mit grauem Bart sitzt mit Gamecontroller im Sessel, daneben eine Katze und Menütexte.",
+            "caption": "Zu alt zum Zocken? Die Kolumne zeigt, wie überfordernd Tutorials, Updates und Menüs für ältere Spieler wirken können."
+        },
+        "uploads/kolumne_cover_crafting_17d493c839.jpg": {
+            "alt": "Junge Frau mit schmutzigem Gesicht sitzt zwischen Crafting-Materialien vor einem Crafting-Menü in einer Berglandschaft.",
+            "caption": "Crafting im Spiel: Aus Erzen, Holz und Fundstücken entsteht im Menü ein Beutel – doch der Weg dorthin ist mühsam."
+        },
+        "uploads/kolumne_cover_horror_games_1b7d8e200b.jpg": {
+            "alt": "Dunkle Kreatur mit leuchtenden Augen und Tentakeln kriecht über einen blutigen Boden.",
+            "caption": "Wenn Horror-Games unter die Haut gehen: Die m10z-Kolumne widmet sich dem Grusel im Spiel."
+        },
+        "uploads/kolumne_cover_leid_in_videospielen_18fcb491d0.jpg": {
+            "alt": "Traurige Kreatur mit gesenktem Kopf hockt vor Ruinen, darüber eine fast leere Lebensanzeige.",
+            "caption": "Fast keine Lebensenergie mehr: Virtuelles Leid zeigt sich oft in den kleinen Momenten der Spiele."
+        },
+        "uploads/lauda_91c18d1060.jpg": {
+            "alt": "Roter Formel-1-Rennwagen mit Startnummer 1 fährt durch eine Kurve, Fahrer im roten Helm.",
+            "caption": "Niki Lauda in seinem Ferrari – ein Klassiker der Motorsport-Geschichte auf der Rennstrecke."
+        },
         "uploads/lisa_banner_8aa6603223.jpg": {
+            "alt": "Frau im orangefarbenen Blazer gestikuliert auf einer Bühne neben einem großen Firmenlogo.",
             "caption": "Lisa Su"
         },
         "uploads/lisa_cover_78ba793658.jpg": {
+            "alt": "Silhouette einer Person mit Brille vor einem hellblau leuchtenden Neon-Symbol.",
             "caption": "Lisa Su"
+        },
+        "uploads/little_big_adventure2_16dbbf48e7.jpg": {
+            "alt": "Logo von Little Big Adventure 2 mit zwei animierten Figuren im Hintergrund.",
+            "caption": "Das Logo zum Spiel Little Big Adventure 2 mit den Hauptfiguren."
+        },
+        "uploads/logo_bfa_5b55715eed.jpg": {
+            "alt": "Logo von World of Warcraft: Battle for Azeroth mit verziertem Rahmen.",
+            "caption": "Das Logo der World-of-Warcraft-Erweiterung Battle for Azeroth."
+        },
+        "uploads/logo_bfa_6a5ba09ade.webp": {
+            "alt": "Logo von World of Warcraft: Battle for Azeroth mit verziertem Rahmen.",
+            "caption": "Das Logo der World-of-Warcraft-Erweiterung Battle for Azeroth."
+        },
+        "uploads/logo_classic_20th_anniversary_c2be31a564.webp": {
+            "alt": "World-of-Warcraft-Classic-Logo mit goldener Zierrahmenoptik und Schriftzug „20th Anniversary Edition“",
+            "caption": "Zum 20. Jubiläum erscheint World of Warcraft Classic in einer Anniversary Edition."
+        },
+        "uploads/logo_classic_9e8e405deb.webp": {
+            "alt": "Logo von World of Warcraft Classic mit goldener Schrift.",
+            "caption": "Das Logo der Classic-Version des ursprünglichen World of Warcraft."
+        },
+        "uploads/logo_classic_cataclysm_993426d413.webp": {
+            "alt": "World-of-Warcraft-Cataclysm-Classic-Logo mit Flammen in Orange und Rot",
+            "caption": "Cataclysm Classic bringt den Feuersturm des Drachen Aspekten zurück nach Azeroth."
+        },
+        "uploads/logo_classic_hardcore_1fcda745dd.webp": {
+            "alt": "World-of-Warcraft-Classic-Hardcore-Logo in Schwarz mit rotem Hardcore-Schriftzug",
+            "caption": "Im Hardcore-Modus von WoW Classic bedeutet der Tod das endgültige Aus."
+        },
+        "uploads/logo_classic_sod_e6d819be72.webp": {
+            "alt": "World-of-Warcraft-Classic-Logo mit goldenem Schriftzug „Season of Discovery“",
+            "caption": "Season of Discovery mischt WoW Classic mit neuen Runen und überraschenden Klassenrollen."
+        },
+        "uploads/logo_classic_tbc_ce2674ba7f.webp": {
+            "alt": "Logo von World of Warcraft: Burning Crusade Classic mit grüner Schrift.",
+            "caption": "Das Logo der Classic-Version von The Burning Crusade."
+        },
+        "uploads/logo_classic_wotlk_8b772bee35.webp": {
+            "alt": "Logo von World of Warcraft: Wrath of the Lich King Classic mit dem deutschen Titel 'Der Untergang des Lichkönigs'.",
+            "caption": "Das Logo der Classic-Version von Wrath of the Lich King, hier mit deutschem Titel."
+        },
+        "uploads/logo_draenor_3d6ddffd3e.webp": {
+            "alt": "Logo von World of Warcraft: Warlords of Draenor.",
+            "caption": "Das Logo der Erweiterung Warlords of Draenor."
         },
         "uploads/ss_651c4a0b0bd1d39618b461b10d8906c4b71ae167_1920x1080_926e843003.jpg": {
             "alt": "Screenshot aus Doors of Trithius: Top-Down-Ansicht eines Dungeons mit Charakter und Monstern",
