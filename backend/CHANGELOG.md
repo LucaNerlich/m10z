@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2026-10-12
+
+### Added
+- `pnpm caption:images`: an operator pipeline that lists Media Library images through the Strapi MCP, generates German alt text and captions with a configurable vision model (opencode go), and writes them back. It is a dry run by default and only fills missing text unless `--force` is given.
+
+### Fixed
+- The caption pipeline no longer retries — or fails noisily on — images the decoder cannot read; corrupt or unsupported files are skipped with a clear reason.
+
 ## [1.3.0] - 2026-08-07
 
 ### Added
