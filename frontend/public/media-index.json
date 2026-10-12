@@ -1,7 +1,7 @@
 {
     "version": 1,
     "baseUrl": "https://cms.m10z.de",
-    "generatedAt": "2026-10-12T18:42:39.693Z",
+    "generatedAt": "2026-10-12T18:45:36.417Z",
     "entries": {
         "uploads/01_5ec66cf3a6.png": {
             "alt": "Screenshot eines Retro-Ego-Shooters mit HUD-Anzeige, Munition, Gesundheit und Gegnern im Korridor.",
@@ -255,6 +255,10 @@
             "alt": "Mehrere Seiten eines WoW-Tagebuchs mit Screenshots, Text und UI-Elementen.",
             "caption": "Das Tagebuch dokumentiert Abenteuer in World of Warcraft mit Screenshots und Spiel-Interface."
         },
+        "uploads/128494604_57d39e2fb9.jpeg": {
+            "alt": "Schwarzweißes Porträt eines Mannes mit Cap, Brille und Bart, der in die Kamera blickt.",
+            "caption": "Til in Schwarzweiß, mit Cap und Brille."
+        },
         "uploads/12_81495892ab.jpg": {
             "alt": "Screenshot aus einem Rollenspiel: Spielerfigur mit Fackel vor einer anderen Figur in einer Ruine.",
             "caption": "Im Spiel führt eine Quest offenbar ins 'verfaulte Medienparadies'."
@@ -298,6 +302,10 @@
         "uploads/16_case_2f95d324ae.jpg": {
             "alt": "PC-Gehäuse-Front mit USB-C, USB 3.0, Power-Knopf und Audio-Anschlüssen.",
             "caption": "Die Anschlüsse an der PC-Front: USB-C, USB 3.0 sowie Kopfhörer- und Mikrofonbuchse."
+        },
+        "uploads/1786991297866_e1978bde45.png": {
+            "alt": "Illustriertes Porträt eines bärtigen Mannes mit Brille und Kappe „24h Le Mans“.",
+            "caption": "Der Mann trägt ein rotes Poloshirt mit Total-Logo und eine 24h-Le-Mans-Kappe."
         },
         "uploads/17_2ad60bf102.png": {
             "alt": "Geteiltes Cover: links Stalin vor orangem Sternenhimmel, rechts grünes Alien und das Kainga-Logo",
@@ -503,6 +511,10 @@
             "alt": "Leeres PC-Gehäuse von innen mit Lüftern oben und unten sowie Mainboard-Aussparung",
             "caption": "Der Blick ins Gehäuse zeigt die Lüfterplätze vor dem Einbau der Hardware."
         },
+        "uploads/552e8914d1ef6feafca239f1d5305033c17d950d1d5b915dcdab5e6be4f16c75_192_69bea2764c.png": {
+            "alt": "Mann mit kurzen braunen Haaren, Dreitagebart und weißem T-Shirt, leicht nach unten blickend.",
+            "caption": "Marcel, Mitglied des m10z-Teams, in entspannter Atmosphäre."
+        },
         "uploads/55_case_16a1853628.jpg": {
             "alt": "Gehäuse mit eingebautem Mainboard, Dual-Tower-Kühler, RAM und Grafikkarte",
             "caption": "Nach dem Einbau sitzen Kühler, Speicher und Grafikkarte an ihrem Platz."
@@ -655,6 +667,10 @@
             "alt": "Orangefarbenes Icon eines Helms mit weißen Augen und Atemmaske, an Darth Vader erinnernd.",
             "caption": "KaFour: orangefarbenes Helm-Icon im Stil von Darth Vader."
         },
+        "uploads/Kanallogo_neu_90321b314a.png": {
+            "alt": "Grünes Dreieck mit stilisiertem grünen Buchstaben U auf weißem, strukturiertem Hintergrund.",
+            "caption": "Das Logo zeigt ein grünes Dreieck mit einem geschwungenen Buchstaben."
+        },
         "uploads/Kolumne_Banner_8c0cac4045.jpg": {
             "alt": "Schwarz-weiße Strichzeichnungen: gekreuzte Schwerter, Dokument mit Stift, Geist und Tastatur; Text M10Z Kolumne.",
             "caption": "Banner der m10z-Kolumne mit Symbolen für Gaming und Technik."
@@ -706,6 +722,10 @@
         "uploads/Reviews_Cover_f06bc22ec5.jpg": {
             "alt": "Icon-Grafik mit gekreuzten Schwertern, Monitor mit 10/10, Geist, Tastatur und M10Z-Schriftzug, daneben Erfahrungssache.",
             "caption": "Das Cover für die Review-Reihe M10Z – Erfahrungssache."
+        },
+        "uploads/S6_A1880_7aed54790d.jpg": {
+            "alt": "Porträt eines lächelnden Mannes mit hellem Hemd und dunkler Weste vor Steinmauer und Kreidetafel.",
+            "caption": "Simon posiert für ein Porträt im Freien vor rauer Steinwand und dunkler Schiefertafel."
         },
         "uploads/Screenshot_2026_01_06_143626dkbanner_dc968357b7.png": {
             "alt": "Logo von Dome Keeper über einer leuchtenden Schutzkuppel, um die im Nachthimmel Monster kreisen",
@@ -782,6 +802,10 @@
         "uploads/Verse_Cover_0fbb4adde5.jpg": {
             "alt": "Gaming-Utensilien auf Holztisch, Notizbuch mit „Virtuelle Verse“ und Hand mit Stift.",
             "caption": "Das Cover der Reihe „Virtuelle Verse“ kombiniert Lyrik und Games."
+        },
+        "uploads/Vf_B_Fan_e8f29fdf8a.png": {
+            "alt": "Orangegelber Roboter mit großen runden Augen und lächelndem Mund vor türkisfarbenem Hintergrund",
+            "caption": "Ein freundlicher Roboter mit Kulleraugen und breitem Lächeln blickt direkt in die Kamera."
         },
         "uploads/Wahl_ff73fc6de6.jpg": {
             "alt": "Spielscreenshot: Bunte Figuren, Erfolgsstatistik links und Rundenanzeige unten.",
@@ -1367,6 +1391,10 @@
             "alt": "Dunkle Spielszene aus Halo mit den Spielernamen VIRGIL und HAVOC über den Charakteren.",
             "caption": "Eine düstere Szene aus dem Halo-Mehrspielermodus mit Teamkollegen."
         },
+        "uploads/header_1e4d2455ae.jpg": {
+            "alt": "Laptop mit orangefarbenem M10Z-Schriftzug, pinkem WASTED-Lanyard und zwei Gamecontrollern.",
+            "caption": "Der Launch von m10z.de: Der Laptop zeigt das Logo, dazu WASTED-Merch und Controller."
+        },
         "uploads/header_3604a7420e.jpg": {
             "alt": "Nahaufnahme eines Gesichts mit Schutzbrille, in deren Gläsern Flammen reflektiert werden, darunter der Schriftzug FROSTPUNK 2.",
             "caption": "Düsteres Key Art zu Frostpunk 2: Eine Person mit Schutzbrille, in der sich Feuer spiegelt, deutet die eisige und zugleich heiße Welt des Spiels an."
@@ -1378,6 +1406,14 @@
         "uploads/header_9a4c5ea767.jpg": {
             "alt": "Der Schriftzug Gothic in metallischem Look über einem gehörnten Schädel-Emblem.",
             "caption": "Das Logo des legendären Rollenspiels Gothic vor schwarzem Hintergrund."
+        },
+        "uploads/header_a67085c179.jpg": {
+            "alt": "Logo von Stone Shard mit Untertitel Of Beasts & Sages und einem Magier in violetter Robe.",
+            "caption": "Stone Shard: Of Beasts & Sages setzt auf düstere Fantasy und einen zauberkundigen Helden."
+        },
+        "uploads/header_c6b6bb0a0b.jpg": {
+            "alt": "Großer Mech-Roboter feuert Waffen ab, umgeben von Explosionen und Flugzeugen, Logo MECHABELLUM.",
+            "caption": "Key-Art zum Spiel Mechabellum mit einem schwer bewaffneten Mech in einer Gefechtsszene."
         },
         "uploads/header_f2001645d4.jpg": {
             "alt": "Logo von Dragon Quest III HD-2D Remake mit dem Helden und einem Schloss im Hintergrund.",
@@ -1507,9 +1543,477 @@
             "alt": "Logo von World of Warcraft: Warlords of Draenor.",
             "caption": "Das Logo der Erweiterung Warlords of Draenor."
         },
+        "uploads/logo_dragonflight_a14b5be8f4.webp": {
+            "alt": "Logo von World of Warcraft: Dragonflight in Silber und Türkis mit Drachenverzierungen",
+            "caption": "Das Logo der Erweiterung Dragonflight zeigt das WoW-Schriftbild mit türkisfarbenen Drachenschmuckelementen."
+        },
+        "uploads/logo_legion_77d3c16127.webp": {
+            "alt": "Logo von World of Warcraft: Legion, giftgrün leuchtend mit dunklem Rahmen",
+            "caption": "Das Legion-Logo setzt auf ein fieses Giftgrün, passend zur Brennenden Legion als Gegner."
+        },
+        "uploads/logo_midnight_0c69947b68.webp": {
+            "alt": "Logo von World of Warcraft: Midnight in Blau und Violett mit leuchtendem Portalring",
+            "caption": "Midnight erscheint in kühlem Violett-Blau, umrahmt von einem glühenden Ring aus Splittern."
+        },
+        "uploads/logo_pandaria_8ce6c293f9.webp": {
+            "alt": "Logo von World of Warcraft: Mists of Pandaria in Gold auf grünem Grund",
+            "caption": "Das Pandaria-Logo kombiniert goldene Schriftzüge mit grüner Hintergrundfläche und Drachenornamenten."
+        },
+        "uploads/logo_season_of_mastery_cda910d59e.webp": {
+            "alt": "Logo von World of Warcraft Classic: Season of Mastery mit blauem Hintergrund und goldener Schrift.",
+            "caption": "Das Logo der Classic-Saison Season of Mastery, die neue Herausforderungen für WoW Classic bietet."
+        },
+        "uploads/logo_shadowlands_e7e1574c9c.webp": {
+            "alt": "Logo von World of Warcraft: Shadowlands mit düsterem, gotischem Schriftzug und dunklem Hintergrund.",
+            "caption": "Das Logo der Shadowlands-Erweiterung, die die Spieler ins Reich der Toten führt."
+        },
+        "uploads/logo_the_last_titan_b1860b45f7.webp": {
+            "alt": "Logo von World of Warcraft: The Last Titan mit goldener Scheibe und dunklem Schriftzug.",
+            "caption": "Das Logo der Erweiterung The Last Titan, die den Titanen-Konflikt thematisiert."
+        },
+        "uploads/logo_war_within_4fd3817fb4.webp": {
+            "alt": "Logo von World of Warcraft: The War Within mit orangefarbenem, rissigem Ring und feurigem Hintergrund.",
+            "caption": "Das Logo der Erweiterung The War Within, die in die Tiefen Azeroths führt."
+        },
+        "uploads/logo_worldsoul_cef004baa1.webp": {
+            "alt": "Logo der World of Warcraft: Worldsoul Saga mit goldener Schrift und silbernem Metallic-Look.",
+            "caption": "Das offizielle Logo der Worldsoul Saga, der nächsten Erweiterungsreihe von World of Warcraft."
+        },
+        "uploads/luca_54e18cc3d1.jpg": {
+            "alt": "Schwarz-weißes Porträt eines kahlrasierten Mannes mit geschlossenen Augen und detaillierter Hautstruktur.",
+            "caption": "Ein eindringliches Schwarz-Weiß-Porträt, das die Gesichtszüge und Textur der Haut betont."
+        },
+        "uploads/m10z_podcast_2af93ebfec.jpg": {
+            "alt": "Graffiti an weißer Ziegelwand mit Schriftzug MINDESTENS 10 ZEICHEN und großem M-Logo.",
+            "caption": "Das Logo des Podcasts Mindestens 10 Zeichen als Graffiti auf einer Ziegelwand."
+        },
+        "uploads/media_library_2673d1cd4e.png": {
+            "alt": "WordPress-Mediathek mit Filterleiste, Kategorien und Rasteransicht mehrerer Medienobjekte.",
+            "caption": "Die Mediathek von WordPress mit Filtern und Vorschaukarten für Bilder."
+        },
+        "uploads/memberships_7093acbef5.png": {
+            "alt": "Webseite mit drei Schritten zum Mitgliedschaftsabschluss und Übersicht der neuesten Inhalte.",
+            "caption": "Mitgliedschaftsbereich mit Schritten, neuester Folge und freischaltbaren Paketen."
+        },
+        "uploads/mmorpg_tycoon2_f2196aa9d4.jpg": {
+            "alt": "Logo von MMORPG Tycoon 2: goldener Schriftzug auf blau leuchtendem Wappen mit Pixelmotiv.",
+            "caption": "Das Logo zu MMORPG Tycoon 2."
+        },
+        "uploads/mn9_1_74a3716d45.png": {
+            "alt": "Spielfigur mit blauem Helm in eisiger Umgebung, daneben helle Plattformen und Block.",
+            "caption": "Szene aus Mighty No. 9 in einem blau gefärbten Level."
+        },
+        "uploads/og_classic_c0245c44db.png": {
+            "alt": "Karte von Orgrimmar aus World of Warcraft mit eingezeichneten Distrikten und Wegen.",
+            "caption": "Die Classic-Karte der Hauptstadt Orgrimmar."
+        },
+        "uploads/og_midnight_93fdb365c0.png": {
+            "alt": "Karte von Orgrimmar in neuerer Darstellung mit Markierungen und Wegen.",
+            "caption": "Die überarbeitete Orgrimmar-Karte aus World of Warcraft."
+        },
+        "uploads/og_view_classic_38027e4edb.png": {
+            "alt": "World of Warcraft: Charakter in Orgrimmar, rote Felslandschaft mit Feuern und Gebäuden.",
+            "caption": "Screenshot aus World of Warcraft Classic: Blick auf Orgrimmar mit Spielercharakter und Benutzeroberfläche."
+        },
+        "uploads/og_view_midnight_c059029c01.png": {
+            "alt": "World of Warcraft: Orgrimmar bei Nacht mit Spielern und grünen Namensplaketten.",
+            "caption": "Midnight-Ansicht von Orgrimmar in World of Warcraft mit mehreren Spielercharakteren."
+        },
+        "uploads/owwg_27dfa12cd5.jpg": {
+            "alt": "Cartoon: Vater und Sohn beim Spielen, Text „Once We Were Gamers!“ in orangefarbenem Kasten.",
+            "caption": "Alternative Layout-Version der Gaming-Illustration mit Slogan und M1OZ-Logo."
+        },
+        "uploads/owwg_ffe6542893.jpg": {
+            "alt": "Cartoon: Kind und Erwachsener mit Gamecontrollern, Schriftzug „Once We Were Gamers!“.",
+            "caption": "Illustration zum Blogthema: Gemeinsames Gaming von Generationen mit M1OZ-Logo."
+        },
+        "uploads/p5_tactica_0cfe0d3a27.jpg": {
+            "alt": "Logo von Persona 5 Tactica mit Gruppe chibiartiger Charaktere vor rotem Hintergrund.",
+            "caption": "Das rundenbasierte Strategiespiel Persona 5 Tactica zeigt die Phantomdiebe im Chibi-Stil."
+        },
+        "uploads/parkitect_6d31c654f7.jpg": {
+            "alt": "Logo von Parkitect mit einem Freizeitpark im Hintergrund.",
+            "caption": "Parkitect: Ein Aufbauspiel, in dem du deinen eigenen Freizeitpark verwaltest."
+        },
+        "uploads/pile_of_joy_6a6193fc17.jpg": {
+            "alt": "Schriftzug „PILE OF JOY“ in Weiß und Gelb auf grauem Hintergrund.",
+            "caption": "Ein plakatives Lettering in gestapelter Form – 'PILE OF JOY' könnte ein Spiel- oder Projektname sein."
+        },
+        "uploads/pixelplausch_885cfbd687.jpg": {
+            "alt": "Zwei pixelige Sprechblasen mit den Texten „M10Z“ und „Pixelplausch“ auf orangem Hintergrund.",
+            "caption": "Die pixeligen Sprechblasen zeigen die Namen M10Z und Pixelplausch – vermutlich ein Podcast- oder Blog-Logo."
+        },
+        "uploads/pixelplausch_f28ea6aae5.jpg": {
+            "alt": "Zwei pixelige Sprechblasen: oben M10Z in Orange, unten Pixelplausch in Schwarz auf orangem Grund.",
+            "caption": "Das Logo oder Titelbild für das Format Pixelplausch bei M10Z."
+        },
+        "uploads/podcastabos_25_c8130bfb55.png": {
+            "alt": "Balkendiagramm: Games-Podcasts nach Unterstützenden am 31.12.2024, The Pod führt mit 7.632.",
+            "caption": "Die Rangliste der Games-Podcasts nach Patreon- und Steady-Unterstützenden zum Jahresende 2024."
+        },
+        "uploads/podcastabos_8fbfc94347.png": {
+            "alt": "Balkendiagramm: Games-Podcasts nach Unterstützern am 31.12.2023, The Pod führt mit 7.457.",
+            "caption": "Die Rangliste der Games-Podcasts nach Patreon- und Steady-Unterstützern zum Jahresende 2023."
+        },
+        "uploads/ratshaker_0a1573efa5.jpg": {
+            "alt": "Schriftzug 'Ratshaker' in Schwarz auf strukturiertem Hintergrund, rechts Comic-Ratte mit Kochmütze und Blitz.",
+            "caption": "Das Artwork zum Spiel Ratshaker zeigt den Schriftzug und eine Ratte mit Kochmütze."
+        },
+        "uploads/resynced_ea6afcbae0.jpg": {
+            "alt": "Hauptfigur von Assassin's Creed Black Flag Resynced mit Säbel und Pistole vor Schiffstakelage",
+            "caption": "Assassin's Creed Black Flag Resynced bringt Captain Kenway zurück auf die Karibik-Segelroute."
+        },
+        "uploads/riftbreaker_e9aa779213.jpg": {
+            "alt": "Drei Kampfmechs im Gefecht gegen Alien-Monster, darüber Schriftzug Online Co-op und Endgame Expansion",
+            "caption": "Das Update 2.0 von The Riftbreaker erweitert den Koop-Modus und die Endgame-Inhalte."
+        },
+        "uploads/road_out_e86a16de86.jpg": {
+            "alt": "Illustration zu RoadOut mit blauhaariger Frau, Bär, Sportwagen und Logo samt japanischem Schriftzug",
+            "caption": "RoadOut kombiniert rasante Verfolgungsjagden mit Retro-Look und japanischem Flair."
+        },
+        "uploads/screenshot_2026_01_24_15_03_22_a9611fdd4b.png": {
+            "alt": "Spielmenü mit sechs bebilderten Gerichten wie Wildschweinrippen und Taube sowie dem Item Rusty Lake Cigars.",
+            "caption": "Die Dinner-Galerie aus Rusty Lake zeigt deftige Wildgerichte zur Auswahl."
+        },
+        "uploads/screenshot_2026_03_28_13_07_13_73f971d571.png": {
+            "alt": "Schwarz-weiße Zeichnung eines grinsenden Frauengesichts mit Krone, wirren Augen und spitzen Zähnen",
+            "caption": "Slay the Princess setzt auf albtraumhafte Handzeichnungen und verstörende Gesichter."
+        },
+        "uploads/screenshot_2026_08_22_11_41_00_a10f0921cb.png": {
+            "alt": "Dunkler Screenshot mit dem Hinweis yollum has left the fireteam und einer Ladeleiste",
+            "caption": "Wenn der Feuerteam-Kollege geht, bleibt nur noch die Meldung yollum has left the fireteam."
+        },
+        "uploads/screenshot_2026_09_05_10_52_04_148c6dded7.png": {
+            "alt": "Glücksrad mit Popup „We have a winner!“ und dem Gewinner-Namen thomas",
+            "caption": "Das Glücksrad hat thomas als Gewinner gezogen."
+        },
+        "uploads/screenshot_2026_09_05_12_14_07_ab07e39202.png": {
+            "alt": "Editor für Release-Ankündigung mit Text zu World of Tribunall v1.0.0",
+            "caption": "Der Announcement-Post für Version 1.0.0 ist bereit zur Veröffentlichung."
+        },
+        "uploads/screenshot_2026_09_05_12_27_54_e18ae661b1.png": {
+            "alt": "Spielansicht mit Update-Fenster zu World of Tribunall Version 1.1.0",
+            "caption": "Die Update-Notizen zu v1.1.0 „Mages“ erscheinen im Spiel."
+        },
+        "uploads/screenshot_2026_09_05_12_28_03_de32a8b0b7.png": {
+            "alt": "Startbildschirm von World of Tribunall mit großem Schriftzug „Mages“",
+            "caption": "Der Startbildschirm bewirbt das Mages-Update v1.1.0."
+        },
+        "uploads/screenshot_2026_09_05_12_28_16_46497fd6ef.png": {
+            "alt": "Low-Poly-Spielszene mit grüner Wiese, dunklen Nadelbäumen und mehreren eckigen Figuren",
+            "caption": "Mehrere eckige Spielfiguren verteilen sich auf einer grünen Wiese vor dunklen Nadelbäumen."
+        },
+        "uploads/screenshot_2026_09_05_12_28_39_bb4a4188f8.png": {
+            "alt": "Titelbildschirm mit dem Schriftzug „MAGES“ und „NOW LIVE“ über einer Spielszene",
+            "caption": "Der Titelbildschirm kündigt das Spiel MAGES als „Now Live“ an."
+        },
+        "uploads/screenshot_2026_09_05_13_54_02_03bcc8f065.png": {
+            "alt": "Spieloberfläche mit Status zu World of Tribunal, Nutzerzahlen, Abos und Finanzen",
+            "caption": "Das Dashboard zeigt Nutzerzahlen, Abonnenten, Tickets sowie Cash und Nettovermögen."
+        },
+        "uploads/screenshot_2026_09_05_13_55_30_a57e243c12.png": {
+            "alt": "Vogelperspektive auf Spielfiguren mit Namen wie Robin, Raven und Alan auf grüner Wiese",
+            "caption": "Figuren mit Namen und Emoji-Symbolen versammeln sich auf einer grünen Wiese."
+        },
+        "uploads/screenshot_2026_09_05_14_14_43_b4215d3307.png": {
+            "alt": "Dunkle Spieloberfläche von World of Tribunal mit Status Online, Bevölkerungszahlen, Datum und Kontostand",
+            "caption": "Das Interface von World of Tribunal zeigt Status, Bevölkerung und Kontostand im Spiel."
+        },
+        "uploads/sd_6390b93f6a.png": {
+            "alt": "Nahaufnahme einer Platine mit AMD-Radeon-Grafikchip und zahlreichen Elektronikbauteilen",
+            "caption": "Makroaufnahme eines Mainboards rund um den AMD-Radeon-Grafikchip."
+        },
+        "uploads/sh3_mission2_a87b2fa28e.png": {
+            "alt": "Isometrische Spielansicht eines mittelalterlichen Dorfes mit Steinhütten, Türmen und Minimap",
+            "caption": "Die Missionskarte zeigt ein befestigtes Dorf mit Hütten und Wachtürmen aus der Vogelperspektive."
+        },
+        "uploads/sh3_vernuenftig_ee9b57cea2.png": {
+            "alt": "Schriftzug „Eine vernünftige Entscheidung, Eure Durchlaucht!“ in heller Frakturschrift",
+            "caption": "Der Spieltext lobt die Entscheidung des Spielers mit den Worten „Eine vernünftige Entscheidung, Eure Durchlaucht!“."
+        },
+        "uploads/sh3_wolf_09fc752c20.png": {
+            "alt": "Gruppe rot gekleideter Soldaten mit Speeren umringt einen weißen Wolf auf grüner Wiese.",
+            "caption": "Im Spiel umzingeln mehrere Soldaten einen Wolf, während links ein weißer Gegenstand schwebt."
+        },
+        "uploads/shadow_of_mordor_65c2b6ab3f.jpg": {
+            "alt": "Cover von Middle-earth: Shadow of Mordor mit einem Krieger mit leuchtend blauen Augen und dunkler Rüstung.",
+            "caption": "Der Krieger Talion mit leuchtenden Augen prangt auf dem Cover von Shadow of Mordor."
+        },
+        "uploads/shop_643dd6b4ab.jpg": {
+            "alt": "Spieloberfläche eines Händlers mit Auswahl an Gegenständen wie Brudilixier und White Hat.",
+            "caption": "Ein Händler bietet im Spiel Ausrüstung wie den White Hat zum Kauf an."
+        },
+        "uploads/sik_001_illustration_9012db9d7c.jpg": {
+            "alt": "Zweigeteilte Illustration: links ein trauriger Roboterhund mit Lebensbalken, rechts ein Schwertkämpfer als Silhouette.",
+            "caption": "Eine Bildhälfte zeigt einen beschädigten Roboter, die andere einen einsamen Krieger im Dämmerlicht."
+        },
+        "uploads/slay_the_princess_ddf517fd5f.jpg": {
+            "alt": "Schwarz-weißes Titelbild des Spiels Slay the Princess mit Prinzessin und Monstergesichtern.",
+            "caption": "Das Artwork zu Slay the Princess zeigt die Prinzessin mit dem flehenden Satz „Please don't.“"
+        },
+        "uploads/slay_the_spire_2_pc_mac_steam_cover_dba0e75ba9.jpg": {
+            "alt": "Cover von Slay the Spire 2 mit Logo, Turm und mehreren gezeichneten Spielfiguren vor orangem Himmel",
+            "caption": "Slay the Spire 2 schickt bekannte und neue Kämpfer wieder in den Turm."
+        },
+        "uploads/spezial_krieg_5b405e8f79.jpg": {
+            "alt": "Titelgrafik mit orange-weißem Schriftzug M10Z Spezial, Videospiele & Krieg, über Soldaten- und Trümmerbildern",
+            "caption": "Unser M10Z Spezial geht der Frage nach, wo das Medium Videospiel beim Thema Krieg steht."
+        },
+        "uploads/spezial_krieg_bf91184cb5.jpg": {
+            "alt": "Breite Titelgrafik mit Soldat in Ausrüstung, kauernder Figur und dem Schriftzug M10Z Spezial zu Videospielen und Krieg",
+            "caption": "Zwischen Kriegsdarstellung und Wirklichkeit: das M10Z Spezial zum Verhältnis von Videospielen und Krieg."
+        },
         "uploads/ss_651c4a0b0bd1d39618b461b10d8906c4b71ae167_1920x1080_926e843003.jpg": {
             "alt": "Screenshot aus Doors of Trithius: Top-Down-Ansicht eines Dungeons mit Charakter und Monstern",
             "caption": "Doors of Trithius 2 – Rundenbasiertes Rollenspiel in Pixelgrafik."
+        },
+        "uploads/stalker2_05f0f025f4.jpg": {
+            "alt": "Key-Art zu STALKER 2: vermummte Figur mit Gewehr vor leuchtender Anomalie und roten Mohnblumen",
+            "caption": "STALKER 2: Heart of Chornobyl führt zurück in die verstrahlte Zone rund um Tschernobyl."
+        },
+        "uploads/statistics_107b1c5cbb.png": {
+            "alt": "Screenshot der Statistik-Übersicht aus STALKER 2 mit Waffen-, Kill-, Mutanten- und Artefaktwerten",
+            "caption": "Die Statistikseite zeigt im Detail, welche Waffen, Gegner und Fundstücke man bereits gesammelt hat."
+        },
+        "uploads/stats_b305f4e6b0.jpg": {
+            "alt": "Spielstatistik-Bildschirm mit Rundenübersicht, Verdienst und Tabelle mit Werten pro Brudi-Einheit.",
+            "caption": "Die Statistik nach Runde 58 zeigt Kills, Schaden und Heilung der einzelnen Brudis im Überblick."
+        },
+        "uploads/sundayprojects_9d1b5a0e3b.jpg": {
+            "alt": "Laptop mit buntem Programmcode in einem goldgelben Feld, darüber der Schriftzug „Sunday Projects“.",
+            "caption": "Die Illustration zeigt einen Laptop mit Code in einer warmen Abendlandschaft – passend für Sonntagsprojekte."
+        },
+        "uploads/svenoble_e21e5c57ed.png": {
+            "alt": "Pixelart-Porträt eines Mannes mit Brille, Anzug und Mikrofon vor blauem Hintergrund.",
+            "caption": "Sven Noble im Retro-Pixelstil, wie er ins Mikrofon spricht."
+        },
+        "uploads/sz_9c69c03ef4.webp": {
+            "alt": "Schwarzes, stilisiertes Buchstaben-S als Logo auf weißem Hintergrund",
+            "caption": "Das reduzierte S-Logo auf hellem Grund."
+        },
+        "uploads/technology_0673ed005b.png": {
+            "alt": "Dunkle 3-D-Darstellung von Platine, Chips und neonfarbenen Leiterbahnen",
+            "caption": "Platinen-Komponenten mit neonfarbenen Schaltkreisen."
+        },
+        "uploads/technology_51db2abedb.png": {
+            "alt": "Isometrische 3-D-Grafik mit Mainboard, Chip, Lüfter und leuchtenden Schaltkreisen",
+            "caption": "Technik-Bauteile als leuchtende 3-D-Illustration."
+        },
+        "uploads/telespiel_trio_954cc4afd5.jpg": {
+            "alt": "Illustration einer Computermaus und eines Gamepads neben dem Schriftzug „Das Telespiel Trio“ auf hellblauem Hintergrund",
+            "caption": "Maus und Gamepad stehen für das Telespiel-Trio, um das es im Artikel geht."
+        },
+        "uploads/telespiel_trio_c82d92628b.jpg": {
+            "alt": "Computermaus und gelber Gamecontroller neben Schriftzug „Das Telespiel Trio“",
+            "caption": "Das Telespiel Trio: Maus und Gamepad als Illustration."
+        },
+        "uploads/tffm_01_introtext_5bdd7835b9.jpg": {
+            "alt": "Logo der „The Fabulous Fear Machine“ mit gelbem Schriftzug und einer Kristallkugel, in der pinke Hände zu sehen sind",
+            "caption": "Das Logo des Spiels The Fabulous Fear Machine mit Kristallkugel und Händen."
+        },
+        "uploads/tffm_02_themachine_876a0daabe.jpg": {
+            "alt": "Illustration eines Wahrsagerautomaten mit Turbanfigur und Kristallkugel im Schaukasten, Schild „The Fabulous Fear Machine“",
+            "caption": "Der Jahrmarkt-Automat The Fabulous Fear Machine mit seiner Wahrsagerin."
+        },
+        "uploads/tffm_03_coin_f65bbfc8bf.jpg": {
+            "alt": "Comic-Zeichnung einer Hand, die eine Münze in einen Münzschlitz einwirft, vor dunklem Hintergrund",
+            "caption": "Eine Münze wandert in den Schlitz – der Start für eine Runde am Automaten."
+        },
+        "uploads/tffm_04_jen_e13281cba9.jpg": {
+            "alt": "Comicfigur mit Brille und roten Haaren sitzt im Auto, hält das Lenkrad und liest Papiere im Regen.",
+            "caption": "Bei strömendem Regen im Wagen: Sie hält Papiere und Lenkrad gleichzeitig."
+        },
+        "uploads/tffm_05_jimmy_0e33335bcc.jpg": {
+            "alt": "Zwei Panels: Ein schwitzender Mann mit Brille blickt erschrocken, daneben ein Krater mit Fundstück.",
+            "caption": "Entsetzen und ein rätselhafter Fund im Krater – zwei Bilder einer Geschichte."
+        },
+        "uploads/tffm_06_santos_96a2e0396a.jpg": {
+            "alt": "Person mit Rucksack steht auf einer Wüstendüne zwischen Knochen und Schädeln vor einem Monolithen.",
+            "caption": "Zwischen Knochen und Schädeln blickt die Figur den Dünenkamm zum Monolithen hinauf."
+        },
+        "uploads/tffm_07_wishes_303d579e70.jpg": {
+            "alt": "Drei fiktive Comic-Cover mit den Titeln Double Blind, Shaking Hands und Sinners or Saints.",
+            "caption": "Drei erfundene Heftcover erzählen die Geschichten der Figuren in drastischen Bildern."
+        },
+        "uploads/tffm_08_options_8894322346.jpg": {
+            "alt": "Auswahlbildschirm mit den Optionen Secrecy und Corruption sowie zwei Charakteren",
+            "caption": "Im Spiel muss zwischen Geheimhaltung und Korruption gewählt werden."
+        },
+        "uploads/tffm_09_legends_a70c7c2c58.jpg": {
+            "alt": "Mehrere Comic-Karten mit Titeln wie Premature Burial, Doppelgänger und Crime Scene",
+            "caption": "Eine Auswahl der Legend-Karten aus dem Spiel."
+        },
+        "uploads/tffm_10_jen_end_766545b924.jpg": {
+            "alt": "Comic-Panel: Menschenmenge in Aufruhr, eine Frau ruft entsetzt No Nooooooo",
+            "caption": "Jen erfährt, dass die Maschine nur bis zur Erfüllung ihres Wunsches ihr gehört."
+        },
+        "uploads/tffm_11_jen_finding_machine_bba33a5c3c.jpg": {
+            "alt": "Frau von hinten vor einem Gerät mit der Aufschrift The Fabulous Fear Machine",
+            "caption": "Jen entdeckt die geheimnisvolle Fabulous Fear Machine."
+        },
+        "uploads/thiberion_36f71ecce6.jpg": {
+            "alt": "Eule mit großen gelben Augen, auf deren Kopf ein kleines Eichhörnchen unter einem Blatt sitzt",
+            "caption": "Ein Eichhörnchen nutzt ein Blatt als Regenschirm und sitzt dabei auf dem Kopf einer Eule."
+        },
+        "uploads/thumbnail_b743515205.png": {
+            "alt": "Spielszene im Pixel-Art-Stil: Held kämpft gegen Zombies, Skelette und Dämonen. Titel: Vampire Doom Survivors.",
+            "caption": "Vampire Doom Survivors: Pixel-Slasher mit Retro-Look und vielen Monstern."
+        },
+        "uploads/tmnt_8dc37b63cf.jpg": {
+            "alt": "Pixel-Art-Szene: Ninja-Schildkröten und Gegner auf einer nächtlichen Straße vor Lagerhalle.",
+            "caption": "Beat 'em up im Turtles-Stil: Verfolgungsjagd durch die Straßen."
+        },
+        "uploads/tortuga_death_65491c0375.png": {
+            "alt": "Pixel-Art-Game-Over-Bildschirm mit rotem Text „You died after 5 Nights“.",
+            "caption": "Game Over: Der Bildschirm zeigt „You died after 5 Nights“ und den Button Continue."
+        },
+        "uploads/tortugacity_cee0184eac.jpg": {
+            "alt": "Nächtliche Pixel-Art-Stadt mit HUD, Schild „Build for 300 $“ und Schildkrötenfigur.",
+            "caption": "Szene aus einem Aufbauspiel: Bei Nacht in der Stadt mit Baukosten-Anzeige."
+        },
+        "uploads/trans_siberian_railway_sim_02588d2a91.jpg": {
+            "alt": "Lokfront mit rotem Stern und zwei leuchtenden Scheinwerfern, Titel Trans-Siberian Railway Simulator",
+            "caption": "Trans-Siberian Railway Simulator: Die Lokomotive mit Sowjetstern ziert das Spielcover."
+        },
+        "uploads/tribunal_10_banner_0785aebf71.png": {
+            "alt": "Banner mit drei Spielen: WorldBox-Pixellandschaft, MMORPG Tycoon 2-Logo, Strategie-Icons",
+            "caption": "Drei Spiele im Banner: WorldBox, MMORPG Tycoon 2 und ein Strategietitel."
+        },
+        "uploads/tribunal_10_cover_008581924f.png": {
+            "alt": "Drei Spielpanels: Pixel-Art-Landschaft, Fantasy-Logo und Schachbrett mit springendem Pferd.",
+            "caption": "Drei Spiele, drei Stile: Pixel-Art, Fantasy-RPG und Schachrätsel im Vergleich."
+        },
+        "uploads/tribunal_1_banner_b931cdb4eb.png": {
+            "alt": "Banner mit drei Szenen: Hotelgebäude, Mann mit Hut im Schatten, goldener Ring im Pixelstil",
+            "caption": "Drei Motive aus Tribunal 1: das Hotel, ein Ermittler und ein goldener Ring."
+        },
+        "uploads/tribunal_1_cover_a0b1e5ff86.png": {
+            "alt": "Cover mit drei vertikalen Panels: Hotel, Mann mit Hut und goldener Ring im Pixelstil",
+            "caption": "Das Cover von Tribunal 1 zeigt Hotel, Detektiv und einen goldenen Ring."
+        },
+        "uploads/tribunal_2_banner_ad00df8f03.png": {
+            "alt": "Drei Banner: blauer Roboterheld, düsteres Männergesicht, Ritterwappen mit Schriftzug.",
+            "caption": "Von Mega Man über düstere Kost bis zum Wappen: die Kontrahenten im Duell."
+        },
+        "uploads/tribunal_2_cover_73d7bef881.png": {
+            "alt": "Bildausschnitte: Roboter mit grünen Augen, Männergesicht, Wappen mit Goldbuchstaben.",
+            "caption": "Nahaufnahmen der drei Spiele aus dem aktuellen Tribunal-Vergleich."
+        },
+        "uploads/tribunal_3_banner_74ffdc7470.png": {
+            "alt": "Drei Illustrationen: zwei Anime-Figuren, ein Junge mit Schlüsseln, eine Bleistiftzeichnung.",
+            "caption": "Anime-Drama, bunte Abenteuerwelt und Skizze: drei Spiele mit eigenem Artwork."
+        },
+        "uploads/tribunal_3_cover_f4189bfefb.png": {
+            "alt": "Dreigeteiltes Cover: links Frau mit blauen Augen, mittig Comic-Junge im Anzug, rechts Bleistiftzeichnung eines Mädchens.",
+            "caption": "Cover des dritten Teils der Tribunal-Reihe mit drei unterschiedlichen Charakterdesigns."
+        },
+        "uploads/tribunal_4_banner_57cebf67e7.png": {
+            "alt": "Banner mit drei Spielszenen: Silhouette mit Schriftzug DOOR, Logo PAF mit Kinderwagen, Mech mit ENDGAME-Schriftzug.",
+            "caption": "Banner zum Tribunal 4 mit Szenen aus drei verschiedenen Spielen."
+        },
+        "uploads/tribunal_4_cover_2fa6e74af5.png": {
+            "alt": "Cover von Tribunal 4: links Soldatensilhouette mit DOOR, mittig PAF-Logo mit Kinderwagen, rechts Mech aus Endgame.",
+            "caption": "Titelmotiv von Tribunal 4 mit drei Spielszenen als Collage."
+        },
+        "uploads/tribunal_4_drowned_ed7645bd1b.png": {
+            "alt": "Benachrichtigungsleiste mit Totenkopf-Symbol und dem Text Brittany Anderson has drowned!",
+            "caption": "Todesmeldung im Spiel: Brittany Anderson ist ertrunken."
+        },
+        "uploads/tribunal_4_oops2_cc861d6231.png": {
+            "alt": "Roter Warnhinweis mit dem Text Imminent Bankruptcy und einem Fortschrittsbalken",
+            "caption": "Der Warnhinweis droht: Ohne Gewinn bis Ende Juni wird der Park dauerhaft geschlossen."
+        },
+        "uploads/tribunal_4_oops_ed5a26c393.png": {
+            "alt": "Grüne Hügellandschaft mit spitzem Berg, See, Bäumen und Freizeitpark im Hintergrund",
+            "caption": "Eine seltsam geformte Berglandschaft im Park, die wie ein missglücktes Terraforming aussieht."
+        },
+        "uploads/tribunal_4_park_06cca79769.png": {
+            "alt": "Draufsicht auf einen Freizeitpark mit Seen, Inseln, Achterbahnen und riesiger Weinflasche",
+            "caption": "Der fertige Park aus der Vogelperspektive, inklusive der auffälligen Weinflaschen-Attraktion am Seeufer."
+        },
+        "uploads/tribunal_4_wine_f35a275d9c.png": {
+            "alt": "Infofenster Chateau Parkitéc neben einer riesigen Weinflaschen-Attraktion mit Weinglas",
+            "caption": "Die Statistik zeigt: Die Weinflaschen-Attraktion ist geöffnet, doch bisher fährt niemand mit."
+        },
+        "uploads/tribunal_5_banner_4e1851567b.png": {
+            "alt": "Dreigeteiltes Banner: Silhouette, Frau mit blauen Haaren, Cartoon-Tiere im roten Auto mit Nummer 62.",
+            "caption": "Das Banner zu Tribunal 5 zeigt drei verschiedene Spielszenen."
+        },
+        "uploads/tribunal_5_cover_34015794ff.png": {
+            "alt": "Dreigeteiltes Cover: Silhouette, Frau mit blauen Haaren, Cartoon-Tiere im roten Auto mit Nummer 62.",
+            "caption": "Das Cover zu Tribunal 5 mit drei unterschiedlichen Spielszenen."
+        },
+        "uploads/tribunal_6_banner_d4ef0ddbd2.png": {
+            "alt": "Dreigeteiltes Banner: Pixel-Art-Kampfszene, Capybara mit Schriftzug, Frosch auf Motorrad vor Gebäude.",
+            "caption": "Das Banner zu Tribunal 6 zeigt Szenen aus drei Indie-Spielen."
+        },
+        "uploads/tribunal_6_cover_d870de8553.png": {
+            "alt": "Dreigeteiltes Cover: Pixel-Art-Kampfszene, Capybara mit Schriftzug, Frosch auf Motorrad vor Gebäude.",
+            "caption": "Das Cover zu Tribunal 6 mit Szenen aus drei verschiedenen Spielen."
+        },
+        "uploads/tribunal_7_banner_7ed8ef272a.png": {
+            "alt": "Dreigeteilte Collage: links grüner Hintergrund mit Text, mittig erschrockener Mann, rechts rosa Koch-Maus.",
+            "caption": "Die Tribunal-7-Collage vereint drei Spiele: ein Kurz-Abenteuer, einen erschrockenen Mann und eine Koch-Maus."
+        },
+        "uploads/tribunal_7_cover_796600c2fb.png": {
+            "alt": "Dreigeteilte Collage: links grüner Hintergrund mit Text, mittig erschrockener Mann, rechts rosa Koch-Maus.",
+            "caption": "Das Cover zu Tribunal 7 zeigt die drei Spielmotive aus dem Banner in einer alternativen Anordnung."
+        },
+        "uploads/tribunal_7c63d61799.png": {
+            "alt": "Illustration dreier Personen auf einer Bühne, die unter Scheinwerfern ihre Zeigefinger erheben.",
+            "caption": "Drei Figuren präsentieren auf der Tribunal-Bühne ihre Auswahl."
+        },
+        "uploads/tribunal_8_banner_58d4fffe8c.png": {
+            "alt": "Dreigeteilte Collage: links Park Beyond mit Pool, mittig Car Dealer Simulator, rechts Spiel mit Stern-Logo.",
+            "caption": "Die Tribunal-8-Collage zeigt drei Simulationsspiele: Park Beyond, Car Dealer Simulator und ein weiteres Spiel mit Stern."
+        },
+        "uploads/tribunal_8_cover_1ad303c37d.png": {
+            "alt": "Dreigeteilte Collage: links Park Beyond mit Pool, mittig Car Dealer Simulator, rechts Spiel mit Stern-Logo.",
+            "caption": "Das Cover zu Tribunal 8 zeigt dieselben drei Simulationsspiele in einer anderen Anordnung."
+        },
+        "uploads/tribunal_9_banner_e0a8eac963.png": {
+            "alt": "Gaming-Collage: Master Chief aus Halo, Figur mit Rucksack vor Feuer, bärtiger Mann mit blauen Augen.",
+            "caption": "Banner des Tribunal-9-Specials mit Motiven aus Halo, Death Stranding und einem weiteren Spiel."
+        },
+        "uploads/tribunal_9_cover_568c8d74f7.png": {
+            "alt": "Gecroppte Gaming-Collage: Master Chief aus Halo, Figur mit Rucksack vor Feuer, bärtiger Mann mit blauen Augen.",
+            "caption": "Titelbild des Tribunal-9-Covers mit denselben Spielmotiven."
+        },
+        "uploads/tribunal_fe4a79cd8a.png": {
+            "alt": "Drei Silhouetten mit erhobenen Zeigefingern vor Vorhang und Säulen, darüber schwebende Spiele-Symbole.",
+            "caption": "Ein Tribunal aus Spielerfiguren richtet über schwebende Gaming-Symbole."
+        },
+        "uploads/tribunal_kateogrien_3807ab70d1.png": {
+            "alt": "Screenshot einer Kategorienliste mit 26 Einträgen, Status offen oder verwendet und Zuordnungen wie Coop.",
+            "caption": "Die Kategorienübersicht des Tribunal-Formats mit offenen und verwendeten Kategorien."
+        },
+        "uploads/verse_c60e01ccdb.jpg": {
+            "alt": "Schreibtisch mit Retro-Spielen, Controllern und Notizblock, darüber der Schriftzug Virtuelle Verse.",
+            "caption": "Virtuelle Verse verbindet Lyrik und Games auf dem heimischen Schreibtisch."
+        },
+        "uploads/winter_falling_battle_tactics_c75e03f11c.jpg": {
+            "alt": "Logo von Winter Falling mit Schwert sowie Brettspiel-Feldern für Pferd und zwei Schwertern.",
+            "caption": "Winter Falling zeigt das Logo neben den Einheitenfeldern für Pferd und Schwerter."
+        },
+        "uploads/worldbox_god_simulator_9d63848ca0.jpg": {
+            "alt": "Pixelart-Logo von WorldBox: God Simulator vor einer Landschaft mit Bergen, Wald und Figuren.",
+            "caption": "Das Logo des God-Simulators WorldBox mit einer bunten Pixelwelt im Hintergrund."
+        },
+        "uploads/ziegen_ca2c93b973.jpg": {
+            "alt": "Viele kleine Ziegen-Kreaturen in einem kreisförmigen Bereich, umgeben von Spiel-Interface.",
+            "caption": "Eine riesige Herde Ziegen versammelt sich in einer Spielszene mit umfangreicher Benutzeroberfläche."
+        },
+        "uploads/zoz_73fd9a2c85.jpg": {
+            "alt": "Drei orange Banner mit weißem Schriftzug 'ZOCKEN OHNE ZA$TER', Logo M10Z unten links.",
+            "caption": "Der Slogan 'Zocken ohne Zaster' als grafisches Logo mit M10Z-Schriftzug."
+        },
+        "uploads/zoz_ff3f6463cf.jpg": {
+            "alt": "Schriftzug ZOCKEN OHNE ZASTER auf orangefarbenen Balken, darunter M10Z.",
+            "caption": "Der Schriftzug Zocken ohne Zaster in orange-weißem Design, unten rechts das Logo M10Z."
+        },
+        "uploads/zoz_live_2070b7fdc1.jpg": {
+            "alt": "Orange Banner 'ZOCKEN OHNE ZA$TER' mit darüberliegendem dunkelroten, tropfenden Schriftzug 'LIVE!'",
+            "caption": "Live!-Ausgabe: Tropfender LIVE!-Schriftzug über dem Zocken-ohne-Zaster-Logo."
         }
     }
 }
