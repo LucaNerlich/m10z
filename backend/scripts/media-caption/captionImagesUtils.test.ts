@@ -358,6 +358,20 @@ describe('withRetry', () => {
         }
     });
 
+    it('does not retry when shouldRetry returns false', async () => {
+        let calls = 0;
+        await expect(
+            withRetry(
+                async () => {
+                    calls += 1;
+                    throw new Error('undecodable');
+                },
+                {attempts: 3, baseDelayMs: 10, shouldRetry: () => false}
+            )
+        ).rejects.toThrow('undecodable');
+        expect(calls).toBe(1);
+    });
+
     it('rethrows the last error after exhausting attempts', async () => {
         vi.useFakeTimers();
         try {

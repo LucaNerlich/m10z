@@ -68,6 +68,7 @@ const USER_AGENT = 'm10z-caption-pipeline/1.0 (+https://m10z.de)';
 const MAX_TOKENS = 4000;
 const IMAGE_MAX_EDGE = 768;
 const IMAGE_QUALITY = 72;
+const IMAGE_FETCH_CONCURRENCY = 4;
 const WRITE_DELAY_MS = 250;
 const MCP_MAX_PAGES = 200;
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
@@ -244,8 +245,16 @@ function resolveApiKey(): string | null {
     }
 }
 
-/** Downloads an image and re-encodes it small so a batch stays cheap. */
-async function fetchImageDataUrl(url: string): Promise<string> {
+/** Raised when the downloaded bytes cannot be decoded by sharp (corrupt or unsupported codec). */
+class ImageDecodeError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ImageDecodeError';
+    }
+}
+
+/** Downloads an image, retrying transient failures. */
+async function downloadImageBuffer(url: string): Promise<Buffer> {
     return withRetry(
         async () => {
             const response = await fetch(url, {
@@ -255,19 +264,7 @@ async function fetchImageDataUrl(url: string): Promise<string> {
                 throw new Error(
                     `image download failed with HTTP ${response.status}`
                 );
-            const buffer = Buffer.from(await response.arrayBuffer());
-            const resized = await sharp(buffer)
-                .rotate()
-                .resize({
-                    width: IMAGE_MAX_EDGE,
-                    height: IMAGE_MAX_EDGE,
-                    fit: 'inside',
-                    withoutEnlargement: true,
-                })
-                .flatten({background: '#ffffff'})
-                .jpeg({quality: IMAGE_QUALITY})
-                .toBuffer();
-            return `data:image/jpeg;base64,${resized.toString('base64')}`;
+            return Buffer.from(await response.arrayBuffer());
         },
         {
             attempts: 3,
@@ -278,6 +275,46 @@ async function fetchImageDataUrl(url: string): Promise<string> {
                 ),
         }
     );
+}
+
+/**
+ * Re-encodes an image small so a batch stays cheap. Throws `ImageDecodeError`
+ * when sharp cannot read it (e.g. a corrupt or HEVC/AVIF file sharp's build
+ * does not support) — such a file will never succeed on retry.
+ */
+async function encodeImageForModel(buffer: Buffer): Promise<string> {
+    try {
+        const resized = await sharp(buffer)
+            .rotate()
+            .resize({
+                width: IMAGE_MAX_EDGE,
+                height: IMAGE_MAX_EDGE,
+                fit: 'inside',
+                withoutEnlargement: true,
+            })
+            .flatten({background: '#ffffff'})
+            .jpeg({quality: IMAGE_QUALITY})
+            .toBuffer();
+        return `data:image/jpeg;base64,${resized.toString('base64')}`;
+    } catch (error) {
+        throw new ImageDecodeError(
+            `undecodable image — skipping (${errorMessage(error)})`
+        );
+    }
+}
+
+/** A target image already downloaded and encoded, ready to be sent to the model. */
+type PreparedImage = {asset: McpAsset; dataUrl: string};
+
+async function prepareImage(
+    asset: McpAsset,
+    origin: string
+): Promise<PreparedImage> {
+    const url = asset.url;
+    if (typeof url !== 'string' || url === '')
+        throw new Error('asset has no URL');
+    const buffer = await downloadImageBuffer(resolveAssetUrl(url, origin));
+    return {asset, dataUrl: await encodeImageForModel(buffer)};
 }
 
 type GatewayResult = {
@@ -352,26 +389,13 @@ type BatchContext = {
 type AssetFailure = {asset: McpAsset; error: string};
 
 async function analyzeBatch(
-    batch: McpAsset[],
-    ctx: BatchContext,
-    origin: string
+    batch: PreparedImage[],
+    ctx: BatchContext
 ): Promise<{proposals: CaptionProposal[]; truncated: boolean}> {
-    const images = await Promise.all(
-        batch.map(async (asset) => {
-            const url = asset.url;
-            if (typeof url !== 'string' || url === '')
-                throw new Error('asset has no URL');
-            return {
-                asset,
-                dataUrl: await fetchImageDataUrl(resolveAssetUrl(url, origin)),
-            };
-        })
-    );
-
     const content: unknown[] = [
-        {type: 'text', text: buildInstructions(images.length)},
+        {type: 'text', text: buildInstructions(batch.length)},
     ];
-    for (const {asset, dataUrl} of images) {
+    for (const {asset, dataUrl} of batch) {
         content.push({type: 'text', text: buildAssetLabel(asset)});
         content.push({type: 'image_url', image_url: {url: dataUrl}});
     }
@@ -399,16 +423,15 @@ async function analyzeBatch(
  * failure.
  */
 async function analyzeWithSplit(
-    batch: McpAsset[],
-    ctx: BatchContext,
-    origin: string
+    batch: PreparedImage[],
+    ctx: BatchContext
 ): Promise<{
     proposals: Map<number, CaptionProposal>;
     failures: AssetFailure[];
 }> {
     const proposals = new Map<number, CaptionProposal>();
     const failures: AssetFailure[] = [];
-    const queue: McpAsset[][] = [batch];
+    const queue: PreparedImage[][] = [batch];
 
     while (queue.length > 0) {
         const current = queue.shift();
@@ -417,22 +440,23 @@ async function analyzeWithSplit(
         try {
             const {proposals: batchProposals, truncated} = await analyzeBatch(
                 current,
-                ctx,
-                origin
+                ctx
             );
             const returned = new Map(
                 batchProposals.map((proposal) => [proposal.id, proposal])
             );
             for (const item of current) {
-                const proposal = returned.get(item.id);
-                if (proposal) proposals.set(item.id, proposal);
+                const proposal = returned.get(item.asset.id);
+                if (proposal) proposals.set(item.asset.id, proposal);
             }
 
-            const missing = current.filter((item) => !proposals.has(item.id));
+            const missing = current.filter(
+                (item) => !proposals.has(item.asset.id)
+            );
             if (missing.length === 0) continue;
             if (current.length === 1) {
                 failures.push({
-                    asset: current[0],
+                    asset: current[0].asset,
                     error: truncated
                         ? 'model output truncated'
                         : 'model returned no entry for this image',
@@ -444,7 +468,10 @@ async function analyzeWithSplit(
             queue.unshift(missing.slice(0, mid));
         } catch (error) {
             if (current.length === 1) {
-                failures.push({asset: current[0], error: errorMessage(error)});
+                failures.push({
+                    asset: current[0].asset,
+                    error: errorMessage(error),
+                });
                 continue;
             }
             const mid = Math.ceil(current.length / 2);
@@ -576,18 +603,53 @@ async function main(): Promise<void> {
         usage: {promptTokens: 0, completionTokens: 0, requests: 0},
     };
 
-    const batches = chunk(targets, args.batchSize);
-    const batchResults = await mapPool(batches, args.concurrency, (batch) =>
-        analyzeWithSplit(batch, ctx, origin)
+    // Download + encode every target first, so one undecodable image is skipped
+    // without forcing the model to re-analyse (and re-download) its whole batch.
+    type PrepareOutcome = {
+        asset: McpAsset;
+        prepared?: PreparedImage;
+        error?: string;
+    };
+    const outcomes = await mapPool<McpAsset, PrepareOutcome>(
+        targets,
+        IMAGE_FETCH_CONCURRENCY,
+        async (asset) => {
+            try {
+                return {asset, prepared: await prepareImage(asset, origin)};
+            } catch (error) {
+                return {asset, error: errorMessage(error)};
+            }
+        }
     );
 
-    const proposals = new Map<number, CaptionProposal>();
+    const images: PreparedImage[] = [];
     const failures: AssetFailure[] = [];
-    for (const result of batchResults) {
-        for (const [id, proposal] of result.proposals)
-            proposals.set(id, proposal);
-        failures.push(...result.failures);
+    for (const outcome of outcomes) {
+        if (outcome.prepared) images.push(outcome.prepared);
+        else
+            failures.push({
+                asset: outcome.asset,
+                error: outcome.error ?? 'unknown error',
+            });
     }
+
+    const proposals = new Map<number, CaptionProposal>();
+    if (images.length > 0) {
+        const batchResults = await mapPool(
+            chunk(images, args.batchSize),
+            args.concurrency,
+            (batch) => analyzeWithSplit(batch, ctx)
+        );
+        for (const result of batchResults) {
+            for (const [id, proposal] of result.proposals)
+                proposals.set(id, proposal);
+            failures.push(...result.failures);
+        }
+    }
+
+    const failureReasons = new Map(
+        failures.map((failure) => [failure.asset.id, failure.error])
+    );
 
     const entries: RunEntry[] = targets.map((asset) => {
         const proposal = proposals.get(asset.id) ?? null;
@@ -604,7 +666,9 @@ async function main(): Promise<void> {
     for (const entry of entries) {
         const label = `${entry.asset.id} | ${entry.asset.name ?? '(ohne Namen)'}`;
         if (!entry.proposal) {
-            log(`${label}\n    ✗ keine Vorschläge`);
+            log(
+                `${label}\n    ✗ ${failureReasons.get(entry.asset.id) ?? 'keine Vorschläge'}`
+            );
             continue;
         }
         const current = `alt=${JSON.stringify(entry.asset.alternativeText ?? '')} caption=${JSON.stringify(
@@ -648,7 +712,7 @@ async function main(): Promise<void> {
     );
     log(
         `Summary: ${entries.length} target(s), ${proposals.size} proposal(s), ` +
-            `${failures.length} analysis failure(s)` +
+            `${failures.length} failure(s)` +
             (args.apply
                 ? `, ${applied} updated, ${writeFailures} write failure(s)`
                 : ', 0 written (dry run)') +

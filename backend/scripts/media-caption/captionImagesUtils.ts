@@ -366,6 +366,8 @@ export async function mapPool<T, R>(
 export type RetryOptions = {
     attempts?: number;
     baseDelayMs?: number;
+    /** When it returns false the error is rethrown immediately without another attempt. */
+    shouldRetry?: (error: unknown) => boolean;
     onRetry?: (error: unknown, attempt: number) => void;
 };
 
@@ -384,6 +386,7 @@ export async function withRetry<T>(
         } catch (error) {
             lastError = error;
             if (attempt >= attempts) break;
+            if (options.shouldRetry && !options.shouldRetry(error)) break;
             options.onRetry?.(error, attempt);
             await new Promise((resolve) =>
                 setTimeout(resolve, baseDelayMs * 2 ** (attempt - 1))

@@ -86,6 +86,9 @@ The script calls `dotenv.config()`, which loads `.env` from the **working direct
   they are never stale in the admin panel.
 - Re-running is safe: the default scope re-selects anything still missing text, and an
   occasional duplicate write of the same value is harmless.
+- Images sharp cannot decode (corrupt files, or HEVC/AVIF content mislabeled as JPEG) are
+  skipped with a clear reason and counted as a failure — the run exits `1`. MCP cannot
+  rewrite file bytes, so fix or replace the asset itself (e.g. re-upload it).
 
 ## Inline content images
 
