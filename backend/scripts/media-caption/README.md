@@ -86,3 +86,24 @@ The script calls `dotenv.config()`, which loads `.env` from the **working direct
   they are never stale in the admin panel.
 - Re-running is safe: the default scope re-selects anything still missing text, and an
   occasional duplicate write of the same value is harmless.
+
+## Inline content images
+
+Writes land on the Media Library asset, which reaches the frontend through relations
+(`cover`, `banner`, `avatar`, category images). Images embedded **inline** in article or
+podcast `content` are plain Markdown (`![filename](url)`) with no relation, so they are
+served from a derived snapshot the frontend reads at render time:
+
+```
+frontend/public/media-index.json
+```
+
+Refresh it after a caption run, then commit/deploy (or let the scheduled `Media Index`
+workflow do it):
+
+```bash
+cd frontend && pnpm media:index
+```
+
+See [`.github/agents/media-index.agent.md`](../../../.github/agents/media-index.agent.md) for
+details, behaviour and current limitations (RSS feeds are not enriched yet).

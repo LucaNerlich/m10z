@@ -14,9 +14,15 @@ import {Code} from '@/src/components/markdown/Code';
 import {FancyboxClient} from '@/src/components/markdown/FancyboxClient';
 import {Heading} from '@/src/components/markdown/Heading';
 import {Image} from '@/src/components/markdown/Image';
+import {enrichMarkdownImages} from '@/src/lib/media/mediaIndex';
+import {getMediaIndex} from '@/src/lib/media/mediaIndexSource';
 
 import {preprocessMarkdown} from './preprocess';
-import {REHYPE_EXTERNAL_LINKS_OPTIONS, REHYPE_SANITIZE_SCHEMA, REMARK_REHYPE_OPTIONS} from './plugins';
+import {
+    REHYPE_EXTERNAL_LINKS_OPTIONS,
+    REHYPE_SANITIZE_SCHEMA,
+    REMARK_REHYPE_OPTIONS,
+} from './plugins';
 
 export type MarkdownProps = {
     markdown: string;
@@ -35,14 +41,21 @@ const COMPONENTS = {
 /**
  * Render sanitised Markdown into a React element.
  *
- * Pipeline: preprocess (custom inline syntax) → ReactMarkdown
- * (remark + rehype + sanitize) → FancyboxClient (image lightbox).
+ * Pipeline: preprocess (custom inline syntax) → enrich inline images with
+ * Media Library metadata (`media-index.json`) → ReactMarkdown (remark + rehype
+ * + sanitize) → FancyboxClient (image lightbox).
  *
  * Custom syntax and the sanitisation allowlist live in `./preprocess` and
  * `./plugins`; the component itself is the thin shell that wires them.
  */
-export function Markdown({markdown, className}: MarkdownProps) {
-    const containerClassName = className ? `markdown-content ${className}` : 'markdown-content';
+export async function Markdown({markdown, className}: MarkdownProps) {
+    const containerClassName = className
+        ? `markdown-content ${className}`
+        : 'markdown-content';
+    const source = enrichMarkdownImages(
+        preprocessMarkdown(markdown),
+        await getMediaIndex()
+    );
 
     return (
         <FancyboxClient className={containerClassName}>
@@ -58,7 +71,7 @@ export function Markdown({markdown, className}: MarkdownProps) {
                 ]}
                 components={COMPONENTS}
             >
-                {preprocessMarkdown(markdown)}
+                {source}
             </ReactMarkdown>
         </FancyboxClient>
     );
