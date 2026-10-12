@@ -1,6 +1,6 @@
 {
     "name": "m10z-frontend",
-    "version": "1.15.0",
+    "version": "1.16.0",
     "private": true,
     "scripts": {
         "predev": "node scripts/sync-shared-contracts.mjs && node scripts/copy-changelog.mjs",
@@ -11,6 +11,7 @@
         "snapshot:feeds": "tsx scripts/feed-snapshot.ts",
         "snapshot:feeds:write": "tsx scripts/feed-snapshot.ts --write",
         "snapshot:statistik": "tsx scripts/statistik-snapshot.ts",
+        "media:index": "tsx scripts/media-index.ts",
         "pretest": "node scripts/sync-shared-contracts.mjs",
         "test": "vitest",
         "pretest:run": "node scripts/sync-shared-contracts.mjs",

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.16.0] - 2026-10-12
+
+### Added
+- Images embedded in article and podcast text now render with the alt text and caption authored in the CMS Media Library instead of the raw filename. A committed `media-index.json` snapshot (refreshed weekly by CI, or locally with `pnpm media:index`) maps media URLs to their metadata and is applied while rendering Markdown.
+
 ## [1.15.0] - 2026-10-11
 
 ### Added

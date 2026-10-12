@@ -63,7 +63,10 @@ src/
   middlewares/              # Document service middleware (cacheInvalidation, duration, wordCount)
   services/                 # Shared services (debounced queues, search index builder)
   utils/                    # Utilities (blurhash generation, Next.js cache invalidation)
-  scripts/                  # One-off migration scripts
+  scripts/                  # One-off migration scripts (src/scripts/, run via tsx)
+scripts/
+  sync-shared-contracts.mjs # Copies shared/contracts into src/shared/contracts (prebuild/pretest)
+  media-caption/            # AI caption/alt-text pipeline + README (`pnpm caption:images`)
 config/
   admin.ts                  # Admin panel, preview URLs, auth config
   api.ts                    # REST limits (default: 25, max: 100)
