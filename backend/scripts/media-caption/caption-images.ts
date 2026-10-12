@@ -17,7 +17,7 @@
  *   pnpm caption:images -- --apply             # write the proposals
  *   pnpm caption:images -- --apply --force     # refresh every image
  *
- * Authentication / overrides (see .env.example and docs/media-caption-pipeline.md):
+ * Authentication / overrides (see ../../.env.example and README.md next to this script):
  *   STRAPI_MCP_ADMIN_TOKEN_PROD  Bearer token for https://cms.m10z.de/mcp
  *   STRAPI_MCP_ADMIN_TOKEN_LOCAL Bearer token for --local
  *   STRAPI_MCP_TOKEN             Explicit token override
