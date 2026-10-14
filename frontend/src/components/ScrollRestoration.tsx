@@ -17,19 +17,24 @@ import {useEffect, useRef} from 'react';
  */
 export function ScrollRestoration(): null {
     const pathname = usePathname();
-    const popStateSeen = useRef(false);
+    // The pathname a popstate navigation landed on. A popstate that does *not*
+    // change the pathname (an in-page or hash-only back) must not leave a
+    // boolean flag armed, or the next genuine route change would skip its scroll
+    // reset. Comparing the recorded path against the current one scopes the skip
+    // to the navigation it belongs to.
+    const popStatePath = useRef<string | null>(null);
 
     useEffect(() => {
         const onPopState = () => {
-            popStateSeen.current = true;
+            popStatePath.current = window.location.pathname;
         };
         window.addEventListener('popstate', onPopState);
         return () => window.removeEventListener('popstate', onPopState);
     }, []);
 
     useEffect(() => {
-        if (popStateSeen.current) {
-            popStateSeen.current = false;
+        if (popStatePath.current === pathname) {
+            popStatePath.current = null;
             return;
         }
         if (window.location.hash) {
