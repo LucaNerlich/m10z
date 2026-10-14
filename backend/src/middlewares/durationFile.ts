@@ -1,11 +1,10 @@
 /**
  * Pure file-handling helpers for the podcast duration middleware.
  *
- * Extracted from `duration.ts` so the file-identity comparison and the
- * path-traversal guard can be unit-tested without Strapi or the filesystem.
+ * Extracted from `duration.ts` so the file-identity comparison can be unit-tested
+ * without Strapi or the filesystem. The path-traversal guard lives in
+ * `utils/resolveFileWithinPublicDir.ts`, shared with the blurhash cron.
  */
-
-import {resolve, sep} from 'path';
 
 import type {FileReference} from '../types/middleware';
 
@@ -31,25 +30,4 @@ export function normalizeFileIdentity(
         if (file.url) return `url:${file.url}`;
     }
     return null;
-}
-
-/**
- * Resolve a Strapi-served file URL to an absolute path inside `publicDir`.
- *
- * Security: guards against path traversal by ensuring the resolved path stays
- * within the resolved public directory (including against sibling directories
- * that merely share the directory's name as a prefix).
- *
- * @returns The resolved absolute file path, or `null` if it would escape `publicDir`.
- */
-export function resolveFileWithinPublicDir(publicDir: string, fileUrl: string): string | null {
-    // Remove leading slash if present to handle relative URLs
-    const relativePath = fileUrl.startsWith('/') ? fileUrl.slice(1) : fileUrl;
-    const filePath = resolve(publicDir, relativePath);
-
-    const resolvedPublicDir = resolve(publicDir);
-    if (filePath !== resolvedPublicDir && !filePath.startsWith(resolvedPublicDir + sep)) {
-        return null;
-    }
-    return filePath;
 }

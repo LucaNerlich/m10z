@@ -7,7 +7,8 @@
 import {parseFile} from 'music-metadata';
 import {existsSync} from 'fs';
 
-import {normalizeFileIdentity, resolveFileWithinPublicDir} from './durationFile';
+import {normalizeFileIdentity} from './durationFile';
+import {resolveFileWithinPublicDir} from '../utils/resolveFileWithinPublicDir';
 import type {
     DocumentServiceContext,
     DocumentServiceNext,
