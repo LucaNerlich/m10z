@@ -72,7 +72,7 @@ describe('AsyncTaskQueue', () => {
         expect(onSettled).toHaveBeenCalledWith('a', true, strapi);
     });
 
-    test('a throwing onSettled does not abort the rest of the batch', async () => {
+    test('a throwing onSettled does not drop the items after its sub-batch', async () => {
         const run = vi.fn().mockResolvedValue(true);
         const onSettled = vi.fn((item: string) => {
             if (item === 'a') throw new Error('callback boom');
@@ -82,19 +82,17 @@ describe('AsyncTaskQueue', () => {
             keyOf: (item) => item,
             run,
             onSettled,
-            concurrency: 1,
             debounceMs: 100,
         });
 
-        queue.enqueue('a', strapi);
-        queue.enqueue('b', strapi);
+        // More than one sub-batch (DEFAULT_CONCURRENCY = 5) with the throwing callback in
+        // the first one: the items are removed from `pending` before the callbacks run, so
+        // an escaping exception used to skip every later sub-batch.
+        for (const item of ['a', 'b', 'c', 'd', 'e', 'f']) queue.enqueue(item, strapi);
         await vi.advanceTimersByTimeAsync(100);
 
-        // Both items were processed, and the second callback still ran: the items are
-        // removed from `pending` before the callbacks, so an escaping exception would
-        // drop the rest of the run.
-        expect(run).toHaveBeenCalledTimes(2);
-        expect(onSettled).toHaveBeenCalledTimes(2);
+        expect(run).toHaveBeenCalledTimes(6);
+        expect(onSettled).toHaveBeenCalledTimes(6);
         expect(strapi.log.warn).toHaveBeenCalledWith(
             expect.stringContaining('onSettled threw'),
             expect.any(Error),
@@ -184,25 +182,5 @@ describe('AsyncTaskQueue', () => {
 
         expect(onSettled).toHaveBeenCalledWith('a', false, strapi);
         expect(strapi.log.warn).toHaveBeenCalledWith(expect.stringContaining('threw'), expect.any(Error));
-    });
-
-    test('caps the batch delay to maxWaitMs even if items keep arriving', async () => {
-        const run = vi.fn().mockResolvedValue(true);
-        const queue = new AsyncTaskQueue<string>({
-            name: 'test',
-            keyOf: (item) => item,
-            run,
-            debounceMs: 1000,
-            maxWaitMs: 1500,
-        });
-
-        queue.enqueue('a', strapi);
-        await vi.advanceTimersByTimeAsync(1000);
-        queue.enqueue('b', strapi); // would normally push the run out another 1000ms
-
-        // Without the cap this wouldn't fire until t=2000; the 1500ms deadline (from the
-        // first enqueue) should force it to run by t=1500.
-        await vi.advanceTimersByTimeAsync(500);
-        expect(run).toHaveBeenCalled();
     });
 });

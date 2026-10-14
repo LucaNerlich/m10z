@@ -29,10 +29,6 @@ export type TaskQueueOptions<T, S extends StrapiLike = StrapiLike> = {
     merge?: (existing: T, incoming: T) => T;
     /** Base debounce window in ms before a batch runs. */
     debounceMs?: number;
-    /** Upper bound in ms from the first pending item until a batch must run, regardless of new arrivals. */
-    maxWaitMs?: number;
-    /** How many items to process concurrently within a batch. */
-    concurrency?: number;
     /** Consecutive failed batches after which pending items for that key are abandoned. */
     maxFailureRetries?: number;
     /** Called once per item after each run attempt (e.g. to remove it from durable storage on success). */
@@ -42,13 +38,13 @@ export type TaskQueueOptions<T, S extends StrapiLike = StrapiLike> = {
 };
 
 const DEFAULT_DEBOUNCE_MS = 5000;
+/** Items processed concurrently within a run; no caller needs a different value. */
 const DEFAULT_CONCURRENCY = 5;
 const DEFAULT_MAX_FAILURE_RETRIES = 5;
 const MAX_BACKOFF_MS = 60_000;
 
 export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
     private pending = new Map<string, T>();
-    private firstPendingAt: number | null = null;
     private isRunning = false;
     private consecutiveFailures = 0;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -84,7 +80,6 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
             return;
         }
 
-        if (this.firstPendingAt === null) this.firstPendingAt = Date.now();
         this.setPending(item);
         strapi.log.info(
             `[${this.options.name}] queued (debounced ${(this.options.debounceMs ?? DEFAULT_DEBOUNCE_MS) / 1000}s), ${this.pending.size} pending.`,
@@ -95,7 +90,6 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
     /** Re-enqueue items recovered from durable storage on boot, without re-triggering onEnqueue persistence. */
     restore(items: T[], strapi: S): void {
         if (items.length === 0) return;
-        if (this.firstPendingAt === null) this.firstPendingAt = Date.now();
         for (const item of items) {
             this.setPending(item);
         }
@@ -121,16 +115,10 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
     private scheduleRun(strapi: S): void {
         this.clearTimer();
         const base = this.options.debounceMs ?? DEFAULT_DEBOUNCE_MS;
-        let delay =
+        const delay =
             this.consecutiveFailures > 0
                 ? Math.min(base * Math.pow(2, this.consecutiveFailures), MAX_BACKOFF_MS)
                 : base;
-
-        const {maxWaitMs} = this.options;
-        if (maxWaitMs !== undefined && this.firstPendingAt !== null) {
-            const remaining = Math.max(0, maxWaitMs - (Date.now() - this.firstPendingAt));
-            delay = Math.min(delay, remaining);
-        }
 
         this.debounceTimer = setTimeout(() => {
             this.debounceTimer = null;
@@ -145,15 +133,13 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
         this.isRunning = true;
         const items = Array.from(this.pending.values());
         this.pending.clear();
-        this.firstPendingAt = null;
         strapi.log.info(`[${this.options.name}] running ${items.length} item(s).`);
 
-        const concurrency = this.options.concurrency ?? DEFAULT_CONCURRENCY;
         const failedItems: T[] = [];
         let succeededCount = 0;
         try {
-            for (let i = 0; i < items.length; i += concurrency) {
-                const batch = items.slice(i, i + concurrency);
+            for (let i = 0; i < items.length; i += DEFAULT_CONCURRENCY) {
+                const batch = items.slice(i, i + DEFAULT_CONCURRENCY);
                 await Promise.all(
                     batch.map(async (item) => {
                         const succeeded = await this.options.run(item, strapi).catch((error: unknown) => {
