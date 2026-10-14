@@ -29,7 +29,6 @@ export default function WichtelnPage() {
     const hydrated = useSyncExternalStore(subscribeNoop, getIsClient, getIsClientServer);
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [assignments, setAssignments] = useState<Assignment[]>([]);
-    const [isShuffling, setIsShuffling] = useState(false);
     const [newName, setNewName] = useState('');
     const [newProfileUrl, setNewProfileUrl] = useState('');
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -153,11 +152,9 @@ export default function WichtelnPage() {
             setError('Mindestens 2 Teilnehmer für die Zuordnung erforderlich.');
             return;
         }
-        setIsShuffling(true);
         const result = shuffleAndAssign(participants);
         setAssignments(result);
         persist(participants, result);
-        setIsShuffling(false);
     }, [participants, persist, clearError]);
 
     const handleExport = useCallback(() => {
@@ -330,7 +327,6 @@ export default function WichtelnPage() {
                         variant="primary"
                         onClick={handleShuffle}
                         disabled={participants.length < 2}
-                        loading={isShuffling}
                     >
                         Shuffle &amp; Zuordnen
                     </Button>
