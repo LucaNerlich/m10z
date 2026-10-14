@@ -95,6 +95,15 @@ dockerArgs.push(
 );
 
 const res = spawnSync('docker', dockerArgs, {stdio: 'inherit'});
+
+// A spawn failure (usually ENOENT: docker not on PATH) leaves `status` null, so
+// without this the run exits 1 with no output at all.
+if (res.error) {
+  console.error(`Failed to run docker: ${res.error.message}`);
+  console.error('Install Docker (or run k6 locally) and try again.');
+  process.exit(2);
+}
+
 process.exit(res.status ?? 1);
 
 
