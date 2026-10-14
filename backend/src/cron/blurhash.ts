@@ -4,9 +4,9 @@
  */
 
 import {existsSync, promises as fsPromises} from 'fs';
-import {resolve, sep} from 'path';
 
 import {documentServicePage} from '../utils/documentServicePage';
+import {resolveFileWithinPublicDir} from '../utils/resolveFileWithinPublicDir';
 import {generateBlurDataUrl} from '../utils/generateBlurhash';
 import type {ContentDocument, StrapiInstance} from '../types/middleware';
 
@@ -74,14 +74,11 @@ export async function generateMissingBlurhashes({strapi}: {strapi: StrapiInstanc
                     continue;
                 }
 
-                const relativePath = fileUrl.startsWith('/') ? fileUrl.slice(1) : fileUrl;
-                const filePath = resolve(publicDir, relativePath);
-
-                // Security: Validate path is within public directory (separator-aware,
-                // so sibling dirs like `public-evil` do not pass the prefix check)
-                const resolvedPublicDir = resolve(publicDir);
-                if (filePath !== resolvedPublicDir && !filePath.startsWith(resolvedPublicDir + sep)) {
-                    strapi.log.warn(`File path outside public directory: ${filePath}`);
+                // Shared containment guard (separator-aware, so sibling dirs like
+                // `public-evil` do not pass the prefix check).
+                const filePath = resolveFileWithinPublicDir(publicDir, fileUrl);
+                if (!filePath) {
+                    strapi.log.warn(`File path outside public directory: ${fileUrl}`);
                     failed++;
                     continue;
                 }
