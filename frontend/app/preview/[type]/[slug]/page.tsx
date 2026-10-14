@@ -8,6 +8,7 @@ import {fetchArticleBySlugForPreview, fetchPodcastBySlugForPreview} from '@/src/
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {getClientIp} from '@/src/lib/net/getClientIp';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import PreviewBanner from '@/src/components/PreviewBanner';
@@ -52,7 +53,8 @@ async function resolvePreviewContext(
     const slug = validateSlugSafe(rawSlug);
     if (!slug) notFound();
 
-    const ip = (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+    // Trusts the proxy-appended last hop, unlike the client-controlled first one.
+    const ip = getClientIp(await headers());
     const rl = checkRateLimit(`preview:${ip}`, {windowMs: 60_000, max: 20});
     if (!rl.ok) notFound();
 

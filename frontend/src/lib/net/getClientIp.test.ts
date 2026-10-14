@@ -42,4 +42,15 @@ describe('getClientIp', () => {
     test('returns "unknown" when x-forwarded-for is empty after trimming', () => {
         expect(getClientIp(requestWith({'x-forwarded-for': '   '}))).toBe('unknown');
     });
+
+    test('accepts a Headers instance', () => {
+        expect(getClientIp(new Headers({'x-forwarded-for': 'spoofed, 10.0.0.1'}))).toBe('10.0.0.1');
+    });
+
+    test('accepts Next-style readonly headers from headers()', () => {
+        const readonlyHeaders = {
+            get: (name: string) => (name === 'x-forwarded-for' ? 'spoofed, 10.0.0.1' : null),
+        };
+        expect(getClientIp(readonlyHeaders)).toBe('10.0.0.1');
+    });
 });
