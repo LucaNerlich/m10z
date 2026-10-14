@@ -16,7 +16,6 @@ import {createPrivilegedFeedReader} from '@/src/lib/strapi/contentAccess';
 import {buildFeedListQuery} from '@/src/lib/strapi-queries/queries';
 import {type FeedBuilt} from '@/src/lib/rss/feedCache';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
-import {sha256Hex} from '@/src/lib/rss/xml';
 import {type StrapiAudioFeedSingle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {feedSourceTag, feedTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 export type AudioFeedBuildTiming = {
@@ -29,7 +28,6 @@ export type AudioFeedBuildTiming = {
         fileMetadataMs: number;
         enclosureMs: number;
     };
-    markdownCache?: {hits: number; misses: number; size: number};
 };
 
 const fetcher = createPrivilegedFeedReader([feedTag('audio'), typeTag('podcast'), feedSourceTag('audio')]);
@@ -66,23 +64,12 @@ export async function buildAudioFeed(): Promise<{built: FeedBuilt; buildTiming: 
     });
     const cfg = getAudioFeedDefaults();
 
-    const markdownCache = new Map<string, string>();
-    let markdownCacheHits = 0;
-    let markdownCacheMisses = 0;
-
-    const markdownConverter: AudioFeedMarkdownConverter = ({episodeId, kind, markdownText}) => {
-        if (!markdownText) return '';
-        const key = `${episodeId}:${kind}:${sha256Hex(markdownText)}`;
-        const hit = markdownCache.get(key);
-        if (hit !== undefined) {
-            markdownCacheHits += 1;
-            return hit;
-        }
-        markdownCacheMisses += 1;
-        const html = markdownToHtml(markdownText);
-        markdownCache.set(key, html);
-        return html;
-    };
+    // Each (episode, kind) pair is converted exactly once per build, so a cache
+    // scoped to this build could never hit: the previous Map was created here and
+    // its hit counter always read 0, while hashing every shownotes string on the
+    // hot path. Convert directly.
+    const markdownConverter: AudioFeedMarkdownConverter = ({markdownText}) =>
+        markdownText ? markdownToHtml(markdownText) : '';
 
     const {xml, etagSeed, lastModified, timing, renderedEpisodeCount} = generateAudioFeedXml({
         cfg,
@@ -104,7 +91,6 @@ export async function buildAudioFeed(): Promise<{built: FeedBuilt; buildTiming: 
             fileMetadataMs: timing.fileMetadata.avgMs,
             enclosureMs: timing.enclosure.avgMs,
         },
-        markdownCache: {hits: markdownCacheHits, misses: markdownCacheMisses, size: markdownCache.size},
     };
 
     return {
