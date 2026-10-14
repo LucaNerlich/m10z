@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import {type ExtraProps} from 'react-markdown';
 import {routes} from '@/src/lib/routes';
+import {resolveAnchorTarget} from '@/src/lib/markdown/anchorTarget';
 import {umamiEventId, umamiExternalLinkEvent} from '@/src/lib/analytics/umami';
 
 export type AnchorProps = React.ComponentProps<'a'> & ExtraProps & {
@@ -62,51 +63,11 @@ export function Anchor({href, children, className, id, node: _node, ...props}: A
         );
     }
 
-    // Secure same-site detection using URL origin comparison
-    // This prevents protocol/case/trailing-slash/subdomain/protocol-relative URL attacks
-    let processedHref = href;
-    let isInternal = false;
-
-    const siteOrigin = (() => {
-        try {
-            return new URL(routes.siteUrl).origin;
-        } catch {
-            return routes.siteUrl;
-        }
-    })();
-
-    if (href.startsWith('/') && !href.startsWith('//')) {
-        isInternal = true;
-        // Normalize trailing slash (remove for consistency, except root)
-        if (href !== '/' && href.endsWith('/') && !href.includes('?') && !href.includes('#')) {
-            processedHref = href.slice(0, -1);
-        } else {
-            processedHref = href;
-        }
-    } else {
-        try {
-            // Protocol-relative URLs ("//host/path") have no scheme; give them https: so they parse.
-            const baseUrl = href.startsWith('//') ? `https:${href}` : href;
-            const url = new URL(baseUrl, routes.siteUrl);
-
-            isInternal = url.origin === siteOrigin;
-
-            if (isInternal) {
-                processedHref = url.pathname + url.search + url.hash;
-                if (!processedHref || processedHref === '/') {
-                    processedHref = '/';
-                } else if (!processedHref.startsWith('/')) {
-                    processedHref = '/' + processedHref;
-                }
-            } else {
-                processedHref = href;
-            }
-        } catch {
-            // Non-parseable URL (e.g., mailto:, tel:, javascript:) — keep as external.
-            isInternal = false;
-            processedHref = href;
-        }
-    }
+    // Secure same-site detection by URL origin comparison. Parsing every href —
+    // including ones that merely start with "/" — prevents protocol-relative,
+    // backslash-normalised ("/\host"), case, and subdomain tricks from being
+    // treated as internal.
+    const {isInternal, href: processedHref} = resolveAnchorTarget(href, routes.siteUrl);
 
     const linkProps: React.ComponentProps<typeof Link> & {'data-umami-event'?: string} = {
         href: processedHref,
