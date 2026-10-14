@@ -33,11 +33,14 @@ export default [
     {
         name: 'strapi::body',
         config: {
-            formLimit: '2gb',   // 2GB for larger audio/media file uploads
+            // Applies to urlencoded bodies only. This middleware runs before
+            // routing and auth, so a multi-gigabyte limit here is remotely
+            // reachable without credentials.
+            formLimit: '1mb',
             jsonLimit: '10mb',  // 10MB for JSON data
             textLimit: '10mb',  // 10MB for text content
             formidable: {
-                maxFileSize: 2147483648, // 2GB for larger audio files
+                maxFileSize: 500 * 1024 * 1024, // 500MB cap for audio/media uploads
             },
         },
     },
