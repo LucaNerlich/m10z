@@ -24,20 +24,6 @@ function escapeHtml(s) {
     .replace(/'/g, '&#39;');
 }
 
-function parseSubmetricKey(key) {
-  const brace = key.indexOf('{');
-  if (brace === -1 || !key.endsWith('}')) return null;
-  const base = key.slice(0, brace);
-  const inside = key.slice(brace + 1, -1);
-  const tags = {};
-  for (const part of inside.split(',')) {
-    const [k, v] = part.split(':');
-    if (!k || v == null) continue;
-    tags[k.trim()] = v.trim();
-  }
-  return {base, tags};
-}
-
 function getCounterCount(metric) {
   // Counter in summary-export commonly: {count, rate} or {values: {count}}
   return metric?.values?.count ?? metric?.count ?? null;
