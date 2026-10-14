@@ -1,5 +1,6 @@
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {buildContentFeed, type ContentFeedResponse} from '@/src/lib/contentFeed';
+import {clampContentFeedPage, clampContentFeedPageSize} from '@/src/lib/contentFeed/mergeFeedItems';
 import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
 
 /**
@@ -12,8 +13,10 @@ import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
  */
 export async function GET(request: Request) {
     const {searchParams} = new URL(request.url);
-    const page = Math.max(1, Math.floor(Number(searchParams.get('page')) || 1));
-    const pageSize = Math.max(1, Math.min(100, Math.floor(Number(searchParams.get('pageSize')) || 10)));
+    // Use the shared clamps so the route cannot drift from the merged feed's own
+    // normalisation (and so `?page=Infinity` cannot reach the pagination envelope).
+    const page = clampContentFeedPage(Number(searchParams.get('page') ?? 1));
+    const pageSize = clampContentFeedPageSize(Number(searchParams.get('pageSize') ?? 10));
     const startedAt = Date.now();
 
     try {

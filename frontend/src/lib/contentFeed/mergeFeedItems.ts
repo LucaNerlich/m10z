@@ -23,7 +23,11 @@ export type FeedItem =
 export type ContentFeedResponse = PaginatedResult<FeedItem>;
 
 export function clampContentFeedPage(page: number): number {
-    return Math.max(1, Math.floor(page || 1));
+    // Reject non-finite values rather than letting `Math.max` pass them through:
+    // `JSON.stringify(Infinity)` is `null`, so a `?page=Infinity` request would
+    // have serialised `pagination.page: null` into the public feed contract.
+    if (!Number.isFinite(page) || page < 1) return 1;
+    return Math.floor(page);
 }
 
 export function clampContentFeedPageSize(pageSize: number): number {

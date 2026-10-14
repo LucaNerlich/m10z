@@ -87,5 +87,18 @@ describe('clamp helpers', () => {
 
     test('clampContentFeedPage floors at 1', () => {
         expect(clampContentFeedPage(0)).toBe(1);
+        expect(clampContentFeedPage(-5)).toBe(1);
+    });
+
+    test('clampContentFeedPage rejects non-finite values instead of passing them through', () => {
+        expect(clampContentFeedPage(Number.POSITIVE_INFINITY)).toBe(1);
+        expect(clampContentFeedPage(Number.NEGATIVE_INFINITY)).toBe(1);
+        expect(clampContentFeedPage(Number.NaN)).toBe(1);
+    });
+
+    test('clampContentFeedPageSize rejects non-finite values', () => {
+        expect(clampContentFeedPageSize(Number.POSITIVE_INFINITY)).toBe(100);
+        expect(clampContentFeedPageSize(Number.NaN)).toBe(10);
+        expect(clampContentFeedPageSize(-5)).toBe(1);
     });
 });
