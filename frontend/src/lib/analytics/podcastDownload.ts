@@ -100,11 +100,18 @@ export function shouldRecordDownloadDeduped(slug: string, clientIp: string, now:
     recentDownloads.set(key, now);
 
     if (recentDownloads.size > MAX_DEDUP_ENTRIES) {
-        // Bound the map: prune expired entries before they accumulate.
+        // Prune expired entries first, then evict oldest-inserted ones (Map
+        // preserves insertion order) until the cap is met. Previously this only
+        // pruned: with every entry still live it deleted nothing, so the stated
+        // cap was not enforced and the map grew with observed traffic.
         for (const [entryKey, timestamp] of recentDownloads) {
             if (now - timestamp >= DOWNLOAD_DEDUP_WINDOW_MS) {
                 recentDownloads.delete(entryKey);
             }
+        }
+        for (const entryKey of recentDownloads.keys()) {
+            if (recentDownloads.size <= MAX_DEDUP_ENTRIES) break;
+            recentDownloads.delete(entryKey);
         }
     }
     return true;
