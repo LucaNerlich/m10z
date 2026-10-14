@@ -1,6 +1,6 @@
 import {describe, expect, test, vi} from 'vitest';
 
-import {createPrivilegedFeedReader, readApiPath, readCollection, readSingle} from '@/src/lib/strapi/contentAccess';
+import {createPrivilegedFeedReader, fetchStrapiCollection, fetchStrapiSingle, readApiPath} from '@/src/lib/strapi/contentAccess';
 
 const strapiFetchMock = vi.hoisted(() => vi.fn());
 
@@ -9,22 +9,30 @@ vi.mock('@/src/lib/strapiTransport', () => ({
 }));
 
 describe('contentAccess read interface', () => {
-    test('readCollection normalises endpoint to /api path', async () => {
+    test('fetchStrapiCollection normalises endpoint to /api path', async () => {
         strapiFetchMock.mockResolvedValueOnce({data: [], meta: {}});
-        await readCollection('articles', 'filters[slug][$eq]=foo', {tags: ['strapi:article']});
+        await fetchStrapiCollection('articles', 'filters[slug][$eq]=foo', {tags: ['strapi:article']});
         expect(strapiFetchMock).toHaveBeenCalledWith(
             expect.objectContaining({
                 path: '/api/articles?filters[slug][$eq]=foo',
-                diagnosticName: 'strapi.readCollection',
+                diagnosticName: 'strapi.fetchStrapiCollection',
             }),
         );
     });
 
-    test('readSingle normalises endpoint to /api path', async () => {
+    test('fetchStrapiSingle normalises endpoint to /api path', async () => {
         strapiFetchMock.mockResolvedValueOnce({data: {}, meta: {}});
-        await readSingle('about', '', {tags: ['strapi:about']});
+        await fetchStrapiSingle('about', '', {tags: ['strapi:about']});
         expect(strapiFetchMock).toHaveBeenCalledWith(
-            expect.objectContaining({path: '/api/about', diagnosticName: 'strapi.readSingle'}),
+            expect.objectContaining({path: '/api/about', diagnosticName: 'strapi.fetchStrapiSingle'}),
+        );
+    });
+
+    test('a read without tags still passes an empty tag list to the transport', async () => {
+        strapiFetchMock.mockResolvedValueOnce({data: {}});
+        await fetchStrapiSingle('about');
+        expect(strapiFetchMock).toHaveBeenCalledWith(
+            expect.objectContaining({cache: {mode: 'tags', tags: [], revalidate: undefined}}),
         );
     });
 
