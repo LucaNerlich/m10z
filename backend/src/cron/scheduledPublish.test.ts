@@ -139,3 +139,88 @@ describe('publishScheduledEntries pagination', () => {
         expect(publishedIds).toEqual(expectedIds);
     });
 });
+
+describe('publishScheduledEntries', () => {
+    const ARTICLE_UID = 'api::article.article';
+
+    /** Strapi double whose `findMany` serves one page of due drafts per content type. */
+    function makeCronStrapi(duePerType: Record<string, number>, publishImpl?: () => Promise<unknown>) {
+        let inFlight = 0;
+        let maxInFlight = 0;
+
+        const publish = vi.fn(async (args: {documentId: string}) => {
+            inFlight++;
+            maxInFlight = Math.max(maxInFlight, inFlight);
+            try {
+                return await (publishImpl ? publishImpl() : Promise.resolve({}));
+            } finally {
+                inFlight--;
+            }
+        });
+
+        const remaining = new Map(Object.entries(duePerType));
+
+        const documents = vi.fn((uid: string) => ({
+            findMany: vi.fn(async () => {
+                const left = remaining.get(uid) ?? 0;
+                if (left === 0) return [];
+                remaining.set(uid, 0);
+                return Array.from({length: left}, (_, index) => ({
+                    documentId: `${uid}-${index}`,
+                    slug: `doc-${index}`,
+                }));
+            }),
+            publish,
+        }));
+
+        return {
+            strapi: {
+                documents,
+                log: {info: vi.fn(), debug: vi.fn(), warn: vi.fn(), error: vi.fn()},
+            },
+            publish,
+            maxInFlight: () => maxInFlight,
+        };
+    }
+
+    test('publishes every due entry in bounded batches', async () => {
+        const {strapi, publish, maxInFlight} = makeCronStrapi({[ARTICLE_UID]: 25});
+
+        await publishScheduledEntries({strapi});
+
+        expect(publish).toHaveBeenCalledTimes(25);
+        // The fan-out was unbounded before: all 25 would start at once.
+        expect(maxInFlight()).toBeLessThanOrEqual(10);
+        expect(maxInFlight()).toBeGreaterThan(1);
+    });
+
+    test('skips the tick when a previous run is still active', async () => {
+        let release: () => void = () => {};
+        const gate = new Promise<void>((resolveGate) => {
+            release = resolveGate;
+        });
+        const {strapi, publish} = makeCronStrapi({[ARTICLE_UID]: 3}, () => gate);
+
+        const first = publishScheduledEntries({strapi});
+        await Promise.resolve();
+        const callsAfterFirstRunStarted = publish.mock.calls.length;
+
+        await publishScheduledEntries({strapi});
+
+        expect(strapi.log.warn).toHaveBeenCalledWith(expect.stringContaining('skipping this tick'));
+        expect(publish.mock.calls.length).toBe(callsAfterFirstRunStarted);
+
+        release();
+        await first;
+    });
+
+    test('a run that finishes releases the guard for the next tick', async () => {
+        const {strapi, publish} = makeCronStrapi({[ARTICLE_UID]: 1});
+
+        await publishScheduledEntries({strapi});
+        await publishScheduledEntries({strapi});
+
+        expect(publish).toHaveBeenCalledTimes(1);
+        expect(strapi.log.warn).not.toHaveBeenCalled();
+    });
+});
