@@ -1,5 +1,6 @@
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {buildContentFeed, type ContentFeedResponse} from '@/src/lib/contentFeed';
+import {parsePageParam} from '@/src/lib/params';
 import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
 
 /**
@@ -12,7 +13,7 @@ import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
  */
 export async function GET(request: Request) {
     const {searchParams} = new URL(request.url);
-    const page = Math.max(1, Math.floor(Number(searchParams.get('page')) || 1));
+    const page = parsePageParam({page: searchParams.get('page') ?? undefined});
     const pageSize = Math.max(1, Math.min(100, Math.floor(Number(searchParams.get('pageSize')) || 10)));
     const startedAt = Date.now();
 

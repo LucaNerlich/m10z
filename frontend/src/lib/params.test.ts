@@ -16,6 +16,10 @@ describe('parsePageParam', () => {
         [{page: '3.9'}, 3],
         [{page: '999'}, 999],
         [{page: ['2', '3']}, 2], // takes first element
+        [{page: 'Infinity'}, 1], // Number('Infinity') is finite-passing Infinity — must be rejected
+        [{page: '-Infinity'}, 1],
+        [{page: '1e400'}, 1], // Number('1e400') === Infinity
+        [{page: 'NaN'}, 1],
     ])('%j → %i', (params, expected) => {
         expect(parsePageParam(params)).toBe(expected);
     });
