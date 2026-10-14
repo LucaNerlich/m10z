@@ -13,7 +13,7 @@ import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateCategoryJsonLd} from '@/src/lib/jsonld/category';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
-import {sitemapTag} from '@/src/lib/strapi/cacheTags';
+import {sitemapTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {type SlugPageParams} from '@/src/lib/params';
 import Script from 'next/script';
 import styles from './page.module.css';

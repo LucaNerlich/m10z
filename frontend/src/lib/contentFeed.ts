@@ -1,5 +1,5 @@
 import {fetchArticlesPage, fetchPodcastsPage} from '@/src/lib/strapiContent';
-import {contentListPageTag, contentTag} from '@/src/lib/strapi/cacheTags';
+import {listPageTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {
     computeContentFeedFetchSize,
     type ContentFeedResponse,
@@ -21,8 +21,8 @@ export async function buildContentFeed(
     const fetchSize = computeContentFeedFetchSize(page, pageSize);
 
     const extraTags = options.tags ?? [];
-    const articleTags = Array.from(new Set([contentTag('article'), contentListPageTag('article'), ...extraTags]));
-    const podcastTags = Array.from(new Set([contentTag('podcast'), contentListPageTag('podcast'), ...extraTags]));
+    const articleTags = Array.from(new Set([typeTag('article'), listPageTag('article'), ...extraTags]));
+    const podcastTags = Array.from(new Set([typeTag('podcast'), listPageTag('podcast'), ...extraTags]));
 
     const [articlesResult, podcastsResult] = await Promise.all([
         fetchArticlesPage({page: 1, pageSize: fetchSize, tags: articleTags}),

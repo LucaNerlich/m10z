@@ -2,7 +2,7 @@ import qs from 'qs';
 import {cache} from 'react';
 
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {ABOUT_PAGE_TAG, ABOUT_TAG, feedSourceTag, LEGAL_TAGS} from '@/src/lib/strapi/cacheTags';
+import {ABOUT_PAGE_TAG, ABOUT_TAG, LEGAL_TAGS, feedSourceTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {type FetchStrapiOptions, fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
 

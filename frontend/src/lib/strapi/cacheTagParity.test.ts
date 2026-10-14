@@ -1,20 +1,45 @@
 import {describe, expect, test} from 'vitest';
 
-import {CONTENT_TYPE_KEYS, CONTENT_TYPES} from '@/src/lib/shared/strapiContract';
+import {CONTENT_TYPE_KEYS, CONTENT_TYPES} from '@/src/lib/shared/contracts/strapi-contract/registry';
 import {
     ABOUT_PAGE_TAG,
     ABOUT_TAG,
     buildAuthorPageTags,
-    contentBySlugsTag,
-    contentItemTag,
-    contentListPageTag,
-    contentListTag,
-    contentTag,
-    FETCH_TAG_SURFACES,
+    bySlugsTag,
+    entityTag,
     IMPRINT_TAG,
+    LEGAL_TAGS,
     LEGAL_TAG,
+    listPageTag,
+    listTag,
     PRIVACY_TAG,
-} from './cacheTags';
+    RELATED_CONTENT_TAG,
+    typeTag,
+} from '@/src/lib/shared/contracts/strapi-contract/tags';
+
+/**
+ * The tags each fetch surface attaches. Kept here (rather than in a module) so
+ * the expectation and the check live together: the point of the test is that
+ * whatever the read side attaches is covered by the write-side invalidation
+ * taxonomy, because Next matches cache tags exactly on revalidation.
+ */
+const FETCH_TAG_SURFACES = {
+    contentBySlug: (type: 'article' | 'podcast' | 'author' | 'category', slug: string) => [
+        typeTag(type),
+        entityTag(type, slug),
+    ],
+    contentListPage: (type: 'article' | 'podcast' | 'author' | 'category') => [typeTag(type), listPageTag(type)],
+    contentBySlugs: (type: 'article' | 'podcast' | 'author' | 'category') => [typeTag(type), bySlugsTag(type)],
+    contentAuthorPage: buildAuthorPageTags,
+    relatedContent: (type: 'article' | 'podcast' | 'author' | 'category') => [typeTag(type), RELATED_CONTENT_TAG],
+    authorList: () => [typeTag('author'), listTag('author')],
+    authorBySlug: (slug: string) => [typeTag('author'), entityTag('author', slug)],
+    categoryList: () => [typeTag('category'), listTag('category')],
+    categoryBySlug: (slug: string) => [typeTag('category'), entityTag('category', slug)],
+    about: () => [ABOUT_TAG, ABOUT_PAGE_TAG],
+    imprint: () => [...LEGAL_TAGS],
+    privacy: () => [...LEGAL_TAGS],
+} as const;
 
 /** Every tag the registry busts on write, across all content types (collection type/list tags + cascadeTags). */
 function allInvalidationTags(): Set<string> {
@@ -22,8 +47,8 @@ function allInvalidationTags(): Set<string> {
     for (const key of CONTENT_TYPE_KEYS) {
         const config = CONTENT_TYPES[key];
         if (config.kind === 'collection') {
-            tags.add(contentTag(key as Parameters<typeof contentTag>[0]));
-            tags.add(contentListTag(key as Parameters<typeof contentListTag>[0]));
+            tags.add(typeTag(key));
+            tags.add(listTag(key));
         }
         for (const tag of config.cascadeTags ?? []) tags.add(tag);
     }
@@ -34,7 +59,7 @@ describe('cache tag parity', () => {
     const invalidationTags = allInvalidationTags();
 
     test('each fetch surface has coarse invalidation coverage', () => {
-        const surfaces: {name: string; tags: string[]}[] = [
+        const surfaces: {name: string; tags: readonly string[]}[] = [
             {name: 'contentBySlug', tags: FETCH_TAG_SURFACES.contentBySlug('article', 'foo')},
             {name: 'contentListPage', tags: FETCH_TAG_SURFACES.contentListPage('article')},
             {name: 'contentBySlugs', tags: FETCH_TAG_SURFACES.contentBySlugs('podcast')},
@@ -72,10 +97,10 @@ describe('cache tag parity', () => {
     });
 
     test('coarse tags subsume fine-grained list tags', () => {
-        expect(invalidationTags.has(contentTag('article'))).toBe(true);
-        expect(invalidationTags.has(contentListTag('article'))).toBe(true);
-        expect(invalidationTags.has(contentListPageTag('article'))).toBe(false);
-        expect(invalidationTags.has(contentItemTag('article', 'foo'))).toBe(false);
-        expect(invalidationTags.has(contentBySlugsTag('article'))).toBe(false);
+        expect(invalidationTags.has(typeTag('article'))).toBe(true);
+        expect(invalidationTags.has(listTag('article'))).toBe(true);
+        expect(invalidationTags.has(listPageTag('article'))).toBe(false);
+        expect(invalidationTags.has(entityTag('article', 'foo'))).toBe(false);
+        expect(invalidationTags.has(bySlugsTag('article'))).toBe(false);
     });
 });

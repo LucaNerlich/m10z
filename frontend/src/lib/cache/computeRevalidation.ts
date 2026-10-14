@@ -1,15 +1,9 @@
 import {routes} from '@/src/lib/routes';
-import {
-    buildAuthorPageTags,
-    CONTENT_TYPES,
-    entityTag,
-    listTag,
-    type ContentTypeKey,
-    type InvalidationEvent,
-    type ListableContentType,
-    typeTag,
-} from '@/src/lib/shared/strapiContract';
-
+import type {InvalidationEvent} from '@/src/lib/shared/contracts/strapi-contract/invalidationEvent';
+import {CONTENT_TYPES} from '@/src/lib/shared/contracts/strapi-contract/registry';
+import type {ContentTypeKey} from '@/src/lib/shared/contracts/strapi-contract/registry';
+import {buildAuthorPageTags, entityTag, listTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
+import type {ListableContentType} from '@/src/lib/shared/contracts/strapi-contract/tags';
 export type Revalidation = {tags: string[]; pages: string[]; paths: string[]};
 
 function isListable(type: ContentTypeKey): type is ListableContentType {

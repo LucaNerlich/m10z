@@ -13,15 +13,14 @@ import {RelatedContent} from '@/src/components/RelatedContent';
 import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 import {type SlugPageParams} from '@/src/lib/params';
-import {contentTag} from '@/src/lib/strapi/cacheTags';
-
+import {typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 /**
  * Pre-generate static params for all published articles at build time.
  * `fetchPublishedSlugs` degrades to the entries collected so far (possibly
  * empty) when the CMS is unreachable, allowing ISR at runtime.
  */
 export async function generateStaticParams() {
-    const entries = await fetchPublishedSlugs('articles', [contentTag('article')]);
+    const entries = await fetchPublishedSlugs('articles', [typeTag('article')]);
     return entries.map(({slug}) => ({slug}));
 }
 
