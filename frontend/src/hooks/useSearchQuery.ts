@@ -5,6 +5,13 @@ import {fetcher} from '@/src/lib/swr/config';
 
 const SEARCH_INDEX_URL = '/api/search-index';
 
+/**
+ * Minimum number of characters before a query is sent. Shared with the UI so the
+ * status message and the fetch boundary cannot disagree (a one-character query
+ * used to report "no results" for a request that was never made).
+ */
+export const SEARCH_MIN_QUERY_LENGTH = 2;
+
 type SearchQueryResponse = {
     results: SearchResult[];
     total: number;
@@ -40,7 +47,7 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
 
     // 2 chars matches the Fuse client config (minMatchCharLength) and avoids
     // hammering the server for 1-char queries.
-    const shouldFetch = debouncedQuery.length >= 2;
+    const shouldFetch = debouncedQuery.length >= SEARCH_MIN_QUERY_LENGTH;
     const swrKey = shouldFetch ? `${SEARCH_INDEX_URL}?q=${encodeURIComponent(debouncedQuery)}` : null;
 
     const {data, error, isLoading, isValidating} = useSWR<SearchQueryResponse>(
