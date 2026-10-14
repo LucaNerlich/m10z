@@ -5,20 +5,45 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  # Each workspace is an independent pnpm project (there is no root manifest),
+  # so every manifest needs its own entry. Pointing at "/" found nothing.
+  - package-ecosystem: "npm"
+    directory: "/frontend"
     schedule:
       interval: "weekly"
     groups:
-        docusaurus:
-            applies-to: version-updates
-            patterns:
-                - "@docusaurus*"
-        react:
-          applies-to: version-updates
-          patterns:
-            - "react*"
-        types:
-            applies-to: version-updates
-            patterns:
-                - "@types*"
+      next-react:
+        applies-to: version-updates
+        patterns:
+          - "react*"
+          - "next*"
+      types:
+        applies-to: version-updates
+        patterns:
+          - "@types*"
+
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    groups:
+      # Grouped so the Strapi packages cannot skew against each other.
+      strapi:
+        applies-to: version-updates
+        patterns:
+          - "@strapi*"
+          - "strapi"
+      types:
+        applies-to: version-updates
+        patterns:
+          - "@types*"
+
+  - package-ecosystem: "npm"
+    directory: "/load-test"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
