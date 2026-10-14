@@ -1,7 +1,7 @@
 import {MetadataRoute} from 'next';
 
 import {absoluteRoute, routes} from '@/src/lib/routes';
-import {contentTag, sitemapTag} from '@/src/lib/strapi/cacheTags';
+import {sitemapTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {fetchPublishedSlugs, type PublishedSlugEntry} from '@/src/lib/publishedSlugs';
 import {monthsWithContent} from '@/src/lib/statistik/statistikMonth';
 import {getStatistikDashboard} from '@/src/lib/statistik/statistikSource';
@@ -52,8 +52,8 @@ function buildStaticEntries(urls: string[]): MetadataRoute.Sitemap {
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const [articles, podcasts, categories, authors, statistik] = await Promise.all([
-        fetchPublishedSlugs('articles', [sitemapTag('articles'), contentTag('article')]),
-        fetchPublishedSlugs('podcasts', [sitemapTag('podcasts'), contentTag('podcast')]),
+        fetchPublishedSlugs('articles', [sitemapTag('articles'), typeTag('article')]),
+        fetchPublishedSlugs('podcasts', [sitemapTag('podcasts'), typeTag('podcast')]),
         fetchPublishedSlugs('categories', [sitemapTag('categories')]),
         fetchPublishedSlugs('authors', [sitemapTag('authors')]),
         getStatistikDashboard(),

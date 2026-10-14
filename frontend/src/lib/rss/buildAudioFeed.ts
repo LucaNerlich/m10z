@@ -18,8 +18,7 @@ import {type FeedBuilt} from '@/src/lib/rss/feedCache';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {type StrapiAudioFeedSingle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
-import {contentTag, feedSourceTag, feedTag} from '@/src/lib/strapi/cacheTags';
-
+import {feedSourceTag, feedTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 export type AudioFeedBuildTiming = {
     episodeCount: number;
     renderedEpisodeCount: number;
@@ -33,7 +32,7 @@ export type AudioFeedBuildTiming = {
     markdownCache?: {hits: number; misses: number; size: number};
 };
 
-const fetcher = createFeedStrapiFetcher([feedTag('audio'), contentTag('podcast'), feedSourceTag('audio')]);
+const fetcher = createFeedStrapiFetcher([feedTag('audio'), typeTag('podcast'), feedSourceTag('audio')]);
 
 const buildPodcastListQuery = createFeedListQuery({
     populate: {...feedListPopulate, file: {populate: '*'}},

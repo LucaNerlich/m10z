@@ -1,15 +1,8 @@
 import {describe, expect, test} from 'vitest';
 
-import {
-    authorCategoryListTag,
-    authorListTag,
-    CONTENT_TYPE_KEYS,
-    entityTag,
-    listTag,
-    typeTag,
-} from '@/src/lib/shared/strapiContract';
-import {HOME_PAGE_TAG, RELATED_CONTENT_TAG} from '@/src/lib/strapi/cacheTags';
-
+import {CONTENT_TYPE_KEYS} from '@/src/lib/shared/contracts/strapi-contract/registry';
+import {authorCategoryListTag, authorListTag, entityTag, listTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
+import {HOME_PAGE_TAG, RELATED_CONTENT_TAG} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {computeRevalidation} from './computeRevalidation';
 
 describe('computeRevalidation', () => {

@@ -1,8 +1,7 @@
 import {describe, expect, test} from 'vitest';
 
 import {clampPage, clampPageSize, normalizePagination, toPaginatedResult} from './strapiContent';
-import {buildAuthorPageTags} from '@/src/lib/strapi/cacheTags';
-
+import {buildAuthorPageTags} from '@/src/lib/shared/contracts/strapi-contract/tags';
 describe('clampPage', () => {
     test.each([
         [0, 1],

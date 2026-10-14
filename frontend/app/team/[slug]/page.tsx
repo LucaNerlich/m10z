@@ -24,7 +24,7 @@ import {generateAuthorProfileJsonLd} from '@/src/lib/jsonld/author';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 import {type SlugPageParams} from '@/src/lib/params';
-import {sitemapTag} from '@/src/lib/strapi/cacheTags';
+import {sitemapTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import Script from 'next/script';
 import styles from './page.module.css';
 

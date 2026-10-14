@@ -3,8 +3,7 @@ import {buildArticleFeed} from '@/src/lib/rss/buildArticleFeed';
 import {type AudioFeedBuildTiming, buildAudioFeed} from '@/src/lib/rss/buildAudioFeed';
 import {createFeedCache, type FeedCache} from '@/src/lib/rss/feedCache';
 
-import {type ContentTypeKey} from '@/src/lib/shared/strapiContract';
-
+import type {ContentTypeKey} from '@/src/lib/shared/contracts/strapi-contract/registry';
 // `module.hot` is injected by the dev bundler for HMR; not present in production/runtime node.
 type HotModule = {
     hot?: {

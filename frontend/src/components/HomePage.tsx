@@ -6,7 +6,7 @@ import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
 import {buildContentFeed} from '@/src/lib/contentFeed';
-import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
+import {HOME_PAGE_TAG} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {mediaUrlToAbsolute} from '@/src/lib/strapi/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTimeCompact} from '@/src/lib/readingTime';

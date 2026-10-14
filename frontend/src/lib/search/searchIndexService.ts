@@ -4,8 +4,7 @@ import {type SearchIndexFile, type SearchRecord} from '@/src/lib/shared/search';
 
 import {CACHE_REVALIDATE_SEARCH} from '@/src/lib/cache/constants';
 import {readApiPath} from '@/src/lib/strapi/contentAccess';
-import {SEARCH_INDEX_TAG} from '@/src/lib/strapi/cacheTags';
-
+import {SEARCH_INDEX_TAG} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {getStaticPageRecords} from './staticPages';
 import {isValidSearchIndexFile} from './validateSearchIndex';
 

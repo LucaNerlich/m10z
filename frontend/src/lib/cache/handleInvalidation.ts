@@ -4,9 +4,10 @@ import {getClientIp} from '@/src/lib/net/getClientIp';
 import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {feedRegistry} from '@/src/lib/rss/feedRegistry';
-import {isContentTypeKey, isDocumentAction, type InvalidationEvent} from '@/src/lib/shared/strapiContract';
-import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
-
+import {isDocumentAction} from '@/src/lib/shared/contracts/strapi-contract/invalidationEvent';
+import type {InvalidationEvent} from '@/src/lib/shared/contracts/strapi-contract/invalidationEvent';
+import {isContentTypeKey} from '@/src/lib/shared/contracts/strapi-contract/registry';
+import {HOME_PAGE_TAG} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {computeRevalidation} from './computeRevalidation';
 
 const RATE_LIMIT = {windowMs: 60_000, max: 120} as const;

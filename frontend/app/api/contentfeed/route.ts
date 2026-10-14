@@ -1,8 +1,7 @@
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {buildContentFeed, type ContentFeedResponse} from '@/src/lib/contentFeed';
 import {parsePageParam} from '@/src/lib/params';
-import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
-
+import {HOME_PAGE_TAG} from '@/src/lib/shared/contracts/strapi-contract/tags';
 /**
  * Serve a merged, paginated content feed of articles and podcasts.
  *

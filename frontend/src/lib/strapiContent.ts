@@ -3,15 +3,7 @@ import {cache} from 'react';
 import {type StrapiArticle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {type StrapiAuthor, type StrapiCategoryRef, type StrapiMediaRef} from '@/src/lib/strapi/media';
 import {CACHE_REVALIDATE_CONTENT_PAGE, CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
-import {
-    buildAuthorPageTags,
-    contentBySlugsTag,
-    contentItemTag,
-    contentListPageTag,
-    contentListTag,
-    contentTag,
-    RELATED_CONTENT_TAG,
-} from '@/src/lib/strapi/cacheTags';
+import {RELATED_CONTENT_TAG, buildAuthorPageTags, bySlugsTag, entityTag, listPageTag, listTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {fetchJson, fetchJsonNoStore} from '@/src/lib/strapi/contentAccess';
 import {type PaginatedResult, type PaginationMeta} from '@/src/lib/strapi/responses';
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
@@ -150,7 +142,7 @@ function fetchBySlug<T>(desc: ContentDescriptor, slug: string): Promise<T | null
         status: 'published',
     });
     return fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: [contentTag(desc.contentType), contentItemTag(desc.contentType, slug)],
+        tags: [typeTag(desc.contentType), entityTag(desc.contentType, slug)],
         revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
         context: {slug, contentType: desc.contentType, populateOptions: desc.detailPopulate},
     }).then((res) => res.data?.[0] ?? null);
@@ -189,7 +181,7 @@ async function fetchPage<T>(desc: ContentDescriptor, options: FetchPageOptions):
     const res = await fetchJson<{data: T[]; meta?: {pagination?: Partial<PaginationMeta>}}>(
         `${desc.apiPath}?${query}`,
         {
-            tags: options.tags ?? [contentTag(desc.contentType), contentListPageTag(desc.contentType)],
+            tags: options.tags ?? [typeTag(desc.contentType), listPageTag(desc.contentType)],
             revalidate: CACHE_REVALIDATE_DEFAULT,
         },
     );
@@ -214,7 +206,7 @@ async function fetchBySlugs<T>(desc: ContentDescriptor, slugs: string[]): Promis
     });
 
     const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: [contentTag(desc.contentType), contentBySlugsTag(desc.contentType)],
+        tags: [typeTag(desc.contentType), bySlugsTag(desc.contentType)],
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
     return res.data ?? [];
@@ -287,7 +279,7 @@ async function fetchInDateRange<T>(desc: ContentDescriptor, from: string, to: st
     });
 
     const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: [contentTag(desc.contentType), contentListPageTag(desc.contentType)],
+        tags: [typeTag(desc.contentType), listPageTag(desc.contentType)],
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
 
@@ -315,7 +307,7 @@ async function fetchRelated<T>(
     });
 
     const res = await fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: [contentTag(desc.contentType), RELATED_CONTENT_TAG],
+        tags: [typeTag(desc.contentType), RELATED_CONTENT_TAG],
         revalidate: CACHE_REVALIDATE_DEFAULT,
     });
 
@@ -442,7 +434,7 @@ function fetchEntityList<T>(desc: SimpleDescriptor, options: FetchListOptions = 
     });
 
     return fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: options.tags ?? [contentTag(desc.contentType), contentListTag(desc.contentType)],
+        tags: options.tags ?? [typeTag(desc.contentType), listTag(desc.contentType)],
         revalidate: CACHE_REVALIDATE_DEFAULT,
     }).then((res) => res.data ?? []);
 }
@@ -455,7 +447,7 @@ function fetchEntityBySlug<T>(desc: SimpleDescriptor, slug: string): Promise<T |
     });
 
     return fetchJson<{data: T[]}>(`${desc.apiPath}?${query}`, {
-        tags: [contentTag(desc.contentType), contentItemTag(desc.contentType, slug)],
+        tags: [typeTag(desc.contentType), entityTag(desc.contentType, slug)],
         revalidate: CACHE_REVALIDATE_CONTENT_PAGE,
         context: {slug, contentType: desc.contentType, populateOptions: desc.bySlugPopulate},
     }).then((res) => res.data?.[0] ?? null);

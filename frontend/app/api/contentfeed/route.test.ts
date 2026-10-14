@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 
-import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
+import {HOME_PAGE_TAG} from '@/src/lib/shared/contracts/strapi-contract/tags';
 
 import {GET} from './route';
 

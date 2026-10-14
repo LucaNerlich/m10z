@@ -1,8 +1,7 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
-import {type InvalidationEvent} from '@/src/lib/shared/strapiContract';
-import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
-
+import type {InvalidationEvent} from '@/src/lib/shared/contracts/strapi-contract/invalidationEvent';
+import {HOME_PAGE_TAG} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {computeRevalidation} from './computeRevalidation';
 import {handleInvalidation} from './handleInvalidation';
 

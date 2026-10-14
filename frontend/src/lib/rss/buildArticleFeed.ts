@@ -10,9 +10,8 @@ import {
 import {createFeedStrapiFetcher} from '@/src/lib/rss/feedFetcher';
 import {type FeedBuilt} from '@/src/lib/rss/feedCache';
 import {type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/strapi/contentTypes';
-import {contentTag, feedSourceTag, feedTag} from '@/src/lib/strapi/cacheTags';
-
-const fetcher = createFeedStrapiFetcher([feedTag('article'), contentTag('article'), feedSourceTag('article')]);
+import {feedSourceTag, feedTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
+const fetcher = createFeedStrapiFetcher([feedTag('article'), typeTag('article'), feedSourceTag('article')]);
 
 const buildArticleListQuery = createFeedListQuery({
     populate: feedListPopulate,
