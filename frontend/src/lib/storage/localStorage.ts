@@ -50,10 +50,6 @@ export function removeItem(key: string): void {
     }
 }
 
-export function clearCache(): void {
-    inMemoryStore.clear();
-}
-
 if (typeof window !== 'undefined') {
     window.addEventListener('storage', (e: StorageEvent) => {
         if (e.key === null) {
