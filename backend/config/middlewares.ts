@@ -53,14 +53,15 @@ export default [
     {
         name: 'strapi::body',
         config: {
-            // Applies to urlencoded bodies only. This middleware runs before
-            // routing and auth, so a multi-gigabyte limit here is remotely
-            // reachable without credentials.
+            // Only urlencoded bodies. This middleware parses before routing and
+            // auth, so this one stays small: a multi-gigabyte allowance here
+            // would be remotely reachable without credentials. Multipart uploads
+            // (audio/media) are governed by `formidable.maxFileSize` below.
             formLimit: '1mb',
             jsonLimit: '10mb',  // 10MB for JSON data
             textLimit: '10mb',  // 10MB for text content
             formidable: {
-                maxFileSize: 500 * 1024 * 1024, // 500MB cap for audio/media uploads
+                maxFileSize: 2 * 1024 * 1024 * 1024, // 2GB for audio/media uploads
             },
         },
     },
