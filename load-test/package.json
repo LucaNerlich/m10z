@@ -4,9 +4,6 @@
     "version": "0.1.0",
     "type": "module",
     "description": "Load/performance test harness for m10z using k6 (via Docker) + local HTML report generation.",
-    "dependencies": {
-        "dotenv": "^17.2.3"
-    },
     "scripts": {
         "smoke": "node run.mjs smoke",
         "ramp": "node run.mjs ramp",
