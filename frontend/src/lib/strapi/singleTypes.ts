@@ -4,7 +4,8 @@ import {cache} from 'react';
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
 import {routes} from '@/src/lib/routes';
 import {ABOUT_PAGE_TAG, ABOUT_TAG, LEGAL_TAGS, feedSourceTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
-import {type FetchStrapiOptions, fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
+import {fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
+import {type FetchStrapiOptions} from '@/src/lib/strapi/responses';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
 
 /**
