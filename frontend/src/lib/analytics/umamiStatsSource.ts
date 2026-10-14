@@ -4,8 +4,12 @@
  * Returns `null` when credentials are missing or Umami is unreachable so the
  * page can omit the traffic panel without failing the editorial snapshot.
  *
- * Unconfigured deploys skip `unstable_cache` entirely so adding secrets later
- * is not stuck behind a cached null from build time.
+ * Only *successful* reads are cached. The cached callbacks deliberately let a
+ * fetch failure throw: catching inside them would cache the `null` for
+ * `CACHE_REVALIDATE_UMAMI` and blank the panel for every visitor until the
+ * window expired. The outer `cache()` wrappers catch per request instead, so the
+ * next request retries. Unconfigured deploys skip `unstable_cache` entirely so
+ * adding secrets later is not stuck behind a cached null from build time.
  */
 import 'server-only';
 
@@ -44,12 +48,8 @@ const getCachedUmamiTrafficStats = unstable_cache(
     async (): Promise<UmamiTrafficStats | null> => {
         const config = readUmamiStatsConfig();
         if (!config.ok) return null;
-        try {
-            return await fetchUmamiTrafficStats(config.value);
-        } catch (error) {
-            console.warn('[umami-stats] Failed to load traffic stats:', getErrorMessage(error));
-            return null;
-        }
+        // Deliberately un-caught: a transient failure must not be cached.
+        return await fetchUmamiTrafficStats(config.value);
     },
     ['umami-traffic-stats'],
     {
@@ -62,12 +62,8 @@ const getCachedUmamiReachDetailStats = unstable_cache(
     async (): Promise<UmamiReachDetailStats | null> => {
         const config = readUmamiStatsConfig();
         if (!config.ok) return null;
-        try {
-            return await fetchUmamiReachDetailStats(config.value);
-        } catch (error) {
-            console.warn('[umami-stats] Failed to load reach detail stats:', getErrorMessage(error));
-            return null;
-        }
+        // Deliberately un-caught: a transient failure must not be cached.
+        return await fetchUmamiReachDetailStats(config.value);
     },
     ['umami-reach-detail-stats'],
     {
