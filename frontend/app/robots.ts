@@ -15,7 +15,10 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
         .map((s) => s.trim().toLowerCase())
         .filter(Boolean);
 
-    const isNoIndex = noindexHosts.some((part) => host.toLowerCase().includes(part));
+    // Match host labels, not substrings: `NOINDEX_HOSTS=example.com` must not
+    // deindex `notexample.com`, and `m10z.de` must not match `m10z.de.evil.com`.
+    const hostname = host.toLowerCase().split(':')[0];
+    const isNoIndex = noindexHosts.some((part) => hostname === part || hostname.endsWith(`.${part}`));
 
     if (isNoIndex) {
         return {
