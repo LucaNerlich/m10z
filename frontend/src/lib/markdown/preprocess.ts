@@ -14,6 +14,8 @@
  * already, and stray `<br>`s tend to introduce large gaps.
  */
 
+import {markCodeFenceLines} from './codeFences';
+
 const RAW_BR_RE = /<br\s*\/?>/gi;
 const MARK_RE = /==([^=\n]+)==/g;
 const INS_RE = /\+\+([^+\n]+)\+\+/g;
@@ -58,23 +60,11 @@ function applyTransformsOutsideInlineCode(line: string): string {
 }
 
 export function preprocessMarkdown(source: string): string {
-    const lines = source.split('\n');
-    const result: string[] = [];
-    let inCodeFence = false;
-
     // The custom syntax transforms must never run inside fenced code blocks or
     // inline code spans: `==x==` in a code sample would be displayed as the
     // literal text `<mark>x</mark>`, and real `<br>` tags in code would be
-    // silently deleted.
-    for (const line of lines) {
-        const trimmed = line.trimStart();
-        if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
-            inCodeFence = !inCodeFence;
-            result.push(line);
-            continue;
-        }
-        result.push(inCodeFence ? line : applyTransformsOutsideInlineCode(line));
-    }
-
-    return result.join('\n');
+    // silently deleted. Fence detection is shared with the other markdown helpers.
+    return markCodeFenceLines(source)
+        .map(({line, inCode}) => (inCode ? line : applyTransformsOutsideInlineCode(line)))
+        .join('\n');
 }

@@ -23,21 +23,15 @@ export type HeadingItem = {
  * @param maxDepth - Maximum heading depth to include (default: 3, meaning h1-h3)
  * @returns Array of heading items with text and depth
  */
+import {markCodeFenceLines} from './codeFences';
+
 export function extractHeadings(markdown: string, maxDepth = 3): HeadingItem[] {
     const headings: HeadingItem[] = [];
-    const lines = markdown.split('\n');
-    let inCodeBlock = false;
 
-    for (const line of lines) {
+    for (const {line, inCode} of markCodeFenceLines(markdown)) {
+        if (inCode) continue;
+
         const trimmed = line.trimStart();
-
-        // Toggle code block state (fenced code blocks with ``` or ~~~)
-        if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
-            inCodeBlock = !inCodeBlock;
-            continue;
-        }
-
-        if (inCodeBlock) continue;
 
         const match = HEADING_REGEX.exec(trimmed);
         if (!match) continue;
