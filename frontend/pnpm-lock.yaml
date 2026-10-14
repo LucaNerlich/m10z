@@ -20,6 +20,9 @@ importers:
       fuse.js:
         specifier: ^7.5.0
         version: 7.5.0
+      github-slugger:
+        specifier: 2.0.0
+        version: 2.0.0
       jsdom:
         specifier: ^27.4.0
         version: 27.4.0
