@@ -29,15 +29,7 @@
     --color-link-night: var(--color-primary-soft);
     --shadow-soft-night: 0 16px 50px -24px rgba(0, 0, 0, 0.6);
 
-    /* Code syntax highlighting tokens - night mode (reference base variables from colors.css) */
-    --code-bg-night: oklch(0.15 0.02 255);
-    --code-text-night: oklch(0.92 0.01 260);
-    --code-keyword-night: oklch(0.72 0.16 280);
-    --code-string-night: oklch(0.78 0.13 150);
-    --code-comment-night: oklch(0.68 0.02 250);
-    --code-function-night: oklch(0.74 0.16 240);
-    --code-number-night: oklch(0.8 0.12 50);
-    --code-operator-night: oklch(0.78 0.06 20);
+    /* (code night-mode tokens live in colors.css; declaring them here too let the two copies drift) */
 
     /* Default to light mode */
     color-scheme: light;
