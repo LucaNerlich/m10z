@@ -6,6 +6,10 @@
  * proxy set itself — every entry left of it is client-supplied and spoofable.
  * Falls back to `x-real-ip`, and returns `'unknown'` when no usable value is
  * present.
+ *
+ * Accepts either a `Request` or anything with a `get(name)` header lookup, so
+ * server components can pass Next's `ReadonlyHeaders` (from `headers()`)
+ * instead of re-implementing the parsing and trusting the wrong hop.
  */
 
 // Loose IPv4/IPv6 shape check. Keeps rate-limit keys free of arbitrary garbage
@@ -17,14 +21,24 @@ function isPlausibleIp(value: string): boolean {
     return IP_SHAPE.test(value) && /[0-9]/.test(value);
 }
 
-export function getClientIp(request: Request): string {
-    const xff = request.headers.get('x-forwarded-for');
+/** Minimal header lookup contract — `Headers`, Next's `ReadonlyHeaders`, or similar. */
+export type HeaderSource = {
+    get(name: string): string | null;
+};
+
+function resolveHeaders(source: Request | HeaderSource): HeaderSource {
+    return 'headers' in source ? source.headers : source;
+}
+
+export function getClientIp(source: Request | HeaderSource): string {
+    const headers = resolveHeaders(source);
+    const xff = headers.get('x-forwarded-for');
     if (xff) {
         const hops = xff.split(',');
         const last = hops[hops.length - 1]?.trim();
         if (last && isPlausibleIp(last)) return last;
     }
-    const realIp = request.headers.get('x-real-ip')?.trim();
+    const realIp = headers.get('x-real-ip')?.trim();
     if (realIp && isPlausibleIp(realIp)) return realIp;
     return 'unknown';
 }
