@@ -8,7 +8,9 @@ export default defineConfig({
     },
     test: {
         environment: 'node',
-        include: ['src/**/*.test.ts', 'app/**/*.test.ts'],
+        // Component tests are `.tsx` (and opt into jsdom per file with
+        // `// @vitest-environment jsdom`); logic tests stay `.ts` under node.
+        include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'app/**/*.test.ts', 'app/**/*.test.tsx'],
         globals: false,
     },
 });

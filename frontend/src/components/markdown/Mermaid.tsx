@@ -48,6 +48,12 @@ export function Mermaid({chart, className}: MermaidProps) {
     const linkRef = useRef<HTMLAnchorElement>(null);
     const [{error, dataUrl}, dispatch] = useReducer(mermaidReducer, {error: null, dataUrl: null});
     const renderedChartRef = useRef<string>('');
+    // Identity of the most recent render run. A resolution from an older run must
+    // not write over a newer one: without this, changing `chart` while a render
+    // is in flight can leave the *older* diagram on screen permanently, because
+    // the resolution also stamps `renderedChartRef` and the skip-guard below then
+    // suppresses the correction.
+    const latestRunRef = useRef<string>('');
 
     // Initialize Mermaid once. startOnLoad: false prevents auto-scanning the DOM
     // (we render explicitly). securityLevel: 'strict' — diagrams never need
@@ -90,10 +96,13 @@ export function Mermaid({chart, className}: MermaidProps) {
         }
 
         const chartId = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
+        latestRunRef.current = chartId;
 
         mermaid
             .render(chartId, trimmedChart)
             .then(({svg}) => {
+                // A newer run superseded this one; its result is the one to show.
+                if (latestRunRef.current !== chartId) return;
                 if (containerRef.current) {
                     containerRef.current.innerHTML = svg;
                     renderedChartRef.current = trimmedChart;
@@ -112,6 +121,8 @@ export function Mermaid({chart, className}: MermaidProps) {
                 }
             })
             .catch((err) => {
+                // Ignore a superseded run's failure too.
+                if (latestRunRef.current !== chartId) return;
                 const errorMessage = err instanceof Error ? err.message : String(err);
                 dispatch({type: 'error', message: `Failed to render Mermaid diagram: ${errorMessage}`});
                 console.error('Mermaid rendering error:', err);
