@@ -63,7 +63,7 @@ Before submitting any change:
 - 4-space indentation, single quotes, semicolons, LF line endings
 - `bracketSpacing: false` → `{foo}` not `{ foo }`
 - `jsxSingleQuote: true`, `trailingComma: "es5"`, `quoteProps: "consistent"`
-- JSX closing bracket on same line as last prop (`jsxBracketSameLine: true`)
+- JSX closing bracket on same line as last prop (`bracketSameLine: true`)
 - Arrow parens always: `(x) =>` not `x =>`
 
 ### TypeScript
