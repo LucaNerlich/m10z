@@ -65,10 +65,7 @@ cd load-test
 # Create .env once (then just edit TARGET_ORIGIN there)
 cp env.example .env
 
-# Install deps (dotenv)
-npm install
-
-# Run tests via Docker k6 (reads .env / .env.local)
+# Run tests via Docker k6 (reads .env / .env.local; the harness has no dependencies)
 npm run smoke
 npm run ramp
 npm run spike

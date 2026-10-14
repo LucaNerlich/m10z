@@ -2,7 +2,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
-import dotenv from 'dotenv';
 
 // Repo root is not mounted: the harness only needs load-test/ read and
 // load-test/reports/ write.
@@ -16,7 +15,14 @@ const reportsDir = path.join(__dirname, 'reports');
 const K6_IMAGE = 'grafana/k6@sha256:e66db15b860113878fa74670e31f5e274830b7b6e42c8bff28b2f2d86a257603';
 
 function loadEnvFile(p) {
-  return dotenv.config({path: p, override: true});
+  // `process.loadEnvFile` is built in (Node >= 20.12) and throws when the file
+  // is missing. Unlike dotenv's `override: true` it never overwrites variables
+  // that are already set, so an explicit shell/CI value wins over .env.
+  try {
+    process.loadEnvFile(p);
+  } catch {
+    // Both files are optional.
+  }
 }
 
 // Load .env then .env.local (local overrides)
