@@ -212,22 +212,15 @@ export function buildLoginUrl(config: Pick<UmamiStatsConfig, 'host'>): string {
 
 /**
  * Build the website-stats URL for one range.
- * Optional filters use Umami's `operator.value` query form (e.g. `path=c./artikel`).
  */
 export function buildStatsUrl(
     config: Pick<UmamiStatsConfig, 'host' | 'websiteId'>,
     startAt: number,
-    endAt: number,
-    filters?: Record<string, string>
+    endAt: number
 ): string {
     const url = new URL(`/api/websites/${encodeURIComponent(config.websiteId)}/stats`, config.host);
     url.searchParams.set('startAt', String(startAt));
     url.searchParams.set('endAt', String(endAt));
-    if (filters) {
-        for (const [key, value] of Object.entries(filters)) {
-            url.searchParams.set(key, value);
-        }
-    }
     return url.toString();
 }
 
