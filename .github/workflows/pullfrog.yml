@@ -28,7 +28,7 @@ jobs:
       - name: Run agent
         # Pinned to a commit SHA (not the mutable v0 tag) because this step is
         # granted id-token:write plus every provider secret below.
-        uses: pullfrog/pullfrog@b6639f063a3017551d093eca1aeb9be12bf955b4 # v0.1.79
+        uses: pullfrog/pullfrog@ad4283a862b8377cb525a0f5bf30f17c023b18ea # v0.1.98
         with:
           prompt: ${{ inputs.prompt }}
         env:
