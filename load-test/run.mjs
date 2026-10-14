@@ -4,12 +4,16 @@ import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import dotenv from 'dotenv';
 
+// Repo root is not mounted: the harness only needs load-test/ read and
+// load-test/reports/ write.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Repo root is one level up from load-test/
-const repoRoot = path.resolve(__dirname, '..');
 const reportsDir = path.join(__dirname, 'reports');
+
+// Pinned by digest — this is the `latest` tag as of 2026-10-14. A floating tag
+// lets a re-tagged or compromised upstream image execute here.
+const K6_IMAGE = 'grafana/k6@sha256:e66db15b860113878fa74670e31f5e274830b7b6e42c8bff28b2f2d86a257603';
 
 function loadEnvFile(p) {
   return dotenv.config({path: p, override: true});
@@ -45,12 +49,17 @@ const scriptPath = `/work/load-test/${testName}.js`;
 const summaryPath = `/work/load-test/reports/${testName}-summary.json`;
 
 // Build docker args and only pass through known env vars.
+// Mount load-test/ read-only and reports/ read-write: mounting the whole repo
+// root read-write would give the container write access to every file in the
+// tree, including the .env files the README tells you to create.
 const dockerArgs = [
   'run',
   '--rm',
   '-i',
   '-v',
-  `${repoRoot}:/work`,
+  `${__dirname}:/work/load-test:ro`,
+  '-v',
+  `${reportsDir}:/work/load-test/reports`,
   '-e',
   `TARGET_ORIGIN=${targetOrigin}`,
 ];
@@ -73,7 +82,7 @@ for (const key of passEnv) {
 }
 
 dockerArgs.push(
-  'grafana/k6:latest',
+  K6_IMAGE,
   'run',
   `--summary-export=${summaryPath}`,
   scriptPath,
