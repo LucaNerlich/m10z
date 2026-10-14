@@ -1,10 +1,10 @@
 import {describe, expect, test} from 'vitest';
 
+import {PODCAST_DOWNLOAD_EVENT} from './umamiServer';
 import {
     ARTICLE_METRICS_DETAIL_FETCH_LIMIT,
     ARTICLE_METRICS_FETCH_LIMIT,
     ARTICLE_PATH_FILTER,
-    PODCAST_DOWNLOAD_EVENT,
     SLUG_PROPERTY,
     articleSlugFromPath,
     buildArticleMetricsUrl,

@@ -9,6 +9,10 @@
 
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 
+// The event name is declared once, by the emitter; the stats queries must match
+// it byte-for-byte or they silently return nothing.
+import {PODCAST_DOWNLOAD_EVENT} from './umamiServer';
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Public Statistik ranges: last 30 days is the primary display window. */
@@ -36,9 +40,6 @@ export const ARTICLE_PATH_FILTER = 'c./artikel';
 
 /** Umami event type for pageviews (excludes custom events on the same path). */
 export const PAGEVIEW_EVENT_TYPE = '1';
-
-/** Custom event recorded for podcast downloads (see `umamiServer.ts`). */
-export const PODCAST_DOWNLOAD_EVENT = 'podcast-download';
 
 /** Event-data property holding the episode slug. */
 export const SLUG_PROPERTY = 'slug';
