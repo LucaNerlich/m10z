@@ -146,19 +146,6 @@
     animation: pulse 1.2s ease-in-out infinite;
 }
 
-.loadingBody {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.loadingMeta {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
 .loadingPill {
     height: 20px;
     width: 60px;
@@ -203,8 +190,5 @@
         font-size: 1.125rem;
     }
 
-    .loadingBody {
-        padding: 14px;
-    }
+    
 }
-
