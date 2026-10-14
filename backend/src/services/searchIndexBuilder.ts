@@ -84,10 +84,6 @@ export function getLastSearchIndexMetrics(): SearchIndexMetricsSnapshot | null {
     return metricsHistory[0] ?? null;
 }
 
-export function getAllSearchIndexMetrics(): SearchIndexMetricsHistoryEntry[] {
-    return [...metricsHistory];
-}
-
 /**
  * Returns historical search index metrics from in-memory history.
  *
