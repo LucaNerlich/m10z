@@ -161,6 +161,9 @@ async function downloadFileWithRetry(
             headers: {
                 'User-Agent': 'm10z-migration-script/1.0',
             },
+            // Without a timeout a stalled connection (no FIN, no response) hangs the
+            // sequential run forever and the retry loop below never sees an error.
+            signal: AbortSignal.timeout(CLIENT_TIMEOUT_MS),
         });
 
         if (!response.ok) {
