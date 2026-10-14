@@ -355,9 +355,15 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
     }
 
     function reset() {
+        // Drop the memoised feed so the next read rebuilds, but never drop an
+        // in-flight build: `ensureScheduler()` below kicks a refresh
+        // immediately, and with `inflight` cleared that refresh would start a
+        // *second* build in parallel — both writing the same `${xmlPath}.tmp`
+        // before renaming, risking interleaved output and a meta file from a
+        // different build than the body. Queue a follow-up instead;
+        // `settleInflightBuild()` runs it as soon as the current build lands.
         cachedFeed = null;
-        inflight = null;
-        pendingRefresh = false;
+        pendingRefresh = inflight !== null;
         stopScheduler();
         ensureScheduler();
     }
