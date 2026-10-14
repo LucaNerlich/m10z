@@ -79,31 +79,11 @@ export type ImageSize = 'thumbnail' | 'small' | 'medium' | 'large';
 const IMAGE_SIZES_ORDERED: ImageSize[] = ['thumbnail', 'small', 'medium', 'large'];
 
 // Strapi 5 returns media as flat objects: { url, width, ... }.
-// This normalizer copies the fields into a plain StrapiMedia object.
+// This normalizer returns a plain copy; every field the type declares is already
+// present, so a spread says that in one line instead of a 19-line whitelist that
+// silently drops any field added to `StrapiMediaRef` later.
 export function normalizeStrapiMedia(ref: StrapiMediaRef | null | undefined): StrapiMedia {
-    if (!ref) return {};
-    return {
-        id: ref.id,
-        documentId: ref.documentId,
-        name: ref.name,
-        alternativeText: ref.alternativeText,
-        caption: ref.caption,
-        width: ref.width,
-        height: ref.height,
-        formats: ref.formats,
-        hash: ref.hash,
-        ext: ref.ext,
-        mime: ref.mime,
-        size: ref.size,
-        sizeInBytes: ref.sizeInBytes,
-        url: ref.url,
-        previewUrl: ref.previewUrl,
-        provider: ref.provider,
-        blurhash: ref.blurhash,
-        createdAt: ref.createdAt,
-        updatedAt: ref.updatedAt,
-        publishedAt: ref.publishedAt,
-    };
+    return ref ? {...ref} : {};
 }
 
 /**
