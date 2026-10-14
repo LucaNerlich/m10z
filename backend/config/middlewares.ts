@@ -1,3 +1,18 @@
+/**
+ * Origins allowed to call the content API from a browser.
+ *
+ * `strapi::cors` defaults to `origin: '*'` with `credentials: true`, which
+ * reflects any request's `Origin` back and hands every third-party page a
+ * credentialed CORS answer. Pin it to the frontend origins instead.
+ */
+const CORS_ORIGINS = [
+    process.env.CLIENT_URL,
+    process.env.FRONTEND_URL,
+    'https://m10z.de',
+    'https://umami.m10z.de',
+    'http://localhost:3000',
+].filter((origin): origin is string => Boolean(origin));
+
 export default [
     'strapi::logger',
     'strapi::errors',
@@ -27,7 +42,12 @@ export default [
             },
         },
     },
-    'strapi::cors',
+    {
+        name: 'strapi::cors',
+        config: {
+            origin: CORS_ORIGINS,
+        },
+    },
     'strapi::poweredBy',
     'strapi::query',
     {
