@@ -127,4 +127,41 @@ describe('parseWichtelnStorage', () => {
             }),
         ).toBeNull();
     });
+
+    test('rejects a self-assignment', () => {
+        expect(
+            parseWichtelnStorage({
+                participants: validPayload.participants,
+                assignments: [{giverId: 'a', receiverId: 'a'}],
+            }),
+        ).toBeNull();
+    });
+
+    test('rejects a participant giving more than once', () => {
+        expect(
+            parseWichtelnStorage({
+                participants: validPayload.participants,
+                assignments: [
+                    {giverId: 'a', receiverId: 'b'},
+                    {giverId: 'a', receiverId: 'a'},
+                ],
+            }),
+        ).toBeNull();
+    });
+
+    test('rejects a participant receiving more than once', () => {
+        expect(
+            parseWichtelnStorage({
+                participants: [
+                    {id: 'a', name: 'Anna', profileUrl: ''},
+                    {id: 'b', name: 'Ben', profileUrl: ''},
+                    {id: 'c', name: 'Cara', profileUrl: ''},
+                ],
+                assignments: [
+                    {giverId: 'a', receiverId: 'c'},
+                    {giverId: 'b', receiverId: 'c'},
+                ],
+            }),
+        ).toBeNull();
+    });
 });
