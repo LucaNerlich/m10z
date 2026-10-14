@@ -1,6 +1,6 @@
 'use client';
 
-import {type KeyboardEvent, type MouseEvent, useEffect, useId, useMemo, useRef, useState} from 'react';
+import {type KeyboardEvent, type MouseEvent, useEffect, useId, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
 import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
@@ -174,14 +174,15 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         shouldScrollRef.current = false;
     }, [results.length]);
 
-    const statusMessage = useMemo(() => {
+    const trimmedQuery = query.trim();
+    const statusMessage = (() => {
         if (searchError) return 'Suche konnte nicht geladen werden.';
         if (isLoading) return 'Suchen ...';
-        if (query.trim().length === 0) return 'Tippe, um die Suche zu starten.';
-        if (query.trim().length < SEARCH_MIN_QUERY_LENGTH) return 'Tippe weiter, um zu suchen.';
+        if (trimmedQuery.length === 0) return 'Tippe, um die Suche zu starten.';
+        if (trimmedQuery.length < SEARCH_MIN_QUERY_LENGTH) return 'Tippe weiter, um zu suchen.';
         if (results.length === 0) return 'Keine Treffer gefunden.';
         return null;
-    }, [searchError, isLoading, query, results.length]);
+    })();
 
     const selectResult = (item: SearchResult) => {
         router.push(item.href);
