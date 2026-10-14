@@ -52,13 +52,6 @@ export default function HeaderClient({
         return Array.from(elements).filter((el) => !el.hasAttribute('disabled'));
     };
 
-    const handleBurgerKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-        if (event.key === ' ' || event.key === 'Enter') {
-            event.preventDefault();
-            toggleMenu();
-        }
-    };
-
     const handleMenuLinkKeyDown = (event: React.KeyboardEvent<HTMLAnchorElement>) => {
         if (event.key === ' ') {
             event.preventDefault();
@@ -181,7 +174,6 @@ export default function HeaderClient({
                 aria-label="Menü öffnen"
                 data-umami-event="header-menu-toggle"
                 onClick={toggleMenu}
-                onKeyDown={handleBurgerKeyDown}
             >
                 <span className={styles.burgerLines} aria-hidden>
                     <span />
