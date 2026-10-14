@@ -4,7 +4,8 @@ import {useEffect, useState, useSyncExternalStore} from 'react';
 
 import styles from './Header.module.css';
 import {SearchModal} from './SearchModal';
-import {SWRProvider} from './SWRProvider';
+import {SWRConfig} from 'swr';
+import {swrConfig} from '@/src/lib/swr/config';
 
 const shortcutKeySearch = 'K';
 
@@ -55,12 +56,12 @@ export function SearchLauncher(): React.ReactElement {
                 <span className={styles.searchButtonLabel}>Suche</span>
                 <span className={styles.searchShortcut}>{shortcutLabel}</span>
             </button>
-            {/* Mount SWRProvider only when modal is open to avoid registering
-                 the global SWR config and fetch dedupe layer when unused. */}
+            {/* Mount the SWR config only when the modal is open, so the global
+                 fetch dedupe layer is not registered while it is unused. */}
             {isOpen ? (
-                <SWRProvider>
+                <SWRConfig value={swrConfig}>
                     <SearchModal onClose={() => setIsOpen(false)} />
-                </SWRProvider>
+                </SWRConfig>
             ) : null}
         </>
     );
