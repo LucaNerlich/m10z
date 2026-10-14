@@ -8,12 +8,7 @@ import {
     getSchedulerState as getArticleSchedulerState,
     stopScheduler as stopArticleScheduler,
 } from '@/src/lib/rss/articleFeedRouteHandler';
-import {verifySecret} from '@/src/lib/security/verifySecret';
-import {createRateLimiter} from '@/src/lib/security/rateLimit';
-import {getClientIp} from '@/src/lib/net/getClientIp';
-
-// Own bucket store, so another endpoint's limiter filling up cannot fail this one closed.
-const resetSchedulersLimiter = createRateLimiter({windowMs: 60_000, max: 10});
+import {requireDiagnosticsAuth} from '@/src/lib/diagnostics/requireDiagnosticsAuth';
 
 /**
  * Auth: requires `DIAGNOSTICS_TOKEN` (same as `/api/diagnostics`), provided via
@@ -28,14 +23,14 @@ const resetSchedulersLimiter = createRateLimiter({windowMs: 60_000, max: 10});
  * - In production, schedulers should usually run continuously; this endpoint is primarily for deployments/testing.
  */
 export async function GET(request: Request) {
-    const unauthorized = checkAuthAndRateLimit(request);
+    const unauthorized = requireDiagnosticsAuth(request, {bucket: 'diag-reset', max: 10});
     if (unauthorized) return unauthorized;
 
     return stateResponse(false);
 }
 
 export async function POST(request: Request) {
-    const unauthorized = checkAuthAndRateLimit(request);
+    const unauthorized = requireDiagnosticsAuth(request, {bucket: 'diag-reset', max: 10});
     if (unauthorized) return unauthorized;
 
     const audioBefore = getAudioSchedulerState();
@@ -45,28 +40,6 @@ export async function POST(request: Request) {
     stopArticleScheduler();
 
     return stateResponse(true, {audioBefore, articleBefore});
-}
-
-function checkAuthAndRateLimit(request: Request): NextResponse | null {
-    // Rate-limit before authentication so secret-guessing attempts are
-    // throttled too.
-    const ip = getClientIp(request);
-    const rl = resetSchedulersLimiter.check(`diag-reset:${ip}`);
-    if (!rl.ok) {
-        return new NextResponse('Too Many Requests', {
-            status: 429,
-            headers: {'Retry-After': String(rl.retryAfterSeconds)},
-        });
-    }
-
-    const expected = process.env.DIAGNOSTICS_TOKEN ?? null;
-    const provided = request.headers.get('x-m10z-diagnostics-token');
-
-    if (!verifySecret(provided, expected)) {
-        return new NextResponse('Unauthorized', {status: 401});
-    }
-
-    return null;
 }
 
 function stateResponse(
