@@ -1,12 +1,10 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
-import {checkRateLimit} from './rateLimit';
+import {createRateLimiter} from './rateLimit';
 
-// The rateLimit module owns a process-level `buckets` Map. Each test uses a
-// unique key derived from the test name to avoid cross-test contamination.
-function key(name: string): string {
-    return `test:${name}:${Math.random().toString(36).slice(2, 10)}`;
-}
+// Each test builds its own limiter, so the bucket map is isolated and no
+// cross-test contamination is possible.
+const CFG = {windowMs: 60_000, max: 5};
 
 beforeEach(() => {
     vi.useFakeTimers();
@@ -16,76 +14,87 @@ afterEach(() => {
     vi.useRealTimers();
 });
 
-describe('checkRateLimit', () => {
+describe('createRateLimiter', () => {
     test('first request within window → ok=true, retryAfterSeconds=0', () => {
-        const k = key('first');
-        const result = checkRateLimit(k, {windowMs: 60_000, max: 5});
-        expect(result).toEqual({ok: true, retryAfterSeconds: 0});
+        const limiter = createRateLimiter(CFG);
+        expect(limiter.check('k')).toEqual({ok: true, retryAfterSeconds: 0});
     });
 
     test('requests under max all succeed', () => {
-        const k = key('under-max');
+        const limiter = createRateLimiter(CFG);
         for (let i = 0; i < 5; i++) {
-            expect(checkRateLimit(k, {windowMs: 60_000, max: 5}).ok).toBe(true);
+            expect(limiter.check('k').ok).toBe(true);
         }
     });
 
     test('(max+1)th request → ok=false with retryAfterSeconds > 0', () => {
-        const k = key('over-max');
-        for (let i = 0; i < 3; i++) {
-            checkRateLimit(k, {windowMs: 60_000, max: 3});
-        }
-        const result = checkRateLimit(k, {windowMs: 60_000, max: 3});
+        const limiter = createRateLimiter({windowMs: 60_000, max: 3});
+        for (let i = 0; i < 3; i++) limiter.check('k');
+        const result = limiter.check('k');
         expect(result.ok).toBe(false);
         expect(result.retryAfterSeconds).toBeGreaterThan(0);
     });
 
     test('window resets after windowMs elapses', () => {
-        const k = key('window-reset');
-        // Fill the bucket.
-        for (let i = 0; i < 2; i++) {
-            checkRateLimit(k, {windowMs: 1000, max: 2});
-        }
-        expect(checkRateLimit(k, {windowMs: 1000, max: 2}).ok).toBe(false);
+        const limiter = createRateLimiter({windowMs: 1000, max: 2});
+        for (let i = 0; i < 2; i++) limiter.check('k');
+        expect(limiter.check('k').ok).toBe(false);
 
-        // Advance past the window.
         vi.advanceTimersByTime(1001);
 
-        expect(checkRateLimit(k, {windowMs: 1000, max: 2}).ok).toBe(true);
+        expect(limiter.check('k').ok).toBe(true);
     });
 
     test('retryAfterSeconds is at least 1 second', () => {
-        const k = key('min-retry');
-        checkRateLimit(k, {windowMs: 100, max: 1});
-        const result = checkRateLimit(k, {windowMs: 100, max: 1});
+        const limiter = createRateLimiter({windowMs: 100, max: 1});
+        limiter.check('k');
+        const result = limiter.check('k');
         expect(result.ok).toBe(false);
         expect(result.retryAfterSeconds).toBeGreaterThanOrEqual(1);
     });
 
     test('separate keys have independent buckets', () => {
-        const a = key('iso-a');
-        const b = key('iso-b');
-        for (let i = 0; i < 3; i++) checkRateLimit(a, {windowMs: 60_000, max: 3});
+        const limiter = createRateLimiter({windowMs: 60_000, max: 3});
+        for (let i = 0; i < 3; i++) limiter.check('a');
 
-        expect(checkRateLimit(a, {windowMs: 60_000, max: 3}).ok).toBe(false);
-        expect(checkRateLimit(b, {windowMs: 60_000, max: 3}).ok).toBe(true);
+        expect(limiter.check('a').ok).toBe(false);
+        expect(limiter.check('b').ok).toBe(true);
     });
 
-    test('map full of live buckets fails closed instead of evicting a live bucket', async () => {
-        // Use a fresh module instance so the 10k filler buckets cannot leak into
-        // other tests (the production Map is module-global and shared).
-        vi.resetModules();
-        const fresh = await import('./rateLimit');
+    test('separate limiters have independent stores, so one endpoint cannot exhaust another', () => {
+        const endpointA = createRateLimiter({windowMs: 60_000, max: 1});
+        const endpointB = createRateLimiter({windowMs: 60_000, max: 1});
+
+        expect(endpointA.check('shared').ok).toBe(true);
+        expect(endpointA.check('shared').ok).toBe(false);
+
+        // The same key on a different limiter is a different bucket.
+        expect(endpointB.check('shared').ok).toBe(true);
+    });
+
+    test('map full of live buckets fails closed instead of evicting a live bucket', () => {
+        const limiter = createRateLimiter({windowMs: 60_000, max: 1});
 
         for (let i = 0; i < 10_000; i++) {
-            fresh.checkRateLimit(`full:${i}`, {windowMs: 60_000, max: 1});
+            limiter.check(`full:${i}`);
         }
 
-        const rejected = fresh.checkRateLimit('full:overflow', {windowMs: 60_000, max: 1});
+        const rejected = limiter.check('full:overflow');
         expect(rejected.ok).toBe(false);
         expect(rejected.retryAfterSeconds).toBeGreaterThan(0);
 
         // The oldest live bucket was not evicted/reset by the overflow attempt.
-        expect(fresh.checkRateLimit('full:0', {windowMs: 60_000, max: 1}).ok).toBe(false);
+        expect(limiter.check('full:0').ok).toBe(false);
+    });
+
+    test('reclaims expired buckets before failing closed', () => {
+        const limiter = createRateLimiter({windowMs: 1000, max: 1});
+        for (let i = 0; i < 10_000; i++) {
+            limiter.check(`full:${i}`);
+        }
+
+        // Once the window has passed, the store is reclaimed and new keys are allowed.
+        vi.advanceTimersByTime(1001);
+        expect(limiter.check('after-window').ok).toBe(true);
     });
 });

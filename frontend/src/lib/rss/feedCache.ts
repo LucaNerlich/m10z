@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
-import {checkRateLimit, type RateLimitConfig} from '@/src/lib/security/rateLimit';
+import {createRateLimiter, type RateLimitConfig} from '@/src/lib/security/rateLimit';
 
 import {buildRssHeaders, fallbackFeedXml, maybeReturn304} from './feedRoute';
 
@@ -18,13 +18,13 @@ export type FeedCacheDeps = {
     clearIntervalFn?: typeof clearInterval;
     setTimeoutFn?: typeof setTimeout;
     clearTimeoutFn?: typeof clearTimeout;
-    checkRateLimitFn?: (key: string, limit: RateLimitConfig) => {ok: boolean; retryAfterSeconds: number};
+    checkRateLimitFn?: (key: string) => {ok: boolean; retryAfterSeconds: number};
     getClientIpFn?: (request: Request) => string;
     feedCacheDir?: string;
     regenerateMs?: number;
     invalidationDebounceMs?: number;
     siteUrl?: string;
-    rateLimit?: {windowMs: number; max: number};
+    rateLimit?: RateLimitConfig;
 };
 
 export type FeedBuilt = {
@@ -124,13 +124,14 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
     const clearIntervalFn = deps.clearIntervalFn ?? clearInterval;
     const setTimeoutFn = deps.setTimeoutFn ?? setTimeout;
     const clearTimeoutFn = deps.clearTimeoutFn ?? clearTimeout;
-    const checkRateLimitFn = deps.checkRateLimitFn ?? checkRateLimit;
     const getClientIpFn = deps.getClientIpFn ?? getClientIp;
+    // Own bucket store per feed cache instance.
+    const feedLimiter = createRateLimiter(deps.rateLimit ?? DEFAULT_RATE_LIMIT);
+    const checkRateLimitFn = deps.checkRateLimitFn ?? ((key: string) => feedLimiter.check(key));
 
     const FEED_CACHE_DIR = deps.feedCacheDir ?? process.env.FEED_CACHE_DIR ?? path.join(process.cwd(), '.feed-cache');
     const FEED_REGENERATE_MS = deps.regenerateMs ?? (Number(process.env.FEED_REGENERATE_MS ?? '') || DEFAULT_FEED_REGENERATE_MS);
     const INVALIDATION_DEBOUNCE_MS = deps.invalidationDebounceMs ?? DEFAULT_INVALIDATION_DEBOUNCE_MS;
-    const RATE_LIMIT = deps.rateLimit ?? DEFAULT_RATE_LIMIT;
     const SITE_URL = (deps.siteUrl ?? process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
 
     const xmlPath = path.join(FEED_CACHE_DIR, spec.diskFileName);
@@ -366,7 +367,7 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
         ensureScheduler();
 
         const ip = getClientIpFn(request);
-        const rl = checkRateLimitFn(`feed:${spec.feedKey}:${ip}`, RATE_LIMIT);
+        const rl = checkRateLimitFn(`feed:${spec.feedKey}:${ip}`);
         if (!rl.ok) {
             const headers = buildRssHeaders({cacheControl: 'no-store'});
             headers.set('Retry-After', String(rl.retryAfterSeconds));
