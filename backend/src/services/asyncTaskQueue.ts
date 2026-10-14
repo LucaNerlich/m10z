@@ -55,6 +55,29 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
 
     constructor(private readonly options: TaskQueueOptions<T, S>) {}
 
+    /**
+     * Invoke a caller callback without letting it abort the batch.
+     *
+     * The batch's items are removed from `pending` before these callbacks run, so an
+     * exception escaping one of them would skip every remaining item in the run (and
+     * surface as an unhandled rejection). Contain it here, per item / per batch.
+     */
+    private notifySettled(item: T, succeeded: boolean, strapi: S): void {
+        try {
+            this.options.onSettled?.(item, succeeded, strapi);
+        } catch (error: unknown) {
+            strapi.log.warn(`[${this.options.name}] onSettled threw; continuing with the batch.`, error);
+        }
+    }
+
+    private notifyAbandoned(items: T[], strapi: S): void {
+        try {
+            this.options.onAbandoned?.(items, strapi);
+        } catch (error: unknown) {
+            strapi.log.warn(`[${this.options.name}] onAbandoned threw; continuing.`, error);
+        }
+    }
+
     enqueue(item: T, strapi: S | undefined | null): void {
         if (!strapi) {
             console.warn(`[${this.options.name}] Missing strapi instance; cannot enqueue.`);
@@ -137,7 +160,7 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
                             strapi.log.warn(`[${this.options.name}] task threw for an item; treating as failure.`, error);
                             return false;
                         });
-                        this.options.onSettled?.(item, succeeded, strapi);
+                        this.notifySettled(item, succeeded, strapi);
                         if (succeeded) {
                             succeededCount++;
                         } else {
@@ -163,7 +186,7 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
                     strapi.log.warn(
                         `[${this.options.name}] abandoning ${failedItems.length} item(s) after ${maxRetries} consecutive failed batches; will retry on next enqueue.`,
                     );
-                    this.options.onAbandoned?.(failedItems, strapi);
+                    this.notifyAbandoned(failedItems, strapi);
                     this.consecutiveFailures = 0;
                 } else {
                     // Re-queue failed items for the next (backed-off) run, merging into any
