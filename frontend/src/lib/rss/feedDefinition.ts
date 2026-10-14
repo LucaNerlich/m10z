@@ -54,12 +54,20 @@ export function buildFeedEtagSeed(itemCount: number, latestPublishedAt: Date | n
  * Extract the publication date of the newest item in a newest-first sorted list,
  * or `null` when the list is empty. Both feed generators sort with
  * `sortByDateDesc` before calling this.
+ *
+ * Returns `null` for an unparseable date too: `new Date('garbage').toISOString()`
+ * throws `RangeError: Invalid time value`, which would take the whole feed build
+ * down (`buildFeedEtagSeed` and `formatRssDate` both convert the value) and leave
+ * subscribers on a stale or 503 response. `sortByDateDesc` already tolerates bad
+ * dates, so this is the same contract.
  */
 export function latestPublishedDate<T extends PublishableWithContentDate>(
     sortedNewestFirst: T[],
 ): Date | null {
     const raw = getEffectiveDate(sortedNewestFirst[0]);
-    return raw ? new Date(raw) : null;
+    if (!raw) return null;
+    const parsed = new Date(raw);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
 /**

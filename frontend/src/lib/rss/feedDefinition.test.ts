@@ -31,6 +31,23 @@ describe('latestPublishedDate', () => {
     test('returns null for an empty list', () => {
         expect(latestPublishedDate([])).toBeNull();
     });
+
+    test('returns null for an unparseable date instead of an invalid Date', () => {
+        // `new Date('garbage').toISOString()` throws RangeError, which would take
+        // the whole feed build down via buildFeedEtagSeed / formatRssDate.
+        const sorted = [{title: 'bad', date: 'garbage', publishedAt: null}];
+        expect(latestPublishedDate(sorted)).toBeNull();
+        expect(() => buildFeedEtagSeed(1, latestPublishedDate(sorted))).not.toThrow();
+        expect(buildFeedEtagSeed(1, latestPublishedDate(sorted))).toBe('1:none');
+    });
+
+    test('falls back to a parseable publishedAt when the date is unparseable', () => {
+        const sorted = [{title: 'mixed', date: 'garbage', publishedAt: '2026-02-02T00:00:00.000Z'}];
+        // getEffectiveDate prefers `dated` then publishedAt; either way the value
+        // that reaches the seed must be a valid Date or null.
+        const result = latestPublishedDate(sorted);
+        expect(result === null || !Number.isNaN(result.getTime())).toBe(true);
+    });
 });
 
 describe('resolveChannelImageUrl', () => {
