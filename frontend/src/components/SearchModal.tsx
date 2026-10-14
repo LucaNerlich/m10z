@@ -6,7 +6,7 @@ import Image from 'next/image';
 import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
-import {normalizeSearchImageUrl} from '@/src/lib/image';
+import {isImageHostnameAllowed, normalizeSearchImageUrl} from '@/src/lib/image';
 import {type SearchRecord, type SearchResult} from '@/src/lib/search/types';
 import {umamiEventId} from '@/src/lib/analytics/umami';
 
@@ -262,7 +262,12 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                             <div className={styles.resultContent}>
                                 {item.coverImageUrl ? (() => {
                                     const normalizedUrl = normalizeSearchImageUrl(item.coverImageUrl);
-                                    return normalizedUrl ? (
+                                    // A host outside the Next image allowlist makes <Image> throw
+                                    // during render, which would take the whole modal into the error
+                                    // boundary. Every other image path checks the allowlist first;
+                                    // here we degrade to no thumbnail (the row already supports that).
+                                    if (!normalizedUrl || !isImageHostnameAllowed(normalizedUrl)) return null;
+                                    return (
                                         <div className={styles.resultImage}>
                                             <Image
                                                 src={normalizedUrl}
@@ -274,7 +279,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                                                 className={styles.coverImage}
                                             />
                                         </div>
-                                    ) : null;
+                                    );
                                 })() : null}
                                 <div className={styles.resultText}>
                                     <div className={styles.resultHeader}>
