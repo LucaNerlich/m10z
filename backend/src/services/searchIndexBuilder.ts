@@ -172,7 +172,7 @@ function toPlainText(value: unknown, metrics?: PlainTextMetrics): string | undef
     return text.slice(0, maxLen);
 }
 
-function extractMediaUrl(mediaRef: IndexEntry, strapiUrl?: string): string | null {
+function extractMediaUrl(mediaRef: IndexEntry | null | undefined, strapiUrl?: string): string | null {
     if (!strapiUrl || !mediaRef) return null;
 
     const url = mediaRef.url;
@@ -213,34 +213,6 @@ function extractCoverImageUrl(raw: IndexEntry, strapiUrl?: string): string | nul
             const url = extractMediaUrl(categoryBanner, strapiUrl);
             if (url) return url;
         }
-    }
-
-    return null;
-}
-
-function extractAuthorAvatarUrl(raw: IndexEntry, strapiUrl?: string): string | null {
-    if (!strapiUrl) return null;
-
-    const avatar = raw.avatar;
-    if (avatar) {
-        return extractMediaUrl(avatar, strapiUrl);
-    }
-
-    return null;
-}
-
-function extractCategoryCoverUrl(raw: IndexEntry, strapiUrl?: string): string | null {
-    if (!strapiUrl) return null;
-
-    const rootCover = raw.cover;
-    if (rootCover) {
-        const url = extractMediaUrl(rootCover, strapiUrl);
-        if (url) return url;
-    }
-
-    const rootBanner = raw.banner;
-    if (rootBanner) {
-        return extractMediaUrl(rootBanner, strapiUrl);
     }
 
     return null;
@@ -343,7 +315,7 @@ function normalizeAuthor(author: IndexEntry, strapiUrl?: string): SearchRecord |
         description: sanitizeText(author.description) ?? null,
         href: `/team/${encodeURIComponent(slug)}`,
         tags: ['Autor-In'],
-        coverImageUrl: extractAuthorAvatarUrl(author, strapiUrl),
+        coverImageUrl: extractMediaUrl(author.avatar, strapiUrl),
     };
 }
 
@@ -360,7 +332,7 @@ function normalizeCategory(category: IndexEntry, strapiUrl?: string): SearchReco
         description: sanitizeText(category.description) ?? null,
         href: `/kategorien/${encodeURIComponent(slug)}`,
         tags: ['Kategorie'],
-        coverImageUrl: extractCategoryCoverUrl(category, strapiUrl),
+        coverImageUrl: extractCoverImageUrl(category, strapiUrl),
     };
 }
 
