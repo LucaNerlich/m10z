@@ -37,7 +37,7 @@ if (!testName || !['smoke', 'ramp', 'spike'].includes(testName)) {
 
 const targetOriginRaw = process.env.TARGET_ORIGIN?.trim() ?? '';
 if (!targetOriginRaw) {
-  console.error('Missing TARGET_ORIGIN. Put it in load-test/.env (see load-test/env.example).');
+  console.error('Missing TARGET_ORIGIN. Put it in load-test/.env (see load-test/.env.example).');
   process.exit(2);
 }
 
