@@ -10,13 +10,22 @@ on:
     # https://crontab.guru -> at 09:00
     - cron: '0 * * * *'
 
+# Least privilege: the workflow default is read, and write scopes are granted
+# only to the job that merges (it holds a merge-capable PAT).
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+# Queue rather than cancel: an hourly run must finish its merge.
+concurrency:
+  group: merge-schedule
+  cancel-in-progress: false
 
 jobs:
   merge_schedule:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       # Pinned to a commit SHA (not the mutable v2 tag) because this step is
       # granted a merge-capable PAT below.
@@ -34,4 +43,4 @@ jobs:
           # `automerge-fail`.
           automerge_fail_label: 'merge-schedule-failed'
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }} #
+          GITHUB_TOKEN: ${{ secrets.PAT }}
