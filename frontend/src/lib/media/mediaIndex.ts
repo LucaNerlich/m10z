@@ -10,6 +10,8 @@
  * `public/media-index.json` and read server-side (see `mediaIndexSource.ts`).
  */
 
+import {markCodeFenceLines} from '@/src/lib/markdown/codeFences';
+
 export const MEDIA_INDEX_VERSION = 1;
 
 export type MediaIndexEntry = {
@@ -182,16 +184,9 @@ export function enrichMarkdownImages(
     if (!index || typeof markdown !== 'string' || markdown === '')
         return markdown;
 
-    let inCodeFence = false;
-    return markdown
-        .split('\n')
-        .map((line) => {
-            const trimmed = line.trimStart();
-            if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
-                inCodeFence = !inCodeFence;
-                return line;
-            }
-            if (inCodeFence) return line;
+    return markCodeFenceLines(markdown)
+        .map(({line, inCode}) => {
+            if (inCode) return line;
 
             return line.replace(
                 MARKDOWN_IMAGE_RE,
