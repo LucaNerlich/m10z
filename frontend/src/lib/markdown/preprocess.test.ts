@@ -64,4 +64,30 @@ describe('preprocessMarkdown', () => {
         const expected = ['~~~', 'H~2~O', '~~~', 'H<sub>2</sub>O'].join('\n');
         expect(preprocessMarkdown(source)).toBe(expected);
     });
+
+    test('leaves inline code spans untouched', () => {
+        expect(preprocessMarkdown('Use `<br>` to force a line break.')).toBe(
+            'Use `<br>` to force a line break.',
+        );
+        expect(preprocessMarkdown('Compare `a == b` in code.')).toBe('Compare `a == b` in code.');
+        expect(preprocessMarkdown('`x++y` and `^caret^` and `~tilde~`')).toBe(
+            '`x++y` and `^caret^` and `~tilde~`',
+        );
+    });
+
+    test('still transforms text outside an inline code span on the same line', () => {
+        expect(preprocessMarkdown('==mark== then `==literal==` then ^sup^')).toBe(
+            '<mark>mark</mark> then `==literal==` then <sup>sup</sup>',
+        );
+    });
+
+    test('handles double-backtick spans', () => {
+        expect(preprocessMarkdown('``a == b`` stays')).toBe('``a == b`` stays');
+    });
+
+    // Pinned as-is: the transform set is intentionally unchanged, so prose that
+    // uses `~` as "approximately" still forms a subscript pair.
+    test('keeps the existing tilde semantics outside code spans', () => {
+        expect(preprocessMarkdown('~10 bis ~20 Minuten')).toBe('<sub>10 bis </sub>20 Minuten');
+    });
 });

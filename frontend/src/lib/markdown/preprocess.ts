@@ -31,14 +31,41 @@ function applyTransforms(line: string): string {
         .replace(SUB_RE, '<sub>$1</sub>');
 }
 
+/**
+ * Matches inline code spans (`` `code` ``, ``` ``code`` ```), keeping the
+ * backtick delimiters in the captured group so the code can be split without
+ * losing them.
+ */
+const INLINE_CODE_SPLIT_RE = /(`+[^`]*`+)/g;
+
+/**
+ * Apply the transforms to the parts of a line that are *not* inline code spans.
+ *
+ * The transforms are text-level, so without this an inline span like
+ * `` `a == b` `` lost its content (`` `` ``) and a documented literal such as
+ * `` `<br>` `` was deleted. `String.prototype.split` with a capturing group
+ * interleaves the delimiters, so the odd indices are exactly the code spans.
+ *
+ * Limitation: a span whose closing delimiter uses a different number of
+ * backticks than its opening one (CommonMark allows `` `a`b` ``) is not
+ * recognised.
+ */
+function applyTransformsOutsideInlineCode(line: string): string {
+    return line
+        .split(INLINE_CODE_SPLIT_RE)
+        .map((part, index) => (index % 2 === 1 ? part : applyTransforms(part)))
+        .join('');
+}
+
 export function preprocessMarkdown(source: string): string {
     const lines = source.split('\n');
     const result: string[] = [];
     let inCodeFence = false;
 
-    // The custom syntax transforms must never run inside fenced code blocks:
-    // `==x==` in a code sample would be displayed as the literal text
-    // `<mark>x</mark>`, and real `<br>` tags in code would be silently deleted.
+    // The custom syntax transforms must never run inside fenced code blocks or
+    // inline code spans: `==x==` in a code sample would be displayed as the
+    // literal text `<mark>x</mark>`, and real `<br>` tags in code would be
+    // silently deleted.
     for (const line of lines) {
         const trimmed = line.trimStart();
         if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
@@ -46,7 +73,7 @@ export function preprocessMarkdown(source: string): string {
             result.push(line);
             continue;
         }
-        result.push(inCodeFence ? line : applyTransforms(line));
+        result.push(inCodeFence ? line : applyTransformsOutsideInlineCode(line));
     }
 
     return result.join('\n');
