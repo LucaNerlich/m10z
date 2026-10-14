@@ -48,11 +48,20 @@ export function parseWichtelnStorage(value: unknown): {
     }
 
     const assignments: Assignment[] = [];
+    const giverIds = new Set<string>();
+    const receiverIds = new Set<string>();
     for (const rawAssignment of record.assignments) {
         if (typeof rawAssignment !== 'object' || rawAssignment === null) return null;
         const {giverId, receiverId} = rawAssignment as Record<string, unknown>;
         if (typeof giverId !== 'string' || typeof receiverId !== 'string') return null;
         if (!participantIds.has(giverId) || !participantIds.has(receiverId)) return null;
+        // `shuffleAndAssign` produces a derangement in which every participant
+        // gives once and receives once, so a self-gift or a repeated giver or
+        // receiver means the payload is corrupt.
+        if (giverId === receiverId) return null;
+        if (giverIds.has(giverId) || receiverIds.has(receiverId)) return null;
+        giverIds.add(giverId);
+        receiverIds.add(receiverId);
         assignments.push({giverId, receiverId});
     }
 
