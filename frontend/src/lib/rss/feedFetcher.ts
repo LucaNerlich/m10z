@@ -9,7 +9,6 @@
  * Centralising these here means a query/config change is one edit, not two.
  */
 
-import {createPrivilegedFeedReader} from '@/src/lib/strapi/contentAccess';
 import {
     type StrapiCollectionResponse,
     type StrapiSingleResponse,
@@ -20,15 +19,6 @@ const DEFAULT_MAX_PAGES = 50;
 const DEFAULT_MAX_ITEMS = 1000;
 
 export type StrapiFeedFetcher = <T>(pathWithQuery: string) => Promise<T>;
-
-/**
- * Build a fetcher bound to a fixed cache-tag set. The returned function
- * forwards every call across the unified Content access read interface as a
- * privileged read, with the production-vs-dev revalidate behaviour.
- */
-export function createFeedStrapiFetcher(tags: string[]): StrapiFeedFetcher {
-    return createPrivilegedFeedReader(tags);
-}
 
 /**
  * Walk a Strapi collection endpoint, capping at `maxItems` total items and

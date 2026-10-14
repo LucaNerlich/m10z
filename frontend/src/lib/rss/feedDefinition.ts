@@ -3,8 +3,7 @@ import qs from 'qs';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {normalizeBaseUrl} from '@/src/lib/rss/feedRoute';
 import {fetchAllPaginated, fetchFeedSingle, type StrapiFeedFetcher} from '@/src/lib/rss/feedFetcher';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory, type StrapiPopulate} from '@/src/lib/strapi-queries/populate';
-import {buildFeedListQuery} from '@/src/lib/strapi-queries/queries';
+import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapi-queries/populate';
 import {getEffectiveDate, type PublishableWithContentDate} from '@/src/lib/effectiveDate';
 import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiMediaRef} from '@/src/lib/strapi/media';
 
@@ -23,21 +22,13 @@ export const FEED_CHANNEL_SINGLE_QUERY = qs.stringify(
 );
 
 // Common list population: cover, banner, authors, categories. The audio feed extends
-// this with its file enclosure (see createFeedListQuery callers).
+// this with its file enclosure (see the list-query builders in each feed handler).
 export const feedListPopulate = {
     cover: {fields: MEDIA_FIELDS},
     banner: {fields: MEDIA_FIELDS},
     authors: populateAuthorAvatar,
     categories: populateCategory,
 };
-
-// Build a paginated list-query string for a feed (sorted newest-first, published only).
-export function createFeedListQuery(args: {
-    fields: readonly string[];
-    populate: StrapiPopulate;
-}): (page: number, pageSize: number) => string {
-    return buildFeedListQuery(args);
-}
 
 // The feed etag: a stable hash of the generator's seed plus the rendered document.
 export function computeFeedEtag(etagSeed: string, xml: string): string {

@@ -7,13 +7,13 @@ import {
 } from '@/src/lib/rss/audiofeed';
 import {
     computeFeedEtag,
-    createFeedListQuery,
     FEED_CHANNEL_SINGLE_QUERY,
     FEED_SITE_URL,
     feedListPopulate,
     fetchFeedSourceData,
 } from '@/src/lib/rss/feedDefinition';
-import {createFeedStrapiFetcher} from '@/src/lib/rss/feedFetcher';
+import {createPrivilegedFeedReader} from '@/src/lib/strapi/contentAccess';
+import {buildFeedListQuery} from '@/src/lib/strapi-queries/queries';
 import {type FeedBuilt} from '@/src/lib/rss/feedCache';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {sha256Hex} from '@/src/lib/rss/xml';
@@ -32,9 +32,9 @@ export type AudioFeedBuildTiming = {
     markdownCache?: {hits: number; misses: number; size: number};
 };
 
-const fetcher = createFeedStrapiFetcher([feedTag('audio'), typeTag('podcast'), feedSourceTag('audio')]);
+const fetcher = createPrivilegedFeedReader([feedTag('audio'), typeTag('podcast'), feedSourceTag('audio')]);
 
-const buildPodcastListQuery = createFeedListQuery({
+const buildPodcastListQuery = buildFeedListQuery({
     populate: {...feedListPopulate, file: {populate: '*'}},
     fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
 });

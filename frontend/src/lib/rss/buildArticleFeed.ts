@@ -1,19 +1,19 @@
 import {generateArticleFeedXml} from '@/src/lib/rss/articlefeed';
 import {
     computeFeedEtag,
-    createFeedListQuery,
     FEED_CHANNEL_SINGLE_QUERY,
     FEED_SITE_URL,
     feedListPopulate,
     fetchFeedSourceData,
 } from '@/src/lib/rss/feedDefinition';
-import {createFeedStrapiFetcher} from '@/src/lib/rss/feedFetcher';
+import {createPrivilegedFeedReader} from '@/src/lib/strapi/contentAccess';
+import {buildFeedListQuery} from '@/src/lib/strapi-queries/queries';
 import {type FeedBuilt} from '@/src/lib/rss/feedCache';
 import {type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/strapi/contentTypes';
 import {feedSourceTag, feedTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
-const fetcher = createFeedStrapiFetcher([feedTag('article'), typeTag('article'), feedSourceTag('article')]);
+const fetcher = createPrivilegedFeedReader([feedTag('article'), typeTag('article'), feedSourceTag('article')]);
 
-const buildArticleListQuery = createFeedListQuery({
+const buildArticleListQuery = buildFeedListQuery({
     populate: feedListPopulate,
     fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
 });
