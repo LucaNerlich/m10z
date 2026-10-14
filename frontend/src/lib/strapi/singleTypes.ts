@@ -2,6 +2,7 @@ import qs from 'qs';
 import {cache} from 'react';
 
 import {CACHE_REVALIDATE_DEFAULT} from '@/src/lib/cache/constants';
+import {routes} from '@/src/lib/routes';
 import {ABOUT_PAGE_TAG, ABOUT_TAG, LEGAL_TAGS, feedSourceTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {type FetchStrapiOptions, fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
@@ -166,8 +167,11 @@ function feedsContentToString(content: unknown): string {
 }
 
 async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promise<StrapiFeedsInfo> {
-    const feed = `${process.env.NEXT_PUBLIC_DOMAIN}/rss.xml`;
-    const audioFeed = `${process.env.NEXT_PUBLIC_DOMAIN}/audiofeed.xml`;
+    // Use the shared site URL: every other site-URL site guards this, and the
+    // fallback is exactly when the CMS is unreachable, so an unset
+    // NEXT_PUBLIC_DOMAIN must not render literal `undefined/rss.xml` links.
+    const feed = `${routes.siteUrl}/rss.xml`;
+    const audioFeed = `${routes.siteUrl}/audiofeed.xml`;
     const nowIso = new Date().toISOString();
     const fallback: StrapiFeedsInfo = {
         id: -1,
