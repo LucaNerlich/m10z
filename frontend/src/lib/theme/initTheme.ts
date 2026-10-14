@@ -9,7 +9,8 @@ const STORAGE_KEY = 'm10z-theme';
 export type Theme = 'system' | 'light' | 'night' | 'dark' | 'paper' | 'hacker' | 'rainbow' | 'oled';
 type EffectiveTheme = 'light' | 'night' | 'dark' | 'paper' | 'hacker' | 'rainbow' | 'oled';
 
-const THEME_OPTIONS: Theme[] = ['system', 'light', 'night', 'dark', 'paper', 'hacker', 'rainbow', 'oled'];
+/** The themes the app supports. `public/theme-init.js` carries the same list. */
+export const THEME_OPTIONS: Theme[] = ['system', 'light', 'night', 'dark', 'paper', 'hacker', 'rainbow', 'oled'];
 
 // Fired on the same window after persistTheme() writes; the `storage` event
 // only fires in OTHER tabs, so same-tab consumers need their own signal.
