@@ -23,7 +23,8 @@ export type FeedItem =
 export type ContentFeedResponse = PaginatedResult<FeedItem>;
 
 export function clampContentFeedPage(page: number): number {
-    return Math.max(1, Math.floor(page || 1));
+    // Infinity survives Math.max/Math.floor and then serializes as null — non-finite input falls back to 1.
+    return Number.isFinite(page) ? Math.max(1, Math.floor(page)) : 1;
 }
 
 export function clampContentFeedPageSize(pageSize: number): number {

@@ -87,5 +87,13 @@ describe('clamp helpers', () => {
 
     test('clampContentFeedPage floors at 1', () => {
         expect(clampContentFeedPage(0)).toBe(1);
+        expect(clampContentFeedPage(-3)).toBe(1);
+        expect(clampContentFeedPage(2.9)).toBe(2);
+    });
+
+    test('clampContentFeedPage falls back to 1 on non-finite input', () => {
+        expect(clampContentFeedPage(Number.POSITIVE_INFINITY)).toBe(1);
+        expect(clampContentFeedPage(Number.NEGATIVE_INFINITY)).toBe(1);
+        expect(clampContentFeedPage(Number.NaN)).toBe(1);
     });
 });
