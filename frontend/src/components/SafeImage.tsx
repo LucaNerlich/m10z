@@ -29,13 +29,17 @@ export function SafeImage({
                               style,
                               title,
                           }: SafeImageProps) {
-    const [hasError, setHasError] = useState(false);
+    // Track *which* src failed rather than a bare boolean: a boolean stays true
+    // for the element's lifetime, so a list that revalidates a different image
+    // into the same position kept showing the warning for a URL that never
+    // failed. Comparing against the current src retries automatically.
+    const [failedSrc, setFailedSrc] = useState<string | null>(null);
 
     if (!isImageHostnameAllowed(src)) {
         return <ImageWarning src={src} alt={alt} />;
     }
 
-    if (hasError) {
+    if (failedSrc === src) {
         return <ImageWarning src={src} alt={alt} />;
     }
 
@@ -48,7 +52,7 @@ export function SafeImage({
             height={height}
             sizes={sizes}
             style={style}
-            onError={() => setHasError(true)}
+            onError={() => setFailedSrc(src)}
         />
     );
 }
