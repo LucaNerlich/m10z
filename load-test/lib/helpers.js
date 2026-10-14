@@ -2,9 +2,12 @@ import http from 'k6/http';
 import {check, sleep} from 'k6';
 import {Counter} from 'k6/metrics';
 
-// Custom metric to make failures explainable in reports (e.g. 429 vs 500).
-// k6 will emit per-tag submetrics like:
-//   m10z_http_status{status:200,name:home}: { count, rate }
+// Custom metric to make failures explainable (e.g. 429 vs 500). Tagged by status
+// and endpoint name so k6 exposes submetrics like
+//   m10z_http_status{status:500,name:api_search}
+// which threshold selectors and the k6 console summary use. Note: `--summary-export`
+// aggregates by metric name and drops tags, so these submetrics do not appear in
+// the exported JSON the HTML report is generated from.
 const httpStatusCounter = new Counter('m10z_http_status');
 const http2xx = new Counter('m10z_http_2xx');
 const http3xx = new Counter('m10z_http_3xx');
@@ -54,7 +57,13 @@ export function think(minSeconds = 0.2, maxSeconds = 0.8) {
 
 function recordStatus(status, name) {
   const s = Number(status);
-  httpStatusCounter.add(1);
+  // Tagged so per-status / per-endpoint submetrics exist, e.g.
+  //   m10z_http_status{status:500,name:api_search}
+  // which is what threshold expressions and the k6 console summary use.
+  httpStatusCounter.add(1, {
+    status: String(s),
+    name: String(name ?? 'unknown'),
+  });
   if (Number.isFinite(s)) {
     if (s >= 200 && s < 300) http2xx.add(1);
     else if (s >= 300 && s < 400) http3xx.add(1);
