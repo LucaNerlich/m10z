@@ -6,8 +6,8 @@
       "icon": "sync",
       "options": {
         "from": {
-          "name": "Administration Panel",
-          "email": "no-reply@strapi.io"
+          "name": "m10z",
+          "email": "no-reply@m10z.de"
         },
         "response_email": "",
         "object": "Reset password",
@@ -19,8 +19,8 @@
       "icon": "check-square",
       "options": {
         "from": {
-          "name": "Administration Panel",
-          "email": "no-reply@strapi.io"
+          "name": "m10z",
+          "email": "no-reply@m10z.de"
         },
         "response_email": "",
         "object": "Account confirmation",
