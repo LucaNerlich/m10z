@@ -36,6 +36,7 @@ https://nextjs.org/docs/app/api-reference/file-conventions/route#non-ui-response
 - /api/contentfeed - merged, paginated article + podcast JSON feed
 - /api/podcast-download/[slug] - download tracking redirect for podcast audio
 - /api/diagnostics - runtime diagnostics (rate-limited, token-protected)
+- /api/diagnostics/reset-schedulers - read or stop the RSS feed refresh schedulers (rate-limited, token-protected)
 - /api/sitemap - redirects to /sitemap.xml
 
 ## Content Parsing
