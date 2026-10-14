@@ -1,6 +1,6 @@
 'use client';
 
-import {useMemo, useState} from 'react';
+import {useState} from 'react';
 import Link from 'next/link';
 import Fuse, {type IFuseOptions} from 'fuse.js';
 
@@ -24,18 +24,15 @@ const FUSE_OPTIONS: IFuseOptions<M12GGameIndexEntry> = {
 export function M12GGameIndex({games}: M12GGameIndexProps) {
     const [query, setQuery] = useState('');
 
-    const fuse = useMemo(() => new Fuse(games, FUSE_OPTIONS), [games]);
+    // `reactCompiler: true` (next.config.ts) memoises these; manual wrappers only
+    // added dependency arrays that can silently go stale.
+    const fuse = new Fuse(games, FUSE_OPTIONS);
 
-    const filteredGames = useMemo(() => {
-        const trimmed = query.trim();
-        if (trimmed.length < 2) return games;
-        return fuse.search(trimmed).map((result) => result.item);
-    }, [query, games, fuse]);
+    const trimmedQuery = query.trim();
+    const filteredGames =
+        trimmedQuery.length < 2 ? games : fuse.search(trimmedQuery).map((result) => result.item);
 
-    const maxVotes = useMemo(() => {
-        if (filteredGames.length === 0) return 1;
-        return Math.max(...filteredGames.map((g) => g.totalVotes));
-    }, [filteredGames]);
+    const maxVotes = filteredGames.length === 0 ? 1 : Math.max(...filteredGames.map((g) => g.totalVotes));
 
     const isFiltered = query.trim().length >= 2;
 
