@@ -1,9 +1,11 @@
 'use client';
 
-import React, {useEffect, useState, useSyncExternalStore} from 'react';
+import React, {useEffect} from 'react';
 
 import {applyTheme, getStoredTheme, persistTheme, subscribeToTheme, type Theme} from '@/src/lib/theme/initTheme';
+import {useStoredPreference} from '@/src/hooks/useStoredPreference';
 
+import {PreferenceSelect} from './PreferenceSelect';
 import styles from './ThemeSelector.module.css';
 
 interface ThemeOption {
@@ -23,26 +25,18 @@ const THEME_OPTIONS: ThemeOption[] = [
 ];
 
 const DEFAULT_THEME: Theme = 'system';
-// getIsClient / getIsClientServer discriminate SSR from client for hydration safety.
-const getIsClient = () => true;
-const getIsClientServer = () => false;
+const getServerTheme = () => DEFAULT_THEME;
 
 export default function ThemeSelector(): React.ReactElement | null {
     // subscribeToTheme keeps the snapshot in sync with the header toggle and
     // cross-tab changes; a no-op subscription would show a stale theme.
-    const storedTheme = useSyncExternalStore(subscribeToTheme, getStoredTheme, () => DEFAULT_THEME);
-    const [userTheme, setUserTheme] = useState<Theme | null>(null);
-    const theme = userTheme ?? storedTheme;
-    const hydrated = useSyncExternalStore(() => () => {}, getIsClient, getIsClientServer);
-
-    useEffect(() => {
-        applyTheme(theme);
-    }, [theme]);
-
-    useEffect(() => {
-        if (userTheme === null) return;
-        persistTheme(userTheme);
-    }, [userTheme]);
+    const {value: theme, setValue, hydrated} = useStoredPreference<Theme>({
+        subscribe: subscribeToTheme,
+        getStored: getStoredTheme,
+        getServerValue: getServerTheme,
+        apply: applyTheme,
+        persist: persistTheme,
+    });
 
     useEffect(() => {
         if (!hydrated || theme !== 'system') return;
@@ -56,28 +50,18 @@ export default function ThemeSelector(): React.ReactElement | null {
         return () => mediaQuery.removeEventListener('change', handleChange);
     }, [theme, hydrated]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setUserTheme(e.target.value as Theme);
-    };
-
     if (!hydrated) {
         return null;
     }
 
     return (
-        <div className={styles.pickerWrapper}>
-            <select
-                className={styles.picker}
-                value={theme}
-                onChange={handleChange}
-                aria-label="Design auswählen"
-            >
-                {THEME_OPTIONS.map((option) => (
-                    <option key={option.id} value={option.id}>
-                        {option.displayName}
-                    </option>
-                ))}
-            </select>
-        </div>
+        <PreferenceSelect
+            options={THEME_OPTIONS}
+            value={theme}
+            onChange={(value) => setValue(value as Theme)}
+            ariaLabel="Design auswählen"
+            wrapperClassName={styles.pickerWrapper}
+            selectClassName={styles.picker}
+        />
     );
 }

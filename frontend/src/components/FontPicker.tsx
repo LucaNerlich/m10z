@@ -1,7 +1,10 @@
 'use client';
 
-import React, {useEffect, useState, useSyncExternalStore} from 'react';
+import React from 'react';
 
+import {useStoredPreference} from '@/src/hooks/useStoredPreference';
+
+import {PreferenceSelect} from './PreferenceSelect';
 import styles from './FontPicker.module.css';
 
 const STORAGE_KEY = 'm10z-font-family';
@@ -25,11 +28,7 @@ const FONT_OPTIONS: FontOption[] = [
 ];
 
 const DEFAULT_FONT = 'poppins';
-
-const subscribeNoop = () => () => {
-};
-const getIsClient = () => true;
-const getIsClientServer = () => false;
+const getServerFont = () => DEFAULT_FONT;
 
 function getStoredFont(): string {
     if (typeof window === 'undefined') return DEFAULT_FONT;
@@ -79,23 +78,12 @@ function persistFont(fontId: string) {
 }
 
 export default function FontPicker(): React.ReactElement | null {
-    const storedFont = useSyncExternalStore(subscribeNoop, getStoredFont, () => DEFAULT_FONT);
-    const [userFont, setUserFont] = useState<string | null>(null);
-    const selectedFont = userFont ?? storedFont;
-    const hydrated = useSyncExternalStore(subscribeNoop, getIsClient, getIsClientServer);
-
-    useEffect(() => {
-        applyFont(selectedFont);
-    }, [selectedFont]);
-
-    useEffect(() => {
-        if (userFont === null) return;
-        persistFont(userFont);
-    }, [userFont]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setUserFont(e.target.value);
-    };
+    const {value: selectedFont, setValue, hydrated} = useStoredPreference<string>({
+        getStored: getStoredFont,
+        getServerValue: getServerFont,
+        apply: applyFont,
+        persist: persistFont,
+    });
 
     if (!hydrated) {
         return null;
@@ -107,21 +95,14 @@ export default function FontPicker(): React.ReactElement | null {
         : undefined;
 
     return (
-        <div className={styles.pickerWrapper}>
-            <select
-                className={styles.picker}
-                value={selectedFont}
-                onChange={handleChange}
-                aria-label="Schriftart auswählen"
-                style={selectStyle}
-            >
-                {FONT_OPTIONS.map((option) => (
-                    <option key={option.id} value={option.id}>
-                        {option.displayName}
-                    </option>
-                ))}
-            </select>
-        </div>
+        <PreferenceSelect
+            options={FONT_OPTIONS}
+            value={selectedFont}
+            onChange={setValue}
+            ariaLabel="Schriftart auswählen"
+            wrapperClassName={styles.pickerWrapper}
+            selectClassName={styles.picker}
+            selectStyle={selectStyle}
+        />
     );
 }
-
