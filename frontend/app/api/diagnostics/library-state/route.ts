@@ -1,10 +1,13 @@
 import {NextResponse} from 'next/server';
 
 import {verifySecret} from '@/src/lib/security/verifySecret';
-import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {getMarkdownToHtmlState} from '@/src/lib/rss/markdownToHtml';
 import {getAudioFeedRuntimeState} from '@/src/lib/rss/audioFeedRouteHandler';
 import {getClientIp} from '@/src/lib/net/getClientIp';
+
+// Own bucket store, so another endpoint's limiter filling up cannot fail this one closed.
+const libraryStateLimiter = createRateLimiter({windowMs: 60_000, max: 30});
 
 /**
  * Handle GET requests for the diagnostics route by rate-limiting the caller,
@@ -20,7 +23,7 @@ export async function GET(request: Request) {
     // Rate-limit before authentication so secret-guessing attempts are
     // throttled too.
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`diag-library-state:${ip}`, {windowMs: 60_000, max: 30});
+    const rl = libraryStateLimiter.check(`diag-library-state:${ip}`);
     if (!rl.ok) {
         return new NextResponse('Too Many Requests', {
             status: 429,

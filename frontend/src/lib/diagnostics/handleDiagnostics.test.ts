@@ -3,23 +3,28 @@ import {handleDiagnosticsGet} from './handleDiagnostics';
 
 const {
     verifySecret,
-    checkRateLimit,
+    check,
+    createRateLimiter,
     getRecentDiagnosticEvents,
     getAudioFeedRuntimeState,
     getSchedulerState,
     getClientIp,
 } =
-    vi.hoisted(() => ({
-        verifySecret: vi.fn(),
-        checkRateLimit: vi.fn(),
-        getRecentDiagnosticEvents: vi.fn().mockReturnValue([]),
-        getAudioFeedRuntimeState: vi.fn().mockReturnValue({}),
-        getSchedulerState: vi.fn().mockReturnValue({}),
-        getClientIp: vi.fn().mockReturnValue('127.0.0.1'),
-    }));
+    vi.hoisted(() => {
+        const check = vi.fn();
+        return {
+            verifySecret: vi.fn(),
+            check,
+            createRateLimiter: vi.fn(() => ({check})),
+            getRecentDiagnosticEvents: vi.fn().mockReturnValue([]),
+            getAudioFeedRuntimeState: vi.fn().mockReturnValue({}),
+            getSchedulerState: vi.fn().mockReturnValue({}),
+            getClientIp: vi.fn().mockReturnValue('127.0.0.1'),
+        };
+    });
 
 vi.mock('@/src/lib/security/verifySecret', () => ({verifySecret}));
-vi.mock('@/src/lib/security/rateLimit', () => ({checkRateLimit}));
+vi.mock('@/src/lib/security/rateLimit', () => ({createRateLimiter}));
 vi.mock('@/src/lib/diagnostics/runtimeDiagnostics', () => ({getRecentDiagnosticEvents}));
 vi.mock('@/src/lib/rss/audioFeedRouteHandler', () => ({getAudioFeedRuntimeState}));
 vi.mock('@/src/lib/rss/articleFeedRouteHandler', () => ({
@@ -42,7 +47,7 @@ function makeHeaderRequest(token: string): Request {
 
 beforeEach(() => {
     vi.stubEnv('DIAGNOSTICS_TOKEN', 'test-token');
-    checkRateLimit.mockReturnValue({ok: true, retryAfterSeconds: 0});
+    check.mockReturnValue({ok: true, retryAfterSeconds: 0});
     verifySecret.mockReturnValue(false);
 });
 
@@ -70,7 +75,7 @@ describe('handleDiagnosticsGet', () => {
 
     test('returns 429 with Retry-After header when rate limit is exceeded', async () => {
         verifySecret.mockReturnValue(true);
-        checkRateLimit.mockReturnValue({ok: false, retryAfterSeconds: 5});
+        check.mockReturnValue({ok: false, retryAfterSeconds: 5});
 
         const res = await handleDiagnosticsGet(makeHeaderRequest('test-token'));
 
@@ -80,17 +85,17 @@ describe('handleDiagnosticsGet', () => {
 
     test('checks the rate limit even for unauthenticated requests', async () => {
         verifySecret.mockReturnValue(false);
-        checkRateLimit.mockReturnValue({ok: false, retryAfterSeconds: 7});
+        check.mockReturnValue({ok: false, retryAfterSeconds: 7});
 
         const res = await handleDiagnosticsGet(makeHeaderRequest('wrong-token'));
 
         expect(res.status).toBe(429);
-        expect(checkRateLimit).toHaveBeenCalled();
+        expect(check).toHaveBeenCalled();
     });
 
     test('returns 200 with diagnostic JSON when token is valid and within rate limit', async () => {
         verifySecret.mockReturnValue(true);
-        checkRateLimit.mockReturnValue({ok: true, retryAfterSeconds: 0});
+        check.mockReturnValue({ok: true, retryAfterSeconds: 0});
         getRecentDiagnosticEvents.mockReturnValue([{type: 'test', ts: 1, kind: 'route', name: 'x', ok: true, durationMs: 1}]);
         getAudioFeedRuntimeState.mockReturnValue({running: true, lastFetchMs: 100});
         getSchedulerState.mockReturnValue({lastRun: 123, intervalMs: 60000});
@@ -113,7 +118,7 @@ describe('handleDiagnosticsGet', () => {
 
     test('returns 200 when token is provided via x-m10z-diagnostics-token header', async () => {
         verifySecret.mockReturnValue(true);
-        checkRateLimit.mockReturnValue({ok: true, retryAfterSeconds: 0});
+        check.mockReturnValue({ok: true, retryAfterSeconds: 0});
 
         const res = await handleDiagnosticsGet(makeHeaderRequest('test-token'));
 

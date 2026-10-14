@@ -1,7 +1,7 @@
 import {revalidatePath, revalidateTag} from 'next/cache';
 
 import {getClientIp} from '@/src/lib/net/getClientIp';
-import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 import {feedRegistry} from '@/src/lib/rss/feedRegistry';
 import {isContentTypeKey, isDocumentAction, type InvalidationEvent} from '@/src/lib/shared/strapiContract';
@@ -10,6 +10,9 @@ import {HOME_PAGE_TAG} from '@/src/lib/strapi/cacheTags';
 import {computeRevalidation} from './computeRevalidation';
 
 const RATE_LIMIT = {windowMs: 60_000, max: 120} as const;
+
+// Own bucket store, so another endpoint's limiter filling up cannot fail this one closed.
+const invalidateLimiter = createRateLimiter(RATE_LIMIT);
 
 function expectedSecret(): string | null {
     return process.env.STRAPI_INVALIDATION_SECRET ?? null;
@@ -36,7 +39,7 @@ export async function handleInvalidation(request: Request): Promise<Response> {
     // Rate-limit before authentication so brute-force attempts against the
     // secret are throttled too, and so spoofed-IP churn cannot hide abuse.
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`invalidate:${ip}`, RATE_LIMIT);
+    const rl = invalidateLimiter.check(`invalidate:${ip}`);
     if (!rl.ok) {
         // 503 (not 429) so the backend treats it as retryable: bulk publishes
         // can legitimately exceed the limit, and the backend only retries 5xx.

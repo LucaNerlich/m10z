@@ -1,19 +1,22 @@
 import {NextResponse} from 'next/server';
 
 import {getClientIp} from '@/src/lib/net/getClientIp';
-import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {verifySecret} from '@/src/lib/security/verifySecret';
 
 import {getRecentDiagnosticEvents} from './runtimeDiagnostics';
 import {getAudioFeedRuntimeState} from '../rss/audioFeedRouteHandler';
 import {getSchedulerState as getArticleFeedSchedulerState} from '../rss/articleFeedRouteHandler';
 
+// Own bucket store, so another endpoint's limiter filling up cannot fail this one closed.
+const diagnosticsLimiter = createRateLimiter({windowMs: 60_000, max: 30});
+
 export async function handleDiagnosticsGet(request: Request): Promise<NextResponse> {
     // Rate-limit before authentication so secret-guessing attempts are
     // throttled too. The token is header-only: query-string tokens would leak
     // into proxy/request logs, browser history, and Referer headers.
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`diag:${ip}`, {windowMs: 60_000, max: 30});
+    const rl = diagnosticsLimiter.check(`diag:${ip}`);
     if (!rl.ok) {
         return new NextResponse('Too Many Requests', {
             status: 429,

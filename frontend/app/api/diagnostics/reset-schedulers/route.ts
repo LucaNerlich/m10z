@@ -9,8 +9,11 @@ import {
     stopScheduler as stopArticleScheduler,
 } from '@/src/lib/rss/articleFeedRouteHandler';
 import {verifySecret} from '@/src/lib/security/verifySecret';
-import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {getClientIp} from '@/src/lib/net/getClientIp';
+
+// Own bucket store, so another endpoint's limiter filling up cannot fail this one closed.
+const resetSchedulersLimiter = createRateLimiter({windowMs: 60_000, max: 10});
 
 /**
  * Auth: requires `DIAGNOSTICS_TOKEN` (same as `/api/diagnostics`), provided via
@@ -48,7 +51,7 @@ function checkAuthAndRateLimit(request: Request): NextResponse | null {
     // Rate-limit before authentication so secret-guessing attempts are
     // throttled too.
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`diag-reset:${ip}`, {windowMs: 60_000, max: 10});
+    const rl = resetSchedulersLimiter.check(`diag-reset:${ip}`);
     if (!rl.ok) {
         return new NextResponse('Too Many Requests', {
             status: 429,

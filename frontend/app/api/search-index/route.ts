@@ -3,7 +3,7 @@ import {NextResponse} from 'next/server';
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
 import {sha256Hex} from '@/src/lib/rss/xml';
-import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {
     augmentIndexWithStaticPages,
     getCachedFuse,
@@ -12,6 +12,9 @@ import {
     SearchIndexValidationError,
     stripRecordContent,
 } from '@/src/lib/search/searchIndexService';
+
+// Own bucket store, so another endpoint's limiter filling up cannot fail this one closed.
+const searchLimiter = createRateLimiter({windowMs: 60_000, max: 100});
 
 export async function GET(request: Request) {
     const {searchParams} = new URL(request.url);
@@ -93,7 +96,7 @@ export async function GET(request: Request) {
         }
 
         const ip = getClientIp(request);
-        const rl = checkRateLimit(`search:${ip}`, {windowMs: 60_000, max: 100});
+        const rl = searchLimiter.check(`search:${ip}`);
         if (!rl.ok) {
             return NextResponse.json(
                 {error: 'Too Many Requests'},

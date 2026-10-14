@@ -7,7 +7,7 @@ import {headers} from 'next/headers';
 import {fetchArticleBySlugForPreview, fetchPodcastBySlugForPreview} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {verifySecret} from '@/src/lib/security/verifySecret';
-import {checkRateLimit} from '@/src/lib/security/rateLimit';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {getClientIp} from '@/src/lib/net/getClientIp';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
@@ -15,6 +15,9 @@ import PreviewBanner from '@/src/components/PreviewBanner';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 
 export const dynamic = 'force-dynamic';
+
+// Own bucket store, so another endpoint's limiter filling up cannot fail this one closed.
+const previewLimiter = createRateLimiter({windowMs: 60_000, max: 20});
 
 type PreviewType = 'artikel' | 'podcasts';
 type PreviewStatus = 'draft' | 'published';
@@ -55,7 +58,7 @@ async function resolvePreviewContext(
 
     // Trusts the proxy-appended last hop, unlike the client-controlled first one.
     const ip = getClientIp(await headers());
-    const rl = checkRateLimit(`preview:${ip}`, {windowMs: 60_000, max: 20});
+    const rl = previewLimiter.check(`preview:${ip}`);
     if (!rl.ok) notFound();
 
     const {token, status} = await searchParams;
