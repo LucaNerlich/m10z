@@ -29,7 +29,7 @@ Optional knobs depend on the test (see each script header).
 Create `load-test/.env` (ignored by git) and put your prod target there:
 
 ```bash
-cp load-test/env.example load-test/.env
+cp load-test/.env.example load-test/.env
 ```
 
 ## Run (local k6)
@@ -63,7 +63,7 @@ You can run everything from the `load-test/` folder:
 cd load-test
 
 # Create .env once (then just edit TARGET_ORIGIN there)
-cp env.example .env
+cp .env.example .env
 
 # Run tests via Docker k6 (reads .env / .env.local; the harness has no dependencies)
 npm run smoke
