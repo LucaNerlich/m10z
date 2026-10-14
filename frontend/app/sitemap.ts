@@ -33,12 +33,20 @@ function buildDynamicEntries(
     });
 }
 
-function buildStaticEntries(urls: string[]): MetadataRoute.Sitemap {
-    return urls.map((url) => {
-        const absoluteUrl = absoluteRoute(url);
+type StaticEntryConfig = readonly [
+    path: string,
+    changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'],
+    priority: number,
+];
+
+function buildStaticEntries(entries: readonly StaticEntryConfig[]): MetadataRoute.Sitemap {
+    return entries.map(([path, changeFrequency, priority]) => {
+        const absoluteUrl = absoluteRoute(path);
         return {
             url: absoluteUrl,
             alternates: createLanguageAlternates(absoluteUrl),
+            changeFrequency,
+            priority,
         };
     });
 }
@@ -60,50 +68,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]);
     const statistikMonths = statistik ? monthsWithContent(statistik.heatmap) : [];
 
+    // Each route declares its own hints once; a previous second, URL-keyed table
+    // had to be kept in sync by hand (a route added in one place silently lost
+    // its changeFrequency/priority in the other).
     const staticEntries = buildStaticEntries([
-        routes.home,
-        routes.articles,
-        routes.podcasts,
-        routes.categories,
-        routes.authors,
-        routes.m12g,
-        routes.m12gGames,
-        routes.statistik,
-        routes.feeds,
-        routes.audioFeed,
-        routes.articleFeed,
-        routes.imprint,
-        routes.privacy,
-        routes.about,
+        [routes.home, 'daily', 1.0],
+        [routes.articles, 'daily', 0.9],
+        [routes.podcasts, 'daily', 0.9],
+        [routes.categories, 'weekly', 0.6],
+        [routes.authors, 'weekly', 0.6],
+        [routes.m12g, 'monthly', 0.4],
+        [routes.m12gGames, 'monthly', 0.4],
+        [routes.statistik, 'monthly', 0.4],
+        [routes.feeds, 'monthly', 0.4],
+        [routes.audioFeed, 'daily', 0.3],
+        [routes.articleFeed, 'daily', 0.3],
+        [routes.imprint, 'yearly', 0.3],
+        [routes.privacy, 'yearly', 0.3],
+        [routes.about, 'monthly', 0.8],
     ]);
-
-    const staticPriorities: Record<string, {
-        changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'];
-        priority: number
-    }> = {
-        [absoluteRoute(routes.home)]: {changeFrequency: 'daily', priority: 1.0},
-        [absoluteRoute(routes.articles)]: {changeFrequency: 'daily', priority: 0.9},
-        [absoluteRoute(routes.podcasts)]: {changeFrequency: 'daily', priority: 0.9},
-        [absoluteRoute(routes.categories)]: {changeFrequency: 'weekly', priority: 0.6},
-        [absoluteRoute(routes.authors)]: {changeFrequency: 'weekly', priority: 0.6},
-        [absoluteRoute(routes.m12g)]: {changeFrequency: 'monthly', priority: 0.4},
-        [absoluteRoute(routes.m12gGames)]: {changeFrequency: 'monthly', priority: 0.4},
-        [absoluteRoute(routes.statistik)]: {changeFrequency: 'monthly', priority: 0.4},
-        [absoluteRoute(routes.feeds)]: {changeFrequency: 'monthly', priority: 0.4},
-        [absoluteRoute(routes.audioFeed)]: {changeFrequency: 'daily', priority: 0.3},
-        [absoluteRoute(routes.articleFeed)]: {changeFrequency: 'daily', priority: 0.3},
-        [absoluteRoute(routes.imprint)]: {changeFrequency: 'yearly', priority: 0.3},
-        [absoluteRoute(routes.privacy)]: {changeFrequency: 'yearly', priority: 0.3},
-        [absoluteRoute(routes.about)]: {changeFrequency: 'monthly', priority: 0.8},
-    };
-
-    for (const entry of staticEntries) {
-        const config = staticPriorities[entry.url];
-        if (config) {
-            entry.changeFrequency = config.changeFrequency;
-            entry.priority = config.priority;
-        }
-    }
 
     const dynamicEntries: MetadataRoute.Sitemap = [
         ...buildDynamicEntries(articles, routes.article, 'weekly', 0.8),
