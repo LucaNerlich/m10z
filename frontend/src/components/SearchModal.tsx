@@ -5,7 +5,7 @@ import {useRouter} from 'next/navigation';
 import Image from 'next/image';
 import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
 
-import {useSearchQuery} from '@/src/hooks/useSearchQuery';
+import {SEARCH_MIN_QUERY_LENGTH, useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {isImageHostnameAllowed, normalizeSearchImageUrl} from '@/src/lib/image';
 import {type SearchRecord, type SearchResult} from '@/src/lib/search/types';
 import {umamiEventId} from '@/src/lib/analytics/umami';
@@ -177,8 +177,9 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const statusMessage = useMemo(() => {
         if (searchError) return 'Suche konnte nicht geladen werden.';
         if (isLoading) return 'Suchen ...';
-        if (results.length === 0 && query.trim().length > 0) return 'Keine Treffer gefunden.';
         if (query.trim().length === 0) return 'Tippe, um die Suche zu starten.';
+        if (query.trim().length < SEARCH_MIN_QUERY_LENGTH) return 'Tippe weiter, um zu suchen.';
+        if (results.length === 0) return 'Keine Treffer gefunden.';
         return null;
     }, [searchError, isLoading, query, results.length]);
 

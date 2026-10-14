@@ -8,7 +8,7 @@ const {useSearchQuery, push} = vi.hoisted(() => ({
     push: vi.fn(),
 }));
 
-vi.mock('@/src/hooks/useSearchQuery', () => ({useSearchQuery}));
+vi.mock('@/src/hooks/useSearchQuery', () => ({useSearchQuery, SEARCH_MIN_QUERY_LENGTH: 2}));
 vi.mock('next/navigation', () => ({useRouter: () => ({push})}));
 
 import type {SearchResult} from '@/src/lib/search/types';
@@ -48,6 +48,15 @@ function input(): HTMLInputElement {
     const el = container.querySelector('input');
     if (!el) throw new Error('search input not rendered');
     return el;
+}
+
+async function type(text: string): Promise<void> {
+    const el = input();
+    const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
+    await act(async () => {
+        setValue.call(el, text);
+        el.dispatchEvent(new Event('input', {bubbles: true}));
+    });
 }
 
 async function press(key: string): Promise<void> {
@@ -109,6 +118,25 @@ describe('SearchModal keyboard interaction', () => {
 
         expect(push).not.toHaveBeenCalled();
         expect(onClose).not.toHaveBeenCalled();
+    });
+
+    test('a one-character query asks the user to keep typing instead of reporting no results', async () => {
+        useSearchQuery.mockReturnValue({results: [], total: 0, isLoading: false, isValidating: false});
+        await renderModal();
+
+        await type('a');
+
+        expect(container.textContent).toContain('Tippe weiter');
+        expect(container.textContent).not.toContain('Keine Treffer gefunden');
+    });
+
+    test('two or more characters with no matches report no results', async () => {
+        useSearchQuery.mockReturnValue({results: [], total: 0, isLoading: false, isValidating: false});
+        await renderModal();
+
+        await type('ab');
+
+        expect(container.textContent).toContain('Keine Treffer gefunden');
     });
 
     test('restores focus to the element that opened the modal', async () => {
