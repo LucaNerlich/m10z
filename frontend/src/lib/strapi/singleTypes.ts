@@ -114,10 +114,8 @@ async function getAboutWithFallback(options: FetchStrapiOptions = {}): Promise<S
         name: 'Über Uns',
         alternateName: null,
         content:
-            'Diese Seite erklärt, wie du die Feeds von Mindestens 10 Zeichen nutzen kannst.\n\n'
-            + '- Artikel-Feed: `/rss.xml`\n'
-            + '- Podcast-Feed: `/audiofeed.xml`\n\n'
-            + 'Du kannst diese URLs in deinem RSS-Reader oder Podcast-Client abonnieren.',
+            'Mindestens 10 Zeichen ist ein deutschsprachiges Magazin über Games und Technik.\n\n'
+            + 'Wir schreiben über Spiele, Hardware und alles dazwischen - im Magazin und im Podcast.',
         logo: null,
         createdAt: nowIso,
         updatedAt: nowIso,
