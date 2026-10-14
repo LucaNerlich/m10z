@@ -1,6 +1,8 @@
 'use client';
 
-import {useEffect, useState, useSyncExternalStore} from 'react';
+import {useEffect, useState} from 'react';
+
+import {useIsMac} from '@/src/hooks/useIsMac';
 
 import styles from './Header.module.css';
 import {SearchModal} from './SearchModal';
@@ -9,16 +11,9 @@ import {swrConfig} from '@/src/lib/swr/config';
 
 const shortcutKeySearch = 'K';
 
-const REGEX_APPLE_PLATFORM = /Mac|iPhone|iPad|iPod/;
-
-const subscribeNoop = () => () => {
-};
-const getIsMac = () => REGEX_APPLE_PLATFORM.test(navigator.platform);
-const getIsMacServer = () => false;
-
 export function SearchLauncher(): React.ReactElement {
     const [isOpen, setIsOpen] = useState(false);
-    const isMac = useSyncExternalStore(subscribeNoop, getIsMac, getIsMacServer);
+    const isMac = useIsMac();
 
     const shortcutLabel = isMac ? 'Cmd+' + shortcutKeySearch : 'Ctrl+' + shortcutKeySearch;
 
