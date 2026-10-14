@@ -22,7 +22,16 @@ let ogFontLoad: Promise<Buffer> | null = null;
  * renders reuse the same read instead of re-reading the font file.
  */
 export function loadOgFont(): Promise<Buffer> {
-    ogFontLoad ??= readFile(join(process.cwd(), 'public/fonts/Poppins-Bold.woff2'));
+    ogFontLoad ??= readFile(join(process.cwd(), 'public/fonts/Poppins-Bold.woff2')).catch(
+        (error: unknown) => {
+            // A rejected promise is truthy, so `??=` would otherwise keep the
+            // failure for the process lifetime and 500 every OG image route.
+            // Clear the memo so the next render retries; the handler rethrows so
+            // this read still fails.
+            ogFontLoad = null;
+            throw error;
+        },
+    );
     return ogFontLoad;
 }
 
