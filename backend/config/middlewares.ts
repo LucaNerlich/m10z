@@ -9,6 +9,7 @@ const CORS_ORIGINS = [
     process.env.CLIENT_URL,
     process.env.FRONTEND_URL,
     'https://m10z.de',
+    'https://umami.m10z.de',
     'http://localhost:3000',
 ].filter((origin): origin is string => Boolean(origin));
 
