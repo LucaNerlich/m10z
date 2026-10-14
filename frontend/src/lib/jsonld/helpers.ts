@@ -165,12 +165,10 @@ export function imagesEqual(image1: ImageObject | string | undefined, image2: Im
  * @returns A stable, sanitized JSON string representation safe for use in script tags
  */
 export function stringifyJsonLd(jsonLd: JsonLd): string {
-    const cleaned = JSON.parse(JSON.stringify(jsonLd, (key, value) => {
-        if (value === undefined) return undefined;
-        return value;
-    }));
+    // JSON.stringify drops `undefined`-valued keys natively, so no replacer is
+    // needed to "remove undefined values".
     // JSON.stringify is unsafe for script tag injection — a payload like `</script>` in
     // content would break out of the tag. serialize-javascript escapes these sequences.
     // isJSON: true produces valid JSON (no JS-specific syntax like undefined/Infinity).
-    return serialize(cleaned, {isJSON: true});
+    return serialize(jsonLd, {isJSON: true});
 }
