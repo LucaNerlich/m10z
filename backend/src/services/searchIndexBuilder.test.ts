@@ -57,3 +57,80 @@ describe('buildAndPersistSearchIndex pagination', () => {
         expect(index.total).toBe(42);
     });
 });
+
+describe('buildAndPersistSearchIndex media urls', () => {
+    const ORIGIN = 'https://cms.m10z.de';
+
+    function makeMediaStrapi() {
+        const empty = () => Promise.resolve([]);
+        const documents = vi.fn((uid: string) => {
+            if (uid === 'api::author.author') {
+                return {
+                    findMany: vi.fn(() =>
+                        Promise.resolve([
+                            {documentId: 'a1', slug: 'luca', title: 'Luca', avatar: {url: '/uploads/luca.jpg'}},
+                            {documentId: 'a2', slug: 'ohne-bild', title: 'Ohne Bild'},
+                        ]),
+                    ),
+                };
+            }
+            if (uid === 'api::category.category') {
+                return {
+                    findMany: vi.fn(() =>
+                        Promise.resolve([
+                            // Absolute cover: kept as-is, and wins over the banner.
+                            {
+                                documentId: 'c1',
+                                slug: 'games',
+                                title: 'Games',
+                                cover: {url: 'https://cdn.example/cover.jpg'},
+                                banner: {url: '/uploads/games-banner.jpg'},
+                            },
+                            // No cover: the banner fallback applies.
+                            {documentId: 'c2', slug: 'tech', title: 'Tech', banner: {url: '/uploads/tech-banner.jpg'}},
+                        ]),
+                    ),
+                };
+            }
+            if (uid === 'api::search-index.search-index') {
+                return {
+                    findFirst: vi.fn(() => Promise.resolve(null)),
+                    create: vi.fn(() => Promise.resolve({})),
+                    update: vi.fn(() => Promise.resolve({})),
+                };
+            }
+            return {findMany: vi.fn(empty)};
+        });
+
+        return {
+            documents,
+            log: {info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn()},
+        };
+    }
+
+    function record(index: {records: {id: string; coverImageUrl: string | null}[]}, id: string) {
+        const found = index.records.find((entry) => entry.id === id);
+        if (!found) throw new Error(`record ${id} missing from the index`);
+        return found;
+    }
+
+    test('resolves author avatars and category covers through the shared media resolvers', async () => {
+        const previousDomain = process.env.BASE_DOMAIN;
+        process.env.BASE_DOMAIN = ORIGIN;
+        try {
+            const {index} = await buildAndPersistSearchIndex(makeMediaStrapi() as any);
+
+            // Relative upload path -> resolved against the CMS origin.
+            expect(record(index, 'author:luca').coverImageUrl).toBe(`${ORIGIN}/uploads/luca.jpg`);
+            // No avatar at all -> no image.
+            expect(record(index, 'author:ohne-bild').coverImageUrl).toBeNull();
+            // Absolute URL -> kept verbatim, cover before banner.
+            expect(record(index, 'category:games').coverImageUrl).toBe('https://cdn.example/cover.jpg');
+            // Cover missing -> banner, resolved against the CMS origin.
+            expect(record(index, 'category:tech').coverImageUrl).toBe(`${ORIGIN}/uploads/tech-banner.jpg`);
+        } finally {
+            if (previousDomain === undefined) delete process.env.BASE_DOMAIN;
+            else process.env.BASE_DOMAIN = previousDomain;
+        }
+    });
+});
