@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+
+import {useIsMac} from '@/src/hooks/useIsMac';
 
 import styles from './Header.module.css';
 
@@ -12,12 +14,6 @@ type HeaderClientProps = {
 };
 
 const shortcutKeyMenu = 'J';
-
-const REGEX_APPLE_PLATFORM = /Mac|iPhone|iPad|iPod/;
-const subscribeNoop = () => () => {
-};
-const getIsMac = () => REGEX_APPLE_PLATFORM.test(navigator.platform);
-const getIsMacServer = () => false;
 
 /**
  * Renders a responsive header with a toggleable mobile menu and accessible keyboard interactions.
@@ -33,7 +29,7 @@ export default function HeaderClient({
                                          secondaryLinks,
                                      }: HeaderClientProps): React.ReactElement {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const isMac = useSyncExternalStore(subscribeNoop, getIsMac, getIsMacServer);
+    const isMac = useIsMac();
     const pathname = usePathname();
     const menuRef = useRef<HTMLDivElement | null>(null);
     const burgerButtonRef = useRef<HTMLButtonElement | null>(null);
