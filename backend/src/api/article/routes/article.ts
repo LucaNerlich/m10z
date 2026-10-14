@@ -8,7 +8,7 @@ export default factories.createCoreRouter('api::article.article', {
     config: {
         // Draft & publish: pin anonymous callers to published entries so that
         // `?status=draft` cannot expose unpublished articles.
-        find: {policies: ['published-status-only']},
-        findOne: {policies: ['published-status-only']},
+        find: {policies: ['global::published-status-only']},
+        findOne: {policies: ['global::published-status-only']},
     },
 });
