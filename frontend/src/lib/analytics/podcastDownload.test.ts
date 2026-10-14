@@ -201,4 +201,35 @@ describe('shouldRecordDownloadDeduped', () => {
         expect(shouldRecordDownloadDeduped('ep-2', '198.51.100.9', now)).toBe(true);
         expect(shouldRecordDownloadDeduped('ep-1', '198.51.100.10', now)).toBe(true);
     });
+
+    test('bounds the dedup map under a distinct-key burst, evicting the oldest', () => {
+        resetDownloadDedupForTests();
+        const now = 1_000_000;
+
+        // One more distinct key than the cap, all inside the dedup window.
+        for (let i = 0; i <= 1_000; i++) {
+            expect(shouldRecordDownloadDeduped(`ep-${i}`, '198.51.100.9', now)).toBe(true);
+        }
+
+        // The oldest entry was evicted, so it is no longer deduplicated ...
+        expect(shouldRecordDownloadDeduped('ep-0', '198.51.100.9', now)).toBe(true);
+        // ... while the newest is still deduplicated, so eviction came from the front.
+        expect(shouldRecordDownloadDeduped('ep-1000', '198.51.100.9', now)).toBe(false);
+    });
+
+    test('still prunes expired entries before evicting live ones', () => {
+        resetDownloadDedupForTests();
+        const now = 1_000_000;
+
+        // Fill past the cap, then let the window pass: a later burst must be able
+        // to record every key, i.e. the expired ones were reclaimed.
+        for (let i = 0; i <= 1_000; i++) {
+            shouldRecordDownloadDeduped(`old-${i}`, '198.51.100.9', now);
+        }
+
+        const later = now + 61_000;
+        for (let i = 0; i <= 1_000; i++) {
+            expect(shouldRecordDownloadDeduped(`new-${i}`, '198.51.100.9', later)).toBe(true);
+        }
+    });
 });
