@@ -195,7 +195,6 @@ export default function HeaderClient({
             <div
                 id="header-menu"
                 className={`${styles.menu} ${isMenuOpen ? styles.menuOpen : ''}`}
-                role="menu"
             >
                 <nav aria-label="Weitere Navigation">
                     <ul className={styles.menuList}>
