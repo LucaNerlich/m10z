@@ -2,9 +2,9 @@
  * Content-API policy: keep draft entries off the public routes.
  *
  * Anonymous and end-user requests are pinned to `status=published`, so
- * `?status=draft` can no longer expose unpublished articles or podcasts.
- * Privileged API-token callers (the server-to-server preview path) keep the
- * status they asked for.
+ * `?status=draft` cannot expose unpublished articles or podcasts. Privileged
+ * API-token callers (the server-to-server preview path) keep the status they
+ * asked for.
  *
  * Wired into the article and podcast core routers for `find` and `findOne`.
  */

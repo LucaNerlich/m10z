@@ -8,7 +8,7 @@ export default factories.createCoreRouter('api::podcast.podcast', {
     config: {
         // Draft & publish: pin anonymous callers to published entries so that
         // `?status=draft` cannot expose unpublished episodes.
-        find: {policies: ['published-status-only']},
-        findOne: {policies: ['published-status-only']},
+        find: {policies: ['global::published-status-only']},
+        findOne: {policies: ['global::published-status-only']},
     },
 });
