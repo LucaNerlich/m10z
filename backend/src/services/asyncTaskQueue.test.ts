@@ -72,6 +72,59 @@ describe('AsyncTaskQueue', () => {
         expect(onSettled).toHaveBeenCalledWith('a', true, strapi);
     });
 
+    test('a throwing onSettled does not abort the rest of the batch', async () => {
+        const run = vi.fn().mockResolvedValue(true);
+        const onSettled = vi.fn((item: string) => {
+            if (item === 'a') throw new Error('callback boom');
+        });
+        const queue = new AsyncTaskQueue<string>({
+            name: 'test',
+            keyOf: (item) => item,
+            run,
+            onSettled,
+            concurrency: 1,
+            debounceMs: 100,
+        });
+
+        queue.enqueue('a', strapi);
+        queue.enqueue('b', strapi);
+        await vi.advanceTimersByTimeAsync(100);
+
+        // Both items were processed, and the second callback still ran: the items are
+        // removed from `pending` before the callbacks, so an escaping exception would
+        // drop the rest of the run.
+        expect(run).toHaveBeenCalledTimes(2);
+        expect(onSettled).toHaveBeenCalledTimes(2);
+        expect(strapi.log.warn).toHaveBeenCalledWith(
+            expect.stringContaining('onSettled threw'),
+            expect.any(Error),
+        );
+    });
+
+    test('a throwing onAbandoned does not escape the batch', async () => {
+        const run = vi.fn().mockResolvedValue(false);
+        const onAbandoned = vi.fn(() => {
+            throw new Error('abandon boom');
+        });
+        const queue = new AsyncTaskQueue<string>({
+            name: 'test',
+            keyOf: (item) => item,
+            run,
+            onAbandoned,
+            maxFailureRetries: 1,
+            debounceMs: 100,
+        });
+
+        queue.enqueue('a', strapi);
+        await expect(vi.advanceTimersByTimeAsync(100)).resolves.not.toThrow();
+
+        expect(onAbandoned).toHaveBeenCalledTimes(1);
+        expect(strapi.log.warn).toHaveBeenCalledWith(
+            expect.stringContaining('onAbandoned threw'),
+            expect.any(Error),
+        );
+    });
+
     test('calls onAbandoned with the failed items when the retry limit is reached', async () => {
         const run = vi.fn().mockResolvedValue(false);
         const onAbandoned = vi.fn();
