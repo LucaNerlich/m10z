@@ -16,6 +16,20 @@ export const SCHEDULE_PUBLISH_LEEWAY_MS = 2 * 60 * 1000; // 2 minutes into the f
 
 const PAGE_SIZE = 25;
 
+/**
+ * How many publishes to run concurrently. Bounded well below `DATABASE_POOL_MAX`
+ * (default 25) so a backlog cannot queue the whole pool in one burst, and low enough
+ * that a run stays inside the 15-minute schedule.
+ */
+const PUBLISH_CONCURRENCY = 10;
+
+/**
+ * Guards against overlapping runs: node-schedule does not prevent a second tick from
+ * starting while the previous one is still publishing, which would publish the same
+ * due entries twice.
+ */
+let isRunning = false;
+
 export type ContentUid = 'api::article.article' | 'api::podcast.podcast';
 
 /**
@@ -79,6 +93,13 @@ const CONTENT_TYPES: {uid: ContentUid; label: string}[] = [
  * @param strapi - The Strapi instance injected by the cron runner
  */
 export async function publishScheduledEntries({strapi}: {strapi: StrapiInstance}): Promise<void> {
+    if (isRunning) {
+        strapi.log.warn('Scheduled publish: previous run still active; skipping this tick.');
+        return;
+    }
+
+    isRunning = true;
+
     try {
         const cutoffDate = getSchedulePublishCutoffIso();
 
@@ -128,37 +149,41 @@ export async function publishScheduledEntries({strapi}: {strapi: StrapiInstance}
 
                 if (dueDocs.length === 0) continue;
 
-                const results = await Promise.allSettled(
-                    dueDocs.map((doc) => {
-                        const targetId = doc.documentId;
-                        if (!targetId) {
-                            // Mirror a failed publish so the per-doc error path below runs.
-                            return Promise.reject({doc, error: new Error('Document has no documentId')});
-                        }
-                        return strapi
-                            .documents(uid)
-                            .publish({documentId: targetId})
-                            .then(() => ({doc, error: null}))
-                            .catch((error: unknown) => {
-                                throw {doc, error};
-                            });
-                    }),
-                );
+                const publishOne = (doc: (typeof dueDocs)[number]) => {
+                    const targetId = doc.documentId;
+                    if (!targetId) {
+                        // Mirror a failed publish so the per-doc error path below runs.
+                        return Promise.reject({doc, error: new Error('Document has no documentId')});
+                    }
+                    return strapi
+                        .documents(uid)
+                        .publish({documentId: targetId})
+                        .then(() => ({doc, error: null}))
+                        .catch((error: unknown) => {
+                            throw {doc, error};
+                        });
+                };
 
-                for (const result of results) {
-                    if (result.status === 'fulfilled') {
-                        const {doc} = result.value;
-                        totalPublished++;
-                        strapi.log.info(
-                            `Scheduled publish: published ${label} "${doc.slug}" (${doc.documentId})`,
-                        );
-                    } else {
-                        const {doc, error} = result.reason;
-                        totalFailed++;
-                        strapi.log.error(
-                            `Scheduled publish: failed to publish ${label} "${doc.slug}" (${doc.documentId}):`,
-                            error,
-                        );
+                // Bounded chunks: every due document used to be published at once.
+                for (let offset = 0; offset < dueDocs.length; offset += PUBLISH_CONCURRENCY) {
+                    const chunk = dueDocs.slice(offset, offset + PUBLISH_CONCURRENCY);
+                    const results = await Promise.allSettled(chunk.map(publishOne));
+
+                    for (const result of results) {
+                        if (result.status === 'fulfilled') {
+                            const {doc} = result.value;
+                            totalPublished++;
+                            strapi.log.info(
+                                `Scheduled publish: published ${label} "${doc.slug}" (${doc.documentId})`,
+                            );
+                        } else {
+                            const {doc, error} = result.reason;
+                            totalFailed++;
+                            strapi.log.error(
+                                `Scheduled publish: failed to publish ${label} "${doc.slug}" (${doc.documentId}):`,
+                                error,
+                            );
+                        }
                     }
                 }
             } catch (error) {
@@ -175,5 +200,7 @@ export async function publishScheduledEntries({strapi}: {strapi: StrapiInstance}
         }
     } catch (error) {
         strapi.log.error('Scheduled publish: unexpected error:', error);
+    } finally {
+        isRunning = false;
     }
 }
