@@ -8,12 +8,6 @@ export function getTargetOrigin() {
   return raw.replace(/\/+$/, '');
 }
 
-export function getBool(name, fallback = false) {
-  const v = __ENV[name];
-  if (v == null) return fallback;
-  return String(v).toLowerCase() === 'true' || String(v) === '1';
-}
-
 export function getInt(name, fallback) {
   const v = __ENV[name];
   if (v == null || v === '') return fallback;

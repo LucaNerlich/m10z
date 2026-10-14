@@ -14,7 +14,6 @@ export function routes() {
     search: (q) => `${origin}/api/search-index?q=${encodeURIComponent(q)}`,
     // Feeds (hit rarely; may be rate limited)
     audioFeedXml: `${origin}/audiofeed.xml`,
-    articleFeedXml: `${origin}/rss.xml`,
   };
 }
 
