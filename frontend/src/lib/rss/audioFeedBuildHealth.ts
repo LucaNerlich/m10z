@@ -65,8 +65,9 @@ export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildH
 
         const thresholdMs = (state.initialBuildDurationMs ?? 0) * SLOW_BUILD_MULTIPLIER;
         const last3 = state.buildDurationsMs.slice(-SLOW_BUILD_WINDOW);
-        const shouldResetNow =
-            last3.length === SLOW_BUILD_WINDOW && last3.every((d) => d > thresholdMs);
+        // Single source of truth for the reset decision: recordBuild and the diagnostics
+        // route must not be able to disagree on when the history triggers a reset.
+        const shouldResetNow = shouldReset();
 
         if (durationMs >= 500) {
             recordDiagnosticEvent({
