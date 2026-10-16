@@ -37,6 +37,22 @@ describe('sendPodcastDownloadEvent', () => {
         expect(fetchMock).not.toHaveBeenCalled();
     });
 
+    test('caps the forwarded episode title in the event data', async () => {
+        vi.stubEnv('NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'site-123');
+        vi.stubEnv('NEXT_PUBLIC_UMAMI_URL', 'https://umami.example.test');
+        const fetchMock = mockFetchOk();
+
+        await sendPodcastDownloadEvent({
+            slug: 'ep-1',
+            title: 't'.repeat(600),
+            request: makeRequest(),
+        });
+
+        const [url, init] = fetchMock.mock.calls[0] as FetchCall;
+        const payload = JSON.parse(init.body) as {payload: {data: Record<string, string>}};
+        expect(payload.payload.data.title).toHaveLength(256);
+    });
+
     test('skips the event when the client sent DNT', async () => {
         vi.stubEnv('NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'site-123');
         const fetchMock = mockFetchOk();
