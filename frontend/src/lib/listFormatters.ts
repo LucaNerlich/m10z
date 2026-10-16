@@ -7,6 +7,13 @@
  */
 const GERMAN_LOCALE = 'de-DE';
 
+// Hoisted: Intl construction (locale resolution) is the expensive part and every
+// rendered card with authors calls formatAuthorList.
+const germanListFormatter = new Intl.ListFormat(GERMAN_LOCALE, {
+    type: 'conjunction',
+    style: 'long',
+});
+
 /**
  * Formats an array of author names into locale-aware list parts using Intl.ListFormat.
  *
@@ -31,11 +38,6 @@ const GERMAN_LOCALE = 'de-DE';
  * ```
  */
 export function formatAuthorList(authorNames: string[]): {type: 'element' | 'literal'; value: string;}[] {
-    const formatter = new Intl.ListFormat(GERMAN_LOCALE, {
-        type: 'conjunction',
-        style: 'long',
-    });
-
-    return formatter.formatToParts(authorNames);
+    return germanListFormatter.formatToParts(authorNames);
 }
 
