@@ -52,11 +52,14 @@ const articles: StrapiArticle[] = [
             width: 1920,
             height: 1080,
             mime: 'image/jpeg',
-            sizeInBytes: 350_000,
+            size: 341.796875,
             formats: {
                 thumbnail: {url: '/uploads/cover-1-thumb.jpg', width: 245, height: 138, mime: 'image/jpeg', sizeInBytes: 20_000},
                 small: {url: '/uploads/cover-1-small.jpg', width: 500, height: 281, mime: 'image/jpeg', sizeInBytes: 60_000},
-                medium: {url: '/uploads/cover-1-medium.jpg', width: 750, height: 422, mime: 'image/jpeg', sizeInBytes: 120_000},
+                // KB-valued `size` (117.1875 × 1024 = 120000) so the golden exercises the
+                // format-merge + KB→bytes path production actually takes, not the
+                // synthetic sizeInBytes branch no Strapi upload carries.
+                medium: {url: '/uploads/cover-1-medium.jpg', width: 750, height: 422, mime: 'image/jpeg', size: 117.1875},
                 large: {url: '/uploads/cover-1-large.jpg', width: 1000, height: 562, mime: 'image/jpeg', sizeInBytes: 200_000},
             },
         },
