@@ -21,6 +21,21 @@ export async function GET(request: Request) {
     const query = searchParams.get('q');
     const startedAt = Date.now();
 
+    const ip = getClientIp(request);
+    const rl = searchLimiter.check(`search:${ip}`);
+    if (!rl.ok) {
+        return NextResponse.json(
+            {error: 'Too Many Requests'},
+            {
+                status: 429,
+                headers: {
+                    'Retry-After': String(rl.retryAfterSeconds),
+                    'Cache-Control': 'no-store',
+                },
+            },
+        );
+    }
+
     if (!query) {
         try {
             const content = await loadSearchIndex();
@@ -93,21 +108,6 @@ export async function GET(request: Request) {
         }
         if (trimmedQuery.length > 200) {
             return NextResponse.json({error: 'Query too long'}, {status: 400});
-        }
-
-        const ip = getClientIp(request);
-        const rl = searchLimiter.check(`search:${ip}`);
-        if (!rl.ok) {
-            return NextResponse.json(
-                {error: 'Too Many Requests'},
-                {
-                    status: 429,
-                    headers: {
-                        'Retry-After': String(rl.retryAfterSeconds),
-                        'Cache-Control': 'no-store',
-                    },
-                },
-            );
         }
 
         const index = await loadSearchIndex();
