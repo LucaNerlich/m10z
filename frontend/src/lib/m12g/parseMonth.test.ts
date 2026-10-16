@@ -168,6 +168,13 @@ describe('parseMonth — error cases', () => {
         expect(() => parseMonth(raw, '2025-12')).toThrow(/malformed list item/);
     });
 
+    test.each(['+ [A](https://a.example) 3', '1. [A](https://a.example) 3', '2) [A](https://a.example) 3'])(
+        'unsupported list marker "%s" fails loudly instead of being skipped',
+        (line) => {
+            expect(() => parseMonth(build(line), '2025-12')).toThrow(/malformed list item/);
+        },
+    );
+
     test('error message includes the file name', () => {
         try {
             parseMonth(validFrontmatter, 'not-a-month');
