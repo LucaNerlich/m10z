@@ -9,8 +9,10 @@
  * @returns Formatted reading time string: "< 1 Min. Lesezeit" or "X Min. Lesezeit"
  */
 
-// Module-level so the RegExp objects and cache survive across calls
-const readingTimeCache = new Map<string | number, string>();
+// Module-level so the RegExp objects survive across calls. Only numeric word counts
+// are memoized: a string key would retain whole article bodies in a Map that lives for
+// the lifetime of the server process, for a hit rate near zero.
+const readingTimeCache = new Map<number, string>();
 const REGEX_FENCED_CODE_BLOCKS = /```[\s\S]*?```/g;
 const REGEX_INDENTED_CODE_BLOCKS = /^ {4,}.*$/gm;
 const REGEX_INLINE_CODE = /`[^`]+`/g;
@@ -43,7 +45,7 @@ export function calculateReadingTimeCompact(
 export function calculateReadingTime(
     markdownOrWordCount: string | number | null | undefined,
 ): string {
-    if (markdownOrWordCount !== null && markdownOrWordCount !== undefined) {
+    if (typeof markdownOrWordCount === 'number') {
         const cached = readingTimeCache.get(markdownOrWordCount);
         if (cached !== undefined) {
             return cached;
@@ -125,9 +127,14 @@ export function calculateReadingTime(
         result = '< 1 Min. Lesezeit';
     }
 
-    if (markdownOrWordCount !== null && markdownOrWordCount !== undefined) {
+    if (typeof markdownOrWordCount === 'number') {
         readingTimeCache.set(markdownOrWordCount, result);
     }
 
     return result;
+}
+
+/** Current memoized-entry count (for tests: proves string bodies are never retained). */
+export function __readingTimeCacheSize(): number {
+    return readingTimeCache.size;
 }

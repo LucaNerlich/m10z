@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {calculateReadingTime, calculateReadingTimeCompact} from './readingTime';
+import {__readingTimeCacheSize, calculateReadingTime, calculateReadingTimeCompact} from './readingTime';
 
 describe('calculateReadingTime — numeric input', () => {
     test.each([
@@ -66,5 +66,24 @@ describe('calculateReadingTime — null/undefined', () => {
 
     test('undefined → minimum', () => {
         expect(calculateReadingTime(undefined)).toBe('< 1 Min. Lesezeit');
+    });
+});
+
+describe('calculateReadingTime — memoization', () => {
+    test('does not retain string (markdown) inputs', () => {
+        const before = __readingTimeCacheSize();
+
+        calculateReadingTime('# Ein Artikel\n\n' + Array(500).fill('wort').join(' '));
+
+        expect(__readingTimeCacheSize()).toBe(before);
+    });
+
+    test('memoizes numeric word counts', () => {
+        const before = __readingTimeCacheSize();
+
+        expect(calculateReadingTime(12345)).toBe('~50 Min. Lesezeit');
+        expect(__readingTimeCacheSize()).toBe(before + 1);
+        expect(calculateReadingTime(12345)).toBe('~50 Min. Lesezeit');
+        expect(__readingTimeCacheSize()).toBe(before + 1);
     });
 });
