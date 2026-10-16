@@ -75,6 +75,20 @@ describe('search-index metrics controller', () => {
         );
     });
 
+    test('trims padded date bounds so they stay usable for the service', async () => {
+        const controller = createController();
+
+        await controller.metrics(
+            makeCtx({from: ' 2026-01-01T00:00:00.000Z ', to: ' 2026-02-01T00:00:00.000Z '}),
+        );
+
+        expect(mocks.getHistoricalSearchIndexMetrics).toHaveBeenCalledWith(
+            Number.NaN,
+            '2026-01-01T00:00:00.000Z',
+            '2026-02-01T00:00:00.000Z',
+        );
+    });
+
     test('rejects an unauthenticated request before reading metrics', async () => {
         mocks.verifySecret.mockReturnValueOnce(false);
         const controller = createController();
