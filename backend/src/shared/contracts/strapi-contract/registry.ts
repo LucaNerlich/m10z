@@ -48,8 +48,6 @@ export type ContentTypeConfig = {
     cascadeTags?: readonly string[];
     /** Whether a mutation of this type should also queue a search-index rebuild. */
     searchIndex?: boolean;
-    /** Present only for content types exposed via /preview/{frontendSegment}/{slug}. */
-    preview?: {frontendSegment: string};
 };
 
 export const CONTENT_TYPES: Record<ContentTypeKey, ContentTypeConfig> = {
@@ -68,7 +66,6 @@ export const CONTENT_TYPES: Record<ContentTypeKey, ContentTypeConfig> = {
             sitemapTag('articles'),
         ],
         searchIndex: true,
-        preview: {frontendSegment: 'artikel'},
     },
     podcast: {
         uid: 'api::podcast.podcast',
@@ -85,7 +82,6 @@ export const CONTENT_TYPES: Record<ContentTypeKey, ContentTypeConfig> = {
             sitemapTag('podcasts'),
         ],
         searchIndex: true,
-        preview: {frontendSegment: 'podcasts'},
     },
     author: {
         uid: 'api::author.author',
