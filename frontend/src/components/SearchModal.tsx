@@ -96,11 +96,6 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
             // Only trap Tab when focus is on input, close button, or result buttons
             if (!isInput && !isCloseButton && !isResultButton) return;
 
-            // Get result buttons (exclude input and close button)
-            const resultButtons = tabbableElements.filter(
-                (el) => el !== inputRef.current && el !== closeButtonRef.current,
-            );
-
             event.preventDefault();
 
             const currentIndex = tabbableElements.indexOf(document.activeElement as HTMLElement);
