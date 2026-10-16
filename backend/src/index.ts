@@ -80,9 +80,7 @@ export default {
         // Configure HTTP server timeouts to prevent premature socket closure
         // during SSR requests. The server may not be initialized immediately,
         // so we use a timeout to retry if needed.
-        const MAX_RETRIES = process.env.STRAPI_SERVER_CONFIG_MAX_RETRIES
-            ? parseInt(process.env.STRAPI_SERVER_CONFIG_MAX_RETRIES, 10)
-            : 50; // Default: 50 retries * 100ms = 5 seconds total
+        const MAX_RETRIES = 50; // 50 retries * 100ms = 5 seconds total
         let retryCount = 0;
 
         const configureServer = () => {
