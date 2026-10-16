@@ -32,6 +32,9 @@ type SearchQueryResponse = {
  *   - `error`: Error object if fetch failed (undefined otherwise)
  *   - `isLoading`: Boolean indicating if the initial load is in progress
  *   - `isValidating`: Boolean indicating if a revalidation is in progress
+ *   - `effectiveQuery`: The trimmed, debounced query the fetch boundary uses; it lags
+ *     `query` during the debounce window, so a status message can tell whether a
+ *     request has been issued yet
  */
 export function useSearchQuery(query: string, debounceMs: number = 150) {
     const [debouncedQuery, setDebouncedQuery] = useState<string>('');
@@ -70,6 +73,7 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
             error: undefined,
             isLoading: false,
             isValidating: false,
+            effectiveQuery: debouncedQuery,
         };
     }
 
@@ -79,6 +83,7 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
         error,
         isLoading,
         isValidating,
+        effectiveQuery: debouncedQuery,
     };
 }
 

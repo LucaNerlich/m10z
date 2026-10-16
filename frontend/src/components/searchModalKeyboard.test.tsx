@@ -27,7 +27,13 @@ let root: Root;
 
 beforeEach(() => {
     push.mockReset();
-    useSearchQuery.mockReturnValue({results: RESULTS, total: RESULTS.length, isLoading: false, isValidating: false});
+    useSearchQuery.mockReturnValue({
+        results: RESULTS,
+        total: RESULTS.length,
+        isLoading: false,
+        isValidating: false,
+        effectiveQuery: '',
+    });
     // jsdom does not implement scrollIntoView, which the modal calls on keyboard
     // navigation.
     Element.prototype.scrollIntoView = vi.fn();
@@ -111,7 +117,13 @@ describe('SearchModal keyboard interaction', () => {
     });
 
     test('Enter with no results does not navigate', async () => {
-        useSearchQuery.mockReturnValue({results: [], total: 0, isLoading: false, isValidating: false});
+        useSearchQuery.mockReturnValue({
+            results: [],
+            total: 0,
+            isLoading: false,
+            isValidating: false,
+            effectiveQuery: '',
+        });
         const onClose = await renderModal();
 
         await press('Enter');
@@ -121,7 +133,13 @@ describe('SearchModal keyboard interaction', () => {
     });
 
     test('a one-character query asks the user to keep typing instead of reporting no results', async () => {
-        useSearchQuery.mockReturnValue({results: [], total: 0, isLoading: false, isValidating: false});
+        useSearchQuery.mockReturnValue({
+            results: [],
+            total: 0,
+            isLoading: false,
+            isValidating: false,
+            effectiveQuery: '',
+        });
         await renderModal();
 
         await type('a');
@@ -130,8 +148,32 @@ describe('SearchModal keyboard interaction', () => {
         expect(container.textContent).not.toContain('Keine Treffer gefunden');
     });
 
+    test('a valid query in its debounce window shows "Suchen ..." instead of "Keine Treffer gefunden."', async () => {
+        // While the debounce runs, effectiveQuery still holds the previous value and no
+        // request has been issued — the status must not read as "no results".
+        useSearchQuery.mockReturnValue({
+            results: [],
+            total: 0,
+            isLoading: false,
+            isValidating: false,
+            effectiveQuery: '',
+        });
+        await renderModal();
+
+        await type('hal');
+
+        expect(container.textContent).toContain('Suchen ...');
+        expect(container.textContent).not.toContain('Keine Treffer gefunden');
+    });
+
     test('two or more characters with no matches report no results', async () => {
-        useSearchQuery.mockReturnValue({results: [], total: 0, isLoading: false, isValidating: false});
+        useSearchQuery.mockReturnValue({
+            results: [],
+            total: 0,
+            isLoading: false,
+            isValidating: false,
+            effectiveQuery: 'ab',
+        });
         await renderModal();
 
         await type('ab');
