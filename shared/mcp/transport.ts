@@ -36,7 +36,7 @@ const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
  * production token must never travel over plain HTTP.
  */
 export function resolveMcpConfig(
-    options: {useLocal?: boolean; env?: Record<string, string | undefined>} = {},
+    options: {useLocal?: boolean; env?: Record<string, string | undefined>} = {}
 ): McpConfig {
     const env = options.env ?? process.env;
     const useLocal = options.useLocal ?? false;
@@ -61,7 +61,7 @@ export function resolveMcpConfig(
         (!localHttp || !localToken || token !== localToken)
     ) {
         throw new Error(
-            'MCP endpoint must use HTTPS, or local HTTP with STRAPI_MCP_ADMIN_TOKEN_LOCAL',
+            'MCP endpoint must use HTTPS, or local HTTP with STRAPI_MCP_ADMIN_TOKEN_LOCAL'
         );
     }
     if (!token) {
@@ -69,7 +69,9 @@ export function resolveMcpConfig(
             useLocal || localHttp
                 ? 'STRAPI_MCP_ADMIN_TOKEN_LOCAL'
                 : 'STRAPI_MCP_ADMIN_TOKEN_PROD';
-        throw new Error(`Missing MCP token. Set ${name} (or STRAPI_MCP_TOKEN).`);
+        throw new Error(
+            `Missing MCP token. Set ${name} (or STRAPI_MCP_TOKEN).`
+        );
     }
 
     return {
@@ -85,7 +87,7 @@ export type McpRetryOptions = {
     attempts?: number;
     /** Base of the exponential backoff between attempts. */
     baseDelayMs?: number;
-    onRetry?: (error: unknown, attempt: number) => void;
+    onRetry?: (error: unknown, attempt: number, tool: string) => void;
 };
 
 export type McpTransportOptions = {
@@ -95,7 +97,10 @@ export type McpTransportOptions = {
 };
 
 export type McpTransport = {
-    callTool: <T>(name: string, toolArgs: Record<string, unknown>) => Promise<T>;
+    callTool: <T>(
+        name: string,
+        toolArgs: Record<string, unknown>
+    ) => Promise<T>;
 };
 
 /**
@@ -104,7 +109,7 @@ export type McpTransport = {
  */
 export function createMcpTransport(
     config: Pick<McpConfig, 'endpoint' | 'token'>,
-    options: McpTransportOptions = {},
+    options: McpTransportOptions = {}
 ): McpTransport {
     let requestId = 0;
 
@@ -112,7 +117,7 @@ export function createMcpTransport(
     function parseRpcBody(
         body: string,
         contentType: string,
-        id: number,
+        id: number
     ): JsonRpcResponse {
         if (!contentType.includes('text/event-stream'))
             return JSON.parse(body) as JsonRpcResponse;
@@ -131,7 +136,7 @@ export function createMcpTransport(
 
     async function callOnce<T>(
         name: string,
-        toolArgs: Record<string, unknown>,
+        toolArgs: Record<string, unknown>
     ): Promise<T> {
         const id = ++requestId;
         const response = await fetch(config.endpoint, {
@@ -147,7 +152,9 @@ export function createMcpTransport(
                 method: 'tools/call',
                 params: {name, arguments: toolArgs},
             }),
-            ...(options.timeoutMs ? {signal: AbortSignal.timeout(options.timeoutMs)} : {}),
+            ...(options.timeoutMs
+                ? {signal: AbortSignal.timeout(options.timeoutMs)}
+                : {}),
         });
         if (!response.ok)
             throw new Error(`MCP ${name} failed with HTTP ${response.status}`);
@@ -155,16 +162,17 @@ export function createMcpTransport(
         const rpc = parseRpcBody(
             await response.text(),
             response.headers.get('content-type') ?? '',
-            id,
+            id
         );
-        if (rpc.error) throw new Error(`MCP ${name} failed: ${rpc.error.message}`);
+        if (rpc.error)
+            throw new Error(`MCP ${name} failed: ${rpc.error.message}`);
         if (!rpc.result || rpc.result.isError)
             throw new Error(`MCP ${name} returned an error result`);
 
         if (rpc.result.structuredContent)
             return rpc.result.structuredContent as T;
         const text = rpc.result.content?.find(
-            (item) => item.type === 'text',
+            (item) => item.type === 'text'
         )?.text;
         if (!text) throw new Error(`MCP ${name} returned no content`);
         return JSON.parse(text) as T;
@@ -172,7 +180,7 @@ export function createMcpTransport(
 
     async function callTool<T>(
         name: string,
-        toolArgs: Record<string, unknown>,
+        toolArgs: Record<string, unknown>
     ): Promise<T> {
         const attempts = options.retry?.attempts ?? 1;
         const baseDelayMs = options.retry?.baseDelayMs ?? 700;
@@ -184,14 +192,16 @@ export function createMcpTransport(
             } catch (error) {
                 lastError = error;
                 if (attempt >= attempts) break;
-                options.retry?.onRetry?.(error, attempt);
+                options.retry?.onRetry?.(error, attempt, name);
                 await new Promise((resolve) =>
-                    setTimeout(resolve, baseDelayMs * 2 ** (attempt - 1)),
+                    setTimeout(resolve, baseDelayMs * 2 ** (attempt - 1))
                 );
             }
         }
 
-        throw lastError instanceof Error ? lastError : new Error(String(lastError));
+        throw lastError instanceof Error
+            ? lastError
+            : new Error(String(lastError));
     }
 
     return {callTool};

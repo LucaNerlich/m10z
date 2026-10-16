@@ -452,8 +452,10 @@ async function main(): Promise<void> {
         retry: {
             attempts: 3,
             baseDelayMs: 700,
-            onRetry: (error, attempt) =>
-                warn(`MCP call attempt ${attempt} failed: ${errorMessage(error)}`),
+            onRetry: (error, attempt, tool) =>
+                warn(
+                    `MCP ${tool} attempt ${attempt} failed: ${errorMessage(error)}`
+                ),
         },
     });
 

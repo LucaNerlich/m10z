@@ -1,6 +1,9 @@
 import {describe, expect, test, vi} from 'vitest';
 
-import {createMcpTransport, resolveMcpConfig} from './shared/contracts/mcp/transport';
+import {
+    createMcpTransport,
+    resolveMcpConfig,
+} from './shared/contracts/mcp/transport';
 
 describe('resolveMcpConfig', () => {
     test('allows HTTPS with the production token', () => {
@@ -36,7 +39,7 @@ describe('resolveMcpConfig', () => {
                     STRAPI_MCP_ADMIN_TOKEN_LOCAL: 'local-token',
                     STRAPI_MCP_TOKEN: 'prod-token',
                 },
-            }),
+            })
         ).toThrow(/HTTPS/);
     });
 
@@ -47,7 +50,7 @@ describe('resolveMcpConfig', () => {
                 env: {
                     STRAPI_MCP_ADMIN_TOKEN_PROD: 'prod-token',
                 },
-            }),
+            })
         ).toThrow(/HTTPS/);
     });
 
@@ -58,7 +61,7 @@ describe('resolveMcpConfig', () => {
                     STRAPI_MCP_URL: 'http://cms.example.test/mcp',
                     STRAPI_MCP_TOKEN: 'prod-token',
                 },
-            }),
+            })
         ).toThrow(/HTTPS/);
     });
 
@@ -70,15 +73,23 @@ describe('resolveMcpConfig', () => {
 describe('createMcpTransport', () => {
     test('parses a plain JSON-RPC response', async () => {
         const fetchMock = vi.fn().mockResolvedValue(
-            new Response(JSON.stringify({result: {structuredContent: {ok: true}}}), {
-                status: 200,
-                headers: {'content-type': 'application/json'},
-            }),
+            new Response(
+                JSON.stringify({result: {structuredContent: {ok: true}}}),
+                {
+                    status: 200,
+                    headers: {'content-type': 'application/json'},
+                }
+            )
         );
         vi.stubGlobal('fetch', fetchMock);
 
-        const transport = createMcpTransport({endpoint: 'https://cms.m10z.de/mcp', token: 't'});
-        await expect(transport.callTool('media_list_assets', {page: 1})).resolves.toEqual({ok: true});
+        const transport = createMcpTransport({
+            endpoint: 'https://cms.m10z.de/mcp',
+            token: 't',
+        });
+        await expect(
+            transport.callTool('media_list_assets', {page: 1})
+        ).resolves.toEqual({ok: true});
 
         vi.unstubAllGlobals();
     });
@@ -88,20 +99,30 @@ describe('createMcpTransport', () => {
             .fn()
             .mockResolvedValueOnce(new Response('boom', {status: 503}))
             .mockResolvedValueOnce(
-                new Response(JSON.stringify({result: {structuredContent: {ok: true}}}), {
-                    status: 200,
-                    headers: {'content-type': 'application/json'},
-                }),
+                new Response(
+                    JSON.stringify({result: {structuredContent: {ok: true}}}),
+                    {
+                        status: 200,
+                        headers: {'content-type': 'application/json'},
+                    }
+                )
             );
         vi.stubGlobal('fetch', fetchMock);
         const onRetry = vi.fn();
 
         const transport = createMcpTransport(
             {endpoint: 'https://cms.m10z.de/mcp', token: 't'},
-            {retry: {attempts: 2, baseDelayMs: 1, onRetry}},
+            {retry: {attempts: 2, baseDelayMs: 1, onRetry}}
         );
-        await expect(transport.callTool('media_list_assets', {})).resolves.toEqual({ok: true});
+        await expect(
+            transport.callTool('media_list_assets', {})
+        ).resolves.toEqual({ok: true});
         expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(onRetry).toHaveBeenCalledWith(
+            expect.anything(),
+            1,
+            'media_list_assets'
+        );
         expect(fetchMock).toHaveBeenCalledTimes(2);
 
         vi.unstubAllGlobals();

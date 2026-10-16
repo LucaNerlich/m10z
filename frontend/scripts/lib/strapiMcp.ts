@@ -38,7 +38,7 @@ export function createMcpClient(config: Pick<McpConfig, 'endpoint' | 'token'>) {
     async function listAll<T>(
         tool: string,
         extraArgs: Record<string, unknown> = {},
-        options: McpListOptions = {},
+        options: McpListOptions = {}
     ): Promise<T[]> {
         const pageSize = options.pageSize ?? DEFAULT_PAGE_SIZE;
         const maxPages = options.maxPages ?? DEFAULT_MAX_PAGES;
@@ -61,8 +61,8 @@ export function createMcpClient(config: Pick<McpConfig, 'endpoint' | 'token'>) {
                         pageSize,
                         page: index + 2,
                         ...extraArgs,
-                    }),
-                ),
+                    })
+                )
             );
             for (const payload of remaining) {
                 all.push(...(payload.results ?? []));
