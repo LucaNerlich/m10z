@@ -1,4 +1,5 @@
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
+import {isTimeoutOrSocketError} from '@/src/lib/errors';
 import {type StrapiPopulate} from '@/src/lib/strapi-queries/populate';
 
 // The one seam every Strapi request crosses. Owns base-URL resolution, optional
@@ -80,22 +81,6 @@ function buildRequestInit(req: StrapiRequest): RequestInit {
     return {headers, next: {tags: req.cache.tags, revalidate: req.cache.revalidate}};
 }
 
-// Only retry on transient network/timeout failures — not on 4xx/5xx HTTP responses,
-// which indicate server-side issues that won't resolve by retrying immediately.
-function isRetryableError(error: unknown): boolean {
-    if (error instanceof Error) {
-        if (error.name === 'AbortError' || error.message.includes('timed out')) return true;
-        if (
-            error.message.includes('ECONNRESET') ||
-            error.message.includes('ECONNREFUSED') ||
-            error.message.includes('UND_ERR_SOCKET')
-        ) {
-            return true;
-        }
-    }
-    return false;
-}
-
 async function fetchOnce<T>(req: StrapiRequest, url: URL, timeout: number): Promise<T> {
     const diagnosticName = req.diagnosticName ?? 'strapi.fetch';
     const startedAt = Date.now();
@@ -105,10 +90,12 @@ async function fetchOnce<T>(req: StrapiRequest, url: URL, timeout: number): Prom
 
     try {
         const res = await fetch(url.toString(), {signal: controller.signal, ...buildRequestInit(req)});
-        clearTimeout(timeoutId);
 
         if (!res.ok) {
-            throw new Error(`Strapi request failed: ${res.status} ${res.statusText}`);
+            const httpError = Object.assign(new Error(`Strapi request failed: ${res.status} ${res.statusText}`), {
+                status: res.status,
+            });
+            throw httpError;
         }
 
         const body = (await res.json()) as T;
@@ -127,7 +114,6 @@ async function fetchOnce<T>(req: StrapiRequest, url: URL, timeout: number): Prom
 
         return body;
     } catch (error: unknown) {
-        clearTimeout(timeoutId);
         const durationMs = Date.now() - startedAt;
 
         if (error instanceof Error && error.name === 'AbortError') {
@@ -209,6 +195,10 @@ async function fetchOnce<T>(req: StrapiRequest, url: URL, timeout: number): Prom
         }
 
         throw error;
+    } finally {
+        // The timer stays armed through the body read: only consuming the
+        // response completes the request, not merely receiving its headers.
+        clearTimeout(timeoutId);
     }
 }
 
@@ -224,7 +214,9 @@ const defaultStrapiTransport: StrapiTransport = async <T>(req: StrapiRequest): P
             return await fetchOnce<T>(req, url, timeout);
         } catch (error) {
             lastError = error;
-            if (attempt < MAX_RETRIES && isRetryableError(error)) {
+            // Only retry on transient network/timeout failures — not on 4xx/5xx HTTP
+            // responses, which indicate server-side issues that won't resolve by retrying.
+            if (attempt < MAX_RETRIES && isTimeoutOrSocketError(error)) {
                 await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)));
                 continue;
             }

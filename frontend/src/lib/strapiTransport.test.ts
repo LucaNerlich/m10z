@@ -120,6 +120,40 @@ describe('defaultStrapiTransport (via strapiFetch)', () => {
         expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
+    test('attaches the HTTP status to a non-OK transport error', async () => {
+        const fetchMock = vi.fn().mockResolvedValue(httpError(404));
+        vi.stubGlobal('fetch', fetchMock);
+
+        await expect(strapiFetch({path: '/api/x', cache: {mode: 'tags', tags: []}})).rejects.toMatchObject({
+            status: 404,
+        });
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    test('aborts a stalled body after timeoutMs and retries once', async () => {
+        const fetchMock = vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+            const signal = init.signal as AbortSignal;
+            const response = {
+                ok: true,
+                status: 200,
+                statusText: 'OK',
+                json: () =>
+                    new Promise((_resolve, reject) => {
+                        signal.addEventListener('abort', () =>
+                            reject(Object.assign(new Error('aborted'), {name: 'AbortError'})),
+                        );
+                    }),
+            } as unknown as Response;
+            return Promise.resolve(response);
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        await expect(
+            strapiFetch({path: '/api/x', cache: {mode: 'tags', tags: []}, timeoutMs: 10}),
+        ).rejects.toThrow(/timed out/);
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
     test('retries once on a transient failure, then succeeds', async () => {
         const fetchMock = vi
             .fn()

@@ -35,6 +35,7 @@ describe('getErrorMessage', () => {
 describe('isTimeoutOrSocketError', () => {
     test.each([
         ['Request timeout exceeded', true],
+        ['Strapi request timed out after 30000ms: http://localhost:1337/api/x', true],
         ['UND_ERR_SOCKET: socket disconnected', true],
         ['fetch failed: ECONNRESET', true],
         ['ECONNREFUSED 127.0.0.1:1337', true],
@@ -56,12 +57,25 @@ describe('isTimeoutOrSocketError', () => {
 describe('isNotFoundError', () => {
     test.each([
         ['Strapi request failed: 404 Not Found', true],
+        ['Strapi request failed: 404 Boom', true],
         ['Resource not found', true],
         ['RESOURCE NOT FOUND', true],
         ['Strapi request failed: 500 Internal Server Error', false],
+        [
+            'Strapi request timed out after 30000ms: http://strapi:1337/api/articles?filters[slug][$eq]=404-games&status=published',
+            false,
+        ],
         ['ECONNREFUSED 127.0.0.1:1337', false],
     ])('"%s" → %s', (msg, expected) => {
         expect(isNotFoundError(new Error(msg))).toBe(expected);
+    });
+
+    test('classifies on a numeric status before the message', () => {
+        expect(isNotFoundError(Object.assign(new Error('Strapi request failed: 404 Boom'), {status: 404}))).toBe(true);
+        expect(isNotFoundError(Object.assign(new Error('boom'), {status: 404}))).toBe(true);
+        expect(
+            isNotFoundError(Object.assign(new Error('Strapi request failed: 404 Not Found'), {status: 500})),
+        ).toBe(false);
     });
 });
 
