@@ -182,8 +182,6 @@ export interface DocumentServiceContext {
         data?: ArticleDocument | PodcastDocument;
         where?: {documentId?: string; id?: number | string};
         documentId?: string;
-        /** Bulk Document Service actions (`deleteMany`, `publishMany`, `unpublishMany`). */
-        documentIds?: string[];
         status?: string;
     };
     contentType?: {
