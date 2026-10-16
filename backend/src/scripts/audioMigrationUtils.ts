@@ -80,12 +80,24 @@ export function getMimeType(filename: string): string {
 }
 
 /**
+ * Build the multipart body for a Strapi file upload.
+ *
+ * Uses the runtime's global `FormData`/`Blob`; `fetch` sets the multipart
+ * Content-Type boundary itself, so callers pass no explicit header for it.
+ */
+export function buildUploadFormData(fileBuffer: Buffer, filename: string): FormData {
+    const form = new FormData();
+    form.append('files', new Blob([fileBuffer], {type: getMimeType(filename)}), filename);
+    return form;
+}
+
+/**
  * Look up an already-uploaded media file by name (idempotency check for the
  * migration script). Pure w.r.t. Strapi: the fetch implementation, API base
  * URL, and token are passed in, so this is unit-testable without network I/O.
  *
- * The fetch contract is deliberately minimal and structural so both the global
- * fetch and `node-fetch`'s fetch (and test doubles) satisfy it.
+ * The fetch contract is deliberately minimal and structural so the global
+ * fetch and test doubles satisfy it.
  */
 export async function findExistingFileByName(
     fetchFn: (
