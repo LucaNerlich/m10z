@@ -136,6 +136,29 @@ describe('generateAudioFeedXml — channel & item structure', () => {
         expect(xml).toContain('<link>https://m10z.de/podcasts/episode-001</link>');
     });
 
+    test('omits <itunes:duration> when the CMS value is null', () => {
+        // The CMS field is optional (required: false), so a saved podcast can carry null
+        // although the frontend type declares it non-nullable.
+        const withoutDuration = {...episode, duration: null as unknown as number};
+        const {xml} = generateAudioFeedXml({
+            cfg: baseCfg,
+            channel,
+            episodeFooter: null,
+            episodes: [withoutDuration],
+        });
+        expect(xml).not.toContain('<itunes:duration>');
+    });
+
+    test('omits <itunes:duration> for a non-positive value', () => {
+        const {xml} = generateAudioFeedXml({
+            cfg: baseCfg,
+            channel,
+            episodeFooter: null,
+            episodes: [{...episode, duration: 0}],
+        });
+        expect(xml).not.toContain('<itunes:duration>');
+    });
+
     test('reports renderedEpisodeCount and caching metadata', () => {
         const result = generateAudioFeedXml({cfg: baseCfg, channel, episodeFooter: null, episodes: [episode]});
         expect(result.renderedEpisodeCount).toBe(1);

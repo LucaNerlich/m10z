@@ -254,6 +254,15 @@ function renderItem(
 
     const link = `${normalizeBaseUrl(cfg.siteUrl)}/podcasts/${encodeURIComponent(episode.slug)}`;
 
+    // `duration` is optional in the CMS schema, so a saved podcast can carry null.
+    // Only emit the tag for a usable value; a literal `<itunes:duration>null</itunes:duration>`
+    // is invalid metadata for podcatchers.
+    const durationSeconds = Number(episode.duration);
+    const durationTag =
+        Number.isFinite(durationSeconds) && durationSeconds > 0
+            ? `    <itunes:duration>${durationSeconds}</itunes:duration>`
+            : '';
+
     const tGuid0 = nowMs();
     const guid = sha256Hex(enclosureUrl);
     const tGuid1 = nowMs();
@@ -269,7 +278,7 @@ function renderItem(
         `    <author>${escapeXml(cfg.authorEmail)}</author>` +
         `    <itunes:explicit>${cfg.itunesExplicit}</itunes:explicit>` +
         `    <link>${escapeXml(link)}</link>` +
-        `    <itunes:duration>${episode.duration}</itunes:duration>` +
+        durationTag +
         `    <enclosure url="${escapeXml(enclosureDisplayUrl)}" length="${lengthBytes}" type="${escapeXml(enclosureType)}"/>` +
         `</item>`
     );
