@@ -215,8 +215,11 @@ const defaultStrapiTransport: StrapiTransport = async <T>(req: StrapiRequest): P
         } catch (error) {
             lastError = error;
             // Only retry on transient network/timeout failures — not on 4xx/5xx HTTP
-            // responses, which indicate server-side issues that won't resolve by retrying.
-            if (attempt < MAX_RETRIES && isTimeoutOrSocketError(error)) {
+            // responses (the transport's own HTTP errors carry a numeric `status`;
+            // their statusText can still contain "Timeout"), which indicate
+            // server-side issues that won't resolve by retrying.
+            const hasHttpStatus = typeof (error as {status?: unknown})?.status === 'number';
+            if (attempt < MAX_RETRIES && !hasHttpStatus && isTimeoutOrSocketError(error)) {
                 await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)));
                 continue;
             }

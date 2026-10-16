@@ -12,8 +12,8 @@ function okJson(body: unknown): Response {
     return {ok: true, status: 200, statusText: 'OK', json: async () => body} as unknown as Response;
 }
 
-function httpError(status: number): Response {
-    return {ok: false, status, statusText: 'Boom', json: async () => ({})} as unknown as Response;
+function httpError(status: number, statusText = 'Boom'): Response {
+    return {ok: false, status, statusText, json: async () => ({})} as unknown as Response;
 }
 
 function abortError(): Error {
@@ -127,6 +127,14 @@ describe('defaultStrapiTransport (via strapiFetch)', () => {
         await expect(strapiFetch({path: '/api/x', cache: {mode: 'tags', tags: []}})).rejects.toMatchObject({
             status: 404,
         });
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    test('does not retry an HTTP error whose statusText contains "Timeout"', async () => {
+        const fetchMock = vi.fn().mockResolvedValue(httpError(504, 'Gateway Timeout'));
+        vi.stubGlobal('fetch', fetchMock);
+
+        await expect(strapiFetch({path: '/api/x', cache: {mode: 'tags', tags: []}})).rejects.toThrow(/504/);
         expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
