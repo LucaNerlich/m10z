@@ -93,6 +93,39 @@ describe('SearchModal keyboard interaction', () => {
         expect(onClose).toHaveBeenCalledTimes(1);
     });
 
+    test('Tab moves focus from the input to the close button', async () => {
+        await renderModal();
+        expect(document.activeElement).toBe(input());
+
+        await press('Tab');
+
+        // Tabbable order follows the DOM: input, close button, result buttons.
+        expect(document.activeElement).toBe(container.querySelectorAll('button')[0]);
+    });
+
+    test('Shift+Tab from the input wraps to the last tabbable element', async () => {
+        await renderModal();
+
+        await act(async () => {
+            input().dispatchEvent(
+                new KeyboardEvent('keydown', {key: 'Tab', shiftKey: true, bubbles: true}),
+            );
+        });
+
+        const tabbables = Array.from(container.querySelectorAll('input, button'));
+        expect(document.activeElement).toBe(tabbables[tabbables.length - 1]);
+    });
+
+    test('Tab from the last tabbable element wraps back to the input', async () => {
+        await renderModal();
+        const tabbables = Array.from(container.querySelectorAll('input, button'));
+        tabbables[tabbables.length - 1]?.focus();
+
+        await press('Tab');
+
+        expect(document.activeElement).toBe(input());
+    });
+
     test('ArrowDown moves the active result and Enter opens it', async () => {
         const onClose = await renderModal();
 
