@@ -5,6 +5,7 @@ import {usePathname} from 'next/navigation';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {useIsMac} from '@/src/hooks/useIsMac';
+import {lockBodyScroll} from '@/src/lib/bodyScrollLock';
 
 import styles from './Header.module.css';
 
@@ -63,11 +64,8 @@ export default function HeaderClient({
 
     useEffect(() => {
         if (!isMenuOpen) return;
-        const previousOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = previousOverflow;
-        };
+        // Ref-counted: the search modal may hold the lock at the same time.
+        return lockBodyScroll();
     }, [isMenuOpen]);
 
     // Close menu on outside click/touch. Both events are needed:
