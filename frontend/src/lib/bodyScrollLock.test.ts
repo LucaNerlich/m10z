@@ -32,5 +32,11 @@ describe('lockBodyScroll', () => {
         release();
 
         expect(document.body.style.overflow).toBe('scroll');
+
+        // A double release must not poison the holder count: the next lock still applies.
+        const relock = lockBodyScroll();
+        expect(document.body.style.overflow).toBe('hidden');
+        relock();
+        expect(document.body.style.overflow).toBe('scroll');
     });
 });
