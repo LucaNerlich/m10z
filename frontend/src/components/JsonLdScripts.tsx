@@ -1,9 +1,7 @@
 import Script from 'next/script';
 
+import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {type JsonLd} from '@/src/lib/jsonld/types';
-
-// Hoist RegExp pattern to module scope
-const LT_ESCAPE_PATTERN = /</g;
 
 type JsonLdScriptEntry = {
     /** Unique Script element id (e.g. `jsonld-article-${slug}`). */
@@ -18,8 +16,8 @@ type JsonLdScriptsProps = {
 /**
  * Renders one or more JSON-LD `<script type="application/ld+json">` tags.
  *
- * Serializes each object with `<` escaped to `\u003c` so a payload containing
- * `</script>` cannot break out of the tag.
+ * Serializes each object through `stringifyJsonLd`, which escapes `<` so a
+ * payload containing `</script>` cannot break out of the tag.
  */
 export function JsonLdScripts({entries}: JsonLdScriptsProps) {
     return (
@@ -30,7 +28,7 @@ export function JsonLdScripts({entries}: JsonLdScriptsProps) {
                     id={id}
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
-                        __html: JSON.stringify(jsonLd).replace(LT_ESCAPE_PATTERN, '\\u003c'),
+                        __html: stringifyJsonLd(jsonLd),
                     }}
                 />
             ))}
