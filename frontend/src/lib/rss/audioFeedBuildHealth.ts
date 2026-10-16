@@ -119,13 +119,12 @@ export function createAudioFeedBuildHealth(onReset: () => void): AudioFeedBuildH
     }): AudioFeedRuntimeState {
         const now = Date.now();
         const uptimeMs = schedulerState.schedulerStartedAtMs ? now - schedulerState.schedulerStartedAtMs : 0;
-        const last3 = state.buildDurationsMs.slice(-SLOW_BUILD_WINDOW);
-        const hasEnough = last3.length === SLOW_BUILD_WINDOW && state.initialBuildDurationMs !== null;
         const thresholdMs = state.initialBuildDurationMs
             ? state.initialBuildDurationMs * SLOW_BUILD_MULTIPLIER
             : null;
-        const wouldTrigger =
-            hasEnough && thresholdMs !== null ? last3.every((d) => d > thresholdMs) : false;
+        // Mirror recordBuild's reset decision so the diagnostics snapshot cannot
+        // disagree with it (shouldReset() self-checks the window length).
+        const wouldTrigger = shouldReset();
 
         const trend: AudioFeedBuildTrend =
             state.buildDurationsMs.length >= 5

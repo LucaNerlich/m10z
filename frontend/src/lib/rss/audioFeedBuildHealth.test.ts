@@ -46,4 +46,18 @@ describe('createAudioFeedBuildHealth', () => {
         expect(health.shouldReset()).toBe(false);
         expect(health.getRuntimeState(schedulerState).threshold.wouldTrigger).toBe(false);
     });
+
+    test('wouldTrigger mirrors the reset decision even for a zero baseline', () => {
+        const onReset = vi.fn();
+        const health = createAudioFeedBuildHealth(onReset);
+
+        // A 0 ms first build seeds the baseline; threshold 0 makes any build "slow".
+        health.recordBuild(build(0));
+        health.recordBuild(build(1));
+        health.recordBuild(build(2));
+        health.recordBuild(build(3));
+
+        expect(health.shouldReset()).toBe(true);
+        expect(health.getRuntimeState(schedulerState).threshold.wouldTrigger).toBe(true);
+    });
 });
