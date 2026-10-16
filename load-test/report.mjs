@@ -53,8 +53,6 @@ function getRate(rate) {
   const values = rate?.values ?? rate ?? {};
   return {
     rate: values.rate ?? values.value,
-    passes: values.passes,
-    fails: values.fails,
   };
 }
 
@@ -68,7 +66,6 @@ const raw = await fs.readFile(inputPath, 'utf8');
 const summary = JSON.parse(raw);
 
 const metrics = summary.metrics ?? {};
-const duration = (summary.state?.testRunDurationMs ?? null);
 
 const httpReqDuration = getTrend(getMetric(metrics, 'http_req_duration'));
 const httpReqFailed = getRate(getMetric(metrics, 'http_req_failed'));
@@ -139,7 +136,6 @@ const html = `<!doctype html>
   <body>
     <h1>${title}</h1>
     <div class="muted">Generated at <code>${new Date().toISOString()}</code></div>
-    <div class="muted">Test duration: <code>${fmtMs(duration)}</code></div>
 
     <div class="grid" style="margin-top:16px">
       <div class="card">
@@ -156,8 +152,6 @@ const html = `<!doctype html>
         <table>
           <tr><td>http_req_failed rate</td><td><code>${httpReqFailed.rate != null ? (httpReqFailed.rate * 100).toFixed(2) + '%' : 'n/a'}</code></td></tr>
           <tr><td>failed requests (approx)</td><td><code>${fmtNum(approxFailedReqs)}</code></td></tr>
-          <tr><td>passes</td><td><code>${fmtNum(httpReqFailed.passes)}</code></td></tr>
-          <tr><td>fails</td><td><code>${fmtNum(httpReqFailed.fails)}</code></td></tr>
         </table>
       </div>
 
