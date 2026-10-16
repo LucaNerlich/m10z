@@ -35,14 +35,15 @@ export default factories.createCoreController('api::search-index.search-index', 
         // - limit: optional integer (default 30, capped at 1000, invalid values ignored)
         // - from / to: optional ISO date strings used as inclusive bounds on metrics.updatedAt
         // Normalization lives in getHistoricalSearchIndexMetrics; the controller only
-        // parses what it can and forwards it.
+        // parses what it can and forwards it. Whitespace-padded dates are trimmed —
+        // Date.parse rejects padded strings, so the bound would be silently ignored.
         const rawLimit = (ctx?.request?.query?.limit ?? ctx?.query?.limit) as unknown;
         const rawFrom = (ctx?.request?.query?.from ?? ctx?.query?.from) as unknown;
         const rawTo = (ctx?.request?.query?.to ?? ctx?.query?.to) as unknown;
 
         const limit = Number(rawLimit);
-        const from = typeof rawFrom === 'string' ? rawFrom : undefined;
-        const to = typeof rawTo === 'string' ? rawTo : undefined;
+        const from = typeof rawFrom === 'string' ? rawFrom.trim() : undefined;
+        const to = typeof rawTo === 'string' ? rawTo.trim() : undefined;
 
         const history = getHistoricalSearchIndexMetrics(limit, from, to);
 
