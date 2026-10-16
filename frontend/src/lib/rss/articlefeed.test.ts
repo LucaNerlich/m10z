@@ -73,6 +73,20 @@ describe('generateArticleFeedXml — items', () => {
         ]);
         expect(xml).toContain('<description>Category blurb</description>');
     });
+
+    test('derives the enclosure length from the KB `size` field', () => {
+        const {xml} = render([
+            makeArticle({cover: {url: 'https://cdn.example.test/cover.jpg', mime: 'image/jpeg', size: 25}}),
+        ]);
+        expect(xml).toContain('length="25600"');
+    });
+
+    test('falls back to length="0" when the media carries no size', () => {
+        const {xml} = render([
+            makeArticle({cover: {url: 'https://cdn.example.test/cover.jpg', mime: 'image/jpeg'}}),
+        ]);
+        expect(xml).toContain('length="0"');
+    });
 });
 
 describe('generateArticleFeedXml — ordering & caching metadata', () => {
