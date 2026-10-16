@@ -23,7 +23,7 @@ import {
     type UmamiTrafficStats,
     readUmamiStatsConfig,
 } from '@/src/lib/analytics/umamiStats';
-import {CACHE_REVALIDATE_UMAMI, UMAMI_STATS_CACHE_TAG} from '@/src/lib/cache/constants';
+import {CACHE_REVALIDATE_UMAMI} from '@/src/lib/cache/constants';
 import {getErrorMessage} from '@/src/lib/errors';
 
 function createLoggedClient() {
@@ -54,7 +54,6 @@ const getCachedUmamiTrafficStats = unstable_cache(
     ['umami-traffic-stats'],
     {
         revalidate: CACHE_REVALIDATE_UMAMI,
-        tags: [UMAMI_STATS_CACHE_TAG],
     }
 );
 
@@ -68,7 +67,6 @@ const getCachedUmamiReachDetailStats = unstable_cache(
     ['umami-reach-detail-stats'],
     {
         revalidate: CACHE_REVALIDATE_UMAMI,
-        tags: [UMAMI_STATS_CACHE_TAG],
     }
 );
 

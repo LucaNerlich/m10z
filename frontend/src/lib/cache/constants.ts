@@ -54,6 +54,3 @@ export const CACHE_REVALIDATE_SEARCH = 3600;
  */
 export const CACHE_REVALIDATE_UMAMI = 600;
 
-/** Next.js cache tag for Umami traffic stats (fetch / unstable_cache). */
-export const UMAMI_STATS_CACHE_TAG = 'umami:stats';
-
