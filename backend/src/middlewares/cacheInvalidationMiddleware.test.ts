@@ -156,4 +156,49 @@ describe('cacheInvalidationMiddleware', () => {
             strapi,
         );
     });
+
+    test('delete resolves slugs before next() and queues one delete event', async () => {
+        const order: string[] = [];
+        const findOne = vi.fn(async () => {
+            order.push('resolve');
+            return {slug: 'cat-a'};
+        });
+        const strapi = {
+            documents: vi.fn(() => ({findOne})),
+            log: {info: vi.fn(), warn: vi.fn(), error: vi.fn()},
+        };
+        const next = vi.fn(async () => {
+            order.push('next');
+            return {};
+        });
+
+        await cacheInvalidationMiddleware(
+            {uid: 'api::category.category', action: 'delete', params: {strapi: strapi as any, documentId: 'doc-1'}},
+            next,
+        );
+
+        // The entity is gone once next() resolves — the slug must be resolved first,
+        // otherwise every delete event would degrade to a slug-less bust.
+        expect(order).toEqual(['resolve', 'next']);
+        expect(mockedQueue).toHaveBeenCalledTimes(1);
+        expect(mockedQueue).toHaveBeenCalledWith(
+            {type: 'category', action: 'delete', slug: 'cat-a'},
+            strapi,
+        );
+        expect(mockedRebuildQueue).toHaveBeenCalledTimes(1);
+    });
+
+    test('delete without a resolvable document fails open with a slug-less event', async () => {
+        const {strapi} = makeStrapi();
+        const next = vi.fn(async () => ({}));
+
+        await cacheInvalidationMiddleware(
+            {uid: 'api::category.category', action: 'delete', params: {strapi: strapi as any}},
+            next,
+        );
+
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(mockedQueue).toHaveBeenCalledTimes(1);
+        expect(mockedQueue).toHaveBeenCalledWith({type: 'category', action: 'delete'}, strapi);
+    });
 });
