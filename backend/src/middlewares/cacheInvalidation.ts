@@ -122,12 +122,13 @@ export async function cacheInvalidationMiddleware(
     // keeps working and the emitted events keep the single-action contract.
     const bulkBase = BULK_ACTION_BASE[context.action];
 
-    // A Document Service `update({status: 'published'})` publishes the live entry
-    // without going through the `publish` action (REST/direct API calls). Treat it
-    // as a publish so caches and the search index are busted exactly like the
-    // explicit publish path.
+    // A Document Service `update({status: 'published'})` publishes the live entry,
+    // and `create({status: 'published'})` publishes through an internal call the
+    // middleware never sees as `publish` (REST/direct API calls; `status` defaults to
+    // 'published'). Treat both as a publish so caches and the search index are busted
+    // exactly like the explicit publish path.
     const effectiveAction: string =
-        context.action === 'update' && context.params?.status === 'published'
+        (context.action === 'create' || context.action === 'update') && context.params?.status === 'published'
             ? 'publish'
             : (bulkBase ?? context.action);
 

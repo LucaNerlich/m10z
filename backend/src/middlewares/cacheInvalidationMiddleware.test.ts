@@ -76,6 +76,41 @@ describe('cacheInvalidationMiddleware', () => {
         expect(mockedRebuildQueue).toHaveBeenCalledTimes(1);
     });
 
+    test('create with status published queues a publish event', async () => {
+        const {strapi} = makeStrapi({slug: 'my-article'});
+        const next = vi.fn(async () => ({slug: 'my-article'}));
+
+        await cacheInvalidationMiddleware(
+            {
+                uid: 'api::article.article',
+                action: 'create',
+                params: {strapi: strapi as any, status: 'published'},
+            },
+            next,
+        );
+
+        expect(mockedQueue).toHaveBeenCalledTimes(1);
+        expect(mockedQueue).toHaveBeenCalledWith(
+            {type: 'article', action: 'publish', slug: 'my-article'},
+            strapi,
+        );
+        expect(mockedRebuildQueue).toHaveBeenCalledTimes(1);
+    });
+
+    test('plain create stays silent', async () => {
+        const {strapi} = makeStrapi({slug: 'my-article'});
+        const next = vi.fn(async () => ({slug: 'my-article'}));
+
+        await cacheInvalidationMiddleware(
+            {uid: 'api::article.article', action: 'create', params: {strapi: strapi as any, documentId: 'doc-1'}},
+            next,
+        );
+
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(mockedQueue).not.toHaveBeenCalled();
+        expect(mockedRebuildQueue).not.toHaveBeenCalled();
+    });
+
     test('plain updates of types that invalidate on update still work', async () => {
         const {strapi} = makeStrapi({slug: 'someone'});
         const next = vi.fn(async () => ({}));
