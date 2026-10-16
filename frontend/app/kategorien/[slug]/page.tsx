@@ -8,6 +8,7 @@ import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
 
 import {EmptyState} from '@/src/components/EmptyState';
+import {transientPageFallback} from '@/src/lib/transientPageFallback';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateCategoryJsonLd} from '@/src/lib/jsonld/category';
@@ -78,7 +79,10 @@ export default async function CategoryDetailPage({params}: SlugPageParams) {
             console.error(`Error fetching category for slug "${slug}":`, errorMessage);
         }
 
-        return notFound();
+        // Transient failure, not a genuine absence: at runtime the error is rethrown so
+        // Next's ISR keeps serving the last successfully cached page instead of caching
+        // a 404; during `next build` it degrades to a 404 that ISR replaces later.
+        return transientPageFallback(error, () => notFound());
     }
 
     const {category, articles: sortedArticles, podcasts: sortedPodcasts} = pageData;
