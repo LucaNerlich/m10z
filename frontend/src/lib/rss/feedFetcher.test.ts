@@ -51,6 +51,7 @@ describe('fetchAllPaginated', () => {
             apiBasePath: '/api/x',
             buildQueryString,
             resolveMaxItems: () => 3,
+            pageSize: 2,
         });
         expect(items).toEqual(['a', 'b', 'c']);
     });
@@ -68,6 +69,23 @@ describe('fetchAllPaginated', () => {
         });
         expect(items).toEqual(['a', 'b']);
         expect(calls).toHaveLength(2);
+    });
+
+    test('does not request pages past the maxItems cap', async () => {
+        // 250 items need three 100-item pages; pages 4..30 must not be requested.
+        const pages: Record<number, PageDef> = {};
+        for (let page = 1; page <= 30; page++) {
+            pages[page] = {data: Array.from({length: 100}, (_, i) => `p${page}-${i}`), pageCount: 30};
+        }
+        const {fetcher, calls} = makeFetcher(pages);
+        const items = await fetchAllPaginated<string>({
+            fetcher,
+            apiBasePath: '/api/x',
+            buildQueryString,
+            resolveMaxItems: () => 250,
+        });
+        expect(items).toHaveLength(250);
+        expect(calls).toHaveLength(3);
     });
 
     test('stops when the first page is empty', async () => {
