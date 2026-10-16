@@ -111,6 +111,42 @@ describe('cacheInvalidationMiddleware', () => {
         expect(mockedRebuildQueue).not.toHaveBeenCalled();
     });
 
+    test('create of a non draft&publish type with REST-injected status published still invalidates', async () => {
+        const {strapi} = makeStrapi({slug: 'someone'});
+        const next = vi.fn(async () => ({slug: 'someone'}));
+
+        await cacheInvalidationMiddleware(
+            {uid: 'api::author.author', action: 'create', params: {strapi: strapi as any, status: 'published'}},
+            next,
+        );
+
+        expect(mockedQueue).toHaveBeenCalledTimes(1);
+        expect(mockedQueue).toHaveBeenCalledWith(
+            {type: 'author', action: 'create', slug: 'someone'},
+            strapi,
+        );
+    });
+
+    test('update of a non draft&publish type with REST-injected status published still invalidates', async () => {
+        const {strapi} = makeStrapi({slug: 'someone'});
+        const next = vi.fn(async () => ({}));
+
+        await cacheInvalidationMiddleware(
+            {
+                uid: 'api::author.author',
+                action: 'update',
+                params: {strapi: strapi as any, documentId: 'doc-1', status: 'published'},
+            },
+            next,
+        );
+
+        expect(mockedQueue).toHaveBeenCalledTimes(1);
+        expect(mockedQueue).toHaveBeenCalledWith(
+            {type: 'author', action: 'update', slug: 'someone'},
+            strapi,
+        );
+    });
+
     test('plain updates of types that invalidate on update still work', async () => {
         const {strapi} = makeStrapi({slug: 'someone'});
         const next = vi.fn(async () => ({}));

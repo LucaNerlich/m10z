@@ -124,11 +124,13 @@ export async function cacheInvalidationMiddleware(
 
     // A Document Service `update({status: 'published'})` publishes the live entry,
     // and `create({status: 'published'})` publishes through an internal call the
-    // middleware never sees as `publish` (REST/direct API calls; `status` defaults to
-    // 'published'). Treat both as a publish so caches and the search index are busted
-    // exactly like the explicit publish path.
+    // middleware never sees as `publish` (REST/direct API calls). REST also injects
+    // `status: 'published'` into every core-service call — for types without
+    // draft & publish that default is an artifact, not a publication fact — so the
+    // remap only applies where 'publish' is a real action for the type.
+    const publishable = match?.config.invalidatesOn.includes('publish') ?? false;
     const effectiveAction: string =
-        (context.action === 'create' || context.action === 'update') && context.params?.status === 'published'
+        publishable && (context.action === 'create' || context.action === 'update') && context.params?.status === 'published'
             ? 'publish'
             : (bulkBase ?? context.action);
 
