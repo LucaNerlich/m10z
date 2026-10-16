@@ -5,7 +5,6 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const nextConfig: NextConfig = {
     experimental: {
-        turbopackFileSystemCacheForDev: true,
         optimizePackageImports: ["@phosphor-icons/react"],
     },
     reactCompiler: true,
@@ -17,7 +16,6 @@ const nextConfig: NextConfig = {
         // host and keep Next's private-IP blocking enabled.
         dangerouslyAllowLocalIP: !isProd || allowLocalImageIp(),
         remotePatterns: getRemotePatterns(),
-        deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
         qualities: [50, 60, 75, 80, 90, 95]
     },
