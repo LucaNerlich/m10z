@@ -119,6 +119,11 @@ describe('podcastClientLabel', () => {
     ])('%s → %s', (input, expected) => {
         expect(podcastClientLabel(input)).toBe(expected);
     });
+
+    test('caps the clientApp token', () => {
+        const label = podcastClientLabel(`${'a'.repeat(600)}/1.0`);
+        expect(label).toHaveLength(256);
+    });
 });
 
 describe('isAllowedDownloadTarget', () => {
