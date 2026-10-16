@@ -231,6 +231,9 @@ async function fetchAllDocuments(
         const res = (await strapi.documents(uid).findMany({
             ...params,
             status: 'published',
+            // Stable ordering for offset-based paging: an unordered scan can shift
+            // rows between page queries while a rebuild is running.
+            sort: 'documentId:asc',
             ...documentServicePage(page, PAGE_SIZE),
         })) as IndexEntry[];
 

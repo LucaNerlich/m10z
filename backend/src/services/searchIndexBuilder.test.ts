@@ -13,7 +13,7 @@ function makeArticle(i: number) {
 
 function makeStrapi(articleCount: number) {
     const articles = Array.from({length: articleCount}, (_, i) => makeArticle(i + 1));
-    const articleFindMany = vi.fn((params: {limit?: number; start?: number}) => {
+    const articleFindMany = vi.fn((params: {limit?: number; start?: number; sort?: string}) => {
         const pageSize = params.limit ?? 100;
         const start = params.start ?? 0;
         return Promise.resolve(articles.slice(start, start + pageSize));
@@ -55,6 +55,17 @@ describe('buildAndPersistSearchIndex pagination', () => {
 
         expect(articleFindMany).toHaveBeenCalledTimes(1);
         expect(index.total).toBe(42);
+    });
+
+    test('requests a stable sort on every page', async () => {
+        const {strapi, articleFindMany} = makeStrapi(250);
+
+        await buildAndPersistSearchIndex(strapi as any);
+
+        expect(articleFindMany.mock.calls.length).toBeGreaterThan(1);
+        for (const [params] of articleFindMany.mock.calls) {
+            expect(params.sort).toBe('documentId:asc');
+        }
     });
 });
 
