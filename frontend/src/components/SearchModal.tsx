@@ -7,6 +7,7 @@ import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/r
 
 import {SEARCH_MIN_QUERY_LENGTH, useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {isImageHostnameAllowed, normalizeSearchImageUrl} from '@/src/lib/image';
+import {lockBodyScroll} from '@/src/lib/bodyScrollLock';
 import {type SearchRecord, type SearchResult} from '@/src/lib/search/types';
 import {umamiEventId} from '@/src/lib/analytics/umami';
 
@@ -64,13 +65,10 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         };
     }, []);
 
-    // Lock body scroll while modal is open; restore on unmount.
+    // Lock body scroll while modal is open; restore on unmount. Ref-counted so an
+    // overlapping burger menu cannot leak the lock.
     useEffect(() => {
-        const previousOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = previousOverflow;
-        };
+        return lockBodyScroll();
     }, []);
 
     useEffect(() => {
