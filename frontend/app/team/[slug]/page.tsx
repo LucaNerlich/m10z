@@ -8,6 +8,8 @@ import {
 } from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {buildContentSlugMetadata} from '@/src/lib/metadata/contentSlugMetadata';
+import {transientPageFallback} from '@/src/lib/transientPageFallback';
+import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {PodcastCard} from '@/src/components/PodcastCard';
@@ -77,15 +79,25 @@ export default async function AuthorPage({params}: SlugPageParams) {
     try {
         author = await fetchAuthorBySlug(slug);
     } catch (error) {
-        console.error(`Failed to fetch author "${slug}":`, error);
-        return (
+        const errorMessage = getErrorMessage(error);
+
+        if (isTimeoutOrSocketError(error)) {
+            console.error(`Socket/timeout error fetching author for slug "${slug}":`, errorMessage);
+        } else {
+            console.error(`Error fetching author for slug "${slug}":`, errorMessage);
+        }
+
+        // Transient failure, not a genuine absence: at runtime the error is rethrown so
+        // Next's ISR keeps serving the last successfully cached page instead of caching
+        // the fallback panel; during `next build` the friendly fallback is shown.
+        return transientPageFallback(error, () => (
             <div data-list-page>
                 <section>
                     <h1>Team</h1>
                     <EmptyState message="Dieses Teammitglied konnte gerade nicht geladen werden. Bitte später erneut versuchen." />
                 </section>
             </div>
-        );
+        ));
     }
     if (!author) return notFound();
 
