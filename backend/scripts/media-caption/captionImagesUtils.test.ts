@@ -16,7 +16,6 @@ import {
     parseProposals,
     pickUpdates,
     resolveAssetUrl,
-    resolveMcpOrigin,
     selectAssets,
     toGatewayModelId,
     withRetry,
@@ -151,15 +150,6 @@ describe('selectAssets', () => {
 });
 
 describe('URL helpers', () => {
-    it('derives the CMS origin from the MCP endpoint', () => {
-        expect(resolveMcpOrigin('https://cms.m10z.de/mcp')).toBe(
-            'https://cms.m10z.de'
-        );
-        expect(resolveMcpOrigin('http://localhost:1337/mcp')).toBe(
-            'http://localhost:1337'
-        );
-    });
-
     it('resolves relative and absolute asset URLs', () => {
         expect(resolveAssetUrl('/uploads/a.jpg', 'https://cms.m10z.de')).toBe(
             'https://cms.m10z.de/uploads/a.jpg'
