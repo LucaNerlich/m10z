@@ -35,6 +35,7 @@ export function getErrorMessage(error: unknown): string {
  *
  * Checks the error message for common timeout and socket error indicators:
  * - 'timeout' - Request timeout errors
+ * - 'timed out' - Transport timeout message ("Strapi request timed out after …")
  * - 'connection error' - Generic connection errors
  * - 'ECONNRESET' - Connection reset by peer
  * - 'ECONNREFUSED' - Connection refused
@@ -48,6 +49,7 @@ export function isTimeoutOrSocketError(error: unknown): boolean {
 
     return (
         message.includes('timeout') ||
+        message.includes('timed out') ||
         message.includes('connection error') ||
         message.includes('econnreset') ||
         message.includes('econnrefused') ||
@@ -55,18 +57,32 @@ export function isTimeoutOrSocketError(error: unknown): boolean {
     );
 }
 
+// The transport's HTTP-error message, e.g. "Strapi request failed: 404 Not Found".
+// Anchored so request data embedded in another message — a slug or URL such as
+// `filters[slug][$eq]=404-games` in a timeout error — is never read as a status.
+// Only consulted when the error carries no numeric `status` property.
+const STRAPI_404_MESSAGE_PATTERN = /^strapi request failed: 404(\s|$)/;
+
 /**
  * Determines if an error represents a genuine "not found" response, as opposed
  * to a transient failure (timeout, socket error, 5xx) that should be rethrown
  * so ISR keeps serving the last successfully cached page.
  *
+ * Classifies on the structured HTTP status the transport attaches first; only
+ * errors without one fall back to the anchored message match, so a URL or slug
+ * inside an error message can never masquerade as a 404.
+ *
  * @param error - The error to check
- * @returns true if the error message indicates a 404/not-found response
+ * @returns true if the error is a 404 response
  */
 export function isNotFoundError(error: unknown): boolean {
+    if (error && typeof error === 'object' && 'status' in error && typeof error.status === 'number') {
+        return error.status === 404;
+    }
+
     const message = getErrorMessage(error).toLowerCase();
 
-    return message.includes('404') || message.includes('not found');
+    return message.includes('not found') || STRAPI_404_MESSAGE_PATTERN.test(message);
 }
 
 /**
