@@ -193,12 +193,6 @@ export function selectAssets(
     return options.limit === null ? selected : selected.slice(0, options.limit);
 }
 
-/** `https://cms.m10z.de/mcp` -> `https://cms.m10z.de` (media URLs are root-relative). */
-export function resolveMcpOrigin(endpoint: string): string {
-    const url = new URL(endpoint);
-    return `${url.protocol}//${url.host}`;
-}
-
 /** Turns a possibly root-relative media URL into an absolute one. */
 export function resolveAssetUrl(url: string, origin: string): string {
     if (/^https?:\/\//i.test(url)) return url;

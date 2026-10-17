@@ -54,12 +54,17 @@ import {
     parseProposals,
     pickUpdates,
     resolveAssetUrl,
-    resolveMcpOrigin,
     selectAssets,
     SYSTEM_PROMPT,
     toGatewayModelId,
     withRetry,
 } from './captionImagesUtils';
+import {
+    createMcpTransport,
+    type McpConfig,
+    type McpTransport,
+    resolveMcpConfig,
+} from '../../src/shared/contracts/mcp/transport';
 
 config();
 
@@ -76,11 +81,8 @@ const IMAGE_FETCH_TIMEOUT_MS = 60_000;
 const GATEWAY_REQUEST_TIMEOUT_MS = 180_000;
 const WRITE_DELAY_MS = 250;
 const MCP_MAX_PAGES = 200;
-const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 
 type Usage = {prompt_tokens?: number; completion_tokens?: number};
-
-type McpConfig = {endpoint: string; token: string};
 
 type RunEntry = {
     asset: McpAsset;
@@ -103,107 +105,17 @@ function sleep(ms: number): Promise<void> {
 }
 
 /* ------------------------------------------------------------------ */
-/* MCP client (Streamable HTTP, stateless — one POST per tool call)    */
+/* MCP client — provided by the shared transport module (see import)    */
 /* ------------------------------------------------------------------ */
-
-type JsonRpcResponse = {
-    id?: number | string | null;
-    result?: {
-        isError?: boolean;
-        structuredContent?: unknown;
-        content?: {type: string; text?: string}[];
-    };
-    error?: {code: number; message: string};
-};
-
-let requestId = 0;
-
-/** The MCP Streamable HTTP transport may answer with plain JSON or SSE frames. */
-function parseRpcBody(
-    body: string,
-    contentType: string,
-    id: number
-): JsonRpcResponse {
-    if (!contentType.includes('text/event-stream'))
-        return JSON.parse(body) as JsonRpcResponse;
-    for (const frame of body.split(/\r?\n\r?\n/)) {
-        const data = frame
-            .split(/\r?\n/)
-            .filter((line) => line.startsWith('data:'))
-            .map((line) => line.slice(5).trimStart())
-            .join('\n');
-        if (!data) continue;
-        const rpc = JSON.parse(data) as JsonRpcResponse;
-        if (rpc.id === id) return rpc;
-    }
-    throw new Error(`MCP response for request ${id} was missing`);
-}
-
-async function callTool<T>(
-    mcp: McpConfig,
-    name: string,
-    toolArgs: Record<string, unknown>
-): Promise<T> {
-    return withRetry(
-        async () => {
-            const id = ++requestId;
-            const response = await fetch(mcp.endpoint, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${mcp.token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json, text/event-stream',
-                },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    id,
-                    method: 'tools/call',
-                    params: {name, arguments: toolArgs},
-                }),
-                signal: AbortSignal.timeout(MCP_REQUEST_TIMEOUT_MS),
-            });
-            if (!response.ok)
-                throw new Error(
-                    `MCP ${name} failed with HTTP ${response.status}`
-                );
-
-            const rpc = parseRpcBody(
-                await response.text(),
-                response.headers.get('content-type') ?? '',
-                id
-            );
-            if (rpc.error)
-                throw new Error(`MCP ${name} failed: ${rpc.error.message}`);
-            if (!rpc.result || rpc.result.isError)
-                throw new Error(`MCP ${name} returned an error result`);
-
-            if (rpc.result.structuredContent)
-                return rpc.result.structuredContent as T;
-            const text = rpc.result.content?.find(
-                (item) => item.type === 'text'
-            )?.text;
-            if (!text) throw new Error(`MCP ${name} returned no content`);
-            return JSON.parse(text) as T;
-        },
-        {
-            attempts: 3,
-            baseDelayMs: 700,
-            onRetry: (error, attempt) =>
-                warn(
-                    `MCP ${name} attempt ${attempt} failed: ${errorMessage(error)}`
-                ),
-        }
-    );
-}
 
 /** Pages through `media_list_assets` until every `image/*` asset is collected. */
 async function listImageAssets(
-    mcp: McpConfig,
+    transport: McpTransport,
     pageSize: number
 ): Promise<McpAsset[]> {
     const all: McpAsset[] = [];
     for (let page = 1; page <= MCP_MAX_PAGES; page += 1) {
-        const payload = await callTool<unknown>(mcp, 'media_list_assets', {
+        const payload = await transport.callTool<unknown>('media_list_assets', {
             page,
             pageSize,
             mime: 'image',
@@ -499,45 +411,6 @@ async function analyzeWithSplit(
 /* Entry point                                                         */
 /* ------------------------------------------------------------------ */
 
-function resolveRunConfig(args: CaptionArgs): {
-    endpoint: string;
-    origin: string;
-    token: string;
-} {
-    const endpoint =
-        process.env.STRAPI_MCP_URL ??
-        (args.local ? 'http://localhost:1337/mcp' : 'https://cms.m10z.de/mcp');
-    const endpointUrl = URL.canParse(endpoint) ? new URL(endpoint) : null;
-    if (!endpointUrl)
-        throw new Error('STRAPI_MCP_URL must be an absolute HTTP(S) URL');
-
-    const localHttp =
-        endpointUrl.protocol === 'http:' &&
-        LOCAL_HOSTS.has(endpointUrl.hostname);
-    if (endpointUrl.protocol !== 'https:' && !localHttp) {
-        throw new Error(
-            'MCP endpoint must use HTTPS (only localhost may use HTTP)'
-        );
-    }
-
-    const token =
-        process.env.STRAPI_MCP_TOKEN ??
-        (args.local || localHttp
-            ? process.env.STRAPI_MCP_ADMIN_TOKEN_LOCAL
-            : process.env.STRAPI_MCP_ADMIN_TOKEN_PROD);
-    if (!token) {
-        const name =
-            args.local || localHttp
-                ? 'STRAPI_MCP_ADMIN_TOKEN_LOCAL'
-                : 'STRAPI_MCP_ADMIN_TOKEN_PROD';
-        throw new Error(
-            `Missing MCP admin token. Set ${name} (or STRAPI_MCP_TOKEN).`
-        );
-    }
-
-    return {endpoint, origin: resolveMcpOrigin(endpoint), token};
-}
-
 async function writeManifest(
     args: CaptionArgs,
     entries: RunEntry[]
@@ -572,8 +445,19 @@ async function writeManifest(
 
 async function main(): Promise<void> {
     const args = parseArgs(process.argv.slice(2));
-    const {endpoint, origin, token} = resolveRunConfig(args);
-    const mcp: McpConfig = {endpoint, token};
+    const mcp = resolveMcpConfig({useLocal: args.local});
+    const {endpoint, origin} = mcp;
+    const transport = createMcpTransport(mcp, {
+        timeoutMs: MCP_REQUEST_TIMEOUT_MS,
+        retry: {
+            attempts: 3,
+            baseDelayMs: 700,
+            onRetry: (error, attempt, tool) =>
+                warn(
+                    `MCP ${tool} attempt ${attempt} failed: ${errorMessage(error)}`
+                ),
+        },
+    });
 
     const model = args.model ?? process.env.CAPTION_MODEL ?? DEFAULT_MODEL;
     const apiKey = resolveApiKey();
@@ -593,7 +477,7 @@ async function main(): Promise<void> {
             : 'Mode: DRY RUN — nothing will be written.'
     );
 
-    const assets = await listImageAssets(mcp, args.pageSize);
+    const assets = await listImageAssets(transport, args.pageSize);
     log(`Media library: ${assets.length} image asset(s).`);
 
     const inScope = selectAssets(assets, {force: args.force, limit: null});
@@ -700,7 +584,7 @@ async function main(): Promise<void> {
             if (!entry.update || Object.keys(entry.update).length === 0)
                 continue;
             try {
-                await callTool(mcp, 'media_update_asset', {
+                await transport.callTool('media_update_asset', {
                     id: entry.asset.id,
                     ...entry.update,
                 });
