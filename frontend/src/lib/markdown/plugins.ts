@@ -25,25 +25,24 @@ export const REHYPE_EXTERNAL_LINKS_OPTIONS: RehypeExternalLinksOptions = {
 
 /**
  * rehype-sanitize schema. Extends the default with the custom inline tags
- * produced by the preprocessor (`mark`, `ins`, `sup`, `sub`) and a `section`
- * tag for footnote groups. Allows `data-*` attributes on anchors so Fancybox
- * and analytics hooks can attach.
+ * produced by the preprocessor (`mark`, `ins`, `sup`, `sub`). Allows `data-*`
+ * attributes on anchors (bare `'data*'` name match — the array form is a
+ * *value* allow-list) so Fancybox and analytics hooks can attach.
  */
 export const REHYPE_SANITIZE_SCHEMA = {
     ...defaultSchema,
     clobberPrefix: '',
-    tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark', 'section'],
+    tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark'],
     attributes: {
         ...defaultSchema.attributes,
         ins: [],
         sup: [],
         sub: [],
         mark: [],
-        section: ['class'],
         a: [
             ...(defaultSchema.attributes?.a || []),
             'id',
-            ['data*', /^data-/],
+            'data*',
             // Preserve the security attributes rehype-external-links adds
             // (target="_blank" rel="noopener noreferrer"); without them the
             // plugin runs before sanitization and its attributes are stripped.
