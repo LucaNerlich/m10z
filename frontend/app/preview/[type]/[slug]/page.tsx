@@ -12,7 +12,7 @@ import {getClientIp} from '@/src/lib/net/getClientIp';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import PreviewBanner from '@/src/components/PreviewBanner';
-import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
+import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,7 +81,10 @@ function handlePreviewFetchError(error: unknown, slug: string, label: string): n
         console.error(`Socket/timeout error fetching preview ${label} for slug "${slug}":`, errorMessage);
         throw error instanceof Error ? error : new Error('Service unavailable');
     }
-    if (!errorMessage.includes('404') && !errorMessage.includes('not found')) {
+    // Classify through the shared predicate (structured status first) instead of
+    // scanning the message: request data like a URL-embedded "404" must not
+    // suppress the log for a transient failure.
+    if (!isNotFoundError(error)) {
         console.error(`Error fetching preview ${label} for slug "${slug}":`, errorMessage);
     }
     return null;
