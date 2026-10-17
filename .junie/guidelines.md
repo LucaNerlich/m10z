@@ -42,7 +42,7 @@ For a more detailed tree, see the Project Structure section in README.md.
 ## Prerequisites
 
 - Node.js 22+
-- Package manager: the repo declares pnpm@10.15.1, but npm 11+ also works
+- Package manager: the repo pins pnpm 10 (packageManager), but npm 11+ also works
 
 Tip: Prefer pnpm if available to match the lockfile; otherwise use npm.
 
