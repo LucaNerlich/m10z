@@ -31,6 +31,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Unit tests
         run: pnpm test:run
+      - name: Feed XML goldens
+        run: pnpm run snapshot:feeds
       - name: Typecheck
         run: npx tsc --noEmit
 
