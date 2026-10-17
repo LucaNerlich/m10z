@@ -22,8 +22,9 @@ export type StrapiFeedFetcher = <T>(pathWithQuery: string) => Promise<T>;
 
 /**
  * Walk a Strapi collection endpoint, capping at `maxItems` total items and
- * `maxPages` requests. Page 1 is fetched first to read pagination meta;
- * subsequent pages are fetched in parallel.
+ * `maxPages` requests. The item cap also bounds the page span, so a page that
+ * cannot contribute to `maxItems` is never requested. Page 1 is fetched first
+ * to read pagination meta; subsequent pages are fetched in parallel.
  *
  * `resolveMaxItems` is read lazily so callers can express it as
  * `() => Number(process.env.FEED_X_MAX_ITEMS ?? '') || 1000`.
@@ -58,7 +59,9 @@ export async function fetchAllPaginated<T>(args: {
         return all;
     }
 
-    const lastPage = Math.min(pageCount, maxPages);
+    // Bound the span by what the cap can consume: a page beyond maxItems/pageSize
+    // would only contribute items that are immediately sliced away.
+    const lastPage = Math.min(pageCount, maxPages, Math.max(1, Math.ceil(maxItems / pageSize)));
     const pageNumbers = Array.from({length: lastPage - 1}, (_, i) => i + 2);
     const results = await Promise.all(
         pageNumbers.map((p) =>
