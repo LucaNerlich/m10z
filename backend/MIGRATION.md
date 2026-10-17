@@ -4,7 +4,7 @@ This document describes the process for migrating audio files from m10z.picnotes
 
 ## Overview
 
-The migration script (`src/scripts/migrate-audio-files.ts`) downloads 87 audio files from m10z.picnotes.de and uploads them to the Strapi CMS upload endpoint. Files are processed sequentially with retry logic and proper error handling.
+The migration script (`src/scripts/migrate-audio-files.ts`) downloads 68 audio files from m10z.picnotes.de and uploads them to the Strapi CMS upload endpoint. The fixed URL list lives in `src/scripts/audioMigrationList.ts`. Files are processed sequentially with retry logic and proper error handling.
 
 ## Prerequisites
 
@@ -37,7 +37,7 @@ The migration script (`src/scripts/migrate-audio-files.ts`) downloads 87 audio f
    set STRAPI_API_TOKEN=your_token_here
    ```
 
-3. **Important**: Before running the script, you must add the 87 audio file URLs to the `AUDIO_FILE_URLS` array in `src/scripts/migrate-audio-files.ts`.
+3. **Important**: The `AUDIO_FILE_URLS` array in `src/scripts/audioMigrationList.ts` must list exactly `EXPECTED_FILE_COUNT` (68) URLs — the script refuses to start when the list and the count disagree.
 
 ## Running the Migration
 
@@ -62,18 +62,18 @@ The script will:
 
 Example output:
 ```
-[migrate-audio-files] Starting migration of 87 audio files...
+[migrate-audio-files] Starting migration of 68 audio files...
 [migrate-audio-files] Strapi endpoint: https://cms.m10z.de/api/upload
 [migrate-audio-files] Temporary directory: /tmp/m10z-audio-migration-xxxxx
-[migrate-audio-files] [1/87] Processing: episode-001.mp3
+[migrate-audio-files] [1/68] Processing: episode-001.mp3
 [migrate-audio-files] Downloaded: episode-001.mp3 (1234567 bytes)
 [migrate-audio-files] Uploaded: episode-001.mp3 (ID: 42, URL: /uploads/episode_001_abc123.mp3)
 ...
 [migrate-audio-files] ============================================================
 [migrate-audio-files] Migration Report
 [migrate-audio-files] ============================================================
-[migrate-audio-files] Total files: 87
-[migrate-audio-files] Successful: 87
+[migrate-audio-files] Total files: 68
+[migrate-audio-files] Successful: 68
 [migrate-audio-files] Failed: 0
 [migrate-audio-files] ============================================================
 ```
@@ -85,7 +85,7 @@ The script includes automatic retry logic for both downloads and uploads:
 - **Retry delays**: 2s, 5s delays between retries (exponential backoff)
 - Failed files are tracked and reported at the end
 
-**Note:** These values are defined by the `MAX_RETRIES` and `RETRY_DELAYS` constants in `src/scripts/migrate-audio-files.ts` (lines 51-52). Update the documentation if these constants are modified.
+**Note:** These values are defined by the `MAX_RETRIES` and `RETRY_DELAYS` constants in `src/scripts/migrate-audio-files.ts` (lines 45-46). Update the documentation if these constants are modified.
 
 ## Verification
 
@@ -94,7 +94,7 @@ After the migration completes:
 1. **Check Strapi Admin Panel**:
    - Navigate to Media Library
    - Files should appear in the "API Uploads" folder
-   - Verify all 87 files are present
+   - Verify all 68 files are present
 
 2. **Review Migration Report**:
    - The script prints a summary at the end
