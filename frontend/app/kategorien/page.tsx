@@ -3,6 +3,7 @@ import {type Metadata} from 'next';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
+import {isBuildPhase} from '@/src/lib/buildPhase';
 import {getErrorMessage} from '@/src/lib/errors';
 import {getCategoryActiveWindowLabel, splitCategoriesByActivity} from '@/src/lib/categoryActivity';
 import {ContentGrid} from '@/src/components/ContentGrid';
@@ -25,6 +26,10 @@ export default async function CategoriesPage() {
         categories = await fetchCategoriesWithContent();
     } catch (error) {
         console.error('CategoriesPage: failed to load categories:', getErrorMessage(error));
+        // A transient failure must not become cached page state: at runtime rethrow so
+        // ISR keeps the last good page; during `next build` degrade to the retry panel.
+        // (Replaced by transientPageFallback once PR #955 lands.)
+        if (!isBuildPhase()) throw error;
         return (
             <section data-list-page>
                 <h1>Kategorien</h1>
