@@ -43,7 +43,6 @@ function getTrend(trend) {
     p50: values['p(50)'] ?? values.med,
     p90: values['p(90)'],
     p95: values['p(95)'],
-    p99: values['p(99)'],
     max: values.max,
     min: values.min,
   };
@@ -168,7 +167,6 @@ const html = `<!doctype html>
           <tr><td>p50</td><td><code>${fmtMs(httpReqDuration.p50)}</code></td></tr>
           <tr><td>p90</td><td><code>${fmtMs(httpReqDuration.p90)}</code></td></tr>
           <tr><td>p95</td><td><code>${fmtMs(httpReqDuration.p95)}</code></td></tr>
-          <tr><td>p99</td><td><code>${fmtMs(httpReqDuration.p99)}</code></td></tr>
           <tr><td>max</td><td><code>${fmtMs(httpReqDuration.max)}</code></td></tr>
         </table>
       </div>
