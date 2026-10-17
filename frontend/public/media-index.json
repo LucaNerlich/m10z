@@ -1,7 +1,7 @@
 {
     "version": 1,
     "baseUrl": "https://cms.m10z.de",
-    "generatedAt": "2026-10-13T04:21:44.197Z",
+    "generatedAt": "2026-10-17T17:12:34.036Z",
     "entries": {
         "uploads/01_5ec66cf3a6.png": {
             "alt": "Screenshot eines Retro-Ego-Shooters mit HUD-Anzeige, Munition, Gesundheit und Gegnern im Korridor.",
@@ -459,10 +459,6 @@
             "alt": "Kupferboden eines CPU-Kühlers mit Aufkleber „WARNING! Please peel off label before you use it“ und Heatpipes.",
             "caption": "Vor der Montage muss die Schutzfolie vom Kühlerboden abgezogen werden."
         },
-        "uploads/4668558_stalin_vs_martians_windows_front_cover_f3849dbfe1.jpg": {
-            "alt": "Spielcover „Сталин против Марсиан“: Stalin im Profil neben einem grünen Alien, Game of the Year Edition.",
-            "caption": "Auf dem Cover von Stalin vs. Martians trifft der Diktator auf einen wütenden Marsbewohner."
-        },
         "uploads/46_cooler_475b3932c2.jpg": {
             "alt": "Montagematerial eines CPU-Kühlers: schwarze LGA-1700-Halterung, Schrauben, blaue Abstandshalter und Anleitung.",
             "caption": "Das Montagezubehör liegt bereit – inklusive Halterung für Sockel 1700 und 115X/1200."
@@ -712,8 +708,8 @@
             "caption": "Logo und Keyvisual der M10Z-Reihe „Open Beta“."
         },
         "uploads/Pasted_image_20260921140332_bf002bc39c.png": {
-            "alt": "Ego-Perspektive mit Gewehr in einem dunklen, zerstörten Kellerraum mit Rohren und blauem Lichtschein.",
-            "caption": "Düstere Atmosphäre im verlassenen Keller: In der Ego-Perspektive geht es mit dem Gewehr durch die Ruine."
+            "alt": "Egoperspektive mit Schrotflinte in einem dunklen, zerstörten Kellerraum mit Rohren und blauem Lichtschein.",
+            "caption": "In der Egoperspektive geht es mit der Schrotflinte durch heruntergekommene Räume."
         },
         "uploads/Reviews_Banner_7ef22d8813.jpg": {
             "alt": "Schwarz-weiße Icon-Grafik mit gekreuzten Schwertern, Monitor mit 10/10, Geist, Tastatur und orangem Schriftzug M10Z sowie Text Erfahrungssache.",
@@ -828,88 +824,88 @@
             "caption": "Aquapark Tycoon zeigt eine bunte Wasserpark-Szene mit Rutschen und Becken."
         },
         "uploads/atmo_10_pov_56cddd67e0.png": {
-            "alt": "Blick über eine bewaldete Küstenlandschaft mit Ruinen im Vordergrund und Sonne durch Wolken.",
-            "caption": "Weitblick über die baumbestandene Küste, in der Ferne ziehen Vögel durch die Wolken."
+            "alt": "Blick von einem Hügel auf die bewaldete Landschaft mit Schrott im Vordergrund und auf die durch die Wolken scheinende Sonne.",
+            "caption": "Weitblick über den Schlackeberg: weiter Blick, weite Wege."
         },
         "uploads/atmo_11_pov_27b4457e49.png": {
-            "alt": "Blick über einen Steinbruch mit Betonbecken, Gerüsten und einer Industrieanlage am Horizont.",
-            "caption": "Über den ausgehobenen Gruben liegt der Blick auf die ferne Industrieanlage."
+            "alt": "Blick von einem Hügel auf Gerüste in der Nähe und eine Industrieanlage am Horizont.",
+            "caption": "Noch mehr Schrott zum Anschauen, schön ist anders."
         },
         "uploads/atmo_12_swamp_8f5923f322.png": {
-            "alt": "Ich-Perspektive mit Fernglas vor einem Sumpf mit Schilf und kahlen Bäumen unter grauem Himmel.",
-            "caption": "Durch das Fernglas: trüber Blick über Schilf und kahle Bäume im Sumpf."
+            "alt": "Egoperspektive mit Fernglas vor einem Sumpf mit Schilf und Bäumen unter grauem Himmel.",
+            "caption": "Der Sumpf bietet viel unüberwindbares Wasser und eine Mission bis ans Ende der Karte."
         },
         "uploads/atmo_13_helicopter_93b1ee7b17.png": {
             "alt": "Militärhubschrauber auf einer Wiese, daneben eine Person, im Hintergrund Blitze am dunklen Himmel.",
-            "caption": "Ein Helikopter landet im Sturm – ein Blitz erhellt den bedrohlichen Himmel."
+            "caption": "Ob der Helikopter auch bei diesem Wetter startet?"
         },
         "uploads/atmo_13_swamp_e33c12e456.png": {
-            "alt": "Blick durch ein hölzertes Fensterkreuz auf nebligen Sumpf mit kahlen Bäumen unter grauem Wolkenhimmel.",
-            "caption": "Durch das Fensterrahmen zeigt sich eine neblige Sumpflandschaft – typsiche Atmosphäre eines düsteren Levels."
+            "alt": "Blick von der Terrasse auf nebligen Sumpf mit Bäumen unter grauem Wolkenhimmel.",
+            "caption": "Hier könnte man es sich direkt bei einer Tasse Kaffee oder Tee auf der Terrasse gemütlich machen."
         },
         "uploads/atmo_15_brutalism_ebd2bf066c.png": {
-            "alt": "Brutalistischer Betonbau mit vorgelagertem Wasserbecken, darüber schwebt eine metallene Kugel bei Abendwolken.",
-            "caption": "Brutalismus trifft Science-Fiction: Eine schwebende Metallkugel vor geometrischer Betonarchitektur."
+            "alt": "Brutalistischer Betonbau mit vorgelagertem Wasserbecken, darüber schwebt eine metallisch schimmernde Kugel bei bewölktem Himmel.",
+            "caption": "Eine seltsame schwebende »Kugel« und Brutalismus, das könnte rein optisch ein Level aus Control sein."
         },
         "uploads/atmo_16_wall_painting_627197fa92.png": {
-            "alt": "Soldat mit Waffe steht in dunklem Gang vor einer großen Wandmalerei mit Sonnenmotiv.",
-            "caption": "Im verlassenen Gang wirft die Taschenlampe des Soldaten Licht auf ein Wandgemälde aus vergangenen Zeiten."
+            "alt": "Soldat mit Waffe steht in dunklem Kellerraum vor einem großen Wandgemälde, das von einer Taschenlampe beleuchtet wird.",
+            "caption": "Der Maler dieses Wandgemäldes ist wohl schon seit längerer Zeit nicht mehr im Dienst."
         },
         "uploads/atmo_17_tired_soldiers_4084593eff.png": {
-            "alt": "Erschöpfte oder gefallene Soldaten in schwerer Rüstung liegen am Boden einer zerstörten Industrieanlage.",
-            "caption": "Nach einem Gefecht bleiben die Soldaten im Hinterhof der Anlage zurück."
+            "alt": "Gefallene Soldaten in schwerer Rüstung liegen am Boden einer zerstörten Industrieanlage.",
+            "caption": "Diese müden Soldaten schlafen sicher nur, oder?"
         },
         "uploads/atmo_18_broken_bridge_c2d46ca6ff.png": {
             "alt": "Zerstörte Brücke mit herabhängendem Stahlfachwerk in nebliger, düsterer Landschaft.",
-            "caption": "Die eingestürzte Brücke liegt verlassen im Nebel."
+            "caption": "Dieses Mal also eine eingestürzte Brücke, die den direkten Weg blockiert."
         },
         "uploads/atmo_19_dealer_96a2b901c2.png": {
-            "alt": "Mann mit grauem Bart steht hinter einem Tresen in einem heruntergekommenen Raum mit Metallgittern.",
-            "caption": "Der Händler wartet hinter seinem Tresen auf Kundschaft."
+            "alt": "Ein Mann mit grauem Bart sitzt hinter einem Tresen in einem schwach beleuchteten Kellerraum.",
+            "caption": "Dieser bei Stalker-Fans altbekannte Händler wartet erneut auf seine Kundschaft."
         },
         "uploads/atmo_20_gadget_08872db57a.png": {
-            "alt": "Behandschuhte Hände halten ein altes Messgerät mit roter Digitalanzeige vor eine Wandkonsole mit drei Kontrollleuchten.",
-            "caption": "Das selbstgebaute Gerät zeigt 288 an, daneben leuchten rote, gelbe und grüne Kontrolllampen."
+            "alt": "Behandschuhte Hände halten ein altes Gerät mit roter Digitalanzeige vor eine Zutrittskontrolle mit drei Kontrollleuchten.",
+            "caption": "Gegen Ende des Spiels muss man sogar Zutrittskontrollen hacken, das passiert jedoch alles ganz automatisch."
         },
         "uploads/atmo_21_excavator_fdd0ea394a.png": {
-            "alt": "Großer Schaufelbagger in nebliger, herbstlicher Landschaft unter wolkenverhangenem Himmel.",
-            "caption": "Ein gigantischer Schaufelbagger steht verlassen in einer nebligen, herbstlich gefärbten Landschaft."
+            "alt": "Großer Schaufelradbagger in herbstlicher Landschaft unter wolkenverhangenem Himmel.",
+            "caption": "Ein gigantischer Schaufelradbagger steht hier einsam und verlassen in der Landschaft."
         },
         "uploads/atmo_22_tornado_e37041dfa9.png": {
             "alt": "Dunkle Bahnstrecke mit Oberleitungsmasten, im Hintergrund ein Tornado.",
-            "caption": "Düstere Stimmung an der Bahnstrecke: Im Hintergrund zieht ein Tornado auf."
+            "caption": "Achtung, Gefahr, Tornado im Anmarsch!"
         },
         "uploads/atmo_2_helicopter_d858f57fb1.png": {
             "alt": "Abgestürzter Hubschrauber in einer bewachsenen Landschaft im Licht des Sonnenuntergangs.",
-            "caption": "Die Überreste eines Hubschraubers liegen in der Abendsonne zwischen hohem Gras und Bäumen."
+            "caption": "Auch wenn die Umgebung meistens feindlich ist, für die schönen Lichtstimmungen sollte man kurz innehalten."
         },
         "uploads/atmo_3_campfire_f6da4fe955.png": {
-            "alt": "Lagerfeuer in der Nacht, daneben sitzt eine Person, dahinter Häuser und Stromleitungen.",
-            "caption": "Am Lagerfeuer: In der Dunkelheit wärmt sich eine Person am Feuer vor der Kulisse verlassener Häuser."
+            "alt": "Lagerfeuer in der Nacht, daneben sitzt eine Gitarre spielende Person, dahinter Häuser und Stromleitungen.",
+            "caption": "Am Lagerfeuer kann man den anderen Stalkern bei Gesprächen lauschen oder ihre Musik genießen."
         },
         "uploads/atmo_4_tombstone_98546ddab1.png": {
             "alt": "Verwitterter Grabstein mit Kreuz und Grablichtern in einer kargen Grashügellandschaft bei trübem Himmel.",
-            "caption": "Ein einsamer Grabstein mit Kreuz und brennenden Kerzen unter grauem Himmel."
+            "caption": "Dankbarerweise liegt ein noch voller Rucksack zum Plündern am Grab."
         },
         "uploads/atmo_5_bus_stop_bc51425434.png": {
-            "alt": "Egoperspektive mit Waffe vor einer überwucherten Bushaltestelle an einer nebligen Landstraße im Morgenlicht",
-            "caption": "Verwaiste Bushaltestelle im Morgendunst – die Straße führt ins Nirgendwo."
+            "alt": "Egoperspektive mit Waffe vor einer überwucherten Bushaltestelle an einer nebligen Landstraße im Morgenlicht.",
+            "caption": "Hier fährt in nächster Zeit wohl kein Bus mehr ab."
         },
         "uploads/atmo_6_thunderstorm_02894ca589.png": {
-            "alt": "Blitze über einer kahlen, nebligen Landschaft mit Bäumen im düsteren Gewitterlicht",
-            "caption": "Gewitter über der Zone: Blitze durchschneiden die stickige Luft."
+            "alt": "Blitze über einer kahlen, nebligen Landschaft mit Bäumen im düsteren Gewitterlicht.",
+            "caption": "Dies ist keine Emission, sondern nur ein gewöhnliches Gewitter, also kein Stress."
         },
         "uploads/atmo_7_rainbow_fc4edf5d69.png": {
-            "alt": "Regenbogen über verfallenen Holzhäusern, einem Traktor und einer Windmühle in nebliger Landschaft",
-            "caption": "Nach dem Regen spannt sich ein Bogen über die verlassene Siedlung."
+            "alt": "Regenbogen über verfallenen Holzhäusern, einem Traktor und einer Windmühle in nebliger Landschaft.",
+            "caption": "Schöner wird es nicht mehr, für heute."
         },
         "uploads/atmo_8_doll_5cbf699449.png": {
-            "alt": "Puppe mit rotem Kleid hinter zerbrochener Fensterscheibe eines verlassenen Plattenbaus, Waffe im Vordergrund",
-            "caption": "Ein einsamer Fund: Die Puppe blickt aus dem zerstörten Fenster."
+            "alt": "Puppe mit rotem Kleid hinter zerbrochener Fensterscheibe eines verlassenen Hauses und die Pistole in den Händen im Vordergrund.",
+            "caption": "Mit dieser freundlich dreinschauenden Puppe spielt leider niemand mehr."
         },
         "uploads/atmo_9_powerline_42cc80d3a3.png": {
-            "alt": "Ich-Perspektive mit Gewehr und Rotpunktvisier, davor ein Militärlaster zwischen Strommasten im Nebel.",
-            "caption": "Bewaffnet durch das neblige Ödland: Ein verlassener Lkw zwischen Strommasten und Ranken."
+            "alt": "Egoperspektive mit Maschinenpistole im Anschlag, dahinter ein Militärlaster zwischen Strommasten im Nebel.",
+            "caption": "Die erste Mission des DLCs führt in den »Eisenwald«. Viele Hochspannungsleitungen und Anomalien gibt es dort."
         },
         "uploads/atom_eve_intro_266c3cf0a9.jpg": {
             "alt": "Comic-Szene: Mark und Atom Eve fliegen gemeinsam durch den blauen Himmel.",
@@ -1032,12 +1028,12 @@
             "caption": "Das Logo der Rubrik Videospielgeschichten auf m10z.de."
         },
         "uploads/death_screen_1_b998afe774.png": {
-            "alt": "Hand mit Handschuh reckt sich in dunkler, nebliger Umgebung nach oben",
-            "caption": "Der Todesscreen zeigt eine ausgestreckte Hand und die Option, den letzten Spielstand zu laden."
+            "alt": "Game-Over-Bildschirm beim ersten Mal – »In einer Anomalie gestorben« – Ein Handschuh, der sich in dunkler, nebliger Umgebung nach oben reckt.",
+            "caption": "Einmal ist keinmal, besonders bei Stalker 2."
         },
         "uploads/death_screen_2_782dba4f82.png": {
-            "alt": "GAME-OVER-Bildschirm mit rotem Schriftzug „Erschossen“, Stufe 100 und Menüoptionen im Hintergrund eines Soldaten mit Gasmaske und Gewehr.",
-            "caption": "Der Tod durch Erschossenwerden beendet den Lauf auf Stufe 100 – inklusive Auswahl, den letzten Spielstand zu laden."
+            "alt": "Game-Over-Bildschirm beim hundersten Mal – »Erschossen« – Ein Soldat mit Gasmaske und Maschinenpistole.",
+            "caption": "Hundertmal ist auch nicht so viel, da geht noch mehr, viel mehr!"
         },
         "uploads/default_feeds_eaedf13655.png": {
             "alt": "Screenshot der Seite „RSS-Feeds“ mit Anleitung für Podcast-Apps sowie öffentlichem und privatem Feed-Link zum Kopieren.",
@@ -1772,8 +1768,8 @@
             "caption": "STALKER 2: Heart of Chornobyl führt zurück in die verstrahlte Zone rund um Tschernobyl."
         },
         "uploads/statistics_107b1c5cbb.png": {
-            "alt": "Screenshot der Statistik-Übersicht aus STALKER 2 mit Waffen-, Kill-, Mutanten- und Artefaktwerten",
-            "caption": "Die Statistikseite zeigt im Detail, welche Waffen, Gegner und Fundstücke man bereits gesammelt hat."
+            "alt": "Die Statistikübersicht aus Stalker 2 mit Waffen-, Kill-, Mutanten- und Artefaktwerten.",
+            "caption": "Die Statistikseite zeigt alles an, außer die gegessene Wurst in Tonnen, die getrunkenen Energydrinks in Hektolitern und die zu Fuß zurückgelegten Marathondistanzen. Schade!"
         },
         "uploads/stats_b305f4e6b0.jpg": {
             "alt": "Spielstatistik-Bildschirm mit Rundenübersicht, Verdienst und Tabelle mit Werten pro Brudi-Einheit.",
@@ -2002,6 +1998,12 @@
         "uploads/ziegen_ca2c93b973.jpg": {
             "alt": "Viele kleine Ziegen-Kreaturen in einem kreisförmigen Bereich, umgeben von Spiel-Interface.",
             "caption": "Eine riesige Herde Ziegen versammelt sich in einer Spielszene mit umfangreicher Benutzeroberfläche."
+        },
+        "uploads/zoz_10_moon_mystery_2251de7b66.jpg": {
+            "caption": "System Shock 2"
+        },
+        "uploads/zoz_10_system_shock_2_24b4f0c00a.jpg": {
+            "caption": "Moon Mystery"
         },
         "uploads/zoz_73fd9a2c85.jpg": {
             "alt": "Drei orange Banner mit weißem Schriftzug 'ZOCKEN OHNE ZA$TER', Logo M10Z unten links.",
