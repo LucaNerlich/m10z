@@ -45,20 +45,26 @@ export function generateMarkdown(
     return lines.join('\n');
 }
 
+// One owner for the Blob/anchor/revoke dance shared by both downloads; callers
+// keep their own content generation and filename derivation.
+function downloadMarkdownFile(markdown: string, filename: string): void {
+    const blob = new Blob([markdown], {type: 'text/markdown;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+}
+
 export function downloadMarkdown(
     participants: Participant[],
     assignments: Assignment[]
 ): void {
     const markdown = generateMarkdown(participants, assignments);
-    const blob = new Blob([markdown], {type: 'text/markdown;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `wichteln-${new Date().toISOString().slice(0, 10)}.md`;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    URL.revokeObjectURL(url);
+    downloadMarkdownFile(markdown, `wichteln-${new Date().toISOString().slice(0, 10)}.md`);
 }
 
 /**
@@ -104,15 +110,10 @@ export function downloadMarkdownForGiver(
     giverId: string
 ): void {
     const markdown = generateMarkdownForGiver(participants, assignments, giverId);
-    const blob = new Blob([markdown], {type: 'text/markdown;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
     const giver = participants.find((p) => p.id === giverId);
     const safeName = (giver?.name ?? 'teilnehmer').replace(/[^\p{L}\p{N}-]+/gu, '-').replace(/^-|-$/g, '');
-    anchor.download = `wichteln-${safeName || 'teilnehmer'}-${new Date().toISOString().slice(0, 10)}.md`;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    URL.revokeObjectURL(url);
+    downloadMarkdownFile(
+        markdown,
+        `wichteln-${safeName || 'teilnehmer'}-${new Date().toISOString().slice(0, 10)}.md`
+    );
 }
