@@ -72,7 +72,10 @@ function parseGames(body: string, monthId: string): M12GGame[] {
     const games: M12GGame[] = [];
     for (const line of body.split('\n')) {
         if (line.trim() === '') continue;
-        if (!/^\s*[*-]\s/.test(line)) continue;
+        // Every candidate list line must reach parseGameLine so an unsupported marker
+        // (`+`, `1.`, `2)`) fails loudly: silently skipping them would publish a month
+        // with zero games instead of surfacing the format drift.
+        if (!/^\s*(?:[*+-]|\d+[.)])\s/.test(line)) continue;
         games.push(parseGameLine(line, monthId));
     }
     games.sort((a, b) => b.votes - a.votes);
