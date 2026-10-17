@@ -85,7 +85,7 @@ The script includes automatic retry logic for both downloads and uploads:
 - **Retry delays**: 2s, 5s delays between retries (exponential backoff)
 - Failed files are tracked and reported at the end
 
-**Note:** These values are defined by the `MAX_RETRIES` and `RETRY_DELAYS` constants in `src/scripts/migrate-audio-files.ts` (lines 45-46). Update the documentation if these constants are modified.
+**Note:** These values are defined by the `MAX_RETRIES` and `RETRY_DELAYS` constants near the top of `src/scripts/migrate-audio-files.ts`. Update the documentation if these constants are modified.
 
 ## Verification
 
