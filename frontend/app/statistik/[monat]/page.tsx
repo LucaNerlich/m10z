@@ -5,6 +5,7 @@ import {notFound} from 'next/navigation';
 import Script from 'next/script';
 
 import {getErrorMessage} from '@/src/lib/errors';
+import {isBuildPhase} from '@/src/lib/buildPhase';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
@@ -77,6 +78,9 @@ async function loadMonthContent(month: StatistikMonth): Promise<MonthContent> {
         };
     } catch (error) {
         console.error(`[statistik] Failed to load content for ${month.key}:`, getErrorMessage(error));
+        // A transient failure must not become cached page state: at runtime rethrow so
+        // ISR keeps the last good page; during `next build` degrade to the empty state.
+        if (!isBuildPhase()) throw error;
         return {articles: [], podcasts: [], failed: true};
     }
 }

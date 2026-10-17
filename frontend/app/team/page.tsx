@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {type Metadata} from 'next';
 import {fetchAuthorsList} from '@/src/lib/strapiContent';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
+import {isBuildPhase} from '@/src/lib/buildPhase';
 import {getErrorMessage} from '@/src/lib/errors';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {AuthorCard} from '@/src/components/AuthorCard';
@@ -25,6 +26,10 @@ export default async function TeamPage() {
         authors = await fetchAuthorsList();
     } catch (error) {
         console.error('TeamPage: failed to load authors:', getErrorMessage(error));
+        // A transient failure must not become cached page state: at runtime rethrow so
+        // ISR keeps the last good page; during `next build` degrade to the retry panel.
+        // (Replaced by transientPageFallback once PR #955 lands.)
+        if (!isBuildPhase()) throw error;
         return (
             <section data-list-page>
                 <h1>Team</h1>
