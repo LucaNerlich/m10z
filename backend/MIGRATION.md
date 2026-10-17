@@ -56,7 +56,7 @@ The script will:
    - Download from m10z.picnotes.de
    - Upload to Strapi CMS
    - Clean up temporary file
-   - Wait 100-200ms before processing next file
+   - Wait 1-2s before processing next file
 4. Display progress logs for each file
 5. Generate a final migration report
 
