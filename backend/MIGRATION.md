@@ -8,7 +8,7 @@ The migration script (`src/scripts/migrate-audio-files.ts`) downloads 87 audio f
 
 ## Prerequisites
 
-1. **Node.js and pnpm**: Ensure Node.js ^22 and pnpm 10.15.1 are installed
+1. **Node.js and pnpm**: Ensure Node.js ^22 and pnpm 10 are installed
 2. **Strapi API Token**: Obtain an API token from Strapi admin panel:
    - Navigate to Settings > API Tokens
    - Create a new token with "Full access" permissions
