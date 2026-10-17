@@ -6,17 +6,16 @@ import styles from './CategoryList.module.css';
 
 type CategoryListProps = {
     categories: StrapiCategoryRef[];
-    showCounts?: boolean;
     maxDisplay?: number;
 };
 
 /**
  * Component for displaying a list of categories.
  *
- * Renders categories as tag-like elements with optional count display.
+ * Renders categories as tag-like elements.
  * Supports horizontal scrolling on mobile and wrapped grid on desktop.
  */
-export function CategoryList({categories, showCounts = false, maxDisplay}: CategoryListProps) {
+export function CategoryList({categories, maxDisplay}: CategoryListProps) {
     if (categories.length === 0) return null;
 
     const displayCategories = maxDisplay ? categories.slice(0, maxDisplay) : categories;

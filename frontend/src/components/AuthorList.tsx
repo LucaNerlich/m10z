@@ -9,25 +9,22 @@ type AuthorListProps = {
     authors: StrapiAuthor[];
     showAvatars?: boolean;
     layout?: 'inline' | 'block';
-    maxDisplay?: number;
 };
 
 /**
  * Render a list of authors in either an inline (comma-separated) or block (vertical) layout.
  *
- * Authors are displayed alphabetically by name. When `maxDisplay` is provided, only that many authors are shown and a count of remaining authors is appended.
+ * Authors are displayed alphabetically by name.
  *
  * @param authors - Array of author objects to display
  * @param showAvatars - If `true`, include each author's avatar when available
  * @param layout - Layout style: `'inline'` (default) or `'block'`
- * @param maxDisplay - Optional maximum number of authors to render; excess authors are summarized as a remaining count
  * @returns The JSX element containing the formatted author list, or `null` when `authors` is empty
  */
 export function AuthorList({
                                authors,
                                showAvatars = true,
                                layout = 'inline',
-                               maxDisplay,
                            }: AuthorListProps) {
     if (authors.length === 0) return null;
 
@@ -37,13 +34,10 @@ export function AuthorList({
         return nameA.localeCompare(nameB, 'de-DE');
     });
 
-    const displayAuthors = maxDisplay ? sortedAuthors.slice(0, maxDisplay) : sortedAuthors;
-    const remainingCount = maxDisplay && sortedAuthors.length > maxDisplay ? sortedAuthors.length - maxDisplay : 0;
-
     if (layout === 'block') {
         return (
             <div className={styles.blockList}>
-                {displayAuthors.map((author, index) => {
+                {sortedAuthors.map((author, index) => {
                     const avatarUrl = resolveAuthorAvatarUrl(author);
                     const authorUrl = routes.author(author.slug ?? '');
                     const authorTitle = author.title ?? 'Unbekannter Autor';
@@ -65,14 +59,11 @@ export function AuthorList({
                         </div>
                     );
                 })}
-                {remainingCount > 0 ? (
-                    <span className={styles.more}>und {remainingCount} weitere</span>
-                ) : null}
             </div>
         );
     }
 
-    const authorNames = displayAuthors.map(author => author.title ?? 'Unbekannter Autor');
+    const authorNames = sortedAuthors.map(author => author.title ?? 'Unbekannter Autor');
     const formattedParts = formatAuthorList(authorNames);
     let authorIndex = 0;
 
@@ -80,7 +71,7 @@ export function AuthorList({
         <div className={styles.inlineList}>
             {formattedParts.map((part, partIndex) => {
                 if (part.type === 'element') {
-                    const author = displayAuthors[authorIndex];
+                    const author = sortedAuthors[authorIndex];
                     const avatarUrl = resolveAuthorAvatarUrl(author);
                     const authorUrl = routes.author(author.slug ?? '');
                     const authorTitle = author.title ?? 'Unbekannter Autor';
@@ -111,9 +102,6 @@ export function AuthorList({
                     );
                 }
             })}
-            {remainingCount > 0 ? (
-                <span className={styles.more}>, und {remainingCount} weitere</span>
-            ) : null}
         </div>
     );
 }
