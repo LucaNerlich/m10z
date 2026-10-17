@@ -53,7 +53,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const resultsId = useId();
     const shouldScrollRef = useRef(false);
 
-    const {results, isLoading, error: searchError} = useSearchQuery(query, 150);
+    const {results, isLoading, error: searchError, effectiveQuery} = useSearchQuery(query, 150);
 
     useEffect(() => {
         // Remember what was focused before the modal opened (the launcher
@@ -175,9 +175,11 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
     const trimmedQuery = query.trim();
     const statusMessage = (() => {
         if (searchError) return 'Suche konnte nicht geladen werden.';
-        if (isLoading) return 'Suchen ...';
         if (trimmedQuery.length === 0) return 'Tippe, um die Suche zu starten.';
         if (trimmedQuery.length < SEARCH_MIN_QUERY_LENGTH) return 'Tippe weiter, um zu suchen.';
+        // The fetch boundary is the debounced query: while it lags the typed query no
+        // request exists yet, so this window must not read as "no results".
+        if (effectiveQuery !== trimmedQuery || isLoading) return 'Suchen ...';
         if (results.length === 0) return 'Keine Treffer gefunden.';
         return null;
     })();
