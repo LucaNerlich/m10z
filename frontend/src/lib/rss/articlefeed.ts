@@ -1,3 +1,4 @@
+import {normalizeEnclosureLengthBytes} from '@/src/lib/rss/audiofeed';
 import {markdownToHtml} from '@/src/lib/rss/markdownToHtml';
 import {getEffectiveDate, sortByDateDesc} from '@/src/lib/effectiveDate';
 import {
@@ -66,6 +67,9 @@ export function generateArticleFeedXml(args: {
                 'medium',
                 'cover',
             );
+            // Strapi stores upload sizes in KB (`size`); the shared converter turns that
+            // into the byte count RSS requires for <enclosure length>.
+            const enclosureLengthBytes = optimizedMedia ? normalizeEnclosureLengthBytes(optimizedMedia) ?? 0 : 0;
 
             const title = escapeXml(a.title);
             // Fall back to the first category's description when the article has no explicit description.
@@ -85,7 +89,7 @@ export function generateArticleFeedXml(args: {
                 `      <description>${description}</description>` +
                 `      <content:encoded><![CDATA[${cdataContent}]]></content:encoded>` +
                 (optimizedMediaUrl
-                    ? `      <enclosure url="${escapeXml(optimizedMediaUrl)}" length="${optimizedMedia?.sizeInBytes ?? 0}" type="${escapeXml(optimizedMedia?.mime ?? 'image/jpeg')}"/>`
+                    ? `      <enclosure url="${escapeXml(optimizedMediaUrl)}" length="${enclosureLengthBytes}" type="${escapeXml(optimizedMedia?.mime ?? 'image/jpeg')}"/>`
                     : '') +
                 `    </item>`
             );
