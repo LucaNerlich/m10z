@@ -118,7 +118,7 @@ describe('SearchModal keyboard interaction', () => {
 
     test('Tab from the last tabbable element wraps back to the input', async () => {
         await renderModal();
-        const tabbables = Array.from(container.querySelectorAll('input, button'));
+        const tabbables = Array.from(container.querySelectorAll<HTMLElement>('input, button'));
         tabbables[tabbables.length - 1]?.focus();
 
         await press('Tab');
