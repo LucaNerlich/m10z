@@ -1,5 +1,5 @@
 import {getClientIp} from '@/src/lib/net/getClientIp';
-import {normalizeClientUserAgent, podcastClientLabel} from '@/src/lib/analytics/podcastDownload';
+import {capUmamiDataValue, normalizeClientUserAgent, podcastClientLabel} from '@/src/lib/analytics/podcastDownload';
 
 /**
  * Custom Umami event name recorded for podcast downloads initiated via the RSS feed.
@@ -74,7 +74,8 @@ export async function sendPodcastDownloadEvent(args: {
     const clientApp = podcastClientLabel(rawUserAgent);
 
     const data: Record<string, string> = {slug};
-    if (title) data.title = title;
+    const cappedTitle = capUmamiDataValue(title);
+    if (cappedTitle) data.title = cappedTitle;
     if (clientApp) data.clientApp = clientApp;
     if (clientUserAgent) data.clientUserAgent = clientUserAgent;
 
