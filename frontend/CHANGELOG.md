@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.16.1] - 2026-10-18
+
+### Fixed
+- Preview pages work again: the IP lookup crashed on Next's readonly headers, so every preview request answered "Service unavailable"; draft previews now fetch through the privileged API token and show the edited draft instead of the stale published version.
+- Feed builds stay inside their item cap, no longer fail on a single unparseable date, and can no longer start a second concurrent build; podcast feeds omit `itunes:duration` when no duration is known, and the article enclosure advertises the real byte size.
+- Search no longer reports "no results" before a request is issued, the status message matches the actual fetch minimum, the full-index endpoint is rate-limited, and thumbnails respect the image allowlist.
+- During a CMS outage, the category, author, list, and month pages serve the last good content with a dedicated notice instead of an error.
+- Markdown: heading anchors use GitHub-compatible slugs, custom transforms no longer rewrite inline code, and footnote and anchor metadata survives sanitizing.
+- Wichteln rejects impossible pairings on hydration; the body stays locked while any overlay is open; images retry when their source changes after a failure; superseded Mermaid renders are discarded.
+- Hardening: the preview rate limit keys on the proxy-appended IP, robots noindex detection matches host labels, a leading slash no longer implies an internal link, Do Not Track is honored for server-side download events, the download-dedup map is capped, and Umami event names/values are capped and no longer cached on soft failure.
+- `/feeds`, `/impressum`, `/datenschutz`, `/ueber-uns`, and `/m12g` fall through to the root error boundary again.
+- Accessibility: the header disclosure no longer claims a menu role.
+
+### Changed
+- Performance: the author-list formatter is hoisted and the reading-time cache no longer retains article bodies.
+- Dependency upgrades (Next 16.4, Mermaid 12).
+- Internal refactors, dead-code removal, and additional tests across the feed, search, caching, markdown, and tooling layers.
+
 ## [1.16.0] - 2026-10-12
 
 ### Added
