@@ -53,4 +53,15 @@ describe('getClientIp', () => {
         };
         expect(getClientIp(readonlyHeaders)).toBe('10.0.0.1');
     });
+
+    test('prefers a callable get over the raw .headers bag Next attaches (#991)', () => {
+        // Next's `HeadersAdapter` stores the raw incoming headers as an instance
+        // property named `headers` — a plain-object proxy without a `get` method.
+        // A `'headers' in source` probe picks that bag and crashes the caller.
+        const readonlyHeaders = {
+            get: (name: string) => (name === 'x-forwarded-for' ? 'spoofed, 10.0.0.1' : null),
+            headers: {host: 'm10z.de'},
+        };
+        expect(getClientIp(readonlyHeaders)).toBe('10.0.0.1');
+    });
 });
