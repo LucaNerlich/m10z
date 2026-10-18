@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2026-10-18
+
+### Fixed
+- Anonymous `?status=draft` reads on the content API are now reliably blocked: the policy loads on the article and podcast routes, and the frontend's preview path uses a privileged API token for drafts.
+- The request pipeline is hardened: a global body-size cap, CORS pinned to the known frontend origins, the unused and unenforceable Public-role grants removed, and the 2 GB media upload limit restored.
+- Scheduled publishing bounds its fan-out and skips overlapping runs; a throwing invalidation-queue callback no longer aborts the whole batch.
+- Cache invalidation also fires when a content-API create arrives with status published.
+- YouTube embeds accept the URL forms the renderer actually supports, and auth emails are sent from the m10z domain.
+- The audio migration uses the upload's timeout for downloads, and the search-index build pages with a stable sort.
+- The admin dev server no longer fails its dependency scan when the media library contains HTML files.
+
+### Changed
+- Dependency upgrades (sharp, dotenv).
+- Internal refactors (shared MCP transport, metrics and uploads helpers), documentation, and `.env.example` updates.
+
 ## [1.4.0] - 2026-10-12
 
 ### Added
