@@ -1,7 +1,7 @@
 # M10Z Statistik-Snapshot — generiert von `pnpm run snapshot:statistik` (siehe .github/agents/statistik.agent.md).
 # Nicht von Hand bearbeiten.
 version: 1
-generatedAt: 2026-10-12T00:54:22.884Z
+generatedAt: 2026-10-18T23:51:37.876Z
 authors:
   - slug: adrian
     name: Adrian
@@ -2115,7 +2115,7 @@ podcasts:
       - tribunal
     duration: 4695
   - slug: zoz-9
-    title: "Zocken ohne Zaster #9: „Not Tonight“ vs. „Mindustry“ (svenoble #2) & „Space Rangers“ (Dima)"
+    title: "Zocken ohne Zaster #9 – Not Tonight vs. Mindustry (svenoble #2) und Space Rangers (Dima)"
     date: 2026-09-01T10:00:00.000Z
     authors:
       - m10zfreundin
@@ -2180,15 +2180,6 @@ podcasts:
     categories:
       - pile-of-joy
     duration: 5854
-  - slug: pile-of-joy-017
-    title: "Pile of Joy #017 Genre Shuffle | Cleaning – House Flipper, Powerwash Simulator und mehr"
-    date: 2026-09-20T19:15:00.000Z
-    authors:
-      - sz
-      - thiberion
-    categories:
-      - pile-of-joy
-    duration: 5854
   - slug: fundbuero-20
     title: "Fundbüro #20 | Imperialistische Außerirdische gegen frühe Zivilisationen"
     date: 2026-09-23T19:00:00.000Z
@@ -2210,11 +2201,30 @@ podcasts:
       - pixelplausch
     duration: 4463
   - slug: zoz-10
-    title: "Zocken ohne Zaster #10 - LIVE von der ClaviCon, System Shock 2 vs. Moon Mystery"
+    title: "Zocken ohne Zaster #10 – LIVE von der Classic Videogames Convention, System Shock 2 vs. Moon Mystery"
     date: 2026-10-11T18:40:00.000Z
     authors:
       - marcel
       - tom
+      - yollum
     categories:
       - zocken-ohne-zaster
     duration: 3226
+  - slug: pile-of-joy-017
+    title: "Pile of Joy #017 Genre Shuffle | Cleaning – House Flipper, Powerwash Simulator, Viscera Cleanup und Mario?"
+    date: 2026-10-13T14:15:00.000Z
+    authors:
+      - sz
+      - thiberion
+    categories:
+      - pile-of-joy
+    duration: 4425
+  - slug: stalker-2
+    title: Stalker 2 – A Long Walk
+    date: 2026-10-16T19:30:00.000Z
+    authors:
+      - luca
+      - thomas
+    categories:
+      - erfahrungssache
+    duration: 3858
