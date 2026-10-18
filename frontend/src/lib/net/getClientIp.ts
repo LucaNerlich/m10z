@@ -27,7 +27,13 @@ export type HeaderSource = {
 };
 
 function resolveHeaders(source: Request | HeaderSource): HeaderSource {
-    return 'headers' in source ? source.headers : source;
+    // Prefer the object itself when it can look up headers; only `Request` keeps
+    // them behind `.headers`. Do not probe `'headers' in source`: Next's
+    // `ReadonlyHeaders` exposes the raw incoming bag under that exact name (no
+    // `get` method), so the probe picks the wrong object and the next lookup
+    // crashes (#991).
+    if (typeof (source as {get?: unknown}).get === 'function') return source as HeaderSource;
+    return (source as Request).headers;
 }
 
 export function getClientIp(source: Request | HeaderSource): string {
