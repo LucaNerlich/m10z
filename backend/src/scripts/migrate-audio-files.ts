@@ -14,13 +14,17 @@
  */
 
 import {config} from 'dotenv';
-import FormData from 'form-data';
-import fetch from 'node-fetch';
 import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 
-import {extractFilename, findExistingFileByName, getMimeType, validateUrl} from './audioMigrationUtils';
+import {
+    buildUploadFormData,
+    extractFilename,
+    findExistingFileByName,
+    getMimeType,
+    validateUrl,
+} from './audioMigrationUtils';
 import {AUDIO_FILE_URLS, EXPECTED_FILE_COUNT} from './audioMigrationList';
 
 config();
@@ -139,11 +143,7 @@ async function uploadToStrapiWithRetry(
 
         log(`Uploading ${filename} (${fileSizeMB} MB, ${mimeType})...`);
 
-        const formData = new FormData();
-        formData.append('files', fileBuffer, {
-            filename,
-            contentType: mimeType,
-        });
+        const formData = buildUploadFormData(fileBuffer, filename);
 
         // Calculate estimated upload time (rough estimate: 1MB per second)
         const estimatedSeconds = Math.ceil(fileBuffer.length / (1024 * 1024));
@@ -157,13 +157,12 @@ async function uploadToStrapiWithRetry(
         }, CLIENT_TIMEOUT_MS);
 
         try {
-            // Use node-fetch which has better compatibility with form-data
-            // getHeaders() includes Content-Type with boundary
+            // The global fetch sets the multipart Content-Type/boundary from the
+            // native FormData body itself.
             const response = await fetch(STRAPI_UPLOAD_URL, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${apiToken}`,
-                    ...formData.getHeaders(),
                 },
                 body: formData,
                 signal: controller.signal,

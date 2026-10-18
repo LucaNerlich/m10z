@@ -1,6 +1,6 @@
-import {describe, expect, test} from 'vitest';
+import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {extractFilename, findExistingFileByName, getMimeType, validateUrl} from './audioMigrationUtils';
+import {buildUploadFormData, extractFilename, findExistingFileByName, getMimeType, validateUrl} from './audioMigrationUtils';
 
 describe('validateUrl', () => {
     test('accepts an HTTPS URL on the allowed domain', () => {
@@ -76,5 +76,32 @@ describe('findExistingFileByName', () => {
                 throw new Error('network down');
             }, base, token, 'song.mp3'),
         ).toBeNull();
+    });
+});
+
+describe('buildUploadFormData', () => {
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    test('produces a native FormData body that the global fetch accepts', async () => {
+        const fetchMock = vi.fn().mockResolvedValue(new Response('[]', {status: 200}));
+        vi.stubGlobal('fetch', fetchMock);
+
+        const body = buildUploadFormData(Buffer.from('audio-bytes'), 'episode-001.mp3');
+        await fetch('https://cms.m10z.de/api/upload', {method: 'POST', body});
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        const init = fetchMock.mock.calls[0][1] as RequestInit;
+        expect(init.body).toBeInstanceOf(FormData);
+    });
+
+    test('names the file and sets the audio MIME type', () => {
+        const body = buildUploadFormData(Buffer.from('x'), 'episode-001.mp3');
+
+        const file = body.get('files');
+        expect(file).toBeInstanceOf(File);
+        expect((file as File).name).toBe('episode-001.mp3');
+        expect((file as File).type).toBe('audio/mpeg');
     });
 });
