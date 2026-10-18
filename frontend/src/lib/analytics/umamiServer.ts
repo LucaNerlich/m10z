@@ -58,6 +58,11 @@ export async function sendPodcastDownloadEvent(args: {
     const {slug, title, request} = args;
     const umamiUrl = (process.env.NEXT_PUBLIC_UMAMI_URL || 'https://umami.m10z.de').replace(/\/+$/, '');
 
+    // Mirror the client tracker's `data-do-not-track` opt-out for the server-side event:
+    // a visitor who sent DNT asked not to be tracked, and the collector UA override below
+    // means Umami cannot detect it on its own.
+    if (request.headers.get('dnt') === '1') return;
+
     // Forward the client IP, but keep the collector UA stable so podcatcher identifiers are not
     // mistaken for bot traffic by Umami's ingestion endpoint.
     const clientIp = getClientIp(request);

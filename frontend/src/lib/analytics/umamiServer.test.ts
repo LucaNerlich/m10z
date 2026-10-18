@@ -37,6 +37,15 @@ describe('sendPodcastDownloadEvent', () => {
         expect(fetchMock).not.toHaveBeenCalled();
     });
 
+    test('skips the event when the client sent DNT', async () => {
+        vi.stubEnv('NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'site-123');
+        const fetchMock = mockFetchOk();
+
+        await sendPodcastDownloadEvent({slug: 'ep-1', title: 'Episode 1', request: makeRequest({dnt: '1'})});
+
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
     test('posts a custom event to /api/send with the expected payload and attribution headers', async () => {
         vi.stubEnv('NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'site-123');
         vi.stubEnv('NEXT_PUBLIC_UMAMI_URL', 'https://umami.example.test');
