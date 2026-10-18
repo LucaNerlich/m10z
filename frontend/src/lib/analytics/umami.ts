@@ -29,10 +29,17 @@ export function slugifyUmami(input: string): string {
 }
 
 /**
+ * Umami's collector rejects custom event names longer than this. Every generated id
+ * funnels through `umamiEventId`, so the cap lives there and all producers
+ * (external links, footer, search, mermaid, anchor events, …) inherit it.
+ */
+export const MAX_EVENT_NAME_LENGTH = 50;
+
+/**
  * Generates a unique event identifier by processing and concatenating the provided parts.
  *
  * @param {Array<string | number | null | undefined>} parts - An array of parts that will be joined to form the event ID. Each part can be a string, number, null, or undefined.
- * @return {string} - A slugified string formed by concatenating non-empty, trimmed parts. Defaults to 'click' if no valid parts are provided.
+ * @return {string} - A slugified string formed by concatenating non-empty, trimmed parts, capped at `MAX_EVENT_NAME_LENGTH` characters. Defaults to 'click' if no valid parts are provided.
  */
 export function umamiEventId(parts: Array<string | number | null | undefined>): string {
     const raw = parts
@@ -41,8 +48,10 @@ export function umamiEventId(parts: Array<string | number | null | undefined>): 
         .filter(Boolean)
         .join('-');
 
-    const slug = slugifyUmami(raw);
-    return slug || 'click';
+    const id = slugifyUmami(raw) || 'click';
+    if (id.length <= MAX_EVENT_NAME_LENGTH) return id;
+    // Truncation can land on a dash; trim trailing separators so ids stay readable.
+    return id.slice(0, MAX_EVENT_NAME_LENGTH).replace(/-+$/, '');
 }
 
 /**
@@ -72,7 +81,7 @@ export function umamiExternalLinkEvent(href: string, prefix = 'outbound'): strin
             .slice(0, 2);
 
         const id = umamiEventId([prefix, url.hostname, ...segments]);
-        return id.length > 90 ? id.slice(0, 90) : id;
+        return id;
     } catch {
         // Unknown/relative scheme. Still generate something stable-ish.
         const short = trimmed.length > 50 ? trimmed.slice(0, 50) : trimmed;

@@ -24,6 +24,16 @@ describe('umamiEventId', () => {
     test('falls back to "click" when nothing usable remains', () => {
         expect(umamiEventId([null, undefined, '   '])).toBe('click');
     });
+
+    test('caps event ids at the Umami limit of 50 characters', () => {
+        const longLink = umamiExternalLinkEvent('https://forum.m10z.de/t/m12g-pick-and-play-dezember-2025/2905');
+        expect(longLink.length).toBeLessThanOrEqual(50);
+        expect(longLink.startsWith('outbound-forum-m10z-de-t-m12g-pick-and-play')).toBe(true);
+        expect(longLink.endsWith('-')).toBe(false);
+
+        expect(umamiEventId(['x'.repeat(120)]).length).toBeLessThanOrEqual(50);
+        expect(umamiEventId(['x'.repeat(120)]).length).toBe(50);
+    });
 });
 
 describe('umamiExternalLinkEvent', () => {
