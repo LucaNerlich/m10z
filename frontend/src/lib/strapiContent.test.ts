@@ -1,6 +1,7 @@
-import {describe, expect, test} from 'vitest';
+import {afterEach, describe, expect, test} from 'vitest';
 
-import {clampPage, clampPageSize, normalizePagination, toPaginatedResult} from './strapiContent';
+import {clampPage, clampPageSize, fetchArticleBySlugForPreview, fetchPodcastBySlugForPreview, normalizePagination, toPaginatedResult} from './strapiContent';
+import {__resetStrapiTransport, __setStrapiTransport, type StrapiRequest} from '@/src/lib/strapiTransport';
 import {buildAuthorPageTags} from '@/src/lib/shared/contracts/strapi-contract/tags';
 describe('clampPage', () => {
     test.each([
@@ -84,5 +85,43 @@ describe('buildAuthorPageTags', () => {
         expect(tags).toContain('strapi:category:news');
         expect(tags).toContain('strapi:podcast:list:author:jane:category:news');
         expect(tags).toContain('strapi:podcast:list:author:jane:category:news:page');
+    });
+});
+
+describe('preview fetches', () => {
+    afterEach(() => {
+        __resetStrapiTransport();
+    });
+
+    test('a draft article preview read is privileged and asks for status=draft', async () => {
+        const seen: StrapiRequest[] = [];
+        __setStrapiTransport(async <T>(req: StrapiRequest): Promise<T> => {
+            seen.push(req);
+            return {data: [{slug: 'x'}]} as T;
+        });
+
+        const article = await fetchArticleBySlugForPreview('x', 'draft');
+
+        expect(article).toEqual({slug: 'x'});
+        expect(seen).toHaveLength(1);
+        // The backend pins anonymous `status=draft` queries to published (#726), so a
+        // preview that does not send the API token can never receive a draft.
+        expect(seen[0].auth).toBe('privileged');
+        expect(seen[0].cache).toEqual({mode: 'no-store', tags: []});
+        expect(seen[0].path).toContain('status=draft');
+    });
+
+    test('a podcast preview read is privileged too', async () => {
+        const seen: StrapiRequest[] = [];
+        __setStrapiTransport(async <T>(req: StrapiRequest): Promise<T> => {
+            seen.push(req);
+            return {data: [{slug: 'y'}]} as T;
+        });
+
+        await fetchPodcastBySlugForPreview('y', 'draft');
+
+        expect(seen).toHaveLength(1);
+        expect(seen[0].auth).toBe('privileged');
+        expect(seen[0].path).toContain('status=draft');
     });
 });

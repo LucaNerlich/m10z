@@ -159,8 +159,12 @@ function fetchBySlugForPreview<T>(
         fields: desc.detailFields,
         status,
     });
+    // Draft reads must be privileged: the backend pins anonymous `status=draft`
+    // queries to published (#726), so without the API token the preview page can
+    // never receive a draft (draft-only entries come back empty → 404).
     return fetchJsonNoStore<{data: T[]}>(`${desc.apiPath}?${query}`, {
         tags: [],
+        auth: 'privileged',
         context: {slug, contentType: desc.contentType, populateOptions: desc.detailPopulate},
     }).then((res) => res.data?.[0] ?? null);
 }
