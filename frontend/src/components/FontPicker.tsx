@@ -18,7 +18,7 @@ interface FontOption {
     cssVariable: string;
 }
 
-const FONT_OPTIONS: FontOption[] = [
+export const FONT_OPTIONS: FontOption[] = [
     {id: 'argon', displayName: 'Argon', cssVariable: 'var(--font-argon-family)'},
     {id: 'krypton', displayName: 'Krypton', cssVariable: 'var(--font-krypton-family)'},
     {id: 'neon', displayName: 'Neon', cssVariable: 'var(--font-neon-family)'},
