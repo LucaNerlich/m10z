@@ -26,6 +26,7 @@ describe('computeRevalidation', () => {
             const {pages} = computeRevalidation({type, action: 'update', slug: 'x'});
             expect(pages).not.toContain('/artikel/[slug]');
             expect(pages).not.toContain('/podcasts/[slug]');
+            expect(pages).not.toContain('/kategorien/[slug]');
         }
         expect(computeRevalidation({type: 'podcast', action: 'unpublish', slug: 'ep'}).paths).toContain(
             '/podcasts/ep'

@@ -44,7 +44,7 @@ function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: s
             };
         case 'category':
             return {
-                pages: [routes.categories, `${routes.categories}/[slug]`, routes.articles, routes.podcasts, routes.home],
+                pages: [routes.categories, routes.articles, routes.podcasts, routes.home],
                 paths: [],
             };
         case 'about':
@@ -56,12 +56,12 @@ function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: s
             return {pages: [], paths: [routes.imprint, routes.privacy]};
         case 'article-feed':
             return {
-                pages: [routes.home, routes.articles, routes.categories, `${routes.categories}/[slug]`],
+                pages: [routes.home, routes.articles, routes.categories],
                 paths: [routes.articleFeed],
             };
         case 'audio-feed':
             return {
-                pages: [routes.home, routes.podcasts, routes.categories, `${routes.categories}/[slug]`],
+                pages: [routes.home, routes.podcasts, routes.categories],
                 paths: [routes.audioFeed],
             };
         case 'search-index':
