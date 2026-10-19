@@ -54,8 +54,9 @@ describe('markCodeFenceLines', () => {
     });
 
     test('treats a nested-looking fence marker inside code as the closing fence', () => {
-        // The scanner is line-oriented and always toggles, which is what every
-        // caller relied on before this module existed.
+        // The scanner is line-oriented and always toggles on a delimiter of the
+        // opening character, which is what every caller relied on before this
+        // module existed.
         expect(marked('```\na\n```\nb\n```\nc')).toEqual(['C ```', 'C a', 'C ```', '- b', 'C ```', 'C c']);
     });
 
