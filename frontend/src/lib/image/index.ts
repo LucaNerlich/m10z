@@ -15,7 +15,7 @@
  * is consumed by `next.config.ts` for build-time `remotePatterns`.
  */
 
-import {ALLOWED_IMAGE_HOSTNAMES} from './hostnames';
+import {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp} from './hostnames';
 
 export {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp, getCspImageSources, getRemotePatterns} from './hostnames';
 
@@ -73,17 +73,40 @@ export function normalizeSearchImageUrl(src: string | null | undefined): string 
 }
 
 /**
- * Check whether a URL's hostname is in the allowlist consumed by
- * Next.js Image optimisation. Subdomains of allowed hosts are accepted.
+ * Check whether a URL is accepted by the runtime image gate.
+ *
+ * Mirrors `getRemotePatterns`:
+ * - the configured Strapi origin is accepted exactly (including an http/local
+ *   origin), because the optimizer permits that one explicit pattern;
+ * - other public hosts must be https and in the allowlist (subdomains included);
+ * - `localhost` is not accepted unless it is the configured Strapi origin.
  */
 export function isImageHostnameAllowed(url: string | null | undefined): boolean {
     if (!url || typeof url !== 'string') return false;
+
+    let parsed: URL;
     try {
-        const {hostname} = new URL(url);
-        return ALLOWED_IMAGE_HOSTNAMES.some(
-            (allowed) => hostname === allowed || hostname.endsWith(`.${allowed}`),
-        );
+        parsed = new URL(url);
     } catch {
         return false;
     }
+
+    const base = getStrapiBaseUrl();
+    if (base && allowLocalImageIp()) {
+        // `getRemotePatterns` only adds the configured origin when it is local;
+        // accepting a public staging origin here would admit URLs the optimizer
+        // then rejects.
+        try {
+            if (parsed.origin === new URL(base).origin) return true;
+        } catch {
+            // Unparseable configured base: fall back to the static allowlist.
+        }
+    }
+
+    if (parsed.protocol !== 'https:') return false;
+    return ALLOWED_IMAGE_HOSTNAMES.some(
+        (allowed) =>
+            allowed !== 'localhost' &&
+            (parsed.hostname === allowed || parsed.hostname.endsWith(`.${allowed}`)),
+    );
 }
