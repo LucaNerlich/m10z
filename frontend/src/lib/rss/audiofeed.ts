@@ -199,8 +199,8 @@ function renderItem(
     cfg: AudioFeedConfig,
     episode: StrapiPodcast,
     htmlFooter: string,
-    timings?: AudioFeedTimingCollector,
-    markdownConverter?: AudioFeedMarkdownConverter,
+    timings: AudioFeedTimingCollector | undefined,
+    markdownConverter: AudioFeedMarkdownConverter,
 ): string | null {
     const tFileMeta0 = nowMs();
     const fileMedia = normalizeStrapiMedia(episode.file);
@@ -238,12 +238,7 @@ function renderItem(
     const shownotes = (episode.shownotes ?? '').toString();
     const descriptionText = shownotes || effectiveDescription || '';
     const tMd0 = nowMs();
-    const convert =
-        markdownConverter ??
-        ((args: {markdownText: string}) => {
-            return markdownToHtml(args.markdownText);
-        });
-    const htmlShownotes = convert({episodeId: episode.id, kind: 'shownotes', markdownText: descriptionText});
+    const htmlShownotes = markdownConverter({episodeId: episode.id, kind: 'shownotes', markdownText: descriptionText});
     const tMd1 = nowMs();
     timings?.record('markdownConversion', tMd1 - tMd0);
     const cdataShownotes = escapeCdata(htmlShownotes);
