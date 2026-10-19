@@ -93,10 +93,24 @@ export function checkRateLimit(key: string): {ok: boolean; retryAfterSeconds: nu
     // distinct keys (attacker-rotated or just long-lived traffic) cannot grow it
     // without bound.
     if (rateLimitState.size >= RATE_LIMIT_MAX_ENTRIES) {
-        for (const [storedKey, stored] of rateLimitState) {
-            if (now > stored.resetAt) {
-                rateLimitState.delete(storedKey);
+        // The map is insertion-ordered, so an expired entry (if any) is normally
+        // at the head. Only pay for the full sweep when the head has expired;
+        // a full live map goes straight to eviction instead of rescanning 10k
+        // entries for every new key.
+        const head = rateLimitState.entries().next().value;
+        if (head !== undefined && now > head[1].resetAt) {
+            for (const [storedKey, stored] of rateLimitState) {
+                if (now > stored.resetAt) {
+                    rateLimitState.delete(storedKey);
+                }
             }
+        }
+        // Every entry can still be live (attacker-rotated keys inside one window).
+        // Evict the oldest insertion until there is room, so the map stays capped.
+        while (rateLimitState.size >= RATE_LIMIT_MAX_ENTRIES) {
+            const oldestKey = rateLimitState.keys().next().value;
+            if (oldestKey === undefined) break;
+            rateLimitState.delete(oldestKey);
         }
     }
 
