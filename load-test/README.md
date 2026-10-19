@@ -48,10 +48,23 @@ k6 run -e TARGET_ORIGIN="https://your-domain.tld" load-test/spike.js
 
 ## Run (Docker)
 
+The harness runs the digest-pinned k6 image with `load-test/` mounted and the
+env vars each scenario needs passed through, so scenarios can import
+`./lib/routes.js`:
+
+```bash
+node load-test/run.mjs smoke   # or: ramp · spike
+```
+
+To invoke k6 directly, pin the same image (a floating tag would let a
+re-tagged upstream image execute here) and mount `load-test/`:
+
 ```bash
 docker run --rm -i \
+  -v "$PWD/load-test:/work/load-test:ro" \
   -e TARGET_ORIGIN="https://your-domain.tld" \
-  grafana/k6:latest run - < load-test/smoke.js
+  grafana/k6@sha256:e66db15b860113878fa74670e31f5e274830b7b6e42c8bff28b2f2d86a257603 \
+  run /work/load-test/smoke.js
 ```
 
 ## Notes
