@@ -1,19 +1,21 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 type LocalStorageModule = typeof import('./localStorage');
+type StorageListener = (event: StorageEvent) => void;
 
 // A fresh module instance per test: the in-memory mirror is module-private state,
 // so re-importing is how a test gets a clean one (the previous `clearCache()`
-// export existed only for this and cleared nothing else).
+// export existed only for this and cleared nothing else). `window` must exist
+// before that import, otherwise the module never registers its listeners.
 let api: LocalStorageModule;
 
 describe('localStorage utilities', () => {
     let store: Record<string, string> = {};
+    let listeners: Record<string, StorageListener[]> = {};
 
     beforeEach(async () => {
-        vi.resetModules();
-        api = await import('./localStorage');
         store = {};
+        listeners = {};
         vi.stubGlobal(
             'window',
             {
@@ -26,8 +28,13 @@ describe('localStorage utilities', () => {
                         delete store[key];
                     }),
                 },
+                addEventListener: vi.fn((type: string, listener: StorageListener) => {
+                    (listeners[type] ??= []).push(listener);
+                }),
             }
         );
+        vi.resetModules();
+        api = await import('./localStorage');
     });
 
     afterEach(() => {
@@ -64,6 +71,67 @@ describe('localStorage utilities', () => {
         test('returns null for corrupted JSON', () => {
             store['bad'] = '{broken';
             expect(api.getItem('bad')).toBeNull();
+        });
+    });
+
+    describe('stale durable value with a newer mirror', () => {
+        test('getItem returns the mirrored value when setItem failed after an older value was stored', () => {
+            store['key'] = '"old"';
+            // Prime the in-memory mirror from the durable store.
+            expect(api.getItem<string>('key')).toBe('old');
+
+            // Storage is full: the durable write fails while the mirror takes the new value.
+            vi.mocked(window.localStorage.setItem).mockImplementation(() => {
+                throw new Error('QuotaExceededError');
+            });
+            api.setItem('key', 'new');
+
+            expect(store['key']).toBe('"old"');
+            expect(api.getItem<string>('key')).toBe('new');
+        });
+
+        test('a successful retry lets the durable store win again', () => {
+            store['key'] = '"old"';
+            // Prime the in-memory mirror from the durable store.
+            expect(api.getItem<string>('key')).toBe('old');
+
+            vi.mocked(window.localStorage.setItem).mockImplementationOnce(() => {
+                throw new Error('QuotaExceededError');
+            });
+            api.setItem('key', 'new');
+            expect(api.getItem<string>('key')).toBe('new');
+
+            // Retry lands durably, so the mirror is a cache again.
+            api.setItem('key', 'retry');
+            expect(store['key']).toBe('"retry"');
+
+            // Another tab writes; its `storage` event is queued but not delivered yet.
+            store['key'] = '"other"';
+            expect(api.getItem<string>('key')).toBe('other');
+
+            for (const listener of listeners['storage'] ?? []) {
+                listener({key: 'key'} as unknown as StorageEvent);
+            }
+            expect(api.getItem<string>('key')).toBe('other');
+        });
+    });
+
+    describe('cross-tab invalidation', () => {
+        test('a read before the queued storage event returns the durable value', () => {
+            store['key'] = '"old"';
+            // Prime the mirror from the durable store.
+            expect(api.getItem<string>('key')).toBe('old');
+
+            // Another tab writes; its `storage` event is queued but not delivered yet.
+            store['key'] = '"new"';
+            expect(api.getItem<string>('key')).toBe('new');
+
+            expect(listeners['storage']).toHaveLength(1);
+            for (const listener of listeners['storage'] ?? []) {
+                listener({key: 'key'} as unknown as StorageEvent);
+            }
+
+            expect(api.getItem<string>('key')).toBe('new');
         });
     });
 
