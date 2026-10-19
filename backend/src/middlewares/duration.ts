@@ -116,9 +116,13 @@ async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): P
         const metadata = await parseFile(filePath);
         const duration = metadata.format?.duration;
 
-        if (duration && typeof duration === 'number' && duration > 0) {
-            data.duration = Math.round(duration);
-            strapi.log.info(`Extracted duration: ${data.duration} seconds for file: ${fileUrl}`);
+        // Round before the positivity guard: the podcast schema declares `min: 1`, so a
+        // file whose rounded duration is 0 (shorter than 0.5s) must leave the field unset
+        // rather than store a value the publish validator rejects.
+        const seconds = typeof duration === 'number' ? Math.round(duration) : 0;
+        if (seconds > 0) {
+            data.duration = seconds;
+            strapi.log.info(`Extracted duration: ${seconds} seconds for file: ${fileUrl}`);
         } else {
             strapi.log.warn(`Duration not found in metadata for file: ${fileUrl}`);
         }
