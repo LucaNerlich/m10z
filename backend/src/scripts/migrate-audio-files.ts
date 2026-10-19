@@ -319,6 +319,21 @@ async function uploadToStrapiWithRetry(
         }
 
         if (attempt < MAX_RETRIES) {
+            // The failed attempt may have landed server-side (a timeout or proxy
+            // 504 after Strapi persisted the file). Check the library before
+            // POSTing the same bytes again.
+            const lookup = await lookupExistingFile(filename);
+            if (lookup.status === 'found') {
+                const existing = lookup.file;
+                log(
+                    `Recovered ${filename} after a failed attempt — already in the media library (ID: ${existing.id})`,
+                );
+                return {id: existing.id, url: existing.url || ''};
+            }
+            if (lookup.status === 'unknown') {
+                throw new LookupUnavailableError(filename, lookup.reason);
+            }
+
             const delay = RETRY_DELAYS[attempt - 1];
             error(
                 `Upload failed for ${filename} (attempt ${attempt}/${MAX_RETRIES}): ${errorMessage}`,
