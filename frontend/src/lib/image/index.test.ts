@@ -71,6 +71,19 @@ describe('isImageHostnameAllowed', () => {
     test('does not treat a lookalike suffix as a subdomain', () => {
         expect(isImageHostnameAllowed('https://notm10z.de/a.jpg')).toBe(false);
     });
+
+    test('rejects http on a public allow-listed host, matching the optimizer', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        expect(isImageHostnameAllowed('http://cms.m10z.de/a.jpg')).toBe(false);
+    });
+
+    test('accepts the configured local Strapi origin over http', () => {
+        vi.stubEnv('STRAPI_URL', 'http://127.0.0.1:1337');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        expect(isImageHostnameAllowed('http://127.0.0.1:1337/uploads/a.jpg')).toBe(true);
+        expect(isImageHostnameAllowed('http://localhost:3000/a.jpg')).toBe(false);
+    });
 });
 
 describe('getCspImageSources', () => {
