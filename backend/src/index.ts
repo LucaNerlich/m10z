@@ -2,7 +2,7 @@ import {wordCountMiddleware} from './middlewares/wordCount';
 import {durationMiddleware} from './middlewares/duration';
 import {cacheInvalidationMiddleware} from './middlewares/cacheInvalidation';
 import {restorePendingInvalidations, type StrapiWithDb} from './services/cacheInvalidationQueue';
-import {runGracefulShutdown} from './utils/gracefulShutdown';
+import {runGracefulShutdown, registerShutdownHandlers} from './utils/gracefulShutdown';
 import {isValidBaseDomain} from './utils/envChecks';
 import {configureServerTimeouts} from '../config/server';
 import type {Server as HttpServer} from 'http';
@@ -274,20 +274,9 @@ export default {
             });
         };
 
-        // Register shutdown handlers
-        process.once('SIGTERM', () => gracefulShutdown('SIGTERM'));
-        process.once('SIGINT', () => gracefulShutdown('SIGINT'));
-
-        // Handle uncaught exceptions and rejections
-        process.on('uncaughtException', (error) => {
-            strapi.log.error('Uncaught Exception:', error);
-            gracefulShutdown('uncaughtException');
-        });
-
-        process.on('unhandledRejection', (reason, promise) => {
-            strapi.log.error('Unhandled Rejection at:', promise, 'reason:', reason);
-            // Not calling gracefulShutdown here as unhandled rejections are often recoverable
-        });
+        // Register shutdown handlers: a requested stop exits 0, a fatal crash
+        // (uncaughtException) exits 1 so supervision and alerting see the failure.
+        registerShutdownHandlers(process, gracefulShutdown, strapi.log);
 
         // Recover invalidation events that were persisted before the last shutdown so
         // they are delivered after a restart (the whole point of the durable queue).
