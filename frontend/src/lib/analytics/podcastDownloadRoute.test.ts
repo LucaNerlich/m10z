@@ -67,6 +67,24 @@ afterEach(() => {
 });
 
 describe('podcast download route', () => {
+    test('does not track HEAD and still records the following GET', async () => {
+        mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
+
+        const headResponse = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1.mp3', {method: 'HEAD'}),
+            makeContext('ep-1.mp3'),
+        );
+        expect(headResponse.status).toBe(302);
+        expect(mocks.afterCallbacks).toHaveLength(0);
+
+        const getResponse = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1.mp3'),
+            makeContext('ep-1.mp3'),
+        );
+        expect(getResponse.status).toBe(302);
+        expect(mocks.afterCallbacks).toHaveLength(1);
+    });
+
     test('redirects to the podcast file and schedules tracking for a .mp3-suffixed inbound slug', async () => {
         const podcast = makePodcast();
         mocks.fetchPodcastBySlug.mockResolvedValue(podcast);
