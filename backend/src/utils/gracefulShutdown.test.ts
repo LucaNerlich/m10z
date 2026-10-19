@@ -118,7 +118,7 @@ describe('runGracefulShutdown', () => {
 
         await runGracefulShutdown({
             signal: 'SIGTERM',
-            exitCode: 0,
+            exitCode: 1,
             log,
             httpServer,
             closeDatabase,
@@ -126,7 +126,8 @@ describe('runGracefulShutdown', () => {
         });
 
         expect(closeDatabase).toHaveBeenCalledTimes(1);
-        expect(exit).toHaveBeenCalledWith(0);
+        // Pins the pass-through end to end: hardcoding exit(0) must fail here.
+        expect(exit).toHaveBeenCalledWith(1);
     });
 
     test('gives the database step a fresh watchdog after a slow close', async () => {
