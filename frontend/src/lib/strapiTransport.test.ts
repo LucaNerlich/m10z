@@ -93,6 +93,17 @@ describe('defaultStrapiTransport (via strapiFetch)', () => {
         expect((pub.headers as Headers).get('Authorization')).toBeNull();
     });
 
+    test('privileged without an env token fails instead of downgrading to an anonymous read', async () => {
+        const fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+        vi.stubEnv('STRAPI_API_TOKEN', '');
+
+        await expect(
+            strapiFetch({path: '/api/x', auth: 'privileged', cache: {mode: 'tags', tags: []}}),
+        ).rejects.toThrow(/STRAPI_API_TOKEN/);
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
     test('maps the tags directive to Next cache options', async () => {
         const fetchMock = vi.fn().mockResolvedValue(okJson({}));
         vi.stubGlobal('fetch', fetchMock);
