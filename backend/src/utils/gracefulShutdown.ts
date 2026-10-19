@@ -33,6 +33,15 @@ export type ShutdownHttpServer = {
     closeIdleConnections?: () => void;
 };
 
+/** Minimal process-emitter surface used to register the shutdown hooks. */
+export type ShutdownProcess = {
+    once: (event: string, listener: (...args: unknown[]) => void) => unknown;
+    on: (event: string, listener: (...args: unknown[]) => void) => unknown;
+};
+
+/** The shutdown callback the hooks invoke: `(signal, exitCode)`. */
+export type ShutdownTrigger = (signal: string, exitCode: number) => unknown;
+
 export type GracefulShutdownOptions = {
     /** Trigger label used in logs, e.g. `SIGTERM` or `uncaughtException`. */
     signal: string;
@@ -129,4 +138,29 @@ export async function runGracefulShutdown({
         clearTimeout(watchdog);
         clearInterval(idleSweep);
     }
+}
+
+/**
+ * Register the process shutdown hooks.
+ *
+ * A requested stop (SIGTERM/SIGINT) exits 0; a fatal `uncaughtException` is a
+ * crash and exits 1 so supervisors restart the CMS and exit-code alerting
+ * fires. Unhandled rejections are logged but never trigger a shutdown.
+ */
+export function registerShutdownHandlers(
+    processLike: ShutdownProcess,
+    shutdown: ShutdownTrigger,
+    log: ShutdownLogger,
+): void {
+    processLike.once('SIGTERM', () => shutdown('SIGTERM', 0));
+    processLike.once('SIGINT', () => shutdown('SIGINT', 0));
+
+    processLike.on('uncaughtException', (error) => {
+        log.error('Uncaught Exception:', error);
+        shutdown('uncaughtException', 1);
+    });
+
+    processLike.on('unhandledRejection', (reason, promise) => {
+        log.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    });
 }

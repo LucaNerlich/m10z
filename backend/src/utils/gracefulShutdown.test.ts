@@ -1,12 +1,13 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 let runGracefulShutdown: typeof import('./gracefulShutdown').runGracefulShutdown;
+let registerShutdownHandlers: typeof import('./gracefulShutdown').registerShutdownHandlers;
 
 beforeEach(async () => {
     // The re-entrancy guard is module state, so reload the module to give each
     // test a fresh shutdown sequence.
     vi.resetModules();
-    ({runGracefulShutdown} = await import('./gracefulShutdown'));
+    ({runGracefulShutdown, registerShutdownHandlers} = await import('./gracefulShutdown'));
 });
 
 function makeLogger() {
@@ -222,5 +223,52 @@ describe('runGracefulShutdown', () => {
 
         expect(exit).toHaveBeenCalledTimes(1);
         expect(exit).toHaveBeenCalledWith(0);
+    });
+});
+
+describe('registerShutdownHandlers', () => {
+    function makeProcess() {
+        const handlers: Record<string, (...args: unknown[]) => void> = {};
+        return {
+            handlers,
+            processLike: {
+                once: (event: string, listener: (...args: unknown[]) => void) => {
+                    handlers[event] = listener;
+                },
+                on: (event: string, listener: (...args: unknown[]) => void) => {
+                    handlers[event] = listener;
+                },
+            },
+        };
+    }
+
+    test('a requested stop exits 0, a fatal crash exits 1', () => {
+        const {handlers, processLike} = makeProcess();
+        const log = makeLogger();
+        const shutdown = vi.fn();
+
+        registerShutdownHandlers(processLike, shutdown, log);
+
+        handlers.SIGTERM();
+        expect(shutdown).toHaveBeenLastCalledWith('SIGTERM', 0);
+
+        handlers.SIGINT();
+        expect(shutdown).toHaveBeenLastCalledWith('SIGINT', 0);
+
+        handlers.uncaughtException(new Error('boom'));
+        expect(shutdown).toHaveBeenLastCalledWith('uncaughtException', 1);
+        expect(log.error).toHaveBeenCalledWith('Uncaught Exception:', expect.any(Error));
+    });
+
+    test('an unhandled rejection is logged but does not trigger a shutdown', () => {
+        const {handlers, processLike} = makeProcess();
+        const log = makeLogger();
+        const shutdown = vi.fn();
+
+        registerShutdownHandlers(processLike, shutdown, log);
+        handlers.unhandledRejection('reason', Promise.resolve());
+
+        expect(shutdown).not.toHaveBeenCalled();
+        expect(log.error).toHaveBeenCalled();
     });
 });
