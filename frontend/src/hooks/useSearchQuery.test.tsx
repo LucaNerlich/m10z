@@ -94,6 +94,13 @@ describe('useSearchQuery', () => {
         expect(lastKey()).toBe('/api/search-index?q=mi');
     });
 
+    test('caps the key at the server query limit', async () => {
+        await renderQuery('a'.repeat(250));
+        await settleDebounce();
+
+        expect(lastKey()).toBe(`/api/search-index?q=${'a'.repeat(200)}`);
+    });
+
     test('trims the query before using it as the key', async () => {
         await renderQuery('  hallo  ');
         await settleDebounce();

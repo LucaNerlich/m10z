@@ -167,7 +167,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         shouldScrollRef.current = false;
     }, [results.length]);
 
-    const trimmedQuery = query.trim();
+    const trimmedQuery = query.trim().slice(0, SEARCH_MAX_QUERY_LENGTH);
     const statusMessage = (() => {
         if (searchError) return 'Suche konnte nicht geladen werden.';
         if (trimmedQuery.length === 0) return 'Tippe, um die Suche zu starten.';
@@ -220,7 +220,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         aria-label="Suche"
                         maxLength={SEARCH_MAX_QUERY_LENGTH}
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
+                        onChange={(e) => setQuery(e.target.value.slice(0, SEARCH_MAX_QUERY_LENGTH))}
                         onKeyDown={handleKeyDown}
                         role="combobox"
                         aria-autocomplete="list"
