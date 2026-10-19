@@ -191,14 +191,14 @@ function renderChannelHeader(
  *
  * @param cfg - Feed configuration (site URL, author/email, iTunes flags, etc.)
  * @param episode - Episode data from Strapi
- * @param episodeFooter - Optional footer content to append to the episode description (Markdown)
+ * @param htmlFooter - Pre-converted footer HTML appended to every episode description (feed-wide)
  * @param timings - Optional per-operation timing collector (used for diagnostics)
  * @returns An XML string for the episode's <item> element suitable for inclusion in an RSS feed, or `null` if no valid enclosure URL exists
  */
 function renderItem(
     cfg: AudioFeedConfig,
     episode: StrapiPodcast,
-    episodeFooter: string | null,
+    htmlFooter: string,
     timings?: AudioFeedTimingCollector,
     markdownConverter?: AudioFeedMarkdownConverter,
 ): string | null {
@@ -236,7 +236,6 @@ function renderItem(
 
     const effectiveDescription = episode.description || episode.categories?.[0]?.description;
     const shownotes = (episode.shownotes ?? '').toString();
-    const footer = episodeFooter ?? '';
     const descriptionText = shownotes || effectiveDescription || '';
     const tMd0 = nowMs();
     const convert =
@@ -245,7 +244,6 @@ function renderItem(
             return markdownToHtml(args.markdownText);
         });
     const htmlShownotes = convert({episodeId: episode.id, kind: 'shownotes', markdownText: descriptionText});
-    const htmlFooter = convert({episodeId: episode.id, kind: 'footer', markdownText: footer});
     const tMd1 = nowMs();
     timings?.record('markdownConversion', tMd1 - tMd0);
     const cdataShownotes = escapeCdata(htmlShownotes);
@@ -338,10 +336,18 @@ export function generateAudioFeedXml(args: {
 
     const header = renderChannelHeader(cfg, channel, channelImageUrl, channelPubDate);
 
+    // `episodeFooter` is one string for the whole feed, so convert it once here
+    // instead of once per episode inside `renderItem` (JSDOM + marked + DOMPurify
+    // per conversion). The result is identical for every episode.
+    const convert =
+        args.markdownConverter ??
+        ((markdownArgs: {markdownText: string}) => markdownToHtml(markdownArgs.markdownText));
+    const htmlFooter = convert({episodeId: 0, kind: 'footer', markdownText: episodeFooter ?? ''});
+
     let renderedEpisodeCount = 0;
     const items = sorted
         .map((ep) => {
-            const item = renderItem(cfg, ep, episodeFooter ?? null, timingCollector, args.markdownConverter);
+            const item = renderItem(cfg, ep, htmlFooter, timingCollector, convert);
             if (item !== null) renderedEpisodeCount += 1;
             return item;
         })
