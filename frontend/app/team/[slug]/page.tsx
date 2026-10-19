@@ -130,7 +130,7 @@ export default async function AuthorPage({params}: SlugPageParams) {
     const articleTotal = articlesPage?.pagination.total ?? stats.articles.total;
     const podcastTotal = podcastsPage?.pagination.total ?? stats.podcasts.total;
     const shouldRenderArticleSection = articleTotal > 0 && (sortedArticles.length > 0 || stats.articles.categories.length > 0);
-    const shouldRenderPodcastSection = sortedPodcasts.length > 0;
+    const shouldRenderPodcastSection = podcastTotal > 0;
 
     const breadcrumbJsonLd = generateBreadcrumbJsonLd([
         {name: 'Startseite', path: '/'},
@@ -199,12 +199,17 @@ export default async function AuthorPage({params}: SlugPageParams) {
                             <Link href={`/team/${slug}/podcasts`}>Alle ansehen</Link>
                         </div>
                     </div>
-                    <ContentGrid gap="comfortable">
-                        {sortedPodcasts.map((podcast) => (
-                            <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false}
-                                         showCategories={true} />
-                        ))}
-                    </ContentGrid>
+                    {sortedPodcasts.length > 0 ? (
+                        <ContentGrid gap="comfortable">
+                            {sortedPodcasts.map((podcast) => (
+                                <PodcastCard key={podcast.slug} podcast={podcast} showAuthors={false}
+                                             showCategories={true} />
+                            ))}
+                        </ContentGrid>
+                    ) : (
+                        <EmptyState
+                            message="Podcasts konnten gerade nicht geladen werden. Bitte später erneut versuchen." />
+                    )}
                 </section>
             ) : null}
 
