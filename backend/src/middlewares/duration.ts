@@ -7,7 +7,7 @@
 import {parseFile} from 'music-metadata';
 import {existsSync} from 'fs';
 
-import {normalizeFileIdentity} from './durationFile';
+import {hasFileIdentity, isSameFileReference, type FileIdentifier} from './durationFile';
 import {resolveFileWithinPublicDir} from '../utils/resolveFileWithinPublicDir';
 import type {
     DocumentServiceContext,
@@ -17,17 +17,17 @@ import type {
     StrapiInstance,
 } from '../types/middleware';
 
-async function getExistingPodcastFileIdentity(
+async function getExistingPodcastFile(
     strapi: StrapiInstance,
     documentId?: string | number,
-): Promise<string | null> {
+): Promise<FileIdentifier> {
     if (!documentId) return null;
     try {
         const podcast = await strapi.documents('api::podcast.podcast').findOne({
             documentId,
             populate: ['file'],
         });
-        return normalizeFileIdentity(podcast?.file);
+        return podcast?.file as FileIdentifier;
     } catch (error) {
         strapi.log.warn('Failed to load podcast for duration comparison:', error);
         return null;
@@ -74,9 +74,11 @@ async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): P
             }
 
             // Query upload file record
-            const uploadRecord = await strapi.documents('plugin::upload.file').findOne({
-                documentId: fileId,
-            });
+            const uploadRecord = (typeof fileId === 'number'
+                ? await strapi.db.query('plugin::upload.file').findOne({where: {id: fileId}})
+                : await strapi.documents('plugin::upload.file').findOne({
+                      documentId: fileId,
+                  })) as {url?: string} | null;
 
             if (!uploadRecord) {
                 strapi.log.warn(`Upload file record not found for ID: ${fileId}`);
@@ -216,25 +218,21 @@ export async function durationMiddleware(
                         context.params?.where?.id ||
                         podcastData.documentId ||
                         podcastData.id;
-                    const existingIdentity = await getExistingPodcastFileIdentity(
+                    const existingFile = await getExistingPodcastFile(
                         strapiInstance,
                         documentId,
                     );
-                    const incomingIdentity = normalizeFileIdentity(podcastData.file);
-                    if (
-                        existingIdentity &&
-                        incomingIdentity &&
-                        existingIdentity === incomingIdentity
-                    ) {
+                    if (isSameFileReference(existingFile, podcastData.file)) {
                         strapiInstance.log.info(
                             `Skipping duration recalculation (file unchanged) for podcast: ${documentId}`,
                         );
                         return next();
                     }
-                    // Only clear when both identities are known and differ. An
+                    // Only clear when both references are identifiable and differ. An
                     // unidentifiable existing file must not let a relation-shaped
                     // payload wipe a valid duration.
-                    fileChanged = Boolean(existingIdentity && incomingIdentity);
+                    fileChanged =
+                        hasFileIdentity(existingFile) && hasFileIdentity(podcastData.file);
                 }
                 if (fileChanged) {
                     // The audio is being replaced: clear the previous duration before
