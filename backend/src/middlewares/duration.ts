@@ -37,7 +37,7 @@ async function getExistingPodcastFileIdentity(
 /**
  * Extracts audio duration from the podcast file referenced by `data.file` and sets `data.duration` to the rounded number of seconds.
  *
- * Attempts to locate the file URL from `data.file` (object with `url`, numeric/string id, `id`, or `documentId`), resolves the path inside Strapi's public directory, reads audio metadata, and updates `data.duration` when a positive duration is found. Errors are logged and do not interrupt the save operation.
+ * Attempts to locate the file URL from `data.file` (object with `url`, numeric/string id, `id`, or `documentId`), resolves the path inside Strapi's public directory, reads audio metadata, and sets `data.duration` to the rounded seconds, or to `null` when no usable duration is found (so a replace cannot keep stale metadata). Errors are logged and do not interrupt the save operation.
  *
  * @param data - The entity data being saved; if a file is present its duration will be assigned to `data.duration` as an integer number of seconds
  */
@@ -117,13 +117,17 @@ async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): P
         const duration = metadata.format?.duration;
 
         // Round before the positivity guard: the podcast schema declares `min: 1`, so a
-        // file whose rounded duration is 0 (shorter than 0.5s) must leave the field unset
-        // rather than store a value the publish validator rejects.
+        // file whose rounded duration is 0 (shorter than 0.5s) must not store a value
+        // the publish validator rejects. Clear the field instead of leaving it unset:
+        // `duration` is not editable in the content manager, so an update that replaces
+        // the audio carries no duration and a partial update would otherwise keep the
+        // replaced episode's old value.
         const seconds = typeof duration === 'number' ? Math.round(duration) : 0;
         if (seconds > 0) {
             data.duration = seconds;
             strapi.log.info(`Extracted duration: ${seconds} seconds for file: ${fileUrl}`);
         } else {
+            data.duration = null;
             strapi.log.warn(`Duration not found in metadata for file: ${fileUrl}`);
         }
     } catch (error) {

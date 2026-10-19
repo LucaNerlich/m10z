@@ -123,19 +123,27 @@ describe('durationMiddleware clone handling', () => {
  * on publish, so the middleware must never store the rounded value 0.
  */
 describe('durationMiddleware duration rounding', () => {
-    function makeStrapi() {
+    function makeStrapi(existing: Record<string, unknown> | null = null) {
         return {
-            documents: vi.fn(() => ({findOne: vi.fn()})),
+            documents: vi.fn(() => ({findOne: vi.fn(async () => existing)})),
             dirs: {public: '/pub'},
             log: {info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn()},
         };
     }
 
-    function makeContext(strapi: ReturnType<typeof makeStrapi>, data: PodcastDocument) {
+    function makeContext(
+        strapi: ReturnType<typeof makeStrapi>,
+        data: PodcastDocument,
+        options: {action?: string; documentId?: string} = {},
+    ) {
         return {
             uid: 'api::podcast.podcast',
-            action: 'create',
-            params: {strapi: strapi as never, data},
+            action: options.action ?? 'create',
+            params: {
+                strapi: strapi as never,
+                data,
+                documentId: options.documentId,
+            },
         };
     }
 
@@ -149,16 +157,30 @@ describe('durationMiddleware duration rounding', () => {
         expect(data.duration).toBe(42);
     });
 
-    test('leaves duration unset when the file rounds to 0 seconds', async () => {
+    test('clears duration when the file rounds to 0 seconds', async () => {
         mocks.duration = 0.4;
         const strapi = makeStrapi();
         const data: PodcastDocument = {file: {url: '/uploads/too-short.mp3'}};
 
         await durationMiddleware(makeContext(strapi, data), vi.fn(async () => ({})));
 
-        expect(data.duration).toBeUndefined();
+        expect(data.duration).toBeNull();
         expect(strapi.log.warn).toHaveBeenCalledWith(
             expect.stringContaining('Duration not found'),
         );
+    });
+
+    test('clears the previous duration when an update replaces the audio with a sub-second file', async () => {
+        mocks.duration = 0.4;
+        const strapi = makeStrapi({duration: 3540, file: {url: '/uploads/old-episode.mp3'}});
+        const data: PodcastDocument = {file: {url: '/uploads/new-episode.mp3'}};
+
+        await durationMiddleware(
+            makeContext(strapi, data, {action: 'update', documentId: 'podcast-1'}),
+            vi.fn(async () => ({})),
+        );
+
+        expect(mockedParseFile).toHaveBeenCalledWith(expect.stringContaining('new-episode.mp3'));
+        expect(data.duration).toBeNull();
     });
 });
