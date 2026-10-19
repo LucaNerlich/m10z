@@ -22,14 +22,6 @@ export interface FileReference {
     url?: string;
 }
 
-/** One node of Strapi's rich-text (ProseMirror-style) document tree. */
-export interface RichTextBlock {
-    type: string;
-    text?: string;
-    children?: RichTextBlock[];
-    content?: RichTextBlock[];
-}
-
 export interface PodcastDocument {
     id?: number | string;
     documentId?: string;
@@ -38,8 +30,8 @@ export interface PodcastDocument {
     file?: FileReference | FileReference[];
     duration?: number | null;
     wordCount?: number;
-    shownotes?: string | RichTextBlock[];
-    content?: string | RichTextBlock[];
+    shownotes?: string;
+    content?: string;
 }
 
 export interface ArticleDocument {
@@ -47,7 +39,7 @@ export interface ArticleDocument {
     documentId?: string;
     slug?: string | null;
     title?: string;
-    content?: string | RichTextBlock[];
+    content?: string;
     wordCount?: number;
 }
 
@@ -68,8 +60,8 @@ export interface ContentDocument {
     mime?: string;
     blurhash?: string | null;
     file?: FileReference | FileReference[] | null;
-    content?: string | RichTextBlock[];
-    shownotes?: string | RichTextBlock[];
+    content?: string;
+    shownotes?: string;
     version?: number;
     [key: string]: unknown;
 }

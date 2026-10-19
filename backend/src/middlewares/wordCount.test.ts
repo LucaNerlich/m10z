@@ -61,35 +61,6 @@ describe('extractTextFromRichtext', () => {
     test('returns markdown strings unchanged', () => {
         expect(extractTextFromRichtext('# Hello')).toBe('# Hello');
     });
-
-    test('extracts text from a ProseMirror doc tree', () => {
-        const doc = {
-            type: 'doc',
-            content: [
-                {type: 'paragraph', content: [{type: 'text', text: 'Hello'}, {type: 'text', text: 'world'}]},
-            ],
-        };
-        const result = extractTextFromRichtext(doc);
-        expect(result).toContain('Hello');
-        expect(result).toContain('world');
-    });
-
-    test('returns null for an empty doc tree', () => {
-        expect(extractTextFromRichtext({type: 'doc', content: []})).toBeNull();
-    });
-
-    test('skips nested empty blocks instead of failing on them', () => {
-        const blocks = [
-            {type: 'paragraph', content: 'Hallo'},
-            {type: 'quote', content: []},
-            {type: 'paragraph', content: 'Welt'},
-        ];
-        expect(extractTextFromRichtext(blocks)).toBe('Hallo Welt');
-    });
-
-    test('joins text from an array of nodes', () => {
-        expect(extractTextFromRichtext([{text: 'a'}, {text: 'b'}])).toBe('a b');
-    });
 });
 
 function makeStrapi() {

@@ -9,7 +9,6 @@ import type {
     DocumentServiceContext,
     DocumentServiceNext,
     StrapiInstance,
-    RichTextBlock,
     ArticleDocument,
     PodcastDocument,
 } from '../types/middleware';
@@ -84,83 +83,16 @@ export function countWords(content: string | null | undefined): number {
 }
 
 /**
- * Extract text content from Strapi richtext field.
- * Handles both string (markdown) and object (Strapi richtext format) formats.
+ * Extract text content from a Strapi richtext field.
+ *
+ * Both `content` and `shownotes` are declared as Strapi `richtext`, which the
+ * entity validator only accepts as a Markdown string. Returns null for empty
+ * or missing input.
  */
 export function extractTextFromRichtext(
-    richtext: string | RichTextBlock | RichTextBlock[] | null | undefined
-): string | null | undefined {
-    if (!richtext) {
-        return null;
-    }
-
-    if (typeof richtext === 'string') {
-        return richtext;
-    }
-
-    // If it's an object (Strapi richtext format), try to extract text
-    if (!Array.isArray(richtext) && typeof richtext === 'object') {
-        // Strapi v5 richtext might be stored as JSON with structure like { type: 'doc', content: [...] }
-        // Try to serialize it to markdown/plain text
-        try {
-            if (richtext.type === 'doc' && Array.isArray(richtext.content)) {
-                // Recursively extract text from content nodes
-                function extractFromNodes(nodes: RichTextBlock[]): string {
-                    return nodes
-                        .map((node) => {
-                            if (node.type === 'text' && typeof node.text === 'string') {
-                                return node.text;
-                            }
-                            if (node.content && Array.isArray(node.content)) {
-                                return extractFromNodes(node.content);
-                            }
-                            // Handle paragraph nodes that might have text directly
-                            if (node.text && typeof node.text === 'string') {
-                                return node.text;
-                            }
-                            return '';
-                        })
-                        .filter((text) => text.length > 0)
-                        .join(' ');
-                }
-                const extracted = extractFromNodes(richtext.content);
-                return extracted.length > 0 ? extracted : null;
-            }
-
-            // If it has a toString method, try that
-            if (typeof richtext.toString === 'function') {
-                const str = richtext.toString();
-                if (str && str !== '[object Object]') {
-                    return str;
-                }
-            }
-
-            // Last resort: JSON syntax inflates the count slightly, but countWords tolerates it.
-            return JSON.stringify(richtext);
-        } catch {
-            // If extraction fails, return null
-            return null;
-        }
-    }
-
-    // Check if it's an array of blocks (some formats use plain block arrays)
-    try {
-        const extracted = richtext
-            .map((item) => {
-                if (typeof item === 'string') return item;
-                if (item && typeof item === 'object') {
-                    if (item.text) return item.text;
-                    if (item.content) return extractTextFromRichtext(item.content) ?? '';
-                }
-                return '';
-            })
-            .filter((text) => typeof text === 'string' && text.length > 0)
-            .join(' ');
-        return extracted.length > 0 ? extracted : null;
-    } catch {
-        // If extraction fails, return null
-        return null;
-    }
+    richtext: string | null | undefined
+): string | null {
+    return typeof richtext === 'string' && richtext.length > 0 ? richtext : null;
 }
 
 const RICHTEXT_FIELD = {
@@ -198,7 +130,7 @@ export async function extractWordCount(
 
         // `contentType` is 'article' | 'podcast'; narrow the payload union accordingly
         // (runtime behaviour is unchanged — the field names drive everything below).
-        let richtextValue: string | RichTextBlock[] | undefined;
+        let richtextValue: string | undefined;
         if (contentType === 'article' && 'content' in data) {
             richtextValue = data.content;
         } else if ('shownotes' in data) {
@@ -206,12 +138,6 @@ export async function extractWordCount(
         }
 
         const content = extractTextFromRichtext(richtextValue);
-
-        if (richtextValue && typeof richtextValue !== 'string') {
-            strapi.log.info(
-                `Richtext is not a string for ${contentType} (${data.slug || 'new'}), type: ${typeof richtextValue}, value preview: ${JSON.stringify(richtextValue).substring(0, 200)}`,
-            );
-        }
 
         if (!richtextValue) {
             strapi.log.warn(
