@@ -2,7 +2,9 @@
  * Shared search-index schema contract between Strapi builder and Next.js consumer.
  */
 
-export type SearchRecordType = 'article' | 'podcast' | 'author' | 'category' | 'page';
+export const SEARCH_RECORD_TYPES = ['article', 'podcast', 'author', 'category', 'page'] as const;
+
+export type SearchRecordType = (typeof SEARCH_RECORD_TYPES)[number];
 
 export type SearchRecord = {
     id: string;
@@ -23,11 +25,3 @@ export type SearchIndexFile = {
     total: number;
     records: SearchRecord[];
 };
-
-export const SEARCH_RECORD_TYPES: readonly SearchRecordType[] = [
-    'article',
-    'podcast',
-    'author',
-    'category',
-    'page',
-];
