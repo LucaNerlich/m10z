@@ -26,6 +26,23 @@ describe('markCodeFenceLines', () => {
         expect(marked('~~~\nH~2~O\n~~~\nH~2~O')).toEqual(['C ~~~', 'C H~2~O', 'C ~~~', '- H~2~O']);
     });
 
+    test('does not close a backtick fence with a tilde line', () => {
+        // A ``` block may legitimately contain a `~~~` line; CommonMark only
+        // closes it with ```, so the interior must stay marked as code.
+        expect(marked('```\n~~~\n==x==\n# not a heading\n```\n==out==')).toEqual([
+            'C ```',
+            'C ~~~',
+            'C ==x==',
+            'C # not a heading',
+            'C ```',
+            '- ==out==',
+        ]);
+    });
+
+    test('does not close a tilde fence with a backtick line', () => {
+        expect(marked('~~~\n```\nx\n~~~\ny')).toEqual(['C ~~~', 'C ```', 'C x', 'C ~~~', '- y']);
+    });
+
     test('recognises an indented fence', () => {
         expect(marked('text\n  ```\n  x\n  ```\ntext')).toEqual([
             '- text',
@@ -37,8 +54,9 @@ describe('markCodeFenceLines', () => {
     });
 
     test('treats a nested-looking fence marker inside code as the closing fence', () => {
-        // The scanner is line-oriented and always toggles, which is what every
-        // caller relied on before this module existed.
+        // The scanner is line-oriented and always toggles on a delimiter of the
+        // opening character, which is what every caller relied on before this
+        // module existed.
         expect(marked('```\na\n```\nb\n```\nc')).toEqual(['C ```', 'C a', 'C ```', '- b', 'C ```', 'C c']);
     });
 
