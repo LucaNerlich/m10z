@@ -64,13 +64,6 @@ const RASTER_MIME_TYPES = new Set([
     'image/avif',
 ]);
 
-const POSITIVE_INT_FLAGS = new Set([
-    '--limit',
-    '--batch-size',
-    '--page-size',
-    '--concurrency',
-]);
-
 function parsePositiveInt(value: string, flag: string): number {
     const parsed = Number(value);
     if (!Number.isInteger(parsed) || parsed <= 0) {
