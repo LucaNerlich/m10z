@@ -5,9 +5,10 @@
  * Two forms are detected:
  *   - `${...}` interpolation in a raw template literal, e.g.
  *     `db.connection.raw(\`SELECT ${id}\`)`;
- *   - concatenation into a string-literal first argument, e.g.
- *     `connection.raw('SELECT … ' + id)` and `whereRaw(\`slug = '${slug}'\`)`
- *     when written as ``whereRaw(`… ${slug} …`)``.
+ *   - concatenation into a literal first argument, e.g.
+ *     `connection.raw('SELECT … ' + id)`, `` connection.raw(`SELECT … ` + id) ``
+ *     and `whereRaw(\`slug = '${slug}'\`)` when written as
+ *     ``whereRaw(`… ${slug} …`)``.
  *
  * Safe: parameterized `db.connection.raw('... ? ...', [v])` or templates with only
  * `?` / `??` placeholders, no `${`.
@@ -22,7 +23,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import {fileURLToPath} from 'url';
+import {fileURLToPath, pathToFileURL} from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -93,11 +94,11 @@ function findInterpolatedSqlTemplates(filePath, text, openRe) {
 }
 
 /**
- * Flag `raw('SQL … ' + value)`: a raw call whose first argument is a string
- * literal concatenated with something else.
+ * Flag a raw call whose first argument is a literal concatenated with something
+ * else: `raw('SQL … ' + value)` and ``raw(`SQL … ` + value)``.
  *
- * Heuristic ceiling: only the string-literal-first form is detected. A raw call
- * whose first argument is an expression that concatenates SQL internally (e.g.
+ * Heuristic ceiling: only the literal-first form is detected. A raw call whose
+ * first argument is an expression that concatenates SQL internally (e.g.
  * `raw(buildSql() + tail)`) is not, nor is SQL assembled without a raw call.
  *
  * @param {string} filePath
@@ -110,21 +111,32 @@ function findConcatenatedRawCalls(filePath, text, openRe) {
     let m;
     while ((m = openRe.exec(text)) !== null) {
         let i = m.index + m[0].length;
-        const quote = text[i];
-        if (quote !== "'" && quote !== '"') continue;
+        const opener = text[i];
 
-        i += 1;
-        while (i < text.length) {
-            const c = text[i];
-            if (c === '\\') {
-                i += 2;
-                continue;
-            }
-            if (c === quote) break;
+        if (opener === '`') {
+            // Template-literal first argument. The interpolation pass only fires
+            // on `${` *inside* the body, so ``raw(`… ` + value)`` is only caught
+            // here; reuse the template reader and keep the `+` check below.
+            const read = readTemplateLiteralBody(text, i);
+            if (!read) continue;
+            i = read.end;
+        } else if (opener === "'" || opener === '"') {
+            const quote = opener;
             i += 1;
+            while (i < text.length) {
+                const c = text[i];
+                if (c === '\\') {
+                    i += 2;
+                    continue;
+                }
+                if (c === quote) break;
+                i += 1;
+            }
+            if (i >= text.length) continue;
+            i += 1; // step past the closing quote
+        } else {
+            continue;
         }
-        if (i >= text.length) continue;
-        i += 1; // step past the closing quote
 
         let j = i;
         while (j < text.length && /\s/.test(text[j])) j++;
@@ -175,6 +187,28 @@ const CONCAT_OPENERS = [
     {re: /\.(?:where|select|having|orderBy|groupBy|join)Raw\(\s*/g, label: '.*Raw(...)'},
 ];
 
+/**
+ * Run both detectors over a chunk of source text.
+ *
+ * @param {string} text
+ * @param {string} [filePath] - used only to label the issue (defaults to `inline`)
+ * @returns {Array<{file: string, line: number, pattern: string, preview: string, label: string}>}
+ */
+function findSqlInjectionIssues(text, filePath = 'inline') {
+    const issues = [];
+    for (const {re, label} of OPENERS) {
+        for (const f of findInterpolatedSqlTemplates(filePath, text, re)) {
+            issues.push({...f, label});
+        }
+    }
+    for (const {re, label} of CONCAT_OPENERS) {
+        for (const f of findConcatenatedRawCalls(filePath, text, re)) {
+            issues.push({...f, label});
+        }
+    }
+    return issues;
+}
+
 function main() {
     const targets = [path.join(ROOT, 'frontend'), path.join(ROOT, 'backend')].filter((p) =>
         fs.existsSync(p),
@@ -185,18 +219,7 @@ function main() {
     for (const base of targets) {
         for (const filePath of walk(base)) {
             const text = fs.readFileSync(filePath, 'utf8');
-            for (const {re, label} of OPENERS) {
-                const found = findInterpolatedSqlTemplates(filePath, text, re);
-                for (const f of found) {
-                    allIssues.push({...f, label});
-                }
-            }
-            for (const {re, label} of CONCAT_OPENERS) {
-                const found = findConcatenatedRawCalls(filePath, text, re);
-                for (const f of found) {
-                    allIssues.push({...f, label});
-                }
-            }
+            allIssues.push(...findSqlInjectionIssues(text, filePath));
         }
     }
 
@@ -213,4 +236,20 @@ function main() {
     console.log('check-sql-injection-patterns: OK (no dynamic SQL built in raw calls found)');
 }
 
-main();
+export {findConcatenatedRawCalls, findInterpolatedSqlTemplates, findSqlInjectionIssues, readTemplateLiteralBody};
+
+// Run only when invoked as a script (`node scripts/check-sql-injection-patterns.mjs`);
+// importing it from a test must not scan the repo or call process.exit.
+function isDirectRun() {
+    const entry = process.argv[1];
+    if (!entry) return false;
+    try {
+        return pathToFileURL(path.resolve(entry)).href === import.meta.url;
+    } catch {
+        return false;
+    }
+}
+
+if (isDirectRun()) {
+    main();
+}
