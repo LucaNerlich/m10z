@@ -3,6 +3,7 @@ import {durationMiddleware} from './middlewares/duration';
 import {cacheInvalidationMiddleware} from './middlewares/cacheInvalidation';
 import {restorePendingInvalidations, type StrapiWithDb} from './services/cacheInvalidationQueue';
 import {runGracefulShutdown} from './utils/gracefulShutdown';
+import {isValidBaseDomain} from './utils/envChecks';
 import {configureServerTimeouts} from '../config/server';
 import type {Server as HttpServer} from 'http';
 import {
@@ -64,6 +65,15 @@ export default {
 
         if (missingVars.length > 0) {
             const errorMsg = `Missing required environment variables: ${missingVars.join(', ')}. Please check your .env file.`;
+            strapi.log.error(errorMsg);
+            throw new Error(errorMsg);
+        }
+
+        // `BASE_DOMAIN` is concatenated with media paths to build absolute
+        // cover URLs, so a bare host would boot and silently produce relative
+        // ones; require the documented absolute origin shape.
+        if (process.env.BASE_DOMAIN && !isValidBaseDomain(process.env.BASE_DOMAIN)) {
+            const errorMsg = `Invalid BASE_DOMAIN: "${process.env.BASE_DOMAIN}". Expected an absolute origin like https://cms.m10z.de (http(s)://host[:port], no path). Please check your .env file.`;
             strapi.log.error(errorMsg);
             throw new Error(errorMsg);
         }
