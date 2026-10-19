@@ -1,7 +1,7 @@
 import {matchRemotePattern} from 'next/dist/shared/lib/match-remote-pattern';
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp, getRemotePatterns, isImageHostnameAllowed, normalizeSearchImageUrl, resolveStrapiImageUrl} from './index';
+import {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp, getCspImageSources, getRemotePatterns, isImageHostnameAllowed, normalizeSearchImageUrl, resolveStrapiImageUrl} from './index';
 
 afterEach(() => {
     vi.unstubAllEnvs();
@@ -70,6 +70,23 @@ describe('isImageHostnameAllowed', () => {
 
     test('does not treat a lookalike suffix as a subdomain', () => {
         expect(isImageHostnameAllowed('https://notm10z.de/a.jpg')).toBe(false);
+    });
+});
+
+describe('getCspImageSources', () => {
+    test('emits the bare host and its wildcard subdomain form for every allowed host', () => {
+        const sources = getCspImageSources();
+
+        // CSP host-sources are exact: the bare host does not cover subdomains,
+        // and `*.host` does not cover the host itself, so both must be present.
+        expect(sources).toContain('https://m10z.de');
+        expect(sources).toContain('https://*.m10z.de');
+        expect(sources).toContain('https://cdn.akamai.steamstatic.com');
+        expect(sources).toContain('https://*.cdn.akamai.steamstatic.com');
+
+        // Development-only host stays out of the production CSP.
+        expect(sources).not.toContain('https://localhost');
+        expect(new Set(sources).size).toBe(sources.length);
     });
 });
 

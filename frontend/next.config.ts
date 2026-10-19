@@ -1,5 +1,5 @@
 import type {NextConfig} from 'next';
-import {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp, getRemotePatterns} from '@/src/lib/image';
+import {allowLocalImageIp, getCspImageSources, getRemotePatterns} from '@/src/lib/image';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -59,9 +59,9 @@ const nextConfig: NextConfig = {
         })();
 
         // Mirror Next/Image remote hostnames in CSP. In production, we only allow HTTPS sources here.
-        const remoteImageSources = unique(
-            ALLOWED_IMAGE_HOSTNAMES.filter((hostname) => hostname !== 'localhost').map((hostname) => `https://${hostname}`),
-        );
+        // Emit both the bare host and its `*.` form: CSP host-sources are exact, so the
+        // bare host alone would block subdomain images the optimizer accepts (Fancybox zoom).
+        const remoteImageSources = unique(getCspImageSources());
 
         const frameAncestors = unique([
             "'self'",

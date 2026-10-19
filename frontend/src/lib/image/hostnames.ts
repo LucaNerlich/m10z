@@ -54,6 +54,20 @@ export function allowLocalImageIp(): boolean {
     return origin !== null && isLocalHostname(origin.hostname);
 }
 
+/**
+ * CSP `img-src` sources that mirror the image allowlist.
+ *
+ * CSP host-sources are exact matches: `https://host` does not cover
+ * `https://sub.host`, so emit both forms for every allow-listed host. The
+ * bare host stays because `https://*.host` does not match the host itself.
+ */
+export function getCspImageSources(): string[] {
+    return ALLOWED_IMAGE_HOSTNAMES.filter((hostname) => hostname !== 'localhost').flatMap((hostname) => [
+        `https://${hostname}`,
+        `https://*.${hostname}`,
+    ]);
+}
+
 export function getRemotePatterns() {
     // No blanket localhost rule: the optimizer may only fetch from a local
     // origin when STRAPI_URL explicitly points at one (and only that exact
