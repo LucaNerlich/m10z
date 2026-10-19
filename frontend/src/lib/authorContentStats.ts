@@ -1,5 +1,4 @@
 import {type StrapiCategoryRef} from '@/src/lib/strapi/media';
-import {type PaginatedResult} from '@/src/lib/strapiContent';
 
 type CategoryCount = {
     slug: string;
@@ -21,11 +20,6 @@ export type AuthorContentStats = {
 type ItemWithCategories = {
     categories?: StrapiCategoryRef[] | null;
 };
-
-function isPaginatedResult<T>(value: unknown): value is PaginatedResult<T> {
-    if (!value || typeof value !== 'object') return false;
-    return 'items' in value && 'pagination' in value;
-}
 
 function computeCategoryCounts(items: ItemWithCategories[]): CategoryCount[] {
     const map = new Map<string, {slug: string; title: string; count: number}>();
@@ -50,38 +44,25 @@ function computeCategoryCounts(items: ItemWithCategories[]): CategoryCount[] {
     });
 }
 
-// Accepts two input shapes: PaginatedResult (where total comes from server-reported pagination,
-// which may be higher than the items array length) or a plain array (total = array length).
-function normalizeInput(input: PaginatedResult<ItemWithCategories> | ItemWithCategories[]): {
-    items: ItemWithCategories[];
-    total: number
-} {
-    if (isPaginatedResult<ItemWithCategories>(input)) {
-        return {items: input.items, total: input.pagination.total};
-    }
-    return {items: input, total: input.length};
-}
-
 /**
  * Compute totals and category breakdowns for an author's content.
  *
- * Accepts either full arrays, or PaginatedResult values (in which case `total` is taken from pagination meta).
+ * Takes the full arrays of an author's articles and podcasts; each `total` is
+ * the array length, so the category counts always derive from the same item set
+ * as the total.
  */
 export function computeAuthorContentStats(
-    articles: PaginatedResult<ItemWithCategories> | ItemWithCategories[],
-    podcasts: PaginatedResult<ItemWithCategories> | ItemWithCategories[],
+    articles: ItemWithCategories[],
+    podcasts: ItemWithCategories[],
 ): AuthorContentStats {
-    const a = normalizeInput(articles);
-    const p = normalizeInput(podcasts);
-
     return {
         articles: {
-            total: a.total,
-            categories: computeCategoryCounts(a.items),
+            total: articles.length,
+            categories: computeCategoryCounts(articles),
         },
         podcasts: {
-            total: p.total,
-            categories: computeCategoryCounts(p.items),
+            total: podcasts.length,
+            categories: computeCategoryCounts(podcasts),
         },
     };
 }
