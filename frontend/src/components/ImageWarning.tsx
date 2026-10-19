@@ -26,8 +26,8 @@ function isSafeUrl(url: string): boolean {
 }
 
 /**
- * Warning component displayed when an external image cannot be loaded
- * due to security restrictions (hostname not configured in next.config.js).
+ * Warning shown instead of an image when its host is not in the image allowlist
+ * or when the image fails to load; `reason` selects the message.
  */
 export function ImageWarning({src, alt, reason = 'unauthorized'}: ImageWarningProps) {
     const isSafe = isSafeUrl(src);
