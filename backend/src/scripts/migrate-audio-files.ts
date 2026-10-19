@@ -23,6 +23,7 @@ import {
     extractFilename,
     findExistingFileByName,
     getMimeType,
+    interpretUploadResponse,
     validateUrl,
 } from './audioMigrationUtils';
 import {AUDIO_FILE_URLS, EXPECTED_FILE_COUNT} from './audioMigrationList';
@@ -244,18 +245,23 @@ async function uploadToStrapiWithRetry(
                 );
             }
 
-            // Strapi upload returns an array of uploaded files
-            if (
-                !Array.isArray(parsed) ||
-                !parsed[0] ||
-                typeof (parsed[0] as {id?: unknown}).id !== 'number'
-            ) {
-                throw new Error(
-                    `Unexpected Strapi upload response format. Expected array with file objects, got: ${JSON.stringify(parsed)}`,
+            // Strapi upload returns an array of uploaded files. Any other 200 body is
+            // equally ambiguous — the request was accepted, so the upload may still have
+            // succeeded server-side — and is resolved the same way as the unreadable-body
+            // branch above: verify the media library before retrying (a blind retry would
+            // POST the same file a second time).
+            const outcome = await interpretUploadResponse(parsed, () => lookupExistingFile(filename));
+            if (outcome.status === 'existing') {
+                log(
+                    `Upload of ${filename} returned an unexpected response format, but the file exists in the media library (ID: ${outcome.id}) — treating as success.`,
                 );
+                return {id: outcome.id, url: outcome.url};
+            }
+            if (outcome.status === 'unexpected') {
+                throw new Error(outcome.message);
             }
 
-            const uploadedFile = parsed[0] as {id: number; url?: string};
+            const uploadedFile = {id: outcome.id, url: outcome.url};
             log(
                 `Uploaded: ${filename} (ID: ${uploadedFile.id}, URL: ${uploadedFile.url})`,
             );

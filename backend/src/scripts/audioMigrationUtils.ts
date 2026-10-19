@@ -92,6 +92,55 @@ export function buildUploadFormData(fileBuffer: Buffer, filename: string): FormD
 }
 
 /**
+ * Outcome of interpreting the body of a `POST /api/upload` 2xx response.
+ */
+export type UploadResponseOutcome =
+    | {status: 'uploaded'; id: number; url: string}
+    | {status: 'existing'; id: number; url: string}
+    | {status: 'unexpected'; message: string};
+
+const UPLOAD_BODY_PREVIEW_LENGTH = 200;
+
+/**
+ * Interpret the parsed body of a `POST /api/upload` response.
+ *
+ * Strapi answers with an array of uploaded files. Any other 2xx body is ambiguous:
+ * the request was accepted, so the upload may still have succeeded server-side.
+ * `lookupExisting` (the media-library lookup for the file being uploaded) is
+ * therefore consulted before declaring the body unexpected — an existing file
+ * means the upload went through and the caller must treat it as success instead
+ * of retrying (a retry would POST the same file a second time). The unexpected
+ * message carries a truncated body preview so a huge/garbage body cannot flood
+ * the log.
+ */
+export async function interpretUploadResponse(
+    parsed: unknown,
+    lookupExisting: () => Promise<{id: number; url: string} | null>,
+): Promise<UploadResponseOutcome> {
+    const uploaded = Array.isArray(parsed) ? (parsed[0] as {id?: unknown; url?: unknown}) : undefined;
+    if (uploaded && typeof uploaded.id === 'number') {
+        return {
+            status: 'uploaded',
+            id: uploaded.id,
+            url: typeof uploaded.url === 'string' ? uploaded.url : '',
+        };
+    }
+
+    const existing = await lookupExisting();
+    if (existing) return {status: 'existing', id: existing.id, url: existing.url};
+
+    const received = JSON.stringify(parsed) ?? String(parsed);
+    const preview =
+        received.length > UPLOAD_BODY_PREVIEW_LENGTH
+            ? `${received.slice(0, UPLOAD_BODY_PREVIEW_LENGTH)}…`
+            : received;
+    return {
+        status: 'unexpected',
+        message: `Unexpected Strapi upload response format. Expected array with file objects, got: ${preview}`,
+    };
+}
+
+/**
  * Look up an already-uploaded media file by name (idempotency check for the
  * migration script). Pure w.r.t. Strapi: the fetch implementation, API base
  * URL, and token are passed in, so this is unit-testable without network I/O.

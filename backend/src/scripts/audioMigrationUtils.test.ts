@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {buildUploadFormData, extractFilename, findExistingFileByName, getMimeType, validateUrl} from './audioMigrationUtils';
+import {buildUploadFormData, extractFilename, findExistingFileByName, getMimeType, interpretUploadResponse, validateUrl} from './audioMigrationUtils';
 
 describe('validateUrl', () => {
     test('accepts an HTTPS URL on the allowed domain', () => {
@@ -76,6 +76,51 @@ describe('findExistingFileByName', () => {
                 throw new Error('network down');
             }, base, token, 'song.mp3'),
         ).toBeNull();
+    });
+});
+
+describe('interpretUploadResponse', () => {
+    test('returns the uploaded file for a well-formed array body without a lookup', async () => {
+        const lookupExisting = vi.fn(async () => null);
+
+        const outcome = await interpretUploadResponse(
+            [{id: 12, url: '/uploads/episode.mp3'}],
+            lookupExisting,
+        );
+
+        expect(outcome).toEqual({status: 'uploaded', id: 12, url: '/uploads/episode.mp3'});
+        expect(lookupExisting).not.toHaveBeenCalled();
+    });
+
+    test('treats a wrong-shape 200 as success when the file is already in the media library', async () => {
+        const lookupExisting = vi.fn(async () => ({id: 7, url: '/uploads/episode.mp3'}));
+
+        const outcome = await interpretUploadResponse({}, lookupExisting);
+
+        expect(outcome).toEqual({status: 'existing', id: 7, url: '/uploads/episode.mp3'});
+        expect(lookupExisting).toHaveBeenCalledTimes(1);
+    });
+
+    test('reports an unexpected body when the file is not in the media library', async () => {
+        const lookupExisting = vi.fn(async () => null);
+
+        const outcome = await interpretUploadResponse({unexpected: 'shape'}, lookupExisting);
+
+        expect(outcome).toMatchObject({
+            status: 'unexpected',
+            message: expect.stringContaining('Unexpected Strapi upload response format'),
+        });
+    });
+
+    test('truncates a huge body in the unexpected message', async () => {
+        const lookupExisting = vi.fn(async () => null);
+
+        const outcome = await interpretUploadResponse({blob: 'x'.repeat(5000)}, lookupExisting);
+
+        expect(outcome.status).toBe('unexpected');
+        if (outcome.status !== 'unexpected') return;
+        expect(outcome.message).toContain('…');
+        expect(outcome.message.length).toBeLessThan(400);
     });
 });
 
