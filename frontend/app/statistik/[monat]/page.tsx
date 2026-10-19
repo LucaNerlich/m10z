@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {notFound} from 'next/navigation';
 
 import {getErrorMessage} from '@/src/lib/errors';
-import {isBuildPhase} from '@/src/lib/buildPhase';
+import {transientPageFallback} from '@/src/lib/transientPageFallback';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {routes} from '@/src/lib/routes';
@@ -79,8 +79,7 @@ async function loadMonthContent(month: StatistikMonth): Promise<MonthContent> {
         console.error(`[statistik] Failed to load content for ${month.key}:`, getErrorMessage(error));
         // A transient failure must not become cached page state: at runtime rethrow so
         // ISR keeps the last good page; during `next build` degrade to the empty state.
-        if (!isBuildPhase()) throw error;
-        return {articles: [], podcasts: [], failed: true};
+        return transientPageFallback(error, () => ({articles: [], podcasts: [], failed: true}));
     }
 }
 
