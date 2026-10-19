@@ -121,6 +121,44 @@ describe('runGracefulShutdown', () => {
         expect(exit).toHaveBeenCalledWith(0);
     });
 
+    test('gives the database step a fresh watchdog after a slow close', async () => {
+        vi.useFakeTimers();
+        const log = makeLogger();
+        const exit = vi.fn();
+        const closeDatabase = vi.fn(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 20000));
+        });
+        const httpServer = {
+            close: (callback: (err?: Error) => void) => {
+                setTimeout(() => callback(undefined), 25000);
+            },
+            closeIdleConnections: vi.fn(),
+        };
+
+        const promise = runGracefulShutdown({
+            signal: 'SIGTERM',
+            log,
+            httpServer,
+            closeDatabase,
+            exit,
+            timeoutMs: 30000,
+        });
+
+        // The close eats 25s of its 30s budget; the destroy then needs 20s.
+        await vi.advanceTimersByTimeAsync(30000);
+
+        expect(closeDatabase).toHaveBeenCalledTimes(1);
+        // A watchdog shared with close() would have forced exit 1 here,
+        // mid-destroy.
+        expect(exit).not.toHaveBeenCalled();
+
+        await vi.advanceTimersByTimeAsync(20000);
+        await promise;
+
+        expect(exit).toHaveBeenCalledTimes(1);
+        expect(exit).toHaveBeenCalledWith(0);
+    });
+
     test('exits 1 when closing the database fails', async () => {
         const log = makeLogger();
         const exit = vi.fn();

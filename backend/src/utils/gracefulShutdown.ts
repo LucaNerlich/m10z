@@ -56,12 +56,14 @@ export async function runGracefulShutdown({
 }: GracefulShutdownOptions): Promise<void> {
     log.info(`Received ${signal}, starting graceful shutdown...`);
 
-    // Arm the watchdog *before* the awaited close(). Arming it afterwards would
-    // not cover the one operation that can block for minutes.
-    const watchdog = setTimeout(() => {
+    const forceExit = () => {
         log.warn('Shutdown timeout exceeded, forcing exit');
         exit(1);
-    }, timeoutMs);
+    };
+
+    // Arm the watchdog *before* the awaited close(). Arming it afterwards would
+    // not cover the one operation that can block for minutes.
+    let watchdog: ReturnType<typeof setTimeout> | undefined = setTimeout(forceExit, timeoutMs);
 
     let idleSweep: ReturnType<typeof setInterval> | undefined;
 
@@ -95,20 +97,25 @@ export async function runGracefulShutdown({
             });
         }
 
+        // close() is bounded, so clear its watchdog and give the database step
+        // a fresh budget: a slow close must not make the forced exit land
+        // mid-destroy.
+        clearTimeout(watchdog);
+        watchdog = setTimeout(forceExit, timeoutMs);
+
         if (closeDatabase) {
             log.info('Closing database connections...');
             await closeDatabase();
             log.info('Database connections closed');
         }
 
-        clearTimeout(watchdog);
         log.info('Graceful shutdown completed');
         exit(exitCode);
     } catch (error) {
-        clearTimeout(watchdog);
         log.error('Error during graceful shutdown:', error);
         exit(1);
     } finally {
+        clearTimeout(watchdog);
         clearInterval(idleSweep);
     }
 }
