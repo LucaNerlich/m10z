@@ -25,7 +25,9 @@ export function ContentImage({
                                  title,
                                  priority = false,
                              }: CoverImageProps) {
-    const imagePlaceholder = blurhash && placeholder === 'blur' ? 'blur' : placeholder;
+    // `next/image` throws when `placeholder='blur'` has no `blurDataURL`, so a
+    // caller that opted into blur without a blurhash degrades to `empty`.
+    const imagePlaceholder = placeholder === 'blur' && !blurhash ? 'empty' : placeholder;
     const blurDataUrlProp = blurhash && placeholder === 'blur' ? {blurDataURL: blurhash} : {};
 
     return (
