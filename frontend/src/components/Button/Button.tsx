@@ -10,8 +10,9 @@ import styles from './Button.module.css';
  * anchor/`<span>` parity, or their own visual treatment render their own element
  * instead - widening this API to absorb them (ref/data-* passthrough, a local-class
  * hook) would add surface for a single consumer, so the local styles stay local.
- * See Pagination (button + Link + span sharing one class) and the search modal's
- * close control (ref + data attribute + its own styling).
+ * See Pagination (Link + span sharing one class, with a disabled button for the
+ * href-less state) and the search modal's close control (ref + data attribute +
+ * its own styling).
  */
 type ButtonProps = {
     children: string;
