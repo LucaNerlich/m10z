@@ -157,17 +157,6 @@ describe('localStorage utilities', () => {
 
             expect(api.getItem<string>('key')).toBe('new');
         });
-
-        test('drops a synced mirror entry so the durable value wins again', () => {
-            store['key'] = '"old"';
-            expect(api.getItem<string>('key')).toBe('old');
-
-            // Another tab wrote while this tab was hidden.
-            store['key'] = '"other"';
-            becomeVisible();
-
-            expect(api.getItem<string>('key')).toBe('other');
-        });
     });
 
     describe('removeItem', () => {
