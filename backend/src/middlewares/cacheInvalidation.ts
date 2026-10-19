@@ -127,7 +127,9 @@ export async function cacheInvalidationMiddleware(
     const targetIds: (string | undefined)[] = [extractDocumentId(context, undefined)];
 
     const resolveAll = (ids: (string | undefined)[]) =>
-        Promise.all(ids.map((documentId) => resolveEntity(strapiInstance, uid, documentId, config.relations)));
+        config.kind === 'single'
+            ? Promise.resolve(ids.map(() => null))
+            : Promise.all(ids.map((documentId) => resolveEntity(strapiInstance, uid, documentId, config.relations)));
 
     // For deletes, the documents are gone once `next()` resolves — resolve slug/relations first.
     let events: InvalidationEvent[];
@@ -146,7 +148,10 @@ export async function cacheInvalidationMiddleware(
         // entity's scalar fields directly, so fall back to resolving it whenever the slug
         // is still missing — not just when relations happen to be configured — otherwise
         // publish/unpublish events could end up with no slug at all.
-        if (!slug || config.relations) {
+        // Single types have neither a `slug` field nor relations, so resolving one
+        // always throws `Invalid key slug` and only produces a log warning. Queue
+        // the slugless event directly.
+        if (config.kind === 'collection' && (!slug || config.relations)) {
             const documentId = extractDocumentId(context, result);
             const entity = await resolveEntity(strapiInstance, uid, documentId, config.relations);
             slug = slug ?? ((entity?.slug as string | undefined) ?? undefined);

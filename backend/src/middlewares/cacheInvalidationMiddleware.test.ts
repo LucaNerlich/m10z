@@ -201,4 +201,21 @@ describe('cacheInvalidationMiddleware', () => {
         expect(mockedQueue).toHaveBeenCalledTimes(1);
         expect(mockedQueue).toHaveBeenCalledWith({type: 'category', action: 'delete'}, strapi);
     });
+
+    test('a single-type update queues a slugless event without resolving a slug', async () => {
+        const {strapi} = makeStrapi({slug: 'must-not-be-read'});
+        const next = vi.fn(async () => ({}));
+
+        await cacheInvalidationMiddleware(
+            {
+                uid: 'api::imprint.imprint',
+                action: 'update',
+                params: {strapi: strapi as any, documentId: 'imprint-1'},
+            },
+            next,
+        );
+
+        expect(mockedQueue).toHaveBeenCalledWith({type: 'imprint', action: 'update'}, strapi);
+        expect(strapi.documents).not.toHaveBeenCalled();
+    });
 });
