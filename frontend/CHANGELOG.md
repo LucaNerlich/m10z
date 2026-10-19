@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.16.2] - 2026-10-19
+
+### Fixed
+- Client storage reads prefer the in-memory store over `localStorage`, so stale values are no longer returned.
+- The category, team, and monthly-statistics list pages serve the last good content with a notice during a CMS outage.
+- A missing category renders the 404 page instead of a logged fetch error.
+- Category cards take the blurhash from the image they actually render.
+- The image optimizer's remote patterns include configured subdomains, matching the runtime host gate.
+- Markdown code-fence detection tracks the opening fence character, so fences closed with a different character are handled correctly.
+- Host checks for robots/noindex split `x-forwarded-host` correctly, including comma-separated proxy chains.
+- Homepage cards render a single image instead of a cover plus hidden banner.
+- JSON-LD is emitted with a native `<script>` tag instead of `next/script`.
+- Short dates only shift whole-hour 22:00–23:59 UTC timestamps, so other times keep their intended date.
+- The audio feed converts its footer once per build.
+- Non-OK Strapi responses have their body cancelled before the error is thrown, keeping connections reusable.
+
+### Changed
+- Internal refactors and dead-code removal (static-page search links, component props, `ContentImage`, author statistics input, feed-cache seams, shared contract alias).
+
 ## [1.16.1] - 2026-10-18
 
 ### Fixed
