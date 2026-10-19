@@ -126,10 +126,14 @@ function buildEventValuesUrl(config, startAt, endAt) {
 /**
  * Coerce an Umami counter to a non-negative integer (garbage becomes 0).
  *
+ * Accepts bare numbers/numeric strings and modern Umami v2 metric objects
+ * shaped like `{value: number, prev?: number}` (use `value` only).
+ *
  * @param {unknown} value raw counter value
  */
 function normalizeCount(value) {
-    const num = typeof value === 'string' && value.trim().length > 0 ? Number(value) : value;
+    const raw = value && typeof value === 'object' && 'value' in value ? value.value : value;
+    const num = typeof raw === 'string' && raw.trim().length > 0 ? Number(raw) : raw;
     if (typeof num !== 'number' || !Number.isFinite(num) || num < 0) return 0;
     return Math.floor(num);
 }
