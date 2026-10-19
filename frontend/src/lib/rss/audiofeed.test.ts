@@ -63,6 +63,20 @@ function render(cfg: AudioFeedConfig): string {
     return generateAudioFeedXml({cfg, channel, episodeFooter: null, episodes: [episode]}).xml;
 }
 
+describe('generateAudioFeedXml — dates', () => {
+    test('falls back to publishedAt when the episode date is unparseable', () => {
+        const {xml} = generateAudioFeedXml({
+            cfg: baseCfg,
+            channel,
+            episodeFooter: null,
+            episodes: [
+                {...episode, date: 'garbage', publishedAt: '2026-04-21T09:00:00.000Z'},
+            ],
+        });
+        expect(xml).toContain('<pubDate>Tue, 21 Apr 2026 09:00:00 GMT</pubDate>');
+    });
+});
+
 describe('generateAudioFeedXml — download tracking', () => {
     test('tracking off → <enclosure> uses the direct Strapi file URL', () => {
         const {url} = parseEnclosure(render(baseCfg));
