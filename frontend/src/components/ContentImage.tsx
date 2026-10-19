@@ -25,9 +25,11 @@ export function ContentImage({
                                  title,
                                  priority = false,
                              }: CoverImageProps) {
-    // `next/image` throws when `placeholder='blur'` has no `blurDataURL`, so a
-    // caller that opted into blur without a blurhash degrades to `empty`.
-    const imagePlaceholder = placeholder === 'blur' && !blurhash ? 'empty' : placeholder;
+    // `next/image` throws when `placeholder='blur'` has no `blurDataURL`. A
+    // string `src` only gets one from `blurhash`; a static import already ships
+    // a build-generated one.
+    const hasStaticBlur = typeof src === 'object' && !!src.blurDataURL;
+    const imagePlaceholder = placeholder === 'blur' && !blurhash && !hasStaticBlur ? 'empty' : placeholder;
     const blurDataUrlProp = blurhash && placeholder === 'blur' ? {blurDataURL: blurhash} : {};
 
     return (

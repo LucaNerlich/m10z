@@ -59,6 +59,27 @@ describe('ContentImage placeholder', () => {
         expect(renderedImage().dataset.blur).toBe(BLURHASH);
     });
 
+    test("keeps placeholder='blur' for a static import that carries blurDataURL", async () => {
+        await act(async () => {
+            root.render(
+                <ContentImage
+                    src={{
+                        src: '/_next/static/media/m10z.0123.jpg',
+                        width: 400,
+                        height: 225,
+                        blurDataURL: 'data:image/jpeg;base64,BBBB',
+                    }}
+                    alt='cover'
+                    width={400}
+                    height={225}
+                    placeholder='blur'
+                />,
+            );
+        });
+
+        expect(renderedImage().dataset.placeholder).toBe('blur');
+    });
+
     test("defaults to 'empty' when no placeholder is requested", async () => {
         await act(async () => {
             root.render(<ContentImage src='https://m10z.de/a.jpg' alt='cover' width={400} height={225} />);
