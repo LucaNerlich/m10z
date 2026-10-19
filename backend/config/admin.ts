@@ -1,5 +1,17 @@
 import crypto from 'node:crypto';
 
+/**
+ * Resolve the admin session cookie's `Domain`.
+ *
+ * A `Set-Cookie` `Domain` must be a bare host and a suffix of the admin host;
+ * a mismatched value is silently dropped by the browser. An empty value means
+ * "omit Domain", i.e. a host-only cookie, which is what local admin logins on
+ * `localhost:1337` need. Production sets `ADMIN_COOKIE_DOMAIN=cms.m10z.de`.
+ */
+export function resolveAuthCookieDomain(value: string | undefined): string | undefined {
+    return value || undefined;
+}
+
 export default ({env}: any) => {
     const clientUrl = env('CLIENT_URL');
 
@@ -17,9 +29,10 @@ export default ({env}: any) => {
             sameSite: 'lax',
             path: '/admin',
             // Bare cookie host (a Set-Cookie `Domain` must be a suffix of the
-            // admin host). Kept separate from `BASE_DOMAIN`, which is an
-            // absolute origin URL used to build media URLs.
-            domain: env('ADMIN_COOKIE_DOMAIN', 'cms.m10z.de'),
+            // admin host). Empty means a host-only cookie, which keeps local
+            // logins on localhost working. Kept separate from `BASE_DOMAIN`,
+            // which is an absolute origin URL used to build media URLs.
+            domain: resolveAuthCookieDomain(env('ADMIN_COOKIE_DOMAIN', '')),
         },
     },
     apiToken: {

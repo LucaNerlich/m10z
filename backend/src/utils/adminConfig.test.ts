@@ -26,18 +26,17 @@ describe('config/admin cookie domain', () => {
         expect(config.auth.cookie.domain).toBe('cms.m10z.de');
     });
 
-    test('defaults to the real admin host when unset', () => {
+    test('defaults to a host-only cookie when unset', () => {
+        // The documented local value is empty: a Domain that is not a suffix of
+        // the admin host (localhost:1337) is dropped by the browser.
         const config = createAdminConfig({env: makeEnv({})});
 
-        expect(config.auth.cookie.domain).toBe('cms.m10z.de');
+        expect(config.auth.cookie.domain).toBeUndefined();
     });
 
-    test('the documented cookie domain is a suffix of the documented admin host', () => {
-        // .env.example documents cms.m10z.de as both the CMS origin host and the
-        // ADMIN_COOKIE_DOMAIN; a Set-Cookie Domain must be a suffix of the host.
-        const config = createAdminConfig({env: makeEnv({})});
-        const host = 'cms.m10z.de';
+    test('treats an empty ADMIN_COOKIE_DOMAIN as host-only', () => {
+        const config = createAdminConfig({env: makeEnv({ADMIN_COOKIE_DOMAIN: ''})});
 
-        expect(host.endsWith(config.auth.cookie.domain as string)).toBe(true);
+        expect(config.auth.cookie.domain).toBeUndefined();
     });
 });
