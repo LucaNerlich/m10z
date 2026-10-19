@@ -34,13 +34,14 @@ function getStoredFont(): string {
     if (typeof window === 'undefined') return DEFAULT_FONT;
 
     let stored: string | null = null;
-    if (window.localStorage) {
-        try {
-            stored = window.localStorage.getItem(STORAGE_KEY);
-        } catch (error) {
-            console.warn('Failed to read font preference from localStorage:', error);
-            stored = null;
-        }
+    try {
+        // Reading `window.localStorage` itself can throw (Firefox with site data
+        // disabled, enterprise policy, sandboxed context), so the property access
+        // must live inside the try — not just getItem().
+        stored = window.localStorage ? window.localStorage.getItem(STORAGE_KEY) : null;
+    } catch (error) {
+        console.warn('Failed to read font preference from localStorage:', error);
+        stored = null;
     }
     if (!stored && memoryStore.has(STORAGE_KEY)) {
         stored = memoryStore.get(STORAGE_KEY) || null;
@@ -58,11 +59,13 @@ function applyFont(fontId: string) {
 
 function persistFont(fontId: string) {
     let storageSucceeded = false;
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== 'undefined') {
         try {
-            window.localStorage.setItem(STORAGE_KEY, fontId);
-            storageSucceeded = true;
-            memoryStore.delete(STORAGE_KEY);
+            if (window.localStorage) {
+                window.localStorage.setItem(STORAGE_KEY, fontId);
+                storageSucceeded = true;
+                memoryStore.delete(STORAGE_KEY);
+            }
         } catch (error) {
             const isQuotaError = error instanceof DOMException && error.name === 'QuotaExceededError';
             if (isQuotaError) {
