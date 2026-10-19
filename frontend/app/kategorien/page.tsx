@@ -3,8 +3,8 @@ import {type Metadata} from 'next';
 
 import {fetchCategoriesWithContent} from '@/src/lib/strapiContent';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
-import {isBuildPhase} from '@/src/lib/buildPhase';
 import {getErrorMessage} from '@/src/lib/errors';
+import {transientPageFallback} from '@/src/lib/transientPageFallback';
 import {getCategoryActiveWindowLabel, splitCategoriesByActivity} from '@/src/lib/categoryActivity';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {CategoryCard} from '@/src/components/CategoryCard';
@@ -28,9 +28,7 @@ export default async function CategoriesPage() {
         console.error('CategoriesPage: failed to load categories:', getErrorMessage(error));
         // A transient failure must not become cached page state: at runtime rethrow so
         // ISR keeps the last good page; during `next build` degrade to the retry panel.
-        // (Replaced by transientPageFallback once PR #955 lands.)
-        if (!isBuildPhase()) throw error;
-        return (
+        return transientPageFallback(error, () => (
             <section data-list-page>
                 <h1>Kategorien</h1>
                 <Card variant="empty">
@@ -40,7 +38,7 @@ export default async function CategoriesPage() {
                     </Link>
                 </Card>
             </section>
-        );
+        ));
     }
 
     const {active, archived} = splitCategoriesByActivity(categories);
