@@ -40,12 +40,6 @@ export default function () {
   getJson(r.contentFeed(1, 10), {name: 'api_contentfeed'});
   think();
 
-  // Search queries (>=2 chars)
-  const queries = ['mi', 'po', 'ar', 'ga', 'ze'];
-  const q = queries[Math.floor(Math.random() * queries.length)];
-  getJson(r.search(q), {name: 'api_search'});
-  think();
-
   // Feeds: keep this rare during ramp tests to avoid rate limits.
   if (Math.random() < 0.02) {
     getHtml(r.audioFeedXml, {name: 'audiofeed_xml'});
