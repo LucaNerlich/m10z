@@ -63,17 +63,18 @@ describe('HomePage', () => {
         expect(html.match(/data-priority="true"/g)).toHaveLength(1);
     });
 
-    test('prefers the banner and falls back to the cover', async () => {
+    test('prefers the banner and falls back to the cover when the banner is empty', async () => {
         buildContentFeed.mockResolvedValue(
             feedResponse([
                 feedItem(),
-                feedItem({slug: 'b', href: '/artikel/b', title: 'Zweiter Artikel', banner: undefined}),
+                // The feed mapper emits `{}` for a missing banner, not `undefined`.
+                feedItem({slug: 'b', href: '/artikel/b', title: 'Zweiter Artikel', banner: {}}),
             ]),
         );
 
         const html = renderToStaticMarkup(await HomePage({page: 1}));
 
-        expect(html).toContain('https://cdn.example.test/banner.jpg');
-        expect(html).toContain('https://cdn.example.test/cover.jpg');
+        expect(html).toContain('<img src="https://cdn.example.test/banner.jpg"');
+        expect(html).toContain('<img src="https://cdn.example.test/cover.jpg"');
     });
 });
