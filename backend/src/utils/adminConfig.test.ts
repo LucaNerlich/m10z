@@ -1,6 +1,20 @@
+import {readFileSync} from 'node:fs';
+import {join} from 'node:path';
+
 import {describe, expect, test} from 'vitest';
 
 import createAdminConfig from '../../config/admin';
+
+/**
+ * Read a variable out of the documented template, so the test follows
+ * `.env.example` instead of re-asserting a hardcoded string.
+ */
+function readDocumentedEnv(name: string): string | undefined {
+    const contents = readFileSync(join(process.cwd(), '.env.example'), 'utf8');
+    const line = contents.split('\n').find((entry) => entry.startsWith(`${name}=`));
+
+    return line?.slice(name.length + 1);
+}
 
 /**
  * Minimal `env` mock matching Strapi's accessor: `env(key, fallback)` plus
@@ -38,5 +52,25 @@ describe('config/admin cookie domain', () => {
         const config = createAdminConfig({env: makeEnv({ADMIN_COOKIE_DOMAIN: ''})});
 
         expect(config.auth.cookie.domain).toBeUndefined();
+    });
+
+    test('the documented ADMIN_COOKIE_DOMAIN is host-only or a suffix of the admin host', () => {
+        // Read the template itself: a revert to a host that is not a suffix of
+        // the documented admin host, or a URL-valued override, must fail here.
+        const documentedDomain = readDocumentedEnv('ADMIN_COOKIE_DOMAIN');
+        const config = createAdminConfig({
+            env: makeEnv({ADMIN_COOKIE_DOMAIN: documentedDomain}),
+        });
+
+        if (!documentedDomain) {
+            // Empty means "omit Domain": a host-only cookie, correct for local.
+            expect(config.auth.cookie.domain).toBeUndefined();
+            return;
+        }
+
+        const documentedHost = new URL(readDocumentedEnv('BASE_DOMAIN') ?? '').hostname;
+
+        expect(config.auth.cookie.domain).toBe(documentedDomain);
+        expect(documentedHost.endsWith(config.auth.cookie.domain as string)).toBe(true);
     });
 });
