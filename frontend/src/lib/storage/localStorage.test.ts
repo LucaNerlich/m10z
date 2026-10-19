@@ -67,6 +67,23 @@ describe('localStorage utilities', () => {
         });
     });
 
+    describe('stale durable value with a newer mirror', () => {
+        test('getItem returns the mirrored value when setItem failed after an older value was stored', () => {
+            store['key'] = '"old"';
+            // Prime the in-memory mirror from the durable store.
+            expect(api.getItem<string>('key')).toBe('old');
+
+            // Storage is full: the durable write fails while the mirror takes the new value.
+            vi.mocked(window.localStorage.setItem).mockImplementation(() => {
+                throw new Error('QuotaExceededError');
+            });
+            api.setItem('key', 'new');
+
+            expect(store['key']).toBe('"old"');
+            expect(api.getItem<string>('key')).toBe('new');
+        });
+    });
+
     describe('removeItem', () => {
         test('removes stored value', () => {
             store['key'] = 'value';

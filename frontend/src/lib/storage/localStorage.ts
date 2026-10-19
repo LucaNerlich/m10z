@@ -1,11 +1,16 @@
 const inMemoryStore = new Map<string, string>();
 
 export function getItem<T>(key: string): T | null {
-    if (typeof window === 'undefined') {
-        const value = inMemoryStore.get(key);
-        if (value === undefined) return null;
-        try { return JSON.parse(value) as T; } catch { return null; }
+    // `setItem` always writes the in-memory mirror first, so the mirror is never
+    // older than the durable store. Reading it first keeps a save that only reached
+    // the mirror (e.g. a full localStorage quota) from being reverted to the older
+    // value still held by localStorage.
+    const mirror = inMemoryStore.get(key);
+    if (mirror !== undefined) {
+        try { return JSON.parse(mirror) as T; } catch { return null; }
     }
+
+    if (typeof window === 'undefined') return null;
 
     try {
         const item = window.localStorage.getItem(key);
@@ -14,12 +19,7 @@ export function getItem<T>(key: string): T | null {
             try { return JSON.parse(item) as T; } catch { return null; }
         }
     } catch {
-        // localStorage unavailable, fall through to in-memory
-    }
-
-    const value = inMemoryStore.get(key);
-    if (value !== undefined) {
-        try { return JSON.parse(value) as T; } catch { return null; }
+        // localStorage unavailable, no in-memory value either
     }
 
     return null;
