@@ -1,10 +1,17 @@
+import {matchRemotePattern} from 'next/dist/shared/lib/match-remote-pattern';
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {allowLocalImageIp, getRemotePatterns, isImageHostnameAllowed, normalizeSearchImageUrl, resolveStrapiImageUrl} from './index';
+import {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp, getCspImageSources, getRemotePatterns, isImageHostnameAllowed, normalizeSearchImageUrl, resolveStrapiImageUrl} from './index';
 
 afterEach(() => {
     vi.unstubAllEnvs();
 });
+
+/** Whether the Next image optimizer's `remotePatterns` would fetch this URL. */
+function optimizerAccepts(url: string): boolean {
+    const parsed = new URL(url);
+    return getRemotePatterns().some((pattern) => matchRemotePattern(pattern, parsed));
+}
 
 describe('resolveStrapiImageUrl', () => {
     test('returns absolute URLs unchanged', () => {
@@ -66,7 +73,59 @@ describe('isImageHostnameAllowed', () => {
     });
 });
 
+describe('getCspImageSources', () => {
+    test('emits the bare host and its wildcard subdomain form for every allowed host', () => {
+        const sources = getCspImageSources();
+
+        // CSP host-sources are exact: the bare host does not cover subdomains,
+        // and `*.host` does not cover the host itself, so both must be present.
+        expect(sources).toContain('https://m10z.de');
+        expect(sources).toContain('https://*.m10z.de');
+        expect(sources).toContain('https://cdn.akamai.steamstatic.com');
+        expect(sources).toContain('https://*.cdn.akamai.steamstatic.com');
+
+        // Development-only host stays out of the production CSP.
+        expect(sources).not.toContain('https://localhost');
+        expect(new Set(sources).size).toBe(sources.length);
+    });
+});
+
 describe('getRemotePatterns', () => {
+    test('emits a subdomain pattern alongside each bare allow-listed host', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        const patterns = getRemotePatterns();
+        expect(patterns).toContainEqual({protocol: 'https', hostname: 'm10z.de'});
+        expect(patterns).toContainEqual({protocol: 'https', hostname: '**.m10z.de'});
+    });
+
+    test('the optimizer accepts every host (and subdomain) the runtime gate accepts', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+
+        // `localhost` is deliberately excluded: the runtime allowlist carries it,
+        // but the optimizer may only fetch a local origin when STRAPI_URL points
+        // at one (asserted below).
+        const positives = ALLOWED_IMAGE_HOSTNAMES.filter((hostname) => hostname !== 'localhost').flatMap(
+            (hostname) => [`https://${hostname}/x.jpg`, `https://sub.${hostname}/x.jpg`],
+        );
+
+        for (const url of positives) {
+            expect(isImageHostnameAllowed(url)).toBe(true);
+            expect(optimizerAccepts(url)).toBe(true);
+        }
+
+        for (const url of ['https://www.m10z.de/x.jpg', 'https://foo.cdn.akamai.steamstatic.com/x.jpg']) {
+            expect(isImageHostnameAllowed(url)).toBe(true);
+            expect(optimizerAccepts(url)).toBe(true);
+        }
+
+        for (const url of ['https://notm10z.de/x.jpg', 'https://evil.test/x.jpg']) {
+            expect(isImageHostnameAllowed(url)).toBe(false);
+            expect(optimizerAccepts(url)).toBe(false);
+        }
+    });
+
     test('excludes local hosts when STRAPI_URL is a public origin', () => {
         vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
         vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
