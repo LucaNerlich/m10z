@@ -34,15 +34,55 @@ describe('runGracefulShutdown', () => {
             timeoutMs: 30000,
         });
 
-        // close() has been called, and the watchdog already exists.
+        // close() has been called, with the watchdog and the idle sweep armed.
         expect(closeCallback).toBeDefined();
-        expect(timersArmedAtClose).toBe(1);
+        expect(timersArmedAtClose).toBe(2);
         expect(httpServer.closeIdleConnections).toHaveBeenCalledTimes(1);
 
         closeCallback?.(undefined);
         await promise;
 
         expect(exit).toHaveBeenCalledWith(0);
+    });
+
+    test('keeps sweeping idle connections until close() calls back', async () => {
+        vi.useFakeTimers();
+        const log = makeLogger();
+        const exit = vi.fn();
+        let closeCallback: ((err?: Error) => void) | undefined;
+        // The socket is still serving a request when shutdown starts, so the
+        // immediate sweep cannot drop it; it only becomes idle later.
+        let requestInFlight = true;
+        const httpServer = {
+            close: vi.fn((callback: (err?: Error) => void) => {
+                closeCallback = callback;
+            }),
+            closeIdleConnections: vi.fn(() => {
+                if (!requestInFlight) {
+                    closeCallback?.(undefined);
+                }
+            }),
+        };
+
+        const promise = runGracefulShutdown({
+            signal: 'SIGTERM',
+            log,
+            httpServer,
+            exit,
+            timeoutMs: 30000,
+        });
+
+        // The immediate sweep ran, but the in-flight socket survived it.
+        expect(httpServer.closeIdleConnections).toHaveBeenCalledTimes(1);
+        requestInFlight = false;
+
+        await vi.advanceTimersByTimeAsync(500);
+
+        expect(httpServer.closeIdleConnections.mock.calls.length).toBeGreaterThan(1);
+        expect(exit).toHaveBeenCalledWith(0);
+        expect(exit).not.toHaveBeenCalledWith(1);
+
+        await promise;
     });
 
     test('forces exit 1 when close() never calls back', async () => {

@@ -16,6 +16,9 @@ export type ShutdownLogger = {
     error: (message: string, ...args: unknown[]) => void;
 };
 
+/** How often to drop sockets that went idle after shutdown started. */
+const IDLE_SWEEP_INTERVAL_MS = 250;
+
 /** Minimal HTTP-server surface the shutdown needs. */
 export type ShutdownHttpServer = {
     close: (callback: (err?: Error) => void) => unknown;
@@ -40,7 +43,7 @@ export type GracefulShutdownOptions = {
  * Stop accepting requests, close the database, then exit.
  *
  * Arms the watchdog before awaiting `close()` (the step it exists to bound) and
- * drops idle keep-alive sockets so `close()` can call back promptly.
+ * keeps dropping idle sockets until `close()` calls back.
  */
 export async function runGracefulShutdown({
     signal,
@@ -60,11 +63,23 @@ export async function runGracefulShutdown({
         exit(1);
     }, timeoutMs);
 
+    let idleSweep: ReturnType<typeof setInterval> | undefined;
+
     try {
         if (httpServer) {
             log.info('Closing HTTP server...');
             await new Promise<void>((resolve, reject) => {
+                // close() calls back only once every connection has ended. A
+                // request still in flight when shutdown starts goes idle
+                // afterwards rather than disappearing, so one sweep is not
+                // enough: keep dropping idle sockets until close() calls back.
+                idleSweep = setInterval(
+                    () => httpServer.closeIdleConnections?.(),
+                    IDLE_SWEEP_INTERVAL_MS
+                );
                 httpServer.close((err?: Error) => {
+                    clearInterval(idleSweep);
+                    idleSweep = undefined;
                     if (err) {
                         log.error('Error closing HTTP server:', err);
                         reject(err);
@@ -73,8 +88,8 @@ export async function runGracefulShutdown({
                         resolve();
                     }
                 });
-                // Drop idle keep-alive sockets now that new connections are
-                // refused, so the close() callback cannot wait out the 65s
+                // Drop sockets that are already idle now, so the first request
+                // burst cannot hold the close() callback out to the 65s
                 // keepAliveTimeout.
                 httpServer.closeIdleConnections?.();
             });
@@ -93,5 +108,7 @@ export async function runGracefulShutdown({
         clearTimeout(watchdog);
         log.error('Error during graceful shutdown:', error);
         exit(1);
+    } finally {
+        clearInterval(idleSweep);
     }
 }
