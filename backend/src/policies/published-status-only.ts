@@ -6,7 +6,8 @@
  * API-token callers (the server-to-server preview path) keep the status they
  * asked for.
  *
- * Wired into the article and podcast core routers for `find` and `findOne`.
+ * Wired into the article, podcast, author, and category core routers for
+ * `find` and `findOne`.
  */
 
 import {forcePublishedStatus, mayRequestAnyStatus, type QueryContext} from '../utils/publishedStatus';
