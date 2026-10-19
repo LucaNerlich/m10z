@@ -4,8 +4,10 @@ import {absoluteRoute} from '@/src/lib/routes';
 import {OG_LOCALE, OG_SITE_NAME} from './constants';
 
 const STATIC_OG_IMAGE_PATH = '/images/m10z.jpg';
-const STATIC_OG_IMAGE_WIDTH = 1200;
-const STATIC_OG_IMAGE_HEIGHT = 630;
+// The static share image is a 3000x3000 square (see public/images/m10z.jpg);
+// declaring 1200x630 made scrapers crop/ignore the hint.
+const STATIC_OG_IMAGE_WIDTH = 3000;
+const STATIC_OG_IMAGE_HEIGHT = 3000;
 
 type StaticListMetadataInput = {
     /** Page title used for `<title>` (templated by root layout). Omit for the homepage. */
