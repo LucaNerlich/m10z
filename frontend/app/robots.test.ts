@@ -60,12 +60,20 @@ describe('robots noindex host matching', () => {
         expect(result.sitemap).toMatch(/\/sitemap\.xml$/);
     });
 
-    test('uses the last hop of a multi-hop x-forwarded-host', async () => {
-        // Node joins the header as the proxy appended it: a client-supplied
-        // `m10z.de` first, then the real `next.m10z.de`. Only the last hop counts,
-        // so the staging noindex rule is not switched off by the first.
+    test('deindexes when any hop of a multi-hop x-forwarded-host matches', async () => {
+        // A client-supplied `m10z.de` joined with the real `next.m10z.de`: the
+        // staging host still matches, so the noindex rule cannot be switched off.
         expect(
             await disallowForHeaders({'x-forwarded-host': 'm10z.de, next.m10z.de'}, 'next.m10z.de'),
+        ).toContain('/');
+    });
+
+    test('deindexes a single-hop x-forwarded-host spoof', async () => {
+        // #1013's reproduction: a staging request whose client-supplied
+        // x-forwarded-host names the production host. The `host` header still
+        // says next.m10z.de, so the staging noindex rule must win.
+        expect(
+            await disallowForHeaders({host: 'next.m10z.de', 'x-forwarded-host': 'm10z.de'}, 'next.m10z.de'),
         ).toContain('/');
     });
 
