@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {mkdtemp, rm, writeFile} from 'node:fs/promises';
+import {mkdir, mkdtemp, rm, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {after, before, test} from 'node:test';
@@ -18,6 +18,7 @@ const keys = {
 let dir;
 let localFile;
 let envFile;
+let blockedFile;
 
 test('the harness reads .env.local before .env', () => {
   assert.deepEqual(ENV_FILES, ['.env.local', '.env']);
@@ -27,6 +28,8 @@ before(async () => {
   dir = await mkdtemp(path.join(tmpdir(), 'm10z-env-loader-'));
   localFile = path.join(dir, '.env.local');
   envFile = path.join(dir, '.env');
+  blockedFile = path.join(dir, 'unreadable.env');
+  await mkdir(blockedFile);
   await writeFile(
     localFile,
     `${keys.both}=from-local\n${keys.localOnly}=local-only\n${keys.shell}=from-local\n`,
@@ -69,6 +72,13 @@ test('a missing file is tolerated', () => {
     applyEnvPrecedence([path.join(dir, 'does-not-exist.env'), envFile]),
   );
   assert.equal(process.env[keys.envOnly], 'env-only');
+});
+
+test('an unreadable env file throws instead of falling back', () => {
+  delete process.env[keys.envOnly];
+
+  assert.throws(() => applyEnvPrecedence([blockedFile, envFile]));
+  assert.equal(process.env[keys.envOnly], undefined);
 });
 
 test('keys unique to either file survive', () => {
