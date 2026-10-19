@@ -128,7 +128,9 @@ async function extractDuration(strapi: StrapiInstance, data: PodcastDocument): P
             strapi.log.info(`Extracted duration: ${seconds} seconds for file: ${fileUrl}`);
         } else {
             data.duration = null;
-            strapi.log.warn(`Duration not found in metadata for file: ${fileUrl}`);
+            strapi.log.warn(
+                `No usable duration for file: ${fileUrl} (metadata duration: ${duration ?? 'missing'})`,
+            );
         }
     } catch (error) {
         // Log error but don't throw - allow save operation to proceed

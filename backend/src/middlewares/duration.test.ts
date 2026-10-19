@@ -166,7 +166,9 @@ describe('durationMiddleware duration rounding', () => {
 
         expect(data.duration).toBeNull();
         expect(strapi.log.warn).toHaveBeenCalledWith(
-            expect.stringContaining('Duration not found'),
+            expect.stringContaining(
+                'No usable duration for file: /uploads/too-short.mp3 (metadata duration: 0.4)',
+            ),
         );
     });
 
