@@ -1,8 +1,9 @@
 import {renderToStaticMarkup} from 'react-dom/server';
 import {describe, expect, test} from 'vitest';
 
-import {JsonLdScripts} from './JsonLdScripts';
 import {type BlogPosting} from '@/src/lib/jsonld/types';
+
+import {JsonLdScripts} from './JsonLdScripts';
 
 function posting(headline: string): BlogPosting {
     return {
