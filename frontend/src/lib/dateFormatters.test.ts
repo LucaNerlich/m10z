@@ -29,7 +29,14 @@ describe('formatDateShort', () => {
         expect(formatDateShort('2025-01-15T19:30:00.000Z')).toBe('15. Jan. 2025');
     });
 
-    test('does not shift a non-whole-hour 22:00+ UTC timestamp', () => {
+    test('renders genuine late-night posts on the Berlin calendar day', () => {
+        // 23:30Z in winter is already 00:30 the next day in Berlin.
+        expect(formatDateShort('2024-01-20T23:30:00.000Z')).toBe('21. Jan. 2024');
+        // 22:30Z in summer is already 00:30 the next day in Berlin.
+        expect(formatDateShort('2026-03-30T22:30:00.000Z')).toBe('31. März 2026');
+    });
+
+    test('keeps an evening timestamp that is still the same Berlin day', () => {
         expect(formatDateShort('2025-01-15T22:30:00.000Z')).toBe('15. Jan. 2025');
     });
 });
