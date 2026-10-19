@@ -206,7 +206,15 @@ function findSqlInjectionIssues(text, filePath = 'inline') {
             issues.push({...f, label});
         }
     }
-    return issues;
+    // A template that interpolates *and* is concatenated matches both detectors;
+    // report the line once, keeping the first (interpolation) label.
+    const seen = new Set();
+    return issues.filter((issue) => {
+        const key = `${issue.file}:${issue.line}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
 }
 
 function main() {

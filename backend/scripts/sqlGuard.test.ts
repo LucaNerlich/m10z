@@ -36,6 +36,15 @@ describe('check-sql-injection-patterns', () => {
         expect(findSqlInjectionIssues(source)).toHaveLength(1);
     });
 
+    test('reports a template that both interpolates and concatenates once', () => {
+        const source = `db.connection.raw(${TICK}SELECT * FROM t WHERE id = ${DOLLAR}{id}${TICK} + tail)`;
+
+        const issues = findSqlInjectionIssues(source);
+
+        expect(issues).toHaveLength(1);
+        expect(issues[0].line).toBe(1);
+    });
+
     test('passes a parameterised quoted raw call', () => {
         const source = `db.connection.raw(${QUOTE}SELECT * FROM t WHERE slug = ?${QUOTE}, [slug])`;
 
