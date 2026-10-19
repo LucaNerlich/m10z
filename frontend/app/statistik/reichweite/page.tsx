@@ -22,9 +22,6 @@ import {
 
 import styles from './page.module.css';
 
-/** Align ISR with Umami traffic cache (~10 min). */
-export const revalidate = 600;
-
 type ReachPageProps = {
     searchParams: Promise<{zeitraum?: string | string[]}>;
 };
