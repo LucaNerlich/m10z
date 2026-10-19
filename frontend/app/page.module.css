@@ -155,7 +155,7 @@
     outline-offset: -2px;
 }
 
-.cover {
+.mediaImage {
     position: absolute;
     top: 0;
     left: 0;
@@ -165,28 +165,10 @@
     object-position: center;
 }
 
-.banner {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Tablet and mobile: Banner with column layout */
+/* Tablet and mobile: 16:9 media slot with column layout */
 @media (max-width: 1080px) {
     .media {
         aspect-ratio: 16/9;
-    }
-
-    .cover {
-        display: none;
-    }
-
-    .banner {
-        display: block;
     }
 }
 
