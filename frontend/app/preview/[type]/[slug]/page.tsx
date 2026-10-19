@@ -60,8 +60,12 @@ async function resolvePreviewContext(
     const ip = getClientIp(await headers());
     const rl = previewLimiter.check(`preview:${ip}`);
     if (!rl.ok) {
-        // A throttled editor must not be told the draft does not exist.
-        throw new Error('Zu viele Vorschau-Anfragen. Bitte in einer Minute erneut versuchen.');
+        // A throttled editor must not be told the draft does not exist. The
+        // digest carries the wait to error.tsx (server errors are otherwise
+        // replaced with a generic message in production).
+        const error = new Error('Too many preview requests');
+        (error as Error & {digest?: string}).digest = `PREVIEW_RATE_LIMITED:${rl.retryAfterSeconds}`;
+        throw error;
     }
 
     const {token, status} = await searchParams;
@@ -79,7 +83,7 @@ async function resolvePreviewContext(
 // Only a genuine 404 means "this document does not exist". Everything else —
 // timeouts, socket errors, 5xx — means the CMS could not answer, so rethrow and
 // let the preview segment's error boundary render instead of a misleading 404.
-function handlePreviewFetchError(error: unknown, slug: string, label: string): null {
+export function handlePreviewFetchError(error: unknown, slug: string, label: string): null {
     if (!isNotFoundError(error)) {
         console.error(
             `Error fetching preview ${label} for slug "${slug}":`,

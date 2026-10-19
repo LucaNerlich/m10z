@@ -51,9 +51,9 @@ function isAllowedDownloadUrl(fileUrl: string): boolean {
 /**
  * Redirects a podcast download request to its validated audio file and records download tracking when enabled.
  *
- * Removes a trailing `.mp3` suffix before resolving the podcast. Returns `404 Not Found` for invalid or unknown slugs, missing audio files, or disallowed audio URLs.
+ * Removes a trailing `.mp3` suffix before resolving the podcast. Returns `404 Not Found` for invalid or unknown slugs, missing audio files, or disallowed audio URLs; returns `503 Service Unavailable` with `Retry-After` when the CMS lookup itself fails.
  *
- * @returns A redirect response to the podcast audio file, or a `404 Not Found` response.
+ * @returns A redirect response to the podcast audio file, a `404 Not Found`, or a `503 Service Unavailable`.
  */
 export async function GET(request: Request, {params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
