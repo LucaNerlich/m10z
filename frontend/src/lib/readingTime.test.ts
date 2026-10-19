@@ -32,6 +32,11 @@ describe('calculateReadingTime — markdown input', () => {
         expect(calculateReadingTime(text)).toBe('< 1 Min. Lesezeit');
     });
 
+    test('strips tilde-fenced code blocks before counting', () => {
+        const text = '~~~ts\n' + Array(500).fill('code').join(' ') + '\n~~~';
+        expect(calculateReadingTime(text)).toBe('< 1 Min. Lesezeit');
+    });
+
     test('keeps link text but drops URL', () => {
         const text = `[${Array(250).fill('linktext').join(' ')}](https://example.com)`;
         expect(calculateReadingTime(text)).toBe('~1 Min. Lesezeit');

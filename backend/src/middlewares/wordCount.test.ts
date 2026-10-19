@@ -23,6 +23,11 @@ describe('countWords', () => {
         expect(countWords('a ```\ncode block ignored\n``` b')).toBe(2);
     });
 
+    test('removes tilde-fenced code blocks too', () => {
+        expect(countWords('a ~~~\ncode block ignored\n~~~ b')).toBe(2);
+        expect(countWords('~~~\ncode\n```\nmore\n~~~')).toBe(0);
+    });
+
     test('removes inline code entirely', () => {
         expect(countWords('alpha `beta` gamma')).toBe(2);
     });

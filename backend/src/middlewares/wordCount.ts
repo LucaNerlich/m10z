@@ -21,6 +21,14 @@ import type {
  * @param content - Markdown or richtext string to count words in
  * @returns `0` for null, empty, or non-string input; otherwise the number of words found
  */
+/**
+ * Remove fenced code blocks, accepting both fence characters and closing only
+ * on the character that opened the fence (backreference).
+ */
+function stripFencedCodeBlocks(markdown: string): string {
+    return markdown.replace(/(```|~~~)[\s\S]*?\1/g, '');
+}
+
 export function countWords(content: string | null | undefined): number {
     if (!content || typeof content !== 'string' || content.trim().length === 0) {
         return 0;
@@ -29,8 +37,9 @@ export function countWords(content: string | null | undefined): number {
     // Strip markdown syntax to extract plain text
     let text = content;
 
-    // Remove fenced code blocks (```code```)
-    text = text.replace(/```[\s\S]*?```/g, '');
+    // Remove fenced code blocks, accepting both fence characters and closing
+    // only on the character that opened the fence.
+    text = stripFencedCodeBlocks(text);
 
     // Remove indented code blocks (4+ spaces at start of line)
     text = text.replace(/^ {4,}.*$/gm, '');

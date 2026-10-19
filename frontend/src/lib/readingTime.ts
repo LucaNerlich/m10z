@@ -1,3 +1,5 @@
+import {markCodeFenceLines} from '@/src/lib/markdown/codeFences';
+
 /**
  * Calculates estimated reading time from markdown content or word count.
  *
@@ -13,7 +15,6 @@
 // are memoized: a string key would retain whole article bodies in a Map that lives for
 // the lifetime of the server process, for a hit rate near zero.
 const readingTimeCache = new Map<number, string>();
-const REGEX_FENCED_CODE_BLOCKS = /```[\s\S]*?```/g;
 const REGEX_INDENTED_CODE_BLOCKS = /^ {4,}.*$/gm;
 const REGEX_INLINE_CODE = /`[^`]+`/g;
 const REGEX_IMAGES = /!\[([^\]]*)\]\([^)]+\)/g;
@@ -71,8 +72,12 @@ export function calculateReadingTime(
             // Strip markdown syntax to extract plain text
             let text = markdown;
 
-            // Remove fenced code blocks (```code```)
-            text = text.replace(REGEX_FENCED_CODE_BLOCKS, '');
+            // Remove fenced code blocks (``` or ~~~), reusing the shared fence
+            // scanner so this cannot drift from the other markdown helpers.
+            text = markCodeFenceLines(text)
+                .filter(({inCode}) => !inCode)
+                .map(({line}) => line)
+                .join('\n');
 
             // Remove indented code blocks (4+ spaces at start of line)
             text = text.replace(REGEX_INDENTED_CODE_BLOCKS, '');
