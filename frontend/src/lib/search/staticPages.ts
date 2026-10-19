@@ -1,3 +1,5 @@
+import {routes} from '@/src/lib/routes';
+
 import {type SearchRecord} from './types';
 
 /**
@@ -13,7 +15,7 @@ export function getStaticPageRecords(): SearchRecord[] {
             title: 'M12G Statistik',
             description: 'Monatliche Community-Abstimmungen zu M12G mit den jeweiligen Gewinnern.',
             content: 'Mindestens 12 Games Statistik M12G Community Abstimmungen Gewinner Leaderboard',
-            href: '/m12g',
+            href: routes.m12g,
             tags: ['Seite', 'M12G', 'Community', 'Statistik', 'Games'],
         },
         {
@@ -23,7 +25,7 @@ export function getStaticPageRecords(): SearchRecord[] {
             title: 'Statistik',
             description: 'Zahlen und Fakten zu allen Artikeln und Podcasts von Mindestens 10 Zeichen.',
             content: 'Statistik Dashboard Veröffentlichungen Artikel Podcasts Wörter Laufzeit Heatmap Aktivität Jahre Kategorien AutorInnen Rekorde',
-            href: '/statistik',
+            href: routes.statistik,
             tags: ['Seite', 'Statistik', 'Artikel', 'Podcasts'],
         },
         {
@@ -32,7 +34,7 @@ export function getStaticPageRecords(): SearchRecord[] {
             slug: 'impressum',
             title: 'Impressum',
             description: 'Impressum von Mindestens 10 Zeichen. Angaben gemäß § 5 TMG über den Anbieter dieser Website.',
-            href: '/impressum',
+            href: routes.imprint,
             tags: ['Seite', 'Impressum', 'Rechtliches'],
         },
         {
@@ -41,7 +43,7 @@ export function getStaticPageRecords(): SearchRecord[] {
             slug: 'datenschutz',
             title: 'Datenschutz',
             description: 'Datenschutzerklärung von Mindestens 10 Zeichen. Informationen zur Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten.',
-            href: '/datenschutz',
+            href: routes.privacy,
             tags: ['Seite', 'Datenschutz', 'Rechtliches'],
         },
         {
@@ -50,7 +52,7 @@ export function getStaticPageRecords(): SearchRecord[] {
             slug: 'ueber-uns',
             title: 'Über uns',
             description: 'Von und mit Mindestens 10 Zeichen. Wer wir sind und was wir machen.',
-            href: '/ueber-uns',
+            href: routes.about,
             tags: ['Seite', 'Über uns', 'Team'],
         },
         {
@@ -59,7 +61,7 @@ export function getStaticPageRecords(): SearchRecord[] {
             slug: 'feeds',
             title: 'RSS-Feeds',
             description: 'RSS-Feeds von Mindestens 10 Zeichen. Abonnieren Sie unsere Artikel und Podcasts über RSS-Feeds.',
-            href: '/feeds',
+            href: routes.feeds,
             tags: ['Seite', 'RSS', 'Feeds'],
         },
     ];
