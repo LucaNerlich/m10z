@@ -8,7 +8,7 @@ import crypto from 'node:crypto';
  * "omit Domain", i.e. a host-only cookie, which is what local admin logins on
  * `localhost:1337` need. Production sets `ADMIN_COOKIE_DOMAIN=cms.m10z.de`.
  */
-export function resolveAuthCookieDomain(value: string | undefined): string | undefined {
+function resolveAuthCookieDomain(value: string | undefined): string | undefined {
     return value || undefined;
 }
 
