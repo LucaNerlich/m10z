@@ -2,37 +2,14 @@ import {type Metadata} from 'next';
 import {getAbout} from '@/src/lib/strapi/singleTypes';
 import {getOptimalMediaFormat, mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
+import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
 import {ContentImage} from '@/src/components/ContentImage';
 
 import {ContentLayout} from '@/src/components/ContentLayout';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import placeholderCover from '@/public/images/m10z.jpg';
 
-/**
- * Produce a short plain-text description from Markdown content.
- *
- * Strips headings, inline links, emphasis, and inline code, then returns the first paragraph
- * with a maximum length of 160 characters. If the resulting description is empty, returns a fixed fallback string.
- *
- * @param content - Markdown-formatted content to extract the description from
- * @returns A plaintext description: the first paragraph of `content` with markdown removed, truncated to 160 characters, or the fallback string `Von und mit Mindestens 10 Zeichen. Wer wir sind und was wir machen.` if empty
- */
-function extractDescription(content: string): string {
-    const plainText = content
-        .replace(/^#+\s+/gm, '')
-        .replace(/\[([^\]]+)]\([^)]+\)/g, '$1')
-        .replace(/\*\*([^*]+)\*\*/g, '$1')
-        .replace(/\*([^*]+)\*/g, '$1')
-        .replace(/`([^`]+)`/g, '$1')
-        .trim();
-
-    const firstParagraph = plainText.split('\n\n')[0] || plainText;
-    const truncated = firstParagraph.length > 160
-        ? firstParagraph.substring(0, 157) + '...'
-        : firstParagraph;
-
-    return truncated || 'Von und mit Mindestens 10 Zeichen. Wer wir sind und was wir machen.';
-}
+const ABOUT_DESCRIPTION_FALLBACK = 'Von und mit Mindestens 10 Zeichen. Wer wir sind und was wir machen.';
 
 /**
  * Produce metadata for the About page based on CMS content.
@@ -48,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
     });
 
     const title = about.name;
-    const description = extractDescription(about.content);
+    const description = deriveExcerpt(about.content, 160) ?? ABOUT_DESCRIPTION_FALLBACK;
 
     return buildStaticListMetadata({
         title,
