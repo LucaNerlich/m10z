@@ -34,7 +34,7 @@ const fetcher = createPrivilegedFeedReader([feedTag('audio'), typeTag('podcast')
 
 const buildPodcastListQuery = buildFeedListQuery({
     populate: {...feedListPopulate, file: {populate: '*'}},
-    fields: ['slug', 'duration', 'shownotes', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
+    fields: ['slug', 'duration', 'shownotes', 'publishedAt', 'title', 'description', 'date'],
 });
 
 function getAudioFeedDefaults(): AudioFeedConfig {

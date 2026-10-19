@@ -15,7 +15,7 @@ const fetcher = createPrivilegedFeedReader([feedTag('article'), typeTag('article
 
 const buildArticleListQuery = buildFeedListQuery({
     populate: feedListPopulate,
-    fields: ['slug', 'content', 'wordCount', 'publishedAt', 'title', 'description', 'date'],
+    fields: ['slug', 'content', 'publishedAt', 'title', 'description', 'date'],
 });
 
 /** Build the article RSS feed document (fetch → generate → etag). */
