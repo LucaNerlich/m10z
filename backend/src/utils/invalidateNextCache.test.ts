@@ -1,9 +1,16 @@
-import {afterEach, describe, expect, test, vi} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 import {postInvalidationEvent} from './invalidateNextCache';
 
 const logger = {info: vi.fn(), warn: vi.fn()};
 const event = {type: 'article', action: 'publish', slug: 'my-article'} as const;
+
+beforeEach(() => {
+    // CI/Docker builds run `vitest run` with NODE_ENV=production. Pin the test
+    // context so ambient env vars cannot change URL resolution; individual tests
+    // stub NODE_ENV when they exercise production behavior.
+    vi.stubEnv('NODE_ENV', 'test');
+});
 
 afterEach(() => {
     vi.unstubAllEnvs();
