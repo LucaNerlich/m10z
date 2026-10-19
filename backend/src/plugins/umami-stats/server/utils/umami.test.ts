@@ -138,6 +138,15 @@ describe('normalizeCount', () => {
         expect(normalizeCount(undefined)).toBe(0);
         expect(normalizeCount(Infinity)).toBe(0);
     });
+
+    // Umami v2 returns counters as `{value, prev}` metric objects; the plugin
+    // reader was written against the v1 flat body and rendered every range as 0.
+    test('reads modern Umami {value, prev} metric objects', () => {
+        expect(normalizeCount({value: 3018, prev: 3508})).toBe(3018);
+        expect(normalizeCount({value: '42', prev: 1})).toBe(42);
+        expect(normalizeCount({})).toBe(0);
+        expect(normalizeCount({value: -1, prev: 2})).toBe(0);
+    });
 });
 
 describe('toTopSlugs', () => {

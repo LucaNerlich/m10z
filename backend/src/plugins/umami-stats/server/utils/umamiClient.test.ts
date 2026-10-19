@@ -34,7 +34,14 @@ function standardFetch() {
         }
         expect(init.headers).toMatchObject({authorization: 'Bearer tok-1'});
         if (url.includes('/stats')) {
-            return jsonResponse({pageviews: 100, visitors: 40, visits: 50, bounces: 10, totaltime: 99});
+            // Umami v2 `/stats` body: each metric is a `{value, prev}` object.
+            return jsonResponse({
+                pageviews: {value: 100, prev: 90},
+                visitors: {value: 40, prev: 35},
+                visits: {value: 50, prev: 45},
+                bounces: {value: 10, prev: 12},
+                totaltime: 99,
+            });
         }
         if (url.includes('/event-data/values')) {
             expect(url).toContain('event=podcast-download');
@@ -129,7 +136,7 @@ describe('createUmamiClient.getDashboard', () => {
             if (url.includes('/stats')) {
                 statsCalls += 1;
                 if (statsCalls === 1) return jsonResponse({error: 'unauthorized'}, 401);
-                return jsonResponse({pageviews: 1, visitors: 1, visits: 1});
+                return jsonResponse({pageviews: {value: 1, prev: 0}, visitors: {value: 1, prev: 0}, visits: {value: 1, prev: 0}});
             }
             return jsonResponse([]);
         });
