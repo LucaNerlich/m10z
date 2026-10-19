@@ -50,6 +50,10 @@ export default [
     },
     'strapi::poweredBy',
     'strapi::query',
+    // Runs before the body parser: multipart is the only body type allowed to
+    // carry a multi-gigabyte payload, and that allowance must not be reachable
+    // on public routes. The guard rejects non-upload multipart before buffering.
+    'global::multipartGuard',
     {
         name: 'strapi::body',
         config: {
