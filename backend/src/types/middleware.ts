@@ -138,6 +138,10 @@ export interface KnexConnection {
 export interface DatabaseLike {
     query(uid: string): {
         updateMany(params: {where: Record<string, unknown>; data: Record<string, unknown>}): Promise<unknown>;
+        findOne(params: {
+            where: Record<string, unknown>;
+            populate?: string[];
+        }): Promise<Record<string, unknown> | null>;
     };
     connection: KnexConnection;
 }

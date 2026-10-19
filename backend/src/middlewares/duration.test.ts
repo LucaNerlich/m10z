@@ -33,7 +33,8 @@ function makeCloneStrapi(sourceEntry: Record<string, unknown> | null) {
 }
 
 beforeEach(() => {
-    mockedExistsSync.mockClear();
+    mockedExistsSync.mockReset();
+    mockedExistsSync.mockReturnValue(true);
     mockedParseFile.mockClear();
     mocks.duration = 42.4;
 });
@@ -126,6 +127,7 @@ describe('durationMiddleware duration rounding', () => {
     function makeStrapi(existing: Record<string, unknown> | null = null) {
         return {
             documents: vi.fn(() => ({findOne: vi.fn(async () => existing)})),
+            db: {query: vi.fn(() => ({findOne: vi.fn(async () => null)}))},
             dirs: {public: '/pub'},
             log: {info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn()},
         };
@@ -183,6 +185,51 @@ describe('durationMiddleware duration rounding', () => {
         );
 
         expect(mockedParseFile).toHaveBeenCalledWith(expect.stringContaining('new-episode.mp3'));
+        expect(data.duration).toBeNull();
+    });
+
+    test('clears the previous duration when a replacement file cannot be read', async () => {
+        mockedExistsSync.mockReturnValue(false);
+        const strapi = makeStrapi({duration: 3540, file: {url: '/uploads/old-episode.mp3'}});
+        const data: PodcastDocument = {file: {url: '/uploads/missing-episode.mp3'}};
+
+        await durationMiddleware(
+            makeContext(strapi, data, {action: 'update', documentId: 'podcast-2'}),
+            vi.fn(async () => ({})),
+        );
+
+        expect(data.duration).toBeNull();
+    });
+
+    test('keeps the duration when the unchanged file is referenced by numeric id', async () => {
+        const strapi = makeStrapi({
+            duration: 3540,
+            file: {id: 7, documentId: 'abc', url: '/uploads/old-episode.mp3'},
+        });
+        const data: PodcastDocument = {file: 7};
+
+        await durationMiddleware(
+            makeContext(strapi, data, {action: 'update', documentId: 'podcast-3'}),
+            vi.fn(async () => ({})),
+        );
+
+        expect(data.duration).toBeUndefined();
+        expect(mockedParseFile).not.toHaveBeenCalled();
+    });
+
+    test('clears the previous duration when a different numeric id replaces the file', async () => {
+        mockedExistsSync.mockReturnValue(false);
+        const strapi = makeStrapi({
+            duration: 3540,
+            file: {id: 7, documentId: 'abc', url: '/uploads/old-episode.mp3'},
+        });
+        const data: PodcastDocument = {file: 8};
+
+        await durationMiddleware(
+            makeContext(strapi, data, {action: 'update', documentId: 'podcast-4'}),
+            vi.fn(async () => ({})),
+        );
+
         expect(data.duration).toBeNull();
     });
 });
