@@ -22,7 +22,18 @@ function getEnv(name: string): string | undefined {
 }
 
 function getNextBaseUrl(): string {
-    return (getEnv('FRONTEND_URL') ?? 'http://localhost:3000').replace(/\/+$/, '');
+    const url = getEnv('FRONTEND_URL');
+    if (!url) {
+        // The localhost default is a development convenience only. In production
+        // a missing FRONTEND_URL would silently POST the shared secret to
+        // http://localhost:3000 and drop every invalidation, so fail loudly. The
+        // queue catches this and treats the event as undelivered.
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error('FRONTEND_URL is required in production (Next cache invalidation target).');
+        }
+        return 'http://localhost:3000';
+    }
+    return url.replace(/\/+$/, '');
 }
 
 function getSecret(): string | undefined {

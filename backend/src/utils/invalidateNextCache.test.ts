@@ -91,4 +91,27 @@ describe('postInvalidationEvent', () => {
             vi.useRealTimers();
         }
     });
+
+    test('falls back to the localhost default when FRONTEND_URL is unset outside production', async () => {
+        vi.stubEnv('FRONTEND_URL', undefined);
+        vi.stubEnv('STRAPI_INVALIDATION_SECRET', 'secret-token');
+        const fetchMock = vi.fn().mockResolvedValue(new Response(null, {status: 200}));
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await postInvalidationEvent(event, logger);
+
+        expect(result).toBe(true);
+        expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:3000/api/invalidate');
+    });
+
+    test('refuses to POST in production when FRONTEND_URL is unset', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('FRONTEND_URL', undefined);
+        vi.stubEnv('STRAPI_INVALIDATION_SECRET', 'secret-token');
+        const fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+
+        await expect(postInvalidationEvent(event, logger)).rejects.toThrow(/FRONTEND_URL is required in production/);
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
 });
