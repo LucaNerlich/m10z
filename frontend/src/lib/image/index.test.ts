@@ -78,6 +78,15 @@ describe('isImageHostnameAllowed', () => {
         expect(isImageHostnameAllowed('http://cms.m10z.de/a.jpg')).toBe(false);
     });
 
+    test('rejects a non-local configured origin that the optimizer does not permit', () => {
+        vi.stubEnv('STRAPI_URL', 'https://staging.example.com');
+        vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);
+        const url = 'https://staging.example.com/uploads/a.jpg';
+
+        expect(isImageHostnameAllowed(url)).toBe(false);
+        expect(optimizerAccepts(url)).toBe(false);
+    });
+
     test('accepts the configured local Strapi origin over http', () => {
         vi.stubEnv('STRAPI_URL', 'http://127.0.0.1:1337');
         vi.stubEnv('NEXT_PUBLIC_STRAPI_URL', undefined);

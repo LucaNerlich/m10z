@@ -15,7 +15,7 @@
  * is consumed by `next.config.ts` for build-time `remotePatterns`.
  */
 
-import {ALLOWED_IMAGE_HOSTNAMES} from './hostnames';
+import {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp} from './hostnames';
 
 export {ALLOWED_IMAGE_HOSTNAMES, allowLocalImageIp, getCspImageSources, getRemotePatterns} from './hostnames';
 
@@ -92,7 +92,10 @@ export function isImageHostnameAllowed(url: string | null | undefined): boolean 
     }
 
     const base = getStrapiBaseUrl();
-    if (base) {
+    if (base && allowLocalImageIp()) {
+        // `getRemotePatterns` only adds the configured origin when it is local;
+        // accepting a public staging origin here would admit URLs the optimizer
+        // then rejects.
         try {
             if (parsed.origin === new URL(base).origin) return true;
         } catch {
