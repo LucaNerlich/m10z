@@ -97,7 +97,6 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
         expect(logins).toHaveLength(1);
         expect(calls.every((call) => call.init.redirect === 'error')).toBe(true);
         expect(gets).toHaveLength(3);
-        expect(payload.cacheTtlSeconds).toBe(600);
         expect(payload.cachedAt).toBe(new Date(NOW).toISOString());
         expect(payload.ranges['30d']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
         expect(payload.content.articles.topArticles).toEqual([

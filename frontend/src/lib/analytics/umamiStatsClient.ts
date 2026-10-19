@@ -31,7 +31,6 @@ import {
     toTopArticlePageviews,
     toTopPodcastDownloads,
 } from '@/src/lib/analytics/umamiStats';
-import {CACHE_REVALIDATE_UMAMI} from '@/src/lib/cache/constants';
 
 const LOGIN_TIMEOUT_MS = 10_000;
 const STATS_TIMEOUT_MS = 15_000;
@@ -206,7 +205,6 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
                 },
             },
             cachedAt: new Date(nowMs).toISOString(),
-            cacheTtlSeconds: CACHE_REVALIDATE_UMAMI,
         };
     }
 
@@ -273,7 +271,6 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
         return {
             ranges,
             cachedAt: new Date(nowMs).toISOString(),
-            cacheTtlSeconds: CACHE_REVALIDATE_UMAMI,
         };
     }
 
