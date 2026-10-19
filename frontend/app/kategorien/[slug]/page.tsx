@@ -69,7 +69,6 @@ export default async function CategoryDetailPage({params}: SlugPageParams) {
     let pageData;
     try {
         pageData = await fetchCategoryPageData(slug);
-        if (!pageData) return notFound();
     } catch (error) {
         const errorMessage = getErrorMessage(error);
 
@@ -84,6 +83,10 @@ export default async function CategoryDetailPage({params}: SlugPageParams) {
         // a 404; during `next build` it degrades to a 404 that ISR replaces later.
         return transientPageFallback(error, () => notFound());
     }
+
+    // Genuine absence: outside the try/catch so `notFound()`'s NEXT_HTTP_ERROR_FALLBACK
+    // digest is not logged as a fetch failure.
+    if (!pageData) return notFound();
 
     const {category, articles: sortedArticles, podcasts: sortedPodcasts} = pageData;
     const title = category.title ?? category.slug ?? 'Kategorie';
