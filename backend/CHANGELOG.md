@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.2] - 2026-10-19
+
+### Fixed
+- Cache invalidation refuses to run in production when `FRONTEND_URL` is unset instead of silently posting to `localhost:3000`.
+- Shutdown handling is hardened: an uncaught exception exits the process with a non-zero code, and the shutdown watchdog is armed before the HTTP server starts closing.
+- Podcast durations no longer round to zero for very short files.
+- The Umami statistics plugin parses v2 metric objects (`{value, prev}`) again.
+- The caption pipeline verifies the media-library response before retrying a wrong-shape upload.
+- The SQL-injection guard now also flags template-literal concatenation.
+
+### Changed
+- The admin panel's cookie domain is configured with its own environment variable instead of being derived from `BASE_DOMAIN`.
+- Internal dead-code removal (shared contract alias, unused admin example, script and plugin constants) and additional tests.
+
 ## [1.4.1] - 2026-10-18
 
 ### Fixed
