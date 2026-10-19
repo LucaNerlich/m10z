@@ -8,6 +8,7 @@
         "smoke": "node run.mjs smoke",
         "ramp": "node run.mjs ramp",
         "spike": "node run.mjs spike",
+        "test": "node --test",
         "report:smoke": "node report.mjs reports/smoke-summary.json reports/smoke-report.html",
         "report:ramp": "node report.mjs reports/ramp-summary.json reports/ramp-report.html",
         "report:spike": "node report.mjs reports/spike-summary.json reports/spike-report.html"

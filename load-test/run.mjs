@@ -3,6 +3,8 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 
+import {applyEnvPrecedence} from './lib/envLoader.mjs';
+
 // Repo root is not mounted: the harness only needs load-test/ read and
 // load-test/reports/ write.
 const __filename = fileURLToPath(import.meta.url);
@@ -14,24 +16,10 @@ const reportsDir = path.join(__dirname, 'reports');
 // lets a re-tagged or compromised upstream image execute here.
 const K6_IMAGE = 'grafana/k6@sha256:e66db15b860113878fa74670e31f5e274830b7b6e42c8bff28b2f2d86a257603';
 
-function loadEnvFile(p) {
-  // `process.loadEnvFile` is built in (Node >= 20.12) and throws when the file
-  // is missing. It never overwrites a key already present in `process.env`, so
-  // load order *is* precedence: the first file to define a key wins.
-  try {
-    process.loadEnvFile(p);
-  } catch {
-    // Both files are optional.
-  }
-}
-
 // Precedence: shell/CI > .env.local > .env. `.env.local` is loaded first because
 // a later `loadEnvFile` cannot override an earlier one, then the captured
 // shell/CI values are re-applied so an explicit environment always wins.
-const shellEnv = {...process.env};
-await loadEnvFile(path.join(__dirname, '.env.local'));
-await loadEnvFile(path.join(__dirname, '.env'));
-Object.assign(process.env, shellEnv);
+applyEnvPrecedence([path.join(__dirname, '.env.local'), path.join(__dirname, '.env')]);
 
 const testName = process.argv[2];
 if (!testName || !['smoke', 'ramp', 'spike'].includes(testName)) {
