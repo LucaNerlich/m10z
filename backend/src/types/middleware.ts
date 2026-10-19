@@ -36,7 +36,7 @@ export interface PodcastDocument {
     slug?: string | null;
     title?: string;
     file?: FileReference | FileReference[];
-    duration?: number;
+    duration?: number | null;
     wordCount?: number;
     shownotes?: string | RichTextBlock[];
     content?: string | RichTextBlock[];
