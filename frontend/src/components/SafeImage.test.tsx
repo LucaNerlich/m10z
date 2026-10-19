@@ -15,6 +15,8 @@ import {SafeImage} from './SafeImage';
 (globalThis as unknown as {IS_REACT_ACT_ENVIRONMENT: boolean}).IS_REACT_ACT_ENVIRONMENT = true;
 
 const WARNING_TEXT = 'Bild konnte nicht geladen werden';
+const UNAUTHORIZED_TEXT = 'Die Domain ist nicht autorisiert';
+const LOAD_ERROR_TEXT = 'Die Datei ist möglicherweise nicht mehr verfügbar';
 const ALLOWED_A = 'https://m10z.de/a.jpg';
 const ALLOWED_B = 'https://m10z.de/b.jpg';
 
@@ -51,13 +53,14 @@ async function failLoadingImage(): Promise<void> {
 describe('SafeImage', () => {
     test('warns for a host outside the allowlist', async () => {
         await render('https://evil.example/x.jpg');
-        expect(container.textContent).toContain(WARNING_TEXT);
+        expect(container.textContent).toContain(UNAUTHORIZED_TEXT);
     });
 
-    test('shows the warning after a load error', async () => {
+    test('reports a load error on an allowed host as a missing file', async () => {
         await render(ALLOWED_A);
         await failLoadingImage();
-        expect(container.textContent).toContain(WARNING_TEXT);
+        expect(container.textContent).toContain(LOAD_ERROR_TEXT);
+        expect(container.textContent).not.toContain(UNAUTHORIZED_TEXT);
     });
 
     test('retries when the src changes after a failure', async () => {
