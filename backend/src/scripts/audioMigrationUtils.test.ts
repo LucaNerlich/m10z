@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {buildUploadFormData, extractFilename, findExistingFileByName, getMimeType, interpretUploadResponse, validateUrl} from './audioMigrationUtils';
+import {buildUploadFormData, decideUploadRetry, extractFilename, findExistingFileByName, getMimeType, interpretUploadResponse, validateUrl} from './audioMigrationUtils';
 
 describe('validateUrl', () => {
     test('accepts an HTTPS URL on the allowed domain', () => {
@@ -180,5 +180,19 @@ describe('buildUploadFormData', () => {
         expect(file).toBeInstanceOf(File);
         expect((file as File).name).toBe('episode-001.mp3');
         expect((file as File).type).toBe('audio/mpeg');
+    });
+});
+
+describe('decideUploadRetry', () => {
+    test('recovers a file that landed during the failed attempt', () => {
+        expect(decideUploadRetry({status: 'found', file: {id: 1, url: '/a.mp3'}})).toBe('recovered');
+    });
+
+    test('fails when the lookup itself is unavailable', () => {
+        expect(decideUploadRetry({status: 'unknown', reason: 'offline'})).toBe('fail');
+    });
+
+    test('retries only when the file is confirmed absent', () => {
+        expect(decideUploadRetry({status: 'absent'})).toBe('retry');
     });
 });

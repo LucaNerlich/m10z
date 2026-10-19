@@ -152,6 +152,15 @@ export type ExistingFileLookup =
     | {status: 'absent'}
     | {status: 'unknown'; reason: string};
 
+export type UploadRetryDecision = 'recovered' | 'retry' | 'fail';
+
+/** Map a media-library lookup to the retry action. */
+export function decideUploadRetry(lookup: ExistingFileLookup): UploadRetryDecision {
+    if (lookup.status === 'found') return 'recovered';
+    if (lookup.status === 'unknown') return 'fail';
+    return 'retry';
+}
+
 /**
  * Look up an already-uploaded media file by name (idempotency check for the
  * migration script). Pure w.r.t. Strapi: the fetch implementation, API base

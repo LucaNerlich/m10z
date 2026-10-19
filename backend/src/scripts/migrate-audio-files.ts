@@ -20,6 +20,7 @@ import path from 'path';
 
 import {
     buildUploadFormData,
+    decideUploadRetry,
     extractFilename,
     findExistingFileByName,
     getMimeType,
@@ -319,27 +320,28 @@ async function uploadToStrapiWithRetry(
         }
 
         if (attempt < MAX_RETRIES) {
-            // The failed attempt may have landed server-side (a timeout or proxy
-            // 504 after Strapi persisted the file). Check the library before
-            // POSTing the same bytes again.
-            const lookup = await lookupExistingFile(filename);
-            if (lookup.status === 'found') {
-                const existing = lookup.file;
-                log(
-                    `Recovered ${filename} after a failed attempt — already in the media library (ID: ${existing.id})`,
-                );
-                return {id: existing.id, url: existing.url || ''};
-            }
-            if (lookup.status === 'unknown') {
-                throw new LookupUnavailableError(filename, lookup.reason);
-            }
-
             const delay = RETRY_DELAYS[attempt - 1];
             error(
                 `Upload failed for ${filename} (attempt ${attempt}/${MAX_RETRIES}): ${errorMessage}`,
             );
             log(`Retrying in ${delay}ms...`);
             await sleep(delay);
+
+            // Check after the backoff, not immediately: a proxy 504 can arrive
+            // while Strapi is still finishing the first upload, so a lookup at
+            // failure time may see it as absent and the retry would duplicate it.
+            const lookup = await lookupExistingFile(filename);
+            const decision = decideUploadRetry(lookup);
+            if (decision === 'recovered' && lookup.status === 'found') {
+                const existing = lookup.file;
+                log(
+                    `Recovered ${filename} after a failed attempt — already in the media library (ID: ${existing.id})`,
+                );
+                return {id: existing.id, url: existing.url || ''};
+            }
+            if (decision === 'fail' && lookup.status === 'unknown') {
+                throw new LookupUnavailableError(filename, lookup.reason);
+            }
             return uploadToStrapiWithRetry(filePath, filename, attempt + 1);
         }
 
