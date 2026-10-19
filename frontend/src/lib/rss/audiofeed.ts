@@ -336,7 +336,7 @@ export function generateAudioFeedXml(args: {
     // per conversion). The result is identical for every episode.
     const convert =
         args.markdownConverter ??
-        ((markdownArgs: {markdownText: string}) => markdownToHtml(markdownArgs.markdownText));
+        ((markdownArgs: {markdownText: string}) => markdownToHtml(markdownArgs.markdownText, cfg.siteUrl));
     const tFooter0 = nowMs();
     const htmlFooter = convert({episodeId: 0, kind: 'footer', markdownText: episodeFooter ?? ''});
     const tFooter1 = nowMs();

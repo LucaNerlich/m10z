@@ -78,10 +78,25 @@ describe('markdownToHtml — URL resolution for feed readers', () => {
         vi.unstubAllEnvs();
     });
 
+    test('does not let a backslash escape the site origin', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('<a href="/\\evil.test/x">x</a>', 'https://m10z.de');
+        expect(html).not.toContain('evil.test');
+        vi.unstubAllEnvs();
+    });
+
     test('absolutizes relative link hrefs', () => {
         vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
         const html = markdownToHtml('[doc](/uploads/doc.pdf)');
         expect(html).toContain('href="https://cms.m10z.de/uploads/doc.pdf"');
+        vi.unstubAllEnvs();
+    });
+
+    test('resolves internal links against the public site, not the CMS', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('[x](/artikel/gothic-classic)', 'https://m10z.de');
+        expect(html).toContain('href="https://m10z.de/artikel/gothic-classic"');
+        expect(html).not.toContain('cms.m10z.de/artikel');
         vi.unstubAllEnvs();
     });
 

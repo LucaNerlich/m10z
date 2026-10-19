@@ -3,11 +3,12 @@
 etagSeed: 3:2026-04-20T09:00:00.000Z
 lastModified: 2026-04-20T09:00:00.000Z
 renderedEpisodeCount: 3
-xmlSha256: 8164918afdf941fa2b6f45e639fe25d221857d766040042ddcaff489189640c8
+xmlSha256: e581f0c633def4cf4517fcbab4f66627795b0ce034c5dfc4a59fb96bd750100b
 
 --- BEGIN XML ---
 <?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">    <channel>        <title>M10Z Podcast</title>        <link>https://m10z.de</link>        <description>Mindestens 10 Zeichen — Podcast-Feed.</description>        <ttl>1</ttl>        <language>de</language>        <copyright>All rights reserved</copyright>        <webMaster>m10z@example.test (M10Z)</webMaster>        <managingEditor>m10z@example.test (M10Z)</managingEditor>        <author>m10z@example.test</author>        <itunes:category text="Leisure"/>        <itunes:owner>            <itunes:name>M10Z</itunes:name>            <itunes:email>m10z@example.test</itunes:email>        </itunes:owner>        <itunes:author>M10Z</itunes:author>        <itunes:explicit>false</itunes:explicit>        <itunes:type>episodic</itunes:type>        <itunes:image href="https://strapi.example.test/uploads/audio-cover.jpg"/>        <image>            <url>https://strapi.example.test/uploads/audio-cover.jpg</url>            <title>M10Z Podcast</title>            <link>https://m10z.de</link>        </image>        <atom:link href="https://m10z.de/audiofeed.xml" rel="self" type="application/rss+xml"/>        <podcast:guid>E9QfcR8TYeotS5ceJLmn</podcast:guid>        <pubDate>Mon, 20 Apr 2026 09:00:00 GMT</pubDate><item>    <title>Episode 001</title>    <pubDate>Mon, 20 Apr 2026 09:00:00 GMT</pubDate>    <guid isPermaLink="false">b471160189907433be6a7a1a93ac55e7dc83e21fd7d904d25bbf8911b109ddb4</guid>    <itunes:image href="https://strapi.example.test/uploads/episode-001-medium.jpg"/>    <description><![CDATA[<h2>Shownotes</h2>
 <p>Wir reden über <em>Spiele</em> und <strong>Technik</strong>.</p>
+<p><a href="https://m10z.de/podcasts/episode-002-keine-shownotes">Shownotes-Link</a></p>
 <ul>
 <li>Link 1</li>
 <li>Link 2</li>
