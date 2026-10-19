@@ -62,11 +62,11 @@ async function loadTitles(
             podcastSlugs.length > 0 ? fetchPodcastsBySlugsBatched(podcastSlugs) : Promise.resolve([]),
         ]);
 
-        const articleTitles: StatistikReachTitleMap = {};
+        const articleTitles: StatistikReachTitleMap = Object.create(null);
         for (const article of articles) {
             if (article.slug && article.title) articleTitles[article.slug] = article.title;
         }
-        const podcastTitles: StatistikReachTitleMap = {};
+        const podcastTitles: StatistikReachTitleMap = Object.create(null);
         for (const podcast of podcasts) {
             if (podcast.slug && podcast.title) podcastTitles[podcast.slug] = podcast.title;
         }
@@ -74,7 +74,7 @@ async function loadTitles(
     } catch (error) {
         // Titles are nice-to-have; rankings still render with slugs.
         console.warn('[statistik/reichweite] Failed to resolve content titles:', getErrorMessage(error));
-        return {articles: {}, podcasts: {}};
+        return {articles: Object.create(null), podcasts: Object.create(null)};
     }
 }
 
