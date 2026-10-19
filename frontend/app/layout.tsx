@@ -6,7 +6,7 @@ import {ScrollRestoration} from '@/src/components/ScrollRestoration';
 import {ContentLayout} from '@/src/components/ContentLayout';
 import {generateOrganizationJsonLd} from '@/src/lib/jsonld/organization';
 import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
-import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
+import {JsonLdScripts} from '@/src/components/JsonLdScripts';
 import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import {type Metadata, type Viewport} from 'next';
 import Script from 'next/script';
@@ -97,18 +97,11 @@ export default function RootLayout({
         </main>
         <Footer />
         <UmamiAnalytics />
-        {/* JSON-LD is structured data, not executable script: a native <script>
-            tag is server-rendered, while next/script's afterInteractive strategy
-            returns null during SSR and would keep the schema out of the HTML. */}
-        <script
-            id="jsonld-organization"
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{__html: stringifyJsonLd(orgJsonLd)}}
-        />
-        <script
-            id="jsonld-website"
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{__html: stringifyJsonLd(websiteJsonLd)}}
+        <JsonLdScripts
+            entries={[
+                {id: 'jsonld-organization', jsonLd: orgJsonLd},
+                {id: 'jsonld-website', jsonLd: websiteJsonLd},
+            ]}
         />
         </body>
         </html>
