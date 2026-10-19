@@ -97,16 +97,17 @@ export default function RootLayout({
         </main>
         <Footer />
         <UmamiAnalytics />
-        <Script
+        {/* JSON-LD is structured data, not executable script: a native <script>
+            tag is server-rendered, while next/script's afterInteractive strategy
+            returns null during SSR and would keep the schema out of the HTML. */}
+        <script
             id="jsonld-organization"
             type="application/ld+json"
-            strategy="beforeInteractive"
             dangerouslySetInnerHTML={{__html: stringifyJsonLd(orgJsonLd)}}
         />
-        <Script
+        <script
             id="jsonld-website"
             type="application/ld+json"
-            strategy="beforeInteractive"
             dangerouslySetInnerHTML={{__html: stringifyJsonLd(websiteJsonLd)}}
         />
         </body>
