@@ -12,7 +12,7 @@ import {getClientIp} from '@/src/lib/net/getClientIp';
 import {ArticleDetail} from '@/src/components/ArticleDetail';
 import {PodcastDetail} from '@/src/components/PodcastDetail';
 import PreviewBanner from '@/src/components/PreviewBanner';
-import {getErrorMessage, isNotFoundError, isTimeoutOrSocketError} from '@/src/lib/errors';
+import {getErrorMessage, isNotFoundError} from '@/src/lib/errors';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,7 +59,10 @@ async function resolvePreviewContext(
     // Trusts the proxy-appended last hop, unlike the client-controlled first one.
     const ip = getClientIp(await headers());
     const rl = previewLimiter.check(`preview:${ip}`);
-    if (!rl.ok) notFound();
+    if (!rl.ok) {
+        // A throttled editor must not be told the draft does not exist.
+        throw new Error('Zu viele Vorschau-Anfragen. Bitte in einer Minute erneut versuchen.');
+    }
 
     const {token, status} = await searchParams;
     const secret = process.env.STRAPI_PREVIEW_SECRET;
@@ -73,19 +76,16 @@ async function resolvePreviewContext(
     return {type: rawType, slug, status: status === 'published' ? 'published' : 'draft'};
 }
 
-// Timeout/socket errors indicate Strapi is unreachable, not that the slug doesn't exist —
-// rethrow so Next renders the error boundary instead of a misleading "not found".
+// Only a genuine 404 means "this document does not exist". Everything else —
+// timeouts, socket errors, 5xx — means the CMS could not answer, so rethrow and
+// let the preview segment's error boundary render instead of a misleading 404.
 function handlePreviewFetchError(error: unknown, slug: string, label: string): null {
-    const errorMessage = getErrorMessage(error);
-    if (isTimeoutOrSocketError(error)) {
-        console.error(`Socket/timeout error fetching preview ${label} for slug "${slug}":`, errorMessage);
-        throw error instanceof Error ? error : new Error('Service unavailable');
-    }
-    // Classify through the shared predicate (structured status first) instead of
-    // scanning the message: request data like a URL-embedded "404" must not
-    // suppress the log for a transient failure.
     if (!isNotFoundError(error)) {
-        console.error(`Error fetching preview ${label} for slug "${slug}":`, errorMessage);
+        console.error(
+            `Error fetching preview ${label} for slug "${slug}":`,
+            getErrorMessage(error),
+        );
+        throw error instanceof Error ? error : new Error('Service unavailable');
     }
     return null;
 }

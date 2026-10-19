@@ -65,18 +65,24 @@ export async function GET(request: Request, {params}: SlugPageParams) {
 
     let fileUrl: string | undefined;
     let title: string | null = null;
+    let podcast: Awaited<ReturnType<typeof fetchPodcastBySlug>> = null;
     try {
-        const podcast = await fetchPodcastBySlug(slug);
-        if (!podcast) {
-            return new NextResponse('Not Found', {status: 404});
-        }
-        title = podcast.title;
-        fileUrl = mediaUrlToAbsolute({media: normalizeStrapiMedia(podcast.file)});
+        podcast = await fetchPodcastBySlug(slug);
     } catch (error) {
-        // Fail securely: never redirect to an unverified target if the lookup failed.
+        // A Strapi outage is not "this episode does not exist": 404 tells
+        // podcatchers the file is gone and they may stop retrying.
         console.error(`[podcast-download] lookup failed for slug "${slug}": ${getErrorMessage(error)}`);
+        return new NextResponse('Service Unavailable', {
+            status: 503,
+            headers: {'Retry-After': '30', 'Cache-Control': 'no-store'},
+        });
+    }
+
+    if (!podcast) {
         return new NextResponse('Not Found', {status: 404});
     }
+    title = podcast.title;
+    fileUrl = mediaUrlToAbsolute({media: normalizeStrapiMedia(podcast.file)});
 
     if (!fileUrl || !isAllowedDownloadUrl(fileUrl)) {
         return new NextResponse('Not Found', {status: 404});
