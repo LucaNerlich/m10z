@@ -51,9 +51,9 @@ function isAllowedDownloadUrl(fileUrl: string): boolean {
 /**
  * Redirects a podcast download request to its validated audio file and records download tracking when enabled.
  *
- * Removes a trailing `.mp3` suffix before resolving the podcast. Returns `404 Not Found` for invalid or unknown slugs, missing audio files, or disallowed audio URLs.
+ * Removes a trailing `.mp3` suffix before resolving the podcast. Returns `404 Not Found` for invalid or unknown slugs, missing audio files, or disallowed audio URLs; returns `503 Service Unavailable` with `Retry-After` when the CMS lookup itself fails.
  *
- * @returns A redirect response to the podcast audio file, or a `404 Not Found` response.
+ * @returns A redirect response to the podcast audio file, a `404 Not Found`, or a `503 Service Unavailable`.
  */
 export async function GET(request: Request, {params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
@@ -65,18 +65,24 @@ export async function GET(request: Request, {params}: SlugPageParams) {
 
     let fileUrl: string | undefined;
     let title: string | null = null;
+    let podcast: Awaited<ReturnType<typeof fetchPodcastBySlug>> = null;
     try {
-        const podcast = await fetchPodcastBySlug(slug);
-        if (!podcast) {
-            return new NextResponse('Not Found', {status: 404});
-        }
-        title = podcast.title;
-        fileUrl = mediaUrlToAbsolute({media: normalizeStrapiMedia(podcast.file)});
+        podcast = await fetchPodcastBySlug(slug);
     } catch (error) {
-        // Fail securely: never redirect to an unverified target if the lookup failed.
+        // A Strapi outage is not "this episode does not exist": 404 tells
+        // podcatchers the file is gone and they may stop retrying.
         console.error(`[podcast-download] lookup failed for slug "${slug}": ${getErrorMessage(error)}`);
+        return new NextResponse('Service Unavailable', {
+            status: 503,
+            headers: {'Retry-After': '30', 'Cache-Control': 'no-store'},
+        });
+    }
+
+    if (!podcast) {
         return new NextResponse('Not Found', {status: 404});
     }
+    title = podcast.title;
+    fileUrl = mediaUrlToAbsolute({media: normalizeStrapiMedia(podcast.file)});
 
     if (!fileUrl || !isAllowedDownloadUrl(fileUrl)) {
         return new NextResponse('Not Found', {status: 404});

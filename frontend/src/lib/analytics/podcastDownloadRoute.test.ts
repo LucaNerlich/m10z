@@ -67,6 +67,19 @@ afterEach(() => {
 });
 
 describe('podcast download route', () => {
+    test('returns 503 when the CMS lookup fails', async () => {
+        mocks.fetchPodcastBySlug.mockRejectedValue(new Error('Strapi down'));
+
+        const response = await GET(
+            new Request('https://m10z.de/api/podcast-download/ep-1.mp3'),
+            makeContext('ep-1.mp3'),
+        );
+
+        expect(response.status).toBe(503);
+        expect(response.headers.get('retry-after')).toBe('30');
+        expect(response.headers.get('cache-control')).toBe('no-store');
+    });
+
     test('does not track HEAD and still records the following GET', async () => {
         mocks.fetchPodcastBySlug.mockResolvedValue(makePodcast());
 
