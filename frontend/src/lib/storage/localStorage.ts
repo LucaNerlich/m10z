@@ -74,8 +74,12 @@ if (typeof window !== 'undefined') {
 
     window.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
-            inMemoryStore.clear();
-            unsyncedKeys.clear();
+            // Drop cached mirror entries only. An unsynced key's mirror value is
+            // the authoritative copy of a write that never reached localStorage;
+            // clearing it would silently lose the user's data on tab focus.
+            for (const key of [...inMemoryStore.keys()]) {
+                if (!unsyncedKeys.has(key)) inMemoryStore.delete(key);
+            }
         }
     });
 }

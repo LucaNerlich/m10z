@@ -135,6 +135,30 @@ describe('localStorage utilities', () => {
         });
     });
 
+    describe('visibility refresh', () => {
+        function becomeVisible() {
+            vi.stubGlobal('document', {visibilityState: 'visible'});
+            for (const listener of listeners['visibilitychange'] ?? []) {
+                listener({} as unknown as StorageEvent);
+            }
+        }
+
+        test('keeps an unsynced mirror write across a hide/show cycle', () => {
+            store['key'] = '"old"';
+            expect(api.getItem<string>('key')).toBe('old');
+
+            vi.mocked(window.localStorage.setItem).mockImplementation(() => {
+                throw new Error('QuotaExceededError');
+            });
+            api.setItem('key', 'new');
+            expect(api.getItem<string>('key')).toBe('new');
+
+            becomeVisible();
+
+            expect(api.getItem<string>('key')).toBe('new');
+        });
+    });
+
     describe('removeItem', () => {
         test('removes stored value', () => {
             store['key'] = 'value';
