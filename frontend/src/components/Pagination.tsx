@@ -4,8 +4,6 @@ import styles from './Pagination.module.css';
 type PaginationProps = {
     currentPage: number;
     totalPages: number;
-    onPrevious?: () => void;
-    onNext?: () => void;
     className?: string;
     previousHref?: string;
     nextHref?: string;
@@ -14,8 +12,6 @@ type PaginationProps = {
 export function Pagination({
                                currentPage,
                                totalPages,
-                               onPrevious,
-                               onNext,
                                className,
                                previousHref,
                                nextHref,
@@ -28,39 +24,25 @@ export function Pagination({
         <nav className={classes} aria-label="Seiten">
             <div className={styles.pageInfo}>Seite {currentPage}</div>
             <div className={styles.pageControls}>
-                {isFirstPage ? (
+                {isFirstPage || !previousHref ? (
                     <span className={`${styles.pageButton} ${styles.pageButtonDisabled}`} aria-disabled="true">
                         Zurück
                     </span>
-                ) : previousHref ? (
-                    <Link
-                        className={styles.pageButton}
-                        href={previousHref}
-                        {...(onPrevious && {onClick: onPrevious})}
-                    >
+                ) : (
+                    <Link className={styles.pageButton} href={previousHref}>
                         Zurück
                     </Link>
-                ) : (
-                    <button className={styles.pageButton} onClick={onPrevious || undefined} disabled={!onPrevious}>
-                        Zurück
-                    </button>
                 )}
-                {isLastPage ? (
+                {isLastPage || !nextHref ? (
                     <span className={`${styles.pageButton} ${styles.pageButtonDisabled}`} aria-disabled="true">
                         Weiter
                     </span>
-                ) : nextHref ? (
-                    <Link className={styles.pageButton} href={nextHref} {...(onNext && {onClick: onNext})}>
+                ) : (
+                    <Link className={styles.pageButton} href={nextHref}>
                         Weiter
                     </Link>
-                ) : (
-                    <button className={styles.pageButton} onClick={onNext || undefined} disabled={!onNext}>
-                        Weiter
-                    </button>
                 )}
             </div>
         </nav>
     );
 }
-
-
