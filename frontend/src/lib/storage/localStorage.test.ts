@@ -89,6 +89,31 @@ describe('localStorage utilities', () => {
             expect(store['key']).toBe('"old"');
             expect(api.getItem<string>('key')).toBe('new');
         });
+
+        test('a successful retry lets the durable store win again', () => {
+            store['key'] = '"old"';
+            // Prime the in-memory mirror from the durable store.
+            expect(api.getItem<string>('key')).toBe('old');
+
+            vi.mocked(window.localStorage.setItem).mockImplementationOnce(() => {
+                throw new Error('QuotaExceededError');
+            });
+            api.setItem('key', 'new');
+            expect(api.getItem<string>('key')).toBe('new');
+
+            // Retry lands durably, so the mirror is a cache again.
+            api.setItem('key', 'retry');
+            expect(store['key']).toBe('"retry"');
+
+            // Another tab writes; its `storage` event is queued but not delivered yet.
+            store['key'] = '"other"';
+            expect(api.getItem<string>('key')).toBe('other');
+
+            for (const listener of listeners['storage'] ?? []) {
+                listener({key: 'key'} as unknown as StorageEvent);
+            }
+            expect(api.getItem<string>('key')).toBe('other');
+        });
     });
 
     describe('cross-tab invalidation', () => {

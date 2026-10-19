@@ -41,6 +41,7 @@ export function setItem<T>(key: string, value: T): void {
 
     try {
         window.localStorage.setItem(key, serialized);
+        unsyncedKeys.delete(key);
     } catch {
         // The mirror is the only place this write landed.
         unsyncedKeys.add(key);
