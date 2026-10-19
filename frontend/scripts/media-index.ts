@@ -13,8 +13,7 @@
  * Overrides: STRAPI_MCP_URL, STRAPI_MCP_TOKEN, MEDIA_INDEX_OUT.
  */
 
-import {randomUUID} from 'node:crypto';
-import {mkdir, rename, rm, writeFile} from 'node:fs/promises';
+import {writeFileAtomic} from './lib/writeFileAtomic';
 import path from 'node:path';
 
 import {
@@ -61,17 +60,7 @@ async function main(): Promise<void> {
         console.log('Dry run — nothing written.');
         return;
     }
-    await mkdir(path.dirname(outFile), {recursive: true});
-    const tempFile = path.join(
-        path.dirname(outFile),
-        `.${path.basename(outFile)}.${randomUUID()}.tmp`
-    );
-    try {
-        await writeFile(tempFile, json, {encoding: 'utf8', flag: 'wx'});
-        await rename(tempFile, outFile);
-    } finally {
-        await rm(tempFile, {force: true});
-    }
+    await writeFileAtomic(outFile, json);
     console.log(
         `Wrote ${path.relative(process.cwd(), outFile)} (${Buffer.byteLength(json)} bytes).`
     );
