@@ -4,7 +4,7 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {after, before, test} from 'node:test';
 
-import {applyEnvPrecedence} from './lib/envLoader.mjs';
+import {applyEnvPrecedence, ENV_FILES} from './lib/envLoader.mjs';
 
 const PREFIX = 'M10Z_ENV_PRECEDENCE_';
 const keys = {
@@ -18,6 +18,10 @@ const keys = {
 let dir;
 let localFile;
 let envFile;
+
+test('the harness reads .env.local before .env', () => {
+  assert.deepEqual(ENV_FILES, ['.env.local', '.env']);
+});
 
 before(async () => {
   dir = await mkdtemp(path.join(tmpdir(), 'm10z-env-loader-'));

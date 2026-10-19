@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 
-import {applyEnvPrecedence} from './lib/envLoader.mjs';
+import {applyEnvPrecedence, ENV_FILES} from './lib/envLoader.mjs';
 
 // Repo root is not mounted: the harness only needs load-test/ read and
 // load-test/reports/ write.
@@ -19,7 +19,7 @@ const K6_IMAGE = 'grafana/k6@sha256:e66db15b860113878fa74670e31f5e274830b7b6e42c
 // Precedence: shell/CI > .env.local > .env. `.env.local` is loaded first because
 // a later `loadEnvFile` cannot override an earlier one, then the captured
 // shell/CI values are re-applied so an explicit environment always wins.
-applyEnvPrecedence([path.join(__dirname, '.env.local'), path.join(__dirname, '.env')]);
+applyEnvPrecedence(ENV_FILES.map((file) => path.join(__dirname, file)));
 
 const testName = process.argv[2];
 if (!testName || !['smoke', 'ramp', 'spike'].includes(testName)) {

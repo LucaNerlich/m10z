@@ -5,6 +5,14 @@
 // Precedence: shell/CI > first file > later files. A missing file is optional.
 
 /**
+ * Env files the harness reads, relative to `load-test/`, highest precedence
+ * first. Exported so the suite pins the order `run.mjs` actually applies.
+ *
+ * @type {string[]}
+ */
+export const ENV_FILES = ['.env.local', '.env'];
+
+/**
  * Load `files` into `process.env`, then re-apply `baseEnv` so an explicit
  * environment always wins.
  *
