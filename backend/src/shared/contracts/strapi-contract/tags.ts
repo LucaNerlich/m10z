@@ -13,9 +13,6 @@ import type {ContentTypeKey} from './contentTypeKeys';
 /** The subset of content types that appear in author/category-scoped list pages. */
 export type ListableContentType = 'article' | 'podcast';
 
-/** Entity content types exposed through the CMS read API. A subset of ContentTypeKey. */
-export type StrapiContentType = 'article' | 'podcast' | 'author' | 'category';
-
 /** Feed surfaces addressed by `feed:` tags. */
 export type FeedKind = 'article' | 'audio';
 
