@@ -6,10 +6,10 @@ import {fileURLToPath} from 'node:url';
 
 import {describe, expect, test} from 'vitest';
 
-// The guard is a plain ESM script at the repo root (run directly by
-// `.github/workflows/security-sql-patterns.yml`); it exports its detector and
-// only runs the repo scan when invoked as a script.
-import {findSqlInjectionIssues} from '../../scripts/check-sql-injection-patterns.mjs';
+// The guard is a plain ESM script in this workspace (the repo-root wrapper
+// `scripts/check-sql-injection-patterns.mjs` is what CI runs); it exports its
+// detector and only runs the repo scan when invoked as a script.
+import {findSqlInjectionIssues} from './check-sql-injection-patterns.mjs';
 
 // The sample sources are assembled from char codes so this test file does not
 // itself contain a raw-call concatenation and trip the guard it tests.
@@ -65,13 +65,14 @@ describe('check-sql-injection-patterns', () => {
 
     test.skipIf(process.platform === 'win32')('still scans when invoked through a symlinked path', () => {
         // `import.meta.url` is loader-resolved to a realpath while argv[1] keeps
-        // the typed path, so a symlinked parent used to make the guard exit 0
+        // the typed path, so a symlinked workspace used to make the guard exit 0
         // silently instead of scanning.
-        const repoRoot = path.resolve(fileURLToPath(import.meta.url), '../../..');
+        const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+        const workspaceRoot = path.resolve(scriptDir, '..');
         const linkDir = mkdtempSync(path.join(tmpdir(), 'm10z-sql-guard-'));
         try {
-            const link = path.join(linkDir, 'repo');
-            symlinkSync(repoRoot, link, 'dir');
+            const link = path.join(linkDir, 'backend');
+            symlinkSync(workspaceRoot, link, 'dir');
 
             const output = execFileSync(
                 process.execPath,
