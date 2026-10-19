@@ -33,7 +33,8 @@ function makeCloneStrapi(sourceEntry: Record<string, unknown> | null) {
 }
 
 beforeEach(() => {
-    mockedExistsSync.mockClear();
+    mockedExistsSync.mockReset();
+    mockedExistsSync.mockReturnValue(true);
     mockedParseFile.mockClear();
     mocks.duration = 42.4;
 });
@@ -183,6 +184,19 @@ describe('durationMiddleware duration rounding', () => {
         );
 
         expect(mockedParseFile).toHaveBeenCalledWith(expect.stringContaining('new-episode.mp3'));
+        expect(data.duration).toBeNull();
+    });
+
+    test('clears the previous duration when a replacement file cannot be read', async () => {
+        mockedExistsSync.mockReturnValue(false);
+        const strapi = makeStrapi({duration: 3540, file: {url: '/uploads/old-episode.mp3'}});
+        const data: PodcastDocument = {file: {url: '/uploads/missing-episode.mp3'}};
+
+        await durationMiddleware(
+            makeContext(strapi, data, {action: 'update', documentId: 'podcast-2'}),
+            vi.fn(async () => ({})),
+        );
+
         expect(data.duration).toBeNull();
     });
 });

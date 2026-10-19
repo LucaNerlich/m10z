@@ -208,6 +208,7 @@ export async function durationMiddleware(
             // Only podcast payloads carry the `file` relation this middleware needs.
             if (data && 'file' in data && !Array.isArray(data.file) && data.file) {
                 const podcastData: PodcastDocument = data;
+                let fileChanged = context.action === 'create';
                 if (context.action === 'update') {
                     const documentId =
                         context.params?.documentId ||
@@ -230,6 +231,16 @@ export async function durationMiddleware(
                         );
                         return next();
                     }
+                    // Only clear when both identities are known and differ. An
+                    // unidentifiable existing file must not let a relation-shaped
+                    // payload wipe a valid duration.
+                    fileChanged = Boolean(existingIdentity && incomingIdentity);
+                }
+                if (fileChanged) {
+                    // The audio is being replaced: clear the previous duration before
+                    // extraction. If the file cannot be read, the old value would
+                    // otherwise survive a partial update and describe the wrong audio.
+                    podcastData.duration = null;
                 }
                 await extractDuration(strapiInstance, podcastData);
             }
