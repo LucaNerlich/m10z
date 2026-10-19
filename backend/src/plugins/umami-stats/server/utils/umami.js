@@ -17,9 +17,6 @@
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** Ranges shown in the widget: 7 days, 30 days, 6 calendar months. */
-const RANGE_KEYS = ['7d', '30d', '6m'];
-
 /** Custom Umami event recorded for podcast downloads (see frontend `umamiServer.ts`). */
 const PODCAST_DOWNLOAD_EVENT = 'podcast-download';
 
@@ -206,7 +203,6 @@ function createUpstreamError(status) {
 module.exports = {
     CACHE_TTL_MS,
     PODCAST_DOWNLOAD_EVENT,
-    RANGE_KEYS,
     SLUG_PROPERTY,
     TOP_SLUGS_LIMIT,
     buildEventValuesUrl,
