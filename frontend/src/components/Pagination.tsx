@@ -4,8 +4,6 @@ import styles from './Pagination.module.css';
 type PaginationProps = {
     currentPage: number;
     totalPages: number;
-    onPrevious?: () => void;
-    onNext?: () => void;
     className?: string;
     previousHref?: string;
     nextHref?: string;
@@ -14,8 +12,6 @@ type PaginationProps = {
 export function Pagination({
                                currentPage,
                                totalPages,
-                               onPrevious,
-                               onNext,
                                className,
                                previousHref,
                                nextHref,
@@ -33,15 +29,11 @@ export function Pagination({
                         Zurück
                     </span>
                 ) : previousHref ? (
-                    <Link
-                        className={styles.pageButton}
-                        href={previousHref}
-                        {...(onPrevious && {onClick: onPrevious})}
-                    >
+                    <Link className={styles.pageButton} href={previousHref}>
                         Zurück
                     </Link>
                 ) : (
-                    <button className={styles.pageButton} onClick={onPrevious || undefined} disabled={!onPrevious}>
+                    <button type="button" className={styles.pageButton} disabled>
                         Zurück
                     </button>
                 )}
@@ -50,11 +42,11 @@ export function Pagination({
                         Weiter
                     </span>
                 ) : nextHref ? (
-                    <Link className={styles.pageButton} href={nextHref} {...(onNext && {onClick: onNext})}>
+                    <Link className={styles.pageButton} href={nextHref}>
                         Weiter
                     </Link>
                 ) : (
-                    <button className={styles.pageButton} onClick={onNext || undefined} disabled={!onNext}>
+                    <button type="button" className={styles.pageButton} disabled>
                         Weiter
                     </button>
                 )}
@@ -62,5 +54,3 @@ export function Pagination({
         </nav>
     );
 }
-
-

@@ -5,18 +5,16 @@ import styles from './Tag.module.css';
 type TagProps = {
     children: ReactNode;
     className?: string;
-    as?: 'span' | 'div';
     icon?: ReactNode;
 };
 
-export function Tag({children, className, as: Element = 'span', icon}: TagProps) {
+export function Tag({children, className, icon}: TagProps) {
     const classes = [styles.tag, className].filter(Boolean).join(' ');
 
     return (
-        <Element className={classes}>
+        <span className={classes}>
             {icon && <span className={styles.icon}>{icon}</span>}
             {children}
-        </Element>
+        </span>
     );
 }
-

@@ -8,32 +8,33 @@ import styles from './RelatedContent.module.css';
 type RelatedContentProps = {
     articles?: StrapiArticle[];
     podcasts?: StrapiPodcast[];
-    maxItems?: number;
 };
+
+const MAX_ITEMS = 3;
 
 /**
  * Renders a "related content" section with article and/or podcast cards.
  * Shows nothing if there are no related items.
  */
-export function RelatedContent({articles = [], podcasts = [], maxItems = 3}: RelatedContentProps) {
+export function RelatedContent({articles = [], podcasts = []}: RelatedContentProps) {
     const hasArticles = articles.length > 0;
     const hasPodcasts = podcasts.length > 0;
 
     if (!hasArticles && !hasPodcasts) return null;
 
-    // Interleave articles and podcasts, taking up to maxItems total
+    // Interleave articles and podcasts, taking up to MAX_ITEMS total
     const items: Array<{type: 'article'; data: StrapiArticle} | {type: 'podcast'; data: StrapiPodcast}> = [];
-    const maxA = Math.min(articles.length, maxItems);
-    const maxP = Math.min(podcasts.length, maxItems);
+    const maxA = Math.min(articles.length, MAX_ITEMS);
+    const maxP = Math.min(podcasts.length, MAX_ITEMS);
     let ai = 0;
     let pi = 0;
 
-    while (items.length < maxItems && (ai < maxA || pi < maxP)) {
+    while (items.length < MAX_ITEMS && (ai < maxA || pi < maxP)) {
         if (ai < maxA) {
             items.push({type: 'article', data: articles[ai]!});
             ai++;
         }
-        if (items.length < maxItems && pi < maxP) {
+        if (items.length < MAX_ITEMS && pi < maxP) {
             items.push({type: 'podcast', data: podcasts[pi]!});
             pi++;
         }
