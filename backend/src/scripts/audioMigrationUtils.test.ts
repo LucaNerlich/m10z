@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {buildUploadFormData, decideUploadRetry, extractFilename, findExistingFileByName, getMimeType, interpretUploadResponse, validateUrl} from './audioMigrationUtils';
+import {buildUploadFormData, decideUploadRetry, extractFilename, findExistingFileByName, getMimeType, interpretUploadResponse, isRedirectRefusal, validateUrl} from './audioMigrationUtils';
 
 describe('validateUrl', () => {
     test('accepts an HTTPS URL on the allowed domain', () => {
@@ -194,5 +194,20 @@ describe('decideUploadRetry', () => {
 
     test('retries only when the file is confirmed absent', () => {
         expect(decideUploadRetry({status: 'absent'})).toBe('retry');
+    });
+});
+
+describe('isRedirectRefusal', () => {
+    test('recognises the fetch redirect refusal', () => {
+        const error = Object.assign(new Error('fetch failed'), {
+            cause: new Error('unexpected redirect'),
+        });
+        expect(isRedirectRefusal(error)).toBe(true);
+    });
+
+    test('does not classify other failures as redirects', () => {
+        expect(isRedirectRefusal(new Error('fetch failed'))).toBe(false);
+        expect(isRedirectRefusal(Object.assign(new Error('fetch failed'), {cause: new Error('ECONNRESET')}))).toBe(false);
+        expect(isRedirectRefusal('nope')).toBe(false);
     });
 });
