@@ -38,11 +38,13 @@ export function FancyboxClient({children, className}: FancyboxClientProps) {
                     // Markdown sanitizer has already run, so return an element with
                     // textContent instead: author text must never be parsed as HTML.
                     formatCaption: (_carousel, slide) => {
+                        const text = typeof slide.caption === 'string' ? slide.caption : '';
+                        // An empty element is still truthy to Fancybox and would add
+                        // a blank padded .f-caption to every uncaptioned slide.
+                        if (!text) return '';
                         const caption = document.createElement('span');
-                        caption.textContent = typeof slide.caption === 'string' ? slide.caption : '';
-                        // Fancybox 6.1.15 appends an HTMLElement return (see its
-                        // caption renderer); its bundled types only admit string.
-                        return caption as unknown as string;
+                        caption.textContent = text;
+                        return caption;
                     },
                     Toolbar: {
                         display: {
