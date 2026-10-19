@@ -53,5 +53,14 @@ export const REHYPE_SANITIZE_SCHEMA = {
             ...(defaultSchema.attributes?.li || []),
             'id',
         ],
+        img: [
+            ...(defaultSchema.attributes?.img || []),
+            // Feed markdown can carry responsive image candidates; the site
+            // renders its own <Image>, but resolving srcset for feeds needs it
+            // to survive sanitization.
+            'srcSet',
+            'sizes',
+            'loading',
+        ],
     },
-} as const;
+};

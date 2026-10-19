@@ -113,15 +113,36 @@ describe('markdownToHtml — URL resolution for feed readers', () => {
     });
 });
 
+describe('markdownToHtml — GFM rendering', () => {
+    test('renders footnotes instead of literal markers', () => {
+        const html = markdownToHtml('Text[^1]\n\n[^1]: Die Note', 'https://m10z.de');
+        expect(html).toContain('id="fnref-1"');
+        expect(html).toContain('Fußnoten');
+        expect(html).not.toContain('[^1]');
+    });
+
+    test('renders the site custom inline syntax', () => {
+        const html = markdownToHtml('==mark== H~2~O E = mc^2^', 'https://m10z.de');
+        expect(html).toContain('<mark>mark</mark>');
+        expect(html).toContain('<sub>2</sub>');
+        expect(html).toContain('<sup>2</sup>');
+    });
+
+    test('renders tables and strikethrough', () => {
+        const html = markdownToHtml('| a | b |\n| - | - |\n| 1 | 2 |\n\n~~old~~', 'https://m10z.de');
+        expect(html).toContain('<table>');
+        expect(html).toContain('<del>old</del>');
+    });
+});
+
 describe('getMarkdownToHtmlState', () => {
     test('reports a non-empty allow-list and increments conversion telemetry', () => {
         const before = getMarkdownToHtmlState().conversions;
         markdownToHtml('telemetry check');
         const after = getMarkdownToHtmlState();
         expect(after.conversions).toBe(before + 1);
+        expect(after.renderer.engine).toBe('remark/rehype');
         expect(after.sanitizer.allowedTagsCount).toBeGreaterThan(0);
         expect(after.sanitizer.allowedAttrCount).toBeGreaterThan(0);
-        // Each conversion must close the JSDOM window it opened.
-        expect(after.jsdom.windowsClosed).toBe(after.jsdom.windowsCreated);
     });
 });
