@@ -134,67 +134,44 @@ export async function HomePage({page}: {page: number}) {
                 ) : (
                     currentItems.map((item, index) => {
                         const anchor = `${item.type}-${item.slug}`;
-                        const coverUrl = mediaUrlToAbsolute({media: item.cover});
-                        const bannerUrl = mediaUrlToAbsolute({media: item.banner});
 
-                        const coverBlurDataUrl = item.cover?.blurhash ?? null;
-                        const bannerBlurDataUrl = item.banner?.blurhash ?? null;
-
+                        // One image serves both breakpoints: the CSS crops it to the
+                        // square (desktop) or 16:9 (<=1080px) slot with object-fit.
+                        // Prefer the banner, mirroring the shared content cards.
+                        const cardMedia = item.banner ?? item.cover;
+                        const cardImageUrl = mediaUrlToAbsolute({media: cardMedia});
+                        const cardBlurDataUrl = cardMedia?.blurhash ?? null;
                         // Remote images need an explicit blurDataURL for 'blur'; the
                         // static fallback import gets one generated at build time.
-                        const coverPlaceholder = coverBlurDataUrl ? 'blur' : coverUrl ? 'empty' : 'blur';
-                        const bannerPlaceholder = bannerBlurDataUrl ? 'blur' : bannerUrl || coverUrl ? 'empty' : 'blur';
+                        const cardPlaceholder = cardBlurDataUrl ? 'blur' : cardImageUrl ? 'empty' : 'blur';
+                        const cardAlt = cardMedia?.alternativeText ?? item.title;
+                        const cardTitle = cardMedia?.caption ?? undefined;
 
-                        const coverAlt = item.cover?.alternativeText ?? item.title;
-                        const coverTitle = item.cover?.caption ?? undefined;
-                        const bannerAlt = item.banner?.alternativeText ?? item.title;
-                        const bannerTitle = item.banner?.caption ?? undefined;
-
-                        // Above-the-fold images of the first card load with priority.
+                        // Above-the-fold image of the first card loads with priority.
                         const isFirstItem = index === 0;
 
                         return (
                             <Card key={anchor} id={anchor} className={styles.contentCard}>
                                 <div className={styles.media}>
-                                    {(() => {
-                                        const coverSrc = coverUrl ?? placeholderCover;
-                                        const bannerSrc = bannerUrl ?? coverUrl ?? placeholderCover;
-
-                                        return (
-                                            <Link
-                                                href={item.href}
-                                                className={styles.mediaLink}
-                                                aria-label={`${item.type === 'article' ? 'Artikel' : 'Podcast'} öffnen: ${item.title}`}
-                                            >
-                                                <Image
-                                                    src={coverSrc}
-                                                    width={200}
-                                                    height={200}
-                                                    sizes="200px"
-                                                    quality={60}
-                                                    placeholder={coverPlaceholder}
-                                                    blurDataURL={coverBlurDataUrl || undefined}
-                                                    alt={coverAlt || ''}
-                                                    title={coverTitle}
-                                                    className={styles.cover}
-                                                    priority={isFirstItem}
-                                                />
-                                                <Image
-                                                    src={bannerSrc}
-                                                    width={800}
-                                                    height={450}
-                                                    sizes="(max-width: 900px) 100vw, 800px"
-                                                    quality={60}
-                                                    placeholder={bannerPlaceholder}
-                                                    blurDataURL={bannerBlurDataUrl || coverBlurDataUrl || undefined}
-                                                    alt={bannerAlt || ''}
-                                                    title={bannerTitle}
-                                                    className={styles.banner}
-                                                    priority={isFirstItem}
-                                                />
-                                            </Link>
-                                        );
-                                    })()}
+                                    <Link
+                                        href={item.href}
+                                        className={styles.mediaLink}
+                                        aria-label={`${item.type === 'article' ? 'Artikel' : 'Podcast'} öffnen: ${item.title}`}
+                                    >
+                                        <Image
+                                            src={cardImageUrl ?? placeholderCover}
+                                            width={cardMedia?.width ?? 400}
+                                            height={cardMedia?.height ?? 225}
+                                            sizes="(max-width: 1080px) 100vw, 280px"
+                                            quality={60}
+                                            placeholder={cardPlaceholder}
+                                            blurDataURL={cardBlurDataUrl ?? undefined}
+                                            alt={cardAlt || ''}
+                                            title={cardTitle}
+                                            className={styles.mediaImage}
+                                            priority={isFirstItem}
+                                        />
+                                    </Link>
                                 </div>
                                 <div className={styles.cardBody}>
                                     <div className={styles.metaRow}>
