@@ -81,6 +81,29 @@ describe('FontPicker', () => {
         expect(window.localStorage.getItem('m10z-font-family')).toBe('neon');
     });
 
+    test('falls back to the default font when the localStorage getter throws', async () => {
+        const original = Object.getOwnPropertyDescriptor(window, 'localStorage');
+        Object.defineProperty(window, 'localStorage', {
+            configurable: true,
+            get() {
+                throw new DOMException('blocked', 'SecurityError');
+            },
+        });
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+        try {
+            await act(async () => {
+                root.render(<FontPicker />);
+            });
+            expect(selectElement().value).toBe('poppins');
+
+            await choose('neon');
+            expect(selectElement().value).toBe('neon');
+        } finally {
+            if (original) Object.defineProperty(window, 'localStorage', original);
+        }
+    });
+
     test('keeps the selection in-session when localStorage rejects writes', async () => {
         vi.spyOn(window.localStorage, 'setItem').mockImplementation(() => {
             throw new DOMException('quota', 'QuotaExceededError');
