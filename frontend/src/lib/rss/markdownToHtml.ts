@@ -9,6 +9,7 @@ import remarkSmartypants from 'remark-smartypants';
 import {unified} from 'unified';
 
 import {joinStrapiBaseUrl} from '@/src/lib/image';
+import {preprocessMarkdown} from '@/src/lib/markdown/preprocess';
 import {REHYPE_SANITIZE_SCHEMA, REMARK_REHYPE_OPTIONS} from '@/src/lib/markdown/plugins';
 
 /**
@@ -141,7 +142,7 @@ export function markdownToHtml(markdownText: string, siteUrl?: string): string {
             .use(rehypeResolveFeedUrls, {siteUrl})
             .use(rehypeSanitize, REHYPE_SANITIZE_SCHEMA)
             .use(rehypeStringify);
-        return String(processor.processSync(markdownText));
+        return String(processor.processSync(preprocessMarkdown(markdownText)));
     } catch (err) {
         lastErrorAtMs = Date.now();
         throw err;
@@ -168,7 +169,10 @@ export function getMarkdownToHtmlState() {
         },
         sanitizer: {
             allowedTagsCount: REHYPE_SANITIZE_SCHEMA.tagNames?.length ?? 0,
-            allowedAttrCount: Object.keys(REHYPE_SANITIZE_SCHEMA.attributes ?? {}).length,
+            allowedAttrCount: Object.values(REHYPE_SANITIZE_SCHEMA.attributes ?? {}).reduce(
+                (count, list) => count + list.length,
+                0,
+            ),
         },
     };
 }

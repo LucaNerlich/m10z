@@ -121,6 +121,13 @@ describe('markdownToHtml — GFM rendering', () => {
         expect(html).not.toContain('[^1]');
     });
 
+    test('renders the site custom inline syntax', () => {
+        const html = markdownToHtml('==mark== H~2~O E = mc^2^', 'https://m10z.de');
+        expect(html).toContain('<mark>mark</mark>');
+        expect(html).toContain('<sub>2</sub>');
+        expect(html).toContain('<sup>2</sup>');
+    });
+
     test('renders tables and strikethrough', () => {
         const html = markdownToHtml('| a | b |\n| - | - |\n| 1 | 2 |\n\n~~old~~', 'https://m10z.de');
         expect(html).toContain('<table>');

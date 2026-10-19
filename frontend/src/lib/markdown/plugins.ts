@@ -59,6 +59,8 @@ export const REHYPE_SANITIZE_SCHEMA = {
             // renders its own <Image>, but resolving srcset for feeds needs it
             // to survive sanitization.
             'srcSet',
+            'sizes',
+            'loading',
         ],
     },
 };
