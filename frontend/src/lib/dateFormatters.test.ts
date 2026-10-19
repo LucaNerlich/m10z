@@ -14,6 +14,24 @@ describe('formatDateShort', () => {
     test('null → em dash', () => {
         expect(formatDateShort(null)).toBe('—');
     });
+
+    test('shifts a whole-hour 22:00/23:00 UTC midnight-local date forward', () => {
+        // 23:00Z = midnight Berlin in winter (UTC+1); 22:00Z = midnight in summer (UTC+2).
+        expect(formatDateShort('2025-01-15T23:00:00.000Z')).toBe('16. Jan. 2025');
+        expect(formatDateShort('2025-07-15T22:00:00.000Z')).toBe('16. Juli 2025');
+    });
+
+    test('does not shift genuine evening timestamps (20:00–21:59 UTC)', () => {
+        expect(formatDateShort('2025-01-15T20:00:00.000Z')).toBe('15. Jan. 2025');
+        expect(formatDateShort('2025-01-15T20:30:00.000Z')).toBe('15. Jan. 2025');
+        expect(formatDateShort('2025-01-15T21:00:00.000Z')).toBe('15. Jan. 2025');
+        expect(formatDateShort('2025-01-15T21:59:59.000Z')).toBe('15. Jan. 2025');
+        expect(formatDateShort('2025-01-15T19:30:00.000Z')).toBe('15. Jan. 2025');
+    });
+
+    test('does not shift a non-whole-hour 22:00+ UTC timestamp', () => {
+        expect(formatDateShort('2025-01-15T22:30:00.000Z')).toBe('15. Jan. 2025');
+    });
 });
 
 describe('formatDuration', () => {

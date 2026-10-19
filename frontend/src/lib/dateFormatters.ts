@@ -47,8 +47,9 @@ function formatGermanDateShort(dateObj: Date): string {
  *
  * When dates are entered in Strapi as calendar dates (e.g., "Dec 28, 00:00" local time),
  * they may be stored as UTC timestamps from the previous day (e.g., "2025-12-27T23:00:00Z"
- * for Germany UTC+1). Such late-evening UTC times (20:00-23:59) are treated as dates
+ * for Germany UTC+1). Whole-hour UTC times of 22:00 or 23:00 are treated as dates
  * entered at midnight local time and adjusted forward to the intended calendar date.
+ * Ordinary evening timestamps (20:00–21:59 UTC) are real and must not shift.
  *
  * @param date - Date string (ISO 8601 or any valid date string)
  * @returns Date object parsed as UTC date-only (time set to 00:00:00 UTC)
@@ -60,7 +61,11 @@ function parseDateAsUtcDateOnly(date: string): Date {
 
         if (dateMatch[2] !== undefined) {
             const hour = parseInt(dateMatch[2], 10);
-            if (hour >= 20) {
+            // Only a whole-hour 22:00 or 23:00 UTC can be a date entered at
+            // midnight in a timezone ahead of UTC (Berlin is UTC+1 in winter,
+            // UTC+2 in summer). Any other hour is a genuine timestamp.
+            const isWholeHour = dateMatch[3] === '00' && dateMatch[4] === '00';
+            if (hour >= 22 && isWholeHour) {
                 // Date entered at midnight local time in a timezone ahead of UTC —
                 // shift to the next calendar day.
                 return new Date(Date.UTC(year, month - 1, day + 1));
