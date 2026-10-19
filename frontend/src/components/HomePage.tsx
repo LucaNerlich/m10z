@@ -37,7 +37,7 @@ function clampPageToData(page: number, totalItems: number): number {
  *
  * @returns The rendered feed component containing the table of contents, content cards, and pagination controls.
  */
-export async function HomePage({page}: {page: number}) {
+export async function HomePage({page, maxPage = 50}: {page: number; maxPage?: number}) {
     let data;
     try {
         data = await buildContentFeed(page, PAGE_SIZE, {tags: [HOME_PAGE_TAG]});
@@ -79,9 +79,10 @@ export async function HomePage({page}: {page: number}) {
     const combinedTotal = data.pagination.total;
     const currentPage = clampPageToData(page, combinedTotal);
     const currentItems = data.items;
-    // hasNextPage comes from the response: it is derived from the actually
-    // fetchable window, not from the raw collection totals.
-    const nextPage = data.hasNextPage ? currentPage + 1 : null;
+    // pageCount comes from the response (real collection totals); the wrapper's
+    // page cap still bounds the paginator so it cannot link to a clamped page.
+    const lastPage = Math.min(data.pagination.pageCount, maxPage);
+    const nextPage = currentPage < lastPage ? currentPage + 1 : null;
     const prevPage = currentPage > 1 ? currentPage - 1 : null;
 
     return (
@@ -218,7 +219,7 @@ export async function HomePage({page}: {page: number}) {
 
                 <Pagination
                     currentPage={currentPage}
-                    totalPages={Math.ceil(combinedTotal / PAGE_SIZE)}
+                    totalPages={lastPage}
                     previousHref={prevPage ? `/?page=${prevPage}` : undefined}
                     nextHref={nextPage ? `/?page=${nextPage}` : undefined}
                 />
