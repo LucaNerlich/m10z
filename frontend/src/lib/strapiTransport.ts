@@ -92,6 +92,11 @@ async function fetchOnce<T>(req: StrapiRequest, url: URL, timeout: number): Prom
         const res = await fetch(url.toString(), {signal: controller.signal, ...buildRequestInit(req)});
 
         if (!res.ok) {
+            // Release the pooled socket immediately. Next only buffers/consumes
+            // the body for cacheable 200s, so a discarded non-OK stream would
+            // otherwise pin a pooled undici connection until GC or the body
+            // timeout, stalling every other Strapi read during an error burst.
+            await res.body?.cancel().catch(() => {});
             const httpError = Object.assign(new Error(`Strapi request failed: ${res.status} ${res.statusText}`), {
                 status: res.status,
             });

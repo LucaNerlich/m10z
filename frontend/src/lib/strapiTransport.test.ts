@@ -16,6 +16,12 @@ function httpError(status: number, statusText = 'Boom'): Response {
     return {ok: false, status, statusText, json: async () => ({})} as unknown as Response;
 }
 
+function httpErrorWithCancel(status: number, statusText = 'Boom'): {response: Response; cancel: ReturnType<typeof vi.fn>} {
+    const cancel = vi.fn().mockResolvedValue(undefined);
+    const response = {ok: false, status, statusText, body: {cancel}} as unknown as Response;
+    return {response, cancel};
+}
+
 function abortError(): Error {
     return Object.assign(new Error('aborted'), {name: 'AbortError'});
 }
@@ -136,6 +142,37 @@ describe('defaultStrapiTransport (via strapiFetch)', () => {
 
         await expect(strapiFetch({path: '/api/x', cache: {mode: 'tags', tags: []}})).rejects.toThrow(/504/);
         expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    test('cancels the error body before throwing so the pooled socket is released', async () => {
+        const {response, cancel} = httpErrorWithCancel(500, 'Internal Server Error');
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response));
+
+        await expect(strapiFetch({path: '/api/x', cache: {mode: 'tags', tags: []}})).rejects.toThrow(/500/);
+        expect(cancel).toHaveBeenCalledTimes(1);
+    });
+
+    test('cancels every body across a burst of error responses', async () => {
+        const cancels = Array.from({length: 5}, () => vi.fn().mockResolvedValue(undefined));
+        const fetchMock = vi.fn();
+        for (const cancel of cancels) {
+            fetchMock.mockResolvedValueOnce({
+                ok: false,
+                status: 502,
+                statusText: 'Bad Gateway',
+                body: {cancel},
+            } as unknown as Response);
+        }
+        vi.stubGlobal('fetch', fetchMock);
+
+        await Promise.all(
+            cancels.map(() =>
+                strapiFetch({path: '/api/x', cache: {mode: 'tags', tags: []}}).catch(() => undefined),
+            ),
+        );
+
+        expect(fetchMock).toHaveBeenCalledTimes(5);
+        expect(cancels.every((cancel) => cancel.mock.calls.length === 1)).toBe(true);
     });
 
     test('aborts a stalled body after timeoutMs and retries once', async () => {

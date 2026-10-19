@@ -18,6 +18,8 @@ export async function fetcher<T = unknown>(url: string): Promise<T> {
 
     if (!res.ok) {
         // Fail securely: do not include response body (may leak details).
+        // Cancel the body so the pooled connection is released immediately.
+        await res.body?.cancel().catch(() => {});
         throw new Error(`Request failed: ${res.status} ${res.statusText}`);
     }
 

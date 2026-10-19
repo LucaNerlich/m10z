@@ -55,6 +55,21 @@ describe('fetcher', () => {
         expect(error.message).not.toContain('sensitive upstream detail');
     });
 
+    test('cancels the error response body before throwing', async () => {
+        const cancel = vi.fn().mockResolvedValue(undefined);
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(
+                async () =>
+                    ({ok: false, status: 502, statusText: 'Bad Gateway', body: {cancel}}) as unknown as Response,
+            ),
+        );
+
+        const error = await fetcherError();
+        expect(error.message).toBe('Request failed: 502 Bad Gateway');
+        expect(cancel).toHaveBeenCalledTimes(1);
+    });
+
     test('throws a generic error for an unparseable body', async () => {
         vi.stubGlobal(
             'fetch',
