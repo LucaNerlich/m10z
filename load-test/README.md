@@ -32,6 +32,10 @@ Create `load-test/.env` (ignored by git) and put your prod target there:
 cp load-test/.env.example load-test/.env
 ```
 
+`load-test/.env.local` is read too and **overrides** `.env` — use it to redirect a
+run at staging without editing `.env`. A variable exported in the shell/CI
+overrides both files.
+
 ## Run (local k6)
 
 From repo root:
@@ -65,7 +69,7 @@ cd load-test
 # Create .env once (then just edit TARGET_ORIGIN there)
 cp .env.example .env
 
-# Run tests via Docker k6 (reads .env / .env.local; the harness has no dependencies)
+# Run tests via Docker k6 (precedence: shell > .env.local > .env; no dependencies)
 npm run smoke
 npm run ramp
 npm run spike
