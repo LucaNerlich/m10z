@@ -16,7 +16,10 @@ export default ({env}: any) => {
         cookie: {
             sameSite: 'lax',
             path: '/admin',
-            domain: env('BASE_DOMAIN', 'cms.m10z.de'),
+            // Bare cookie host (a Set-Cookie `Domain` must be a suffix of the
+            // admin host). Kept separate from `BASE_DOMAIN`, which is an
+            // absolute origin URL used to build media URLs.
+            domain: env('ADMIN_COOKIE_DOMAIN', 'cms.m10z.de'),
         },
     },
     apiToken: {

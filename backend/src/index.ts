@@ -57,6 +57,7 @@ export default {
             'ADMIN_JWT_SECRET',
             'API_TOKEN_SALT',
             'STRAPI_PREVIEW_SECRET',
+            'BASE_DOMAIN',
         ];
 
         const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
