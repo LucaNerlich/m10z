@@ -48,7 +48,7 @@ export interface AudioObject extends JsonLdBase {
     '@type': 'AudioObject';
     contentUrl: string;
     encodingFormat: string;
-    duration: string;
+    duration?: string;
 }
 
 export interface PodcastSeries extends JsonLdBase {
@@ -81,7 +81,7 @@ export interface PodcastEpisode extends JsonLdBase {
     name: string;
     description?: string;
     datePublished?: string;
-    duration: string;
+    duration?: string;
     keywords?: string;
     inLanguage?: string;
     associatedMedia?: AudioObject;

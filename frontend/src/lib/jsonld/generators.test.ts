@@ -83,6 +83,13 @@ describe('generatePodcastJsonLd', () => {
         expect(jsonLd.partOfSeries?.name).toBe('M10Z Podcasts');
         expect(jsonLd.url).toMatch(/\/podcasts\/episode-001$/);
     });
+
+    test('omits duration instead of claiming PT0S for an unknown length', () => {
+        // The CMS field is optional even though the generated type declares it required.
+        const jsonLd = generatePodcastJsonLd({...podcast, duration: undefined as unknown as number});
+        expect(jsonLd.duration).toBeUndefined();
+        expect(jsonLd.associatedMedia?.duration).toBeUndefined();
+    });
 });
 
 describe('generateAuthorProfileJsonLd', () => {

@@ -21,7 +21,11 @@ import {categoryTitlesToKeywords} from '@/src/lib/metadata/keywords';
 export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
     const effectiveDate = getEffectiveDate(podcast);
     const datePublished = formatIso8601Date(effectiveDate);
-    const duration = formatIso8601Duration(podcast.duration);
+    // Unknown duration is not a zero-length episode: omit the property rather
+    // than emitting PT0S.
+    const duration = typeof podcast.duration === 'number' && Number.isFinite(podcast.duration) && podcast.duration > 0
+        ? formatIso8601Duration(podcast.duration)
+        : undefined;
 
     const podcastUrl = absoluteRoute(routes.podcast(podcast.slug));
 
@@ -34,7 +38,7 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
             '@type': 'AudioObject',
             contentUrl: audioUrl,
             encodingFormat: fileMedia.mime ?? 'audio/mpeg',
-            duration,
+            ...(duration ? {duration} : {}),
         }
         : undefined;
 
@@ -60,7 +64,7 @@ export function generatePodcastJsonLd(podcast: StrapiPodcast): PodcastEpisode {
         name: podcast.title,
         description,
         datePublished: datePublished,
-        duration,
+        ...(duration ? {duration} : {}),
         keywords,
         inLanguage: CONTENT_LANGUAGE,
         associatedMedia,
