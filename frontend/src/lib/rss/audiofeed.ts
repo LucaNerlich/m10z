@@ -337,7 +337,10 @@ export function generateAudioFeedXml(args: {
     const convert =
         args.markdownConverter ??
         ((markdownArgs: {markdownText: string}) => markdownToHtml(markdownArgs.markdownText));
+    const tFooter0 = nowMs();
     const htmlFooter = convert({episodeId: 0, kind: 'footer', markdownText: episodeFooter ?? ''});
+    const tFooter1 = nowMs();
+    timingCollector.record('markdownConversion', tFooter1 - tFooter0);
 
     let renderedEpisodeCount = 0;
     const items = sorted

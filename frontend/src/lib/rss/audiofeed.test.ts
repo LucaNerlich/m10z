@@ -208,7 +208,7 @@ describe('generateAudioFeedXml — feed-wide footer', () => {
             file: {...episode.file, url: 'https://cdn.example.test/episode-003.mp3'},
         };
 
-        const {xml} = generateAudioFeedXml({
+        const {xml, timing} = generateAudioFeedXml({
             cfg: baseCfg,
             channel,
             episodeFooter: 'Support us',
@@ -218,6 +218,9 @@ describe('generateAudioFeedXml — feed-wide footer', () => {
 
         // One feed-wide footer conversion, regardless of episode count.
         expect(footerCalls).toHaveLength(1);
+        // The footer conversion is part of the markdown timing breakdown, so
+        // diagnostics do not under-report the work hoisting moved out of renderItem.
+        expect(timing.markdownConversion.count).toBe(4);
         // The converted footer still lands in every episode description.
         expect(xml.match(/<p>Support us<\/p>/g)).toHaveLength(3);
     });
