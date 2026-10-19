@@ -33,11 +33,9 @@ export default function () {
   getJson(r.contentFeed(1, 10), {name: 'api_contentfeed'});
   think(0.05, 0.2);
 
-  // Search can be CPU-ish server-side; include but keep limited to avoid rate limits.
-  if (Math.random() < 0.5) {
-    getJson(r.search('mi'), {name: 'api_search'});
-    think(0.05, 0.2);
-  }
+  // Search is covered by the smoke scenario. It is deliberately absent here:
+  // at these VU counts it trips the app's 100/min limiter and turns the run's
+  // 5% error budget into self-inflicted 429s.
 }
 
 
