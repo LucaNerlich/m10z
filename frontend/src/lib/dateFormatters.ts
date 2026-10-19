@@ -28,6 +28,17 @@ const GERMAN_MONTHS_SHORT: readonly string[] = [
 ] as const;
 
 /**
+ * Europe/Berlin calendar-day formatter. The explicit time zone keeps server and
+ * client output identical, so no hydration mismatch.
+ */
+const BERLIN_DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Berlin',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+});
+
+/**
  * Formats a Date object into German short date format manually.
  *
  * @param dateObj - Date object (must be valid, already parsed)
@@ -42,35 +53,29 @@ function formatGermanDateShort(dateObj: Date): string {
 }
 
 /**
- * Parses a date string, extracting only the date part (YYYY-MM-DD) and parsing it as UTC
- * to avoid timezone shifts that would show the wrong day.
+ * Parses a date string and resolves its Europe/Berlin calendar day as a UTC
+ * date-only Date object, so the month table and formatGermanDateShort stay
+ * unchanged.
  *
- * When dates are entered in Strapi as calendar dates (e.g., "Dec 28, 00:00" local time),
- * they may be stored as UTC timestamps from the previous day (e.g., "2025-12-27T23:00:00Z"
- * for Germany UTC+1). Such late-evening UTC times (20:00-23:59) are treated as dates
- * entered at midnight local time and adjusted forward to the intended calendar date.
+ * Strapi stores calendar dates entered at Berlin midnight as the previous day's
+ * 23:00Z (winter) / 22:00Z (summer) timestamp, so the UTC calendar day can be
+ * one behind the day the author intended. Formatting the instant in
+ * Europe/Berlin recovers that day for midnight-convention dates and gives the
+ * correct day for genuine late-night posts (e.g. 23:30Z in winter is already
+ * 00:30 the next day in Berlin).
  *
  * @param date - Date string (ISO 8601 or any valid date string)
- * @returns Date object parsed as UTC date-only (time set to 00:00:00 UTC)
+ * @returns Date object holding the Europe/Berlin calendar day at 00:00:00 UTC
  */
-function parseDateAsUtcDateOnly(date: string): Date {
-    const dateMatch = date.match(/^(\d{4}-\d{2}-\d{2})(?:T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?Z?)?/);
-    if (dateMatch) {
-        const [year, month, day] = dateMatch[1].split('-').map(Number);
+function parseDateAsBerlinDateOnly(date: string): Date {
+    const parsed = new Date(date);
+    if (Number.isNaN(parsed.getTime())) return parsed;
 
-        if (dateMatch[2] !== undefined) {
-            const hour = parseInt(dateMatch[2], 10);
-            if (hour >= 20) {
-                // Date entered at midnight local time in a timezone ahead of UTC —
-                // shift to the next calendar day.
-                return new Date(Date.UTC(year, month - 1, day + 1));
-            }
-        }
+    const parts = BERLIN_DATE_FORMATTER.formatToParts(parsed);
+    const get = (type: Intl.DateTimeFormatPartTypes) =>
+        parts.find((part) => part.type === type)?.value ?? '';
 
-        return new Date(Date.UTC(year, month - 1, day));
-    }
-    // Fallback to normal parsing if format is unexpected
-    return new Date(date);
+    return new Date(Date.UTC(Number(get('year')), Number(get('month')) - 1, Number(get('day'))));
 }
 
 /**
@@ -83,7 +88,7 @@ function parseDateAsUtcDateOnly(date: string): Date {
  */
 export function formatDateShort(date: string | null | undefined): string {
     if (!date) return '—';
-    const dateObj = parseDateAsUtcDateOnly(date);
+    const dateObj = parseDateAsBerlinDateOnly(date);
     if (Number.isNaN(dateObj.getTime())) return '—';
 
     return formatGermanDateShort(dateObj);

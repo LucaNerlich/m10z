@@ -14,6 +14,31 @@ describe('formatDateShort', () => {
     test('null → em dash', () => {
         expect(formatDateShort(null)).toBe('—');
     });
+
+    test('shifts a whole-hour 22:00/23:00 UTC midnight-local date forward', () => {
+        // 23:00Z = midnight Berlin in winter (UTC+1); 22:00Z = midnight in summer (UTC+2).
+        expect(formatDateShort('2025-01-15T23:00:00.000Z')).toBe('16. Jan. 2025');
+        expect(formatDateShort('2025-07-15T22:00:00.000Z')).toBe('16. Juli 2025');
+    });
+
+    test('does not shift genuine evening timestamps (20:00–21:59 UTC)', () => {
+        expect(formatDateShort('2025-01-15T20:00:00.000Z')).toBe('15. Jan. 2025');
+        expect(formatDateShort('2025-01-15T20:30:00.000Z')).toBe('15. Jan. 2025');
+        expect(formatDateShort('2025-01-15T21:00:00.000Z')).toBe('15. Jan. 2025');
+        expect(formatDateShort('2025-01-15T21:59:59.000Z')).toBe('15. Jan. 2025');
+        expect(formatDateShort('2025-01-15T19:30:00.000Z')).toBe('15. Jan. 2025');
+    });
+
+    test('renders genuine late-night posts on the Berlin calendar day', () => {
+        // 23:30Z in winter is already 00:30 the next day in Berlin.
+        expect(formatDateShort('2024-01-20T23:30:00.000Z')).toBe('21. Jan. 2024');
+        // 22:30Z in summer is already 00:30 the next day in Berlin.
+        expect(formatDateShort('2026-03-30T22:30:00.000Z')).toBe('31. März 2026');
+    });
+
+    test('keeps an evening timestamp that is still the same Berlin day', () => {
+        expect(formatDateShort('2025-01-15T22:30:00.000Z')).toBe('15. Jan. 2025');
+    });
 });
 
 describe('formatDuration', () => {
