@@ -58,9 +58,9 @@ export async function buildContentFeed(
     pageSize: number,
     options: ContentFeedOptions = {},
 ): Promise<ContentFeedResponse> {
-    // Over-fetch by five items so the merge can fill the requested page even
-    // when one collection is slightly ahead of the other.
-    const needed = page * pageSize + 5;
+    // Each collection's first `page * pageSize` items already contain the
+    // merged top `page * pageSize`; the extra chunk was always sliced away.
+    const needed = page * pageSize;
 
     const extraTags = options.tags ?? [];
     const articleTags = Array.from(new Set([typeTag('article'), listPageTag('article'), ...extraTags]));

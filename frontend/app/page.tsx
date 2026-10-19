@@ -26,7 +26,7 @@ export default async function HomePageWrapper({searchParams}: {searchParams?: Pr
     return (
         <div data-homepage>
             <Suspense fallback={<FeedSkeleton />}>
-                <HomePage page={page} />
+                <HomePage page={page} maxPage={HOME_MAX_PAGE} />
             </Suspense>
         </div>
     );
