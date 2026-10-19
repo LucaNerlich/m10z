@@ -34,7 +34,7 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
     const coverMedia = normalizeStrapiMedia(category.banner ?? category.cover);
     const optimizedMedia = coverMedia ? getOptimalMediaFormat(coverMedia, 'medium') : undefined;
     const imageUrl = optimizedMedia ? mediaUrlToAbsolute({media: optimizedMedia}) : null;
-    const blurhash = category.cover?.blurhash;
+    const blurhash = optimizedMedia?.blurhash ?? null;
     const imageSrc = imageUrl ?? placeholderCover;
     const imageWidth = optimizedMedia?.width ?? 400;
     const imageHeight = optimizedMedia?.height ?? 225;
