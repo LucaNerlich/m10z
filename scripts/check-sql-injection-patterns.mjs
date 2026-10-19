@@ -244,7 +244,7 @@ function main() {
     console.log('check-sql-injection-patterns: OK (no dynamic SQL built in raw calls found)');
 }
 
-export {findConcatenatedRawCalls, findInterpolatedSqlTemplates, findSqlInjectionIssues, readTemplateLiteralBody};
+export {findSqlInjectionIssues};
 
 // Run only when invoked as a script (`node scripts/check-sql-injection-patterns.mjs`);
 // importing it from a test must not scan the repo or call process.exit.
