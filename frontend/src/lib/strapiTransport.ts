@@ -56,8 +56,18 @@ export type StrapiTransport = <T>(req: StrapiRequest) => Promise<T>;
 // The single place the privileged token is read from the environment.
 function resolveToken(req: StrapiRequest): string | undefined {
     if (req.token) return req.token;
-    if (req.auth === 'privileged') return process.env.STRAPI_API_TOKEN;
-    return undefined;
+    if (req.auth !== 'privileged') return undefined;
+
+    const token = process.env.STRAPI_API_TOKEN?.trim();
+    if (!token) {
+        // A privileged read without its token would silently become anonymous
+        // and surface as "not found" / an empty feed. Fail as a configuration
+        // error instead. Never log the token itself.
+        throw new Error(
+            'STRAPI_API_TOKEN is required for privileged Strapi reads (preview, feeds, search index).',
+        );
+    }
+    return token;
 }
 
 const DEFAULT_TIMEOUT_MS = 30_000;
