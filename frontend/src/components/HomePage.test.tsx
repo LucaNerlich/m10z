@@ -63,18 +63,20 @@ describe('HomePage', () => {
         expect(html.match(/data-priority="true"/g)).toHaveLength(1);
     });
 
-    test('prefers the banner and falls back to the cover when the banner is empty', async () => {
+    test('uses the square cover for the 1:1 card slot and falls back to the banner', async () => {
         buildContentFeed.mockResolvedValue(
             feedResponse([
                 feedItem(),
-                // The feed mapper emits `{}` for a missing banner, not `undefined`.
-                feedItem({slug: 'b', href: '/artikel/b', title: 'Zweiter Artikel', banner: {}}),
+                // The feed mapper emits `{}` for a missing cover, not `undefined`.
+                feedItem({slug: 'b', href: '/artikel/b', title: 'Zweiter Artikel', cover: {}}),
             ]),
         );
 
         const html = renderToStaticMarkup(await HomePage({page: 1}));
 
-        expect(html).toContain('<img src="https://cdn.example.test/banner.jpg"');
+        // The desktop slot is 1:1, so the square cover beats the 16:9 banner there.
         expect(html).toContain('<img src="https://cdn.example.test/cover.jpg"');
+        // Content without a cover still uses its banner.
+        expect(html).toContain('<img src="https://cdn.example.test/banner.jpg"');
     });
 });

@@ -137,10 +137,11 @@ export async function HomePage({page}: {page: number}) {
 
                         // One image serves both breakpoints: the CSS crops it to the
                         // square (desktop) or 16:9 (<=1080px) slot with object-fit.
-                        // Prefer the banner, mirroring the shared content cards.
-                        // The feed mapper emits `{}` (truthy) for a missing banner,
+                        // The desktop slot is square, so prefer the purpose-built
+                        // cover; a 16:9 banner would lose ~44% of its width there.
+                        // The feed mapper emits `{}` (truthy) for missing media,
                         // so fall back on the URL rather than the object.
-                        const cardMedia = item.banner?.url ? item.banner : item.cover;
+                        const cardMedia = item.cover?.url ? item.cover : item.banner;
                         const cardImageUrl = mediaUrlToAbsolute({media: cardMedia});
                         const cardBlurDataUrl = cardMedia?.blurhash ?? null;
                         // Remote images need an explicit blurDataURL for 'blur'; the
