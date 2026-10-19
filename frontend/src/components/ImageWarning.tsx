@@ -4,6 +4,8 @@ import {umamiExternalLinkEvent} from '@/src/lib/analytics/umami';
 type ImageWarningProps = {
     src: string;
     alt?: string;
+    /** Why the image could not be shown; defaults to the hostname gate. */
+    reason?: 'unauthorized' | 'load-error';
 };
 
 /**
@@ -27,8 +29,11 @@ function isSafeUrl(url: string): boolean {
  * Warning component displayed when an external image cannot be loaded
  * due to security restrictions (hostname not configured in next.config.js).
  */
-export function ImageWarning({src, alt}: ImageWarningProps) {
+export function ImageWarning({src, alt, reason = 'unauthorized'}: ImageWarningProps) {
     const isSafe = isSafeUrl(src);
+    const message = reason === 'load-error'
+        ? 'Bild konnte nicht geladen werden. Die Datei ist möglicherweise nicht mehr verfügbar.'
+        : 'Bild konnte nicht geladen werden: Die Domain ist nicht autorisiert.';
 
     return (
         <div className={styles.container}>
@@ -36,7 +41,7 @@ export function ImageWarning({src, alt}: ImageWarningProps) {
                 <span className={styles.icon}>⚠️</span>
                 <div className={styles.content}>
                     <p className={styles.message}>
-                        Bild konnte nicht geladen werden: Die Domain ist nicht autorisiert.
+                        {message}
                     </p>
                     {alt && (
                         <p className={styles.altText}>

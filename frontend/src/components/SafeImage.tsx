@@ -36,11 +36,11 @@ export function SafeImage({
     const [failedSrc, setFailedSrc] = useState<string | null>(null);
 
     if (!isImageHostnameAllowed(src)) {
-        return <ImageWarning src={src} alt={alt} />;
+        return <ImageWarning src={src} alt={alt} reason="unauthorized" />;
     }
 
     if (failedSrc === src) {
-        return <ImageWarning src={src} alt={alt} />;
+        return <ImageWarning src={src} alt={alt} reason="load-error" />;
     }
 
     return (
