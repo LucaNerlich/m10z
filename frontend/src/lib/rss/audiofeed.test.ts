@@ -187,3 +187,41 @@ describe('generateAudioFeedXml — channel & item structure', () => {
         expect(xml.indexOf('/podcasts/newer')).toBeLessThan(xml.indexOf('/podcasts/older'));
     });
 });
+
+describe('generateAudioFeedXml — feed-wide footer', () => {
+    test('converts the footer once for a multi-episode feed', () => {
+        const footerCalls: number[] = [];
+        const converter = (args: {episodeId: number; kind: 'shownotes' | 'footer'; markdownText: string}) => {
+            if (args.kind === 'footer') footerCalls.push(args.episodeId);
+            return `<p>${args.markdownText}</p>`;
+        };
+        const second: StrapiPodcast = {
+            ...episode,
+            id: 2,
+            slug: 'episode-002',
+            file: {...episode.file, url: 'https://cdn.example.test/episode-002.mp3'},
+        };
+        const third: StrapiPodcast = {
+            ...episode,
+            id: 3,
+            slug: 'episode-003',
+            file: {...episode.file, url: 'https://cdn.example.test/episode-003.mp3'},
+        };
+
+        const {xml, timing} = generateAudioFeedXml({
+            cfg: baseCfg,
+            channel,
+            episodeFooter: 'Support us',
+            episodes: [episode, second, third],
+            markdownConverter: converter,
+        });
+
+        // One feed-wide footer conversion, regardless of episode count.
+        expect(footerCalls).toHaveLength(1);
+        // The footer conversion is part of the markdown timing breakdown, so
+        // diagnostics do not under-report the work hoisting moved out of renderItem.
+        expect(timing.markdownConversion.count).toBe(4);
+        // The converted footer still lands in every episode description.
+        expect(xml.match(/<p>Support us<\/p>/g)).toHaveLength(3);
+    });
+});
