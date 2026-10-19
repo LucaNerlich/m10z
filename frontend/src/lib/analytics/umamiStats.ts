@@ -94,7 +94,6 @@ export type UmamiTrafficStats = {
     ranges: Record<UmamiPublicRangeKey, UmamiRangeStats>;
     content: UmamiContentStats;
     cachedAt: string;
-    cacheTtlSeconds: number;
 };
 
 /** One detail-page window: site totals plus long article/podcast rankings. */
@@ -106,7 +105,6 @@ export type UmamiReachDetailRange = UmamiRangeStats & {
 export type UmamiReachDetailStats = {
     ranges: Record<UmamiDetailRangeKey, UmamiReachDetailRange>;
     cachedAt: string;
-    cacheTtlSeconds: number;
 };
 
 /**
