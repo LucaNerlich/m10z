@@ -2,6 +2,7 @@ import {wordCountMiddleware} from './middlewares/wordCount';
 import {durationMiddleware} from './middlewares/duration';
 import {cacheInvalidationMiddleware} from './middlewares/cacheInvalidation';
 import {restorePendingInvalidations, type StrapiWithDb} from './services/cacheInvalidationQueue';
+import {runGracefulShutdown} from './utils/gracefulShutdown';
 import {configureServerTimeouts} from '../config/server';
 import type {Server as HttpServer} from 'http';
 import {
@@ -240,47 +241,16 @@ export default {
         }
 
         // Set up graceful shutdown handler
-        const gracefulShutdown = async (signal: string) => {
-            strapi.log.info(`Received ${signal}, starting graceful shutdown...`);
-
-            try {
-                // Stop accepting new requests
-                const httpServer = strapi.server?.httpServer;
-                if (httpServer) {
-                    strapi.log.info('Closing HTTP server...');
-                    await new Promise<void>((resolve, reject) => {
-                        httpServer.close((err: unknown) => {
-                            if (err) {
-                                strapi.log.error('Error closing HTTP server:', err);
-                                reject(err);
-                            } else {
-                                strapi.log.info('HTTP server closed successfully');
-                                resolve();
-                            }
-                        });
-                    });
-                }
-
-                // Wait for pending operations to complete (with timeout)
-                const shutdownTimeout = setTimeout(() => {
-                    strapi.log.warn('Shutdown timeout exceeded, forcing exit');
-                    process.exit(1);
-                }, 30000); // 30 second timeout
-
-                // Close database connections
-                if (strapi.db) {
-                    strapi.log.info('Closing database connections...');
-                    await strapi.db.connection.destroy();
-                    strapi.log.info('Database connections closed');
-                }
-
-                clearTimeout(shutdownTimeout);
-                strapi.log.info('Graceful shutdown completed');
-                process.exit(0);
-            } catch (error) {
-                strapi.log.error('Error during graceful shutdown:', error);
-                process.exit(1);
-            }
+        const gracefulShutdown = (signal: string, exitCode = 0) => {
+            const db = strapi.db;
+            return runGracefulShutdown({
+                signal,
+                exitCode,
+                log: strapi.log,
+                httpServer: strapi.server?.httpServer,
+                closeDatabase: db ? () => db.connection.destroy() : undefined,
+                exit: (code) => process.exit(code),
+            });
         };
 
         // Register shutdown handlers
