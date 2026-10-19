@@ -12,6 +12,13 @@ const SEARCH_INDEX_URL = '/api/search-index';
  */
 export const SEARCH_MIN_QUERY_LENGTH = 2;
 
+/**
+ * Maximum query length accepted by `/api/search-index`. Shared with the input
+ * so a long paste is capped client-side instead of returning a generic error
+ * from the route's 400.
+ */
+export const SEARCH_MAX_QUERY_LENGTH = 200;
+
 type SearchQueryResponse = {
     results: SearchResult[];
     total: number;
@@ -40,7 +47,7 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
     const [debouncedQuery, setDebouncedQuery] = useState<string>('');
 
     useEffect(() => {
-        const trimmed = query.trim();
+        const trimmed = query.trim().slice(0, SEARCH_MAX_QUERY_LENGTH);
         const timeoutId = setTimeout(() => {
             setDebouncedQuery(trimmed);
         }, debounceMs);
