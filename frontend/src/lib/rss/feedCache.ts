@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import {recordDiagnosticEvent} from '@/src/lib/diagnostics/runtimeDiagnostics';
 import {getClientIp} from '@/src/lib/net/getClientIp';
-import {createRateLimiter, type RateLimitConfig} from '@/src/lib/security/rateLimit';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 
 import {buildRssHeaders, fallbackFeedXml, maybeReturn304} from './feedRoute';
 
@@ -21,10 +21,6 @@ export type FeedCacheDeps = {
     checkRateLimitFn?: (key: string) => {ok: boolean; retryAfterSeconds: number};
     getClientIpFn?: (request: Request) => string;
     feedCacheDir?: string;
-    regenerateMs?: number;
-    invalidationDebounceMs?: number;
-    siteUrl?: string;
-    rateLimit?: RateLimitConfig;
 };
 
 export type FeedBuilt = {
@@ -126,13 +122,12 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
     const clearTimeoutFn = deps.clearTimeoutFn ?? clearTimeout;
     const getClientIpFn = deps.getClientIpFn ?? getClientIp;
     // Own bucket store per feed cache instance.
-    const feedLimiter = createRateLimiter(deps.rateLimit ?? DEFAULT_RATE_LIMIT);
+    const feedLimiter = createRateLimiter(DEFAULT_RATE_LIMIT);
     const checkRateLimitFn = deps.checkRateLimitFn ?? ((key: string) => feedLimiter.check(key));
 
     const FEED_CACHE_DIR = deps.feedCacheDir ?? process.env.FEED_CACHE_DIR ?? path.join(process.cwd(), '.feed-cache');
-    const FEED_REGENERATE_MS = deps.regenerateMs ?? (Number(process.env.FEED_REGENERATE_MS ?? '') || DEFAULT_FEED_REGENERATE_MS);
-    const INVALIDATION_DEBOUNCE_MS = deps.invalidationDebounceMs ?? DEFAULT_INVALIDATION_DEBOUNCE_MS;
-    const SITE_URL = (deps.siteUrl ?? process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
+    const FEED_REGENERATE_MS = Number(process.env.FEED_REGENERATE_MS ?? '') || DEFAULT_FEED_REGENERATE_MS;
+    const SITE_URL = (process.env.NEXT_PUBLIC_DOMAIN ?? 'https://m10z.de').replace(/\/+$/, '');
 
     const xmlPath = path.join(FEED_CACHE_DIR, spec.diskFileName);
     const metaPath = path.join(FEED_CACHE_DIR, `${spec.diskFileName}.meta.json`);
@@ -343,7 +338,7 @@ export function createFeedCache(spec: FeedSpec, deps: FeedCacheDeps = {}): FeedC
             } else {
                 refreshInBackground();
             }
-        }, INVALIDATION_DEBOUNCE_MS);
+        }, DEFAULT_INVALIDATION_DEBOUNCE_MS);
     }
 
     function getSchedulerState() {
