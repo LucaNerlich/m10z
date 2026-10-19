@@ -1,21 +1,21 @@
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 
-let hostHeader = '';
+let requestHeaders: Record<string, string> = {};
 
 vi.mock('next/headers', () => ({
-    headers: async () => new Headers(hostHeader ? {host: hostHeader} : {}),
+    headers: async () => new Headers(requestHeaders),
 }));
 
 const robots = (await import('./robots')).default;
 
 beforeEach(() => {
-    hostHeader = '';
+    requestHeaders = {};
     vi.unstubAllEnvs();
 });
 
-/** Run `robots()` for a host, returning the disallow list ([] when indexable). */
-async function disallowFor(host: string, noindexHosts: string): Promise<string[]> {
-    hostHeader = host;
+/** Run `robots()` for a set of request headers, returning the disallow list ([] when indexable). */
+async function disallowForHeaders(headers: Record<string, string>, noindexHosts: string): Promise<string[]> {
+    requestHeaders = headers;
     vi.stubEnv('NOINDEX_HOSTS', noindexHosts);
 
     const result = await robots();
@@ -24,6 +24,11 @@ async function disallowFor(host: string, noindexHosts: string): Promise<string[]
         const disallow = rule?.disallow;
         return Array.isArray(disallow) ? disallow : disallow ? [disallow] : [];
     });
+}
+
+/** Run `robots()` for a `host` header, returning the disallow list ([] when indexable). */
+async function disallowFor(host: string, noindexHosts: string): Promise<string[]> {
+    return disallowForHeaders({host}, noindexHosts);
 }
 
 describe('robots noindex host matching', () => {
@@ -46,7 +51,26 @@ describe('robots noindex host matching', () => {
     });
 
     test('indexes an unlisted host and still emits the sitemap', async () => {
-        hostHeader = 'm10z.de';
+        requestHeaders = {host: 'm10z.de'};
+        vi.stubEnv('NOINDEX_HOSTS', 'localhost,127.0.0.1');
+
+        const result = await robots();
+        const rules = Array.isArray(result.rules) ? result.rules : [result.rules];
+        expect(rules[0]?.disallow).toEqual(['/api/', '/preview/']);
+        expect(result.sitemap).toMatch(/\/sitemap\.xml$/);
+    });
+
+    test('uses the last hop of a multi-hop x-forwarded-host', async () => {
+        // Node joins the header as the proxy appended it: a client-supplied
+        // `m10z.de` first, then the real `next.m10z.de`. Only the last hop counts,
+        // so the staging noindex rule is not switched off by the first.
+        expect(
+            await disallowForHeaders({'x-forwarded-host': 'm10z.de, next.m10z.de'}, 'next.m10z.de'),
+        ).toContain('/');
+    });
+
+    test('a single x-forwarded-host on the production host stays indexable', async () => {
+        requestHeaders = {'x-forwarded-host': 'm10z.de'};
         vi.stubEnv('NOINDEX_HOSTS', 'localhost,127.0.0.1');
 
         const result = await robots();
