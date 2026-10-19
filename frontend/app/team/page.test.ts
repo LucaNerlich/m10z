@@ -1,3 +1,4 @@
+import {renderToStaticMarkup} from 'react-dom/server';
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 const mocks = vi.hoisted(() => ({
@@ -40,7 +41,9 @@ describe('TeamPage transient failure handling', () => {
         vi.stubEnv('NEXT_PHASE', 'phase-production-build');
         mocks.fetchAuthorsList.mockRejectedValue(new Error('boom'));
 
-        await expect(TeamPage()).resolves.toBeTruthy();
+        const page = await TeamPage();
+
+        expect(renderToStaticMarkup(page)).toContain('Fehler beim Laden der Autoren');
         expect(errorSpy).toHaveBeenCalledTimes(1);
     });
 });

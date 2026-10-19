@@ -1,3 +1,4 @@
+import {renderToStaticMarkup} from 'react-dom/server';
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 const mocks = vi.hoisted(() => ({
@@ -51,9 +52,11 @@ describe('StatistikMonthPage transient failure handling', () => {
         mocks.fetchArticlesInDateRange.mockRejectedValue(new Error('boom'));
         mocks.fetchPodcastsInDateRange.mockResolvedValue([]);
 
-        await expect(
-            StatistikMonthPage({params: Promise.resolve({monat: '2025-01'})}),
-        ).resolves.toBeTruthy();
+        const page = await StatistikMonthPage({params: Promise.resolve({monat: '2025-01'})});
+
+        expect(renderToStaticMarkup(page)).toContain(
+            'Die Inhalte dieses Monats konnten gerade nicht geladen werden.',
+        );
         expect(errorSpy).toHaveBeenCalledTimes(1);
     });
 });

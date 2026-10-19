@@ -1,3 +1,4 @@
+import {renderToStaticMarkup} from 'react-dom/server';
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 const mocks = vi.hoisted(() => ({
@@ -40,7 +41,9 @@ describe('CategoriesPage transient failure handling', () => {
         vi.stubEnv('NEXT_PHASE', 'phase-production-build');
         mocks.fetchCategoriesWithContent.mockRejectedValue(new Error('boom'));
 
-        await expect(CategoriesPage()).resolves.toBeTruthy();
+        const page = await CategoriesPage();
+
+        expect(renderToStaticMarkup(page)).toContain('Fehler beim Laden der Kategorien');
         expect(errorSpy).toHaveBeenCalledTimes(1);
     });
 });
