@@ -67,6 +67,16 @@ export default {
             throw new Error(errorMsg);
         }
 
+        // `FRONTEND_URL` selects the cache-invalidation target. In production a
+        // missing value would fall back to http://localhost:3000 and silently
+        // drop every invalidation (POSTing the shared secret to the wrong host),
+        // so it is required there; dev/test keep the localhost fallback.
+        if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL) {
+            const errorMsg = 'Missing required environment variable in production: FRONTEND_URL. Please check your .env file.';
+            strapi.log.error(errorMsg);
+            throw new Error(errorMsg);
+        }
+
         // Validate optional but important environment variables
         const importantVars = [
             'STRAPI_INVALIDATION_SECRET',
