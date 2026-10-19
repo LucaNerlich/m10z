@@ -78,11 +78,14 @@ export const articleDetailPopulate = {
     youtube: true,
 };
 
+/** List cards render author names only (no avatars). */
+const authorRefPopulate = {fields: ['title', 'slug'] as const};
+
 /** Paginated lists: cards render author attribution. */
 export const articleListPopulate = {
     cover: populateMedia,
     banner: populateMedia,
-    authors: populateAuthorAvatar,
+    authors: authorRefPopulate,
     categories: populateCategory,
     youtube: true,
 };
@@ -132,7 +135,7 @@ export const podcastDetailPopulate = {
 export const podcastListPopulate = {
     cover: populateMedia,
     banner: populateMedia,
-    authors: populateAuthorAvatar,
+    authors: authorRefPopulate,
     categories: populateCategory,
     youtube: podcastYoutube,
     file: podcastFile,

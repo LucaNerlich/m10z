@@ -105,8 +105,9 @@ type ContentDescriptor = {
     detailPopulate: StrapiPopulate;
     listPopulate: StrapiPopulate;
     relatedPopulate: StrapiPopulate;
-    // by-slugs reuses the detail population for Articles (authors are needed there) but
-    // the lighter list population for Podcasts.
+    // by-slugs reuses the detail population for Articles (authors are needed there) and
+    // the list population for Podcasts; both include author attribution because the
+    // category cards render it.
     bySlugsPopulate: StrapiPopulate;
     detailFields: readonly string[];
     listFields: readonly string[];
