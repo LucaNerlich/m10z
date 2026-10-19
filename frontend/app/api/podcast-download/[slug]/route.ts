@@ -86,6 +86,9 @@ export async function GET(request: Request, {params}: SlugPageParams) {
     // Only when tracking is enabled (single source of truth), skip seek/continuation range
     // requests, and deduplicate per slug + client IP so a single play or download counts once.
     if (
+        // Next auto-implements HEAD by calling GET; an availability probe is not
+        // a download and must not consume the dedup slot of the real request.
+        request.method !== 'HEAD' &&
         isPodcastDownloadTrackingEnabled() &&
         shouldRecordDownloadForRange(request.headers.get('range')) &&
         shouldRecordDownloadDeduped(slug, getClientIp(request))
