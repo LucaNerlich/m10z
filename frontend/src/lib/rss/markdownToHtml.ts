@@ -63,7 +63,7 @@ const ALLOWED_ATTR = [
 ];
 
 /**
- * Resolve a sanitized URL for use inside feed HTML.
+ * Resolve a sanitized URL for an image or srcset candidate.
  *
  * Returns:
  * - the input unchanged for absolute http(s) URLs and mailto: links,
@@ -81,12 +81,27 @@ function resolveFeedUrl(raw: string): string | null {
 }
 
 /**
+ * Resolve a link href. Internal links are site-relative, so they belong to the
+ * public site origin, not the CMS. `/uploads/...` stays on the Strapi origin
+ * because those are media assets served by the CMS.
+ */
+function resolveFeedLink(raw: string, siteUrl: string | undefined): string | null {
+    if (raw.startsWith('//')) return null;
+    if (/^https?:\/\//i.test(raw)) return raw;
+    if (/^mailto:/i.test(raw)) return raw;
+    if (raw.startsWith('#')) return raw;
+    if (raw.startsWith('/uploads/') || !siteUrl) return joinStrapiBaseUrl(raw);
+    return new URL(raw, siteUrl).toString();
+}
+
+/**
  * Convert Markdown to sanitized HTML suitable for RSS descriptions.
  *
  * @param markdownText - The Markdown source to convert
+ * @param siteUrl - Public site origin used to resolve internal links (e.g. `https://m10z.de`)
  * @returns The sanitized HTML string produced from `markdownText`; returns an empty string if `markdownText` is falsy
  */
-export function markdownToHtml(markdownText: string): string {
+export function markdownToHtml(markdownText: string, siteUrl?: string): string {
     if (!markdownText) return '';
 
     conversions += 1;
@@ -158,7 +173,7 @@ export function markdownToHtml(markdownText: string): string {
         }
         for (const anchor of Array.from(body.querySelectorAll('a[href]'))) {
             const href = anchor.getAttribute('href') ?? '';
-            const resolved = resolveFeedUrl(href);
+            const resolved = resolveFeedLink(href, siteUrl);
             if (resolved === null) anchor.removeAttribute('href');
             else anchor.setAttribute('href', resolved);
         }

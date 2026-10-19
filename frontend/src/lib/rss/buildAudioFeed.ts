@@ -69,7 +69,7 @@ export async function buildAudioFeed(): Promise<{built: FeedBuilt; buildTiming: 
     // its hit counter always read 0, while hashing every shownotes string on the
     // hot path. Convert directly.
     const markdownConverter: AudioFeedMarkdownConverter = ({markdownText}) =>
-        markdownText ? markdownToHtml(markdownText) : '';
+        markdownText ? markdownToHtml(markdownText, FEED_SITE_URL) : '';
 
     const {xml, etagSeed, lastModified, timing, renderedEpisodeCount} = generateAudioFeedXml({
         cfg,

@@ -75,7 +75,7 @@ export function generateArticleFeedXml(args: {
             // Fall back to the first category's description when the article has no explicit description.
             const effectiveDescription = a.description || a.categories?.[0]?.description;
             const description = escapeXml(effectiveDescription ?? '');
-            const html = markdownToHtml(a.content ?? '');
+            const html = markdownToHtml(a.content ?? '', siteUrl);
             const cdataContent = escapeCdata(html);
 
             const guid = sha256Hex(link);

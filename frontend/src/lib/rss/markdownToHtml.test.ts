@@ -85,6 +85,14 @@ describe('markdownToHtml — URL resolution for feed readers', () => {
         vi.unstubAllEnvs();
     });
 
+    test('resolves internal links against the public site, not the CMS', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('[x](/artikel/gothic-classic)', 'https://m10z.de');
+        expect(html).toContain('href="https://m10z.de/artikel/gothic-classic"');
+        expect(html).not.toContain('cms.m10z.de/artikel');
+        vi.unstubAllEnvs();
+    });
+
     test('keeps fragment-only anchors unchanged', () => {
         vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
         const html = markdownToHtml('[x](#section)');
