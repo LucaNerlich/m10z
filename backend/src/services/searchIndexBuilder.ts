@@ -340,6 +340,8 @@ function normalizeCategory(category: IndexEntry, strapiUrl?: string): SearchReco
 }
 
 async function buildIndex(strapi: SearchIndexStrapi): Promise<{index: SearchIndexFile; metrics: SearchIndexMetrics}> {
+    // `BASE_DOMAIN` is the CMS's absolute origin (e.g. https://cms.m10z.de);
+    // media URLs are built as `${BASE_DOMAIN}/uploads/...`.
     const strapiUrl = process.env.BASE_DOMAIN;
     const buildStartedAt = Date.now();
 
