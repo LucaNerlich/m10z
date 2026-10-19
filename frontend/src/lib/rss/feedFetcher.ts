@@ -46,7 +46,22 @@ export async function fetchAllPaginated<T>(args: {
         `${args.apiBasePath}?${firstQuery}`,
     );
     const firstItems = Array.isArray(firstRes.data) ? firstRes.data : [];
-    const all: T[] = firstItems.slice(0, maxItems);
+    const all: T[] = [];
+    const seen = new Set<string>();
+
+    function pushItems(items: T[]): void {
+        for (const item of items) {
+            if (all.length >= maxItems) return;
+            const key = feedItemKey(item);
+            if (key !== null) {
+                if (seen.has(key)) continue;
+                seen.add(key);
+            }
+            all.push(item);
+        }
+    }
+
+    pushItems(firstItems);
 
     const pagination = firstRes.meta?.pagination;
     const pageCount = pagination?.pageCount ?? 1;
@@ -73,17 +88,24 @@ export async function fetchAllPaginated<T>(args: {
 
     for (const res of results) {
         const items = Array.isArray(res.data) ? res.data : [];
-        const remaining = Math.max(0, maxItems - all.length);
-        if (remaining <= 0) break;
-        all.push(...items.slice(0, remaining));
+        pushItems(items);
     }
 
     return all;
 }
 
 /**
- * Fetch a Strapi single-type endpoint and unwrap the `{data: T}` envelope.
+ * Stable identity for dedupe across parallel offset pages. Strapi's
+ * `documentId` is canonical; fall back to `id`, then `slug`.
  */
+function feedItemKey(item: unknown): string | null {
+    if (!item || typeof item !== 'object') return null;
+    const record = item as {documentId?: unknown; id?: unknown; slug?: unknown};
+    if (typeof record.documentId === 'string') return `documentId:${record.documentId}`;
+    if (typeof record.id === 'number' || typeof record.id === 'string') return `id:${record.id}`;
+    if (typeof record.slug === 'string') return `slug:${record.slug}`;
+    return null;
+}
 export async function fetchFeedSingle<T>(
     fetcher: StrapiFeedFetcher,
     apiPathWithQuery: string,
