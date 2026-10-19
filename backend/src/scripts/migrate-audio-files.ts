@@ -240,10 +240,6 @@ async function uploadToStrapiWithRetry(
             // (e.g. an empty 200) is ambiguous: the upload may still have succeeded
             // server-side, so verify against the media library before retrying —
             // retrying blindly would upload the same file a second time.
-            // Ensure we fully read the response before closing. An unreadable body
-            // (e.g. an empty 200) is ambiguous: the upload may still have succeeded
-            // server-side, so verify against the media library before retrying —
-            // retrying blindly would upload the same file a second time.
             let parsed: unknown;
             try {
                 parsed = await response.json();
