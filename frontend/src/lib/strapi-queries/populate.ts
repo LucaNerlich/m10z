@@ -78,10 +78,11 @@ export const articleDetailPopulate = {
     youtube: true,
 };
 
-/** Paginated lists where authors are not needed. */
+/** Paginated lists: cards render author attribution. */
 export const articleListPopulate = {
     cover: populateMedia,
     banner: populateMedia,
+    authors: populateAuthorAvatar,
     categories: populateCategory,
     youtube: true,
 };
@@ -131,6 +132,7 @@ export const podcastDetailPopulate = {
 export const podcastListPopulate = {
     cover: populateMedia,
     banner: populateMedia,
+    authors: populateAuthorAvatar,
     categories: populateCategory,
     youtube: podcastYoutube,
     file: podcastFile,
