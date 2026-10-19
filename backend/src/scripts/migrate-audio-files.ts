@@ -112,6 +112,10 @@ async function downloadFileWithRetry(
             headers: {
                 'User-Agent': 'm10z-migration-script/1.0',
             },
+            // validateUrl() only checks this first hop. Following a redirect would
+            // let an allowlisted host point the download at an arbitrary target
+            // (and copy its body into the media library). Refuse redirects instead.
+            redirect: 'error',
             // Without a timeout a stalled connection (no FIN, no response) hangs the
             // sequential run forever and the retry loop below never sees an error.
             signal: AbortSignal.timeout(CLIENT_TIMEOUT_MS),
