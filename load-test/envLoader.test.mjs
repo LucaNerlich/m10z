@@ -63,6 +63,7 @@ test('a base environment entry wins over both files', () => {
 
 test('a missing file is tolerated', () => {
   delete process.env[keys.missing];
+  delete process.env[keys.envOnly];
 
   assert.doesNotThrow(() =>
     applyEnvPrecedence([path.join(dir, 'does-not-exist.env'), envFile]),
