@@ -1,8 +1,26 @@
 import crypto from 'node:crypto';
 
 export function formatRssDate(date: Date): string {
-    // RSS expects RFC 2822 / UTC string.
-    return date.toUTCString();
+    // RSS expects RFC 2822 / UTC string. A NaN date would serialize as the
+    // literal "Invalid Date"; fall back to the epoch instead.
+    return Number.isNaN(date.getTime()) ? new Date(0).toUTCString() : date.toUTCString();
+}
+
+/**
+ * Parse a feed item date, falling back to the document's `publishedAt` and then
+ * to the epoch. `new Date('garbage').toUTCString()` yields `Invalid Date`, which
+ * silently breaks readers.
+ */
+export function parseFeedDate(
+    value: string | null | undefined,
+    fallback?: string | null,
+): Date {
+    for (const candidate of [value, fallback]) {
+        if (!candidate) continue;
+        const parsed = new Date(candidate);
+        if (!Number.isNaN(parsed.getTime())) return parsed;
+    }
+    return new Date(0);
 }
 
 export function sha256Hex(input: string): string {

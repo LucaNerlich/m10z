@@ -8,7 +8,7 @@ import {
 } from '@/src/lib/rss/feedDefinition';
 import {pickAndOptimizeImage} from '@/src/lib/strapi/media';
 import {type StrapiArticle, type StrapiArticleFeedSingle} from '@/src/lib/strapi/contentTypes';
-import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
+import {escapeCdata, escapeXml, formatRssDate, parseFeedDate, sha256Hex} from '@/src/lib/rss/xml';
 
 export type {StrapiArticle, StrapiArticleFeedSingle};
 
@@ -59,7 +59,7 @@ export function generateArticleFeedXml(args: {
     const items = sorted
         .map((a) => {
             const pubRaw = getEffectiveDate(a);
-            const pub = pubRaw ? new Date(pubRaw) : new Date(0);
+            const pub = parseFeedDate(pubRaw, a.publishedAt);
             const link = `${siteUrl}/artikel/${encodeURIComponent(a.slug)}`;
             const {media: optimizedMedia, url: optimizedMediaUrl} = pickAndOptimizeImage(
                 a,

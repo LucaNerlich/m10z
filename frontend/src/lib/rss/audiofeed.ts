@@ -14,7 +14,7 @@ import {
 } from '@/src/lib/strapi/media';
 import {type StrapiAudioFeedSingle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
 import {buildPodcastDownloadUrl} from '@/src/lib/analytics/podcastDownload';
-import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from '@/src/lib/rss/xml';
+import {escapeCdata, escapeXml, formatRssDate, parseFeedDate, sha256Hex} from '@/src/lib/rss/xml';
 
 export type {StrapiAudioFeedSingle, StrapiPodcast};
 
@@ -226,7 +226,7 @@ function renderItem(
 
     const title = escapeXml(episode.title);
     const pubDateRaw = getEffectiveDate(episode);
-    const pub = pubDateRaw ? new Date(pubDateRaw) : new Date(0);
+    const pub = parseFeedDate(pubDateRaw, episode.publishedAt);
     const pubDate = formatRssDate(pub);
 
     const preferredMedia = pickAndOptimizeImage(episode, episode.categories, 'medium', 'cover');

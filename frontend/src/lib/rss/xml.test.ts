@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 
 import {describe, expect, test} from 'vitest';
 
-import {escapeCdata, escapeXml, formatRssDate, sha256Hex} from './xml';
+import {escapeCdata, escapeXml, formatRssDate, parseFeedDate, sha256Hex} from './xml';
 
 describe('escapeXml', () => {
     test('escapes all five XML metacharacters', () => {
@@ -72,5 +72,29 @@ describe('formatRssDate', () => {
     test('produces an RFC-2822 / UTC string', () => {
         const date = new Date('2026-04-20T09:00:00.000Z');
         expect(formatRssDate(date)).toBe('Mon, 20 Apr 2026 09:00:00 GMT');
+    });
+
+    test('never emits the literal "Invalid Date"', () => {
+        expect(formatRssDate(new Date('garbage'))).toBe('Thu, 01 Jan 1970 00:00:00 GMT');
+    });
+});
+
+describe('parseFeedDate', () => {
+    test('uses the primary date when it parses', () => {
+        expect(parseFeedDate('2026-04-20T09:00:00.000Z').toISOString()).toBe(
+            '2026-04-20T09:00:00.000Z',
+        );
+    });
+
+    test('falls back to publishedAt when the primary date is garbage', () => {
+        expect(parseFeedDate('garbage', '2026-04-21T09:00:00.000Z').toISOString()).toBe(
+            '2026-04-21T09:00:00.000Z',
+        );
+    });
+
+    test('falls back to the epoch when neither date parses', () => {
+        expect(parseFeedDate('garbage', 'also-garbage').toISOString()).toBe(
+            '1970-01-01T00:00:00.000Z',
+        );
     });
 });
