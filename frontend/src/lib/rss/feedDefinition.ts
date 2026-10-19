@@ -3,7 +3,7 @@ import qs from 'qs';
 import {sha256Hex} from '@/src/lib/rss/xml';
 import {normalizeBaseUrl} from '@/src/lib/rss/feedRoute';
 import {fetchAllPaginated, fetchFeedSingle, type StrapiFeedFetcher} from '@/src/lib/rss/feedFetcher';
-import {MEDIA_FIELDS, populateAuthorAvatar, populateCategory} from '@/src/lib/strapi-queries/populate';
+import {MEDIA_FIELDS, populateCategory} from '@/src/lib/strapi-queries/populate';
 import {getEffectiveDate, type PublishableWithContentDate} from '@/src/lib/effectiveDate';
 import {mediaUrlToAbsolute, normalizeStrapiMedia, type StrapiMediaRef} from '@/src/lib/strapi/media';
 
@@ -21,12 +21,11 @@ export const FEED_CHANNEL_SINGLE_QUERY = qs.stringify(
     {encodeValuesOnly: true},
 );
 
-// Common list population: cover, banner, authors, categories. The audio feed extends
+// Common list population: cover, banner, categories. The audio feed extends
 // this with its file enclosure (see the list-query builders in each feed handler).
 export const feedListPopulate = {
     cover: {fields: MEDIA_FIELDS},
     banner: {fields: MEDIA_FIELDS},
-    authors: populateAuthorAvatar,
     categories: populateCategory,
 };
 
