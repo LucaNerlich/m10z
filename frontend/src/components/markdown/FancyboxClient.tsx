@@ -33,6 +33,19 @@ export function FancyboxClient({children, className}: FancyboxClientProps) {
             const {Fancybox} = mod;
             Fancybox.bind('[data-fancybox="article-gallery"]', {
                 Carousel: {
+                    // Captions come from Markdown titles and CMS media captions.
+                    // Fancybox assigns a string caption with innerHTML, after the
+                    // Markdown sanitizer has already run, so return an element with
+                    // textContent instead: author text must never be parsed as HTML.
+                    formatCaption: (_carousel, slide) => {
+                        const text = typeof slide.caption === 'string' ? slide.caption : '';
+                        // An empty element is still truthy to Fancybox and would add
+                        // a blank padded .f-caption to every uncaptioned slide.
+                        if (!text) return '';
+                        const caption = document.createElement('span');
+                        caption.textContent = text;
+                        return caption;
+                    },
                     Toolbar: {
                         display: {
                             left: ['counter'],
