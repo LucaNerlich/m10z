@@ -61,6 +61,13 @@ describe('generateArticleFeedXml — items', () => {
         expect(xml).toContain('<title>Tom &amp; Jerry &lt;3</title>');
     });
 
+    test('falls back to publishedAt when the content date is unparseable', () => {
+        const {xml} = render([
+            makeArticle({date: 'garbage', publishedAt: '2026-04-21T09:00:00.000Z'}),
+        ]);
+        expect(xml).toContain('<pubDate>Tue, 21 Apr 2026 09:00:00 GMT</pubDate>');
+    });
+
     test('wraps rendered content in a CDATA content:encoded block', () => {
         const {xml} = render([makeArticle({content: 'Some **bold** text.'})]);
         expect(xml).toContain('<content:encoded><![CDATA[');
