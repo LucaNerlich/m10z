@@ -38,8 +38,9 @@ Do not boot Strapi or a database in tests.
 Before submitting changes:
 1. `pnpm run test:run` — must pass
 2. `pnpm run build` — must succeed
-3. `pnpm run dev` — start the dev server and confirm no runtime errors
-4. Verify cache invalidation reaches the frontend if middleware was changed
+3. `npx tsc -p src/admin/tsconfig.json` — admin/plugin typecheck must pass
+4. `pnpm run dev` — start the dev server and confirm no runtime errors
+5. Verify cache invalidation reaches the frontend if middleware was changed
 
 ---
 
@@ -202,6 +203,7 @@ See `.env.example` for all variables. Key ones:
 
 - [ ] `pnpm run test:run` passes
 - [ ] `pnpm run build` succeeds
+- [ ] `npx tsc -p src/admin/tsconfig.json` passes
 - [ ] Dev server starts without errors (`pnpm run dev`)
 - [ ] Code follows formatting and style conventions above
 - [ ] No secrets or credentials committed

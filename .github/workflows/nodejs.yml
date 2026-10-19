@@ -60,3 +60,5 @@ jobs:
         run: pnpm test:run
       - name: Typecheck
         run: npx tsc --noEmit -p tsconfig.json
+      - name: Admin typecheck
+        run: npx tsc -p src/admin/tsconfig.json
