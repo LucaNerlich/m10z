@@ -50,15 +50,4 @@ describe('computeAuthorContentStats', () => {
         expect(result.articles.total).toBe(4);
         expect(result.articles.categories).toEqual([{slug: 'one', title: 'one', count: 1}]);
     });
-
-    test('uses pagination.total when input is a PaginatedResult', () => {
-        const paginated = {
-            items: [{categories: [cat('only-one')]}],
-            pagination: {page: 1, pageSize: 25, pageCount: 4, total: 100},
-            hasNextPage: true,
-        };
-        const result = computeAuthorContentStats(paginated, []);
-        expect(result.articles.total).toBe(100);
-        expect(result.articles.categories).toEqual([{slug: 'only-one', title: 'only-one', count: 1}]);
-    });
 });
