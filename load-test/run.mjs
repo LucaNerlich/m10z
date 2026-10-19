@@ -16,8 +16,8 @@ const K6_IMAGE = 'grafana/k6@sha256:e66db15b860113878fa74670e31f5e274830b7b6e42c
 
 function loadEnvFile(p) {
   // `process.loadEnvFile` is built in (Node >= 20.12) and throws when the file
-  // is missing. Unlike dotenv's `override: true` it never overwrites variables
-  // that are already set, so an explicit shell/CI value wins over .env.
+  // is missing. It never overwrites a key already present in `process.env`, so
+  // load order *is* precedence: the first file to define a key wins.
   try {
     process.loadEnvFile(p);
   } catch {
@@ -25,9 +25,13 @@ function loadEnvFile(p) {
   }
 }
 
-// Load .env then .env.local (local overrides)
-await loadEnvFile(path.join(__dirname, '.env'));
+// Precedence: shell/CI > .env.local > .env. `.env.local` is loaded first because
+// a later `loadEnvFile` cannot override an earlier one, then the captured
+// shell/CI values are re-applied so an explicit environment always wins.
+const shellEnv = {...process.env};
 await loadEnvFile(path.join(__dirname, '.env.local'));
+await loadEnvFile(path.join(__dirname, '.env'));
+Object.assign(process.env, shellEnv);
 
 const testName = process.argv[2];
 if (!testName || !['smoke', 'ramp', 'spike'].includes(testName)) {
