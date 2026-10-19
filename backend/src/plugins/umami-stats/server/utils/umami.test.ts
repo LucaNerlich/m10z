@@ -1,7 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
 import {
-    CACHE_TTL_MS,
     PODCAST_DOWNLOAD_EVENT,
     SLUG_PROPERTY,
     TOP_SLUGS_LIMIT,
@@ -199,9 +198,5 @@ describe('error factories', () => {
         expect(createAuthError()).toMatchObject({code: 'UMAMI_AUTH', status: 502});
         expect(createUpstreamError(500)).toMatchObject({code: 'UMAMI_UPSTREAM', status: 502, upstreamStatus: 500});
         expect(createUpstreamError(0)).toMatchObject({code: 'UMAMI_UPSTREAM', status: 502});
-    });
-
-    test('exposes the dashboard cache TTL', () => {
-        expect(CACHE_TTL_MS).toBe(10 * 60 * 1000);
     });
 });
