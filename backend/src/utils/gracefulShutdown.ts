@@ -19,6 +19,14 @@ export type ShutdownLogger = {
 /** How often to drop sockets that went idle after shutdown started. */
 const IDLE_SWEEP_INTERVAL_MS = 250;
 
+/**
+ * The shutdown sequence runs at most once per process. `SIGINT` after `SIGTERM`
+ * (or a crash during shutdown) must not call `close()` again: it would reject
+ * with `ERR_SERVER_NOT_RUNNING` and exit 1 while the first shutdown is still
+ * closing the database.
+ */
+let shuttingDown = false;
+
 /** Minimal HTTP-server surface the shutdown needs. */
 export type ShutdownHttpServer = {
     close: (callback: (err?: Error) => void) => unknown;
@@ -54,6 +62,9 @@ export async function runGracefulShutdown({
     timeoutMs = 30000,
     exit = (code) => process.exit(code),
 }: GracefulShutdownOptions): Promise<void> {
+    if (shuttingDown) return;
+    shuttingDown = true;
+
     log.info(`Received ${signal}, starting graceful shutdown...`);
 
     const forceExit = () => {

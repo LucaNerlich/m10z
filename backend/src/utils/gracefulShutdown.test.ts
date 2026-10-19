@@ -1,6 +1,13 @@
-import {afterEach, describe, expect, test, vi} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
-import {runGracefulShutdown} from './gracefulShutdown';
+let runGracefulShutdown: typeof import('./gracefulShutdown').runGracefulShutdown;
+
+beforeEach(async () => {
+    // The re-entrancy guard is module state, so reload the module to give each
+    // test a fresh shutdown sequence.
+    vi.resetModules();
+    ({runGracefulShutdown} = await import('./gracefulShutdown'));
+});
 
 function makeLogger() {
     return {info: vi.fn(), warn: vi.fn(), error: vi.fn()};
@@ -168,5 +175,52 @@ describe('runGracefulShutdown', () => {
 
         expect(exit).toHaveBeenCalledWith(1);
         expect(log.error).toHaveBeenCalled();
+    });
+
+    test('runs the shutdown sequence only once', async () => {
+        const log = makeLogger();
+        const exit = vi.fn();
+        let closeCallback: ((err?: Error) => void) | undefined;
+        let closeCalls = 0;
+        const httpServer = {
+            close: vi.fn((callback: (err?: Error) => void) => {
+                closeCalls += 1;
+                if (closeCalls === 1) {
+                    closeCallback = callback;
+                } else {
+                    // What Node answers when close() is called twice.
+                    callback(Object.assign(new Error('Server is not running'), {code: 'ERR_SERVER_NOT_RUNNING'}));
+                }
+            }),
+            closeIdleConnections: vi.fn(),
+        };
+
+        const first = runGracefulShutdown({
+            signal: 'SIGTERM',
+            log,
+            exitCode: 0,
+            httpServer,
+            exit,
+        });
+
+        // A second signal lands while the first shutdown is still closing the
+        // HTTP server. It must not call close() again (ERR_SERVER_NOT_RUNNING)
+        // or abort the in-progress shutdown with exit 1.
+        await runGracefulShutdown({
+            signal: 'SIGINT',
+            log,
+            exitCode: 1,
+            httpServer,
+            exit,
+        });
+
+        expect(httpServer.close).toHaveBeenCalledTimes(1);
+        expect(exit).not.toHaveBeenCalled();
+
+        closeCallback?.(undefined);
+        await first;
+
+        expect(exit).toHaveBeenCalledTimes(1);
+        expect(exit).toHaveBeenCalledWith(0);
     });
 });
