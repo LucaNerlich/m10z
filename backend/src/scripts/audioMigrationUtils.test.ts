@@ -61,21 +61,34 @@ describe('findExistingFileByName', () => {
 
         const result = await findExistingFileByName(fetchFn as any, base, token, 'song.mp3');
 
-        expect(result).toEqual({id: 7, url: '/uploads/song.mp3'});
+        expect(result).toEqual({status: 'found', file: {id: 7, url: '/uploads/song.mp3'}});
     });
 
-    test('returns null when the response has no matching file', async () => {
+    test('reports absent when the response has no matching file', async () => {
         const fetchFn = async () => ({ok: true, json: async () => [{id: 1, name: 'other.mp3', url: ''}]});
-        expect(await findExistingFileByName(fetchFn as any, base, token, 'song.mp3')).toBeNull();
+        expect(await findExistingFileByName(fetchFn as any, base, token, 'song.mp3')).toEqual({
+            status: 'absent',
+        });
     });
 
-    test('returns null on HTTP errors and network failures', async () => {
-        expect(await findExistingFileByName(async () => ({ok: false}) as any, base, token, 'song.mp3')).toBeNull();
+    test('reports unknown when the lookup request fails, so callers do not retry', async () => {
+        expect(
+            await findExistingFileByName(async () => ({ok: false, status: 500}) as any, base, token, 'song.mp3'),
+        ).toEqual({status: 'unknown', reason: 'media library request failed (HTTP 500)'});
         expect(
             await findExistingFileByName(async () => {
                 throw new Error('network down');
             }, base, token, 'song.mp3'),
-        ).toBeNull();
+        ).toEqual({status: 'unknown', reason: 'network down'});
+    });
+
+    test('reports unknown for a response body that is not a file list', async () => {
+        const fetchFn = async () => ({ok: true, json: async () => ({unexpected: 'shape'})});
+
+        expect(await findExistingFileByName(fetchFn as any, base, token, 'song.mp3')).toEqual({
+            status: 'unknown',
+            reason: 'unexpected media library response body',
+        });
     });
 });
 

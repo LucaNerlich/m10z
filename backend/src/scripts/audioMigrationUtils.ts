@@ -141,6 +141,18 @@ export async function interpretUploadResponse(
 }
 
 /**
+ * Result of the idempotency lookup for an upload.
+ *
+ * `absent` means the media library answered and has no such file, so uploading is
+ * safe. `unknown` means the lookup itself failed, so the caller cannot tell whether
+ * an accepted upload landed — it must fail the file rather than retry the POST.
+ */
+export type ExistingFileLookup =
+    | {status: 'found'; file: {id: number; url: string}}
+    | {status: 'absent'}
+    | {status: 'unknown'; reason: string};
+
+/**
  * Look up an already-uploaded media file by name (idempotency check for the
  * migration script). Pure w.r.t. Strapi: the fetch implementation, API base
  * URL, and token are passed in, so this is unit-testable without network I/O.
@@ -152,21 +164,28 @@ export async function findExistingFileByName(
     fetchFn: (
         url: string,
         init?: {method?: string; headers?: Record<string, string>},
-    ) => Promise<{ok: boolean; json: () => Promise<unknown>}>,
+    ) => Promise<{ok: boolean; status?: number; json: () => Promise<unknown>}>,
     apiBase: string,
     apiToken: string,
     filename: string,
-): Promise<{id: number; url: string} | null> {
+): Promise<ExistingFileLookup> {
     try {
         const query = `filters[name][$eq]=${encodeURIComponent(filename)}`;
         const res = await fetchFn(`${apiBase}/api/upload/files?${query}`, {
             method: 'GET',
             headers: {Authorization: `Bearer ${apiToken}`},
         });
-        if (!res.ok) return null;
+        if (!res.ok) {
+            return {
+                status: 'unknown',
+                reason: `media library request failed${typeof res.status === 'number' ? ` (HTTP ${res.status})` : ''}`,
+            };
+        }
         const json: unknown = await res.json();
         const payload = Array.isArray(json) ? json : (json as {results?: unknown} | null)?.results;
-        if (!Array.isArray(payload)) return null;
+        if (!Array.isArray(payload)) {
+            return {status: 'unknown', reason: 'unexpected media library response body'};
+        }
         const match = payload.find(
             (file): file is {id: number; url?: string} =>
                 typeof file === 'object' &&
@@ -174,8 +193,10 @@ export async function findExistingFileByName(
                 (file as {name?: unknown}).name === filename &&
                 typeof (file as {id?: unknown}).id === 'number',
         );
-        return match ? {id: match.id, url: match.url ?? ''} : null;
-    } catch {
-        return null;
+        return match
+            ? {status: 'found', file: {id: match.id, url: match.url ?? ''}}
+            : {status: 'absent'};
+    } catch (err) {
+        return {status: 'unknown', reason: err instanceof Error ? err.message : String(err)};
     }
 }
