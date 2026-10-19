@@ -1,19 +1,21 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 type LocalStorageModule = typeof import('./localStorage');
+type StorageListener = (event: StorageEvent) => void;
 
 // A fresh module instance per test: the in-memory mirror is module-private state,
 // so re-importing is how a test gets a clean one (the previous `clearCache()`
-// export existed only for this and cleared nothing else).
+// export existed only for this and cleared nothing else). `window` must exist
+// before that import, otherwise the module never registers its listeners.
 let api: LocalStorageModule;
 
 describe('localStorage utilities', () => {
     let store: Record<string, string> = {};
+    let listeners: Record<string, StorageListener[]> = {};
 
     beforeEach(async () => {
-        vi.resetModules();
-        api = await import('./localStorage');
         store = {};
+        listeners = {};
         vi.stubGlobal(
             'window',
             {
@@ -26,8 +28,13 @@ describe('localStorage utilities', () => {
                         delete store[key];
                     }),
                 },
+                addEventListener: vi.fn((type: string, listener: StorageListener) => {
+                    (listeners[type] ??= []).push(listener);
+                }),
             }
         );
+        vi.resetModules();
+        api = await import('./localStorage');
     });
 
     afterEach(() => {
@@ -80,6 +87,25 @@ describe('localStorage utilities', () => {
             api.setItem('key', 'new');
 
             expect(store['key']).toBe('"old"');
+            expect(api.getItem<string>('key')).toBe('new');
+        });
+    });
+
+    describe('cross-tab invalidation', () => {
+        test('a read before the queued storage event returns the durable value', () => {
+            store['key'] = '"old"';
+            // Prime the mirror from the durable store.
+            expect(api.getItem<string>('key')).toBe('old');
+
+            // Another tab writes; its `storage` event is queued but not delivered yet.
+            store['key'] = '"new"';
+            expect(api.getItem<string>('key')).toBe('new');
+
+            expect(listeners['storage']).toHaveLength(1);
+            for (const listener of listeners['storage'] ?? []) {
+                listener({key: 'key'} as unknown as StorageEvent);
+            }
+
             expect(api.getItem<string>('key')).toBe('new');
         });
     });
