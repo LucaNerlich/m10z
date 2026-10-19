@@ -91,7 +91,10 @@ function resolveFeedLink(raw: string, siteUrl: string | undefined): string | nul
     if (/^mailto:/i.test(raw)) return raw;
     if (raw.startsWith('#')) return raw;
     if (raw.startsWith('/uploads/') || !siteUrl) return joinStrapiBaseUrl(raw);
-    return new URL(raw, siteUrl).toString();
+    const url = new URL(raw, siteUrl);
+    // Backslashes normalize to slashes in URL parsing (`/\evil.test` would
+    // escape the site origin), so enforce same-origin after parsing.
+    return url.origin === new URL(siteUrl).origin ? url.toString() : null;
 }
 
 /**
@@ -143,10 +146,12 @@ export function markdownToHtml(markdownText: string, siteUrl?: string): string {
         });
 
         // Rewrite URLs in the sanitized output:
-        // - relative URLs (e.g. /uploads/foo.jpg) are absolutized against the
-        //   Strapi base URL so feed readers resolve them correctly;
-        // - protocol-relative URLs (//host/path) are removed — they would
-        //   resolve against the reader's origin, pulling third-party content.
+        // - image src/srcset relative paths are absolutized against the Strapi
+        //   base URL so feed readers resolve uploads correctly;
+        // - anchor hrefs are resolved against the public site origin, with
+        //   /uploads/... kept on Strapi;
+        // - protocol-relative URLs (//host/path) and escaping backslash forms
+        //   are removed — they would pull third-party content.
         const body = dom.window.document.body;
         body.innerHTML = sanitized;
 

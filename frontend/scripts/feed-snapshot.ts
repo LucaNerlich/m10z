@@ -46,7 +46,7 @@ const articles: StrapiArticle[] = [
         publishedAt: '2026-04-12T10:30:00.000Z',
         date: null,
         wordCount: 1200,
-        content: '## Einleitung\n\nDas ist ein **Test**-Artikel mit etwas *Markdown*.\n\n- Punkt 1\n- Punkt 2',
+        content: '## Einleitung\n\nDas ist ein **Test**-Artikel mit etwas *Markdown*.\n\n[Interner Link](/artikel/zweiter-beitrag)\n\n- Punkt 1\n- Punkt 2',
         cover: {
             url: '/uploads/cover-1.jpg',
             width: 1920,
@@ -148,7 +148,7 @@ const podcasts: StrapiPodcast[] = [
         date: null,
         wordCount: 2500,
         duration: 3540,
-        shownotes: '## Shownotes\n\nWir reden über *Spiele* und **Technik**.\n\n- Link 1\n- Link 2',
+        shownotes: '## Shownotes\n\nWir reden über *Spiele* und **Technik**.\n\n[Shownotes-Link](/podcasts/episode-002-keine-shownotes)\n\n- Link 1\n- Link 2',
         file: {
             url: '/uploads/episode-001.mp3',
             mime: 'audio/mpeg',

@@ -78,6 +78,13 @@ describe('markdownToHtml — URL resolution for feed readers', () => {
         vi.unstubAllEnvs();
     });
 
+    test('does not let a backslash escape the site origin', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('<a href="/\\evil.test/x">x</a>', 'https://m10z.de');
+        expect(html).not.toContain('evil.test');
+        vi.unstubAllEnvs();
+    });
+
     test('absolutizes relative link hrefs', () => {
         vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
         const html = markdownToHtml('[doc](/uploads/doc.pdf)');
