@@ -30,13 +30,21 @@ function rangeHref(key: UmamiDetailRangeKey): string {
     return `${routes.statistikReach}?zeitraum=${key}`;
 }
 
+/**
+ * A slug such as `__proto__` is a valid URL segment but not an own key of a
+ * normal object; reading `titles[slug]` directly would return the inherited
+ * prototype and crash the render. Only own properties count.
+ */
+function titleFor(titles: StatistikReachTitleMap, slug: string): string {
+    return Object.hasOwn(titles, slug) ? titles[slug] : slug;
+}
+
 function toArticleItems(
     range: UmamiReachDetailRange,
     titles: StatistikReachTitleMap
 ): StatistikBarListItem[] {
     return range.articles.map((article) => {
-        const title = titles[article.slug];
-        const label = title ?? article.slug;
+        const label = titleFor(titles, article.slug);
         return {
             key: article.slug,
             label,
@@ -52,8 +60,7 @@ function toPodcastItems(
     titles: StatistikReachTitleMap
 ): StatistikBarListItem[] {
     return range.podcasts.map((episode) => {
-        const title = titles[episode.slug];
-        const label = title ?? episode.slug;
+        const label = titleFor(titles, episode.slug);
         return {
             key: episode.slug,
             label,
