@@ -5,7 +5,7 @@ import {useRouter} from 'next/navigation';
 import Image from 'next/image';
 import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
 
-import {SEARCH_MIN_QUERY_LENGTH, useSearchQuery} from '@/src/hooks/useSearchQuery';
+import {SEARCH_MAX_QUERY_LENGTH, SEARCH_MIN_QUERY_LENGTH, useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {isImageHostnameAllowed, normalizeSearchImageUrl} from '@/src/lib/image';
 import {lockBodyScroll} from '@/src/lib/bodyScrollLock';
 import {type SearchRecord, type SearchResult} from '@/src/lib/search/types';
@@ -218,6 +218,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         type="search"
                         placeholder="Suche nach Artikeln, Podcasts, Kategorien oder Teammitgliedern"
                         aria-label="Suche"
+                        maxLength={SEARCH_MAX_QUERY_LENGTH}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}

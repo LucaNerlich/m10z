@@ -8,7 +8,7 @@ const {useSearchQuery, push} = vi.hoisted(() => ({
     push: vi.fn(),
 }));
 
-vi.mock('@/src/hooks/useSearchQuery', () => ({useSearchQuery, SEARCH_MIN_QUERY_LENGTH: 2}));
+vi.mock('@/src/hooks/useSearchQuery', () => ({useSearchQuery, SEARCH_MIN_QUERY_LENGTH: 2, SEARCH_MAX_QUERY_LENGTH: 200}));
 vi.mock('next/navigation', () => ({useRouter: () => ({push})}));
 
 import type {SearchResult} from '@/src/lib/search/types';
