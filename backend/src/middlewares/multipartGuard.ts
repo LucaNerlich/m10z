@@ -18,10 +18,23 @@ type MultipartGuardContext = {
     body?: unknown;
 };
 
-/** The only paths allowed to carry a multipart body: the upload plugin endpoints. */
+/**
+ * Paths allowed to carry a multipart body. The content-API upload endpoint is
+ * `${apiPrefix}/upload`; the admin Media Library uses `/upload/files` (create),
+ * `/upload/files/:id` (metadata updates) and `/upload/files/:id/replace`, and
+ * the admin project settings accept the logo upload. Everything else is
+ * rejected before the body parser.
+ */
 export function isMultipartUploadPath(path: string, apiPrefix = '/api'): boolean {
     const normalized = path.replace(/\/+$/, '');
-    return normalized === '/upload' || normalized === `${apiPrefix}/upload`;
+    return (
+        normalized === '/upload' ||
+        normalized === `${apiPrefix}/upload` ||
+        normalized === '/upload/files' ||
+        /^\/upload\/files\/[^/]+$/.test(normalized) ||
+        /^\/upload\/files\/[^/]+\/replace$/.test(normalized) ||
+        normalized === '/admin/project-settings'
+    );
 }
 
 export function hasMultipartContentType(contentType: string | string[] | undefined): boolean {

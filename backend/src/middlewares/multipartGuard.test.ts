@@ -1,6 +1,7 @@
 import {describe, expect, test, vi} from 'vitest';
 
 import multipartGuard, {hasMultipartContentType, isMultipartUploadPath} from './multipartGuard';
+import middlewares from '../../config/middlewares';
 
 describe('isMultipartUploadPath', () => {
     test('accepts the content-API and admin upload endpoints', () => {
@@ -8,13 +9,30 @@ describe('isMultipartUploadPath', () => {
         expect(isMultipartUploadPath('/api/upload/')).toBe(true);
         expect(isMultipartUploadPath('/upload')).toBe(true);
         expect(isMultipartUploadPath('/upload/')).toBe(true);
+        expect(isMultipartUploadPath('/upload/files')).toBe(true);
+        expect(isMultipartUploadPath('/upload/files/12')).toBe(true);
+        expect(isMultipartUploadPath('/upload/files/12/replace')).toBe(true);
+        expect(isMultipartUploadPath('/admin/project-settings')).toBe(true);
     });
 
     test('rejects every other path, including nested lookalikes', () => {
         expect(isMultipartUploadPath('/api/articles')).toBe(false);
         expect(isMultipartUploadPath('/api/articles/upload')).toBe(false);
         expect(isMultipartUploadPath('/api/upload/files')).toBe(false);
+        expect(isMultipartUploadPath('/upload/anything')).toBe(false);
+        expect(isMultipartUploadPath('/upload/filesx')).toBe(false);
         expect(isMultipartUploadPath('/')).toBe(false);
+    });
+
+    test('is registered before the body parser', () => {
+        const names = middlewares.map((entry) =>
+            typeof entry === 'string' ? entry : entry.name,
+        );
+        expect(names).toContain('global::multipartGuard');
+        expect(names).toContain('strapi::body');
+        expect(names.indexOf('global::multipartGuard')).toBeLessThan(
+            names.indexOf('strapi::body'),
+        );
     });
 
     test('honours a custom API prefix', () => {
