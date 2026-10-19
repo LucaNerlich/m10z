@@ -218,7 +218,7 @@ export async function HomePage({page}: {page: number}) {
 
                 <Pagination
                     currentPage={currentPage}
-                    totalPages={Math.ceil(combinedTotal / PAGE_SIZE)}
+                    totalPages={data.pagination.pageCount}
                     previousHref={prevPage ? `/?page=${prevPage}` : undefined}
                     nextHref={nextPage ? `/?page=${nextPage}` : undefined}
                 />
