@@ -92,4 +92,19 @@ describe('checkRateLimit', () => {
         expect(rateLimitState.has('seed-0')).toBe(false);
         expect(rateLimitState.get('sweep-fresh-again')).toBeDefined();
     });
+
+    test('evicts the oldest live entry when the map is at the cap', () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(0);
+        rateLimitState.clear();
+        for (let i = 0; i < RATE_LIMIT_MAX_ENTRIES; i++) {
+            rateLimitState.set(`live-${i}`, {count: 1, resetAt: 61_000});
+        }
+
+        expect(checkRateLimit('new-live').ok).toBe(true);
+
+        expect(rateLimitState.size).toBe(RATE_LIMIT_MAX_ENTRIES);
+        expect(rateLimitState.has('live-0')).toBe(false);
+        expect(rateLimitState.has('new-live')).toBe(true);
+    });
 });

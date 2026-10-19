@@ -98,6 +98,14 @@ export function checkRateLimit(key: string): {ok: boolean; retryAfterSeconds: nu
                 rateLimitState.delete(storedKey);
             }
         }
+        // Every entry can still be live (attacker-rotated keys inside one window).
+        // Evict the oldest insertion until there is room, so the map stays capped
+        // instead of growing and rescanning itself on every new key.
+        while (rateLimitState.size >= RATE_LIMIT_MAX_ENTRIES) {
+            const oldestKey = rateLimitState.keys().next().value;
+            if (oldestKey === undefined) break;
+            rateLimitState.delete(oldestKey);
+        }
     }
 
     rateLimitState.set(key, {count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS});
