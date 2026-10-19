@@ -23,7 +23,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import {fileURLToPath, pathToFileURL} from 'url';
+import {fileURLToPath} from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -244,7 +244,9 @@ function isDirectRun() {
     const entry = process.argv[1];
     if (!entry) return false;
     try {
-        return pathToFileURL(path.resolve(entry)).href === import.meta.url;
+        // Compare realpaths: the loader resolves symlinks in `import.meta.url`,
+        // while argv[1] keeps the path the caller typed.
+        return fs.realpathSync(path.resolve(entry)) === fs.realpathSync(fileURLToPath(import.meta.url));
     } catch {
         return false;
     }
