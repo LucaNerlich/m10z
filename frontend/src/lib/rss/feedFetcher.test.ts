@@ -95,6 +95,36 @@ describe('fetchAllPaginated', () => {
         expect(calls).toHaveLength(1);
     });
 
+    test('dedupes items that shift across parallel offset pages', async () => {
+        // A publish between the page-1 response and the parallel page request can
+        // repeat the boundary item on page 2. Identity, not position, decides.
+        const {fetcher} = makeFetcher({
+            1: {data: [{id: 1}, {id: 2}], pageCount: 2},
+            2: {data: [{id: 2}, {id: 3}], pageCount: 2},
+        });
+        const items = await fetchAllPaginated<{id: number}>({
+            fetcher,
+            apiBasePath: '/api/x',
+            buildQueryString,
+            pageSize: 2,
+        });
+        expect(items).toEqual([{id: 1}, {id: 2}, {id: 3}]);
+    });
+
+    test('prefers documentId for dedupe, then slug', async () => {
+        const {fetcher} = makeFetcher({
+            1: {data: [{documentId: 'a', slug: 'one'}, {slug: 'two'}], pageCount: 2},
+            2: {data: [{documentId: 'a', slug: 'one-renamed'}, {slug: 'two'}], pageCount: 2},
+        });
+        const items = await fetchAllPaginated<Record<string, string>>({
+            fetcher,
+            apiBasePath: '/api/x',
+            buildQueryString,
+            pageSize: 2,
+        });
+        expect(items).toEqual([{documentId: 'a', slug: 'one'}, {slug: 'two'}]);
+    });
+
     test('returns the first page when pagination meta is missing', async () => {
         const calls: string[] = [];
         const fetcher: StrapiFeedFetcher = async <T>(pathWithQuery: string): Promise<T> => {
