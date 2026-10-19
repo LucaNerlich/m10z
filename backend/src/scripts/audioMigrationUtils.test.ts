@@ -112,6 +112,25 @@ describe('interpretUploadResponse', () => {
         });
     });
 
+    // `[]` is the plausible ambiguous body where `Array.isArray` passes but
+    // `parsed[0]` is missing; the others pass the array check with a malformed
+    // first element. None of them may take the `uploaded` path.
+    describe('array-shaped invalid bodies', () => {
+        const found = {id: 7, url: '/uploads/episode.mp3'};
+
+        test.each([
+            ['[] with an existing file', [], async () => found, 'existing'],
+            ['[] with no existing file', [], async () => null, 'unexpected'],
+            ['[{}] with no existing file', [{}], async () => null, 'unexpected'],
+            ['[null] with no existing file', [null], async () => null, 'unexpected'],
+            ["[{id: '12'}] with no existing file", [{id: '12'}], async () => null, 'unexpected'],
+        ])('%s', async (_label, body, lookupExisting, status) => {
+            const outcome = await interpretUploadResponse(body, lookupExisting);
+
+            expect(outcome.status).toBe(status);
+        });
+    });
+
     test('truncates a huge body in the unexpected message', async () => {
         const lookupExisting = vi.fn(async () => null);
 
