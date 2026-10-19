@@ -43,7 +43,7 @@ function createUmamiClient({fetchImpl, now, log} = {}) {
         error: () => {},
     };
 
-    /** @type {{token: string, at: number} | null} */
+    /** @type {{token: string} | null} */
     let tokenCache = null;
     /** @type {Promise<string> | null} shared in-flight login */
     let loginInflight = null;
@@ -102,7 +102,7 @@ function createUmamiClient({fetchImpl, now, log} = {}) {
             logger.warn('[umami-stats] Umami login response did not contain a token.');
             throw createUpstreamError(0);
         }
-        tokenCache = {token, at: nowFn()};
+        tokenCache = {token};
         return token;
     }
 

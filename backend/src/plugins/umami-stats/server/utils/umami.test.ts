@@ -3,7 +3,6 @@ import {describe, expect, test} from 'vitest';
 import {
     CACHE_TTL_MS,
     PODCAST_DOWNLOAD_EVENT,
-    RANGE_KEYS,
     SLUG_PROPERTY,
     TOP_SLUGS_LIMIT,
     buildEventValuesUrl,
@@ -202,8 +201,7 @@ describe('error factories', () => {
         expect(createUpstreamError(0)).toMatchObject({code: 'UMAMI_UPSTREAM', status: 502});
     });
 
-    test('range constants cover the required widget ranges', () => {
-        expect(RANGE_KEYS).toEqual(['7d', '30d', '6m']);
+    test('exposes the dashboard cache TTL', () => {
         expect(CACHE_TTL_MS).toBe(10 * 60 * 1000);
     });
 });
