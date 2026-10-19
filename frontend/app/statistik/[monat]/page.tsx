@@ -2,12 +2,10 @@ import {CaretLeftIcon, CaretRightIcon, ChartBarIcon} from '@phosphor-icons/react
 import {type Metadata} from 'next';
 import Link from 'next/link';
 import {notFound} from 'next/navigation';
-import Script from 'next/script';
 
 import {getErrorMessage} from '@/src/lib/errors';
 import {isBuildPhase} from '@/src/lib/buildPhase';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
-import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {routes} from '@/src/lib/routes';
 import {type StrapiArticle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
@@ -26,6 +24,7 @@ import {getStatistikDashboard} from '@/src/lib/statistik/statistikSource';
 import {ArticleCard} from '@/src/components/ArticleCard';
 import {ContentGrid} from '@/src/components/ContentGrid';
 import {EmptyState} from '@/src/components/EmptyState';
+import {JsonLdScripts} from '@/src/components/JsonLdScripts';
 import {PodcastCard} from '@/src/components/PodcastCard';
 import {StatistikDashboard, StatistikIntro} from '@/src/components/StatistikDashboard';
 import {StatistikStatsBar, type StatistikStat} from '@/src/components/StatistikStatsBar';
@@ -146,10 +145,8 @@ export default async function StatistikMonthPage({params}: MonthPageParams) {
 
     return (
         <div data-list-page>
-            <Script
-                id={`jsonld-breadcrumb-statistik-${month.key}`}
-                type='application/ld+json'
-                dangerouslySetInnerHTML={{__html: stringifyJsonLd(breadcrumbJsonLd)}}
+            <JsonLdScripts
+                entries={[{id: `jsonld-breadcrumb-statistik-${month.key}`, jsonLd: breadcrumbJsonLd}]}
             />
 
             <StatistikIntro

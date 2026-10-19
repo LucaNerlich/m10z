@@ -23,11 +23,10 @@ import {Tag} from '@/src/components/Tag';
 import {computeAuthorContentStats} from '@/src/lib/authorContentStats';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateAuthorProfileJsonLd} from '@/src/lib/jsonld/author';
-import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 import {type SlugPageParams} from '@/src/lib/params';
 import {sitemapTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
-import Script from 'next/script';
+import {JsonLdScripts} from '@/src/components/JsonLdScripts';
 import styles from './page.module.css';
 
 /**
@@ -143,15 +142,11 @@ export default async function AuthorPage({params}: SlugPageParams) {
 
     return (
         <div data-list-page>
-            <Script
-                id={`jsonld-breadcrumb-${slug}`}
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: stringifyJsonLd(breadcrumbJsonLd)}}
-            />
-            <Script
-                id={`jsonld-profile-${slug}`}
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: stringifyJsonLd(profileJsonLd)}}
+            <JsonLdScripts
+                entries={[
+                    {id: `jsonld-breadcrumb-${slug}`, jsonLd: breadcrumbJsonLd},
+                    {id: `jsonld-profile-${slug}`, jsonLd: profileJsonLd},
+                ]}
             />
             <AuthorHeader author={author} />
             <AuthorNav authorSlug={slug} activeSection="overview" />

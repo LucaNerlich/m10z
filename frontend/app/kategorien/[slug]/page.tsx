@@ -12,11 +12,10 @@ import {transientPageFallback} from '@/src/lib/transientPageFallback';
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {generateBreadcrumbJsonLd} from '@/src/lib/jsonld/breadcrumb';
 import {generateCategoryJsonLd} from '@/src/lib/jsonld/category';
-import {stringifyJsonLd} from '@/src/lib/jsonld/helpers';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 import {sitemapTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {type SlugPageParams} from '@/src/lib/params';
-import Script from 'next/script';
+import {JsonLdScripts} from '@/src/components/JsonLdScripts';
 import styles from './page.module.css';
 
 /**
@@ -104,15 +103,11 @@ export default async function CategoryDetailPage({params}: SlugPageParams) {
 
     return (
         <div data-list-page>
-            <Script
-                id={`jsonld-breadcrumb-${slug}`}
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: stringifyJsonLd(breadcrumbJsonLd)}}
-            />
-            <Script
-                id={`jsonld-category-${slug}`}
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{__html: stringifyJsonLd(categoryJsonLd)}}
+            <JsonLdScripts
+                entries={[
+                    {id: `jsonld-breadcrumb-${slug}`, jsonLd: breadcrumbJsonLd},
+                    {id: `jsonld-category-${slug}`, jsonLd: categoryJsonLd},
+                ]}
             />
             <header className={styles.header}>
                 <h1 className={styles.title}>{title}</h1>
