@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest';
 
-import {buildUploadFormData, extractFilename, findExistingFileByName, getMimeType, validateUrl} from './audioMigrationUtils';
+import {buildUploadFormData, extractFilename, findExistingFileByName, getMimeType, interpretUploadResponse, validateUrl} from './audioMigrationUtils';
 
 describe('validateUrl', () => {
     test('accepts an HTTPS URL on the allowed domain', () => {
@@ -61,21 +61,98 @@ describe('findExistingFileByName', () => {
 
         const result = await findExistingFileByName(fetchFn as any, base, token, 'song.mp3');
 
-        expect(result).toEqual({id: 7, url: '/uploads/song.mp3'});
+        expect(result).toEqual({status: 'found', file: {id: 7, url: '/uploads/song.mp3'}});
     });
 
-    test('returns null when the response has no matching file', async () => {
+    test('reports absent when the response has no matching file', async () => {
         const fetchFn = async () => ({ok: true, json: async () => [{id: 1, name: 'other.mp3', url: ''}]});
-        expect(await findExistingFileByName(fetchFn as any, base, token, 'song.mp3')).toBeNull();
+        expect(await findExistingFileByName(fetchFn as any, base, token, 'song.mp3')).toEqual({
+            status: 'absent',
+        });
     });
 
-    test('returns null on HTTP errors and network failures', async () => {
-        expect(await findExistingFileByName(async () => ({ok: false}) as any, base, token, 'song.mp3')).toBeNull();
+    test('reports unknown when the lookup request fails, so callers do not retry', async () => {
+        expect(
+            await findExistingFileByName(async () => ({ok: false, status: 500}) as any, base, token, 'song.mp3'),
+        ).toEqual({status: 'unknown', reason: 'media library request failed (HTTP 500)'});
         expect(
             await findExistingFileByName(async () => {
                 throw new Error('network down');
             }, base, token, 'song.mp3'),
-        ).toBeNull();
+        ).toEqual({status: 'unknown', reason: 'network down'});
+    });
+
+    test('reports unknown for a response body that is not a file list', async () => {
+        const fetchFn = async () => ({ok: true, json: async () => ({unexpected: 'shape'})});
+
+        expect(await findExistingFileByName(fetchFn as any, base, token, 'song.mp3')).toEqual({
+            status: 'unknown',
+            reason: 'unexpected media library response body',
+        });
+    });
+});
+
+describe('interpretUploadResponse', () => {
+    test('returns the uploaded file for a well-formed array body without a lookup', async () => {
+        const lookupExisting = vi.fn(async () => null);
+
+        const outcome = await interpretUploadResponse(
+            [{id: 12, url: '/uploads/episode.mp3'}],
+            lookupExisting,
+        );
+
+        expect(outcome).toEqual({status: 'uploaded', id: 12, url: '/uploads/episode.mp3'});
+        expect(lookupExisting).not.toHaveBeenCalled();
+    });
+
+    test('treats a wrong-shape 200 as success when the file is already in the media library', async () => {
+        const lookupExisting = vi.fn(async () => ({id: 7, url: '/uploads/episode.mp3'}));
+
+        const outcome = await interpretUploadResponse({}, lookupExisting);
+
+        expect(outcome).toEqual({status: 'existing', id: 7, url: '/uploads/episode.mp3'});
+        expect(lookupExisting).toHaveBeenCalledTimes(1);
+    });
+
+    test('reports an unexpected body when the file is not in the media library', async () => {
+        const lookupExisting = vi.fn(async () => null);
+
+        const outcome = await interpretUploadResponse({unexpected: 'shape'}, lookupExisting);
+
+        expect(outcome).toMatchObject({
+            status: 'unexpected',
+            message: expect.stringContaining('Unexpected Strapi upload response format'),
+        });
+    });
+
+    // `[]` is the plausible ambiguous body where `Array.isArray` passes but
+    // `parsed[0]` is missing; the others pass the array check with a malformed
+    // first element. None of them may take the `uploaded` path.
+    describe('array-shaped invalid bodies', () => {
+        const found = {id: 7, url: '/uploads/episode.mp3'};
+
+        test.each([
+            ['[] with an existing file', [], async () => found, 'existing'],
+            ['[] with no existing file', [], async () => null, 'unexpected'],
+            ['[{}] with no existing file', [{}], async () => null, 'unexpected'],
+            ['[null] with no existing file', [null], async () => null, 'unexpected'],
+            ["[{id: '12'}] with no existing file", [{id: '12'}], async () => null, 'unexpected'],
+        ])('%s', async (_label, body, lookupExisting, status) => {
+            const outcome = await interpretUploadResponse(body, lookupExisting);
+
+            expect(outcome.status).toBe(status);
+        });
+    });
+
+    test('truncates a huge body in the unexpected message', async () => {
+        const lookupExisting = vi.fn(async () => null);
+
+        const outcome = await interpretUploadResponse({blob: 'x'.repeat(5000)}, lookupExisting);
+
+        expect(outcome.status).toBe('unexpected');
+        if (outcome.status !== 'unexpected') return;
+        expect(outcome.message).toContain('…');
+        expect(outcome.message.length).toBeLessThan(400);
     });
 });
 

@@ -23,7 +23,9 @@ import {
     extractFilename,
     findExistingFileByName,
     getMimeType,
+    interpretUploadResponse,
     validateUrl,
+    type ExistingFileLookup,
 } from './audioMigrationUtils';
 import {AUDIO_FILE_URLS, EXPECTED_FILE_COUNT} from './audioMigrationList';
 
@@ -62,6 +64,20 @@ function error(...args: unknown[]): void {
     console.error('[migrate-audio-files] ERROR:', ...args);
 }
 
+/**
+ * A media-library lookup failed, so the migration cannot prove the file is absent.
+ * Failing the file (instead of retrying the upload) keeps an ambiguous accepted
+ * request from being POSTed a second time; a re-run skips a file that landed.
+ */
+class LookupUnavailableError extends Error {
+    constructor(filename: string, reason: string) {
+        super(
+            `Media library lookup failed for ${filename} (${reason}); not retrying because the file may already exist. Re-run the migration once the lookup works.`,
+        );
+        this.name = 'LookupUnavailableError';
+    }
+}
+
 function randomDelay(min: number, max: number): Promise<void> {
     const delay = Math.floor(Math.random() * (max - min + 1)) + min;
     return new Promise((resolve) => setTimeout(resolve, delay));
@@ -73,12 +89,12 @@ async function sleep(ms: number): Promise<void> {
 
 /**
  * Check whether a file with the given name already exists in the media library,
- * so re-runs of the migration do not duplicate every upload. Returns `null` when
- * the file does not exist or the lookup fails (callers then proceed normally).
+ * so re-runs of the migration do not duplicate every upload. Reports `unknown`
+ * when the lookup itself fails, so callers can refuse to upload blindly.
  */
-async function lookupExistingFile(filename: string): Promise<{id: number; url: string} | null> {
+async function lookupExistingFile(filename: string): Promise<ExistingFileLookup> {
     const apiToken = process.env.STRAPI_API_TOKEN;
-    if (!apiToken) return null;
+    if (!apiToken) return {status: 'unknown', reason: 'STRAPI_API_TOKEN is not set'};
     return findExistingFileByName(fetch, STRAPI_API_BASE, apiToken, filename);
 }
 
@@ -224,38 +240,48 @@ async function uploadToStrapiWithRetry(
             // (e.g. an empty 200) is ambiguous: the upload may still have succeeded
             // server-side, so verify against the media library before retrying —
             // retrying blindly would upload the same file a second time.
-            // Ensure we fully read the response before closing. An unreadable body
-            // (e.g. an empty 200) is ambiguous: the upload may still have succeeded
-            // server-side, so verify against the media library before retrying —
-            // retrying blindly would upload the same file a second time.
             let parsed: unknown;
             try {
                 parsed = await response.json();
             } catch (parseError) {
-                const existing = await lookupExistingFile(filename);
-                if (existing) {
+                const lookup = await lookupExistingFile(filename);
+                if (lookup.status === 'found') {
                     log(
-                        `Upload of ${filename} returned an unreadable response, but the file exists in the media library (ID: ${existing.id}) — treating as success.`,
+                        `Upload of ${filename} returned an unreadable response, but the file exists in the media library (ID: ${lookup.file.id}) — treating as success.`,
                     );
-                    return existing;
+                    return lookup.file;
+                }
+                if (lookup.status === 'unknown') {
+                    throw new LookupUnavailableError(filename, lookup.reason);
                 }
                 throw new Error(
                     `Unexpected Strapi upload response (unreadable body): ${parseError instanceof Error ? parseError.message : String(parseError)}`,
                 );
             }
 
-            // Strapi upload returns an array of uploaded files
-            if (
-                !Array.isArray(parsed) ||
-                !parsed[0] ||
-                typeof (parsed[0] as {id?: unknown}).id !== 'number'
-            ) {
-                throw new Error(
-                    `Unexpected Strapi upload response format. Expected array with file objects, got: ${JSON.stringify(parsed)}`,
+            // Strapi upload returns an array of uploaded files. Any other 200 body is
+            // equally ambiguous — the request was accepted, so the upload may still have
+            // succeeded server-side — and is resolved the same way as the unreadable-body
+            // branch above: verify the media library before retrying (a blind retry would
+            // POST the same file a second time).
+            const outcome = await interpretUploadResponse(parsed, async () => {
+                const lookup = await lookupExistingFile(filename);
+                if (lookup.status === 'unknown') {
+                    throw new LookupUnavailableError(filename, lookup.reason);
+                }
+                return lookup.status === 'found' ? lookup.file : null;
+            });
+            if (outcome.status === 'existing') {
+                log(
+                    `Upload of ${filename} returned an unexpected response format, but the file exists in the media library (ID: ${outcome.id}) — treating as success.`,
                 );
+                return {id: outcome.id, url: outcome.url};
+            }
+            if (outcome.status === 'unexpected') {
+                throw new Error(outcome.message);
             }
 
-            const uploadedFile = parsed[0] as {id: number; url?: string};
+            const uploadedFile = {id: outcome.id, url: outcome.url};
             log(
                 `Uploaded: ${filename} (ID: ${uploadedFile.id}, URL: ${uploadedFile.url})`,
             );
@@ -272,6 +298,13 @@ async function uploadToStrapiWithRetry(
         }
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
+
+        // The upload may have been accepted; without a working lookup a retry would
+        // POST the same file again, so fail the file instead.
+        if (err instanceof LookupUnavailableError) {
+            error(errorMessage);
+            throw err;
+        }
 
         // Classify the failure for the operator; every error here is retried.
         if (err instanceof Error) {
@@ -317,14 +350,18 @@ async function processFile(
 
         // Idempotency: skip files that are already in the media library so a
         // re-run (e.g. after a partial failure) does not duplicate uploads.
-        const existing = await lookupExistingFile(status.filename);
-        if (existing) {
+        const lookup = await lookupExistingFile(status.filename);
+        if (lookup.status === 'found') {
+            const existing = lookup.file;
             status.status = 'success';
             status.uploadedFileId = existing.id;
             log(
                 `[${index + 1}/${total}] Skipping ${status.filename} — already in the media library (ID: ${existing.id})`,
             );
             return status;
+        }
+        if (lookup.status === 'unknown') {
+            throw new LookupUnavailableError(status.filename, lookup.reason);
         }
 
         status.status = 'downloading';
