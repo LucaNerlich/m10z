@@ -8,7 +8,9 @@
  *
  * Fences are matched the way these helpers always have: a line whose trimmed start
  * is ```` ``` ```` or `~~~`. Fence length, info strings and indented fences are not
- * interpreted - this is a line scanner, not a CommonMark parser.
+ * interpreted - this is a line scanner, not a CommonMark parser. The one CommonMark
+ * rule it does honour: a fence closes only with the character that opened it, so a
+ * ```` ``` ```` block is not ended by a `~~~` line (or vice versa).
  */
 
 export type MarkdownLine = {
@@ -22,11 +24,14 @@ export type MarkdownLine = {
     inCode: boolean;
 };
 
-const FENCE_PREFIXES = ['```', '~~~'];
+const FENCE_CHARS = ['`', '~'] as const;
 
-function isFenceDelimiter(line: string): boolean {
+type FenceChar = (typeof FENCE_CHARS)[number];
+
+/** The fence character a delimiter line opens/closes with, or null when it is not one. */
+function fenceCharAt(line: string): FenceChar | null {
     const trimmed = line.trimStart();
-    return FENCE_PREFIXES.some((prefix) => trimmed.startsWith(prefix));
+    return FENCE_CHARS.find((char) => trimmed.startsWith(char.repeat(3))) ?? null;
 }
 
 /**
@@ -35,13 +40,16 @@ function isFenceDelimiter(line: string): boolean {
  * Inline code spans are deliberately not considered - that is each caller's job.
  */
 export function markCodeFenceLines(markdown: string): MarkdownLine[] {
-    let inFence = false;
+    // Track which character opened the fence, not a single boolean: CommonMark
+    // closes a fence only with the same character that opened it.
+    let open: FenceChar | null = null;
 
     return markdown.split('\n').map((line) => {
-        if (isFenceDelimiter(line)) {
-            inFence = !inFence;
+        const char = fenceCharAt(line);
+        if (char !== null && (open === null || open === char)) {
+            open = open === null ? char : null;
             return {line, inCode: true};
         }
-        return {line, inCode: inFence};
+        return {line, inCode: open !== null};
     });
 }
