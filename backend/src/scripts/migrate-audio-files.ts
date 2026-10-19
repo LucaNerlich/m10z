@@ -25,6 +25,7 @@ import {
     findExistingFileByName,
     getMimeType,
     interpretUploadResponse,
+    isRedirectRefusal,
     validateUrl,
     type ExistingFileLookup,
 } from './audioMigrationUtils';
@@ -134,6 +135,12 @@ async function downloadFileWithRetry(
 
         log(`Downloaded: ${path.basename(outputPath)} (${buffer.length} bytes)`);
     } catch (err) {
+        // A refused redirect is a deliberate security guard, not a transient
+        // failure: surface it clearly and do not retry it.
+        if (isRedirectRefusal(err)) {
+            error(`Refusing to follow redirect for ${url}`);
+            throw new Error(`Refusing to follow redirect for ${url}`);
+        }
         if (attempt < MAX_RETRIES) {
             const delay = RETRY_DELAYS[attempt - 1];
             log(

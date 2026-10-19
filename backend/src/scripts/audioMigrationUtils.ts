@@ -154,6 +154,13 @@ export type ExistingFileLookup =
 
 export type UploadRetryDecision = 'recovered' | 'retry' | 'fail';
 
+/** Whether a fetch rejection is the redirect guard, not a transient failure. */
+export function isRedirectRefusal(error: unknown): boolean {
+    if (!(error instanceof Error)) return false;
+    const cause = (error as {cause?: unknown}).cause;
+    return cause instanceof Error && cause.message.includes('unexpected redirect');
+}
+
 /** Map a media-library lookup to the retry action. */
 export function decideUploadRetry(lookup: ExistingFileLookup): UploadRetryDecision {
     if (lookup.status === 'found') return 'recovered';
