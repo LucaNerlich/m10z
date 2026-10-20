@@ -94,9 +94,12 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
 
             const response = await fetchFn(url, init);
             if (response.status === 401) {
+                // Release the pooled socket; the body is never read.
+                await response.body?.cancel().catch(() => {});
                 return {unauthorized: true, data: null};
             }
             if (!response.ok) {
+                await response.body?.cancel().catch(() => {});
                 throw new UmamiClientError(
                     'UMAMI_UPSTREAM',
                     `Umami API responded with status ${response.status}.`,

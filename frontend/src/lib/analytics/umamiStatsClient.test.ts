@@ -133,6 +133,19 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
         });
     });
 
+    test('cancels the response body before throwing on an upstream error', async () => {
+        const cancel = vi.fn(async () => {});
+        const fetchImpl = vi.fn(async () => ({status: 503, ok: false, body: {cancel}}));
+        const client = createUmamiStatsClient({
+            fetchImpl: fetchImpl as unknown as typeof fetch,
+            now: () => NOW,
+            log: silentLog,
+        });
+
+        await expect(client.getTrafficStats(CONFIG)).rejects.toMatchObject({code: 'UMAMI_UPSTREAM'});
+        expect(cancel).toHaveBeenCalled();
+    });
+
     test('retries once after a 401 by re-authenticating', async () => {
         let loginCount = 0;
         let statsHits = 0;

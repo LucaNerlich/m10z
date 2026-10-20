@@ -101,13 +101,16 @@ export async function sendPodcastDownloadEvent(args: {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), UMAMI_SEND_TIMEOUT_MS);
     try {
-        await fetch(`${umamiUrl}/api/send`, {
+        const response = await fetch(`${umamiUrl}/api/send`, {
             method: 'POST',
             headers,
             body,
             signal: controller.signal,
             cache: 'no-store',
         });
+        // The response is irrelevant; release the pooled socket instead of
+        // leaving the stream for the garbage collector.
+        await response.body?.cancel().catch(() => {});
     } catch {
         // Fail securely: analytics errors must never break the download redirect.
     } finally {
