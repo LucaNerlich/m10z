@@ -10,10 +10,10 @@ import {EmptyState} from '@/src/components/EmptyState';
 import {Pagination} from '@/src/components/Pagination';
 
 import {Tag} from '@/src/components/Tag';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {FEED_ALTERNATES_TYPES, OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
 import {parseCategoryParam, parsePageParam, type PageSearchParamsInput, type SlugParams} from '@/src/lib/params';
-import {absoluteRoute} from '@/src/lib/routes';
+import {absoluteRoute, routes} from '@/src/lib/routes';
 import {getOptimalMediaFormat} from '@/src/lib/strapi/media';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {fetchAuthorBySlug, fetchCategoryBySlug, type PaginatedResult} from '@/src/lib/strapiContent';
@@ -49,6 +49,7 @@ export async function generateAuthorContentMetadata(args: {
         description,
         alternates: {
             canonical: absoluteRoute(`/team/${slug}/${args.sectionPath}`),
+            types: FEED_ALTERNATES_TYPES,
         },
         openGraph: {
             type: 'profile',
@@ -61,6 +62,7 @@ export async function generateAuthorContentMetadata(args: {
         },
         twitter: {
             card: 'summary',
+            site: routes.twitter,
             title,
             description,
             images: avatarImage,
