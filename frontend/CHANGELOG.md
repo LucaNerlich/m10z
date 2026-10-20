@@ -2,10 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.17.0] - 2026-10-20
 
 ### Added
 - Inline images in article and podcast text use the Media Library's precomputed blur placeholder, so they fade in like cover images. The committed `media-index.json` now also stores each image's `blurhash`; the generator merges it from the upload content API while keeping alt text and captions from the MCP listing.
+
+### Fixed
+- Feeds stay complete and correctly ordered: the merged feed pages past the 100-item per-type window, parallel page fetches no longer duplicate items, and an unparseable date no longer renders as `Invalid Date`.
+- Feed entries render through the site's Markdown pipeline, and relative links resolve against the public site.
+- The static share image declares its real dimensions, and JSON-LD omits `duration` when the CMS has no value.
+- Reading-time estimation ignores `~`-fenced code, Fancybox captions are sanitized before they reach `innerHTML`, and Markdown links or images with a non-HTTP scheme (such as `javascript:`) are dropped instead of being rewritten onto the CMS origin.
+- Category pages keep serving cached content between publishes instead of hard-expiring on every publish, and the reach page no longer carries an inert revalidation.
+- Search caps input at the server's query limit, and the load test stays under the app's rate limiter.
+- A blocked image host is reported as a blocked host instead of a failed load, and the runtime host gate agrees with the image optimizer.
+- Privileged Strapi reads fail loudly when the API token is missing, and upstream failures no longer surface as 404s.
+- List fetches populate their authors, the About description is derived with the shared excerpt helper, and a failed author fetch keeps the podcast section.
+- The site-wide JSON-LD is rendered by the server with a native `<script>` tag.
+- Client storage keeps unsynced writes across tab focus and guards property access in the font picker, the stored font is applied before first paint, and reach-page title lookups are guarded against `__proto__` slugs.
+- HEAD requests are no longer counted as podcast downloads.
+
+### Changed
+- Internal cleanups: the unused `cacheTtlSeconds` is gone from stats payloads, the duplicated search-index error mapping is collapsed, `SearchRecordType` is derived from `SEARCH_RECORD_TYPES`, the media index's atomic snapshot write is shared between both generators, and feed builds skip unused population and author-triggered rebuilds.
 
 ## [1.16.2] - 2026-10-19
 
