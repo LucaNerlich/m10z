@@ -6,6 +6,7 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import {useIsMac} from '@/src/hooks/useIsMac';
 import {lockBodyScroll} from '@/src/lib/bodyScrollLock';
+import {isEditableTarget} from '@/src/lib/editableTarget';
 
 import styles from './Header.module.css';
 
@@ -90,7 +91,7 @@ export default function HeaderClient({
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             const isShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === shortcutKeyMenu.toLowerCase();
-            if (isShortcut) {
+            if (isShortcut && !isEditableTarget(event.target)) {
                 event.preventDefault();
                 setIsMenuOpen((prev) => !prev);
             }
