@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.3] - 2026-10-20
+
+### Fixed
+- Author and category routes now reject anonymous draft reads like the article and podcast routes.
+- Cache invalidation skips slug resolution for single types instead of looking one up.
+- A podcast duration is cleared when the replacement file cannot be read.
+- Rate-limit bookkeeping stays bounded when every entry is live.
+- Multipart bodies that are not uploads are rejected before parsing.
+- The audio migration verifies the media library before retrying an upload and refuses redirects when downloading.
+- Reading-time estimation ignores `~`-fenced code.
+
+### Changed
+- Removed the unreachable richtext object/array normalizer.
+- `SearchRecordType` is derived from `SEARCH_RECORD_TYPES` in the shared contracts.
+- The SQL-injection guard import stays inside the backend workspace, and the admin dev tsconfig points at the installed pnpm store hash.
+
 ## [1.4.2] - 2026-10-19
 
 ### Fixed
