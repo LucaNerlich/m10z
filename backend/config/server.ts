@@ -21,16 +21,17 @@ import {publishScheduledEntries} from '../src/cron/scheduledPublish';
  *   Set to 66 seconds (1 second more than keepAliveTimeout) to ensure headers are
  *   received before the keep-alive timeout expires.
  *
- * - requestTimeout: Maximum time to receive the entire request from the client.
- *   Set to 120 seconds to balance between allowing sufficient time for long-running
- *   SSR requests and mitigating potential denial-of-service attacks.
+ * - requestTimeout: Maximum time to receive the entire request (headers plus body).
+ *   Multipart uploads allow up to 2 GB, so this must cover a slow but legitimate
+ *   transfer (30 minutes is about 10 Mbps for a 2 GB file), not just SSR latency.
+ *   Slowloris protection comes from headersTimeout, which still bounds the header phase.
  *
  * @param server - The HTTP server instance to configure
  */
 export function configureServerTimeouts(server: Server): void {
     server.keepAliveTimeout = 65000; // 65 seconds
     server.headersTimeout = 66000; // 66 seconds
-    server.requestTimeout = 120000; // 120 seconds
+    server.requestTimeout = 30 * 60 * 1000; // 30 minutes
 }
 
 export default ({env}: any) => ({

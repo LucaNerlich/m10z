@@ -26,8 +26,8 @@ type AppStrapi = StrapiWithDb & {
         error: (message: string, ...args: unknown[]) => void;
     };
     db?: DatabaseLike;
-    server?: {
-        httpServer?: HttpServer;
+    server: {
+        httpServer: HttpServer;
     };
     documents: DocumentsService;
     plugin?: (name: string) =>
@@ -100,29 +100,10 @@ export default {
             strapi.log.warn(`Missing optional but recommended environment variables: ${missingImportantVars.join(', ')}`);
         }
         // Configure HTTP server timeouts to prevent premature socket closure
-        // during SSR requests. The server may not be initialized immediately,
-        // so we use a timeout to retry if needed.
-        const MAX_RETRIES = 50; // 50 retries * 100ms = 5 seconds total
-        let retryCount = 0;
-
-        const configureServer = () => {
-            const httpServer = strapi.server?.httpServer;
-            if (httpServer) {
-                configureServerTimeouts(httpServer);
-                strapi.log.info('HTTP server timeouts configured (keepAlive: 65s, headers: 66s, request: 120s)');
-            } else {
-                retryCount++;
-                if (retryCount >= MAX_RETRIES) {
-                    strapi.log.error(
-                        `Failed to configure HTTP server timeouts: server never became ready after ${MAX_RETRIES} attempts (${MAX_RETRIES * 100}ms). Server timeouts may not be configured correctly.`,
-                    );
-                    return;
-                }
-                // Retry after a short delay if server isn't ready yet
-                setTimeout(configureServer, 100);
-            }
-        };
-        configureServer();
+        // during SSR requests. `strapi.server` resolves the server service on
+        // access, so `httpServer` exists here without a retry loop.
+        configureServerTimeouts(strapi.server.httpServer);
+        strapi.log.info('HTTP server timeouts configured (keepAlive: 65s, headers: 66s, request: 30m)');
         // Extend upload file schema with blurhash attribute (stores base64 data URL)
         const uploadFileAttributes = strapi.plugin?.('upload')?.contentTypes?.file?.attributes;
         if (uploadFileAttributes) {
