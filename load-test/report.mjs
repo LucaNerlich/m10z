@@ -89,6 +89,12 @@ const statusCounterRows = statusCounters
   .filter((r) => r.count != null)
   .map((r) => ({...r, count: Number(r.count)}));
 
+// k6 omits zero-valued counters, so an empty list can mean either "clean run"
+// or "no status data at all". Only the former gets the all-clear.
+const hasStatusData = ['m10z_http_status', 'm10z_http_2xx', 'm10z_http_3xx'].some(
+  (key) => getMetric(metrics, key) != null,
+);
+
 const total4xx = statusCounterRows.find((r) => r.key === 'm10z_http_4xx')?.count ?? null;
 const total5xx = statusCounterRows.find((r) => r.key === 'm10z_http_5xx')?.count ?? null;
 const approxNon2xx3xx = (total4xx != null || total5xx != null) ? (Number(total4xx ?? 0) + Number(total5xx ?? 0)) : null;
@@ -169,7 +175,9 @@ const html = `<!doctype html>
         <h2 style="margin:0 0 8px">HTTP status breakdown</h2>
         ${
           statusCounterRows.length === 0
-            ? `<div class="muted">No status counters found. Re-run the test after updating the scripts.</div>`
+            ? hasStatusData
+              ? `<div class="muted">No 4xx/5xx responses recorded.</div>`
+              : `<div class="muted">No status counters found. Re-run the test after updating the scripts.</div>`
             : `
               <div class="muted">What caused failed requests (approx): <code>${approxNon2xx3xxRate != null ? (approxNon2xx3xxRate * 100).toFixed(2) + '%' : 'n/a'}</code></div>
               <table>
