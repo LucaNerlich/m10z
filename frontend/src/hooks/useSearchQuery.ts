@@ -73,8 +73,11 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
         },
     );
 
-    // Return empty results immediately if query is empty (before debounce completes)
-    if (query.trim().length === 0) {        return {
+    // Return empty results immediately below the fetch boundary (before the
+    // debounce completes), so a shortened query cannot show the previous
+    // query's results.
+    if (query.trim().length < SEARCH_MIN_QUERY_LENGTH) {
+        return {
             results: [],
             total: 0,
             error: undefined,
