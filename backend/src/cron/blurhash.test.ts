@@ -1,4 +1,4 @@
-import {mkdtemp, mkdir, writeFile, rm} from 'node:fs/promises';
+import {mkdtemp, mkdir, writeFile, truncate, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
@@ -9,6 +9,7 @@ vi.mock('../utils/generateBlurhash', () => ({
 }));
 
 import {generateMissingBlurhashes} from './blurhash';
+import {generateBlurDataUrl} from '../utils/generateBlurhash';
 
 let publicDir: string;
 
@@ -68,6 +69,23 @@ describe('generateMissingBlurhashes', () => {
 
         await generateMissingBlurhashes({strapi: strapi as never});
 
+        expect(update).not.toHaveBeenCalled();
+    });
+
+    test('skips an image above the read cap without decoding it', async () => {
+        const file = join(publicDir, 'uploads', 'huge.png');
+        await writeFile(file, '');
+        // Sparse file, so the test does not allocate 21 MB.
+        await truncate(file, 21 * 1024 * 1024);
+        vi.mocked(generateBlurDataUrl).mockClear();
+
+        const {strapi, update} = strapiWith([
+            {documentId: 'doc-3', url: '/uploads/huge.png'},
+        ]);
+
+        await generateMissingBlurhashes({strapi: strapi as never});
+
+        expect(generateBlurDataUrl).not.toHaveBeenCalled();
         expect(update).not.toHaveBeenCalled();
     });
 });
