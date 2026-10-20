@@ -1,7 +1,7 @@
 import {type Metadata} from 'next';
 
-import {absoluteRoute} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from './constants';
+import {absoluteRoute, routes} from '@/src/lib/routes';
+import {FEED_ALTERNATES_TYPES, OG_LOCALE, OG_SITE_NAME} from './constants';
 
 const STATIC_OG_IMAGE_PATH = '/images/m10z.jpg';
 // The static share image is a 3000x3000 square (see public/images/m10z.jpg);
@@ -55,12 +55,14 @@ export function buildStaticListMetadata({
         },
         twitter: {
             card: 'summary_large_image',
+            site: routes.twitter,
             title: title ?? OG_SITE_NAME,
             description,
             images: [image.url],
         },
         alternates: {
             canonical: url,
+            types: FEED_ALTERNATES_TYPES,
         },
     };
 
