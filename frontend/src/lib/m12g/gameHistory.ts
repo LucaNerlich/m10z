@@ -155,11 +155,11 @@ export function computeStreaks(history: GameHistory[]): StreaksResult {
     }
 
     return {
-        win: pickBestStreak(wins),
+        win: pickBestStreak(wins, new Map(history.map((game) => [game.name, game.slug]))),
     };
 }
 
-function pickBestStreak(byGame: Map<string, string[]>): Streak | null {
+function pickBestStreak(byGame: Map<string, string[]>, slugs: Map<string, string>): Streak | null {
     let best: Streak | null = null;
     const names = [...byGame.keys()].sort((a, b) => a.localeCompare(b, 'de-DE'));
     for (const name of names) {
@@ -168,7 +168,7 @@ function pickBestStreak(byGame: Map<string, string[]>): Streak | null {
         const run = findLongestRun(winMonths);
         if (run.length < 2) continue;
         if (!best || run.length > best.length) {
-            best = {name, slug: gameSlug(name), length: run.length, months: run.months};
+            best = {name, slug: slugs.get(name) ?? gameSlug(name), length: run.length, months: run.months};
         }
     }
     return best;
