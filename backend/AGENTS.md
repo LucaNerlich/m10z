@@ -185,7 +185,7 @@ Pool monitoring logs acquisition/failure events and runs health checks every 60s
 
 ### HTTP Server Timeouts
 
-- `keepAliveTimeout: 65s`, `headersTimeout: 66s`, `requestTimeout: 120s`
+- `keepAliveTimeout: 65s`, `headersTimeout: 66s`, `requestTimeout: 30m`
 
 ### Environment Variables
 
