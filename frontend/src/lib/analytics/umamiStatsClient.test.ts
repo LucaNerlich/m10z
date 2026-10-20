@@ -112,30 +112,15 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
     test.each([
         {articles: true, podcasts: false},
         {articles: false, podcasts: true},
-        {articles: true, podcasts: true},
-    ])('preserves site-wide stats and successful content when requests fail: %j', async (failures) => {
+    ])('throws when a content breakdown request fails: %j', async (failures) => {
         const {fetchImpl} = standardFetch(failures);
         const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
 
-        const payload = await client.getTrafficStats(CONFIG);
-
-        expect(payload.ranges['30d']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
-        expect(payload.content.articles.topArticles).toEqual(
-            failures.articles
-                ? []
-                : [
-                      {slug: 'alpha', pageviews: 12},
-                      {slug: 'beta', pageviews: 5},
-                  ]
-        );
-        expect(payload.content.podcasts.topEpisodes).toEqual(
-            failures.podcasts
-                ? []
-                : [
-                      {slug: 'ep-a', downloads: 12},
-                      {slug: 'ep-b', downloads: 5},
-                  ]
-        );
+        // A substituted empty list would be cached as a successful read.
+        await expect(client.getTrafficStats(CONFIG)).rejects.toMatchObject({
+            code: 'UMAMI_UPSTREAM',
+            upstreamStatus: 503,
+        });
     });
 
     test('throws when site-wide stats fail even if content requests succeed', async () => {
@@ -227,7 +212,7 @@ describe('createUmamiStatsClient.getReachDetailStats', () => {
         expect(payload.ranges['6m']).toMatchObject({pageviews: 100, visitors: 40, visits: 50});
     });
 
-    test('keeps other ranges when one range site-stats request fails', async () => {
+    test('throws instead of returning a zeroed range when one range fails', async () => {
         let statsHits = 0;
         const {fetchImpl} = setupFetch((url, init) => {
             if (url.endsWith('/api/auth/login')) {
@@ -249,10 +234,11 @@ describe('createUmamiStatsClient.getReachDetailStats', () => {
         });
         const client = createUmamiStatsClient({fetchImpl: fetchImpl as typeof fetch, now: () => NOW, log: silentLog});
 
-        const payload = await client.getReachDetailStats(CONFIG);
-
-        expect(payload.ranges['7d']).toMatchObject({pageviews: 0, visitors: 0, visits: 0});
-        expect(payload.ranges['7d'].articles).toEqual([{slug: 'alpha', pageviews: 4}]);
-        expect(payload.ranges['30d']).toMatchObject({pageviews: 10, visitors: 5, visits: 6});
+        // Returning a zeroed range here would let the cached loader store it for
+        // the whole revalidation window; throwing keeps the next request retrying.
+        await expect(client.getReachDetailStats(CONFIG)).rejects.toMatchObject({
+            code: 'UMAMI_UPSTREAM',
+            upstreamStatus: 503,
+        });
     });
 });

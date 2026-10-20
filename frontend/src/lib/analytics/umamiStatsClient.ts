@@ -173,20 +173,18 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
 
     /**
      * Site-wide stats plus per-article paths and podcast-download events (30 days).
-     * Content requests settle independently so a failed panel does not hide site-wide reach.
+     * Every sub-request must succeed: the caller caches only complete reads.
      */
     async function getTrafficStats(config: UmamiStatsConfig): Promise<UmamiTrafficStats> {
         const nowMs = nowFn();
         const {startAt, endAt} = getPublicRangeBounds(nowMs)['30d'];
-        const [raw, [articleResult, eventResult]] = await Promise.all([
+        // Any failed sub-request must throw: the cached loader stores whatever
+        // this returns, so a substituted empty list would be served for the TTL.
+        const [raw, articleRows, eventRows] = await Promise.all([
             authorizedGet(config, buildStatsUrl(config, startAt, endAt)),
-            Promise.allSettled([
-                authorizedGet(config, buildArticleMetricsUrl(config, startAt, endAt)),
-                authorizedGet(config, buildEventValuesUrl(config, startAt, endAt)),
-            ]),
+            authorizedGet(config, buildArticleMetricsUrl(config, startAt, endAt)),
+            authorizedGet(config, buildEventValuesUrl(config, startAt, endAt)),
         ]);
-        const articleRows = articleResult.status === 'fulfilled' ? articleResult.value : null;
-        const eventRows = eventResult.status === 'fulfilled' ? eventResult.value : null;
 
         return {
             ranges: {
@@ -210,8 +208,8 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
 
     /**
      * Multi-range detail payload for `/statistik/reichweite` (7d / 30d / 6m).
-     * Each range fetches site totals + long article/podcast lists independently;
-     * a failed content request leaves that list empty without hiding other ranges.
+     * Any failed sub-request throws: the caller caches only successful reads, so a
+     * zero/empty substitute would be frozen for the whole revalidation window.
      */
     async function getReachDetailStats(config: UmamiStatsConfig): Promise<UmamiReachDetailStats> {
         const nowMs = nowFn();
@@ -220,7 +218,7 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
         const entries = await Promise.all(
             UMAMI_DETAIL_RANGE_KEYS.map(async (key): Promise<[UmamiDetailRangeKey, UmamiReachDetailRange]> => {
                 const {startAt, endAt} = bounds[key];
-                const [siteResult, articleResult, eventResult] = await Promise.allSettled([
+                const [raw, articleRows, eventRows] = await Promise.all([
                     authorizedGet(config, buildStatsUrl(config, startAt, endAt)),
                     authorizedGet(
                         config,
@@ -229,36 +227,12 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
                     authorizedGet(config, buildEventValuesUrl(config, startAt, endAt)),
                 ]);
 
-                // Auth failures must surface so the soft-fail source can omit the page.
-                for (const result of [siteResult, articleResult, eventResult]) {
-                    if (
-                        result.status === 'rejected' &&
-                        result.reason instanceof UmamiClientError &&
-                        result.reason.code === 'UMAMI_AUTH'
-                    ) {
-                        throw result.reason;
-                    }
-                }
-
-                if (siteResult.status === 'rejected') {
-                    // Site-wide failure for one window should not blank the whole page;
-                    // content lists may still be useful.
-                    logger.warn(`[umami-stats] Site stats failed for range ${key}.`);
-                }
-
-                const site =
-                    siteResult.status === 'fulfilled'
-                        ? parseStatsPayload(siteResult.value)
-                        : {pageviews: 0, visitors: 0, visits: 0};
-                const articleRows = articleResult.status === 'fulfilled' ? articleResult.value : null;
-                const eventRows = eventResult.status === 'fulfilled' ? eventResult.value : null;
-
                 return [
                     key,
                     {
                         startAt: new Date(startAt).toISOString(),
                         endAt: new Date(endAt).toISOString(),
-                        ...site,
+                        ...parseStatsPayload(raw),
                         articles: toTopArticlePageviews(articleRows, CONTENT_DETAIL_LIMIT),
                         podcasts: toTopPodcastDownloads(eventRows, CONTENT_DETAIL_LIMIT),
                     },
