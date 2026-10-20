@@ -31,7 +31,7 @@ export function ContentHeroImage({media, fallbackAlt}: ContentHeroImageProps) {
             placeholder={blurhash ? 'blur' : 'empty'}
             blurhash={blurhash}
             priority={true}
-            sizes="(max-width: 1040px) 100vw, 1040px"
+            sizes="(max-width: 700px) 100vw, 700px"
         />
     );
 }
