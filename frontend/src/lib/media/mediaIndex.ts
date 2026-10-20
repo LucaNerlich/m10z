@@ -48,9 +48,10 @@ export type MediaUploadInput = {
 };
 
 // `blurhash` holds a data URL (not a BlurHash string), and `next/image` only
-// accepts data URLs for `blurDataURL`. Reject anything else so a malformed or
-// tampered index cannot inject arbitrary CSS into the placeholder style.
-const BLUR_DATA_URL_RE = /^data:image\/[a-z0-9.+-]+;base64,/i;
+// accepts data URLs for `blurDataURL`. Validate the whole base64 payload, not
+// just the prefix: next/image interpolates the value into an inline style, so
+// anything after the comma must not be able to close the CSS `url()` string.
+const BLUR_DATA_URL_RE = /^data:image\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/]+={0,2}$/i;
 
 function nonEmpty(value: unknown): string | undefined {
     if (typeof value !== 'string') return undefined;

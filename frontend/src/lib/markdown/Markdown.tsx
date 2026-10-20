@@ -49,7 +49,7 @@ const COMPONENTS = {
  * the client boundary, as a prop on the client `Image` component. Without an
  * index the renderer keeps the static component map untouched.
  */
-function markdownComponents(index: MediaIndexFile | null): Components {
+export function markdownComponents(index: MediaIndexFile | null): Components {
     if (!index) return COMPONENTS;
 
     return {

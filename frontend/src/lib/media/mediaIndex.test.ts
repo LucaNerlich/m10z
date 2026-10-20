@@ -54,6 +54,11 @@ describe('collectMediaBlurhashes', () => {
                 },
                 {url: '/uploads/empty.jpg', blurhash: null},
                 {url: '/uploads/text.jpg', blurhash: 'not-a-data-url'},
+                {
+                    url: '/uploads/injected.jpg',
+                    blurhash:
+                        'data:image/png;base64,AAAA");position:fixed;inset:0;z-index:9999',
+                },
                 {url: 'https://evil.test/uploads/a.jpg', blurhash: BLUR},
                 {url: null, blurhash: BLUR},
             ],
@@ -129,11 +134,20 @@ describe('buildMediaIndex', () => {
                     alternativeText: null,
                     caption: null,
                 },
+                {
+                    url: '/uploads/injected.jpg',
+                    alternativeText: null,
+                    caption: null,
+                },
             ],
             blurhashes: new Map([
                 ['uploads/with-alt.jpg', BLUR],
                 ['uploads/blur-only.jpg', BLUR],
                 ['uploads/invalid-blur.jpg', 'not-a-data-url'],
+                [
+                    'uploads/injected.jpg',
+                    'data:image/png;base64,AAAA");position:fixed;inset:0;z-index:9999',
+                ],
             ]),
         });
 
@@ -195,6 +209,11 @@ describe('serialize/parse', () => {
         expect(() =>
             parseMediaIndex(
                 `{"version":${MEDIA_INDEX_VERSION},"baseUrl":"x","generatedAt":"y","entries":{"a":{"blurhash":"https://evil.test/x.png"}}}`
+            )
+        ).toThrow(/invalid/);
+        expect(() =>
+            parseMediaIndex(
+                `{"version":${MEDIA_INDEX_VERSION},"baseUrl":"x","generatedAt":"y","entries":{"a":{"blurhash":"data:image/png;base64,AAAA\\");position:fixed;inset:0;z-index:9999"}}}`
             )
         ).toThrow(/invalid/);
         expect(() => parseMediaIndex('not json')).toThrow();
