@@ -24,6 +24,9 @@ describe('youtube component url validation', () => {
         'https://www.youtube.com/embed/dQw4w9WgXcQ',
         'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
         'https://www.youtube.com/live/dQw4w9WgXcQ',
+        'www.youtube.com/watch?v=dQw4w9WgXcQ',
+        'https://WWW.YouTube.com/watch?v=dQw4w9WgXcQ',
+        '  https://youtu.be/dQw4w9WgXcQ  ',
     ])('accepts %s', (url) => {
         expect(pattern.test(url), url).toBe(true);
     });
