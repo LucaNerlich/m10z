@@ -218,4 +218,46 @@ describe('cacheInvalidationMiddleware', () => {
         expect(mockedQueue).toHaveBeenCalledWith({type: 'imprint', action: 'update'}, strapi);
         expect(strapi.documents).not.toHaveBeenCalled();
     });
+
+    test('creating or deleting a single type invalidates its pages', async () => {
+        const {strapi} = makeStrapi();
+        const next = vi.fn(async () => ({}));
+
+        await cacheInvalidationMiddleware(
+            {uid: 'api::privacy.privacy', action: 'create', params: {strapi: strapi as any}},
+            next,
+        );
+        await cacheInvalidationMiddleware(
+            {uid: 'api::privacy.privacy', action: 'delete', params: {strapi: strapi as any}},
+            next,
+        );
+
+        expect(mockedQueue).toHaveBeenNthCalledWith(1, {type: 'privacy', action: 'create'}, strapi);
+        expect(mockedQueue).toHaveBeenNthCalledWith(2, {type: 'privacy', action: 'delete'}, strapi);
+    });
+
+    test('cloning an author invalidates the cloned document, not the source', async () => {
+        const findOne = vi.fn(async ({documentId}: {documentId?: string}) => ({
+            slug: documentId === 'cloned-doc' ? 'cloned-author' : 'source-author',
+        }));
+        const strapi = {
+            documents: vi.fn(() => ({findOne})),
+            log: {info: vi.fn(), warn: vi.fn(), error: vi.fn()},
+        };
+        const next = vi.fn(async () => ({
+            documentId: 'cloned-doc',
+            entries: [{documentId: 'cloned-doc'}],
+        }));
+
+        await cacheInvalidationMiddleware(
+            {uid: 'api::author.author', action: 'clone', params: {strapi: strapi as any, documentId: 'source-doc'}},
+            next,
+        );
+
+        expect(findOne).toHaveBeenCalledWith(expect.objectContaining({documentId: 'cloned-doc'}));
+        expect(mockedQueue).toHaveBeenCalledWith(
+            {type: 'author', action: 'create', slug: 'cloned-author'},
+            strapi,
+        );
+    });
 });

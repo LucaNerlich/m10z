@@ -26,6 +26,15 @@ function extractDocumentId(context: DocumentServiceContext, result: unknown): st
     );
 }
 
+/**
+ * Strapi's admin duplicate flow dispatches `clone`; the returned document lives
+ * under `entries`, while `params.documentId` names the source.
+ */
+function extractClonedDocumentId(result: unknown): string | undefined {
+    const entries = (result as {entries?: Array<{documentId?: string}>} | undefined)?.entries;
+    return entries?.[0]?.documentId;
+}
+
 function buildPopulate(relations: ContentTypeConfig['relations']): Record<string, {fields: string[]}> | undefined {
     if (!relations) return undefined;
     const fields = Object.keys(relations);
@@ -100,11 +109,15 @@ export async function cacheInvalidationMiddleware(
     // `status: 'published'` into every core-service call — for types without
     // draft & publish that default is an artifact, not a publication fact — so the
     // remap only applies where 'publish' is a real action for the type.
+    // `clone` (the admin duplicate flow) creates a live row for non-draft&publish
+    // types, so it invalidates like a create.
     const publishable = match?.config.invalidatesOn.includes('publish') ?? false;
     const effectiveAction: string =
-        publishable && (context.action === 'create' || context.action === 'update') && context.params?.status === 'published'
-            ? 'publish'
-            : context.action;
+        context.action === 'clone'
+            ? 'create'
+            : publishable && (context.action === 'create' || context.action === 'update') && context.params?.status === 'published'
+                ? 'publish'
+                : context.action;
 
     if (!match || !match.config.invalidatesOn.includes(effectiveAction as never)) {
         return next();
@@ -152,7 +165,8 @@ export async function cacheInvalidationMiddleware(
         // always throws `Invalid key slug` and only produces a log warning. Queue
         // the slugless event directly.
         if (config.kind === 'collection' && (!slug || config.relations)) {
-            const documentId = extractDocumentId(context, result);
+            const documentId =
+                context.action === 'clone' ? extractClonedDocumentId(result) : extractDocumentId(context, result);
             const entity = await resolveEntity(strapiInstance, uid, documentId, config.relations);
             slug = slug ?? ((entity?.slug as string | undefined) ?? undefined);
             relations = extractRelationSlugs(entity, config.relations);
