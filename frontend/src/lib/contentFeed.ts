@@ -31,7 +31,7 @@ type FeedPageFetcher<T> = (args: {
  * The backend cannot return more than 100 per request, so a deep page needs
  * more than one request instead of silently truncating the feed window.
  */
-async function collectWindow<T>(
+async function collectWindow<T extends {slug: string}>(
     fetchPage: FeedPageFetcher<T>,
     first: FeedPage<T>,
     needed: number,
@@ -41,7 +41,18 @@ async function collectWindow<T>(
     // Never ask for more than the collection holds; an out-of-range page was
     // already short-circuited by the caller.
     const wanted = Math.min(needed, total);
-    const items = [...first.items];
+    const items: T[] = [];
+    // Offset pages are fetched in parallel, so a publish that shifts the
+    // window repeats one boundary item. Dedupe by slug, like the RSS fetcher.
+    const seen = new Set<string>();
+    const push = (pageItems: T[]) => {
+        for (const item of pageItems) {
+            if (seen.has(item.slug)) continue;
+            seen.add(item.slug);
+            items.push(item);
+        }
+    };
+    push(first.items);
     const pages = Math.min(
         first.pagination.pageCount,
         Math.ceil(wanted / MAX_FETCH_PAGE_SIZE),
@@ -52,7 +63,13 @@ async function collectWindow<T>(
                 fetchPage({page: index + 2, pageSize: MAX_FETCH_PAGE_SIZE, tags}),
             ),
         );
-        for (const page of rest) items.push(...page.items);
+        for (const page of rest) push(page.items);
+        // Dedupe can drop a boundary item, leaving the window short of the
+        // requested size. One extra page only costs a request on that race.
+        if (items.length < wanted && pages < first.pagination.pageCount) {
+            const extra = await fetchPage({page: pages + 1, pageSize: MAX_FETCH_PAGE_SIZE, tags});
+            push(extra.items);
+        }
     }
     return {items: items.slice(0, wanted), total};
 }

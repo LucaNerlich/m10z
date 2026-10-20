@@ -80,4 +80,48 @@ describe('buildContentFeed', () => {
         expect(mocks.fetchArticlesPage.mock.calls[0]?.[0].pageSize).toBe(10);
         expect(mocks.fetchPodcastsPage.mock.calls[0]?.[0].pageSize).toBe(10);
     });
+
+    test('drops a boundary item repeated by a shifted parallel page', async () => {
+        const articles = Array.from({length: 200}, (_, index) => article(`a${index}`));
+        mocks.fetchArticlesPage.mockImplementation(async ({page: pageNumber}: {page: number}) => {
+            const items =
+                pageNumber === 1
+                    ? articles.slice(0, 100)
+                    : [articles[99]!, ...articles.slice(100, 200)];
+            return page(items, articles.length, pageNumber);
+        });
+        mocks.fetchPodcastsPage.mockResolvedValue(page([], 0, 1));
+
+        const result = await buildContentFeed(15, 10);
+
+        expect(mocks.fetchArticlesPage.mock.calls.map(([args]) => args.page)).toEqual([1, 2]);
+        expect(result.items.map((item) => item.slug)).toEqual([
+            'a140',
+            'a141',
+            'a142',
+            'a143',
+            'a144',
+            'a145',
+            'a146',
+            'a147',
+            'a148',
+            'a149',
+        ]);
+    });
+
+    test('backfills one page when dedupe leaves the window short', async () => {
+        const articles = Array.from({length: 201}, (_, index) => article(`a${index}`));
+        mocks.fetchArticlesPage.mockImplementation(async ({page: pageNumber}: {page: number}) => {
+            if (pageNumber === 1) return page(articles.slice(0, 100), articles.length, 1);
+            if (pageNumber === 2) return page([articles[99]!, ...articles.slice(100, 199)], articles.length, 2);
+            return page(articles.slice(199, 201), articles.length, 3);
+        });
+        mocks.fetchPodcastsPage.mockResolvedValue(page([], 0, 1));
+
+        const result = await buildContentFeed(20, 10);
+
+        expect(mocks.fetchArticlesPage.mock.calls.map(([args]) => args.page)).toEqual([1, 2, 3]);
+        expect(result.items).toHaveLength(10);
+        expect(result.pagination.total).toBe(201);
+    });
 });
