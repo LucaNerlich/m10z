@@ -173,7 +173,7 @@ export function createUmamiStatsClient({fetchImpl, now, log}: ClientDeps = {}) {
 
     /**
      * Site-wide stats plus per-article paths and podcast-download events (30 days).
-     * Content requests settle independently so a failed panel does not hide site-wide reach.
+     * Every sub-request must succeed: the caller caches only complete reads.
      */
     async function getTrafficStats(config: UmamiStatsConfig): Promise<UmamiTrafficStats> {
         const nowMs = nowFn();
