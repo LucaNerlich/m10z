@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.4] - 2026-10-20
+
+### Fixed
+- Uploads that take longer than two minutes are accepted: the request timeout covers the 2 GB allowance, and the unreachable server-retry loop is gone.
+- The blurhash backfill skips images above 20 MB without reading them and scans newest-first, so unreadable rows cannot starve new uploads.
+- Cache invalidation covers single-type create/delete and admin clones, resolving the cloned document rather than the source.
+- The YouTube component accepts the same URL variants as the renderer, including scheme-less, mixed-case and whitespace-padded forms.
+
 ## [1.4.3] - 2026-10-20
 
 ### Fixed
