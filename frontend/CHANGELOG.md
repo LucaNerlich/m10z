@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.17.2] - 2026-10-20
+
+### Fixed
+- The Wichteln organizer keeps participants and assignments when another tab writes them, instead of overwriting the newer list.
+- Author overview pages keep the article section and its retry message when the paginated fetch fails; the 404 and About pages render a single brand and a single content container at the list width.
+- The sitemap lists every M12G game page plus the apps and changelog routes.
+- The merged content feed bounds its page window, stops over-fetching page 1, and drops an item repeated by a shifting parallel page.
+- The table of contents follows CommonMark heading rules, and repeated heading text resolves to its own anchor.
+- Mermaid diagrams recover when a failing chart is replaced by a valid one, and the hidden render target stays out of the lightbox.
+- Page metadata keeps the feed alternates and `twitter:site` on list, detail and author-section pages.
+- M12G games whose names normalize to the same slug get distinct URLs, including the win-streak card.
+- Umami statistics are no longer cached as zeros after a partial upstream failure, and unread response bodies are released.
+- The search index rejects hrefs the URL parser would resolve off-site, such as backslash or control-character variants.
+- The Podlove player omits the duration when an episode has none instead of showing 0:00.
+
+### Changed
+- Cache invalidation also covers single-type create/delete and admin clones.
+
 ## [1.17.1] - 2026-10-20
 
 ### Fixed
