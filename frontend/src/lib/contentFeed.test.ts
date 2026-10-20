@@ -108,4 +108,20 @@ describe('buildContentFeed', () => {
             'a149',
         ]);
     });
+
+    test('backfills one page when dedupe leaves the window short', async () => {
+        const articles = Array.from({length: 201}, (_, index) => article(`a${index}`));
+        mocks.fetchArticlesPage.mockImplementation(async ({page: pageNumber}: {page: number}) => {
+            if (pageNumber === 1) return page(articles.slice(0, 100), articles.length, 1);
+            if (pageNumber === 2) return page([articles[99]!, ...articles.slice(100, 199)], articles.length, 2);
+            return page(articles.slice(199, 201), articles.length, 3);
+        });
+        mocks.fetchPodcastsPage.mockResolvedValue(page([], 0, 1));
+
+        const result = await buildContentFeed(20, 10);
+
+        expect(mocks.fetchArticlesPage.mock.calls.map(([args]) => args.page)).toEqual([1, 2, 3]);
+        expect(result.items).toHaveLength(10);
+        expect(result.pagination.total).toBe(201);
+    });
 });

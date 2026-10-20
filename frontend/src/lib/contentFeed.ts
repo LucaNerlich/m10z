@@ -64,6 +64,12 @@ async function collectWindow<T extends {slug: string}>(
             ),
         );
         for (const page of rest) push(page.items);
+        // Dedupe can drop a boundary item, leaving the window short of the
+        // requested size. One extra page only costs a request on that race.
+        if (items.length < wanted && pages < first.pagination.pageCount) {
+            const extra = await fetchPage({page: pages + 1, pageSize: MAX_FETCH_PAGE_SIZE, tags});
+            push(extra.items);
+        }
     }
     return {items: items.slice(0, wanted), total};
 }
