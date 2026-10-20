@@ -92,7 +92,7 @@ export function buildPodloveEpisodeConfig(
         title: podcast.title,
         ...(summary ? {summary} : {}),
         ...(publicationDate ? {publicationDate} : {}),
-        duration: formatPodloveDuration(podcast.duration),
+        ...(podcast.duration > 0 ? {duration: formatPodloveDuration(podcast.duration)} : {}),
         ...(posterUrl ? {poster: posterUrl} : {}),
         ...(link ? {link} : {}),
         audio: [audioAsset],

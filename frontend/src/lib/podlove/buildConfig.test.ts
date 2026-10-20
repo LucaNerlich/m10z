@@ -59,6 +59,15 @@ describe('buildPodloveEpisodeConfig', () => {
         ]);
     });
 
+    test('omits the duration when the episode has none', () => {
+        const episode = buildPodloveEpisodeConfig(makePodcast({duration: undefined}), {
+            audioUrl: '/api/podcast-download/test-episode',
+            audioMime: 'audio/mpeg',
+        });
+
+        expect(episode).not.toHaveProperty('duration');
+    });
+
     test('uses the effective date override when present', () => {
         const episode = buildPodloveEpisodeConfig(
             makePodcast({date: '2026-01-01T00:00:00.000Z', publishedAt: '2026-04-20T09:00:00.000Z'}),
