@@ -56,7 +56,8 @@ function toRelative(root, filePath) {
 
 function main() {
     if (!fs.existsSync(SOURCE)) {
-        console.log('check-shared-contracts: no shared/ at repo root; nothing to check');
+        console.error('check-shared-contracts: shared/ is missing at the repo root');
+        process.exitCode = 1;
         return;
     }
 
