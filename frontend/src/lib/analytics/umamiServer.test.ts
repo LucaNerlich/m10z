@@ -174,4 +174,16 @@ describe('sendPodcastDownloadEvent', () => {
             sendPodcastDownloadEvent({slug: 'ep-6', request: makeRequest({'user-agent': 'X'})}),
         ).resolves.toBeUndefined();
     });
+
+    test('cancels the response body of the collector POST', async () => {
+        vi.stubEnv('NEXT_PUBLIC_UMAMI_WEBSITE_ID', 'site-123');
+        const cancel = vi.fn(async () => {});
+        const response = new Response('ok', {status: 200});
+        Object.defineProperty(response, 'body', {value: {cancel}});
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response));
+
+        await sendPodcastDownloadEvent({slug: 'ep-7', request: makeRequest({'user-agent': 'X'})});
+
+        expect(cancel).toHaveBeenCalledTimes(1);
+    });
 });

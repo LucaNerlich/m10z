@@ -133,6 +133,49 @@ describe('createUmamiStatsClient.getTrafficStats', () => {
         });
     });
 
+    test('cancels the response body before throwing on an upstream error', async () => {
+        const cancel = vi.fn(async () => {});
+        const fetchImpl = vi.fn(async () => ({status: 503, ok: false, body: {cancel}}));
+        const client = createUmamiStatsClient({
+            fetchImpl: fetchImpl as unknown as typeof fetch,
+            now: () => NOW,
+            log: silentLog,
+        });
+
+        await expect(client.getTrafficStats(CONFIG)).rejects.toMatchObject({code: 'UMAMI_UPSTREAM'});
+        expect(cancel).toHaveBeenCalled();
+    });
+
+    test('cancels the body of the 401 response before re-authenticating', async () => {
+        const cancel = vi.fn(async () => {});
+        let loginCount = 0;
+        let statsHits = 0;
+        const fetchImpl = vi.fn(async (url: string) => {
+            if (url.endsWith('/api/auth/login')) {
+                loginCount += 1;
+                return jsonResponse({token: `tok-${loginCount}`});
+            }
+            if (url.includes('/metrics') || url.includes('/event-data/values')) {
+                return jsonResponse([]);
+            }
+            statsHits += 1;
+            if (statsHits === 1) {
+                return {status: 401, ok: false, body: {cancel}, json: async () => ({})};
+            }
+            return jsonResponse({pageviews: 1, visitors: 1, visits: 1});
+        });
+        const client = createUmamiStatsClient({
+            fetchImpl: fetchImpl as unknown as typeof fetch,
+            now: () => NOW,
+            log: silentLog,
+        });
+
+        await client.getTrafficStats(CONFIG);
+
+        expect(cancel).toHaveBeenCalledTimes(1);
+        expect(loginCount).toBe(2);
+    });
+
     test('retries once after a 401 by re-authenticating', async () => {
         let loginCount = 0;
         let statsHits = 0;
