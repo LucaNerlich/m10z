@@ -8,8 +8,10 @@ vi.mock('@strapi/strapi', () => ({
     },
 }));
 
+import articleRouter from './article/routes/article';
 import authorRouter from './author/routes/author';
 import categoryRouter from './category/routes/category';
+import podcastRouter from './podcast/routes/podcast';
 
 type GuardedRoute = {config: {find: {policies: string[]}; findOne: {policies: string[]}}};
 
@@ -17,6 +19,8 @@ const EXPECTED = ['global::published-status-only'];
 
 describe('draft-status route wiring', () => {
     for (const [name, router] of [
+        ['article', articleRouter],
+        ['podcast', podcastRouter],
         ['author', authorRouter],
         ['category', categoryRouter],
     ] as const) {
