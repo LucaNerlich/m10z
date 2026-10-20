@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.17.1] - 2026-10-20
+
+### Fixed
+- Production builds run the test suite with `NODE_ENV=test`, so a jsdom suite that imports a server-only module no longer fails in Docker with `No such built-in module: node:`.
+
 ## [1.17.0] - 2026-10-20
 
 ### Added
