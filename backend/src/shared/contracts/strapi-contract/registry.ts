@@ -100,37 +100,37 @@ export const CONTENT_TYPES: Record<ContentTypeKey, ContentTypeConfig> = {
     'article-feed': {
         uid: 'api::article-feed.article-feed',
         kind: 'single',
-        invalidatesOn: ['update'],
+        invalidatesOn: ['create', 'update', 'delete'],
         cascadeTags: [feedTag('article'), feedSourceTag('article')],
     },
     'audio-feed': {
         uid: 'api::audio-feed.audio-feed',
         kind: 'single',
-        invalidatesOn: ['update'],
+        invalidatesOn: ['create', 'update', 'delete'],
         cascadeTags: [feedTag('audio'), feedSourceTag('audio')],
     },
     about: {
         uid: 'api::about.about',
         kind: 'single',
-        invalidatesOn: ['update'],
+        invalidatesOn: ['create', 'update', 'delete'],
         cascadeTags: [ABOUT_TAG, ABOUT_PAGE_TAG],
     },
     'about-feed': {
         uid: 'api::about-feed.about-feed',
         kind: 'single',
-        invalidatesOn: ['update'],
+        invalidatesOn: ['create', 'update', 'delete'],
         cascadeTags: [feedSourceTag('article')],
     },
     imprint: {
         uid: 'api::imprint.imprint',
         kind: 'single',
-        invalidatesOn: ['update'],
+        invalidatesOn: ['create', 'update', 'delete'],
         cascadeTags: [LEGAL_TAG, IMPRINT_TAG],
     },
     privacy: {
         uid: 'api::privacy.privacy',
         kind: 'single',
-        invalidatesOn: ['update'],
+        invalidatesOn: ['create', 'update', 'delete'],
         cascadeTags: [LEGAL_TAG, PRIVACY_TAG],
     },
     'search-index': {
