@@ -27,8 +27,19 @@ describe('markdownToHtml — sanitization (XSS)', () => {
     });
 
     test('neutralizes javascript: URLs in links', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
         const html = markdownToHtml('[click](javascript:alert(1))');
         expect(html.toLowerCase()).not.toContain('javascript:');
+        expect(html).not.toContain('href');
+        vi.unstubAllEnvs();
+    });
+
+    test('drops images with a non-http scheme instead of prefixing the CMS origin', () => {
+        vi.stubEnv('STRAPI_URL', 'https://cms.m10z.de');
+        const html = markdownToHtml('![x](javascript:alert(1))');
+        expect(html.toLowerCase()).not.toContain('javascript:');
+        expect(html).not.toContain('src=');
+        vi.unstubAllEnvs();
     });
 
     test('removes disallowed tags such as <iframe>', () => {

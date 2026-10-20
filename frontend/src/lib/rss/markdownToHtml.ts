@@ -37,6 +37,13 @@ type HastNode = {
 };
 
 /**
+ * An explicit URI scheme (`javascript:`, `data:`, `tel:`, …). Only http(s) and
+ * mailto are allowed; anything else must be dropped instead of being turned
+ * into a path on the Strapi origin, which would mint a bogus link.
+ */
+const EXPLICIT_SCHEME_RE = /^[a-z][a-z0-9+.-]*:/i;
+
+/**
  * Images are CMS assets: relative paths belong to the Strapi origin.
  */
 function resolveAssetUrl(raw: string): string | null {
@@ -44,6 +51,7 @@ function resolveAssetUrl(raw: string): string | null {
     if (/^https?:\/\//i.test(raw)) return raw;
     if (/^mailto:/i.test(raw)) return raw;
     if (raw.startsWith('#')) return raw;
+    if (EXPLICIT_SCHEME_RE.test(raw)) return null;
     return joinStrapiBaseUrl(raw);
 }
 
@@ -56,6 +64,7 @@ function resolveLinkUrl(raw: string, siteUrl: string | undefined): string | null
     if (/^https?:\/\//i.test(raw)) return raw;
     if (/^mailto:/i.test(raw)) return raw;
     if (raw.startsWith('#')) return raw;
+    if (EXPLICIT_SCHEME_RE.test(raw)) return null;
     if (raw.startsWith('/uploads/') || !siteUrl) return joinStrapiBaseUrl(raw);
     const url = new URL(raw, siteUrl);
     // Backslashes normalize to slashes in URL parsing (`/\evil.test` would
