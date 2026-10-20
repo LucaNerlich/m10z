@@ -169,7 +169,7 @@ const html = `<!doctype html>
         <h2 style="margin:0 0 8px">HTTP status breakdown</h2>
         ${
           statusCounterRows.length === 0
-            ? `<div class="muted">No status counters found. Re-run the test after updating the scripts.</div>`
+            ? `<div class="muted">No 4xx/5xx responses recorded.</div>`
             : `
               <div class="muted">What caused failed requests (approx): <code>${approxNon2xx3xxRate != null ? (approxNon2xx3xxRate * 100).toFixed(2) + '%' : 'n/a'}</code></div>
               <table>
