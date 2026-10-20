@@ -107,4 +107,22 @@ describe('Mermaid', () => {
         expect(container.innerHTML).toContain('id="B"');
         expect(container.innerHTML).not.toContain('Failed to render');
     });
+
+    test('recovers when a failing chart is replaced by a valid one', async () => {
+        renderMock.mockRejectedValueOnce(new Error('bad chart'));
+        renderMock.mockResolvedValueOnce({svg: '<svg id="good"></svg>'});
+
+        await act(async () => {
+            root.render(<Mermaid chart='graph bad' />);
+        });
+        expect(container.innerHTML).toContain('Failed to render');
+
+        await act(async () => {
+            root.render(<Mermaid chart='graph good' />);
+        });
+
+        expect(renderMock).toHaveBeenCalledTimes(2);
+        expect(container.innerHTML).toContain('id="good"');
+        expect(container.innerHTML).not.toContain('Failed to render');
+    });
 });
