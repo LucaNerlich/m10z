@@ -43,6 +43,22 @@ describe('computeM12GStats', () => {
         expect(stats([month('2025-01', [game('Wärme Ära', 3)])]).winnerTimeline[0].slug).toBe('warme-ara');
     });
 
+    test('winnerTimeline uses the disambiguated slug when two games collide', () => {
+        const result = stats([month('2025-01', [game('Wärme', 3)]), month('2025-02', [game('Warme', 3)])]);
+        expect(result.winnerTimeline.map((w) => w.slug)).toEqual(['warme', 'warme-2']);
+    });
+
+    test('the win-streak card uses the disambiguated slug too', () => {
+        const m1 = month('2025-01', [game('Wärme', 0), game('Warme', 5)]);
+        const m2 = month('2025-02', [game('Warme', 5)]);
+
+        expect(buildM12GOverview(buildArchive([m1, m2])).streaks.win).toMatchObject({
+            name: 'Warme',
+            slug: 'warme-2',
+            length: 2,
+        });
+    });
+
     test('monthlyParticipation is chronological with correct totals', () => {
         const m1 = month('2025-01', [game('A', 3), game('B', 1)]);
         const m2 = month('2025-02', [game('A', 5)]);
