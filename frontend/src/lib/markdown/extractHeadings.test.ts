@@ -40,6 +40,15 @@ describe('extractHeadings', () => {
         expect(extractHeadings('   ## Indented')).toEqual([{text: 'Indented', depth: 2}]);
     });
 
+    test('does not treat a four-space-indented code line as a heading', () => {
+        expect(extractHeadings('    # install dependencies')).toEqual([]);
+    });
+
+    test('drops an optional closing hash sequence like CommonMark', () => {
+        expect(extractHeadings('## Fazit ##')).toEqual([{text: 'Fazit', depth: 2}]);
+        expect(extractHeadings('### Teil ###')).toEqual([{text: 'Teil', depth: 3}]);
+    });
+
     test('skips lines that are not ATX headings', () => {
         expect(extractHeadings('Just a paragraph\nwith two lines')).toEqual([]);
     });

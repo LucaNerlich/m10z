@@ -9,7 +9,7 @@
  * component, so depth values here reflect the raw markdown levels.
  */
 
-const HEADING_REGEX = /^(#{1,6})\s+(.+)$/;
+const HEADING_REGEX = /^ {0,3}(#{1,6})\s+(.+)$/;
 
 export type HeadingItem = {
     text: string;
@@ -31,16 +31,17 @@ export function extractHeadings(markdown: string, maxDepth = 3): HeadingItem[] {
     for (const {line, inCode} of markCodeFenceLines(markdown)) {
         if (inCode) continue;
 
-        const trimmed = line.trimStart();
-
-        const match = HEADING_REGEX.exec(trimmed);
+        const match = HEADING_REGEX.exec(line);
         if (!match) continue;
 
         const depth = match[1].length;
         if (depth > maxDepth) continue;
 
+        // CommonMark drops an optional closing sequence (e.g. `## Fazit ##`).
+        const headingText = match[2].replace(/\s+#+\s*$/, '');
+
         // Strip inline markdown formatting from heading text
-        const text = match[2]
+        const text = headingText
             .replace(/\*\*(.+?)\*\*/g, '$1') // bold
             .replace(/__(.+?)__/g, '$1') // bold alt
             .replace(/\*(.+?)\*/g, '$1') // italic
