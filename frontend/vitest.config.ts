@@ -2,6 +2,14 @@ import path from 'node:path';
 
 import {defineConfig} from 'vitest/config';
 
+// Production builds (Docker/Coolify set NODE_ENV=production before running
+// `pnpm run build`, which runs vitest first) make Vite treat jsdom suites as
+// browser code and externalize `node:` builtins, so any suite that imports a
+// server-only module dies with "No such built-in module: node:". Pin it before
+// Vite resolves the environment; the `test.env` pin below only covers React at
+// runtime. `Object.assign` because @types/node declares `NODE_ENV` readonly.
+Object.assign(process.env, {NODE_ENV: 'test'});
+
 export default defineConfig({
     resolve: {
         alias: {'@': path.resolve(__dirname, '.')},
