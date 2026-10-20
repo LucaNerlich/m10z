@@ -34,6 +34,47 @@ const author = {
     ],
 };
 
+describe('AuthorPage article section', () => {
+    beforeEach(() => {
+        mocks.fetchAuthorBySlug.mockReset();
+        mocks.fetchArticlesByAuthorPaginated.mockReset();
+        mocks.fetchPodcastsByAuthorPaginated.mockReset();
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    test('keeps the section and shows an error state when the article fetch fails', async () => {
+        mocks.fetchAuthorBySlug.mockResolvedValue({
+            ...author,
+            podcasts: [],
+            articles: [
+                {
+                    id: 11,
+                    title: 'Beitrag',
+                    slug: 'beitrag',
+                    publishedAt: '2026-01-02T00:00:00.000Z',
+                    date: '2026-01-02T00:00:00.000Z',
+                    categories: [],
+                },
+            ],
+        });
+        mocks.fetchArticlesByAuthorPaginated.mockRejectedValue(new Error('Strapi 500'));
+        mocks.fetchPodcastsByAuthorPaginated.mockResolvedValue({
+            items: [],
+            pagination: {total: 0, pageCount: 0},
+        });
+
+        const page = await AuthorPage({params: Promise.resolve({slug: 'jane'})});
+        const html = renderToStaticMarkup(page);
+
+        expect(html).toContain('Artikel (1)');
+        expect(html).toContain('Artikel konnten gerade nicht geladen werden');
+    });
+});
+
 describe('AuthorPage podcast section', () => {
     beforeEach(() => {
         mocks.fetchAuthorBySlug.mockReset();
