@@ -60,7 +60,7 @@ export default async function AboutUsPage() {
     const placeholder = mediaUrl ? 'empty' : 'blur';
 
     return (
-        <div>
+        <div data-list-page>
             <article>
                 <ContentImage
                     src={imageSrc}
