@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, {type Components} from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import remarkSmartypants from 'remark-smartypants';
@@ -13,8 +13,12 @@ import {Anchor} from '@/src/components/markdown/Anchor';
 import {Code} from '@/src/components/markdown/Code';
 import {FancyboxClient} from '@/src/components/markdown/FancyboxClient';
 import {Heading} from '@/src/components/markdown/Heading';
-import {Image} from '@/src/components/markdown/Image';
-import {enrichMarkdownImages} from '@/src/lib/media/mediaIndex';
+import {Image, type ImageProps} from '@/src/components/markdown/Image';
+import {
+    enrichMarkdownImages,
+    lookupMediaMetadata,
+    type MediaIndexFile,
+} from '@/src/lib/media/mediaIndex';
 import {getMediaIndex} from '@/src/lib/media/mediaIndexSource';
 
 import {preprocessMarkdown} from './preprocess';
@@ -39,6 +43,31 @@ const COMPONENTS = {
 } as const;
 
 /**
+ * Bind the media index to the image renderer.
+ *
+ * The lookup stays on the server — only the resolved blur placeholder crosses
+ * the client boundary, as a prop on the client `Image` component. Without an
+ * index the renderer keeps the static component map untouched.
+ */
+function markdownComponents(index: MediaIndexFile | null): Components {
+    if (!index) return COMPONENTS;
+
+    return {
+        ...COMPONENTS,
+        img: (props: ImageProps) => (
+            <Image
+                {...props}
+                blurhash={
+                    typeof props.src === 'string'
+                        ? lookupMediaMetadata(index, props.src)?.blurhash
+                        : undefined
+                }
+            />
+        ),
+    };
+}
+
+/**
  * Render sanitised Markdown into a React element.
  *
  * Pipeline: preprocess (custom inline syntax) → enrich inline images with
@@ -52,9 +81,10 @@ export async function Markdown({markdown, className}: MarkdownProps) {
     const containerClassName = className
         ? `markdown-content ${className}`
         : 'markdown-content';
+    const mediaIndex = await getMediaIndex();
     const source = enrichMarkdownImages(
         preprocessMarkdown(markdown),
-        await getMediaIndex()
+        mediaIndex
     );
 
     return (
@@ -69,7 +99,7 @@ export async function Markdown({markdown, className}: MarkdownProps) {
                     [rehypeSanitize, REHYPE_SANITIZE_SCHEMA],
                     rehypeUnwrapImages,
                 ]}
-                components={COMPONENTS}
+                components={markdownComponents(mediaIndex)}
             >
                 {source}
             </ReactMarkdown>

@@ -1,8 +1,8 @@
 # Refresh frontend/public/media-index.json from the production Strapi MCP.
 # Commits directly to main when the index changes.
 #
-# The index is the url → {alt, caption} snapshot the frontend uses to enrich
-# inline Markdown images (see src/lib/media/mediaIndex.ts). Run it after
+# The index is the url → {alt, caption, blurhash} snapshot the frontend uses to
+# enrich inline Markdown images (see src/lib/media/mediaIndex.ts). Run it after
 # updating Media Library metadata (e.g. `pnpm caption:images` in backend/).
 #
 # Required secrets:
