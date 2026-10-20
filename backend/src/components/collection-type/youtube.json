@@ -12,7 +12,7 @@
         "url": {
             "type": "string",
             "required": true,
-            "regex": "^\\s*(?:[Hh][Tt][Tt][Pp][Ss]?:\\/\\/)?(?:[Ww][Ww][Ww]\\.|[Mm]\\.)?(?:[Yy][Oo][Uu][Tt][Uu][Bb][Ee]\\.com\\/(?:watch\\?v=|embed\\/|live\\/)|[Yy][Oo][Uu][Tt][Uu]\\.be\\/|[Yy][Oo][Uu][Tt][Uu][Bb][Ee]-[Nn][Oo][Cc][Oo][Oo][Kk][Ii][Ee]\\.com\\/embed\\/)[a-zA-Z0-9_-]{11}(?:[?&#].*)?\\s*$"
+            "regex": "^\\s*(?:[Hh][Tt][Tt][Pp][Ss]?:\\/\\/)?(?:[Ww][Ww][Ww]\\.|[Mm]\\.)?(?:[Yy][Oo][Uu][Tt][Uu][Bb][Ee]\\.[Cc][Oo][Mm]\\/(?:[Ww][Aa][Tt][Cc][Hh]\\?[Vv]=|[Ee][Mm][Bb][Ee][Dd]\\/|[Ll][Ii][Vv][Ee]\\/)|[Yy][Oo][Uu][Tt][Uu]\\.[Bb][Ee]\\/|[Yy][Oo][Uu][Tt][Uu][Bb][Ee]-[Nn][Oo][Cc][Oo][Oo][Kk][Ii][Ee]\\.[Cc][Oo][Mm]\\/[Ee][Mm][Bb][Ee][Dd]\\/)[a-zA-Z0-9_-]{11}(?:[?&#].*)?\\s*$"
         }
     },
     "config": {}
