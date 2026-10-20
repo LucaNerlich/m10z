@@ -140,22 +140,12 @@ export function Mermaid({chart, className}: MermaidProps) {
                     </details>
                 </div>
                 {/* Keep the render target mounted so a later valid chart can replace the error. */}
-                <a
-                    ref={linkRef}
-                    href={dataUrl || '#'}
-                    data-fancybox="article-gallery"
-                    data-type="image"
-                    aria-label="View Mermaid diagram in full size"
-                    className={styles.link}
+                <div
+                    ref={containerRef}
+                    className={styles.container}
                     style={{display: 'none'}}
-                    data-umami-event={umamiEventId(['article', 'mermaid', 'open'])}
-                >
-                    <div
-                        ref={containerRef}
-                        className={styles.container}
-                        aria-label="Mermaid diagram preview"
-                    />
-                </a>
+                    aria-hidden="true"
+                />
             </div>
         );
     }

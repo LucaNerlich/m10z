@@ -125,4 +125,15 @@ describe('Mermaid', () => {
         expect(container.innerHTML).toContain('id="good"');
         expect(container.innerHTML).not.toContain('Failed to render');
     });
+
+    test('the error state contributes no Fancybox slide', async () => {
+        renderMock.mockRejectedValueOnce(new Error('bad chart'));
+
+        await act(async () => {
+            root.render(<Mermaid chart='graph bad' />);
+        });
+
+        expect(container.innerHTML).toContain('Failed to render');
+        expect(container.querySelector('[data-fancybox]')).toBeNull();
+    });
 });
