@@ -37,15 +37,24 @@ export default function WichtelnPage() {
 
     useEffect(() => {
         if (!hydrated) return;
-        try {
-            const parsed = parseWichtelnStorage(getItem<unknown>(STORAGE_KEY));
-            if (parsed) {
-                setParticipants(parsed.participants);
-                setAssignments(parsed.assignments);
+        const readStoredState = () => {
+            try {
+                const parsed = parseWichtelnStorage(getItem<unknown>(STORAGE_KEY));
+                setParticipants(parsed ? parsed.participants : []);
+                setAssignments(parsed ? parsed.assignments : []);
+            } catch {
+                removeItem(STORAGE_KEY);
             }
-        } catch {
-            removeItem(STORAGE_KEY);
-        }
+        };
+        readStoredState();
+
+        // Another tab persists the whole list, so mirror its writes instead of
+        // overwriting them with this tab's stale copy.
+        const onStorage = (event: StorageEvent) => {
+            if (event.key === null || event.key === STORAGE_KEY) readStoredState();
+        };
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
     }, [hydrated]);
 
     const persist = useCallback(
