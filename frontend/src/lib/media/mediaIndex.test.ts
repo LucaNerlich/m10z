@@ -2,6 +2,7 @@ import {describe, expect, it} from 'vitest';
 
 import {
     buildMediaIndex,
+    collectMediaBlurhashes,
     enrichMarkdownImages,
     lookupMediaMetadata,
     MEDIA_INDEX_VERSION,
@@ -12,6 +13,7 @@ import {
 } from './mediaIndex';
 
 const BASE = 'https://cms.m10z.de';
+const BLUR = 'data:image/png;base64,AAAA';
 
 const index = (entries: MediaIndexFile['entries']): MediaIndexFile => ({
     version: MEDIA_INDEX_VERSION,
@@ -38,6 +40,38 @@ describe('normalizeMediaKey', () => {
         ).toBeNull();
         expect(normalizeMediaKey('//evil.test/uploads/a.jpg', BASE)).toBeNull();
         expect(normalizeMediaKey('   ', BASE)).toBeNull();
+    });
+});
+
+describe('collectMediaBlurhashes', () => {
+    it('keys usable blur placeholders by normalised URL and skips the rest', () => {
+        const blurhashes = collectMediaBlurhashes(
+            [
+                {url: '/uploads/a.jpg', blurhash: BLUR},
+                {
+                    url: 'https://cms.m10z.de/uploads/b.jpg',
+                    blurhash: '  data:image/webp;base64,BBBB  ',
+                },
+                {url: '/uploads/empty.jpg', blurhash: null},
+                {url: '/uploads/text.jpg', blurhash: 'not-a-data-url'},
+                {
+                    url: '/uploads/injected.jpg',
+                    blurhash:
+                        'data:image/png;base64,AAAA");position:fixed;inset:0;z-index:9999',
+                },
+                {url: 'https://evil.test/uploads/a.jpg', blurhash: BLUR},
+                {url: null, blurhash: BLUR},
+            ],
+            BASE
+        );
+
+        expect([...blurhashes.keys()]).toEqual([
+            'uploads/a.jpg',
+            'uploads/b.jpg',
+        ]);
+        expect(blurhashes.get('uploads/b.jpg')).toBe(
+            'data:image/webp;base64,BBBB'
+        );
     });
 });
 
@@ -74,6 +108,64 @@ describe('buildMediaIndex', () => {
             caption: 'A caption',
         });
     });
+
+    it('merges blurhashes and keeps entries that only carry one', () => {
+        const built = buildMediaIndex({
+            generatedAt: '2026-01-01T00:00:00.000Z',
+            baseUrl: BASE,
+            assets: [
+                {
+                    url: '/uploads/with-alt.jpg',
+                    alternativeText: 'Alt',
+                    caption: null,
+                },
+                {
+                    url: '/uploads/blur-only.jpg',
+                    alternativeText: null,
+                    caption: null,
+                },
+                {
+                    url: '/uploads/foreign-host.jpg',
+                    alternativeText: null,
+                    caption: null,
+                },
+                {
+                    url: '/uploads/invalid-blur.jpg',
+                    alternativeText: null,
+                    caption: null,
+                },
+                {
+                    url: '/uploads/injected.jpg',
+                    alternativeText: null,
+                    caption: null,
+                },
+            ],
+            blurhashes: new Map([
+                ['uploads/with-alt.jpg', BLUR],
+                ['uploads/blur-only.jpg', BLUR],
+                ['uploads/invalid-blur.jpg', 'not-a-data-url'],
+                [
+                    'uploads/injected.jpg',
+                    'data:image/png;base64,AAAA");position:fixed;inset:0;z-index:9999',
+                ],
+            ]),
+        });
+
+        expect(Object.keys(built.entries)).toEqual([
+            'uploads/blur-only.jpg',
+            'uploads/with-alt.jpg',
+        ]);
+        expect(built.entries['uploads/with-alt.jpg']).toEqual({
+            alt: 'Alt',
+            caption: undefined,
+            blurhash: BLUR,
+        });
+        expect(built.entries['uploads/blur-only.jpg']).toEqual({
+            alt: undefined,
+            caption: undefined,
+            blurhash: BLUR,
+        });
+    });
 });
 
 describe('serialize/parse', () => {
@@ -84,6 +176,7 @@ describe('serialize/parse', () => {
             assets: [
                 {url: '/uploads/a.jpg', alternativeText: 'Alt', caption: 'Cap'},
             ],
+            blurhashes: new Map([['uploads/a.jpg', BLUR]]),
         });
         const roundTripped = parseMediaIndex(serializeMediaIndex(built));
         expect(roundTripped).toEqual(built);
@@ -95,18 +188,32 @@ describe('serialize/parse', () => {
     it('rejects unsupported versions and malformed payloads', () => {
         expect(() =>
             parseMediaIndex(
-                '{"version":2,"baseUrl":"x","generatedAt":"y","entries":{}}'
+                `{"version":${MEDIA_INDEX_VERSION + 1},"baseUrl":"x","generatedAt":"y","entries":{}}`
             )
         ).toThrow(/version/);
         expect(() =>
-            parseMediaIndex('{"version":1,"baseUrl":"x","entries":{}}')
+            parseMediaIndex(
+                `{"version":${MEDIA_INDEX_VERSION},"baseUrl":"x","entries":{}}`
+            )
         ).toThrow(/generatedAt/);
         expect(() =>
-            parseMediaIndex('{"version":1,"baseUrl":"x","generatedAt":"y"}')
+            parseMediaIndex(
+                `{"version":${MEDIA_INDEX_VERSION},"baseUrl":"x","generatedAt":"y"}`
+            )
         ).toThrow(/entries/);
         expect(() =>
             parseMediaIndex(
-                '{"version":1,"baseUrl":"x","generatedAt":"y","entries":{"a":5}}'
+                `{"version":${MEDIA_INDEX_VERSION},"baseUrl":"x","generatedAt":"y","entries":{"a":5}}`
+            )
+        ).toThrow(/invalid/);
+        expect(() =>
+            parseMediaIndex(
+                `{"version":${MEDIA_INDEX_VERSION},"baseUrl":"x","generatedAt":"y","entries":{"a":{"blurhash":"https://evil.test/x.png"}}}`
+            )
+        ).toThrow(/invalid/);
+        expect(() =>
+            parseMediaIndex(
+                `{"version":${MEDIA_INDEX_VERSION},"baseUrl":"x","generatedAt":"y","entries":{"a":{"blurhash":"data:image/png;base64,AAAA\\");position:fixed;inset:0;z-index:9999"}}}`
             )
         ).toThrow(/invalid/);
         expect(() => parseMediaIndex('not json')).toThrow();

@@ -5,7 +5,10 @@ import {isImageHostnameAllowed, resolveStrapiImageUrl} from '@/src/lib/image';
 import {GalleryImage} from './GalleryImage';
 import {PlainImage} from './PlainImage';
 
-export type ImageProps = React.ComponentProps<'img'>;
+export type ImageProps = React.ComponentProps<'img'> & {
+    /** Blur placeholder (data URL) from the media index, when available. */
+    blurhash?: string;
+};
 
 /**
  * Route markdown images between gallery-enabled and plain display.
@@ -16,8 +19,9 @@ export type ImageProps = React.ComponentProps<'img'>;
  *
  * @param src - Image source URL or path; if missing or not a string, the component returns `null`
  * @param alt - Alternate text for the image (defaults to an empty string)
+ * @param blurhash - Precomputed blur placeholder from the media index
  */
-export function Image({src, alt = '', title}: ImageProps) {
+export function Image({src, alt = '', title, blurhash}: ImageProps) {
     if (!src || typeof src !== 'string') return null;
 
     let url: string;
@@ -31,7 +35,7 @@ export function Image({src, alt = '', title}: ImageProps) {
     }
 
     if (isImageHostnameAllowed(url)) {
-        return <GalleryImage src={url} alt={alt} caption={title} title={title} />;
+        return <GalleryImage src={url} alt={alt} caption={title} title={title} blurhash={blurhash} />;
     }
 
     return <PlainImage src={url} alt={alt} title={title} />;

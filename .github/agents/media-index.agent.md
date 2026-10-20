@@ -1,6 +1,6 @@
 ---
 name: media-index
-description: Refreshes frontend/public/media-index.json from the production Strapi MCP so inline Markdown images render with Media Library alt text and captions.
+description: Refreshes frontend/public/media-index.json from the production Strapi MCP so inline Markdown images render with Media Library alt text, captions and blur placeholders.
 ---
 
 # Media index agent
@@ -10,7 +10,10 @@ Inline images embedded in article/podcast `content` are plain Markdown
 the frontend never sees their Media Library `alternativeText`/`caption`. The
 media index closes that gap: it maps a media URL to its metadata, and the
 Markdown renderer applies it (`src/lib/media/mediaIndex.ts`,
-`src/lib/markdown/Markdown.tsx`).
+`src/lib/markdown/Markdown.tsx`). Besides alt text and caption, entries carry
+the precomputed blur placeholder (`blurhash`, a `data:image/…` URL from the
+Media Library) so inline images fade in like cover images instead of popping
+in.
 
 The index is a committed snapshot:
 
@@ -37,9 +40,10 @@ Required repository secrets:
 
 ## Alternative: run the generator locally
 
-The script pages `media_list_assets` over the Strapi MCP endpoint and writes the
-snapshot deterministically (sorted, only assets that carry an alt text or
-caption).
+The script pages `media_list_assets` over the Strapi MCP endpoint, fetches the
+upload blur placeholders from the public upload content API
+(`/api/upload/files`), and writes the snapshot deterministically (sorted, only
+assets that carry an alt text, caption or blurhash).
 
 ```bash
 cd frontend
@@ -80,8 +84,8 @@ committed and deployed (the scheduled Action does this once a week).
   externally hosted image cannot inherit a Media Library entry by pathname.
 - Images inside fenced code blocks are left untouched, and the transform is
   idempotent.
-- Assets without alt text **and** without a caption are omitted, so the file
-  only grows with usable metadata.
+- Assets without alt text, without a caption **and** without a blurhash are
+  omitted, so the file only grows with usable metadata.
 
 ## Limitations
 

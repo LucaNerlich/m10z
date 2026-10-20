@@ -1,5 +1,6 @@
 /**
- * Media index: a `url → {alt, caption}` snapshot of the Strapi Media Library.
+ * Media index: a `url → {alt, caption, blurhash}` snapshot of the Strapi Media
+ * Library.
  *
  * Inline Markdown images carry no relation to the Media Library, so their
  * `![alt](url)` text (often just the filename) is all the frontend sees. This
@@ -12,11 +13,17 @@
 
 import {markCodeFenceLines} from '@/src/lib/markdown/codeFences';
 
-export const MEDIA_INDEX_VERSION = 1;
+export const MEDIA_INDEX_VERSION = 2;
 
 export type MediaIndexEntry = {
     alt?: string;
     caption?: string;
+    /**
+     * Base64 data URL used as the `next/image` blur placeholder. The name
+     * mirrors the `blurhash` upload field in Strapi, which already stores a
+     * pre-rendered 10x10 PNG rather than a BlurHash string.
+     */
+    blurhash?: string;
 };
 
 export type MediaIndexFile = {
@@ -34,10 +41,27 @@ export type MediaAssetInput = {
     caption?: string | null;
 };
 
+/** Minimal shape of an upload as returned by the Strapi upload content API. */
+export type MediaUploadInput = {
+    url?: string | null;
+    blurhash?: string | null;
+};
+
+// `blurhash` holds a data URL (not a BlurHash string), and `next/image` only
+// accepts data URLs for `blurDataURL`. Validate the whole base64 payload, not
+// just the prefix: next/image interpolates the value into an inline style, so
+// anything after the comma must not be able to close the CSS `url()` string.
+const BLUR_DATA_URL_RE = /^data:image\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/]+={0,2}$/i;
+
 function nonEmpty(value: unknown): string | undefined {
     if (typeof value !== 'string') return undefined;
     const trimmed = value.trim();
     return trimmed === '' ? undefined : trimmed;
+}
+
+function blurDataUrl(value: unknown): string | undefined {
+    const trimmed = nonEmpty(value);
+    return trimmed && BLUR_DATA_URL_RE.test(trimmed) ? trimmed : undefined;
 }
 
 function stripLeadingSlashes(value: string): string {
@@ -70,14 +94,36 @@ export function normalizeMediaKey(url: string, baseUrl: string): string | null {
 }
 
 /**
- * Build the index from MCP media assets. Assets without a URL or with neither an
- * alt text nor a caption are skipped (they add nothing). Entries are sorted by
- * key so the serialised file stays deterministic.
+ * Collect the uploads' blur placeholders into a `normalized URL key → data URL`
+ * map. Uploads without a usable URL or an image data URL are skipped.
+ */
+export function collectMediaBlurhashes(
+    uploads: MediaUploadInput[],
+    baseUrl: string
+): Map<string, string> {
+    const blurhashes = new Map<string, string>();
+    for (const upload of uploads) {
+        if (typeof upload.url !== 'string') continue;
+        const key = normalizeMediaKey(upload.url, baseUrl);
+        const blurhash = blurDataUrl(upload.blurhash);
+        if (!key || !blurhash) continue;
+        blurhashes.set(key, blurhash);
+    }
+    return blurhashes;
+}
+
+/**
+ * Build the index from MCP media assets plus the uploads' blurhashes. Assets
+ * without a URL or with no alt text, caption **or** blurhash are skipped (they
+ * add nothing). Entries are sorted by key so the serialised file stays
+ * deterministic.
  */
 export function buildMediaIndex(args: {
     generatedAt: string;
     baseUrl: string;
     assets: MediaAssetInput[];
+    /** Optional `normalized URL key → blur data URL` map from the upload API. */
+    blurhashes?: ReadonlyMap<string, string>;
 }): MediaIndexFile {
     const entries: Record<string, MediaIndexEntry> = {};
     for (const asset of args.assets) {
@@ -86,8 +132,9 @@ export function buildMediaIndex(args: {
         if (!key) continue;
         const alt = nonEmpty(asset.alternativeText);
         const caption = nonEmpty(asset.caption);
-        if (!alt && !caption) continue;
-        entries[key] = {alt, caption};
+        const blurhash = blurDataUrl(args.blurhashes?.get(key));
+        if (!alt && !caption && !blurhash) continue;
+        entries[key] = {alt, caption, blurhash};
     }
 
     const sorted: Record<string, MediaIndexEntry> = {};
@@ -111,7 +158,10 @@ function isMediaIndexEntry(value: unknown): value is MediaIndexEntry {
     const entry = value as Record<string, unknown>;
     return (
         (entry.alt === undefined || typeof entry.alt === 'string') &&
-        (entry.caption === undefined || typeof entry.caption === 'string')
+        (entry.caption === undefined || typeof entry.caption === 'string') &&
+        (entry.blurhash === undefined ||
+            (typeof entry.blurhash === 'string' &&
+                BLUR_DATA_URL_RE.test(entry.blurhash)))
     );
 }
 

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Inline images in article and podcast text use the Media Library's precomputed blur placeholder, so they fade in like cover images. The committed `media-index.json` now also stores each image's `blurhash`; the generator merges it from the upload content API while keeping alt text and captions from the MCP listing.
+
 ## [1.16.2] - 2026-10-19
 
 ### Fixed

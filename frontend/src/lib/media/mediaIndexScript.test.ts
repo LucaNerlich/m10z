@@ -42,11 +42,25 @@ type Asset = {
     caption?: string | null;
 };
 
-async function withMockMcp(
+type Upload = {
+    url?: string | null;
+    blurhash?: string | null;
+};
+
+const BLUR = 'data:image/png;base64,AAAA';
+
+async function withMockStrapi(
     assets: Asset[],
+    uploads: Upload[],
     run: (url: string, outFile: string) => Promise<void>
 ): Promise<void> {
     const server = createServer(async (request, response: ServerResponse) => {
+        if (request.url?.startsWith('/api/upload/files')) {
+            response.setHeader('content-type', 'application/json');
+            response.end(JSON.stringify(uploads));
+            return;
+        }
+
         const body = await new Promise<string>((resolve) => {
             const chunks: Buffer[] = [];
             request.on('data', (chunk: Buffer) => chunks.push(chunk));
@@ -110,8 +124,8 @@ describe('media index script', () => {
         });
     });
 
-    it('writes a sorted, validated index with only assets that carry metadata', async () => {
-        await withMockMcp(
+    it('writes a sorted, validated index with metadata and blurhashes', async () => {
+        await withMockStrapi(
             [
                 {
                     url: '/uploads/b_2.jpg',
@@ -124,7 +138,13 @@ describe('media index script', () => {
                     caption: null,
                 },
                 {url: '/uploads/c_3.jpg', alternativeText: null, caption: null},
+                {url: '/uploads/d_4.jpg', alternativeText: null, caption: null},
                 {url: null, alternativeText: 'no url', caption: 'no url'},
+            ],
+            [
+                {url: '/uploads/a_1.jpg', blurhash: BLUR},
+                {url: '/uploads/d_4.jpg', blurhash: BLUR},
+                {url: '/uploads/c_3.jpg', blurhash: 'not-a-data-url'},
             ],
             async (url, outFile) => {
                 await runScript(
@@ -138,11 +158,23 @@ describe('media index script', () => {
                 expect(Object.keys(index.entries)).toEqual([
                     'uploads/a_1.jpg',
                     'uploads/b_2.jpg',
+                    'uploads/d_4.jpg',
                 ]);
                 expect(index.baseUrl).toBe(url.replace('/mcp', ''));
                 expect(index.entries['uploads/a_1.jpg']).toEqual({
                     alt: 'A alt',
                     caption: undefined,
+                    blurhash: BLUR,
+                });
+                expect(index.entries['uploads/b_2.jpg']).toEqual({
+                    alt: undefined,
+                    caption: 'B capture',
+                    blurhash: undefined,
+                });
+                expect(index.entries['uploads/d_4.jpg']).toEqual({
+                    alt: undefined,
+                    caption: undefined,
+                    blurhash: BLUR,
                 });
                 expect(await readdir(path.dirname(outFile))).toEqual([
                     'media-index.json',
@@ -151,8 +183,52 @@ describe('media index script', () => {
         );
     });
 
+    it('fails when the upload API rejects the blurhash request', async () => {
+        const server = createServer((request, response) => {
+            if (request.url?.startsWith('/api/upload/files')) {
+                response.statusCode = 403;
+                response.end('Forbidden');
+                return;
+            }
+            response.setHeader('content-type', 'application/json');
+            response.end(
+                JSON.stringify({
+                    jsonrpc: '2.0',
+                    id: 1,
+                    result: {structuredContent: {results: [], pagination: {pageCount: 0}}},
+                })
+            );
+        });
+        await new Promise<void>((resolve) =>
+            server.listen(0, '127.0.0.1', resolve)
+        );
+        const address = server.address() as AddressInfo;
+        const directory = await mkdtemp(
+            path.join(tmpdir(), 'media-index-test-')
+        );
+        try {
+            await expect(
+                runScript(
+                    scriptEnv({
+                        STRAPI_MCP_URL: `http://127.0.0.1:${address.port}/mcp`,
+                        STRAPI_MCP_ADMIN_TOKEN_LOCAL: 'local-token',
+                        MEDIA_INDEX_OUT: path.join(directory, 'media-index.json'),
+                    })
+                )
+            ).rejects.toMatchObject({
+                stderr: expect.stringContaining('HTTP 403'),
+            });
+        } finally {
+            server.closeAllConnections();
+            await new Promise<void>((resolve) =>
+                server.close(() => resolve())
+            );
+            await rm(directory, {recursive: true, force: true});
+        }
+    });
+
     it('writes nothing in a dry run', async () => {
-        await withMockMcp(
+        await withMockStrapi(
             [
                 {
                     url: '/uploads/a_1.jpg',
@@ -160,6 +236,7 @@ describe('media index script', () => {
                     caption: null,
                 },
             ],
+            [{url: '/uploads/a_1.jpg', blurhash: BLUR}],
             async (url, outFile) => {
                 await runScript(
                     scriptEnv({

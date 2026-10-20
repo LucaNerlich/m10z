@@ -6,6 +6,8 @@ import {isImageHostnameAllowed, resolveStrapiImageUrl} from '@/src/lib/image';
 
 export type GalleryImageProps = React.ComponentProps<typeof Image> & {
     caption?: string;
+    /** Blur placeholder (data URL) from the media index, when available. */
+    blurhash?: string;
 };
 
 /**
@@ -14,7 +16,7 @@ export type GalleryImageProps = React.ComponentProps<typeof Image> & {
  * Only images from allowed hostnames should reach this component (routed by
  * `Image.tsx`). The allowlist check below is defence-in-depth.
  */
-export function GalleryImage({src, alt = '', style, caption, ...props}: GalleryImageProps) {
+export function GalleryImage({src, alt = '', style, caption, blurhash, ...props}: GalleryImageProps) {
     if (!src || typeof src !== 'string') return null;
 
     const url = resolveStrapiImageUrl(src);
@@ -44,13 +46,15 @@ export function GalleryImage({src, alt = '', style, caption, ...props}: GalleryI
             style={combinedStyle}
         >
             <Image
+                {...restProps}
                 src={url}
                 alt={alt}
                 title={caption ?? title}
                 width={props.width ?? 1200}
                 height={props.height ?? 675}
                 sizes={props.sizes ?? '(max-width: 900px) 100vw, 800px'}
-                {...restProps}
+                placeholder={blurhash ? 'blur' : 'empty'}
+                blurDataURL={blurhash}
             />
         </a>
     );
