@@ -11,6 +11,7 @@ type CoverImageProps = {
     blurhash?: string | null; // Base64 data URL from backend (e.g., "data:image/png;base64,...")
     title?: string;
     priority?: boolean;
+    sizes?: string;
 };
 
 /** Optimized cover image with consistent styling and optional blur placeholder. */
@@ -24,6 +25,7 @@ export function ContentImage({
                                  blurhash,
                                  title,
                                  priority = false,
+                                 sizes,
                              }: CoverImageProps) {
     // `next/image` throws when `placeholder='blur'` has no `blurDataURL`. A
     // string `src` only gets one from `blurhash`; a static import already ships
@@ -45,6 +47,7 @@ export function ContentImage({
                 className={styles.image}
                 priority={priority}
                 loading={priority ? 'eager' : undefined}
+                sizes={sizes}
             />
         </div>
     );

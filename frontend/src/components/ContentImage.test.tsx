@@ -5,9 +5,17 @@ import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 vi.mock('next/image', () => ({
     // Surface the placeholder props so the test can assert the fallback logic.
-    default: ({alt, placeholder, blurDataURL}: {alt?: string; placeholder?: string; blurDataURL?: string}) => (
-        <img alt={alt} data-placeholder={placeholder ?? ''} data-blur={blurDataURL ?? ''} />
-    ),
+    default: ({
+        alt,
+        placeholder,
+        blurDataURL,
+        sizes,
+    }: {
+        alt?: string;
+        placeholder?: string;
+        blurDataURL?: string;
+        sizes?: string;
+    }) => <img alt={alt} data-placeholder={placeholder ?? ''} data-blur={blurDataURL ?? ''} data-sizes={sizes ?? ''} />,
 }));
 
 import {ContentImage} from './ContentImage';
@@ -86,5 +94,15 @@ describe('ContentImage placeholder', () => {
         });
 
         expect(renderedImage().dataset.placeholder).toBe('empty');
+    });
+
+    test('forwards sizes to next/image so cards pick a rendered-size candidate', async () => {
+        await act(async () => {
+            root.render(
+                <ContentImage src='https://m10z.de/a.jpg' alt='cover' width={400} height={225} sizes='33vw' />,
+            );
+        });
+
+        expect(renderedImage().dataset.sizes).toBe('33vw');
     });
 });

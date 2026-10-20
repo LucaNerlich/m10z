@@ -80,6 +80,7 @@ export function ContentCard({
                         className={styles.cover}
                         placeholder={blurhash ? 'blur' : 'empty'}
                         blurDataURL={blurhash ?? undefined}
+                        sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 33vw"
                     />
                 </Link>
             </div>
