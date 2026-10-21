@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import {act} from 'react';
 import {createRoot, type Root} from 'react-dom/client';
-import {afterEach, beforeEach, describe, expect, test} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 import WichtelnPage from './page';
 
@@ -65,5 +65,42 @@ describe('WichtelnPage cross-tab sync', () => {
         });
 
         expect(container.textContent).not.toContain('Alice');
+    });
+});
+
+describe('WichtelnPage persistence warning', () => {
+    async function addParticipant(name: string): Promise<void> {
+        const input = container.querySelector('input');
+        if (!input) throw new Error('name input not rendered');
+        const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
+        await act(async () => {
+            setValue.call(input, name);
+            input.dispatchEvent(new Event('input', {bubbles: true}));
+        });
+        const form = container.querySelector('form');
+        if (!form) throw new Error('form not rendered');
+        await act(async () => {
+            form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+        });
+    }
+
+    test('warns when the write cannot be persisted, and clears it after a successful one', async () => {
+        await act(async () => {
+            root.render(<WichtelnPage />);
+        });
+
+        const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+            throw new Error('QuotaExceededError');
+        });
+        await addParticipant('Alice');
+
+        expect(container.querySelector('[role="alert"]')?.textContent).toContain(
+            'konnte nicht gespeichert werden'
+        );
+
+        spy.mockRestore();
+        await addParticipant('Bob');
+
+        expect(container.querySelector('[role="alert"]')).toBeNull();
     });
 });
