@@ -1,11 +1,12 @@
-import {beforeEach, describe, expect, test, vi} from 'vitest';
+import {PHASE_PRODUCTION_BUILD} from 'next/constants';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 const {fetchStrapiSingle} = vi.hoisted(() => ({fetchStrapiSingle: vi.fn()}));
 
 vi.mock('@/src/lib/strapi/contentAccess', () => ({fetchStrapiSingle}));
 
 import {routes} from '@/src/lib/routes';
-import {getAbout, getFeedsInfo} from './singleTypes';
+import {getAbout, getFeedsInfo, getImprint, getPrivacy} from './singleTypes';
 
 describe('outage fallbacks', () => {
     beforeEach(() => {
@@ -13,6 +14,13 @@ describe('outage fallbacks', () => {
         // The whole point of a fallback: Strapi is unreachable.
         fetchStrapiSingle.mockRejectedValue(new Error('ECONNREFUSED'));
         vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        // The fallback is a build-phase-only escape hatch; at runtime the error
+        // must propagate so ISR keeps the last good page.
+        vi.stubEnv('NEXT_PHASE', PHASE_PRODUCTION_BUILD);
+    });
+
+    afterEach(() => {
+        vi.unstubAllEnvs();
     });
 
     test('getFeedsInfo renders absolute feed URLs from the shared site URL, not `undefined/…`', async () => {
@@ -31,5 +39,25 @@ describe('outage fallbacks', () => {
         expect(about.content).not.toContain('RSS-Reader');
         expect(about.content).not.toContain('Artikel-Feed');
         expect(about.content).toContain('Magazin');
+    });
+});
+
+describe('runtime failures', () => {
+    beforeEach(() => {
+        fetchStrapiSingle.mockReset();
+        fetchStrapiSingle.mockRejectedValue(new Error('ECONNREFUSED'));
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        vi.stubEnv('NEXT_PHASE', 'phase-production-server');
+    });
+
+    afterEach(() => {
+        vi.unstubAllEnvs();
+    });
+
+    test('propagates instead of caching the fallback', async () => {
+        await expect(getImprint()).rejects.toThrow('ECONNREFUSED');
+        await expect(getPrivacy()).rejects.toThrow('ECONNREFUSED');
+        await expect(getAbout()).rejects.toThrow('ECONNREFUSED');
+        await expect(getFeedsInfo()).rejects.toThrow('ECONNREFUSED');
     });
 });
