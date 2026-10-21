@@ -155,6 +155,32 @@ describe('generateAudioFeedXml — channel & item structure', () => {
         expect(xml).toContain('<link>https://m10z.de/podcasts/episode-001</link>');
     });
 
+    test('uses the original cover for <itunes:image>, not the display derivative', () => {
+        // Apple requires 1400-3000 px episode art; the `medium` derivative is 750 px.
+        const {xml} = generateAudioFeedXml({
+            cfg: baseCfg,
+            channel,
+            episodeFooter: null,
+            episodes: [
+                {
+                    ...episode,
+                    cover: {
+                        url: 'https://cdn.example.test/cover-original.jpg',
+                        mime: 'image/jpeg',
+                        width: 3000,
+                        height: 3000,
+                        formats: {
+                            medium: {url: 'https://cdn.example.test/medium_cover.jpg', width: 750, height: 750},
+                        },
+                    },
+                },
+            ],
+        });
+
+        expect(xml).toContain('<itunes:image href="https://cdn.example.test/cover-original.jpg"/>');
+        expect(xml).not.toContain('medium_cover.jpg');
+    });
+
     test('omits <itunes:duration> when the CMS value is null', () => {
         // The CMS field is optional (required: false), so a saved podcast can carry null
         // although the frontend type declares it non-nullable.
