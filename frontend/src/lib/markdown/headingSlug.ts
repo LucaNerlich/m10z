@@ -16,15 +16,6 @@
 import GithubSlugger from 'github-slugger';
 
 /**
- * Slug a single heading text. Stateless: there is no occurrence tracking, so two
- * identical headings produce the same slug (use `createHeadingSlugger` for a
- * document).
- */
-export function slugifyHeadingText(value: string): string {
-    return new GithubSlugger().slug(value);
-}
-
-/**
  * A slugger with occurrence tracking. Call `slug()` on headings in document order
  * exactly once per heading; duplicates receive `-1`, `-2`, … suffixes like
  * rehype-slug assigns.

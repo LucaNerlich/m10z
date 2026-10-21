@@ -3,7 +3,7 @@
 import {useEffect, useState} from 'react';
 
 import {type HeadingItem, renderedHeadingDepth} from '@/src/lib/markdown/extractHeadings';
-import {createHeadingSlugger, slugifyHeadingText} from '@/src/lib/markdown/headingSlug';
+import {createHeadingSlugger} from '@/src/lib/markdown/headingSlug';
 
 import styles from './TableOfContents.module.css';
 
@@ -43,8 +43,9 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
             slugQueues.set(slug, queue);
         }
 
+        const tocSlugger = createHeadingSlugger();
         const resolved = headings.map((heading) => {
-            const slug = slugifyHeadingText(heading.text);
+            const slug = tocSlugger.slug(heading.text);
             const queue = slugQueues.get(slug);
             if (!queue || queue.length === 0) return null;
             return queue.shift() ?? null;
