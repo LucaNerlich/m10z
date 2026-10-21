@@ -9,6 +9,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeUnwrapImages from 'rehype-unwrap-images';
 
+import {joinStrapiBaseUrl} from '@/src/lib/image';
 import {Anchor} from '@/src/components/markdown/Anchor';
 import {Code} from '@/src/components/markdown/Code';
 import {FancyboxClient} from '@/src/components/markdown/FancyboxClient';
@@ -45,20 +46,24 @@ const COMPONENTS = {
 /**
  * Bind the media index to the image renderer.
  *
- * The lookup stays on the server — only the resolved blur placeholder crosses
- * the client boundary, as a prop on the client `Image` component. Without an
- * index the renderer keeps the static component map untouched.
+ * Both lookups stay on the server: the blur placeholder and the absolute image
+ * URL cross the client boundary as props. Resolving the URL here matters because
+ * `Image` is a client component and `STRAPI_URL` is server-only — a relative
+ * `src` would render one URL on the server and another (or none) after hydration.
  */
 export function markdownComponents(index: MediaIndexFile | null): Components {
-    if (!index) return COMPONENTS;
-
     return {
         ...COMPONENTS,
         img: (props: ImageProps) => (
             <Image
                 {...props}
-                blurhash={
+                src={
                     typeof props.src === 'string'
+                        ? joinStrapiBaseUrl(props.src) ?? props.src
+                        : props.src
+                }
+                blurhash={
+                    index && typeof props.src === 'string'
                         ? lookupMediaMetadata(index, props.src)?.blurhash
                         : undefined
                 }
