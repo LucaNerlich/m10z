@@ -5,13 +5,14 @@
  * to ensure consistency across all pages and avoid duplication.
  */
 
-/**
- * OpenGraph locale identifier.
- * Used for the `og:locale` meta tag.
- */
 import {type Metadata} from 'next';
 
-export const OG_LOCALE = 'de' as const;
+/**
+ * OpenGraph locale identifier.
+ * Used for the `og:locale` meta tag. Open Graph defines the value as
+ * `language_TERRITORY`, so a bare `de` is dropped by strict consumers.
+ */
+export const OG_LOCALE = 'de_DE' as const;
 
 /**
  * OpenGraph site name.
@@ -34,7 +35,8 @@ export const FEED_ALTERNATES_TYPES: NonNullable<Metadata['alternates']>['types']
 
 /**
  * BCP 47 language tag used by JSON-LD `inLanguage` properties.
- * Distinct from `OG_LOCALE` ('de'), which follows the OpenGraph locale format.
+ * Distinct from `OG_LOCALE` ('de_DE'), which follows the OpenGraph
+ * `language_TERRITORY` format.
  */
 export const CONTENT_LANGUAGE = 'de-DE' as const;
 
