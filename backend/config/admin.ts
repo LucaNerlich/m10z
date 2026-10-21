@@ -63,7 +63,13 @@ export default ({env}: any) => {
                     if (!clientUrl) return null;
                     if (!documentId) return null;
 
-                    const document = await strapi.documents(uid).findOne({documentId});
+                    // Default reads return the draft row, so pass the version the editor
+                    // asked for: after a draft slug change, a published preview would
+                    // otherwise link to the new draft slug and 404 on the frontend.
+                    const document = await strapi.documents(uid).findOne({
+                        documentId,
+                        status: status === 'published' ? 'published' : 'draft',
+                    });
                     const slug = document?.slug;
                     if (!slug) return null;
 
