@@ -2,20 +2,20 @@ import Link from 'next/link';
 import {type Metadata} from 'next';
 
 import {Card} from '@/src/components/Card';
+import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {routes} from '@/src/lib/routes';
 
 import styles from './page.module.css';
 
-export const metadata: Metadata = {
+const APPS_DESCRIPTION =
+    'Kleine Werkzeuge und Spielereien rund um M10Z — Wichteln, Zufallsgeneratoren und mehr.';
+
+export const metadata: Metadata = buildStaticListMetadata({
     title: 'Apps',
-    description:
-        'Kleine Werkzeuge und Spielereien rund um M10Z — Wichteln, Zufallsgeneratoren und mehr.',
-    openGraph: {
-        title: 'Apps – M10Z',
-        description:
-            'Kleine Werkzeuge und Spielereien rund um M10Z — Wichteln, Zufallsgeneratoren und mehr.',
-    },
-};
+    description: APPS_DESCRIPTION,
+    path: routes.apps,
+    ogImageAlt: 'Apps bei M10Z',
+});
 
 const APPS = [
     {
