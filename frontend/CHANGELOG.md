@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.17.4] - 2026-10-21
+
+### Fixed
+- Generated Open Graph images render again instead of returning 502: the bundled font was a format the image renderer cannot parse and is now shipped as TrueType.
+- Podcast episodes whose slug contains an underscore can be downloaded again; their enclosure URL returned 404 while the episode page worked.
+- RSS enclosures declare the real byte length (the KB→bytes conversion used 1024 where Strapi stores decimal kilobytes).
+- Episodes advertise artwork of at least 1400 px to Apple Podcasts instead of the 750 px card variant.
+- Pages declare `og:locale` as `de_DE`, which strict link-preview consumers understand.
+- The table of contents keeps the current section highlighted on short sections instead of jumping to the next one.
+- Selecting text in the search dialog and releasing on the backdrop no longer closes it, and a right-click no longer dismisses it.
+- The stored theme and font are applied before first paint, removing the flash on cold loads.
+- Legal pages, the about page and the feeds are no longer cached with their error fallback for an hour after a brief CMS outage.
+- Wichteln warns when the browser cannot save the list instead of losing it silently on reload.
+- Editing an author no longer drops every team page from the cache, and deleting a category makes its page 404 immediately.
+- Sitemap and llms.txt paging keeps a stable order, so a publish during a rebuild cannot drop or repeat a URL.
+- Custom Markdown syntax (`==`, `++`, `^`, `~`) no longer rewrites link destinations, attribute values or inline code samples.
+- Markdown images resolve their CMS URL before hydration, so a relative image no longer 404s or causes a hydration mismatch.
+- Mermaid diagrams keep their natural size in the lightbox instead of rendering at a default width.
+- The apps pages carry their own title, canonical URL and link preview, including `/apps/wichteln`.
+- M12G game pages return a 404 for an unknown slug instead of metadata pointing at the index.
+- Removed unreachable render branches and an unused layout API (no visible change).
+
 ## [1.17.3] - 2026-10-21
 
 ### Fixed
