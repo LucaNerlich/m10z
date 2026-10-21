@@ -137,20 +137,17 @@ export async function cacheInvalidationMiddleware(
     // A single-document action names at most one document. When none can be
     // identified (e.g. an unexpected params shape), `undefined` still yields a
     // slug-less event so type/list tags and pages bust.
-    const targetIds: (string | undefined)[] = [extractDocumentId(context, undefined)];
-
-    const resolveAll = (ids: (string | undefined)[]) =>
-        config.kind === 'single'
-            ? Promise.resolve(ids.map(() => null))
-            : Promise.all(ids.map((documentId) => resolveEntity(strapiInstance, uid, documentId, config.relations)));
-
-    // For deletes, the documents are gone once `next()` resolves — resolve slug/relations first.
-    let events: InvalidationEvent[];
+    let event: InvalidationEvent;
     let result: unknown;
 
+    // For deletes, the document is gone once `next()` resolves — resolve slug/relations first.
     if (effectiveAction === 'delete') {
-        const entities = await resolveAll(targetIds);
-        events = entities.map((entity) => buildEvent(key, 'delete', entity, config));
+        const documentId = extractDocumentId(context, undefined);
+        const entity =
+            config.kind === 'single'
+                ? null
+                : await resolveEntity(strapiInstance, uid, documentId, config.relations);
+        event = buildEvent(key, 'delete', entity, config);
         result = await next();
     } else {
         result = await next();
@@ -171,19 +168,15 @@ export async function cacheInvalidationMiddleware(
             slug = slug ?? ((entity?.slug as string | undefined) ?? undefined);
             relations = extractRelationSlugs(entity, config.relations);
         }
-        events = [
-            {
-                type: key as InvalidationEvent['type'],
-                action: effectiveAction as DocumentAction,
-                ...(slug ? {slug} : {}),
-                ...(relations ? {relations} : {}),
-            },
-        ];
+        event = {
+            type: key as InvalidationEvent['type'],
+            action: effectiveAction as DocumentAction,
+            ...(slug ? {slug} : {}),
+            ...(relations ? {relations} : {}),
+        };
     }
 
-    for (const event of events) {
-        queueCacheInvalidation(event, strapiInstance);
-    }
+    queueCacheInvalidation(event, strapiInstance);
 
     if (config.searchIndex) {
         queueSearchIndexRebuild(strapiInstance);
