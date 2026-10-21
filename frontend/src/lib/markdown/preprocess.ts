@@ -14,7 +14,7 @@
  * already, and stray `<br>`s tend to introduce large gaps.
  */
 
-import {mapOutsideInlineCode, markCodeFenceLines} from './codeFences';
+import {markCodeFenceLines} from './codeFences';
 
 const RAW_BR_RE = /<br\s*\/?>/gi;
 const MARK_RE = /==([^=\n]+)==/g;
@@ -34,20 +34,90 @@ function applyTransforms(line: string): string {
 }
 
 /**
- * Regions of a line whose payload is a URL or an HTML attribute value rather than
- * prose: a link destination (`](…)`) and a double-quoted attribute value (`="…"`).
- * Rewriting `==` inside either produces broken Markdown or a corrupted attribute.
+ * Sentinel used to hide a protected region while the transforms run. It contains
+ * none of the characters the transforms match, so a delimiter pair can still span
+ * across a protected region.
  */
-const LITERAL_PAYLOAD_SPLIT_RE = /(\]\([^)\n]*\)|="[^"\n]*")/g;
+const MASK = '\u0000';
 
-/** Apply the transforms to prose only: not to inline code, link targets or attributes. */
+/**
+ * Hide the regions whose payload must survive verbatim: inline code spans, link
+ * destinations (`](…)`, balanced parentheses allowed) and double-quoted attribute
+ * values (`="…"`).
+ *
+ * The regions are replaced with index-carrying sentinels rather than split apart,
+ * because the transforms work on delimiter pairs: `==a [link](u) b==` must still
+ * become a `<mark>` around the whole run, even though the destination is opaque.
+ */
+function maskProtectedRegions(line: string): {masked: string; payloads: string[]} {
+    const payloads: string[] = [];
+    let masked = '';
+    let i = 0;
+
+    const stash = (end: number) => {
+        masked += `${MASK}${payloads.length}${MASK}`;
+        payloads.push(line.slice(i, end));
+        i = end;
+    };
+
+    while (i < line.length) {
+        const char = line[i];
+
+        // Inline code span: opened and closed by runs of the same number of backticks.
+        if (char === '`') {
+            let run = 0;
+            while (line[i + run] === '`') run++;
+            const fence = '`'.repeat(run);
+            const close = line.indexOf(fence, i + run);
+            if (close !== -1) {
+                stash(close + run);
+                continue;
+            }
+        }
+
+        // Link destination, with balanced parentheses and backslash escapes.
+        if (char === ']' && line[i + 1] === '(') {
+            let depth = 1;
+            let j = i + 2;
+            while (j < line.length && depth > 0) {
+                if (line[j] === '\\') {
+                    j += 2;
+                    continue;
+                }
+                if (line[j] === '(') depth++;
+                else if (line[j] === ')') depth--;
+                j++;
+            }
+            if (depth === 0) {
+                stash(j);
+                continue;
+            }
+        }
+
+        // Double-quoted HTML attribute value.
+        if (char === '=' && line[i + 1] === '"') {
+            const close = line.indexOf('"', i + 2);
+            if (close !== -1) {
+                stash(close + 1);
+                continue;
+            }
+        }
+
+        masked += char;
+        i++;
+    }
+
+    return {masked, payloads};
+}
+
+/** Apply the transforms to prose only, leaving every masked region byte-identical. */
 function applyTransformsOutsideLiterals(line: string): string {
-    return mapOutsideInlineCode(line, (prose) =>
-        prose
-            .split(LITERAL_PAYLOAD_SPLIT_RE)
-            .map((part, index) => (index % 2 === 1 ? part : applyTransforms(part)))
-            .join('')
+    const {masked, payloads} = maskProtectedRegions(line);
+    const transformed = applyTransforms(masked).replace(
+        new RegExp(`${MASK}(\\d+)${MASK}`, 'g'),
+        (_, index: string) => payloads[Number(index)]
     );
+    return transformed;
 }
 
 export function preprocessMarkdown(source: string): string {

@@ -99,6 +99,23 @@ describe('preprocessMarkdown', () => {
         );
     });
 
+    test('keeps a delimiter pair working across a link destination', () => {
+        // The destination is opaque, but the pair still has to form its element,
+        // otherwise documented syntax silently degrades to literal characters.
+        expect(preprocessMarkdown('==a [link](https://x.test) b==')).toBe(
+            '<mark>a [link](https://x.test) b</mark>',
+        );
+        expect(preprocessMarkdown('++a <a href="u">l</a> b++')).toBe(
+            '<ins>a <a href="u">l</a> b</ins>',
+        );
+    });
+
+    test('handles a destination with balanced parentheses', () => {
+        expect(preprocessMarkdown('[x](https://a.test/wiki/Foo_(bar)?q=a==b==)')).toBe(
+            '[x](https://a.test/wiki/Foo_(bar)?q=a==b==)',
+        );
+    });
+
     test('keeps prose transforms outside a protected region on the same line', () => {
         expect(preprocessMarkdown('a==b== [x](https://a.test/?q=a==b==) c==d==')).toBe(
             'a<mark>b</mark> [x](https://a.test/?q=a==b==) c<mark>d</mark>',
