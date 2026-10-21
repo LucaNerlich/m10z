@@ -82,15 +82,26 @@ export default {
         // missing value would fall back to http://localhost:3000 and silently
         // drop every invalidation (POSTing the shared secret to the wrong host),
         // so it is required there; dev/test keep the localhost fallback.
-        if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL) {
-            const errorMsg = 'Missing required environment variable in production: FRONTEND_URL. Please check your .env file.';
-            strapi.log.error(errorMsg);
-            throw new Error(errorMsg);
+        // `STRAPI_INVALIDATION_SECRET` is required for the same reason: without it
+        // every invalidation is skipped, the queue dead-letters the events, and
+        // content silently stops reaching the frontend.
+        if (process.env.NODE_ENV === 'production') {
+            // `.trim()` so a whitespace-only value counts as missing: it would pass
+            // this check and then be sent as the header value, 401 every request and
+            // dead-letter the queue.
+            const missingProductionVars = ['FRONTEND_URL', 'STRAPI_INVALIDATION_SECRET'].filter(
+                varName => !process.env[varName]?.trim()
+            );
+
+            if (missingProductionVars.length > 0) {
+                const errorMsg = `Missing required environment variable(s) in production: ${missingProductionVars.join(', ')}. Please check your .env file.`;
+                strapi.log.error(errorMsg);
+                throw new Error(errorMsg);
+            }
         }
 
         // Validate optional but important environment variables
         const importantVars = [
-            'STRAPI_INVALIDATION_SECRET',
             'DIAGNOSTICS_TOKEN',
         ];
 
