@@ -6,8 +6,29 @@ import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {TableOfContentsClient} from './TableOfContentsClient';
 
 class StubIntersectionObserver {
-    observe() {}
+    static instances: StubIntersectionObserver[] = [];
+    elements: Element[] = [];
+    private readonly callback: IntersectionObserverCallback;
+
+    constructor(callback: IntersectionObserverCallback) {
+        this.callback = callback;
+        StubIntersectionObserver.instances.push(this);
+    }
+
+    observe(element: Element) {
+        this.elements.push(element);
+    }
+
     disconnect() {}
+
+    /** Deliver one batch, as the browser would: a delta, not a full snapshot. */
+    trigger(intersecting: Element[], left: Element[] = []) {
+        const entries = [
+            ...intersecting.map((target) => ({target, isIntersecting: true})),
+            ...left.map((target) => ({target, isIntersecting: false})),
+        ];
+        this.callback(entries as unknown as IntersectionObserverEntry[], this as unknown as IntersectionObserver);
+    }
 }
 
 vi.stubGlobal('IntersectionObserver', StubIntersectionObserver);
@@ -19,6 +40,7 @@ let mount: HTMLDivElement;
 let root: Root;
 
 beforeEach(() => {
+    StubIntersectionObserver.instances = [];
     content = document.createElement('div');
     content.className = 'markdown-content';
     content.innerHTML = [
@@ -59,5 +81,59 @@ describe('TableOfContentsClient heading resolution', () => {
 
         const hrefs = Array.from(mount.querySelectorAll('a')).map((a) => a.getAttribute('href'));
         expect(hrefs).toEqual(['#intro', '#teil', '#intro-1', '#fazit']);
+    });
+});
+
+describe('TableOfContentsClient active heading', () => {
+    const HEADINGS = [
+        {text: 'Intro', depth: 2},
+        {text: 'Teil', depth: 2},
+        {text: 'Intro', depth: 2},
+        {text: 'Fazit', depth: 2},
+    ];
+
+    async function renderToc(headings = HEADINGS) {
+        await act(async () => {
+            root.render(<TableOfContentsClient headings={headings} />);
+        });
+        const observer = StubIntersectionObserver.instances.at(-1);
+        if (!observer) throw new Error('no observer created');
+        return observer;
+    }
+
+    function activeText(): string | null {
+        return mount.querySelector('[aria-current="location"]')?.textContent ?? null;
+    }
+
+    test('keeps the topmost heading active when a second one becomes visible', async () => {
+        // The callback receives only changed targets, so the second heading's
+        // entry must not steal the highlight from the first one still on screen.
+        const observer = await renderToc();
+        const [intro, teil] = observer.elements;
+
+        await act(async () => observer.trigger([intro]));
+        expect(activeText()).toBe('Intro');
+
+        await act(async () => observer.trigger([teil]));
+        expect(activeText()).toBe('Intro');
+
+        await act(async () => observer.trigger([], [intro]));
+        expect(activeText()).toBe('Teil');
+    });
+
+    test('drops the previous active entry when the heading set changes', async () => {
+        // Client-side navigation reuses this component instance; the new article's
+        // first observer batch can be empty when no heading is in the band yet.
+        let observer = await renderToc();
+        await act(async () => observer.trigger([observer.elements[1]]));
+        expect(activeText()).toBe('Teil');
+
+        observer = await renderToc([
+            {text: 'Intro', depth: 2},
+            {text: 'Teil', depth: 2},
+        ]);
+        await act(async () => observer.trigger([], observer.elements));
+
+        expect(activeText()).toBeNull();
     });
 });

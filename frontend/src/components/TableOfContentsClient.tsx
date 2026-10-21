@@ -25,6 +25,11 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
         // Find heading elements in the rendered markdown content. Markdown
         // `#` headings are demoted to h2 by the Heading component, so only
         // h2-h6 appear in the DOM.
+        // A new heading set means a new document (client-side navigation reuses
+        // this component instance), so drop the previous active entry: the fresh
+        // observer's first batch may be empty when no heading is in the band yet.
+        setActiveIndex(-1);
+
         const container = document.querySelector('.markdown-content');
         if (!container) return;
 
@@ -57,16 +62,27 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
 
         // The observer fires for headings entering/leaving the top portion
         // of the viewport (below the sticky header, top ~34% of the screen).
+        // `entries` only carries targets whose state changed, so the set of
+        // currently visible headings has to be tracked here; otherwise a
+        // heading that stayed visible contributes nothing and the highlight
+        // jumps to the next section while the reader is still in the previous.
+        const visible = new Set<HTMLElement>();
         const observer = new IntersectionObserver(
             (entries) => {
-                // Find the topmost visible heading (lowest heading index)
-                let minIdx = Infinity;
                 for (const entry of entries) {
                     if (entry.isIntersecting) {
-                        const idx = resolved.indexOf(entry.target as HTMLElement);
-                        if (idx !== -1 && idx < minIdx) {
-                            minIdx = idx;
-                        }
+                        visible.add(entry.target as HTMLElement);
+                    } else {
+                        visible.delete(entry.target as HTMLElement);
+                    }
+                }
+
+                // The topmost visible heading is the lowest index still in the set.
+                let minIdx = Infinity;
+                for (const el of visible) {
+                    const idx = resolved.indexOf(el);
+                    if (idx !== -1 && idx < minIdx) {
+                        minIdx = idx;
                     }
                 }
                 if (minIdx !== Infinity) {
@@ -114,7 +130,10 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
 
                     return (
                         <li key={index}>
-                            <a className={linkClass} href={href}>
+                            <a
+                                className={linkClass}
+                                href={href}
+                                aria-current={index === activeIndex ? 'location' : undefined}>
                                 {heading.text}
                             </a>
                         </li>
