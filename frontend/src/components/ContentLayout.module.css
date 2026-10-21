@@ -35,24 +35,8 @@ main:has([data-list-page]) .layout {
     }
 }
 
-.withSidebar {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-}
-
 .content {
     width: 100%;
-}
-
-.sidebar {
-    width: 100%;
-}
-
-@media (min-width: 641px) {
-    .withSidebar {
-        grid-template-columns: 2fr 1fr;
-    }
 }
 
 @media (max-width: 767px) {
