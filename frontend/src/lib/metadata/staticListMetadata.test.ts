@@ -28,5 +28,8 @@ describe('buildStaticListMetadata', () => {
         // helper must repeat the layout's site-wide values.
         expect(metadata.alternates?.types?.['application/rss+xml']).toHaveLength(2);
         expect(metadata.twitter?.site).toBe('@m10z_tv');
+        // Open Graph defines og:locale as `language_TERRITORY`; a bare `de` is
+        // dropped by strict consumers. Every helper shares this constant.
+        expect(metadata.openGraph?.locale).toBe('de_DE');
     });
 });
