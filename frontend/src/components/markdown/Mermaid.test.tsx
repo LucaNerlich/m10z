@@ -10,9 +10,6 @@ const {renderMock, initializeMock} = vi.hoisted(() => ({
 
 vi.mock('mermaid', () => ({default: {initialize: initializeMock, render: renderMock}}));
 vi.mock('@/src/lib/analytics/umami', () => ({umamiEventId: (parts: string[]) => parts.join(':')}));
-vi.mock('@/src/lib/markdown/mermaidSvg', () => ({
-    mermaidSvgToDataUrl: (svg: string) => `data:image/svg+xml,${encodeURIComponent(svg)}`,
-}));
 
 import {Mermaid} from './Mermaid';
 
@@ -78,6 +75,48 @@ describe('Mermaid', () => {
 
         expect(renderMock).toHaveBeenCalledTimes(1);
         expect(container.innerHTML).toContain('id="only"');
+    });
+
+    test('gives the lightbox image an explicit intrinsic size', async () => {
+        // Mermaid emits width="100%" plus max-width; loaded as an <img> that has no
+        // containing block and collapses to ~150px. The serialized copy must carry
+        // pixel dimensions and no capping max-width.
+        renderMock.mockResolvedValue({
+            svg: '<svg id="sized" width="100%" style="max-width: 480px" viewBox="0 0 400 200"><g/></svg>',
+        });
+
+        await act(async () => {
+            root.render(<Mermaid chart='graph A' />);
+        });
+
+        const href = container.querySelector('a')?.getAttribute('href') ?? '';
+        const decoded = decodeURIComponent(href);
+        // 480px from the inline max-width, height from the 400x200 viewBox ratio.
+        expect(decoded).toContain('width="480"');
+        expect(decoded).toContain('height="240"');
+        expect(decoded).not.toContain('width="100%"');
+        expect(decoded).not.toContain('max-width');
+
+        // The visible diagram keeps its fluid sizing; only the clone is resized.
+        const live = container.querySelector('svg');
+        expect(live?.getAttribute('width')).toBe('100%');
+        expect(live?.getAttribute('style')).toContain('max-width');
+    });
+
+    test('falls back to the viewBox width when no pixel max-width is set', async () => {
+        renderMock.mockResolvedValue({
+            // A percentage max-width is not a pixel hint; parsing it as 100px is
+            // exactly the tiny-lightbox symptom this code exists to prevent.
+            svg: '<svg id="bare" width="100%" style="max-width: 100%" viewBox="0 0 300 150"><g/></svg>',
+        });
+
+        await act(async () => {
+            root.render(<Mermaid chart='graph B' />);
+        });
+
+        const href = container.querySelector('a')?.getAttribute('href') ?? '';
+        expect(decodeURIComponent(href)).toContain('width="300"');
+        expect(decodeURIComponent(href)).toContain('height="150"');
     });
 
     test('a superseded run that fails does not put the fresh diagram into an error state', async () => {
