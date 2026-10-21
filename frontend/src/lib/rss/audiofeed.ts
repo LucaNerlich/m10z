@@ -139,9 +139,11 @@ export function normalizeEnclosureLengthBytes(media: StrapiMedia): number | unde
         return Math.max(0, Math.floor(media.sizeInBytes));
     }
     if (typeof media.size === 'number' && Number.isFinite(media.size)) {
-        // Strapi stores `size` in decimal KB (`bytesToKbytes = bytes / 1000`), so the
-        // round trip must use 1000. With 1024 every enclosure was ~2.4% too large.
-        return Math.max(0, Math.floor(media.size * 1000));
+        // Strapi stores `size` in decimal KB rounded to 2 decimals
+        // (`bytesToKbytes = bytes / 1000`), so the round trip must use 1000 — and
+        // round rather than floor: 2.01 * 1000 is 2009.9999999999998 in binary
+        // floating point, and the file really has 2010 bytes.
+        return Math.max(0, Math.round(media.size * 1000));
     }
     return undefined;
 }
