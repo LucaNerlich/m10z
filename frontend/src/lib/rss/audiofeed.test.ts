@@ -120,8 +120,13 @@ describe('normalizeEnclosureLengthBytes', () => {
         expect(normalizeEnclosureLengthBytes({sizeInBytes: -5})).toBe(0);
     });
 
-    test('interprets `size` as kilobytes when sizeInBytes is absent', () => {
-        expect(normalizeEnclosureLengthBytes({size: 10})).toBe(10 * 1024);
+    test('interprets `size` as decimal kilobytes when sizeInBytes is absent', () => {
+        // Strapi stores `size` as bytes / 1000. Episode pp-25: 78718420 bytes
+        // is stored as 78718.42 and must come back as 78718420, not 80607662.
+        expect(normalizeEnclosureLengthBytes({size: 10})).toBe(10_000);
+        expect(normalizeEnclosureLengthBytes({size: 78_718.42})).toBe(78_718_420);
+        // 2.01 * 1000 is 2009.9999999999998 in floating point; the file has 2010 bytes.
+        expect(normalizeEnclosureLengthBytes({size: 2.01})).toBe(2010);
     });
 
     test('prefers sizeInBytes over size', () => {
