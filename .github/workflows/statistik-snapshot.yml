@@ -4,7 +4,7 @@
 # Required secrets:
 #   STRAPI_MCP_ADMIN_TOKEN_PROD — Bearer token for https://cms.m10z.de/mcp
 #   PAT — classic/fine-grained token with contents write
-#         (same secret as merge-schedule; push to main must use a PAT so CI runs)
+#         (shared push PAT; push to main must use a PAT so CI runs)
 name: Statistik Snapshot
 
 on:

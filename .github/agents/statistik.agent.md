@@ -30,7 +30,7 @@ Required repository secrets:
 | Secret                         | Purpose                                              |
 |--------------------------------|------------------------------------------------------|
 | `STRAPI_MCP_ADMIN_TOKEN_PROD`  | Bearer token for `https://cms.m10z.de/mcp`            |
-| `PAT`                          | Write token for pushing to `main` (same as merge-schedule)|
+| `PAT`                          | Shared write token for pushing to `main`|
 
 ## Alternative: run the generator script locally
 
