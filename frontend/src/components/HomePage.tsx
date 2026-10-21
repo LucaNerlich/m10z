@@ -18,19 +18,6 @@ import {umamiEventId} from '@/src/lib/analytics/umami';
 const PAGE_SIZE = 10;
 
 /**
- * Clamp a requested page number to the valid range for the available items.
- *
- * @param page - The requested page number (may be out of range)
- * @param totalItems - Total number of available items
- * @returns The page number clipped to be at least 1 and at most the highest page (ceil(totalItems / PAGE_SIZE)); returns 1 when `totalItems` is 0 or negative
- */
-function clampPageToData(page: number, totalItems: number): number {
-    if (totalItems <= 0) return 1;
-    const maxPage = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
-    return Math.min(page, maxPage);
-}
-
-/**
  * Render the client-side homepage feed that displays a combined, paginated list of articles and podcasts.
  *
  * Handles loading, error, and empty states and derives the current page from the URL `page` query parameter.
@@ -76,8 +63,7 @@ export async function HomePage({page, maxPage = 50}: {page: number; maxPage?: nu
         );
     }
 
-    const combinedTotal = data.pagination.total;
-    const currentPage = clampPageToData(page, combinedTotal);
+    const currentPage = data.pagination.page;
     const currentItems = data.items;
     // pageCount comes from the response (real collection totals); the wrapper's
     // page cap still bounds the paginator so it cannot link to a clamped page.
@@ -90,132 +76,124 @@ export async function HomePage({page, maxPage = 50}: {page: number; maxPage?: nu
             <h1 className="visually-hidden">Mindestens 10 Zeichen</h1>
             <nav className={styles.toc} aria-label="Inhaltsverzeichnis">
                 <h2 className={styles.tocTitle}>Inhaltsverzeichnis</h2>
-                {currentItems.length === 0 ? (
-                    <p className={styles.empty}>Gerade nichts Neues.</p>
-                ) : (
-                    <ul className={styles.tocList}>
-                        {currentItems.map((item) => {
-                            const anchor = `${item.type}-${item.slug}`;
-                            return (
-                                <li key={anchor} className={styles.tocEntry}>
-                                    <a
-                                        href={`#${anchor}`}
-                                        className={styles.tocLink}
-                                        data-umami-event={umamiEventId(['home', 'toc', item.type, item.slug])}
-                                    >
-                                        <div className={styles.tocMetadata}>
-                                            <Tag
-                                                className={styles.tocTag}
-                                                icon={item.type === 'article' ? <BookIcon size={14} aria-hidden='true' /> :
-                                                    <MusicNoteIcon aria-hidden="true" size={14} />}
-                                            >
-                                                {item.type === 'article' ? 'Artikel' : 'Podcast'}
-                                            </Tag>
-                                            {item.publishedAt ? (
-                                                <time className={styles.tocDate} dateTime={item.publishedAt}>
-                                                    {formatDateShort(item.publishedAt)}
-                                                </time>
-                                            ) : (
-                                                <span
-                                                    className={styles.tocDate}>{formatDateShort(item.publishedAt)}</span>
-                                            )}
-                                        </div>
-                                        <h3 className={styles.tocLabel}>{item.title}</h3>
-                                    </a>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                )}
-            </nav>
-
-            <section className={styles.feed} aria-label="Neueste Inhalte">
-                {currentItems.length === 0 ? (
-                    <Card variant="empty">Keine Inhalte gefunden.</Card>
-                ) : (
-                    currentItems.map((item, index) => {
+                <ul className={styles.tocList}>
+                    {currentItems.map((item) => {
                         const anchor = `${item.type}-${item.slug}`;
-
-                        // One image serves both breakpoints: the CSS crops it to the
-                        // square (desktop) or 16:9 (<=1080px) slot with object-fit.
-                        // The desktop slot is square, so prefer the purpose-built
-                        // cover; a 16:9 banner would lose ~44% of its width there.
-                        // The feed mapper emits `{}` (truthy) for missing media,
-                        // so fall back on the URL rather than the object.
-                        const cardMedia = item.cover?.url ? item.cover : item.banner;
-                        const cardImageUrl = mediaUrlToAbsolute({media: cardMedia});
-                        const cardBlurDataUrl = cardMedia?.blurhash ?? null;
-                        // Remote images need an explicit blurDataURL for 'blur'; the
-                        // static fallback import gets one generated at build time.
-                        const cardPlaceholder = cardBlurDataUrl ? 'blur' : cardImageUrl ? 'empty' : 'blur';
-                        const cardAlt = cardMedia?.alternativeText ?? item.title;
-                        const cardTitle = cardMedia?.caption ?? undefined;
-
-                        // Above-the-fold image of the first card loads with priority.
-                        const isFirstItem = index === 0;
-
                         return (
-                            <Card key={anchor} id={anchor} className={styles.contentCard}>
-                                <div className={styles.media}>
-                                    <Link
-                                        href={item.href}
-                                        className={styles.mediaLink}
-                                        aria-label={`${item.type === 'article' ? 'Artikel' : 'Podcast'} öffnen: ${item.title}`}
-                                    >
-                                        <Image
-                                            src={cardImageUrl ?? placeholderCover}
-                                            width={cardMedia?.width ?? 400}
-                                            height={cardMedia?.height ?? 225}
-                                            sizes="(max-width: 1080px) 100vw, 280px"
-                                            quality={60}
-                                            placeholder={cardPlaceholder}
-                                            blurDataURL={cardBlurDataUrl ?? undefined}
-                                            alt={cardAlt || ''}
-                                            title={cardTitle}
-                                            className={styles.mediaImage}
-                                            priority={isFirstItem}
-                                        />
-                                    </Link>
-                                </div>
-                                <div className={styles.cardBody}>
-                                    <div className={styles.metaRow}>
+                            <li key={anchor} className={styles.tocEntry}>
+                                <a
+                                    href={`#${anchor}`}
+                                    className={styles.tocLink}
+                                    data-umami-event={umamiEventId(['home', 'toc', item.type, item.slug])}
+                                >
+                                    <div className={styles.tocMetadata}>
                                         <Tag
-                                            className={styles.metaTag}
+                                            className={styles.tocTag}
                                             icon={item.type === 'article' ? <BookIcon size={14} aria-hidden='true' /> :
                                                 <MusicNoteIcon aria-hidden="true" size={14} />}
                                         >
                                             {item.type === 'article' ? 'Artikel' : 'Podcast'}
                                         </Tag>
-                                        {item.type === 'article' && item.wordCount != null ? (
-                                            <span className={styles.readingTime}>
-                                                <BookIcon size={14} aria-hidden='true' />
-                                                &nbsp;{calculateReadingTimeCompact(item.wordCount)}
-                                            </span>
-                                        ) : null}
-                                        {item.type === 'podcast' && item.duration != null ? (
-                                            <span className={styles.readingTime}>
-                                                <MusicNoteIcon size={14} aria-hidden='true' />
-                                                &nbsp;{formatDuration(item.duration)}
-                                            </span>
-                                        ) : null}
-                                        <time className={styles.date}>{formatDateShort(item.publishedAt)}</time>
+                                        {item.publishedAt ? (
+                                            <time className={styles.tocDate} dateTime={item.publishedAt}>
+                                                {formatDateShort(item.publishedAt)}
+                                            </time>
+                                        ) : (
+                                            <span
+                                                className={styles.tocDate}>{formatDateShort(item.publishedAt)}</span>
+                                        )}
                                     </div>
-                                    <h2 className={styles.cardTitle}>
-                                        <Link href={item.href} className={styles.cardLink}>
-                                            {item.title}
-                                        </Link>
-                                    </h2>
-                                    {item.description ? <p className={styles.description}>{item.description}</p> : null}
-                                    <div className={styles.cardActions}>
-                                        <Link href={item.href} className={styles.readMore}>
-                                            {item.type === 'article' ? 'Weiterlesen' : 'Anhören'}
-                                        </Link>
-                                    </div>
-                                </div>
-                            </Card>
+                                    <h3 className={styles.tocLabel}>{item.title}</h3>
+                                </a>
+                            </li>
                         );
-                    })
-                )}
+                    })}
+                </ul>
+            </nav>
+
+            <section className={styles.feed} aria-label="Neueste Inhalte">
+                {currentItems.map((item, index) => {
+                    const anchor = `${item.type}-${item.slug}`;
+
+                    // One image serves both breakpoints: the CSS crops it to the
+                    // square (desktop) or 16:9 (<=1080px) slot with object-fit.
+                    // The desktop slot is square, so prefer the purpose-built
+                    // cover; a 16:9 banner would lose ~44% of its width there.
+                    // The feed mapper emits `{}` (truthy) for missing media,
+                    // so fall back on the URL rather than the object.
+                    const cardMedia = item.cover?.url ? item.cover : item.banner;
+                    const cardImageUrl = mediaUrlToAbsolute({media: cardMedia});
+                    const cardBlurDataUrl = cardMedia?.blurhash ?? null;
+                    // Remote images need an explicit blurDataURL for 'blur'; the
+                    // static fallback import gets one generated at build time.
+                    const cardPlaceholder = cardBlurDataUrl ? 'blur' : cardImageUrl ? 'empty' : 'blur';
+                    const cardAlt = cardMedia?.alternativeText ?? item.title;
+                    const cardTitle = cardMedia?.caption ?? undefined;
+
+                    // Above-the-fold image of the first card loads with priority.
+                    const isFirstItem = index === 0;
+
+                    return (
+                        <Card key={anchor} id={anchor} className={styles.contentCard}>
+                            <div className={styles.media}>
+                                <Link
+                                    href={item.href}
+                                    className={styles.mediaLink}
+                                    aria-label={`${item.type === 'article' ? 'Artikel' : 'Podcast'} öffnen: ${item.title}`}
+                                >
+                                    <Image
+                                        src={cardImageUrl ?? placeholderCover}
+                                        width={cardMedia?.width ?? 400}
+                                        height={cardMedia?.height ?? 225}
+                                        sizes="(max-width: 1080px) 100vw, 280px"
+                                        quality={60}
+                                        placeholder={cardPlaceholder}
+                                        blurDataURL={cardBlurDataUrl ?? undefined}
+                                        alt={cardAlt || ''}
+                                        title={cardTitle}
+                                        className={styles.mediaImage}
+                                        priority={isFirstItem}
+                                    />
+                                </Link>
+                            </div>
+                            <div className={styles.cardBody}>
+                                <div className={styles.metaRow}>
+                                    <Tag
+                                        className={styles.metaTag}
+                                        icon={item.type === 'article' ? <BookIcon size={14} aria-hidden='true' /> :
+                                            <MusicNoteIcon aria-hidden="true" size={14} />}
+                                    >
+                                        {item.type === 'article' ? 'Artikel' : 'Podcast'}
+                                    </Tag>
+                                    {item.type === 'article' && item.wordCount != null ? (
+                                        <span className={styles.readingTime}>
+                                            <BookIcon size={14} aria-hidden='true' />
+                                            &nbsp;{calculateReadingTimeCompact(item.wordCount)}
+                                        </span>
+                                    ) : null}
+                                    {item.type === 'podcast' && item.duration != null ? (
+                                        <span className={styles.readingTime}>
+                                            <MusicNoteIcon size={14} aria-hidden='true' />
+                                            &nbsp;{formatDuration(item.duration)}
+                                        </span>
+                                    ) : null}
+                                    <time className={styles.date}>{formatDateShort(item.publishedAt)}</time>
+                                </div>
+                                <h2 className={styles.cardTitle}>
+                                    <Link href={item.href} className={styles.cardLink}>
+                                        {item.title}
+                                    </Link>
+                                </h2>
+                                {item.description ? <p className={styles.description}>{item.description}</p> : null}
+                                <div className={styles.cardActions}>
+                                    <Link href={item.href} className={styles.readMore}>
+                                        {item.type === 'article' ? 'Weiterlesen' : 'Anhören'}
+                                    </Link>
+                                </div>
+                            </div>
+                        </Card>
+                    );
+                })}
 
                 <Pagination
                     currentPage={currentPage}
