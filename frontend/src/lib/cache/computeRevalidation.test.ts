@@ -89,4 +89,17 @@ describe('computeRevalidation', () => {
         expect(tags).toContain(listTag('podcast'));
         expect(tags).toContain(entityTag('category', 'politik'));
     });
+
+    test('author edits expire only that author page, not the whole /team/[slug] set', () => {
+        const {pages, paths} = computeRevalidation({type: 'author', action: 'update', slug: 'jane'});
+
+        expect(pages).not.toContain('/team/[slug]');
+        expect(paths).toContain('/team/jane');
+    });
+
+    test('category deletes expire the deleted category page', () => {
+        const {paths} = computeRevalidation({type: 'category', action: 'delete', slug: 'politik'});
+
+        expect(paths).toContain('/kategorien/politik');
+    });
 });

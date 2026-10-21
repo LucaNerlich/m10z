@@ -38,14 +38,18 @@ function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: s
                 paths: [...(slug ? [routes.podcast(slug)] : []), routes.audioFeed, '/sitemap.xml', '/sitemap'],
             };
         case 'author':
+            // Renames expire the new slug only: the backend resolves the event slug
+            // after the mutation, so the old URL keeps answering from cache (SWR)
+            // for one visit — the same bounded window article/podcast renames have.
+            // Deletes still take effect immediately because the entry is gone.
             return {
-                pages: [routes.articles, routes.podcasts, `${routes.authors}/[slug]`, routes.home],
-                paths: [],
+                pages: [routes.articles, routes.podcasts, routes.home],
+                paths: slug ? [routes.author(slug)] : [],
             };
         case 'category':
             return {
                 pages: [routes.categories, routes.articles, routes.podcasts, routes.home],
-                paths: [],
+                paths: slug ? [routes.category(slug)] : [],
             };
         case 'about':
             return {pages: [routes.about], paths: []};
