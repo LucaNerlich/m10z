@@ -28,8 +28,8 @@ jobs:
     refresh:
         runs-on: ubuntu-latest
         timeout-minutes: 15
-        permissions:
-            contents: write
+        # The push below authenticates with the PAT, so the job needs only the
+        # workflow-level contents: read for the checkout.
         steps:
             - name: Checkout main
               # Pinned to a commit SHA (not the mutable v7 tag).
@@ -78,5 +78,5 @@ jobs:
                       echo 'media index unchanged'
                       exit 0
                   fi
-                  git commit -m 'chore(media): refresh media index'
+                  git commit -m 'chore(media): refresh media index' --author="${GITHUB_ACTOR} <${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com>"
                   git push "https://x-access-token:${PAT}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
