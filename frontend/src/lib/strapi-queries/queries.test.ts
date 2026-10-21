@@ -84,6 +84,7 @@ describe('buildSlugIndexQuery', () => {
         expect(qs.parse(query)).toEqual({
             fields: ['slug', 'updatedAt', 'publishedAt'],
             status: 'published',
+            sort: ['documentId:asc'],
             pagination: {pageSize: '100', page: '2'},
         });
     });

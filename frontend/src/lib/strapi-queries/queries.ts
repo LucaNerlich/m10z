@@ -94,12 +94,18 @@ export function buildListQuery(args: {
     );
 }
 
-/** Build a paginated slug-index query (sitemap, static params, llms.txt). */
+/**
+ * Build a paginated slug-index query (sitemap, static params, llms.txt).
+ *
+ * Offset paging needs a deterministic order, or a row inserted between two page
+ * requests shifts the window and silently skips (or repeats) an entry.
+ */
 export function buildSlugIndexQuery(args: {page: number; pageSize: number}): string {
     return qs.stringify(
         {
             fields: ['slug', 'updatedAt', 'publishedAt'],
             status: 'published',
+            sort: ['documentId:asc'],
             pagination: {pageSize: args.pageSize, page: args.page},
         },
         QS_OPTS,
