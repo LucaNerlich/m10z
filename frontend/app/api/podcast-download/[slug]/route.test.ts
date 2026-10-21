@@ -66,7 +66,7 @@ describe('GET /api/podcast-download/[slug]', () => {
     });
 
     test('returns 404 for a slug that still contains dots after stripping a trailing .mp3 suffix', async () => {
-        // SLUG_PATTERN disallows dots, so an embedded dot must still be rejected even though the
+        // validateSlug disallows dots, so an embedded dot must still be rejected even though the
         // trailing ".mp3" is stripped first.
         const [request, context] = makeRequest('valid.slug.mp3');
         const res = await GET(request, context);
@@ -139,9 +139,39 @@ describe('GET /api/podcast-download/[slug]', () => {
         expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
     });
 
+    test('trims surrounding whitespace before the lookup', async () => {
+        // validateSlug trims; the route must query the trimmed value, not the raw
+        // one it validated.
+        fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
+        mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
+        isAllowedDownloadTarget.mockReturnValue(true);
+
+        const [request, context] = makeRequest(' valid-slug.mp3 ');
+        context.params = Promise.resolve({slug: ' valid-slug.mp3 '});
+        const res = await GET(request, context);
+
+        expect(res.status).toBe(302);
+        expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
+    });
+
+    test('accepts the underscore slugs the CMS already serves as pages', async () => {
+        // Two published episodes (thaumaturge_songsofconquest, trithius_newstower) have an
+        // underscore in their slug. The feed emitted their tracking URLs, but the route's
+        // stricter pattern rejected them with 404.
+        fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
+        mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
+        isAllowedDownloadTarget.mockReturnValue(true);
+
+        const [request, context] = makeRequest('thaumaturge_songsofconquest.mp3');
+        const res = await GET(request, context);
+
+        expect(res.status).toBe(302);
+        expect(fetchPodcastBySlug).toHaveBeenCalledWith('thaumaturge_songsofconquest');
+    });
+
     test('only strips one trailing .mp3, so a doubled suffix is still rejected', async () => {
         // TRAILING_MP3_SUFFIX is anchored with a single `$`, so "slug.mp3.mp3" strips to
-        // "slug.mp3" — which still contains a dot and must be rejected by SLUG_PATTERN.
+        // "slug.mp3" — which still contains a dot and must be rejected by validateSlug.
         const [request, context] = makeRequest('valid-slug.mp3.mp3');
         const res = await GET(request, context);
         expect(res.status).toBe(404);

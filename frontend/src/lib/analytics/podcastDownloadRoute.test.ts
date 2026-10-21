@@ -147,7 +147,7 @@ describe('podcast download route', () => {
     });
 
     test('returns 404 for a slug that still contains dots after stripping a trailing .mp3 suffix', async () => {
-        // SLUG_PATTERN disallows dots, so this must still be rejected even though the trailing
+        // validateSlug disallows dots, so this must still be rejected even though the trailing
         // ".mp3" is stripped first — the strip is unambiguous and never masks an invalid slug.
         const response = await GET(
             new Request('https://m10z.de/api/podcast-download/ep.1.mp3'),
