@@ -85,18 +85,16 @@ describe('TableOfContentsClient heading resolution', () => {
 });
 
 describe('TableOfContentsClient active heading', () => {
-    async function renderToc() {
+    const HEADINGS = [
+        {text: 'Intro', depth: 2},
+        {text: 'Teil', depth: 2},
+        {text: 'Intro', depth: 2},
+        {text: 'Fazit', depth: 2},
+    ];
+
+    async function renderToc(headings = HEADINGS) {
         await act(async () => {
-            root.render(
-                <TableOfContentsClient
-                    headings={[
-                        {text: 'Intro', depth: 2},
-                        {text: 'Teil', depth: 2},
-                        {text: 'Intro', depth: 2},
-                        {text: 'Fazit', depth: 2},
-                    ]}
-                />,
-            );
+            root.render(<TableOfContentsClient headings={headings} />);
         });
         const observer = StubIntersectionObserver.instances.at(-1);
         if (!observer) throw new Error('no observer created');
@@ -121,5 +119,21 @@ describe('TableOfContentsClient active heading', () => {
 
         await act(async () => observer.trigger([], [intro]));
         expect(activeText()).toBe('Teil');
+    });
+
+    test('drops the previous active entry when the heading set changes', async () => {
+        // Client-side navigation reuses this component instance; the new article's
+        // first observer batch can be empty when no heading is in the band yet.
+        let observer = await renderToc();
+        await act(async () => observer.trigger([observer.elements[1]]));
+        expect(activeText()).toBe('Teil');
+
+        observer = await renderToc([
+            {text: 'Intro', depth: 2},
+            {text: 'Teil', depth: 2},
+        ]);
+        await act(async () => observer.trigger([], observer.elements));
+
+        expect(activeText()).toBeNull();
     });
 });

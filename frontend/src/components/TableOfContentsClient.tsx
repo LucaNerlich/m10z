@@ -25,6 +25,11 @@ export function TableOfContentsClient({headings}: TableOfContentsClientProps) {
         // Find heading elements in the rendered markdown content. Markdown
         // `#` headings are demoted to h2 by the Heading component, so only
         // h2-h6 appear in the DOM.
+        // A new heading set means a new document (client-side navigation reuses
+        // this component instance), so drop the previous active entry: the fresh
+        // observer's first batch may be empty when no heading is in the band yet.
+        setActiveIndex(-1);
+
         const container = document.querySelector('.markdown-content');
         if (!container) return;
 
