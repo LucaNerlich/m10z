@@ -40,6 +40,11 @@ jobs:
         run: pnpm exec next typegen
       - name: Typecheck
         run: npx tsc --noEmit
+      # AGENTS.md lists `pnpm run build` as a required pre-submission check; without
+      # it, bundling and prerender errors only surface in Coolify after merge.
+      # Call the tool directly so the package script's `vitest run` does not repeat.
+      - name: Production build
+        run: pnpm exec next build
 
   backend:
     runs-on: ubuntu-latest
@@ -67,3 +72,5 @@ jobs:
         run: npx tsc --noEmit -p tsconfig.json
       - name: Admin typecheck
         run: npx tsc -p src/admin/tsconfig.json
+      - name: Production build
+        run: pnpm exec strapi build
