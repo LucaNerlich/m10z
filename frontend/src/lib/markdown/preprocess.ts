@@ -34,37 +34,99 @@ function applyTransforms(line: string): string {
 }
 
 /**
- * Matches inline code spans (`` `code` ``, ``` ``code`` ```), keeping the
- * backtick delimiters in the captured group so the code can be split without
- * losing them.
+ * Sentinel used to hide a protected region while the transforms run. It contains
+ * none of the characters the transforms match, so a delimiter pair can still span
+ * across a protected region.
  */
-const INLINE_CODE_SPLIT_RE = /(`+[^`]*`+)/g;
+const MASK = '\u0000';
 
 /**
- * Apply the transforms to the parts of a line that are *not* inline code spans.
+ * Hide the regions whose payload must survive verbatim: inline code spans, link
+ * destinations (`](…)`, balanced parentheses allowed) and double-quoted attribute
+ * values (`="…"`).
  *
- * The transforms are text-level, so without this an inline span like
- * `` `a == b` `` lost its content (`` `` ``) and a documented literal such as
- * `` `<br>` `` was deleted. `String.prototype.split` with a capturing group
- * interleaves the delimiters, so the odd indices are exactly the code spans.
- *
- * Limitation: a span whose closing delimiter uses a different number of
- * backticks than its opening one (CommonMark allows `` `a`b` ``) is not
- * recognised.
+ * The regions are replaced with index-carrying sentinels rather than split apart,
+ * because the transforms work on delimiter pairs: `==a [link](u) b==` must still
+ * become a `<mark>` around the whole run, even though the destination is opaque.
  */
-function applyTransformsOutsideInlineCode(line: string): string {
-    return line
-        .split(INLINE_CODE_SPLIT_RE)
-        .map((part, index) => (index % 2 === 1 ? part : applyTransforms(part)))
-        .join('');
+function maskProtectedRegions(line: string): {masked: string; payloads: string[]} {
+    const payloads: string[] = [];
+    let masked = '';
+    let i = 0;
+
+    const stash = (end: number) => {
+        masked += `${MASK}${payloads.length}${MASK}`;
+        payloads.push(line.slice(i, end));
+        i = end;
+    };
+
+    while (i < line.length) {
+        const char = line[i];
+
+        // Inline code span: opened and closed by runs of the same number of backticks.
+        if (char === '`') {
+            let run = 0;
+            while (line[i + run] === '`') run++;
+            const fence = '`'.repeat(run);
+            const close = line.indexOf(fence, i + run);
+            if (close !== -1) {
+                stash(close + run);
+                continue;
+            }
+        }
+
+        // Link destination, with balanced parentheses and backslash escapes.
+        if (char === ']' && line[i + 1] === '(') {
+            let depth = 1;
+            let j = i + 2;
+            while (j < line.length && depth > 0) {
+                if (line[j] === '\\') {
+                    j += 2;
+                    continue;
+                }
+                if (line[j] === '(') depth++;
+                else if (line[j] === ')') depth--;
+                j++;
+            }
+            if (depth === 0) {
+                stash(j);
+                continue;
+            }
+        }
+
+        // Double-quoted HTML attribute value.
+        if (char === '=' && line[i + 1] === '"') {
+            const close = line.indexOf('"', i + 2);
+            if (close !== -1) {
+                stash(close + 1);
+                continue;
+            }
+        }
+
+        masked += char;
+        i++;
+    }
+
+    return {masked, payloads};
+}
+
+/** Apply the transforms to prose only, leaving every masked region byte-identical. */
+function applyTransformsOutsideLiterals(line: string): string {
+    const {masked, payloads} = maskProtectedRegions(line);
+    const transformed = applyTransforms(masked).replace(
+        new RegExp(`${MASK}(\\d+)${MASK}`, 'g'),
+        (_, index: string) => payloads[Number(index)]
+    );
+    return transformed;
 }
 
 export function preprocessMarkdown(source: string): string {
-    // The custom syntax transforms must never run inside fenced code blocks or
-    // inline code spans: `==x==` in a code sample would be displayed as the
-    // literal text `<mark>x</mark>`, and real `<br>` tags in code would be
-    // silently deleted. Fence detection is shared with the other markdown helpers.
+    // The custom syntax transforms must never run inside fenced code blocks,
+    // inline code spans, link destinations or attribute values: `==x==` in a code
+    // sample would be displayed as the literal text `<mark>x</mark>`, real `<br>`
+    // tags in code would be silently deleted, and a `?a==b==` query string would
+    // stop being a valid URL. Fence detection is shared with the other helpers.
     return markCodeFenceLines(source)
-        .map(({line, inCode}) => (inCode ? line : applyTransformsOutsideInlineCode(line)))
+        .map(({line, inCode}) => (inCode ? line : applyTransformsOutsideLiterals(line)))
         .join('\n');
 }

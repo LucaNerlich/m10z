@@ -53,3 +53,25 @@ export function markCodeFenceLines(markdown: string): MarkdownLine[] {
         return {line, inCode: open !== null};
     });
 }
+
+/**
+ * Matches inline code spans (`` `code` ``, ``` ``code`` ```), keeping the backtick
+ * delimiters in the capture so the code survives a split.
+ *
+ * Limitation: a span whose closing delimiter uses a different number of backticks
+ * than its opening one (CommonMark allows `` `a`b` ``) is not recognised.
+ */
+const INLINE_CODE_SPLIT_RE = /(`+[^`]*`+)/g;
+
+/**
+ * Apply `fn` to the parts of a line that are *not* inline code spans.
+ *
+ * `String.prototype.split` with a capturing group interleaves the delimiters, so the
+ * odd indices are exactly the code spans.
+ */
+export function mapOutsideInlineCode(line: string, fn: (text: string) => string): string {
+    return line
+        .split(INLINE_CODE_SPLIT_RE)
+        .map((part, index) => (index % 2 === 1 ? part : fn(part)))
+        .join('');
+}

@@ -90,4 +90,35 @@ describe('preprocessMarkdown', () => {
     test('keeps the existing tilde semantics outside code spans', () => {
         expect(preprocessMarkdown('~10 bis ~20 Minuten')).toBe('<sub>10 bis </sub>20 Minuten');
     });
+
+    test('leaves link destinations and attribute values untouched', () => {
+        expect(preprocessMarkdown('[x](https://a.test/?q=a==b==)')).toBe('[x](https://a.test/?q=a==b==)');
+        expect(preprocessMarkdown('<img alt="a==b==c">')).toBe('<img alt="a==b==c">');
+        expect(preprocessMarkdown('==mark== [x](https://a.test/?q=a==b==)')).toBe(
+            '<mark>mark</mark> [x](https://a.test/?q=a==b==)',
+        );
+    });
+
+    test('keeps a delimiter pair working across a link destination', () => {
+        // The destination is opaque, but the pair still has to form its element,
+        // otherwise documented syntax silently degrades to literal characters.
+        expect(preprocessMarkdown('==a [link](https://x.test) b==')).toBe(
+            '<mark>a [link](https://x.test) b</mark>',
+        );
+        expect(preprocessMarkdown('++a <a href="u">l</a> b++')).toBe(
+            '<ins>a <a href="u">l</a> b</ins>',
+        );
+    });
+
+    test('handles a destination with balanced parentheses', () => {
+        expect(preprocessMarkdown('[x](https://a.test/wiki/Foo_(bar)?q=a==b==)')).toBe(
+            '[x](https://a.test/wiki/Foo_(bar)?q=a==b==)',
+        );
+    });
+
+    test('keeps prose transforms outside a protected region on the same line', () => {
+        expect(preprocessMarkdown('a==b== [x](https://a.test/?q=a==b==) c==d==')).toBe(
+            'a<mark>b</mark> [x](https://a.test/?q=a==b==) c<mark>d</mark>',
+        );
+    });
 });
