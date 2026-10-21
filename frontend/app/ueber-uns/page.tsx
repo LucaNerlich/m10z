@@ -69,6 +69,7 @@ export default async function AboutUsPage() {
                     height={imageHeight}
                     placeholder={placeholder}
                     priority={true}
+                    sizes="(max-width: 700px) 100vw, 700px"
                 />
                 <section>
                     <h1>{about.name}</h1>

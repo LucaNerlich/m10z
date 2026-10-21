@@ -57,6 +57,7 @@ export function CategoryCard({category, articleCount, podcastCount, className}: 
                         placeholder={placeholder}
                         blurhash={blurhash}
                         className={styles.cover}
+                        sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 33vw"
                     />
                 </Link>
             </div>
