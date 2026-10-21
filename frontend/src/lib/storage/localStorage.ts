@@ -30,21 +30,30 @@ export function getItem<T>(key: string): T | null {
     return null;
 }
 
-export function setItem<T>(key: string, value: T): void {
+/**
+ * Persist a value, mirroring it in memory as a fallback.
+ *
+ * @returns `true` only when the durable write succeeded. `false` means the value
+ * lives in the mirror for this session only and will not survive a reload, which
+ * callers that show user data must surface.
+ */
+export function setItem<T>(key: string, value: T): boolean {
     const serialized = JSON.stringify(value);
     inMemoryStore.set(key, serialized);
 
     if (typeof window === 'undefined') {
         unsyncedKeys.add(key);
-        return;
+        return false;
     }
 
     try {
         window.localStorage.setItem(key, serialized);
         unsyncedKeys.delete(key);
+        return true;
     } catch {
         // The mirror is the only place this write landed.
         unsyncedKeys.add(key);
+        return false;
     }
 }
 

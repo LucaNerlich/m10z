@@ -62,11 +62,18 @@ export default function WichtelnPage() {
             newParticipants: Participant[],
             newAssignments: Assignment[]
         ) => {
-            setItem(STORAGE_KEY, {
+            const saved = setItem(STORAGE_KEY, {
                 participants: newParticipants,
                 assignments: newAssignments,
                 timestamp: Date.now(),
             });
+            if (!saved) {
+                // Keep the session usable, but never let the user believe a list
+                // that only lives in memory is persisted.
+                setError(
+                    'Die Wichtel-Liste konnte nicht gespeichert werden. Sie geht beim Neuladen verloren.'
+                );
+            }
         },
         []
     );
