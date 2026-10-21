@@ -27,7 +27,7 @@ export async function generateStaticParams() {
  *
  * Fetches the episode referenced by `params.slug` and, if found, produces metadata
  * containing the page title, description, canonical alternate URL, OpenGraph article
- * data (including `locale: 'de'`, `siteName`, `url`, `title`, `description`, and `images`)
+ * data (including `locale: 'de_DE'`, `siteName`, `url`, `title`, `description`, and `images`)
  * and Twitter card fields. Returns an empty object when the slug is invalid or the episode
  * cannot be found.
  *
