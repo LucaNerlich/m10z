@@ -15,7 +15,7 @@ export type SearchIndexStrapi = {
         uid: string,
     ) => {
         findMany: (params?: Record<string, unknown>) => Promise<unknown>;
-        findFirst?: (params?: Record<string, unknown>) => Promise<unknown>;
+        findFirst: (params?: Record<string, unknown>) => Promise<unknown>;
         update: (params: {documentId: string | number; data: Record<string, unknown>}) => Promise<unknown>;
         create: (params: {data: Record<string, unknown>}) => Promise<unknown>;
     };
@@ -466,18 +466,9 @@ async function buildIndex(strapi: SearchIndexStrapi): Promise<{index: SearchInde
 }
 
 // Persists the index as a Strapi single-type document with monotonically increasing version.
-// Uses findFirst if available (Strapi 5), falls back to findMany (Strapi 4 compat).
 async function saveIndex(strapi: SearchIndexStrapi, index: SearchIndexFile): Promise<SearchIndexFile> {
     const svc = strapi.documents('api::search-index.search-index');
-    const existing: unknown = await (svc.findFirst ? svc.findFirst() : svc.findMany(documentServicePage(1, 1)));
-    const list = Array.isArray(existing)
-        ? existing
-        : typeof existing === 'object' && existing !== null
-            ? ((existing as {results?: unknown[]}).results ??
-              (existing as {data?: unknown[]}).data ??
-              [existing])
-            : [];
-    const current = (list[0] ?? null) as ExistingIndexDoc | null;
+    const current = (await svc.findFirst()) as ExistingIndexDoc | null;
     const currentVersion = Number(current?.version) || 0;
     const nextVersion = currentVersion + 1;
 
