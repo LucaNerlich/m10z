@@ -8,6 +8,7 @@ import {
 } from '@/src/lib/analytics/podcastDownload';
 import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
+import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {getClientIp} from '@/src/lib/net/getClientIp';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {getStrapiApiBaseUrl} from '@/src/lib/strapiTransport';
@@ -17,13 +18,9 @@ import {type SlugPageParams} from '@/src/lib/params';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-// Strapi slugs are lowercase, alphanumeric, dash-separated. Reject anything else to prevent
-// path traversal / injection before the value is used in a Strapi query.
-const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-
 // The tracking URL carries a fake `.mp3` extension (see `buildPodcastDownloadPath`) so podcatchers
 // treat the enclosure URL as a valid audio file. Strip it before slug validation/lookup. Since
-// SLUG_PATTERN disallows dots, this is unambiguous and never affects a legitimate slug.
+// `validateSlug` disallows dots, this is unambiguous and never affects a legitimate slug.
 const TRAILING_MP3_SUFFIX = /\.mp3$/i;
 
 /**
@@ -59,7 +56,7 @@ export async function GET(request: Request, {params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
     const slug = rawSlug.replace(TRAILING_MP3_SUFFIX, '');
 
-    if (!SLUG_PATTERN.test(slug)) {
+    if (validateSlugSafe(slug) === null) {
         return new NextResponse('Not Found', {status: 404});
     }
 
