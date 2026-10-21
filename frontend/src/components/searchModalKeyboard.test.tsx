@@ -233,3 +233,46 @@ describe('SearchModal keyboard interaction', () => {
         launcher.remove();
     });
 });
+
+describe('SearchModal backdrop', () => {
+    function backdrop(): Element {
+        const el = container.querySelector('[role="presentation"]');
+        if (!el) throw new Error('backdrop not rendered');
+        return el;
+    }
+
+    function press(target: Element, button = 0): void {
+        // jsdom has no PointerEvent constructor; React only listens for the type.
+        target.dispatchEvent(new MouseEvent('pointerdown', {bubbles: true, button}));
+    }
+
+    test('closes when the press starts on the backdrop', async () => {
+        const onClose = await renderModal();
+
+        await act(async () => press(backdrop()));
+
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    test('does not close when the press starts inside the dialog', async () => {
+        // Selecting text in the input and releasing on the backdrop produces a
+        // click whose target is the backdrop. The press target decides, so the
+        // dialog stays open.
+        const onClose = await renderModal();
+
+        await act(async () => {
+            press(input());
+            backdrop().dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        });
+
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
+    test('ignores secondary buttons', async () => {
+        const onClose = await renderModal();
+
+        await act(async () => press(backdrop(), 2));
+
+        expect(onClose).not.toHaveBeenCalled();
+    });
+});

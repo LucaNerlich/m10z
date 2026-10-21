@@ -1,6 +1,6 @@
 'use client';
 
-import {type KeyboardEvent, type MouseEvent, useEffect, useId, useRef, useState} from 'react';
+import {type KeyboardEvent, type PointerEvent, useEffect, useId, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
 import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
@@ -202,14 +202,20 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         }
     };
 
-    const handleBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
-        if (event.target === event.currentTarget) {
-            onClose();
-        }
+    // pointerdown, not click: a click's target is the common ancestor of the press
+    // and release, so releasing a text selection on the backdrop would close the
+    // dialog. Pointer events also cover touch, where iOS Safari does not reliably
+    // fire mousedown. preventDefault keeps focus on the element that opened the
+    // dialog: the browser's default focus move runs after the unmount cleanup.
+    const handleBackdropPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+        if (event.button !== 0) return;
+        if (event.target !== event.currentTarget) return;
+        event.preventDefault();
+        onClose();
     };
 
     return (
-        <div className={styles.backdrop} onClick={handleBackdropClick} role="presentation">
+        <div className={styles.backdrop} onPointerDown={handleBackdropPointerDown} role="presentation">
             <div ref={modalRef} className={styles.modal} role="dialog" aria-modal="true" aria-label="Suche">
                 <div className={styles.inputRow}>
                     <input
