@@ -94,12 +94,20 @@ export function buildListQuery(args: {
     );
 }
 
-/** Build a paginated slug-index query (sitemap, static params, llms.txt). */
+/**
+ * Build a paginated slug-index query (sitemap, static params, llms.txt).
+ *
+ * Without an explicit order, two identical offset queries can come back in a
+ * different row order, which makes a page walk drop or repeat an entry. A fixed
+ * sort key makes the walk repeatable; it does NOT make offset paging safe against
+ * a publish landing mid-walk, where only keyset paging would help.
+ */
 export function buildSlugIndexQuery(args: {page: number; pageSize: number}): string {
     return qs.stringify(
         {
             fields: ['slug', 'updatedAt', 'publishedAt'],
             status: 'published',
+            sort: ['documentId:asc'],
             pagination: {pageSize: args.pageSize, page: args.page},
         },
         QS_OPTS,
