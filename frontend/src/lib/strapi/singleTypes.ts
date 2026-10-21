@@ -78,8 +78,12 @@ async function getLegalDocWithFallback(
         return res.data;
     } catch (err) {
         console.warn(`[legal-doc] Failed to fetch ${kind}: ${err instanceof Error ? err.message : 'unknown error'}`);
-        // Runtime failures must propagate so ISR keeps the last good page instead of
-        // caching this fallback for the full revalidate window.
+        // Runtime failures propagate instead of being cached as this fallback for
+        // the full revalidate window. Note what that buys and what it does not:
+        // single-type invalidations hard-expire the page, so the first request
+        // after an edit during an outage renders an error once; the retained page
+        // is served afterwards. Caching the fallback would have kept it for the
+        // whole TTL.
         return transientPageFallback(err, () => fallback);
     }
 }
