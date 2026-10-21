@@ -28,6 +28,9 @@ describe('loadOgFont', () => {
         expect(a.toString()).toBe('font');
         expect(b).toBe(a);
         expect(readFile).toHaveBeenCalledTimes(1);
+        // The path is the bug: a WOFF2 file here makes both OG routes throw at
+        // render time, and the signature test below only guards the file contents.
+        expect(readFile).toHaveBeenCalledWith(expect.stringMatching(/Poppins-Bold\.ttf$/));
     });
 
     test('a failed read is not cached, so the next render retries', async () => {
