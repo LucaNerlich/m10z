@@ -2,8 +2,8 @@ import {type Metadata} from 'next';
 
 import {getErrorMessage, isTimeoutOrSocketError} from '@/src/lib/errors';
 import {formatOpenGraphImage} from '@/src/lib/metadata/formatters';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
-import {absoluteRoute} from '@/src/lib/routes';
+import {FEED_ALTERNATES_TYPES, OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {absoluteRoute, routes} from '@/src/lib/routes';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {pickAndOptimizeImage, type StrapiMediaRef} from '@/src/lib/strapi/media';
 import {type SlugParams} from '@/src/lib/params';
@@ -74,7 +74,7 @@ export async function buildContentSlugMetadata<T extends MediaSource>({
         return {
             title,
             description,
-            alternates: {canonical: url},
+            alternates: {canonical: url, types: FEED_ALTERNATES_TYPES},
             openGraph: {
                 type: ogType,
                 locale: OG_LOCALE,
@@ -87,6 +87,7 @@ export async function buildContentSlugMetadata<T extends MediaSource>({
             },
             twitter: {
                 card: twitterCard,
+                site: routes.twitter,
                 title,
                 description,
                 images: coverImage,

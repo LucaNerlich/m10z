@@ -10,6 +10,9 @@ import {resolveFileWithinPublicDir} from '../utils/resolveFileWithinPublicDir';
 import {generateBlurDataUrl} from '../utils/generateBlurhash';
 import type {ContentDocument, StrapiInstance} from '../types/middleware';
 
+/** Blurhash only needs a tiny thumbnail; never read a 2 GB upload into memory. */
+const MAX_BLURHASH_FILE_BYTES = 20 * 1024 * 1024;
+
 /**
  * Scan uploaded image files and generate blurhash data URLs for those missing a blurhash.
  *
@@ -44,6 +47,9 @@ export async function generateMissingBlurhashes({strapi}: {strapi: StrapiInstanc
                     },
                 ],
             },
+            // Newest first: rows that can never succeed (missing/corrupt files)
+            // must not pin the 50-row window and starve fresh uploads.
+            sort: 'createdAt:desc',
             ...documentServicePage(1, 50),
         });
 
@@ -90,6 +96,15 @@ export async function generateMissingBlurhashes({strapi}: {strapi: StrapiInstanc
                 }
 
                 // Read file and generate blur data URL
+                const fileStats = await fsPromises.stat(filePath);
+                if (fileStats.size > MAX_BLURHASH_FILE_BYTES) {
+                    strapi.log.warn(
+                        `Image too large for blurhash (${fileStats.size} bytes): ${filePath}`,
+                    );
+                    failed++;
+                    continue;
+                }
+
                 const fileBuffer = await fsPromises.readFile(filePath);
                 const blurDataUrl = await generateBlurDataUrl(fileBuffer);
 

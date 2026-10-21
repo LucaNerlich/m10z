@@ -11,7 +11,7 @@ import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import {type Metadata, type Viewport} from 'next';
 import Script from 'next/script';
 import {routes} from '@/src/lib/routes';
-import {OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
+import {FEED_ALTERNATES_TYPES, OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getStaleChunkListenerScript} from '@/src/lib/staleChunkReload';
 import React from 'react';
 
@@ -27,12 +27,7 @@ export const metadata: Metadata = {
         follow: true,
     },
     alternates: {
-        types: {
-            'application/rss+xml': [
-                {url: '/rss.xml', title: 'M10Z Artikel-Feed'},
-                {url: '/audiofeed.xml', title: 'M10Z Audio-Feed'},
-            ],
-        },
+        types: FEED_ALTERNATES_TYPES,
     },
     openGraph: {
         type: 'website',

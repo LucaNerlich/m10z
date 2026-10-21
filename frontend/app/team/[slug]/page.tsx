@@ -129,7 +129,7 @@ export default async function AuthorPage({params}: SlugPageParams) {
 
     const articleTotal = articlesPage?.pagination.total ?? stats.articles.total;
     const podcastTotal = podcastsPage?.pagination.total ?? stats.podcasts.total;
-    const shouldRenderArticleSection = articleTotal > 0 && (sortedArticles.length > 0 || stats.articles.categories.length > 0);
+    const shouldRenderArticleSection = articleTotal > 0;
     const shouldRenderPodcastSection = podcastTotal > 0;
 
     const breadcrumbJsonLd = generateBreadcrumbJsonLd([

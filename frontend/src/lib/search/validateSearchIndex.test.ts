@@ -48,6 +48,15 @@ describe('isValidSearchIndexFile', () => {
         expect(isValidSearchIndexFile(index)).toBe(false);
     });
 
+    test.each(['/\\evil.example/phish', '/\t/evil.example/phish', '/\u0000evil'])(
+        'rejects hrefs the URL parser normalizes off-site: %j',
+        (href) => {
+            const index = makeIndex();
+            (index.records as {href: string}[])[0]!.href = href;
+            expect(isValidSearchIndexFile(index)).toBe(false);
+        },
+    );
+
     test('rejects empty hrefs', () => {
         const index = makeIndex();
         (index.records as {href: string}[])[0]!.href = '';

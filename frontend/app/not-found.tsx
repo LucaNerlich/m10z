@@ -4,7 +4,7 @@ import Link from 'next/link';
 import styles from '../src/styles/components/status.module.css';
 
 export const metadata: Metadata = {
-    title: 'Seite nicht gefunden | m10z',
+    title: 'Seite nicht gefunden',
     description: 'Die gesuchte Seite wurde nicht gefunden. Entdecken Sie unser Angebot auf einer unserer anderen Seiten.',
     robots: {
         index: false,

@@ -5,7 +5,6 @@ import {buildStaticListMetadata} from '@/src/lib/metadata/staticListMetadata';
 import {deriveExcerpt} from '@/src/lib/metadata/excerpt';
 import {ContentImage} from '@/src/components/ContentImage';
 
-import {ContentLayout} from '@/src/components/ContentLayout';
 import {Markdown} from '@/src/lib/markdown/Markdown';
 import placeholderCover from '@/public/images/m10z.jpg';
 
@@ -63,25 +62,23 @@ export default async function AboutUsPage() {
     return (
         <div data-list-page>
             <article>
-                <ContentLayout>
-                    <ContentImage
-                        src={imageSrc}
-                        alt={about.name}
-                        width={imageWidth}
-                        height={imageHeight}
-                        placeholder={placeholder}
-                        priority={true}
-                        sizes="(max-width: 740px) 100vw, 740px"
-                    />
-                    <section>
-                        <h1>{about.name}</h1>
-                        {about.alternateName ? (
-                            <p>{about.alternateName}</p>
-                        ) : null}
-                    </section>
+                <ContentImage
+                    src={imageSrc}
+                    alt={about.name}
+                    width={imageWidth}
+                    height={imageHeight}
+                    placeholder={placeholder}
+                    priority={true}
+                    sizes="(max-width: 700px) 100vw, 700px"
+                />
+                <section>
+                    <h1>{about.name}</h1>
+                    {about.alternateName ? (
+                        <p>{about.alternateName}</p>
+                    ) : null}
+                </section>
 
-                    <Markdown markdown={about.content} />
-                </ContentLayout>
+                <Markdown markdown={about.content} />
             </article>
         </div>
     );

@@ -78,6 +78,17 @@ describe('buildGameHistory', () => {
         expect(byName.get('Cairn')).toBe('cairn');
     });
 
+    test('distinct names that normalize to one slug get a suffix', () => {
+        const m1 = month('2025-01', [game('Wärme', 1)]);
+        const m2 = month('2025-02', [game('Warme', 1)]);
+        const m3 = month('2025-03', [game('日本語', 1)]);
+        const m4 = month('2025-04', [game('한국어', 1)]);
+
+        const slugs = buildGameHistory([m1, m2, m3, m4]).map((h) => h.slug);
+
+        expect(slugs).toEqual(['warme', 'warme-2', 'unnamed', 'unnamed-2']);
+    });
+
     test('wins increment per win, not per nomination', () => {
         const a1 = game('A', 5);
         const a2 = game('A', 3);

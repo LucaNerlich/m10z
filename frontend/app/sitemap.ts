@@ -3,6 +3,7 @@ import {MetadataRoute} from 'next';
 import {absoluteRoute, routes} from '@/src/lib/routes';
 import {sitemapTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 import {fetchPublishedSlugs, type PublishedSlugEntry} from '@/src/lib/publishedSlugs';
+import {getM12GArchive} from '@/src/lib/m12g/m12gArchive';
 import {monthsWithContent} from '@/src/lib/statistik/statistikMonth';
 import {getStatistikDashboard} from '@/src/lib/statistik/statistikSource';
 
@@ -59,12 +60,13 @@ function buildStaticEntries(entries: readonly StaticEntryConfig[]): MetadataRout
  * @returns An array of sitemap items containing static routes and dynamic entries for articles, podcasts, categories, and authors
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const [articles, podcasts, categories, authors, statistik] = await Promise.all([
+    const [articles, podcasts, categories, authors, statistik, m12gArchive] = await Promise.all([
         fetchPublishedSlugs('articles', [sitemapTag('articles'), typeTag('article')]),
         fetchPublishedSlugs('podcasts', [sitemapTag('podcasts'), typeTag('podcast')]),
         fetchPublishedSlugs('categories', [sitemapTag('categories')]),
         fetchPublishedSlugs('authors', [sitemapTag('authors')]),
         getStatistikDashboard(),
+        getM12GArchive(),
     ]);
     const statistikMonths = statistik ? monthsWithContent(statistik.heatmap) : [];
 
@@ -81,6 +83,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         [routes.m12gGames, 'monthly', 0.4],
         [routes.statistik, 'monthly', 0.4],
         [routes.feeds, 'monthly', 0.4],
+        [routes.apps, 'monthly', 0.4],
+        [routes.changelog, 'monthly', 0.3],
         [routes.audioFeed, 'daily', 0.3],
         [routes.articleFeed, 'daily', 0.3],
         [routes.imprint, 'yearly', 0.3],
@@ -93,6 +97,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...buildDynamicEntries(podcasts, routes.podcast, 'weekly', 0.8),
         ...buildDynamicEntries(categories, routes.category, 'monthly', 0.5),
         ...buildDynamicEntries(authors, routes.author, 'monthly', 0.5),
+        ...buildDynamicEntries(m12gArchive.gameHistory, routes.m12gGame, 'monthly', 0.3),
         ...buildDynamicEntries(
             statistikMonths.map((slug) => ({slug})),
             routes.statistikMonth,

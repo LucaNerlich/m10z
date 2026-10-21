@@ -18,12 +18,15 @@ function toMonthlyParticipation(months: M12GMonthWithWinner[]): M12GMonthPartici
     }));
 }
 
-function toWinnerTimeline(months: M12GMonthWithWinner[]): M12GWinnerEntry[] {
+function toWinnerTimeline(
+    months: M12GMonthWithWinner[],
+    slugByName: Map<string, string>,
+): M12GWinnerEntry[] {
     return months.flatMap((month) =>
         month.winners.map((winner) => ({
             month: month.month,
             gameName: winner.name,
-            slug: gameSlug(winner.name),
+            slug: slugByName.get(winner.name) ?? gameSlug(winner.name),
             gameLink: winner.link,
             votes: winner.votes,
         })),
@@ -44,7 +47,7 @@ export function computeM12GStats(archive: M12GArchive): M12GStats {
         totalVotes,
         avgVotesPerMonth: totalMonths > 0 ? Math.round(totalVotes / totalMonths) : 0,
         leaderboard: toLeaderboard(gameHistory, MAX_LEADERBOARD_ENTRIES),
-        winnerTimeline: toWinnerTimeline(months),
+        winnerTimeline: toWinnerTimeline(months, new Map(gameHistory.map((g) => [g.name, g.slug]))),
         monthlyParticipation,
     };
 }
