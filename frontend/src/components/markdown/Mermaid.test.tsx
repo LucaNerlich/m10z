@@ -91,10 +91,32 @@ describe('Mermaid', () => {
 
         const href = container.querySelector('a')?.getAttribute('href') ?? '';
         const decoded = decodeURIComponent(href);
-        expect(decoded).toContain('width="');
-        expect(decoded).toContain('height="');
+        // 480px from the inline max-width, height from the 400x200 viewBox ratio.
+        expect(decoded).toContain('width="480"');
+        expect(decoded).toContain('height="240"');
         expect(decoded).not.toContain('width="100%"');
         expect(decoded).not.toContain('max-width');
+
+        // The visible diagram keeps its fluid sizing; only the clone is resized.
+        const live = container.querySelector('svg');
+        expect(live?.getAttribute('width')).toBe('100%');
+        expect(live?.getAttribute('style')).toContain('max-width');
+    });
+
+    test('falls back to the viewBox width when no pixel max-width is set', async () => {
+        renderMock.mockResolvedValue({
+            // A percentage max-width is not a pixel hint; parsing it as 100px is
+            // exactly the tiny-lightbox symptom this code exists to prevent.
+            svg: '<svg id="bare" width="100%" style="max-width: 100%" viewBox="0 0 300 150"><g/></svg>',
+        });
+
+        await act(async () => {
+            root.render(<Mermaid chart='graph B' />);
+        });
+
+        const href = container.querySelector('a')?.getAttribute('href') ?? '';
+        expect(decodeURIComponent(href)).toContain('width="300"');
+        expect(decodeURIComponent(href)).toContain('height="150"');
     });
 
     test('a superseded run that fails does not put the fresh diagram into an error state', async () => {

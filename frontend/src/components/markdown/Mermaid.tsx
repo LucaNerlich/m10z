@@ -54,7 +54,10 @@ function serializeForLightbox(svg: SVGSVGElement): string {
 
     const box = svg.viewBox?.baseVal;
     const ratio = box && box.width > 0 ? box.height / box.width : 1;
-    const maxWidth = Number.parseFloat(getComputedStyle(svg).maxWidth);
+    // Only a pixel value is a usable hint: the stylesheet sets max-width: 100% on
+    // every diagram, and parseFloat would read that as 100px.
+    const computedMaxWidth = getComputedStyle(svg).maxWidth.trim();
+    const maxWidth = computedMaxWidth.endsWith('px') ? Number.parseFloat(computedMaxWidth) : Number.NaN;
 
     const width =
         numericAttribute('width') ??
