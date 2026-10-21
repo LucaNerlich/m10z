@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.17.3] - 2026-10-21
+
+### Fixed
+- Mermaid diagrams recover from a temporary render error instead of staying broken.
+- The menu shortcut is ignored while typing in an editable field.
+- Search results are cleared when the query drops below the minimum length.
+- Every table-of-contents entry resolves to its own heading, including repeated text.
+- Shared card images request a rendered-size `sizes`, so high-DPR screens no longer fetch up to twice the pixels a card renders.
+
 ## [1.17.2] - 2026-10-20
 
 ### Fixed
