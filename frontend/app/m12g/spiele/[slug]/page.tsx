@@ -22,14 +22,10 @@ async function findGame(slug: string) {
 export async function generateMetadata({params}: SlugPageParams): Promise<Metadata> {
     const {slug} = await params;
     const game = await findGame(slug);
-    if (!game) {
-        return buildStaticListMetadata({
-            title: 'Spiel nicht gefunden - M12G',
-            description: 'Dieses Spiel wurde nie bei M12G nominiert.',
-            path: routes.m12gGames,
-            ogImageAlt: 'M12G Spieleindex – Mindestens 10 Zeichen',
-        });
-    }
+    // `dynamicParams = false` plus generateStaticParams means an unknown slug never
+    // reaches this function; notFound() keeps the intent explicit if that changes.
+    if (!game) notFound();
+
     return buildStaticListMetadata({
         title: `${game.name} - M12G`,
         description: `${game.name} bei M12G: ${game.monthsNominated}x nominiert, ${game.wins}x gewonnen, ${game.totalVotes} Stimmen gesamt.`,
