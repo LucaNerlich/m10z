@@ -127,8 +127,9 @@ function createTimingAggregator(): {
  * Normalize a Strapi media object's size into bytes.
  *
  * If `media.sizeInBytes` is a finite number, it is floored and clamped to zero.
- * Otherwise, if `media.size` is a finite number, it is interpreted as kilobytes
- * (Strapi upload plugin convention) and converted to bytes, then floored and clamped to zero.
+ * Otherwise, if `media.size` is a finite number, it is interpreted as decimal
+ * kilobytes (Strapi upload plugin convention: `bytes / 1000`) and converted to
+ * bytes, then floored and clamped to zero.
  *
  * @param media - The Strapi media object whose size should be normalized.
  * @returns The size in bytes as an integer (>= 0), or `undefined` if no valid size is available.
@@ -138,8 +139,9 @@ export function normalizeEnclosureLengthBytes(media: StrapiMedia): number | unde
         return Math.max(0, Math.floor(media.sizeInBytes));
     }
     if (typeof media.size === 'number' && Number.isFinite(media.size)) {
-        // Strapi upload plugin commonly stores `size` in KB.
-        return Math.max(0, Math.floor(media.size * 1024));
+        // Strapi stores `size` in decimal KB (`bytesToKbytes = bytes / 1000`), so the
+        // round trip must use 1000. With 1024 every enclosure was ~2.4% too large.
+        return Math.max(0, Math.floor(media.size * 1000));
     }
     return undefined;
 }

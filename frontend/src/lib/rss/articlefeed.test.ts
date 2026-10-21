@@ -85,7 +85,8 @@ describe('generateArticleFeedXml — items', () => {
         const {xml} = render([
             makeArticle({cover: {url: 'https://cdn.example.test/cover.jpg', mime: 'image/jpeg', size: 25}}),
         ]);
-        expect(xml).toContain('length="25600"');
+        // Strapi's `size` is decimal KB (bytes / 1000), so 25 KB is 25000 bytes.
+        expect(xml).toContain('length="25000"');
     });
 
     test('falls back to length="0" when the media carries no size', () => {
