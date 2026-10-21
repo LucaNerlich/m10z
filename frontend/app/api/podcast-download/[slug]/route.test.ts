@@ -66,7 +66,7 @@ describe('GET /api/podcast-download/[slug]', () => {
     });
 
     test('returns 404 for a slug that still contains dots after stripping a trailing .mp3 suffix', async () => {
-        // SLUG_PATTERN disallows dots, so an embedded dot must still be rejected even though the
+        // validateSlug disallows dots, so an embedded dot must still be rejected even though the
         // trailing ".mp3" is stripped first.
         const [request, context] = makeRequest('valid.slug.mp3');
         const res = await GET(request, context);
@@ -133,6 +133,21 @@ describe('GET /api/podcast-download/[slug]', () => {
         isAllowedDownloadTarget.mockReturnValue(true);
 
         const [request, context] = makeRequest('valid-slug');
+        const res = await GET(request, context);
+
+        expect(res.status).toBe(302);
+        expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
+    });
+
+    test('trims surrounding whitespace before the lookup', async () => {
+        // validateSlug trims; the route must query the trimmed value, not the raw
+        // one it validated.
+        fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
+        mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
+        isAllowedDownloadTarget.mockReturnValue(true);
+
+        const [request, context] = makeRequest(' valid-slug.mp3 ');
+        context.params = Promise.resolve({slug: ' valid-slug.mp3 '});
         const res = await GET(request, context);
 
         expect(res.status).toBe(302);

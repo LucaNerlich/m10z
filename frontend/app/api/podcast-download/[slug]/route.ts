@@ -54,9 +54,11 @@ function isAllowedDownloadUrl(fileUrl: string): boolean {
  */
 export async function GET(request: Request, {params}: SlugPageParams) {
     const {slug: rawSlug} = await params;
-    const slug = rawSlug.replace(TRAILING_MP3_SUFFIX, '');
-
-    if (validateSlugSafe(slug) === null) {
+    // Trim first: the suffix is `$`-anchored, so trailing whitespace would stop the
+    // strip. Then use the guard's return value — the trimmed string is what every
+    // later step (query, cache tag, dedupe key) must use.
+    const slug = validateSlugSafe(rawSlug.trim().replace(TRAILING_MP3_SUFFIX, ''));
+    if (!slug) {
         return new NextResponse('Not Found', {status: 404});
     }
 
