@@ -86,8 +86,11 @@ export default {
         // every invalidation is skipped, the queue dead-letters the events, and
         // content silently stops reaching the frontend.
         if (process.env.NODE_ENV === 'production') {
+            // `.trim()` so a whitespace-only value counts as missing: it would pass
+            // this check and then be sent as the header value, 401 every request and
+            // dead-letter the queue.
             const missingProductionVars = ['FRONTEND_URL', 'STRAPI_INVALIDATION_SECRET'].filter(
-                varName => !process.env[varName]
+                varName => !process.env[varName]?.trim()
             );
 
             if (missingProductionVars.length > 0) {
