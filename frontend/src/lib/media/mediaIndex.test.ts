@@ -275,6 +275,16 @@ describe('enrichMarkdownImages', () => {
         ).toBe('![x](https://evil.test/uploads/logo.webp)');
     });
 
+    it('does not touch images inside inline code spans', () => {
+        // An author documenting the syntax must keep the literal example.
+        expect(enrichMarkdownImages('Use `![logo.webp](/uploads/logo.webp)` here', idx)).toBe(
+            'Use `![logo.webp](/uploads/logo.webp)` here'
+        );
+        expect(
+            enrichMarkdownImages('`![logo.webp](/uploads/logo.webp)` and ![logo.webp](/uploads/logo.webp)', idx)
+        ).toBe('`![logo.webp](/uploads/logo.webp)` and ![Logo](/uploads/logo.webp "Ein Logo")');
+    });
+
     it('does not touch images inside fenced code blocks', () => {
         const md = '```\n![logo.webp](/uploads/logo.webp)\n```';
         expect(enrichMarkdownImages(md, idx)).toBe(md);

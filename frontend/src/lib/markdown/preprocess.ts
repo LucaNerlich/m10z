@@ -14,7 +14,7 @@
  * already, and stray `<br>`s tend to introduce large gaps.
  */
 
-import {markCodeFenceLines} from './codeFences';
+import {mapOutsideInlineCode, markCodeFenceLines} from './codeFences';
 
 const RAW_BR_RE = /<br\s*\/?>/gi;
 const MARK_RE = /==([^=\n]+)==/g;
@@ -34,37 +34,29 @@ function applyTransforms(line: string): string {
 }
 
 /**
- * Matches inline code spans (`` `code` ``, ``` ``code`` ```), keeping the
- * backtick delimiters in the captured group so the code can be split without
- * losing them.
+ * Regions of a line whose payload is a URL or an HTML attribute value rather than
+ * prose: a link destination (`](…)`) and a double-quoted attribute value (`="…"`).
+ * Rewriting `==` inside either produces broken Markdown or a corrupted attribute.
  */
-const INLINE_CODE_SPLIT_RE = /(`+[^`]*`+)/g;
+const LITERAL_PAYLOAD_SPLIT_RE = /(\]\([^)\n]*\)|="[^"\n]*")/g;
 
-/**
- * Apply the transforms to the parts of a line that are *not* inline code spans.
- *
- * The transforms are text-level, so without this an inline span like
- * `` `a == b` `` lost its content (`` `` ``) and a documented literal such as
- * `` `<br>` `` was deleted. `String.prototype.split` with a capturing group
- * interleaves the delimiters, so the odd indices are exactly the code spans.
- *
- * Limitation: a span whose closing delimiter uses a different number of
- * backticks than its opening one (CommonMark allows `` `a`b` ``) is not
- * recognised.
- */
-function applyTransformsOutsideInlineCode(line: string): string {
-    return line
-        .split(INLINE_CODE_SPLIT_RE)
-        .map((part, index) => (index % 2 === 1 ? part : applyTransforms(part)))
-        .join('');
+/** Apply the transforms to prose only: not to inline code, link targets or attributes. */
+function applyTransformsOutsideLiterals(line: string): string {
+    return mapOutsideInlineCode(line, (prose) =>
+        prose
+            .split(LITERAL_PAYLOAD_SPLIT_RE)
+            .map((part, index) => (index % 2 === 1 ? part : applyTransforms(part)))
+            .join('')
+    );
 }
 
 export function preprocessMarkdown(source: string): string {
-    // The custom syntax transforms must never run inside fenced code blocks or
-    // inline code spans: `==x==` in a code sample would be displayed as the
-    // literal text `<mark>x</mark>`, and real `<br>` tags in code would be
-    // silently deleted. Fence detection is shared with the other markdown helpers.
+    // The custom syntax transforms must never run inside fenced code blocks,
+    // inline code spans, link destinations or attribute values: `==x==` in a code
+    // sample would be displayed as the literal text `<mark>x</mark>`, real `<br>`
+    // tags in code would be silently deleted, and a `?a==b==` query string would
+    // stop being a valid URL. Fence detection is shared with the other helpers.
     return markCodeFenceLines(source)
-        .map(({line, inCode}) => (inCode ? line : applyTransformsOutsideInlineCode(line)))
+        .map(({line, inCode}) => (inCode ? line : applyTransformsOutsideLiterals(line)))
         .join('\n');
 }

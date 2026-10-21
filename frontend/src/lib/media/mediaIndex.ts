@@ -11,7 +11,7 @@
  * `public/media-index.json` and read server-side (see `mediaIndexSource.ts`).
  */
 
-import {markCodeFenceLines} from '@/src/lib/markdown/codeFences';
+import {mapOutsideInlineCode, markCodeFenceLines} from '@/src/lib/markdown/codeFences';
 
 export const MEDIA_INDEX_VERSION = 2;
 
@@ -238,18 +238,22 @@ export function enrichMarkdownImages(
         .map(({line, inCode}) => {
             if (inCode) return line;
 
-            return line.replace(
-                MARKDOWN_IMAGE_RE,
-                (match, alt: string, url: string, title?: string) => {
-                    const metadata = lookupMediaMetadata(index, url);
-                    if (!metadata) return match;
+            // Images inside inline code are examples, not content: rewriting them
+            // would change the snippet the author is documenting.
+            return mapOutsideInlineCode(line, (prose) =>
+                prose.replace(
+                    MARKDOWN_IMAGE_RE,
+                    (match, alt: string, url: string, title?: string) => {
+                        const metadata = lookupMediaMetadata(index, url);
+                        if (!metadata) return match;
 
-                    const nextAlt = escapeAlt(metadata.alt ?? alt);
-                    const nextTitle = metadata.caption ?? title;
-                    return nextTitle
-                        ? `![${nextAlt}](${url} "${escapeTitle(nextTitle)}")`
-                        : `![${nextAlt}](${url})`;
-                }
+                        const nextAlt = escapeAlt(metadata.alt ?? alt);
+                        const nextTitle = metadata.caption ?? title;
+                        return nextTitle
+                            ? `![${nextAlt}](${url} "${escapeTitle(nextTitle)}")`
+                            : `![${nextAlt}](${url})`;
+                    }
+                )
             );
         })
         .join('\n');

@@ -90,4 +90,18 @@ describe('preprocessMarkdown', () => {
     test('keeps the existing tilde semantics outside code spans', () => {
         expect(preprocessMarkdown('~10 bis ~20 Minuten')).toBe('<sub>10 bis </sub>20 Minuten');
     });
+
+    test('leaves link destinations and attribute values untouched', () => {
+        expect(preprocessMarkdown('[x](https://a.test/?q=a==b==)')).toBe('[x](https://a.test/?q=a==b==)');
+        expect(preprocessMarkdown('<img alt="a==b==c">')).toBe('<img alt="a==b==c">');
+        expect(preprocessMarkdown('==mark== [x](https://a.test/?q=a==b==)')).toBe(
+            '<mark>mark</mark> [x](https://a.test/?q=a==b==)',
+        );
+    });
+
+    test('keeps prose transforms outside a protected region on the same line', () => {
+        expect(preprocessMarkdown('a==b== [x](https://a.test/?q=a==b==) c==d==')).toBe(
+            'a<mark>b</mark> [x](https://a.test/?q=a==b==) c<mark>d</mark>',
+        );
+    });
 });
