@@ -42,9 +42,10 @@ jobs:
         run: npx tsc --noEmit
       # AGENTS.md lists `pnpm run build` as a required pre-submission check; without
       # it, bundling and prerender errors only surface in Coolify after merge.
-      # Call the tool directly so the package script's `vitest run` does not repeat.
+      # `prebuild` generates public/changelog.md and syncs the shared contracts;
+      # calling next build directly would skip it and fail on a clean checkout.
       - name: Production build
-        run: pnpm exec next build
+        run: pnpm run prebuild && pnpm exec next build
 
   backend:
     runs-on: ubuntu-latest
