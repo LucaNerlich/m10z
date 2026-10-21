@@ -39,13 +39,13 @@ function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: s
             };
         case 'author':
             return {
-                pages: [routes.articles, routes.podcasts, `${routes.authors}/[slug]`, routes.home],
-                paths: [],
+                pages: [routes.articles, routes.podcasts, routes.home],
+                paths: slug ? [routes.author(slug)] : [],
             };
         case 'category':
             return {
                 pages: [routes.categories, routes.articles, routes.podcasts, routes.home],
-                paths: [],
+                paths: slug ? [routes.category(slug)] : [],
             };
         case 'about':
             return {pages: [routes.about], paths: []};
