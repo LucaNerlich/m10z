@@ -71,6 +71,8 @@ export type DocumentServiceParams = Record<string, unknown>;
 
 export interface DocumentServiceMethods {
     findOne(params: DocumentServiceParams): Promise<ContentDocument | null>;
+    /** Strapi 5 single-document read; the search-index builder relies on it. */
+    findFirst(params?: DocumentServiceParams): Promise<ContentDocument | null>;
     findMany(params?: DocumentServiceParams): Promise<ContentDocument[]>;
     update(params: {documentId: string | number; data: Record<string, unknown>}): Promise<ContentDocument | null>;
     create(params: {data: Record<string, unknown>}): Promise<ContentDocument>;
