@@ -1,7 +1,7 @@
 import {type Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
-import {isBuildPhase} from '@/src/lib/buildPhase';
+import {transientPageFallback} from '@/src/lib/transientPageFallback';
 import {getEffectiveDate} from '@/src/lib/effectiveDate';
 import {fetchArticleBySlug, fetchRelatedArticles, fetchRelatedPodcasts} from '@/src/lib/strapiContent';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
@@ -71,12 +71,10 @@ export default async function ArticleDetailPage({params}: SlugPageParams) {
         } else {
             console.error(`Error fetching article for slug "${slug}":`, errorMessage);
         }
-        // Transient failure, not a genuine absence: rethrow so Next's ISR keeps
-        // serving the last successfully cached page instead of caching a 404.
-        // During `next build` there is no cached page and a throw aborts the whole
-        // build, so degrade to a 404 that ISR/invalidation replaces later.
-        if (isBuildPhase()) return null;
-        throw error;
+        // Transient failure, not a genuine absence: the shared policy rethrows at
+        // runtime so ISR keeps the last good page, and returns null during
+        // `next build` where a throw would abort the build.
+        return transientPageFallback(error, () => null);
     });
 
     if (!article) notFound();

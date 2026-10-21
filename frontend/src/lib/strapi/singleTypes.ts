@@ -7,6 +7,7 @@ import {ABOUT_PAGE_TAG, ABOUT_TAG, LEGAL_TAGS, feedSourceTag} from '@/src/lib/sh
 import {fetchStrapiSingle} from '@/src/lib/strapi/contentAccess';
 import {type FetchStrapiOptions} from '@/src/lib/strapi/responses';
 import type {StrapiMediaRef} from '@/src/lib/strapi/media';
+import {transientPageFallback} from '@/src/lib/transientPageFallback';
 
 /**
  * Shared shape for Strapi single types that carry a title and a Markdown body
@@ -77,7 +78,13 @@ async function getLegalDocWithFallback(
         return res.data;
     } catch (err) {
         console.warn(`[legal-doc] Failed to fetch ${kind}: ${err instanceof Error ? err.message : 'unknown error'}`);
-        return fallback;
+        // Runtime failures propagate instead of being cached as this fallback for
+        // the full revalidate window. Note what that buys and what it does not:
+        // single-type invalidations hard-expire the page, so the first request
+        // after an edit during an outage renders an error once; the retained page
+        // is served afterwards. Caching the fallback would have kept it for the
+        // whole TTL.
+        return transientPageFallback(err, () => fallback);
     }
 }
 
@@ -136,7 +143,7 @@ async function getAboutWithFallback(options: FetchStrapiOptions = {}): Promise<S
         return res.data;
     } catch (err) {
         console.warn(`[about] Failed to fetch about: ${err instanceof Error ? err.message : 'unknown error'}`);
-        return fallback;
+        return transientPageFallback(err, () => fallback);
     }
 }
 
@@ -198,7 +205,7 @@ async function getFeedsInfoWithFallback(options: FetchStrapiOptions = {}): Promi
         };
     } catch (err) {
         console.warn(`[feeds] Failed to fetch feeds: ${err instanceof Error ? err.message : 'unknown error'}`);
-        return fallback;
+        return transientPageFallback(err, () => fallback);
     }
 }
 
