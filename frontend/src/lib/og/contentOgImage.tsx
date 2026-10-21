@@ -20,9 +20,13 @@ let ogFontLoad: Promise<Buffer> | null = null;
  * Load the Poppins Bold font used by the branded OG cards. The in-flight
  * promise is cached at module scope so concurrent and subsequent image
  * renders reuse the same read instead of re-reading the font file.
+ *
+ * Must be TTF or OTF: Satori (behind `ImageResponse`) rejects WOFF2 with
+ * "Unsupported OpenType signature wOF2". The CSS pipeline still uses the
+ * smaller WOFF2 files next to it.
  */
 export function loadOgFont(): Promise<Buffer> {
-    ogFontLoad ??= readFile(join(process.cwd(), 'public/fonts/Poppins-Bold.woff2')).catch(
+    ogFontLoad ??= readFile(join(process.cwd(), 'public/fonts/Poppins-Bold.ttf')).catch(
         (error: unknown) => {
             // A rejected promise is truthy, so `??=` would otherwise keep the
             // failure for the process lifetime and 500 every OG image route.

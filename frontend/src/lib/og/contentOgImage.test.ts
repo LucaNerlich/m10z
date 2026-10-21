@@ -28,6 +28,9 @@ describe('loadOgFont', () => {
         expect(a.toString()).toBe('font');
         expect(b).toBe(a);
         expect(readFile).toHaveBeenCalledTimes(1);
+        // The path is the bug: a WOFF2 file here makes both OG routes throw at
+        // render time, and the signature test below only guards the file contents.
+        expect(readFile).toHaveBeenCalledWith(expect.stringMatching(/Poppins-Bold\.ttf$/));
     });
 
     test('a failed read is not cached, so the next render retries', async () => {
@@ -40,5 +43,18 @@ describe('loadOgFont', () => {
         // rejected again without touching the filesystem.
         await expect(load()).resolves.toEqual(Buffer.from('font'));
         expect(readFile).toHaveBeenCalledTimes(2);
+    });
+});
+
+describe('the shipped OG font', () => {
+    // Satori parses TTF/OTF/WOFF only. A WOFF2 asset here 502s both image
+    // routes at render time, which no other test would catch.
+    test('has a signature ImageResponse can parse', async () => {
+        const {readFile: read} = await vi.importActual<typeof import('node:fs/promises')>('node:fs/promises');
+        const {join} = await import('node:path');
+        const font = await read(join(process.cwd(), 'public/fonts/Poppins-Bold.ttf'));
+
+        const signature = font.subarray(0, 4).toString('latin1');
+        expect(['\u0000\u0001\u0000\u0000', 'OTTO', 'true', 'wOFF']).toContain(signature);
     });
 });
