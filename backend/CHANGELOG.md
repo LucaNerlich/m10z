@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.5] - 2026-10-21
+
+### Fixed
+- The admin preview link uses the version being previewed, so previewing a published article after a draft slug change no longer returns 404.
+- `BASE_DOMAIN` accepts a default port and mixed-case origins, and rejects a lone `?` or `#` that would corrupt every media URL.
+- Production refuses to boot with a plaintext `FRONTEND_URL` instead of dead-lettering every cache invalidation at runtime.
+- Production refuses to boot without `STRAPI_INVALIDATION_SECRET`, or with a whitespace-only one, instead of silently dropping every cache invalidation.
+- Removed the Strapi 4 fallback from the search-index save path (no behaviour change).
+- Removed dead multi-document plumbing from the cache-invalidation middleware (no behaviour change).
+
 ## [1.4.4] - 2026-10-20
 
 ### Fixed
