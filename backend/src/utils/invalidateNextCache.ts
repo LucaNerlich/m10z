@@ -33,7 +33,22 @@ function getNextBaseUrl(): string {
         }
         return 'http://localhost:3000';
     }
-    return url.replace(/\/+$/, '');
+    const normalized = url.replace(/\/+$/, '');
+
+    let parsed: URL;
+    try {
+        parsed = new URL(normalized);
+    } catch {
+        throw new Error(`Invalid FRONTEND_URL: "${normalized}". Expected an absolute http(s) origin.`);
+    }
+
+    // The request carries the invalidation secret as a header, so a plaintext
+    // target would expose a credential that can replay cache busts.
+    if (process.env.NODE_ENV === 'production' && parsed.protocol !== 'https:') {
+        throw new Error('FRONTEND_URL must use https in production (Next cache invalidation target).');
+    }
+
+    return normalized;
 }
 
 function getSecret(): string | undefined {

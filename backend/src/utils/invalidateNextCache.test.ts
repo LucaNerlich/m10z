@@ -121,4 +121,37 @@ describe('postInvalidationEvent', () => {
         await expect(postInvalidationEvent(event, logger)).rejects.toThrow(/FRONTEND_URL is required in production/);
         expect(fetchMock).not.toHaveBeenCalled();
     });
+
+    test('refuses to POST a plaintext FRONTEND_URL in production', async () => {
+        // The header carries the invalidation secret; an http target would expose it.
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('FRONTEND_URL', 'http://m10z.de');
+        vi.stubEnv('STRAPI_INVALIDATION_SECRET', 'secret-token');
+        const fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+
+        await expect(postInvalidationEvent(event, logger)).rejects.toThrow(/must use https in production/);
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    test('accepts an https FRONTEND_URL in production', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        stubConfiguredEnv();
+        const fetchMock = vi.fn().mockResolvedValue(new Response(null, {status: 200}));
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await postInvalidationEvent(event, logger);
+
+        expect(result).toBe(true);
+        expect(fetchMock.mock.calls[0][0]).toBe('https://m10z.de/api/invalidate');
+    });
+
+    test('keeps accepting http outside production', async () => {
+        vi.stubEnv('FRONTEND_URL', 'http://localhost:3000');
+        vi.stubEnv('STRAPI_INVALIDATION_SECRET', 'secret-token');
+        const fetchMock = vi.fn().mockResolvedValue(new Response(null, {status: 200}));
+        vi.stubGlobal('fetch', fetchMock);
+
+        await expect(postInvalidationEvent(event, logger)).resolves.toBe(true);
+    });
 });
