@@ -74,6 +74,30 @@ describe('production boot guard', () => {
         ).toThrow(/FRONTEND_URL/);
     });
 
+    test('rejects a plaintext FRONTEND_URL', () => {
+        // The header carries the invalidation secret; the queue would swallow the
+        // runtime throw, so the boot has to fail.
+        vi.stubEnv('NODE_ENV', 'production');
+
+        expect(() =>
+            registerWith({
+                FRONTEND_URL: 'http://m10z.de',
+                STRAPI_INVALIDATION_SECRET: 'secret',
+            })
+        ).toThrow(/FRONTEND_URL/);
+    });
+
+    test('accepts an https FRONTEND_URL', () => {
+        vi.stubEnv('NODE_ENV', 'production');
+
+        expect(() =>
+            registerWith({
+                FRONTEND_URL: 'https://m10z.de',
+                STRAPI_INVALIDATION_SECRET: 'secret',
+            })
+        ).not.toThrow();
+    });
+
     test('keeps both variables optional outside production', () => {
         vi.stubEnv('NODE_ENV', 'test');
 
