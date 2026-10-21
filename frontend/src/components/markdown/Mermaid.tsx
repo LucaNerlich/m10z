@@ -4,7 +4,6 @@ import React, {useEffect, useReducer, useRef} from 'react';
 import mermaid from 'mermaid';
 import styles from './Mermaid.module.css';
 import {umamiEventId} from '@/src/lib/analytics/umami';
-import {mermaidSvgToDataUrl} from '@/src/lib/markdown/mermaidSvg';
 
 export type MermaidProps = {
     chart: string;
@@ -30,6 +29,44 @@ function mermaidReducer(state: MermaidState, action: MermaidAction): MermaidStat
         case 'rendered':
             return {error: null, dataUrl: action.dataUrl};
     }
+}
+
+/**
+ * Serialize a rendered `<svg>` for use as an `<img>` source.
+ *
+ * Mermaid sizes most diagram types with `width="100%"` plus an inline
+ * `max-width`. That works inline, but the lightbox loads the markup as an image
+ * where a percentage width has no containing block and the browser falls back to
+ * a ~150px default. Copy the element, give it an explicit intrinsic size from
+ * its viewBox, and drop the capping `max-width`.
+ *
+ * The live element is not touched, so the inline diagram keeps its fluid width.
+ */
+function serializeForLightbox(svg: SVGSVGElement): string {
+    const clone = svg.cloneNode(true) as SVGSVGElement;
+
+    const numericAttribute = (name: string): number | null => {
+        const raw = svg.getAttribute(name);
+        if (!raw || raw.trim().endsWith('%')) return null;
+        const parsed = Number.parseFloat(raw);
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+    };
+
+    const box = svg.viewBox?.baseVal;
+    const ratio = box && box.width > 0 ? box.height / box.width : 1;
+    const maxWidth = Number.parseFloat(getComputedStyle(svg).maxWidth);
+
+    const width =
+        numericAttribute('width') ??
+        (Number.isFinite(maxWidth) && maxWidth > 0 ? maxWidth : null) ??
+        (box && box.width > 0 ? box.width : 800);
+    const height = numericAttribute('height') ?? Math.round(width * ratio);
+
+    clone.setAttribute('width', String(Math.round(width)));
+    clone.setAttribute('height', String(height));
+    clone.style?.removeProperty('max-width');
+
+    return new XMLSerializer().serializeToString(clone);
 }
 
 /**
@@ -116,8 +153,8 @@ export function Mermaid({chart, className}: MermaidProps) {
                     //    which also breaks once the SVG is loaded as an `<img>`; the helper
                     //    normalizes the intrinsic size.
                     const svgElement = containerRef.current.querySelector('svg');
-                    const exportableSvg = svgElement ? new XMLSerializer().serializeToString(svgElement) : svg;
-                    dispatch({type: 'rendered', dataUrl: mermaidSvgToDataUrl(exportableSvg)});
+                    const exportableSvg = svgElement ? serializeForLightbox(svgElement) : svg;
+                    dispatch({type: 'rendered', dataUrl: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(exportableSvg)}`});
                 }
             })
             .catch((err) => {

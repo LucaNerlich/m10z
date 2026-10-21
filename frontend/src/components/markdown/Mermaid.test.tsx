@@ -10,9 +10,6 @@ const {renderMock, initializeMock} = vi.hoisted(() => ({
 
 vi.mock('mermaid', () => ({default: {initialize: initializeMock, render: renderMock}}));
 vi.mock('@/src/lib/analytics/umami', () => ({umamiEventId: (parts: string[]) => parts.join(':')}));
-vi.mock('@/src/lib/markdown/mermaidSvg', () => ({
-    mermaidSvgToDataUrl: (svg: string) => `data:image/svg+xml,${encodeURIComponent(svg)}`,
-}));
 
 import {Mermaid} from './Mermaid';
 
@@ -78,6 +75,26 @@ describe('Mermaid', () => {
 
         expect(renderMock).toHaveBeenCalledTimes(1);
         expect(container.innerHTML).toContain('id="only"');
+    });
+
+    test('gives the lightbox image an explicit intrinsic size', async () => {
+        // Mermaid emits width="100%" plus max-width; loaded as an <img> that has no
+        // containing block and collapses to ~150px. The serialized copy must carry
+        // pixel dimensions and no capping max-width.
+        renderMock.mockResolvedValue({
+            svg: '<svg id="sized" width="100%" style="max-width: 480px" viewBox="0 0 400 200"><g/></svg>',
+        });
+
+        await act(async () => {
+            root.render(<Mermaid chart='graph A' />);
+        });
+
+        const href = container.querySelector('a')?.getAttribute('href') ?? '';
+        const decoded = decodeURIComponent(href);
+        expect(decoded).toContain('width="');
+        expect(decoded).toContain('height="');
+        expect(decoded).not.toContain('width="100%"');
+        expect(decoded).not.toContain('max-width');
     });
 
     test('a superseded run that fails does not put the fresh diagram into an error state', async () => {
