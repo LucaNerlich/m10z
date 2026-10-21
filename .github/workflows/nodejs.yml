@@ -33,6 +33,11 @@ jobs:
         run: pnpm test:run
       - name: Feed XML goldens
         run: pnpm run snapshot:feeds
+      # next-env.d.ts is gitignored, so a clean checkout has no image-module
+      # declarations and `tsc` fails until Next generates them. CI was disabled for
+      # long enough that this breakage was invisible.
+      - name: Generate Next types
+        run: pnpm exec next typegen
       - name: Typecheck
         run: npx tsc --noEmit
 
