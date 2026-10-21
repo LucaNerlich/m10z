@@ -9,7 +9,6 @@ import {generateWebsiteJsonLd} from '@/src/lib/jsonld/website';
 import {JsonLdScripts} from '@/src/components/JsonLdScripts';
 import {argon, krypton, neon, poppins, radon, xenon} from '@/src/styles/fonts';
 import {type Metadata, type Viewport} from 'next';
-import Script from 'next/script';
 import {routes} from '@/src/lib/routes';
 import {FEED_ALTERNATES_TYPES, OG_LOCALE, OG_SITE_NAME} from '@/src/lib/metadata/constants';
 import {getStaleChunkListenerScript} from '@/src/lib/staleChunkReload';
@@ -81,10 +80,12 @@ export default function RootLayout({
             {/* Inline (not next/script) so it runs before any Next.js chunk: recovers from stale-chunk
                 failures that break hydration or never reach an error boundary. */}
             <script id='stale-chunk-reload' dangerouslySetInnerHTML={{__html: STALE_CHUNK_LISTENER_SCRIPT}} />
+            {/* Plain script, not next/script: `beforeInteractive` is queued in __next_s and
+                runs after first paint, so the stored theme/font would still flash. */}
+            <script id='theme-init' src='/theme-init.js' />
         </head>
         <body>
         <a href="#main-content" className="skip-to-content">Zum Inhalt springen</a>
-        <Script id="theme-init" strategy="beforeInteractive" src="/theme-init.js" />
         <ScrollRestoration />
         <Header />
         <main id="main-content">
