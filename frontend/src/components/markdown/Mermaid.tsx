@@ -131,12 +131,21 @@ export function Mermaid({chart, className}: MermaidProps) {
 
     if (error) {
         return (
-            <div className={`${styles.error} ${className || ''}`}>
-                <p>{error}</p>
-                <details>
-                    <summary>Mermaid source</summary>
-                    <pre className={styles.source}>{chart}</pre>
-                </details>
+            <div className={className}>
+                <div className={styles.error}>
+                    <p>{error}</p>
+                    <details>
+                        <summary>Mermaid source</summary>
+                        <pre className={styles.source}>{chart}</pre>
+                    </details>
+                </div>
+                {/* Keep the render target mounted so a later valid chart can replace the error. */}
+                <div
+                    ref={containerRef}
+                    className={styles.container}
+                    style={{display: 'none'}}
+                    aria-hidden="true"
+                />
             </div>
         );
     }
