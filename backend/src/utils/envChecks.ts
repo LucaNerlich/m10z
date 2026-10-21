@@ -11,8 +11,10 @@
  */
 export function isValidBaseDomain(value: string | undefined): boolean {
     // The consumer concatenates the raw value, so stray whitespace would survive
-    // into the built URL even though `new URL` trims it.
-    if (typeof value !== 'string' || value !== value.trim()) {
+    // into the built URL even though `new URL` trims it. A lone `?` or `#` parses
+    // to an empty search/hash, so it has to be rejected on the raw string: it
+    // would turn `${BASE_DOMAIN}/uploads/...` into a query or a fragment.
+    if (typeof value !== 'string' || value !== value.trim() || /[?#]/.test(value)) {
         return false;
     }
 
@@ -26,9 +28,8 @@ export function isValidBaseDomain(value: string | undefined): boolean {
             (url.protocol === 'https:' || url.protocol === 'http:') &&
             url.username === '' &&
             url.password === '' &&
-            url.search === '' &&
-            url.hash === '' &&
-            (url.pathname === '' || url.pathname === '/')
+            // Any run of slashes: the consumer strips them all.
+            /^\/+$/.test(url.pathname)
         );
     } catch {
         return false;
