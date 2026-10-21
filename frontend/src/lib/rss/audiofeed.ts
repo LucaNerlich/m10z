@@ -9,7 +9,7 @@ import {normalizeBaseUrl} from '@/src/lib/rss/feedRoute';
 import {
     mediaUrlToAbsolute,
     normalizeStrapiMedia,
-    pickAndOptimizeImage,
+    pickCoverOrBannerMedia,
     type StrapiMedia,
 } from '@/src/lib/strapi/media';
 import {type StrapiAudioFeedSingle, type StrapiPodcast} from '@/src/lib/strapi/contentTypes';
@@ -233,9 +233,10 @@ function renderItem(
     const pub = parseFeedDate(pubDateRaw, episode.publishedAt);
     const pubDate = formatRssDate(pub);
 
-    const preferredMedia = pickAndOptimizeImage(episode, episode.categories, 'medium', 'cover');
+    // Apple's episode-art spec requires 1400-3000 px, so this one place takes the
+    // original upload rather than the display-sized derivative used for cards/OG.
     const itunesImageHref =
-        preferredMedia.url ??
+        mediaUrlToAbsolute({media: pickCoverOrBannerMedia(episode, episode.categories)}) ??
         `${normalizeBaseUrl(cfg.siteUrl)}/images/m10z.jpg`;
 
     const effectiveDescription = episode.description || episode.categories?.[0]?.description;
