@@ -233,3 +233,30 @@ describe('SearchModal keyboard interaction', () => {
         launcher.remove();
     });
 });
+
+describe('SearchModal backdrop', () => {
+    test('closes when the press starts on the backdrop', async () => {
+        const onClose = await renderModal();
+        const backdrop = container.querySelector('[role="presentation"]');
+        if (!backdrop) throw new Error('backdrop not rendered');
+
+        await act(async () => {
+            backdrop.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+        });
+
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    test('does not close when the press starts inside the dialog', async () => {
+        // Selecting text in the input and releasing on the backdrop produces a
+        // click whose target is the backdrop. Binding to mousedown means the
+        // press target decides, so the dialog stays open.
+        const onClose = await renderModal();
+
+        await act(async () => {
+            input().dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+        });
+
+        expect(onClose).not.toHaveBeenCalled();
+    });
+});

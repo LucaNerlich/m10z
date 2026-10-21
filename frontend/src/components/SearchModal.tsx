@@ -202,14 +202,17 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         }
     };
 
-    const handleBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
+    // mousedown, not click: a click's target is the common ancestor of the
+    // press and release, so releasing a text selection on the backdrop would
+    // close the dialog even though the user never clicked outside it.
+    const handleBackdropMouseDown = (event: MouseEvent<HTMLDivElement>) => {
         if (event.target === event.currentTarget) {
             onClose();
         }
     };
 
     return (
-        <div className={styles.backdrop} onClick={handleBackdropClick} role="presentation">
+        <div className={styles.backdrop} onMouseDown={handleBackdropMouseDown} role="presentation">
             <div ref={modalRef} className={styles.modal} role="dialog" aria-modal="true" aria-label="Suche">
                 <div className={styles.inputRow}>
                     <input
