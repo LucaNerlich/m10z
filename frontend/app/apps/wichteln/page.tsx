@@ -62,11 +62,19 @@ export default function WichtelnPage() {
             newParticipants: Participant[],
             newAssignments: Assignment[]
         ) => {
-            setItem(STORAGE_KEY, {
+            const saved = setItem(STORAGE_KEY, {
                 participants: newParticipants,
                 assignments: newAssignments,
                 timestamp: Date.now(),
             });
+            // Keep the session usable, but never let the user believe a list that
+            // only lives in memory is persisted. A successful write clears it, so
+            // the banner always tracks the current state.
+            setError(
+                saved
+                    ? null
+                    : 'Die Wichtel-Liste konnte nicht gespeichert werden. Sie geht beim Neuladen verloren.'
+            );
         },
         []
     );
@@ -74,7 +82,6 @@ export default function WichtelnPage() {
     const clearError = useCallback(() => setError(null), []);
 
     const addParticipant = useCallback(() => {
-        clearError();
         const nameError = validateName(newName) ?? validateUniqueName(participants.map((p) => p.name), newName);
         const profileError = validateProfileUrl(newProfileUrl);
         setFormErrors({name: nameError, profileUrl: profileError});
@@ -92,11 +99,10 @@ export default function WichtelnPage() {
         setNewName('');
         setNewProfileUrl('');
         setEditingId(null);
-    }, [newName, newProfileUrl, participants, persist, clearError]);
+    }, [newName, newProfileUrl, participants, persist]);
 
     const updateParticipant = useCallback(
         (id: string) => {
-            clearError();
             const nameError =
                 validateName(newName) ??
                 validateUniqueName(
@@ -118,12 +124,11 @@ export default function WichtelnPage() {
             setNewProfileUrl('');
             setEditingId(null);
         },
-        [newName, newProfileUrl, participants, assignments, persist, clearError]
+        [newName, newProfileUrl, participants, assignments, persist]
     );
 
     const deleteParticipant = useCallback(
         (id: string) => {
-            clearError();
             const updated = participants.filter((p) => p.id !== id);
             setParticipants(updated);
             setAssignments([]);
@@ -135,7 +140,7 @@ export default function WichtelnPage() {
                 setFormErrors({});
             }
         },
-        [participants, persist, editingId, clearError]
+        [participants, persist, editingId]
     );
 
     const startEdit = useCallback(
@@ -185,6 +190,7 @@ export default function WichtelnPage() {
         setNewName('');
         setNewProfileUrl('');
         setFormErrors({});
+        setError(null);
         removeItem(STORAGE_KEY);
     }, []);
 

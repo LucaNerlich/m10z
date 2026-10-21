@@ -56,6 +56,19 @@ describe('localStorage utilities', () => {
             api.setItem('str', 'hello');
             expect(store['str']).toBe('"hello"');
         });
+
+        test('reports whether the write was durable', () => {
+            expect(api.setItem('key', 'value')).toBe(true);
+
+            vi.mocked(window.localStorage.setItem).mockImplementationOnce(() => {
+                throw new Error('QuotaExceededError');
+            });
+
+            // The value is still readable this session, but the caller must know
+            // it will not survive a reload.
+            expect(api.setItem('key', 'value')).toBe(false);
+            expect(api.getItem<string>('key')).toBe('value');
+        });
     });
 
     describe('getItem', () => {
