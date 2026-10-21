@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 
-import {describe, expect, test} from 'vitest';
+import {afterEach, describe, expect, test, vi} from 'vitest';
 
 import createAdminConfig from '../../config/admin';
 
@@ -72,5 +72,41 @@ describe('config/admin cookie domain', () => {
 
         expect(config.auth.cookie.domain).toBe(documentedDomain);
         expect(documentedHost.endsWith(config.auth.cookie.domain as string)).toBe(true);
+    });
+});
+
+describe('config/admin preview link', () => {
+    afterEach(() => {
+        delete (globalThis as {strapi?: unknown}).strapi;
+    });
+
+    async function handlerFor(status: string) {
+        const findOne = vi.fn().mockResolvedValue({slug: 'published-slug'});
+        (globalThis as {strapi?: unknown}).strapi = {documents: () => ({findOne})};
+
+        const config = createAdminConfig({
+            env: makeEnv({CLIENT_URL: 'https://m10z.de', STRAPI_PREVIEW_SECRET: 'secret'}),
+        }) as any;
+        const url: string = await config.preview.config.handler('api::article.article', {
+            documentId: 'doc-1',
+            status,
+        });
+
+        return {findOne, url};
+    }
+
+    test('looks up the version being previewed, not always the draft row', async () => {
+        // Strapi defaults reads to draft, so the published preview used to link to
+        // the draft slug and 404 on the frontend after a slug change.
+        const published = await handlerFor('published');
+        expect(published.findOne).toHaveBeenCalledWith({documentId: 'doc-1', status: 'published'});
+        expect(published.url).toContain('/preview/artikel/published-slug?');
+        expect(published.url).toContain('status=published');
+    });
+
+    test('still previews the draft when that is what the editor picked', async () => {
+        const draft = await handlerFor('draft');
+        expect(draft.findOne).toHaveBeenCalledWith({documentId: 'doc-1', status: 'draft'});
+        expect(draft.url).toContain('status=draft');
     });
 });
