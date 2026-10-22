@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-10-22
+
+### Breaking
+- Node.js 24 or newer is required (previously 22). The workspaces, the CI workflows and `AGENTS.md` pin the same version. The HTTP API and the stored data are unchanged.
+
+### Changed
+- `form-data` and `node-fetch` are declared as direct dependencies instead of relying on transitive copies.
+- The manifest drops its exact `packageManager` pin; `engines.pnpm ^10` covers the toolchain instead.
+
 ## [1.4.5] - 2026-10-21
 
 ### Fixed
