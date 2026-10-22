@@ -1,7 +1,7 @@
 # -------------------------
 # 1) Build stage
 # -------------------------
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -25,7 +25,7 @@ RUN pnpm run generateAuthors && pnpm run generateAudioFeed && pnpm run coolify-b
 # -------------------------
 # 2) Production stage
 # -------------------------
-FROM node:22-alpine
+FROM node:24-alpine
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
