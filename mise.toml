@@ -1,3 +1,4 @@
 [tools]
 herdr = "latest"
 pi = "latest"
+node = "24"
