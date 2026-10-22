@@ -10,7 +10,7 @@ UI text is German; code and comments are English.
 - **Frontend**: Next.js 16, React 19, TypeScript 7, CSS Modules (`frontend/`)
 - **Backend**: Strapi 5 CMS, PostgreSQL (`backend/`)
 - **Legacy**: Docusaurus 3 — retired, **do not modify** (`legacy/`)
-- **Package manager**: pnpm 10. Node.js ^22. Each workspace is independent (no root pnpm-workspace).
+- **Package manager**: pnpm 10. Node.js ^24. Each workspace is independent (no root pnpm-workspace).
 
 ## Build, Run & Verify Commands
 
