@@ -11,3 +11,6 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - esbuild
+
+minimumReleaseAge: 1440
+blockExoticSubdeps: true
