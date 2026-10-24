@@ -1,13 +1,14 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import {getImageProps} from 'next/image';
 import {BookIcon, MusicNoteIcon} from '@phosphor-icons/react/dist/ssr';
 
 import {Tag} from '@/src/components/Tag';
 import {Card} from '@/src/components/Card';
 import {Pagination} from '@/src/components/Pagination';
 import {buildContentFeed} from '@/src/lib/contentFeed';
+import {type FeedItem} from '@/src/lib/contentFeed/mergeFeedItems';
 import {HOME_PAGE_TAG} from '@/src/lib/shared/contracts/strapi-contract/tags';
-import {mediaUrlToAbsolute} from '@/src/lib/strapi/media';
+import {mediaUrlToAbsolute, type StrapiMedia} from '@/src/lib/strapi/media';
 import {formatDateShort, formatDuration} from '@/src/lib/dateFormatters';
 import {calculateReadingTimeCompact} from '@/src/lib/readingTime';
 import {getErrorMessage} from '@/src/lib/errors';
@@ -16,6 +17,50 @@ import placeholderCover from '@/public/images/m10z.jpg';
 import {umamiEventId} from '@/src/lib/analytics/umami';
 
 const PAGE_SIZE = 10;
+
+const MEDIA_SIZES_DESKTOP = '(max-width: 1080px) 100vw, 280px';
+const MEDIA_SIZES_MOBILE = '100vw';
+
+/**
+ * Card image with art direction: below 1081px the slot is 16:9, so the banner
+ * is shown (cover as fallback); above it the slot is 1:1, so the purpose-built
+ * cover is shown (a 16:9 banner would lose ~44% of its width there). The
+ * `<source>` keeps it to one download per breakpoint, which `next/image` alone
+ * cannot do (two `<img>`s would fetch both).
+ */
+function CardMedia({item, eager}: {item: FeedItem; eager: boolean}) {
+    const cover = item.cover?.url ? item.cover : undefined;
+    const banner = item.banner?.url ? item.banner : undefined;
+    const desktopMedia = cover ?? banner;
+
+    const imageProps = (media: StrapiMedia | undefined, sizes: string) =>
+        getImageProps({
+            src: mediaUrlToAbsolute({media}) ?? placeholderCover,
+            width: media?.width ?? 400,
+            height: media?.height ?? 225,
+            sizes,
+            quality: 60,
+            alt: media?.alternativeText ?? item.title,
+            title: media?.caption ?? undefined,
+            className: styles.mediaImage,
+            placeholder: media?.blurhash ? 'blur' : media ? 'empty' : 'blur',
+            blurDataURL: media?.blurhash ?? undefined,
+            loading: eager ? 'eager' : 'lazy',
+            fetchPriority: eager ? 'high' : undefined,
+        }).props;
+
+    // Only art-direct when both images exist; otherwise the fallback already
+    // is the one the slot needs.
+    if (!cover || !banner) return <img {...imageProps(desktopMedia, MEDIA_SIZES_DESKTOP)} />;
+
+    const mobile = imageProps(banner, MEDIA_SIZES_MOBILE);
+    return (
+        <picture>
+            <source media="(max-width: 1080px)" srcSet={mobile.srcSet} sizes={MEDIA_SIZES_MOBILE} />
+            <img {...imageProps(cover, MEDIA_SIZES_DESKTOP)} />
+        </picture>
+    );
+}
 
 /**
  * Render the client-side homepage feed that displays a combined, paginated list of articles and podcasts.
@@ -115,24 +160,6 @@ export async function HomePage({page, maxPage = 50}: {page: number; maxPage?: nu
                 {currentItems.map((item, index) => {
                     const anchor = `${item.type}-${item.slug}`;
 
-                    // One image serves both breakpoints: the CSS crops it to the
-                    // square (desktop) or 16:9 (<=1080px) slot with object-fit.
-                    // The desktop slot is square, so prefer the purpose-built
-                    // cover; a 16:9 banner would lose ~44% of its width there.
-                    // The feed mapper emits `{}` (truthy) for missing media,
-                    // so fall back on the URL rather than the object.
-                    const cardMedia = item.cover?.url ? item.cover : item.banner;
-                    const cardImageUrl = mediaUrlToAbsolute({media: cardMedia});
-                    const cardBlurDataUrl = cardMedia?.blurhash ?? null;
-                    // Remote images need an explicit blurDataURL for 'blur'; the
-                    // static fallback import gets one generated at build time.
-                    const cardPlaceholder = cardBlurDataUrl ? 'blur' : cardImageUrl ? 'empty' : 'blur';
-                    const cardAlt = cardMedia?.alternativeText ?? item.title;
-                    const cardTitle = cardMedia?.caption ?? undefined;
-
-                    // Above-the-fold image of the first card loads with priority.
-                    const isFirstItem = index === 0;
-
                     return (
                         <Card key={anchor} id={anchor} className={styles.contentCard}>
                             <div className={styles.media}>
@@ -141,19 +168,8 @@ export async function HomePage({page, maxPage = 50}: {page: number; maxPage?: nu
                                     className={styles.mediaLink}
                                     aria-label={`${item.type === 'article' ? 'Artikel' : 'Podcast'} öffnen: ${item.title}`}
                                 >
-                                    <Image
-                                        src={cardImageUrl ?? placeholderCover}
-                                        width={cardMedia?.width ?? 400}
-                                        height={cardMedia?.height ?? 225}
-                                        sizes="(max-width: 1080px) 100vw, 280px"
-                                        quality={60}
-                                        placeholder={cardPlaceholder}
-                                        blurDataURL={cardBlurDataUrl ?? undefined}
-                                        alt={cardAlt || ''}
-                                        title={cardTitle}
-                                        className={styles.mediaImage}
-                                        priority={isFirstItem}
-                                    />
+                                    {/* Above-the-fold image of the first card loads eagerly. */}
+                                    <CardMedia item={item} eager={index === 0} />
                                 </Link>
                             </div>
                             <div className={styles.cardBody}>
