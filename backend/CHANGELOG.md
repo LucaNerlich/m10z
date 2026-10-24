@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.1] - 2026-10-24
+
+### Changed
+- pnpm hardening (`minimumReleaseAge`, `blockExoticSubdeps`) now lives in `pnpm-workspace.yaml`; the legacy `.npmrc` is gone.
+- Dependencies are updated (Strapi 5.59, dotenv 18.0.9).
+
 ## [2.0.0] - 2026-10-22
 
 ### Breaking
