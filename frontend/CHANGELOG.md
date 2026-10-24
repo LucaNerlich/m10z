@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.18.0] - 2026-10-24
+
+### Added
+- Homepage cards show the banner artwork on phones and tablets (up to 1080 px) and the square cover on desktop, so neither slot crops the other format.
+- Pages declare a pnpm 10 engine alongside Node and npm.
+
+### Changed
+- Node.js 24 or newer is required (previously 22); CI, mise and the workspace engines pin the same version.
+- Dependencies are updated (Next.js 16.4.2, React 19.3.1, undici 8.12.3).
+
 ## [1.17.4] - 2026-10-21
 
 ### Fixed
