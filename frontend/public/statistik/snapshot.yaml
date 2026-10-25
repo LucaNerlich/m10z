@@ -1,7 +1,7 @@
 # M10Z Statistik-Snapshot — generiert von `pnpm run snapshot:statistik` (siehe .github/agents/statistik.agent.md).
 # Nicht von Hand bearbeiten.
 version: 1
-generatedAt: 2026-10-18T23:51:37.876Z
+generatedAt: 2026-10-25T23:43:02.713Z
 authors:
   - slug: adrian
     name: Adrian
@@ -427,14 +427,6 @@ articles:
     categories:
       - kolumne
     wordCount: 886
-  - slug: virtuelle-verse
-    title: Virtuelle Verse
-    date: 2025-12-18T23:00:00.000Z
-    authors:
-      - til
-    categories:
-      - virtuelle-verse
-    wordCount: 3438
   - slug: cms-walkthrough
     title: CMS-Walkthrough
     date: 2025-12-25T23:00:00.000Z
@@ -709,6 +701,30 @@ articles:
     categories:
       - kolumne
     wordCount: 2179
+  - slug: virtuelle-verse
+    title: Virtuelle Verse
+    date: 2026-10-23T22:00:00.000Z
+    authors:
+      - til
+    categories:
+      - virtuelle-verse
+    wordCount: 3499
+  - slug: gaming-stories-die-kunst-der-cracker
+    title: Die Kunst der Cracker
+    date: 2026-10-24T10:15:00.000Z
+    authors:
+      - faehrmann
+    categories:
+      - gaming-stories
+    wordCount: 1235
+  - slug: gaming-stories-spezial-cracking-trivia
+    title: "Cracking-Trivia: Von Kopierschutz-Battles und Demo-Kunst"
+    date: 2026-10-24T10:30:00.000Z
+    authors:
+      - faehrmann
+    categories:
+      - gaming-stories
+    wordCount: 5377
 podcasts:
   - slug: m10z-1
     title: Mindestens 10 Zeichen 1
@@ -2228,3 +2244,31 @@ podcasts:
     categories:
       - erfahrungssache
     duration: 3858
+  - slug: pp-25
+    title: M10Z Pixelplausch 25
+    date: 2026-10-20T17:00:00.000Z
+    authors:
+      - georg
+      - jan
+      - m10zfreundin
+      - tom
+    categories:
+      - pixelplausch
+    duration: 3274
+  - slug: gaming-stories-die-kunst-der-cracker
+    title: Gaming Stories • Die Kunst der Cracker
+    date: 2026-10-24T10:00:00.000Z
+    authors:
+      - faehrmann
+    categories:
+      - gaming-stories
+    duration: 589
+  - slug: pile-of-joy-018
+    title: "Pile of Joy #018 Genre Shuffle | 2D-Plattformer – Almost There: The Plattformer, Castlevania: Belmont's Curse und allgemeiner Plattformer Talk."
+    date: 2026-10-25T12:45:00.000Z
+    authors:
+      - sz
+      - thiberion
+    categories:
+      - pile-of-joy
+    duration: 7607
