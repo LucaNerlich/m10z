@@ -1,7 +1,7 @@
 {
     "version": 2,
     "baseUrl": "https://cms.m10z.de",
-    "generatedAt": "2026-10-20T06:22:42.881Z",
+    "generatedAt": "2026-10-26T08:46:25.415Z",
     "entries": {
         "uploads/01_5ec66cf3a6.png": {
             "alt": "Screenshot eines Retro-Ego-Shooters mit HUD-Anzeige, Munition, Gesundheit und Gegnern im Korridor.",
@@ -981,6 +981,9 @@
             "caption": "Das Fundbüro widmet sich dem Retro-Klassiker The Operative: No One Lives Forever.",
             "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABQUlEQVR4nAE2Acn+ABQJAwAAAAAAAHskAf9FAIdOK2NdUoJiNb9YGepFBgAeGBEAAAAEAgHNSgPZTgpbVUBkYkSCUz5MPzlINh8AfEUaHRcPLAoA/VIBklYhZGdOkHNEh2Rjm1plPlFjAFAuEwYKCYAlAN1OCWNSNoRuPKt/ZH9pgYlkaF12fgAAAAADAQHNSgLVXQ1zXDB7ekJwdlBaXFtJWGFFZWwAJRwCTS8T720W+XMY6FQPw08dimAucXFKWl9SYGdpAFdKBdWYCvSbCe2hC/GWCPVHAes7AsxcG5NpN1lYPQBNSRHXlAT2qgPvrgTwoAXxcgjxVwbzQADvTALKVRQAnHIc5nwA8H8D8IcF8pMG8X4H8l8H7EsD71EF+V4EAIU1D/pQAOhHAe5RBPBdB/BeB+9cBu5XBfFkCO9iCNPMak3xTfFjAAAAAElFTkSuQmCC"
         },
+        "uploads/Thumbnail18_komplett_350cec86f9.png": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAC4jAAAuIwF4pT92AAABQUlEQVQYlQE2Acn+AFZLFVVPOl1VOl5WPEdAJlRNM05ILllRNU5HMlBEDABeWCJbXUdcXkFfYUZGSS1YWz9UUzdPVDlOVEBTTRQAaKqLKZqqBKO4DaK0D6e5CqC2G4SGMKClHoufPZ+EAEOpkiR8jA2XuQCkywChxwCfxwV8nxamxxebrzOdjQAlkZAmepUjeI0Ag6QFgZ8LfpoAiq0jk6IPf54uoJUAK7iqAJKsBZOjLqy6FqC2HYSSALjUNZGVJIiLMKCRACqcjwCUsgKUqguGnAR+lw9pcSGZiSqiiB2LizKbigAunYwAkKs6j52SoqqLo6uRqK2nsrGEn54BjqUxr5sALLimALPMS624xcLHvsbMxMbLt7/HmLO7ALDLK7mpAFC5gyq1nzCylzKtk0Osj06niTOvkzOvkii2oVO8hHkJhFnUGZwFAAAAAElFTkSuQmCC"
+        },
         "uploads/Titelbild_M10_Z_Marcel_Spezial_Banner_973e28e179.png": {
             "alt": "Illustration eines Mannes mit Kopfhörern vor einem Bildschirm, auf seinem Shirt steht M10Z, dahinter rotes Gekritzel",
             "caption": "Das Special-Banner zeigt Marcel als gezeichneten Charakter im typischen M10Z-Look.",
@@ -1691,6 +1694,18 @@
             "caption": "Cover zur Podcast-Folge von Gaming Stories mit Buchmotiv und Game-Over-Grafik im Retro-Look.",
             "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVR4nAE2Acn+AJ5nNlo1GzMfEh8TDhgQDRkQDB4RCzYhEoBNJ79+QwCieEhtPSF+RitnMB1lKRdlJxNNIA9pPiC5dj3jpWEAyI1AazsgfkstfkomgkchezsaVCYStHg08KdM8q5UANqWO2o5HX9NKYRWKIZTJHhCHFMoEtOTO/+6TPesRQCfaixoNBpyOhxrNxZvNhVkLRBPIxDEhTrmnUW7fTYAOB8PXCgTYioUaTAabC8ZZCcPRBgKhVQtilQqSysUACYWClUgDmQqE3AyGngxGVUnHj0uOXlFMVlCOygiJgAjFh5EGQ5UIxJJGg1KFAc0Hxt6NzC5SiKgQi0xIygALhcmHxAaHAoQFgsTEgoRGhghOCk9Uz9KJipQKSMtACsSHhwJERwMFBULEhILEhQPGx8bJy8iISkkKCgdG6dDTB9phEZwAAAAAElFTkSuQmCC"
         },
+        "uploads/gaming_stories_011_banner_article_6ac8ddf45f.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABP0lEQVQYlWMo91SPMJJxUBbWFuNVFuQR5uUR5OUT4eOXFuRXFeVnyLVUTtaRztEXT9YUjtcUkedlF+fhluDhUxXhNpPjZih3Va91VapylC+3koxWFdDXNrHQNrLUllBUNXY0cWBoCNdtidSsD1Cu81YIUxeyNHdNr6zvWLTaztrNxzaAoS5AtcZbscZDrsxRKkRN0NrUau7U7g2btk7srOxuK2OI0xZM1BJIUOWJUuH2leO1UZdP8LXIDjRP8zEr8DNjiNcRKbVWLrZQyNQV9ZTg8dMQijQUjdAXybKSqHVTZEjUFs7Xl8jVlUhRE3IS4nZXEcm0kU21kilwkMu1k2UIVhEKlOX1leTxlOBzFOGt9FLbU2k3M94o0kwhykyBwV9HIs1WIc9ROddeMddeoTlQuyVIJ9lawVpJxFZFFAAWc0d+EyKUIAAAAABJRU5ErkJggg=="
+        },
+        "uploads/gaming_stories_011_banner_podcast_a6e92ea223.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABP0lEQVQYlWMo91SPNJaxlBfUEOFRFuQR4eUR5OUT4eOXFuRXFeVnyLVUTtGVTtUUT1QXjtcUluHhEuPhkeDhUxbhMZPjZih3U6txU6qxl6uwlIxUFfQxEHPRVbXTEVZT1XU2tWVoitBuidSsD1Cp91YIVRfOsBctqi5uX7zazdbW2zaQoT5QucZbsdZDrsxBKlRNINJKesG09g0bt03uLO9tK2GI0xZM1BJIUOWJUuH2leN11RRN9DXPCrRI8zEr8TdkiNcRKbVWLrZQyNQV9ZLg8VUXiTAUjdAXybKSrHFTYkjUFs7Xl8jVlUhRE3IS4nZXEcm0kU21ksl3kMu1k2UIVhEKlOX1leTxlOBzFOGt9FLbU2k3M94o0kwhykyBwV9HIs1WIc9ROddeMddeoTlQuyVIJ9lawVpJxFZFFAABfEdw8SOCEgAAAABJRU5ErkJggg=="
+        },
+        "uploads/gaming_stories_011_cover_article_744ed07a01.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVQYlQE2Acn+AJ5mN1o1GzMfEh4TDR4SDhwRDR0RCzUhEn9NKL5+QwCmeURuPSB+RitnLx1oLRdkKRNNHw9tPxy9dzjnpl0AiYOAZDknf0srfkkmgUgiejwZUSUWeW9xqpuVr6KbAHGFpmA3KIFNJoNWKYVTJXlCGk0mGXGDopClyIWZvABlYGdiMyByOhprNxZvNhVkLQ9JIROJeXOikIh6cnYAPCALXCgSYioUaC8abjAZZSkSTBwNnGAtnl0pUSwQACUWC1QgDmQqE3EyGnIwGlkaBzcRCm5CIF03Gy4bDgAiFh1EGA1UIxNJGAk9GxlYVVEuKzgxKEAyIj03KzMALhYlIBAaHgwRDgILRj86q7rAgXpyeXFpbWRiYUxNACoSHhsIER0MFBAHDzAmJWBNQFNEOk48K083Kz4kIcf/URmz6ApFAAAAAElFTkSuQmCC"
+        },
+        "uploads/gaming_stories_011_cover_podcast_2e5ed07a49.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVQYlQE2Acn+AJ5mNlo1GzMfEh4TDRgQDRkQDB0RCzYhEoBNJ79+QwCieEhtPSF+RitnMB1lKRdkJxNNIA9pPiC4dj3jpWEAx41AajsgfkstfkkmgkchezsaVCYStHg08KdL8q5UANqWO2o4HX9MKYRXKIZTJHhCHFMoEtSTO/+6TPesRQCfaitoNBpyOhxrNxZvNhRkLRBOIg/Agjrkm0S6fTUANx8PXCgTYioUaC8abjAZZSkSTBwNmF8xmVwuSywWACYWClQgDmQqE3EyGnIwGlkaBzcRCm9CH183Gi8bDQAiFh1EGA1UIxNJGAk9GxlYVVEuKzgxKEAyIj03KzMALhYlIBAaHgwRDgILRj86q7rAgXpyeXFpbWRiYUxNACoSHhsIER0MFBAHDzAmJWBNQFNEOk48K083Kz4kIRL5UXtrT0QkAAAAAElFTkSuQmCC"
+        },
         "uploads/gaming_stories_banner_0974e68291.jpg": {
             "alt": "Gaming-Stories-Buch mit Gamepad-Relief auf Holztisch, daneben Schriftzug und Tastaturkappen",
             "caption": "Kurze Geschichten aus der Welt der Videospiele – das ist Gaming Stories auf m10z.",
@@ -1700,6 +1715,12 @@
             "alt": "Gaming Stories",
             "caption": "Gaming Stories",
             "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVR4nAE2Acn+AIM5CIo9DKNNE6ZSGK9YGrJiIMZ0K9B0JbdWGJ9RHACFOwyFOQmaTx6LSiJ4MRJxKQxrJQlwMRC/bijXeiwAhzwMhzwLhUEbgkojgUUagkMVejYORBcGpGIn34IxAJJIFY1CEYQ9GIVRIIpaIYxZHIFFE0YbCKlmKuiOOgCVSReRRRODOhN0OhFxNwx0Nw1qLApBFgatbTH2oUcAnE4ak0USfjQOXyIIbCoPbCgPYh8IPA8DsGwu/7xYAKNSHZxMFncuDV8gB3gwE3gyF2giCjQMAnVOMJhyTQBRNS48JCZYIRFZIAlOFQVIDwJGEQUzDQMDCiMBCTAAHhgjDhAiGg4WEgsVEAwZDQsbDAoaCwkZBgsgCg0kAB0WHBMKEhINFQ0LFQoLGAsMGgoQHwcNHwgIFgkLGKV+SLwyoxXDAAAAAElFTkSuQmCC"
+        },
+        "uploads/gaming_stories_special_001_banner_article_a1e2fe42bb.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVQYlQE2Acn+ADgqI31xaj4tJT8xLEc7NQ8NDDo8O19fXh8fH5WVlQBvOiJeJhJrLhReJQ5ZJA8nHhoUFRZycXeCgoOTlJMAc0Une0UjeEIfdjwbUiAKV1toTkxZVlJDUFdqREFWAH9XLIJYKH5QI39MH1IlEEVJXG9/hIefpz48R04+TAB8TyR8TCF+Sh9zPxlSJhJEQkykmYy2srGWjHqVjn0AXCsSXSoPXCUMWCULSRsKPzo+SEI5Ukc5TEZBKiosAGAvGHI7InA4IGUtFUYWCCYfHk5QUicrLVBXWAcKCwBfKxNsMBhqLhhhKRNCFAoSCwxHSkl7Y0yicFuleWMAVioYTRwMRxcJPRAGSRsSDgcGJigospuBhWBIqop1AE1IRw4JCBYRETcxMAcCAE9PThcXF05RUxQYGSouL1JdT//Vs38MAAAAAElFTkSuQmCC"
+        },
+        "uploads/gaming_stories_special_001_cover_article_7f3e1ace98.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVQYlQE2Acn+AEE4NFBFP0dBPYJ8eWJaVk9JRiIeHRwcHCwtLTExMQAvMDBmOyJ8RCdiLRthKBFbIgxHHQxKSEdKSUdqaWcAVmZ8WTIigE0se0klf0oieD4aSyQVcoGXgpStdoegAFx3nF85Kn9NJYJYKYNTJHdCGU8sHmV9om+Nt22KsgBqeY5ZLhxxOxpnNhVrNhRlMRJEHxFZZnp1hZxdbYMAeXh3XjEdXSgQZTAaZi0WWB4HMw8DQD88YmBfJCIhAC8xMVAhDmIrE24wFl00Kl5WTTMrOCkkQCYYNDMpMgApJTA/GAxUJxNAEwRgST2gsrxybmlwbGZiWltVRUgAMyMvIxgiIBIYFQ0XNSwrgHBcuZZ5q4Zvto91cFRGAC4eJiQVHSIWHh0WHg0KFysmLIBhTXNPQoNjTFBCNWTmVOPKGgjJAAAAAElFTkSuQmCC"
         },
         "uploads/geheime_perlen_91dbba0e07.jpg": {
             "alt": "Illustration mit Schriftzug Des Game Passes geheime Perlen, Gamepad an Angelrute und Muschel",
