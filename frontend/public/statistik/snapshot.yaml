@@ -1,7 +1,7 @@
 # M10Z Statistik-Snapshot — generiert von `pnpm run snapshot:statistik` (siehe .github/agents/statistik.agent.md).
 # Nicht von Hand bearbeiten.
 version: 1
-generatedAt: 2026-10-25T23:43:02.713Z
+generatedAt: 2026-11-02T01:10:58.732Z
 authors:
   - slug: adrian
     name: Adrian
@@ -700,7 +700,7 @@ articles:
       - faehrmann
     categories:
       - kolumne
-    wordCount: 2179
+    wordCount: 2177
   - slug: virtuelle-verse
     title: Virtuelle Verse
     date: 2026-10-23T22:00:00.000Z
@@ -2264,7 +2264,7 @@ podcasts:
       - gaming-stories
     duration: 589
   - slug: pile-of-joy-018
-    title: "Pile of Joy #018 Genre Shuffle | 2D-Plattformer – Almost There: The Plattformer, Castlevania: Belmont's Curse und allgemeiner Plattformer Talk."
+    title: "Pile of Joy #018 Genre Shuffle | 2D-Plattformer – Almost There: The Plattformer, Castlevania: Belmont’s Curse und allgemeiner Plattformer-Talk"
     date: 2026-10-25T12:45:00.000Z
     authors:
       - sz
