@@ -1,7 +1,7 @@
 # M10Z Statistik-Snapshot — generiert von `pnpm run snapshot:statistik` (siehe .github/agents/statistik.agent.md).
 # Nicht von Hand bearbeiten.
 version: 1
-generatedAt: 2026-11-02T01:10:58.732Z
+generatedAt: 2026-11-09T01:21:48.030Z
 authors:
   - slug: adrian
     name: Adrian
@@ -2171,7 +2171,7 @@ podcasts:
       - das-gesprochene-wort
     duration: 950
   - slug: pile-of-joy-015
-    title: "Pile of Joy #015 | Gamescom-2026-Spezial!"
+    title: "Pile of Joy #015 Spezial | Gamescom 2026"
     date: 2026-09-13T22:00:00.000Z
     authors:
       - sz
@@ -2272,3 +2272,12 @@ podcasts:
     categories:
       - pile-of-joy
     duration: 7607
+  - slug: pile-of-joy-019
+    title: "Pile of Joy #019 Spezial | Games that shaped us"
+    date: 2026-11-08T13:00:00.000Z
+    authors:
+      - sz
+      - thiberion
+    categories:
+      - pile-of-joy
+    duration: 7807
