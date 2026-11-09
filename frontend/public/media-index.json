@@ -1,7 +1,7 @@
 {
     "version": 2,
     "baseUrl": "https://cms.m10z.de",
-    "generatedAt": "2026-11-02T10:52:58.737Z",
+    "generatedAt": "2026-11-09T11:17:22.908Z",
     "entries": {
         "uploads/01_5ec66cf3a6.png": {
             "alt": "Screenshot eines Retro-Ego-Shooters mit HUD-Anzeige, Munition, Gesundheit und Gegnern im Korridor.",
@@ -983,6 +983,9 @@
         },
         "uploads/Thumbnail18_komplett_350cec86f9.png": {
             "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAC4jAAAuIwF4pT92AAABQUlEQVQYlQE2Acn+AFZLFVVPOl1VOl5WPEdAJlRNM05ILllRNU5HMlBEDABeWCJbXUdcXkFfYUZGSS1YWz9UUzdPVDlOVEBTTRQAaKqLKZqqBKO4DaK0D6e5CqC2G4SGMKClHoufPZ+EAEOpkiR8jA2XuQCkywChxwCfxwV8nxamxxebrzOdjQAlkZAmepUjeI0Ag6QFgZ8LfpoAiq0jk6IPf54uoJUAK7iqAJKsBZOjLqy6FqC2HYSSALjUNZGVJIiLMKCRACqcjwCUsgKUqguGnAR+lw9pcSGZiSqiiB2LizKbigAunYwAkKs6j52SoqqLo6uRqK2nsrGEn54BjqUxr5sALLimALPMS624xcLHvsbMxMbLt7/HmLO7ALDLK7mpAFC5gyq1nzCylzKtk0Osj06niTOvkzOvkii2oVO8hHkJhFnUGZwFAAAAAElFTkSuQmCC"
+        },
+        "uploads/Thumbnail_BONUS_9_5c5a2ddbd0.png": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAC4jAAAuIwF4pT92AAABQUlEQVQYlQE2Acn+AExBCT46IUpEJk9JLE1HKkM9IE9KLFNNLj45IU9DBABLQRRDQTNVUUBWUkFRTTxCPy5OSjlYVEFMS0BPRA4Avq9eqJNG39uy29mx3Nqw3tyz2tiv6OO5jI6DjZBmAG99LrW0nPj89+/47vD37+727e/47/f884SKoXRyYAD17sn4+fnu8efp8OHr8eTr8eXq8OHs8OT8/P/68cgAsqSLu6y18fXp7fTn3uHT19nM7vXo6uzf06lw2Kk5ALKsldPM0+Hh1/D47N7fxdrbv+726+vu4Nawk9mnVgD89tb+///r7uHq8eDr8eTr8uXq8ODs8OL8/P/68ssA5t/C8fL87PPu7Pbw6/Tu6vPt7PXw7vXvta24o5FvAM65ZtPGkO/prufio+jipOjipObho/DqrsW2hrScS6us0up3pFNfAAAAAElFTkSuQmCC"
         },
         "uploads/Titelbild_M10_Z_Marcel_Spezial_Banner_973e28e179.png": {
             "alt": "Illustration eines Mannes mit Kopfhörern vor einem Bildschirm, auf seinem Shirt steht M10Z, dahinter rotes Gekritzel",
