@@ -1,9 +1,10 @@
 'use client';
 
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useReducer, useRef, useState} from 'react';
 import Script from 'next/script';
 
 import {type PodloveEpisodeConfig, type PodlovePlayerConfig, type PodlovePlayerStore} from '@/src/lib/podlove/types';
+import {initialPlayerPhase, playerReducer} from './playerState';
 import styles from './Player.module.css';
 
 declare global {
@@ -25,6 +26,10 @@ type PlayerProps = {
     config: PodlovePlayerConfig;
 };
 
+function hasPodlovePlayer(): boolean {
+    return typeof window !== 'undefined' && typeof window.podlovePlayer === 'function';
+}
+
 /**
  * Renders the Podlove Web Player for a podcast episode.
  *
@@ -37,58 +42,68 @@ type PlayerProps = {
  */
 export function PodcastPlayer({episode, config}: PlayerProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const [scriptReady, setScriptReady] = useState(
-        () => typeof window !== 'undefined' && typeof window.podlovePlayer === 'function',
-    );
-    // The player can only mount client-side (it's a sandboxed iframe/Vue app). We keep it hidden
-    // until its bootstrap promise resolves, then fade it in — so the internal boot flicker happens
+    // The player can only mount client-side (it's a sandboxed iframe/Vue app). It stays hidden
+    // until its bootstrap promise resolves, then fades in — so the internal boot flicker happens
     // behind a stable, correctly-sized placeholder instead of popping into view.
-    const [playerReady, setPlayerReady] = useState(false);
-    // Set when the CDN script fails to load or the player bootstrap errors, so we can fall back to a
-    // native audio element instead of leaving the hidden (opacity 0) shell forever.
-    const [failed, setFailed] = useState(false);
+    const [phase, dispatch] = useReducer(playerReducer, undefined, () =>
+        initialPlayerPhase(hasPodlovePlayer()),
+    );
+
+    // Client-side navigation reuses this component. Reset before rendering the
+    // new episode so the old embed is replaced instead of reused.
+    const [prevInputs, setPrevInputs] = useState({episode, config});
+    if (episode !== prevInputs.episode || config !== prevInputs.config) {
+        setPrevInputs({episode, config});
+        dispatch({type: 'reset', hasEmbed: hasPodlovePlayer()});
+    }
 
     useEffect(() => {
+        if (phase !== 'booting' || !episode) return;
         const container = containerRef.current;
-        if (!container || !scriptReady || !episode || typeof window.podlovePlayer !== 'function') {
+        if (!container) return;
+        if (typeof window.podlovePlayer !== 'function') {
+            dispatch({type: 'player-failed'});
             return;
         }
 
-        // Reset the container before (re)mounting to avoid duplicate players across client-side
-        // navigation between episodes.
+        // Clear any previous embed before mounting the current episode.
         container.replaceChildren();
-        setPlayerReady(false);
-        setFailed(false);
-
         let cancelled = false;
+        const fail = (error: unknown) => {
+            if (cancelled) return;
+            console.error('Failed to initialize Podlove player:', error);
+            dispatch({type: 'player-failed'});
+        };
+
         try {
             window.podlovePlayer(container, episode, config)
                 .then(() => {
-                    if (!cancelled) setPlayerReady(true);
+                    if (!cancelled) dispatch({type: 'player-ready'});
                 })
-                .catch((error: unknown) => {
-                    if (!cancelled) {
-                        console.error('Failed to initialize Podlove player:', error);
-                        setFailed(true);
-                    }
-                });
+                .catch(fail);
         } catch (error) {
-            console.error('Failed to initialize Podlove player:', error);
-            setFailed(true);
+            fail(error);
         }
 
         return () => {
             cancelled = true;
-            container.replaceChildren();
         };
-    }, [scriptReady, episode, config]);
+    }, [phase, episode, config]);
+
+    // Drop the embed when the episode changes or the component unmounts so a
+    // playing episode cannot continue from a detached container.
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+        return () => container.replaceChildren();
+    }, [episode]);
 
     if (!episode) return null;
 
     const audioSrc = episode.audio[0]?.url;
 
     // Fallback: if the player can't load, still offer playback + download via the (tracked) audio URL.
-    if (failed) {
+    if (phase === 'fallback') {
         return (
             <div className={styles.player}>
                 {audioSrc ? (
@@ -111,18 +126,28 @@ export function PodcastPlayer({episode, config}: PlayerProps) {
 
     return (
         <div className={styles.player}>
+            {phase !== 'ready' ? (
+                <p className="visually-hidden" role="status">
+                    Player wird geladen …
+                </p>
+            ) : null}
             {/* Warm up the CDN connection early so embed.js + chunks load with less delay. */}
             <link rel="preconnect" href="https://cdn.podlove.org" crossOrigin="anonymous" />
             <div className="podlove-container">
                 <Script
                     src={EMBED_SRC}
                     strategy="afterInteractive"
-                    onReady={() => setScriptReady(true)}
-                    onError={() => setFailed(true)}
+                    onReady={() =>
+                        dispatch({
+                            type: typeof window.podlovePlayer === 'function' ? 'embed-loaded' : 'embed-missing',
+                        })
+                    }
+                    onError={() => dispatch({type: 'player-failed'})}
                 />
                 <div
                     ref={containerRef}
-                    className={`${styles.mount}${playerReady ? ` ${styles.mountReady}` : ''}`}
+                    className={`${styles.mount}${phase === 'ready' ? ` ${styles.mountReady}` : ''}`}
+                    aria-busy={phase !== 'ready'}
                 />
             </div>
         </div>

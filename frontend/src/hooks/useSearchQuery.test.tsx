@@ -4,6 +4,7 @@ import {createRoot, type Root} from 'react-dom/client';
 import {SWRConfig} from 'swr';
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
+import {deriveSearchStatus} from '@/src/lib/search/searchStatus';
 import {type SearchResult} from '@/src/lib/search/types';
 
 const SEARCH_RESULT: SearchResult = {
@@ -52,6 +53,73 @@ afterEach(async () => {
         root.unmount();
     });
     container.remove();
+});
+
+describe('deriveSearchStatus', () => {
+    const base = {
+        query: '',
+        effectiveQuery: '',
+        isLoading: false,
+        error: undefined,
+        resultCount: 0,
+    };
+
+    test('empty input is idle', () => {
+        expect(deriveSearchStatus(base)).toBe('idle');
+    });
+
+    test('one character is too short to fetch', () => {
+        expect(deriveSearchStatus({...base, query: 'a'})).toBe('too-short');
+    });
+
+    test('the debounce window is pending, not empty', () => {
+        expect(deriveSearchStatus({...base, query: 'ab'})).toBe('pending');
+    });
+
+    test('a stale error from the previous query does not win during debounce', () => {
+        expect(
+            deriveSearchStatus({...base, query: 'ab', error: new Error('old request failed')}),
+        ).toBe('pending');
+    });
+
+    test('an in-flight request is pending', () => {
+        expect(
+            deriveSearchStatus({...base, query: 'ab', effectiveQuery: 'ab', isLoading: true}),
+        ).toBe('pending');
+    });
+
+    test('a settled fetch with an error is error', () => {
+        expect(
+            deriveSearchStatus({
+                ...base,
+                query: 'ab',
+                effectiveQuery: 'ab',
+                error: new Error('request failed'),
+            }),
+        ).toBe('error');
+    });
+
+    test('a settled fetch with no matches is empty', () => {
+        expect(deriveSearchStatus({...base, query: 'ab', effectiveQuery: 'ab'})).toBe('empty');
+    });
+
+    test('a settled fetch with matches is ready', () => {
+        expect(
+            deriveSearchStatus({...base, query: 'ab', effectiveQuery: 'ab', resultCount: 2}),
+        ).toBe('ready');
+    });
+
+    test('the capped query matches the effective query', () => {
+        const query = 'a'.repeat(250);
+        expect(
+            deriveSearchStatus({
+                ...base,
+                query,
+                effectiveQuery: 'a'.repeat(200),
+                resultCount: 1,
+            }),
+        ).toBe('ready');
+    });
 });
 
 describe('useSearchQuery minimum length', () => {

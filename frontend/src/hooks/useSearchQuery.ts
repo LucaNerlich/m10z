@@ -1,23 +1,13 @@
 import {useEffect, useState} from 'react';
 import useSWR from 'swr';
+import {
+    normalizeSearchQuery,
+    SEARCH_MIN_QUERY_LENGTH,
+} from '@/src/lib/search/searchStatus';
 import {type SearchResult} from '@/src/lib/search/types';
 import {fetcher} from '@/src/lib/swr/config';
 
 const SEARCH_INDEX_URL = '/api/search-index';
-
-/**
- * Minimum number of characters before a query is sent. Shared with the UI so the
- * status message and the fetch boundary cannot disagree (a one-character query
- * used to report "no results" for a request that was never made).
- */
-export const SEARCH_MIN_QUERY_LENGTH = 2;
-
-/**
- * Maximum query length accepted by `/api/search-index`. Shared with the input
- * so a long paste is capped client-side instead of returning a generic error
- * from the route's 400.
- */
-export const SEARCH_MAX_QUERY_LENGTH = 200;
 
 type SearchQueryResponse = {
     results: SearchResult[];
@@ -47,7 +37,7 @@ export function useSearchQuery(query: string, debounceMs: number = 150) {
     const [debouncedQuery, setDebouncedQuery] = useState<string>('');
 
     useEffect(() => {
-        const trimmed = query.trim().slice(0, SEARCH_MAX_QUERY_LENGTH);
+        const trimmed = normalizeSearchQuery(query);
         const timeoutId = setTimeout(() => {
             setDebouncedQuery(trimmed);
         }, debounceMs);
