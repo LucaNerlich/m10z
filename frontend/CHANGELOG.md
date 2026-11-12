@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.18.1] - 2026-11-12
+
+### Added
+- October 2026 M12G games, with the September 2026 list finalized and ranked.
+
+### Fixed
+- The search dialog keeps showing "Suchen ..." while a new query is debouncing instead of surfacing an error from the previous query.
+- The podcast player falls back to native audio if the CDN script loads without the player global, instead of leaving an invisible player area.
+
 ## [1.18.0] - 2026-10-24
 
 ### Added
