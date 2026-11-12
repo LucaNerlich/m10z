@@ -5,7 +5,12 @@ import {useRouter} from 'next/navigation';
 import Image from 'next/image';
 import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/react/dist/ssr';
 
-import {SEARCH_MAX_QUERY_LENGTH, SEARCH_MIN_QUERY_LENGTH, useSearchQuery} from '@/src/hooks/useSearchQuery';
+import {useSearchQuery} from '@/src/hooks/useSearchQuery';
+import {
+    deriveSearchStatus,
+    SEARCH_MAX_QUERY_LENGTH,
+    type SearchStatus,
+} from '@/src/lib/search/searchStatus';
 import {isImageHostnameAllowed, normalizeSearchImageUrl} from '@/src/lib/image';
 import {lockBodyScroll} from '@/src/lib/bodyScrollLock';
 import {type SearchRecord, type SearchResult} from '@/src/lib/search/types';
@@ -32,6 +37,15 @@ const TYPE_ICON: Record<SearchRecord['type'], typeof BookIcon> = {
     author: UserIcon,
     category: BookIcon,
     page: FileTextIcon,
+};
+
+const SEARCH_STATUS_MESSAGE: Record<SearchStatus, string | null> = {
+    idle: 'Tippe, um die Suche zu starten.',
+    'too-short': 'Tippe weiter, um zu suchen.',
+    pending: 'Suchen ...',
+    error: 'Suche konnte nicht geladen werden.',
+    empty: 'Keine Treffer gefunden.',
+    ready: null,
 };
 
 /**
@@ -167,17 +181,16 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
         shouldScrollRef.current = false;
     }, [results.length]);
 
-    const trimmedQuery = query.trim().slice(0, SEARCH_MAX_QUERY_LENGTH);
-    const statusMessage = (() => {
-        if (searchError) return 'Suche konnte nicht geladen werden.';
-        if (trimmedQuery.length === 0) return 'Tippe, um die Suche zu starten.';
-        if (trimmedQuery.length < SEARCH_MIN_QUERY_LENGTH) return 'Tippe weiter, um zu suchen.';
-        // The fetch boundary is the debounced query: while it lags the typed query no
-        // request exists yet, so this window must not read as "no results".
-        if (effectiveQuery !== trimmedQuery || isLoading) return 'Suchen ...';
-        if (results.length === 0) return 'Keine Treffer gefunden.';
-        return null;
-    })();
+    const statusMessage =
+        SEARCH_STATUS_MESSAGE[
+            deriveSearchStatus({
+                query,
+                effectiveQuery,
+                isLoading,
+                error: searchError,
+                resultCount: results.length,
+            })
+        ];
 
     const selectResult = (item: SearchResult) => {
         router.push(item.href);

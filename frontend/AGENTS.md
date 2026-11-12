@@ -80,6 +80,7 @@ No relative `../` cross-directory imports in components — only `./` for siblin
 - **React Compiler** is enabled (`reactCompiler: true`) — manual memoization is allowed but usually unnecessary.
 - **CSS Modules** (`.module.css`) for styling; CSS custom properties (OKLCH) for theming. No Tailwind.
 - **SWR** for client-side data fetching with a global provider.
+- **State machines**: async/event-driven client flows are discriminated unions with pure transitions, not parallel booleans. See [`STATE.md`](STATE.md) for the pattern and the current inventory.
 - **`<Image>`** — always use `next/image` for images.
 - **Markdown**: `react-markdown` + rehype/remark plugins with custom components.
 - **Named exports** for components; **default exports** for pages only.
