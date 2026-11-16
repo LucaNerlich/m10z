@@ -1,7 +1,7 @@
 {
     "version": 2,
     "baseUrl": "https://cms.m10z.de",
-    "generatedAt": "2026-11-09T11:17:22.908Z",
+    "generatedAt": "2026-11-16T10:56:57.583Z",
     "entries": {
         "uploads/01_5ec66cf3a6.png": {
             "alt": "Screenshot eines Retro-Ego-Shooters mit HUD-Anzeige, Munition, Gesundheit und Gegnern im Korridor.",
@@ -825,6 +825,9 @@
             "alt": "Person mit Kopfhörern sitzt vor Fantasielandschaft, Schriftzug M10Z und Ginas Gedankensuppe.",
             "caption": "Titelbild der Kolumne Ginas Gedankensuppe auf m10z.",
             "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVR4nAE2Acn+AOBLVPqjjfv61P372vr31/352fXlwsWgimtiam6XogD9za389M39/9z39NLf1sTm58T94oTTmmRkVEQ9TFMA+vba/frd+vHTuqePZomOfI+J+N1+1JhtX1BBNjQyAOrW0/fl2frj1qKUj1BWZJ2YgPzRfsWIbV9KTEZCPADMw8ne19vr4tberoukZFStoXznrFuWZVeBbEx1bkgAxcHJ2djd7t62yoBhjV5XamhvsaGJrZZ7wa6FkYh3APnLsP3axf///v39/v39/v7//9zf4Y2Oi5iYm4OGiQDZt6vXqZi7mJuymJWcjI+qnJ2elZx6dX2cjIymlpEA9s+Lz5hyYiUoMwkSEgAIZjsxqmBHfUZAqWRUiVRPAMKbbtXAjriJeUMLIDIPIzgYJ4FiT2hYSzc/Pzs3Pjfotx/1pGEjAAAAAElFTkSuQmCC"
+        },
+        "uploads/Joh_Und_Marl_1dea998b1f.png": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAACXBIWXMAAC4jAAAuIwF4pT92AAABl0lEQVQYlR3K3UtTYQDA4Rf7C7wI6rYLF9RtICLMqwl6yHmGlGHkOLldSBGEoTizPBd21NJ0fuDanKjgB81qegYarmltSioztSk4mc2PqFyQgozAn+Bz/Qjd+TQ9PaWn9cnxdDS6mD45Ojw9Tu0R31hmbNhNd9dLah1ViKFHMr4BF+HIHLHvq5wcpUhur7Oz9Y3EVpR47CvBqbeIzopCJgd7icyHOdhLoqoqWYarjA170f0j+Eb7cfW0IZptFpYin1hbWyF1+BtFURBC8LpNo+nFM5T797hTVopwPryNpaiYdmcXf1N/sNvt57Gm+jGry7O0NKvU1T1B5BolrhhucPFSFuPv/HjcLjIyLiCbJb7MBqivr8GqlCMKCm+RnSuRefk6Wks7v34mcNRW8aDShtfdQZFs5qZcjDBcy8GrVaPZSvC4vezvxgmHdJYWgrS+akS2mHnjciJ8HQ7+Tai8f25nIxZjf3ebuZkJwqEAwY8fMOYZadIaEP/n+wioNqR8icSPHZKJTUIzfhY+T9Pn6cZkMmG13uUMMTQPxYgrVooAAAAASUVORK5CYII="
         },
         "uploads/Ka_Four_m10z_f72f5c1d30.png": {
             "alt": "Orangefarbenes Icon eines Helms mit weißen Augen und Atemmaske, an Darth Vader erinnernd.",
