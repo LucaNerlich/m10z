@@ -1,7 +1,7 @@
 # M10Z Statistik-Snapshot — generiert von `pnpm run snapshot:statistik` (siehe .github/agents/statistik.agent.md).
 # Nicht von Hand bearbeiten.
 version: 1
-generatedAt: 2026-11-09T01:21:48.030Z
+generatedAt: 2026-11-16T01:31:37.010Z
 authors:
   - slug: adrian
     name: Adrian
@@ -2281,3 +2281,23 @@ podcasts:
     categories:
       - pile-of-joy
     duration: 7807
+  - slug: pp-26
+    title: M10Z Pixelplausch 26
+    date: 2026-11-10T18:00:00.000Z
+    authors:
+      - georg
+      - jan
+      - marcel
+      - tom
+    categories:
+      - pixelplausch
+    duration: 3980
+  - slug: zoz-11
+    title: "Zocken ohne Zaster #11 – Let sleeping Dogs lie, Eufloria, Crawl und Path Out mit Johannes Thimme und Marlene Beilharz"
+    date: 2026-11-15T10:00:00.000Z
+    authors:
+      - m10zfreundin
+      - marcel
+    categories:
+      - zocken-ohne-zaster
+    duration: 4854
