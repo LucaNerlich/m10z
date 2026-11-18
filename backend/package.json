@@ -18,10 +18,10 @@
         "test:run": "vitest run"
     },
     "dependencies": {
-        "@strapi/plugin-users-permissions": "^5.61.1",
-        "@strapi/provider-email-mailgun": "^5.61.1",
-        "@strapi/strapi": "^5.61.1",
-        "@strapi/utils": "^5.61.1",
+        "@strapi/plugin-users-permissions": "^5.62.0",
+        "@strapi/provider-email-mailgun": "^5.62.0",
+        "@strapi/strapi": "^5.62.0",
+        "@strapi/utils": "^5.62.0",
         "form-data": "^4.0.6",
         "markdown-to-txt": "^2.0.1",
         "music-metadata": "^12.4.0",
