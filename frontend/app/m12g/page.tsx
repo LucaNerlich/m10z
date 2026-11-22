@@ -140,12 +140,6 @@ export default async function M12GPage() {
         value: month.totalVotes,
         title: `${formatMonthLong(month.month)}: ${formatVotes(month.totalVotes)}`,
     }));
-    const gameCountItems: StatistikBarListItem[] = participationNewestFirst.map((month) => ({
-        key: month.month,
-        label: formatMonthShort(month.month),
-        value: month.gameCount,
-        title: `${formatMonthLong(month.month)}: ${pluralize(month.gameCount, 'Spiel', 'Spiele')}`,
-    }));
 
     return (
         <div data-list-page>
@@ -182,14 +176,9 @@ export default async function M12GPage() {
                     </StatistikPanel>
                 </StatistikColumns>
 
-                <StatistikColumns>
-                    <StatistikPanel title='Stimmen pro Monat' description='Wie viele Stimmen jeden Monat abgegeben wurden.'>
-                        <StatistikBarList items={voteItems} highlightMax />
-                    </StatistikPanel>
-                    <StatistikPanel title='Spiele pro Monat' description='Wie viele Spiele jeden Monat nominiert waren.'>
-                        <StatistikBarList items={gameCountItems} tone='secondary' highlightMax />
-                    </StatistikPanel>
-                </StatistikColumns>
+                <StatistikPanel title='Stimmen pro Monat' description='Wie viele Stimmen jeden Monat abgegeben wurden.'>
+                    <StatistikBarList items={voteItems} highlightMax />
+                </StatistikPanel>
             </StatistikDashboard>
 
             <h2>Alle Abstimmungen</h2>
