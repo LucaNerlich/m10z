@@ -1,7 +1,7 @@
 {
     "version": 2,
     "baseUrl": "https://cms.m10z.de",
-    "generatedAt": "2026-11-16T10:56:57.583Z",
+    "generatedAt": "2026-11-23T12:10:41.445Z",
     "entries": {
         "uploads/01_5ec66cf3a6.png": {
             "alt": "Screenshot eines Retro-Ego-Shooters mit HUD-Anzeige, Munition, Gesundheit und Gegnern im Korridor.",
@@ -1712,6 +1712,18 @@
         "uploads/gaming_stories_011_cover_podcast_2e5ed07a49.jpg": {
             "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVQYlQE2Acn+AJ5mNlo1GzMfEh4TDRgQDRkQDB0RCzYhEoBNJ79+QwCieEhtPSF+RitnMB1lKRdkJxNNIA9pPiC4dj3jpWEAx41AajsgfkstfkkmgkchezsaVCYStHg08KdL8q5UANqWO2o4HX9MKYRXKIZTJHhCHFMoEtSTO/+6TPesRQCfaitoNBpyOhxrNxZvNhRkLRBOIg/Agjrkm0S6fTUANx8PXCgTYioUaC8abjAZZSkSTBwNmF8xmVwuSywWACYWClQgDmQqE3EyGnIwGlkaBzcRCm9CH183Gi8bDQAiFh1EGA1UIxNJGAk9GxlYVVEuKzgxKEAyIj03KzMALhYlIBAaHgwRDgILRj86q7rAgXpyeXFpbWRiYUxNACoSHhsIER0MFBAHDzAmJWBNQFNEOk48K083Kz4kIRL5UXtrT0QkAAAAAElFTkSuQmCC"
         },
+        "uploads/gaming_stories_012_banner_article_c3d1051356.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABPklEQVQYlWOwkuPVFOXREedRFuKS4+cQ5eUSFeARF+CW4GeXEWRjKLZTzdCXyTMQT9YUjtcQleNh1uFntZPktZEWdJXhZShxUa92Vax0lCu3koxQ4nZwDihw9/E3ErQ21ilQN2FoDNdtidSsD1Cu91EMlGePyuvryGyqFeWIVTDI0TBgqAtQrfFWrPGQK3OSCZRnC8nqa85oa9GSLDc1ydXRYojTFkrQFEhQ5YlW5faQ4sr3t+r1t02x0spx0o8z1mSI1xEptVYutlDI1BNxF+dJ0Odst+HJ0BBKVedPV+dlSNIWzjeQyNWTSFEXchDijjEUnR8tPzlYakKAeJuHMEOQipC/DI+3OJe7OK+zKG+ameikYPlef+k8W8lsawkGFUF2bTFOLTFuLVEuXTEOG3luOyV+PSkeaX5OBSEeAM2wQFVzkdrZAAAAAElFTkSuQmCC"
+        },
+        "uploads/gaming_stories_012_banner_podcast_4eb16663e6.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABP0lEQVQYlWOwkuPVFONREeZWEOSU5+cQ4+MQFeQWF+CW4GeXEWRjKLZVzdCXSdMST1IXTtAUkeTh0ODnspfksZEWdJXhZShzUat2VaxykK20kghR5M/3kp/lp+BlKGpjrF2gbszQFK7TEqlZH6Dc4KvgJcu3ocbwaplhqYhQnKJejoYBQ32ASo23Yq2HXLmTlJcc37pKg8ulxtWaSpWmRrk6mgxx2oIJmgIJajzRqtxuUjzdIbLLglUSrXRznPTjjDUZ4nVESq2Viy0UMvVEPMR5onT5G60FMjUEU9X509V5GZK0hfMNJHL1JFLUhRyEuGMNhRfEyE4KlpoQIN7mIcwQpCLkL8PjLc7lLs7rLMqbZiY6KVi+1186z1Yy21qCQUWQXVuMU0uMW0uUS1eMw0ae206JX0+KR5qfU0GIBwDOkkBhPW47NwAAAABJRU5ErkJggg=="
+        },
+        "uploads/gaming_stories_012_cover_article_7d8b430c0d.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABP0lEQVQYlWMwUxDWkeJXEuOVF+FVFeNTEeVRFOLSkeTxVOdtcRdm0JXkSDGTbXDXSdOTTdcVT9EU9pXn91Jh6/bgP5AtxRCXWZdgrtbgo13rqdbooVRtIxmgKpaeVdnXM23axCkMeVOPx1toN/qqNYdptgSrVjpJ+WpIZ/UfqFvzvGLJXYbSospkE8UiK6lsc7E8M9EUPX5PJZHsrNL6xu6ishaGRnfhJB3hRC2RTAPJHH3JFFV+LzHOFEOOUnPOSG12hhhT8XAl/iRN4XxDqVJ96SwdYWc9xUg1DS8D8TB1foYGL7lABd5QZSFfGV4fUc4iGYE0Fc1cNYN0A+loTR6GjgDlYme5bn/ZZm+5XCvxejOlSlvDfEOtZl2VInURBicNUV898Qgj4SA9IXcNIW8lMS9VyQAl8TgZMTdJAQCRH0yTLBWlGwAAAABJRU5ErkJggg=="
+        },
+        "uploads/gaming_stories_012_cover_podcast_a1cb63a03c.jpg": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQUlEQVQYlQE2Acn+ADcgEiwaDyIWDSAUDR8TDSEUDCETCi0ZC0onDIVHEgApGA1jNh2ARyxmLh1kKRdkJxNNHw9GIwuGRxW7ayAArHUuZzgffkstfkomgkchezsaVSYSsXUt6Jo67J48AOWoQWw6Hn5MKIRXKIZTJHdCG1YpE92iQP/DTf26SgC9fjBpNRpxORxrNxZvNhRkLhBNIxCwdS7SjTbBgjEAe0YZYSsUYSoUaTAZbC8ZZCUPShYKXzANbzYQUyoOAF01FlciD2IpE28xGnUvG2osE0MuIVonKEswFlcnDQCASh5RIA1VIxJNHA1MFQlyHBBmJCltJjBnMBtbKQwAiFAjc0Mei08dg0sebToXfzYieT0xbzEqgy0kcicUAEIoFU0uF1gyE1IuEkcoEksiFkolGVAiF14cFkYZENMWTOULuZfOAAAAAElFTkSuQmCC"
+        },
         "uploads/gaming_stories_banner_0974e68291.jpg": {
             "alt": "Gaming-Stories-Buch mit Gamepad-Relief auf Holztisch, daneben Schriftzug und Tastaturkappen",
             "caption": "Kurze Geschichten aus der Welt der Videospiele – das ist Gaming Stories auf m10z.",
@@ -2386,6 +2398,12 @@
             "alt": "Drei Spielpanels: Pixel-Art-Landschaft, Fantasy-Logo und Schachbrett mit springendem Pferd.",
             "caption": "Drei Spiele, drei Stile: Pixel-Art, Fantasy-RPG und Schachrätsel im Vergleich.",
             "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABQUlEQVR4nAE2Acn+AGWWoWWt01ai0hUZNgYAJAAAFEAtKbaRabaPapZ1VQCQnZ6ltL9wfJsUOH8KUKwENog+NFfIc1fFd16qdFYAcZpyg7OJQnNLUJKne5SggZOgcWB43Ik81ohBk0tCAEheKl1xMmiOPahfOs1aQstlS7NfP/TFSeBzQqReRADDhDPtokDNhDedW0quVE+zVEqUYF6TY1GTOkRvYV4ArIc3xphFuJlGpFpHvjw8yDcxiV9fjoly1aRxWmVgAJWRfcG9o8G5n3liR3tlgYNvkGNXS8aXb++0fHxOeQCMWkm4cl2XbV4qPWRoen5xhnwzMn6obn7bo2tcMH0AVjtdgl50P1mZCBNODBRLCBVKJBxXrXVo2phhjl9GACZfZC1opzBslBIUEwsACwcADTgjGplpSqBtUIdbQI8gf4Y/NUPTAAAAAElFTkSuQmCC"
+        },
+        "uploads/tribunal_11_banner_f5ef46e50f.png": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABQUlEQVQYlQE2Acn+ABsSDBwTDgwMEg4OFVNBLW1NJzwuICchHQAAAwAABQA+LSpALy0KChRUS0Xas32himpIOi4UExgAAAcBAAkAf1VNTisaAAAJfGA/0qBelXJCMSUeGRUWBAIHAQEHAD0lFjgnHT5ASGFWTZ6EX4FyXkNIUi0tLgEBBgQECABMNC1bTEanuMatu8S2xM6jvs7O5/WPd2swMDRTU1gAaUhKV0pMmsLfrMzksq6gqbq1utvthYmVOjk+ZmdqAG5OV0hBRqPE3r7Q3rm8s9HJm8Xa54igrwAABAcHCwBxV2xSR0S4vKGnv8qZuM6cuces0uiBna0AAAACAQQASjxKTTstva9sk8TeiMX5icf1ktX/bpm6AAAAAAAGABALBhUOBlNUV1V2mFh7m1d7m1p5mUgyQAAAAAEBBwUEbPjbIjjbAAAAAElFTkSuQmCC"
+        },
+        "uploads/tribunal_11_cover_72561de2da.png": {
+            "blurhash": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABQUlEQVQYlQE2Acn+ACQYEjEgFBYQChEQFmNPOYlkNS4hEgAABAIBBgMCBgBIN0RQOTknGhZUSULetH6oknJCNiYAAAIDAgoIBgsAgUYmfFxhVUBXfmBC0J5bnXZDNCcbAAADAgIIAQEGAHxIHUYzJSUbHFNIP5qCYJGCbB4jKwAAAgICBQEBAwAkGiI+LTVDLyuGjZK4yNOxyth8l6hKRkdfYGRPT1EAUDlFWUFOYUVPkKO4tbWpsL62hqOzWVZXY2VpbW1vAFA7SF1EUmhMYpSerLrAuuDYqGx3eQAAABYHCUU2NABPPlFnU2p/YYGDlqifvM6wy9ZbcH4HAABSODZAOTcAVkZRRT9GSTdAeJ/Cicf1ktT/TnGMAAAAOz5CLzA1ADgrLDMnJBUNBlFtiGqWvW+bwztTagAAAAICBAQECF4oXiXUcE1yAAAAAElFTkSuQmCC"
         },
         "uploads/tribunal_1_banner_b931cdb4eb.png": {
             "alt": "Banner mit drei Szenen: Hotelgebäude, Mann mit Hut im Schatten, goldener Ring im Pixelstil",
