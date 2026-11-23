@@ -1,7 +1,7 @@
 # M10Z Statistik-Snapshot — generiert von `pnpm run snapshot:statistik` (siehe .github/agents/statistik.agent.md).
 # Nicht von Hand bearbeiten.
 version: 1
-generatedAt: 2026-11-16T01:31:37.010Z
+generatedAt: 2026-11-23T02:08:05.175Z
 authors:
   - slug: adrian
     name: Adrian
@@ -725,6 +725,14 @@ articles:
     categories:
       - gaming-stories
     wordCount: 5377
+  - slug: gaming-stories-corrupted-blood-azeroth-im-ausnahmezustand
+    title: Corrupted Blood – Azeroth im Ausnahmezustand
+    date: 2026-11-21T09:00:00.000Z
+    authors:
+      - faehrmann
+    categories:
+      - gaming-stories
+    wordCount: 1153
 podcasts:
   - slug: m10z-1
     title: Mindestens 10 Zeichen 1
@@ -2293,7 +2301,7 @@ podcasts:
       - pixelplausch
     duration: 3980
   - slug: zoz-11
-    title: "Zocken ohne Zaster #11 – Let sleeping Dogs lie, Eufloria, Crawl und Path Out mit Johannes Thimme und Marlene Beilharz"
+    title: "Zocken ohne Zaster #11 – Let Sleeping Dogs Lie, Eufloria, Crawl und Path Out mit Johannes Thimme und Marlene Beilharz"
     date: 2026-11-15T10:00:00.000Z
     authors:
       - m10zfreundin
@@ -2301,3 +2309,21 @@ podcasts:
     categories:
       - zocken-ohne-zaster
     duration: 4854
+  - slug: gaming-stories-corrupted-blood-azeroth-im-ausnahmezustand
+    title: Gaming Stories • Corrupted Blood – Azeroth im Ausnahmezustand
+    date: 2026-11-21T09:00:00.000Z
+    authors:
+      - faehrmann
+    categories:
+      - gaming-stories
+    duration: 578
+  - slug: tribunal-11
+    title: "Tri-bunal #11 – Release vor 2000"
+    date: 2026-11-21T13:45:00.000Z
+    authors:
+      - luca
+      - thomas
+      - yollum
+    categories:
+      - tribunal
+    duration: 4436
