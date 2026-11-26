@@ -227,6 +227,23 @@ describe('media index script', () => {
         }
     });
 
+    it('refuses to overwrite the index when the CMS returns no assets', async () => {
+        await withMockStrapi([], [], async (url, outFile) => {
+            await expect(
+                runScript(
+                    scriptEnv({
+                        STRAPI_MCP_URL: url,
+                        STRAPI_MCP_ADMIN_TOKEN_LOCAL: 'local-token',
+                        MEDIA_INDEX_OUT: outFile,
+                    })
+                )
+            ).rejects.toMatchObject({
+                stderr: expect.stringContaining('refusing to overwrite'),
+            });
+            expect(await readdir(path.dirname(outFile))).toEqual([]);
+        });
+    });
+
     it('writes nothing in a dry run', async () => {
         await withMockStrapi(
             [
