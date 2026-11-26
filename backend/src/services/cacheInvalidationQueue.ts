@@ -29,15 +29,9 @@ const queue = new AsyncTaskQueue<QueueItem, StrapiWithDb>({
             }
         }
     },
-    onAbandoned: (items, strapi) => {
-        // Dead-lettered items will never be delivered; drop their durable rows so the
-        // table does not accumulate rows for a permanently-down frontend.
-        for (const item of items) {
-            for (const dbId of item.dbIds) {
-                void removePending(strapi, dbId);
-            }
-        }
-    },
+    // No onAbandoned: dropping the durable rows would lose the whole outage's
+    // invalidations. The store prunes them after its 7-day retention window and
+    // restores them on boot, so an unforwarded event still gets one more chance.
 });
 
 export function queueCacheInvalidation(event: InvalidationEvent, strapi: StrapiWithDb | undefined | null): void {

@@ -162,7 +162,14 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
                 this.consecutiveFailures = 0;
                 strapi.log.info(`[${this.options.name}] completed: ${succeededCount} succeeded.`);
             } else {
-                this.consecutiveFailures++;
+                // A batch where something got through proves the target is reachable, so
+                // it must not count toward the dead-letter cutoff: an outage that recovers
+                // and drops again would otherwise delete events that were never delivered.
+                if (succeededCount > 0) {
+                    this.consecutiveFailures = 0;
+                } else {
+                    this.consecutiveFailures++;
+                }
                 strapi.log.warn(
                     `[${this.options.name}] completed: ${succeededCount} succeeded, ${failedItems.length} failed.`,
                 );
