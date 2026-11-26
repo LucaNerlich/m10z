@@ -134,6 +134,26 @@ describe('postInvalidationEvent', () => {
         expect(fetchMock).not.toHaveBeenCalled();
     });
 
+    test('refuses a FRONTEND_URL with a path or query', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('STRAPI_INVALIDATION_SECRET', 'secret');
+        vi.stubEnv('FRONTEND_URL', 'https://m10z.de/de');
+
+        await expect(postInvalidationEvent(event, logger)).rejects.toThrow(/without a path or query/);
+    });
+
+    test('canonicalizes an origin alias instead of building a double-slash path', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('STRAPI_INVALIDATION_SECRET', 'secret');
+        vi.stubEnv('FRONTEND_URL', 'https://m10z.de//.');
+        const fetchMock = vi.fn().mockResolvedValue(new Response(null, {status: 200}));
+        vi.stubGlobal('fetch', fetchMock);
+
+        await postInvalidationEvent(event, logger);
+
+        expect(fetchMock.mock.calls[0][0]).toBe('https://m10z.de/api/invalidate');
+    });
+
     test('accepts an https FRONTEND_URL in production', async () => {
         vi.stubEnv('NODE_ENV', 'production');
         stubConfiguredEnv();

@@ -10,6 +10,7 @@
  */
 
 import type {InvalidationEvent} from '../shared/contracts/strapi-contract/invalidationEvent';
+import {isValidBaseDomain} from './envChecks';
 
 type Logger = {
     info?: (message: string) => void;
@@ -35,20 +36,24 @@ function getNextBaseUrl(): string {
     }
     const normalized = url.replace(/\/+$/, '');
 
-    let parsed: URL;
-    try {
-        parsed = new URL(normalized);
-    } catch {
-        throw new Error(`Invalid FRONTEND_URL: "${normalized}". Expected an absolute http(s) origin.`);
+    // `/api/invalidate` is appended to this value, so a path, query, or fragment
+    // silently relocates the endpoint and every event 404s.
+    if (!isValidBaseDomain(url)) {
+        throw new Error(
+            `Invalid FRONTEND_URL: "${normalized}". Expected an absolute http(s) origin without a path or query.`,
+        );
     }
 
     // The request carries the invalidation secret as a header, so a plaintext
     // target would expose a credential that can replay cache busts.
-    if (process.env.NODE_ENV === 'production' && parsed.protocol !== 'https:') {
+    if (process.env.NODE_ENV === 'production' && new URL(normalized).protocol !== 'https:') {
         throw new Error('FRONTEND_URL must use https in production (Next cache invalidation target).');
     }
 
-    return normalized;
+    // Canonical origin: strips dot segments and backslashes that survive the
+    // slash-only pathname check (e.g. `https://m10z.de//.`), so the composed
+    // target can never become `//api/invalidate`.
+    return new URL(normalized).origin;
 }
 
 function getSecret(): string | undefined {

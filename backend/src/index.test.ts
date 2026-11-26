@@ -74,6 +74,17 @@ describe('production boot guard', () => {
         ).toThrow(/FRONTEND_URL/);
     });
 
+    test('rejects a FRONTEND_URL with a path', () => {
+        vi.stubEnv('NODE_ENV', 'production');
+
+        expect(() =>
+            registerWith({
+                FRONTEND_URL: 'https://m10z.de/de',
+                STRAPI_INVALIDATION_SECRET: 'secret',
+            })
+        ).toThrow(/without a path or query/);
+    });
+
     test('rejects a plaintext FRONTEND_URL', () => {
         // The header carries the invalidation secret; the queue would swallow the
         // runtime throw, so the boot has to fail.
