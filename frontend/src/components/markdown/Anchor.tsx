@@ -67,7 +67,7 @@ export function Anchor({href, children, className, id, node: _node, ...props}: A
     // including ones that merely start with "/" — prevents protocol-relative,
     // backslash-normalised ("/\host"), case, and subdomain tricks from being
     // treated as internal.
-    const {isInternal, href: processedHref} = resolveAnchorTarget(href, routes.siteUrl);
+    const {isExternalWeb, href: processedHref} = resolveAnchorTarget(href, routes.siteUrl);
 
     const linkProps: React.ComponentProps<typeof Link> & {'data-umami-event'?: string} = {
         href: processedHref,
@@ -81,16 +81,17 @@ export function Anchor({href, children, className, id, node: _node, ...props}: A
         linkProps.id = id;
     }
 
-    // External links open in a new tab; anchors keep in-page behaviour.
-    if (!isInternal) {
+    // External web pages open in a new tab; mailto:/tel: hand off to the OS,
+    // and in-page anchors keep their behaviour.
+    if (isExternalWeb) {
         linkProps.target = '_blank';
         linkProps.rel = 'noopener noreferrer';
     }
 
-    // Add Umami events for non-page links (external), unless explicitly provided.
+    // Add Umami events for external web links, unless explicitly provided.
     const existingUmamiEvent = props['data-umami-event'];
     if (existingUmamiEvent == null) {
-        if (!isInternal) {
+        if (isExternalWeb) {
             linkProps['data-umami-event'] = umamiExternalLinkEvent(processedHref, 'outbound');
         }
     }
