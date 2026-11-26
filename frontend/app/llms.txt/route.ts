@@ -2,7 +2,6 @@ import {absoluteRoute, routes} from '@/src/lib/routes';
 import {fetchPublishedSlugs} from '@/src/lib/publishedSlugs';
 import {sitemapTag, typeTag} from '@/src/lib/shared/contracts/strapi-contract/tags';
 export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
 
 function buildLinkList(
     entries: {slug: string}[],
