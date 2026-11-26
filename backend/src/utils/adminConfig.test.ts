@@ -1,3 +1,4 @@
+import {createHmac} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 
@@ -108,5 +109,20 @@ describe('config/admin preview link', () => {
         const draft = await handlerFor('draft');
         expect(draft.findOne).toHaveBeenCalledWith({documentId: 'doc-1', status: 'draft'});
         expect(draft.url).toContain('status=draft');
+    });
+
+    test('binds the token to the previewed status', async () => {
+        const draft = await handlerFor('draft');
+        const published = await handlerFor('published');
+
+        const tokenOf = (url: string) => new URL(url).searchParams.get('token');
+        const sign = (status: string) =>
+            createHmac('sha256', 'secret')
+                .update(`api::article.article:published-slug:${status}`)
+                .digest('hex');
+
+        expect(tokenOf(draft.url)).toBe(sign('draft'));
+        expect(tokenOf(published.url)).toBe(sign('published'));
+        expect(tokenOf(draft.url)).not.toBe(tokenOf(published.url));
     });
 });
