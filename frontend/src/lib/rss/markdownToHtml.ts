@@ -1,5 +1,6 @@
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
@@ -147,6 +148,7 @@ export function markdownToHtml(markdownText: string, siteUrl?: string): string {
             .use(remarkGfm)
             .use(remarkSmartypants)
             .use(remarkRehype, {...REMARK_REHYPE_OPTIONS, allowDangerousHtml: true})
+            .use(rehypeSlug)
             .use(rehypeRaw)
             .use(rehypeResolveFeedUrls, {siteUrl})
             .use(rehypeSanitize, REHYPE_SANITIZE_SCHEMA)
@@ -170,6 +172,7 @@ export function getMarkdownToHtmlState() {
             engine: 'remark/rehype',
             remarkPlugins: ['remark-parse', 'remark-breaks', 'remark-gfm', 'remark-smartypants'],
             rehypePlugins: [
+                'rehype-slug',
                 'rehype-raw',
                 'rehype-resolve-feed-urls',
                 'rehype-sanitize',

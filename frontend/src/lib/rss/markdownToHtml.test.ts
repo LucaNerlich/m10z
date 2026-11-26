@@ -17,6 +17,12 @@ describe('markdownToHtml — rendering', () => {
         const html = markdownToHtml('[M10Z](https://m10z.de)');
         expect(html).toContain('href="https://m10z.de"');
     });
+
+    test('gives headings ids so in-content anchors resolve', () => {
+        const html = markdownToHtml('## Content auf drei Standbeinen\n\n[Zurück](#content-auf-drei-standbeinen)');
+        expect(html).toContain('<h2 id="content-auf-drei-standbeinen">');
+        expect(html).toContain('href="#content-auf-drei-standbeinen"');
+    });
 });
 
 describe('markdownToHtml — sanitization (XSS)', () => {
@@ -155,5 +161,10 @@ describe('getMarkdownToHtmlState', () => {
         expect(after.renderer.engine).toBe('remark/rehype');
         expect(after.sanitizer.allowedTagsCount).toBeGreaterThan(0);
         expect(after.sanitizer.allowedAttrCount).toBeGreaterThan(0);
+    });
+
+    test('reports the same rehype plugins the pipeline runs', () => {
+        // rehype-slug owns the heading ids the feed anchors depend on.
+        expect(getMarkdownToHtmlState().renderer.rehypePlugins[0]).toBe('rehype-slug');
     });
 });
