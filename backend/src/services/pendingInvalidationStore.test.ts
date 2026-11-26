@@ -8,6 +8,7 @@ function makeFakeDb(rows: Array<{id: number; payload: string}>) {
     const chain: any = {
         where: vi.fn(() => chain),
         orderBy: vi.fn(() => chain),
+        offset: vi.fn(() => chain),
         limit: vi.fn(() => chain),
         select: selectFn,
         delete: deleteFn,
@@ -39,6 +40,7 @@ describe('drainPending', () => {
         expect(chain.where).toHaveBeenCalledWith('created_at', '>=', expect.any(Date));
         expect(chain.orderBy).toHaveBeenCalledWith('created_at', 'asc');
         expect(chain.limit).toHaveBeenCalledWith(500);
+        expect(chain.offset).toHaveBeenCalledWith(0);
 
         // Prune: rows older than the retention window are deleted.
         expect(chain.where).toHaveBeenCalledWith('created_at', '<', expect.any(Date));

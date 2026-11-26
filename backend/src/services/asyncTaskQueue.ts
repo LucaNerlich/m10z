@@ -47,6 +47,9 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
     private pending = new Map<string, T>();
     private isRunning = false;
     private consecutiveFailures = 0;
+    /** Failed rounds, independent of the dead-letter counter so a partial
+     *  success never resets the backoff of an item that keeps failing. */
+    private backoffFailures = 0;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor(private readonly options: TaskQueueOptions<T, S>) {}
@@ -117,7 +120,7 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
         const base = this.options.debounceMs ?? DEFAULT_DEBOUNCE_MS;
         const delay =
             this.consecutiveFailures > 0
-                ? Math.min(base * Math.pow(2, this.consecutiveFailures), MAX_BACKOFF_MS)
+                ? Math.min(base * Math.pow(2, this.backoffFailures), MAX_BACKOFF_MS)
                 : base;
 
         this.debounceTimer = setTimeout(() => {
@@ -160,8 +163,12 @@ export class AsyncTaskQueue<T, S extends StrapiLike = StrapiLike> {
 
             if (failedItems.length === 0) {
                 this.consecutiveFailures = 0;
+                this.backoffFailures = 0;
                 strapi.log.info(`[${this.options.name}] completed: ${succeededCount} succeeded.`);
             } else {
+                // Backoff follows any failure, so a permanently failing item keeps
+                // slowing down instead of retrying at the base debounce forever.
+                this.backoffFailures++;
                 // A batch where something got through proves the target is reachable, so
                 // it must not count toward the dead-letter cutoff: an outage that recovers
                 // and drops again would otherwise delete events that were never delivered.

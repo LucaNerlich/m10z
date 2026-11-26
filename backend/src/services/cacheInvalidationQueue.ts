@@ -29,9 +29,11 @@ const queue = new AsyncTaskQueue<QueueItem, StrapiWithDb>({
             }
         }
     },
-    // No onAbandoned: dropping the durable rows would lose the whole outage's
-    // invalidations. The store prunes them after its 7-day retention window and
-    // restores them on boot, so an unforwarded event still gets one more chance.
+    // No dead-letter cutoff: an abandoned event leaves the queue and nothing
+    // re-reads its row until the next Strapi restart, so a frontend-only outage
+    // would leave the caches stale. The capped 60s backoff keeps retrying until
+    // the frontend recovers; the durable rows remain as crash safety.
+    maxFailureRetries: Number.POSITIVE_INFINITY,
 });
 
 export function queueCacheInvalidation(event: InvalidationEvent, strapi: StrapiWithDb | undefined | null): void {

@@ -100,6 +100,7 @@ export interface KnexTableRowQuery {
     where(clause: Record<string, unknown>): {delete(): Promise<number>};
     where(column: string, operator: string, value: unknown): KnexTableRowQuery;
     orderBy(column: string, direction: 'asc' | 'desc'): KnexTableRowQuery;
+    offset(count: number): KnexTableRowQuery;
     limit(count: number): KnexTableRowQuery;
     select(...columns: string[]): Promise<Array<Record<string, unknown>>>;
     delete(): Promise<number>;

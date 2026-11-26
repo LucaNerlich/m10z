@@ -61,12 +61,14 @@ describe('AsyncTaskQueue', () => {
         await vi.advanceTimersByTimeAsync(100);
         expect(onAbandoned).not.toHaveBeenCalled();
 
-        // Round 2: 'bad' alone fails -> counter 1 (next attempt is 200ms out).
-        await vi.advanceTimersByTimeAsync(100);
+        // Round 2: 'bad' alone fails -> counter 1. The pre-fix code abandoned here
+        // (counter 2), so the call count is the assertion that tells them apart.
+        await vi.advanceTimersByTimeAsync(200);
+        expect(run).toHaveBeenCalledTimes(3);
         expect(onAbandoned).not.toHaveBeenCalled();
 
         // Round 3: 'bad' alone fails again -> counter 2 -> abandoned.
-        await vi.advanceTimersByTimeAsync(300);
+        await vi.advanceTimersByTimeAsync(400);
         expect(onAbandoned).toHaveBeenCalledTimes(1);
         expect(onAbandoned.mock.calls[0][0]).toEqual(['bad']);
     });
