@@ -161,3 +161,79 @@ describe('WichtelnPage duplicate names', () => {
         expect(exportButton().disabled).toBe(false);
     });
 });
+
+describe('WichtelnPage destructive reset confirmation', () => {
+    const DRAW = JSON.stringify({
+        participants: [
+            {id: 'a', name: 'Alice', profileUrl: ''},
+            {id: 'b', name: 'Bob', profileUrl: ''},
+        ],
+        assignments: [{giverId: 'a', receiverId: 'b'}, {giverId: 'b', receiverId: 'a'}],
+        timestamp: 1,
+    });
+
+    async function addParticipant(name: string): Promise<void> {
+        const input = container.querySelector('input');
+        if (!input) throw new Error('name input not rendered');
+        const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
+        await act(async () => {
+            setValue.call(input, name);
+            input.dispatchEvent(new Event('input', {bubbles: true}));
+        });
+        const form = container.querySelector('form');
+        if (!form) throw new Error('form not rendered');
+        await act(async () => {
+            form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+        });
+    }
+
+    function click(ariaLabel: string): void {
+        const button = container.querySelector<HTMLButtonElement>(`button[aria-label="${ariaLabel}"]`);
+        if (!button) throw new Error(`button ${ariaLabel} not rendered`);
+        button.click();
+    }
+
+    test('cancelling an add keeps the existing draw', async () => {
+        window.localStorage.setItem(STORAGE_KEY, DRAW);
+        await act(async () => {
+            root.render(<WichtelnPage />);
+        });
+
+        const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        await addParticipant('Carol');
+
+        expect(confirmSpy).toHaveBeenCalled();
+        expect(container.textContent).not.toContain('Carol');
+        expect(window.localStorage.getItem(STORAGE_KEY)).toContain('giverId');
+        confirmSpy.mockRestore();
+    });
+
+    test('confirming an add resets the draw', async () => {
+        window.localStorage.setItem(STORAGE_KEY, DRAW);
+        await act(async () => {
+            root.render(<WichtelnPage />);
+        });
+
+        const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+        await addParticipant('Carol');
+
+        expect(container.textContent).toContain('Carol');
+        expect(window.localStorage.getItem(STORAGE_KEY)).not.toContain('giverId');
+        confirmSpy.mockRestore();
+    });
+
+    test('cancelling a delete keeps the participant and the draw', async () => {
+        window.localStorage.setItem(STORAGE_KEY, DRAW);
+        await act(async () => {
+            root.render(<WichtelnPage />);
+        });
+
+        const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        click('Alice löschen');
+
+        expect(confirmSpy).toHaveBeenCalled();
+        expect(container.textContent).toContain('Alice');
+        expect(window.localStorage.getItem(STORAGE_KEY)).toContain('giverId');
+        confirmSpy.mockRestore();
+    });
+});
