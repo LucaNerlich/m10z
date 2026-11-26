@@ -1,4 +1,4 @@
-import {beforeEach, describe, expect, test, vi} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 const mocks = vi.hoisted(() => ({
     getHistoricalSearchIndexMetrics: vi.fn(() => []),
@@ -38,6 +38,10 @@ function makeCtx(query: Record<string, unknown> = {}) {
         set: vi.fn(),
     };
 }
+
+afterEach(() => {
+    vi.unstubAllEnvs();
+});
 
 beforeEach(() => {
     mocks.getHistoricalSearchIndexMetrics.mockClear();
@@ -87,6 +91,31 @@ describe('search-index metrics controller', () => {
             '2026-01-01T00:00:00.000Z',
             '2026-02-01T00:00:00.000Z',
         );
+    });
+
+    test('verifies the header token against DIAGNOSTICS_TOKEN', async () => {
+        vi.stubEnv('DIAGNOSTICS_TOKEN', 'header-token');
+        const ctx = makeCtx();
+        ctx.request.headers = {'x-m10z-diagnostics-token': 'header-token'};
+
+        await createController().metrics(ctx);
+
+        expect(mocks.verifySecret).toHaveBeenCalledWith('header-token', 'header-token');
+    });
+
+    test('never passes a query-string token to verification', async () => {
+        vi.stubEnv('DIAGNOSTICS_TOKEN', 'header-token');
+        // The header check fails, so a header-then-query fallback would be reached
+        // and would accept the valid token in the query string.
+        mocks.verifySecret.mockReturnValueOnce(false);
+        const ctx = makeCtx({token: 'header-token'});
+        ctx.request.headers = {};
+
+        await createController().metrics(ctx);
+
+        expect(ctx.status).toBe(401);
+        expect(mocks.verifySecret).toHaveBeenCalledTimes(1);
+        expect(mocks.verifySecret).toHaveBeenCalledWith(undefined, 'header-token');
     });
 
     test('rejects an unauthenticated request before reading metrics', async () => {
