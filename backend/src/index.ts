@@ -305,15 +305,23 @@ export default {
      * Draining here is the one shutdown path that does not race that teardown.
      */
     async destroy({strapi}: {strapi: AppStrapi}) {
+        const httpServer = strapi.server?.httpServer;
         await runGracefulShutdown({
             signal: 'strapi.destroy',
             log: strapi.log,
-            httpServer: strapi.server?.httpServer,
+            // A loaded-but-not-started app (strapi import, report, a failed develop
+            // build) has no listening server; close() would answer
+            // ERR_SERVER_NOT_RUNNING and the drain would exit 1.
+            httpServer: httpServer?.listening ? httpServer : undefined,
             // Strapi closes the database and exits after destroy resolves; only a
             // watchdog timeout (exit code 1) may force the process down.
             exit: (code) => {
                 if (code !== 0) process.exit(code);
             },
         });
+
+        // Strapi still destroys the server and the DB after this hook. Keep a
+        // watchdog armed so a hung teardown cannot leave the process alive.
+        setTimeout(() => process.exit(1), 30_000).unref();
     },
 };
