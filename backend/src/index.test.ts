@@ -106,3 +106,61 @@ describe('production boot guard', () => {
         ).not.toThrow();
     });
 });
+
+describe('destroy lifecycle', () => {
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.clearAllTimers();
+    });
+
+    test('drains a listening server and arms a final teardown watchdog', async () => {
+        vi.useFakeTimers();
+        const close = vi.fn((callback: (err?: Error) => void) => callback());
+        const closeIdleConnections = vi.fn();
+        const log = {info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn()};
+        const exit = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
+
+        try {
+            await plugin.destroy({
+                strapi: {
+                    log,
+                    server: {httpServer: {listening: true, close, closeIdleConnections}},
+                } as never,
+            });
+
+            expect(close).toHaveBeenCalledTimes(1);
+            // Strapi exits after destroy resolves, so the drain must not.
+            expect(exit).not.toHaveBeenCalled();
+
+            // The final watchdog bounds Strapi's remaining teardown.
+            await vi.advanceTimersByTimeAsync(30_000);
+            expect(exit).toHaveBeenCalledWith(1);
+        } finally {
+            exit.mockRestore();
+        }
+    });
+
+    test('does not close a server that was never started', async () => {
+        vi.useFakeTimers();
+        vi.resetModules();
+        const {default: freshPlugin} = await import('./index');
+
+        const close = vi.fn((callback: (err?: Error) => void) => callback());
+        const log = {info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn()};
+        const exit = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
+
+        try {
+            await freshPlugin.destroy({
+                strapi: {
+                    log,
+                    server: {httpServer: {listening: false, close, closeIdleConnections: vi.fn()}},
+                } as never,
+            });
+
+            expect(close).not.toHaveBeenCalled();
+            expect(exit).not.toHaveBeenCalled();
+        } finally {
+            exit.mockRestore();
+        }
+    });
+});

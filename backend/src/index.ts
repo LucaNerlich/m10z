@@ -285,8 +285,8 @@ export default {
             });
         };
 
-        // Register shutdown handlers: a requested stop exits 0, a fatal crash
-        // (uncaughtException) exits 1 so supervision and alerting see the failure.
+        // Register the crash hooks. SIGTERM/SIGINT belong to Strapi's own
+        // destroyOnSignal handler, which calls the `destroy` lifecycle below.
         registerShutdownHandlers(process, gracefulShutdown, strapi.log);
 
         // Recover invalidation events that were persisted before the last shutdown so
@@ -297,5 +297,31 @@ export default {
         } catch (error) {
             strapi.log.warn('Failed to restore pending cache invalidation events.', error);
         }
+    },
+
+    /**
+     * Strapi's destroy lifecycle, run by `strapi.destroy()` — which its own
+     * SIGTERM/SIGINT handler calls before destroying the HTTP server and the DB.
+     * Draining here is the one shutdown path that does not race that teardown.
+     */
+    async destroy({strapi}: {strapi: AppStrapi}) {
+        const httpServer = strapi.server?.httpServer;
+        await runGracefulShutdown({
+            signal: 'strapi.destroy',
+            log: strapi.log,
+            // A loaded-but-not-started app (strapi import, report, a failed develop
+            // build) has no listening server; close() would answer
+            // ERR_SERVER_NOT_RUNNING and the drain would exit 1.
+            httpServer: httpServer?.listening ? httpServer : undefined,
+            // Strapi closes the database and exits after destroy resolves; only a
+            // watchdog timeout (exit code 1) may force the process down.
+            exit: (code) => {
+                if (code !== 0) process.exit(code);
+            },
+        });
+
+        // Strapi still destroys the server and the DB after this hook. Keep a
+        // watchdog armed so a hung teardown cannot leave the process alive.
+        setTimeout(() => process.exit(1), 30_000).unref();
     },
 };
