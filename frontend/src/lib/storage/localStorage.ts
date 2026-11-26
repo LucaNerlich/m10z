@@ -2,9 +2,7 @@ const inMemoryStore = new Map<string, string>();
 
 // Keys whose latest write never reached the durable store (quota exceeded, or no
 // store at all server-side). Only these may be served from the mirror ahead of
-// localStorage: for every other key the mirror is a cache, and a cross-tab
-// `storage` event that invalidates it is delivered asynchronously, so a
-// mirror-first read could return superseded state.
+// localStorage; a successful durable write always wins a read.
 const unsyncedKeys = new Set<string>();
 
 export function getItem<T>(key: string): T | null {
@@ -20,7 +18,6 @@ export function getItem<T>(key: string): T | null {
     try {
         const item = window.localStorage.getItem(key);
         if (item !== null) {
-            inMemoryStore.set(key, item);
             try { return JSON.parse(item) as T; } catch { return null; }
         }
     } catch {
@@ -78,17 +75,6 @@ if (typeof window !== 'undefined') {
         } else {
             inMemoryStore.delete(e.key);
             unsyncedKeys.delete(e.key);
-        }
-    });
-
-    window.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-            // Drop cached mirror entries only. An unsynced key's mirror value is
-            // the authoritative copy of a write that never reached localStorage;
-            // clearing it would silently lose the user's data on tab focus.
-            for (const key of [...inMemoryStore.keys()]) {
-                if (!unsyncedKeys.has(key)) inMemoryStore.delete(key);
-            }
         }
     });
 }
