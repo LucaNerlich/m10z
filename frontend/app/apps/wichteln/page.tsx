@@ -97,6 +97,13 @@ export default function WichtelnPage() {
         setFormErrors({name: nameError, profileUrl: profileError});
         if (nameError || profileError) return;
 
+        if (
+            assignments.length > 0 &&
+            !confirm('Die bestehenden Zuordnungen werden zurückgesetzt. Fortfahren?')
+        ) {
+            return;
+        }
+
         const participant: Participant = {
             id: crypto.randomUUID(),
             name: newName.trim(),
@@ -109,7 +116,7 @@ export default function WichtelnPage() {
         setNewName('');
         setNewProfileUrl('');
         setEditingId(null);
-    }, [newName, newProfileUrl, participants, persist]);
+    }, [newName, newProfileUrl, participants, assignments, persist]);
 
     const updateParticipant = useCallback(
         (id: string) => {
@@ -139,6 +146,12 @@ export default function WichtelnPage() {
 
     const deleteParticipant = useCallback(
         (id: string) => {
+            const participant = participants.find((p) => p.id === id);
+            const message = assignments.length > 0
+                ? `"${participant?.name ?? 'Teilnehmer'}" löschen? Die bestehenden Zuordnungen werden dabei zurückgesetzt.`
+                : `"${participant?.name ?? 'Teilnehmer'}" löschen?`;
+            if (!confirm(message)) return;
+
             const updated = participants.filter((p) => p.id !== id);
             setParticipants(updated);
             setAssignments([]);
@@ -150,7 +163,7 @@ export default function WichtelnPage() {
                 setFormErrors({});
             }
         },
-        [participants, persist, editingId]
+        [participants, assignments, persist, editingId]
     );
 
     const startEdit = useCallback(
