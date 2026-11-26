@@ -15,6 +15,7 @@
  * Overrides: STRAPI_MCP_URL, STRAPI_MCP_TOKEN, MEDIA_INDEX_OUT.
  */
 
+import {requireNonEmpty} from './lib/requireNonEmpty';
 import {writeFileAtomic} from './lib/writeFileAtomic';
 import path from 'node:path';
 
@@ -99,6 +100,8 @@ async function main(): Promise<void> {
         console.log('Dry run — nothing written.');
         return;
     }
+
+    requireNonEmpty({entries: entries.length}, 'media index');
     await writeFileAtomic(outFile, json);
     console.log(
         `Wrote ${path.relative(process.cwd(), outFile)} (${Buffer.byteLength(json)} bytes).`

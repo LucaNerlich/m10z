@@ -15,6 +15,7 @@
  * Overrides: STRAPI_MCP_URL, STRAPI_MCP_TOKEN, STATISTIK_SNAPSHOT_OUT.
  */
 
+import {requireNonEmpty} from './lib/requireNonEmpty';
 import {writeFileAtomic} from './lib/writeFileAtomic';
 import path from 'node:path';
 
@@ -72,6 +73,11 @@ async function main(): Promise<void> {
         console.log('Dry run — nothing written.');
         return;
     }
+
+    requireNonEmpty(
+        {articles: snapshot.articles.length, podcasts: snapshot.podcasts.length},
+        'statistik snapshot'
+    );
     await writeFileAtomic(outFile, yaml);
     console.log(
         `Wrote ${path.relative(process.cwd(), outFile)} (${Buffer.byteLength(yaml)} bytes).`
