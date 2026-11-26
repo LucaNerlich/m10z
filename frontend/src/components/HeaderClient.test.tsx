@@ -102,3 +102,16 @@ describe('HeaderClient menu focus', () => {
         expect(document.activeElement).toBe(menuButton());
     });
 });
+
+describe('HeaderClient menu label', () => {
+    test('the button name does not contradict its expanded state', async () => {
+        const button = menuButton();
+        expect(button.getAttribute('aria-label')).toBe('Menü');
+        expect(button.getAttribute('aria-expanded')).toBe('false');
+
+        await pressMenuShortcut(document.body);
+
+        expect(menuButton().getAttribute('aria-label')).toBe('Menü');
+        expect(menuButton().getAttribute('aria-expanded')).toBe('true');
+    });
+});
