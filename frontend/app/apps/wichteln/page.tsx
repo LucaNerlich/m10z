@@ -20,6 +20,13 @@ const subscribeNoop = () => () => {};
 const getIsClient = () => true;
 const getIsClientServer = () => false;
 
+/** The banner text for hydrated duplicate names, or null when every name is unique. */
+function duplicateNameError(names: string[]): string | null {
+    const duplicates = findDuplicateNames(names);
+    if (duplicates.length === 0) return null;
+    return `Mehrere Teilnehmer heißen "${duplicates.join('", "')}". Bitte vor dem Zuordnen eindeutige Namen vergeben.`;
+}
+
 type FormErrors = {
     name?: string | null;
     profileUrl?: string | null;
@@ -44,12 +51,7 @@ export default function WichtelnPage() {
                 setAssignments(parsed ? parsed.assignments : []);
                 // State written before duplicate-name validation can hydrate with
                 // two identical names, which would make the assignments ambiguous.
-                const duplicates = findDuplicateNames((parsed?.participants ?? []).map((p) => p.name));
-                if (duplicates.length > 0) {
-                    setError(
-                        `Mehrere Teilnehmer heißen "${duplicates.join('", "')}". Bitte vor dem Zuordnen eindeutige Namen vergeben.`
-                    );
-                }
+                setError(duplicateNameError((parsed?.participants ?? []).map((p) => p.name)));
             } catch {
                 removeItem(STORAGE_KEY);
             }
@@ -80,7 +82,7 @@ export default function WichtelnPage() {
             // the banner always tracks the current state.
             setError(
                 saved
-                    ? null
+                    ? duplicateNameError(newParticipants.map((p) => p.name))
                     : 'Die Wichtel-Liste konnte nicht gespeichert werden. Sie geht beim Neuladen verloren.'
             );
         },
@@ -169,11 +171,9 @@ export default function WichtelnPage() {
     }, []);
 
     const handleShuffle = useCallback(() => {
-        const duplicates = findDuplicateNames(participants.map((p) => p.name));
-        if (duplicates.length > 0) {
-            setError(
-                `Mehrere Teilnehmer heißen "${duplicates.join('", "')}". Bitte vor dem Zuordnen eindeutige Namen vergeben.`
-            );
+        const duplicateError = duplicateNameError(participants.map((p) => p.name));
+        if (duplicateError) {
+            setError(duplicateError);
             return;
         }
         clearError();
@@ -210,6 +210,9 @@ export default function WichtelnPage() {
     }, []);
 
     if (!hydrated) return null;
+
+    // Duplicate names make the name-based assignment list and export ambiguous.
+    const hasDuplicateNames = duplicateNameError(participants.map((p) => p.name)) !== null;
 
     return (
         <div className={styles.page}>
@@ -363,7 +366,7 @@ export default function WichtelnPage() {
                     <Button
                         variant="secondary"
                         onClick={handleExport}
-                        disabled={assignments.length === 0}
+                        disabled={assignments.length === 0 || hasDuplicateNames}
                     >
                         Als Markdown exportieren
                     </Button>
@@ -389,7 +392,7 @@ export default function WichtelnPage() {
                 )}
             </section>
 
-            {assignments.length > 0 && (
+            {assignments.length > 0 && !hasDuplicateNames && (
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Zuordnungen</h2>
                     <p className={styles.hint}>
@@ -419,6 +422,7 @@ export default function WichtelnPage() {
                                                 downloadMarkdownForGiver(participants, assignments, a.giverId)
                                             }
                                             aria-label={`Eigene Datei für ${giver.name} herunterladen`}
+                                            disabled={hasDuplicateNames}
                                         >
                                             Eigene Datei
                                         </button>

@@ -104,3 +104,60 @@ describe('WichtelnPage persistence warning', () => {
         expect(container.querySelector('[role="alert"]')).toBeNull();
     });
 });
+
+describe('WichtelnPage duplicate names', () => {
+    const DUPLICATE = JSON.stringify({
+        participants: [
+            {id: 'a', name: 'Anna', profileUrl: ''},
+            {id: 'b', name: 'Anna', profileUrl: ''},
+        ],
+        assignments: [{giverId: 'a', receiverId: 'b'}, {giverId: 'b', receiverId: 'a'}],
+        timestamp: 1,
+    });
+
+    function exportButton(): HTMLButtonElement {
+        const button = Array.from(container.querySelectorAll('button')).find((candidate) =>
+            candidate.textContent?.includes('Als Markdown exportieren')
+        );
+        if (!button) throw new Error('export button not rendered');
+        return button;
+    }
+
+    test('warns, hides the assignments and disables export for legacy duplicate state', async () => {
+        window.localStorage.setItem(STORAGE_KEY, DUPLICATE);
+        await act(async () => {
+            root.render(<WichtelnPage />);
+        });
+
+        expect(container.querySelector('[role="alert"]')?.textContent).toContain('Mehrere Teilnehmer heißen');
+        expect(container.querySelectorAll('button[aria-label^="Eigene Datei"]')).toHaveLength(0);
+        expect(exportButton().disabled).toBe(true);
+
+        await act(async () => {
+            Array.from(container.querySelectorAll('button'))
+                .find((button) => button.textContent?.includes('Shuffle'))
+                ?.click();
+        });
+
+        expect(container.querySelector('[role="alert"]')?.textContent).toContain('Mehrere Teilnehmer heißen');
+        expect(container.querySelectorAll('button[aria-label^="Eigene Datei"]')).toHaveLength(0);
+    });
+
+    test('keeps the assignments visible when every name is unique', async () => {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            participants: [
+                {id: 'a', name: 'Anna', profileUrl: ''},
+                {id: 'b', name: 'Bea', profileUrl: ''},
+            ],
+            assignments: [{giverId: 'a', receiverId: 'b'}, {giverId: 'b', receiverId: 'a'}],
+            timestamp: 1,
+        }));
+        await act(async () => {
+            root.render(<WichtelnPage />);
+        });
+
+        expect(container.querySelector('[role="alert"]')).toBeNull();
+        expect(container.querySelectorAll('button[aria-label^="Eigene Datei"]')).toHaveLength(2);
+        expect(exportButton().disabled).toBe(false);
+    });
+});

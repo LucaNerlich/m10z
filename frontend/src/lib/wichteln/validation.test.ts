@@ -113,3 +113,13 @@ describe('findDuplicateNames', () => {
         expect(findDuplicateNames([])).toEqual([]);
     });
 });
+
+describe('findDuplicateNames — unicode normalization', () => {
+    test('treats NFC and NFD spellings of the same name as duplicates', () => {
+        expect(findDuplicateNames(['Änne', 'A\u0308nne'])).toEqual(['Änne']);
+    });
+
+    test('validateUniqueName rejects the NFD spelling of an existing name', () => {
+        expect(validateUniqueName(['Änne'], 'A\u0308nne')).toBe('Dieser Name ist bereits vergeben.');
+    });
+});
