@@ -24,7 +24,13 @@ export default defineConfig({
         env: {NODE_ENV: 'test'},
         // Component tests are `.tsx` (and opt into jsdom per file with
         // `// @vitest-environment jsdom`); logic tests stay `.ts` under node.
-        include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'app/**/*.test.ts', 'app/**/*.test.tsx'],
+        include: [
+            'src/**/*.test.ts',
+            'src/**/*.test.tsx',
+            'app/**/*.test.ts',
+            'app/**/*.test.tsx',
+            'scripts/**/*.test.ts',
+        ],
         globals: false,
     },
 });

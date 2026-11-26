@@ -115,6 +115,18 @@ describe('statistik snapshot script', () => {
         expect(overlapped).toBe(true);
     });
 
+    it('refuses to write a snapshot when the CMS returns no content', async () => {
+        await withMockMcp(
+            (_name, _page, id, response) => sendRpc(response, id, []),
+            async (url, outFile) => {
+                await expect(
+                    runScript(scriptEnv({STRAPI_MCP_URL: url, STRAPI_MCP_ADMIN_TOKEN_LOCAL: 'local-token', STATISTIK_SNAPSHOT_OUT: outFile})),
+                ).rejects.toMatchObject({stderr: expect.stringContaining('refusing to overwrite')});
+                expect(await readdir(path.dirname(outFile))).toEqual([]);
+            },
+        );
+    });
+
     it('continues past a full page when pagination is absent', async () => {
         await withMockMcp(
             (name, page, id, response) => {
