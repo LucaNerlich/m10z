@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {validateName, validateProfileUrl, validateUniqueName} from './validation';
+import {findDuplicateNames, validateName, validateProfileUrl, validateUniqueName} from './validation';
 
 describe('validateName', () => {
     test('valid name returns null', () => {
@@ -97,5 +97,29 @@ describe('validateUniqueName', () => {
 
     test('returns null when the list is empty', () => {
         expect(validateUniqueName([], 'Alice')).toBeNull();
+    });
+});
+
+describe('findDuplicateNames', () => {
+    test('returns nothing for unique names', () => {
+        expect(findDuplicateNames(['Alice', 'Bob'])).toEqual([]);
+    });
+
+    test('finds duplicates case-insensitively and trimmed', () => {
+        expect(findDuplicateNames(['Anna', 'Bob', ' anna ', 'Bob'])).toEqual(['Anna', 'Bob']);
+    });
+
+    test('ignores an empty list', () => {
+        expect(findDuplicateNames([])).toEqual([]);
+    });
+});
+
+describe('findDuplicateNames — unicode normalization', () => {
+    test('treats NFC and NFD spellings of the same name as duplicates', () => {
+        expect(findDuplicateNames(['Änne', 'A\u0308nne'])).toEqual(['Änne']);
+    });
+
+    test('validateUniqueName rejects the NFD spelling of an existing name', () => {
+        expect(validateUniqueName(['Änne'], 'A\u0308nne')).toBe('Dieser Name ist bereits vergeben.');
     });
 });

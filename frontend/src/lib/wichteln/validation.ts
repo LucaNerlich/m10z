@@ -21,10 +21,35 @@ export function validateName(name: string): string | null {
  * participants. Duplicate names make assignments ambiguous because the
  * assignment list shows names, not ids.
  */
+/** Comparison key shared by the form check and the state check. */
+function nameKey(name: string): string {
+    return name.trim().normalize('NFC').toLowerCase();
+}
+
 export function validateUniqueName(existingNames: readonly string[], name: string): string | null {
-    const trimmed = name.trim().toLowerCase();
-    const isDuplicate = existingNames.some((existing) => existing.trim().toLowerCase() === trimmed);
+    const key = nameKey(name);
+    const isDuplicate = existingNames.some((existing) => nameKey(existing) === key);
     return isDuplicate ? 'Dieser Name ist bereits vergeben.' : null;
+}
+
+/**
+ * Names that appear more than once (trimmed, case-insensitive), in first-seen order.
+ * Used to reject hydrated state that predates `validateUniqueName`.
+ */
+export function findDuplicateNames(names: readonly string[]): string[] {
+    const firstSeen = new Map<string, string>();
+    const duplicates = new Map<string, string>();
+    for (const name of names) {
+        const trimmed = name.trim();
+        const key = nameKey(trimmed);
+        const first = firstSeen.get(key);
+        if (first === undefined) {
+            firstSeen.set(key, trimmed);
+        } else {
+            duplicates.set(key, first);
+        }
+    }
+    return [...duplicates.values()];
 }
 
 export function validateProfileUrl(url: string): string | null {
