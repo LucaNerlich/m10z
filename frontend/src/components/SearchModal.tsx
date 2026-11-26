@@ -7,6 +7,7 @@ import {BookIcon, FileTextIcon, MusicNoteIcon, UserIcon} from '@phosphor-icons/r
 
 import {useSearchQuery} from '@/src/hooks/useSearchQuery';
 import {
+    capSearchQuery,
     deriveSearchStatus,
     SEARCH_MAX_QUERY_LENGTH,
     type SearchStatus,
@@ -239,7 +240,7 @@ export function SearchModal({onClose}: SearchModalProps): React.ReactElement {
                         aria-label="Suche"
                         maxLength={SEARCH_MAX_QUERY_LENGTH}
                         value={query}
-                        onChange={(e) => setQuery(e.target.value.slice(0, SEARCH_MAX_QUERY_LENGTH))}
+                        onChange={(e) => setQuery(capSearchQuery(e.target.value))}
                         onKeyDown={handleKeyDown}
                         role="combobox"
                         aria-autocomplete="list"
