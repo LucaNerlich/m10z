@@ -13,9 +13,11 @@ import authorRouter from './author/routes/author';
 import categoryRouter from './category/routes/category';
 import podcastRouter from './podcast/routes/podcast';
 
+import {PUBLISHED_ONLY_ROUTE_CONFIG} from '../policies/published-status-only';
+
 type GuardedRoute = {config: {find: {policies: string[]}; findOne: {policies: string[]}}};
 
-const EXPECTED = ['global::published-status-only'];
+const EXPECTED = [...PUBLISHED_ONLY_ROUTE_CONFIG.find.policies];
 
 describe('draft-status route wiring', () => {
     for (const [name, router] of [
