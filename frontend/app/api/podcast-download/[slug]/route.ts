@@ -10,6 +10,7 @@ import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {getClientIp} from '@/src/lib/net/getClientIp';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {getStrapiApiBaseUrl} from '@/src/lib/strapiTransport';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
@@ -22,6 +23,12 @@ export const dynamic = 'force-dynamic';
 // treat the enclosure URL as a valid audio file. Strip it before slug validation/lookup. Since
 // `validateSlug` disallows dots, this is unambiguous and never affects a legitimate slug.
 const TRAILING_MP3_SUFFIX = /\.mp3$/i;
+
+// Generous per-IP cap: podcatchers legitimately fetch many episodes in one go,
+// but the endpoint is unauthenticated and every accepted request costs an
+// outbound analytics event. The per-slug dedupe below counts a listener once;
+// this bounds a client.
+const downloadLimiter = createRateLimiter({windowMs: 60_000, max: 120});
 
 /**
  * Determines whether a download URL is allowed for redirection.
@@ -62,6 +69,15 @@ export async function GET(request: Request, {params}: SlugPageParams) {
         return new NextResponse('Not Found', {status: 404});
     }
 
+    const clientIp = getClientIp(request);
+    const rl = downloadLimiter.check(`download:${clientIp}`);
+    if (!rl.ok) {
+        return new NextResponse('Too Many Requests', {
+            status: 429,
+            headers: {'Retry-After': String(rl.retryAfterSeconds), 'Cache-Control': 'no-store'},
+        });
+    }
+
     let fileUrl: string | undefined;
     let title: string | null = null;
     let podcast: Awaited<ReturnType<typeof fetchPodcastBySlug>> = null;
@@ -96,7 +112,7 @@ export async function GET(request: Request, {params}: SlugPageParams) {
         request.method !== 'HEAD' &&
         isPodcastDownloadTrackingEnabled() &&
         shouldRecordDownloadForRange(request.headers.get('range')) &&
-        shouldRecordDownloadDeduped(slug, getClientIp(request))
+        shouldRecordDownloadDeduped(slug, clientIp)
     ) {
         after(() => sendPodcastDownloadEvent({slug, title, request}));
     }

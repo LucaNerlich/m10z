@@ -106,6 +106,28 @@ describe('GET /api/podcast-download/[slug]', () => {
         expect(fetchPodcastBySlug).toHaveBeenCalledWith('valid-slug');
     });
 
+    test('returns 429 after the per-client request cap', async () => {
+        fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
+        mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
+        isAllowedDownloadTarget.mockReturnValue(true);
+
+        // A distinct client IP keeps this test in its own limiter bucket.
+        const request = new Request('https://m10z.de/api/podcast-download/valid-slug.mp3', {
+            method: 'GET',
+            headers: {'x-forwarded-for': '203.0.113.77'},
+        });
+        const context = {params: Promise.resolve({slug: 'valid-slug'})};
+
+        for (let i = 0; i < 120; i++) {
+            expect((await GET(request, context)).status).toBe(302);
+        }
+
+        const capped = await GET(request, context);
+        expect(capped.status).toBe(429);
+        expect(capped.headers.get('Retry-After')).toBeTruthy();
+        expect(capped.headers.get('Cache-Control')).toBe('no-store');
+    });
+
     test('strips the .mp3 suffix case-insensitively before slug validation/lookup', async () => {
         fetchPodcastBySlug.mockResolvedValue({title: 'Episode 1', file: {}});
         mediaUrlToAbsolute.mockReturnValue('https://cdn.example.com/ep.mp3');
