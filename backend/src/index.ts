@@ -103,17 +103,19 @@ export default {
         // The invalidation request carries the shared secret, so a plaintext target
         // would expose it. The runtime check in getNextBaseUrl throws inside the
         // queue, which catches it, retries and finally dead-letters the event — so
-        // fail at boot instead, like the BASE_DOMAIN guard above.
+        // fail at boot instead, like the BASE_DOMAIN guard above. `/api/invalidate`
+        // is appended to the value, so a path or query is just as fatal.
         if (process.env.NODE_ENV === 'production' && process.env.FRONTEND_URL) {
-            let isHttps = false;
+            const frontendUrl = process.env.FRONTEND_URL;
+            let isHttpsOrigin = false;
             try {
-                isHttps = new URL(process.env.FRONTEND_URL).protocol === 'https:';
+                isHttpsOrigin = isValidBaseDomain(frontendUrl) && new URL(frontendUrl).protocol === 'https:';
             } catch {
-                isHttps = false;
+                isHttpsOrigin = false;
             }
 
-            if (!isHttps) {
-                const errorMsg = `Invalid FRONTEND_URL: "${process.env.FRONTEND_URL}". Production requires an absolute https origin.`;
+            if (!isHttpsOrigin) {
+                const errorMsg = `Invalid FRONTEND_URL: "${frontendUrl}". Production requires an absolute https origin without a path or query.`;
                 strapi.log.error(errorMsg);
                 throw new Error(errorMsg);
             }
