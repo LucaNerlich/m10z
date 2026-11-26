@@ -167,7 +167,7 @@ export default function HeaderClient({
                 className={`${styles.burgerButton} ${isMenuOpen ? styles.burgerButtonActive : ''}`}
                 aria-expanded={isMenuOpen}
                 aria-controls="header-menu"
-                aria-label="Menü öffnen"
+                aria-label="Menü"
                 data-umami-event="header-menu-toggle"
                 onClick={toggleMenu}
             >
