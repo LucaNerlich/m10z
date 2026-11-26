@@ -18,9 +18,19 @@ export const SEARCH_MAX_QUERY_LENGTH = 200;
  */
 export type SearchStatus = 'idle' | 'too-short' | 'pending' | 'error' | 'empty' | 'ready';
 
+/**
+ * Cap the query at the shared length without splitting a surrogate pair. A cut
+ * through an emoji leaves a lone high surrogate, which `encodeURIComponent`
+ * (the SWR key) throws on.
+ */
+export function capSearchQuery(query: string): string {
+    const capped = query.slice(0, SEARCH_MAX_QUERY_LENGTH);
+    return capped.replace(/[\uD800-\uDBFF]$/, '');
+}
+
 /** The exact string the fetch boundary and the status derivation both use. */
 export function normalizeSearchQuery(query: string): string {
-    return query.trim().slice(0, SEARCH_MAX_QUERY_LENGTH);
+    return capSearchQuery(query.trim());
 }
 
 type SearchStatusInput = {
