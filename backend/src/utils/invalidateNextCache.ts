@@ -50,7 +50,10 @@ function getNextBaseUrl(): string {
         throw new Error('FRONTEND_URL must use https in production (Next cache invalidation target).');
     }
 
-    return normalized;
+    // Canonical origin: strips dot segments and backslashes that survive the
+    // slash-only pathname check (e.g. `https://m10z.de//.`), so the composed
+    // target can never become `//api/invalidate`.
+    return new URL(normalized).origin;
 }
 
 function getSecret(): string | undefined {
