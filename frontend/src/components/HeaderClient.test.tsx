@@ -62,3 +62,38 @@ describe('HeaderClient menu shortcut', () => {
         expect(menuButton().getAttribute('aria-expanded')).toBe('true');
     });
 });
+
+describe('HeaderClient menu focus', () => {
+    async function openMenu() {
+        await pressMenuShortcut(document.body);
+        // The open effect focuses the first link on a zero timeout.
+        await act(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        });
+        expect(menuButton().getAttribute('aria-expanded')).toBe('true');
+    }
+
+    test('a click outside keeps focus on the clicked control', async () => {
+        await openMenu();
+        input.focus();
+
+        await act(async () => {
+            input.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+        });
+
+        expect(menuButton().getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(input);
+    });
+
+    test('Escape returns focus to the burger', async () => {
+        await openMenu();
+        menuButton().focus();
+
+        await act(async () => {
+            document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
+        });
+
+        expect(menuButton().getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(menuButton());
+    });
+});

@@ -150,9 +150,10 @@ export default function HeaderClient({
                 }
             }, 0);
         } else if (prevMenuOpenRef.current) {
-            // Restore focus to burger button when menu closes (only if it was previously open)
-            if (burgerButtonRef.current) {
-                burgerButtonRef.current.focus();
+            // Restore focus only when it was inside the menu (Escape). A click outside
+            // has already focused the target control; stealing it back wastes the click.
+            if (menuRef.current?.contains(document.activeElement)) {
+                burgerButtonRef.current?.focus();
             }
         }
         prevMenuOpenRef.current = isMenuOpen;
