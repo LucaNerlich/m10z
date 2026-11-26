@@ -103,3 +103,13 @@ describe('computeRevalidation', () => {
         expect(paths).toContain('/kategorien/politik');
     });
 });
+
+describe('computeRevalidation — the /team list page', () => {
+    test.each(['article', 'podcast', 'author'] as const)(
+        '%s events hard-expire /team so author counts and links are fresh',
+        (type) => {
+            const {pages} = computeRevalidation({type, action: 'publish', slug: 'x'});
+            expect(pages).toContain('/team');
+        },
+    );
+});

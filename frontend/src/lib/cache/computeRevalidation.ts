@@ -29,12 +29,12 @@ function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: s
     switch (type) {
         case 'article':
             return {
-                pages: [routes.articles, routes.home, routes.categories],
+                pages: [routes.articles, routes.home, routes.categories, routes.authors],
                 paths: [...(slug ? [routes.article(slug)] : []), routes.articleFeed, '/sitemap.xml', '/sitemap'],
             };
         case 'podcast':
             return {
-                pages: [routes.podcasts, routes.home, routes.categories],
+                pages: [routes.podcasts, routes.home, routes.categories, routes.authors],
                 paths: [...(slug ? [routes.podcast(slug)] : []), routes.audioFeed, '/sitemap.xml', '/sitemap'],
             };
         case 'author':
@@ -43,7 +43,7 @@ function pagesForType(type: ContentTypeKey, slug: string | undefined): {pages: s
             // for one visit — the same bounded window article/podcast renames have.
             // Deletes still take effect immediately because the entry is gone.
             return {
-                pages: [routes.articles, routes.podcasts, routes.home],
+                pages: [routes.articles, routes.podcasts, routes.home, routes.authors],
                 paths: slug ? [routes.author(slug)] : [],
             };
         case 'category':
