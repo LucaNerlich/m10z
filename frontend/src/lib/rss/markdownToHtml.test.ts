@@ -17,6 +17,12 @@ describe('markdownToHtml — rendering', () => {
         const html = markdownToHtml('[M10Z](https://m10z.de)');
         expect(html).toContain('href="https://m10z.de"');
     });
+
+    test('gives headings ids so in-content anchors resolve', () => {
+        const html = markdownToHtml('## Content auf drei Standbeinen\n\n[Zurück](#content-auf-drei-standbeinen)');
+        expect(html).toContain('<h2 id="content-auf-drei-standbeinen">');
+        expect(html).toContain('href="#content-auf-drei-standbeinen"');
+    });
 });
 
 describe('markdownToHtml — sanitization (XSS)', () => {
