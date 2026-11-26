@@ -45,6 +45,26 @@ describe('check-sql-injection-patterns', () => {
         expect(issues[0].line).toBe(1);
     });
 
+    test('flags a typed raw template with an interpolated value', () => {
+        const source = `db.connection.raw<Row>(${TICK}SELECT * FROM t WHERE slug = ${DOLLAR}{slug}${TICK})`;
+
+        expect(findSqlInjectionIssues(source)).toHaveLength(1);
+    });
+
+    test('flags a typed raw call concatenated with a value', () => {
+        const quoted = `db.connection.raw<Row>(${QUOTE}SELECT * FROM t WHERE slug = ${QUOTE} + slug)`;
+        const templated = `db.connection.raw<Row>(${TICK}SELECT * FROM t WHERE slug = ${TICK} + slug)`;
+
+        expect(findSqlInjectionIssues(quoted)).toHaveLength(1);
+        expect(findSqlInjectionIssues(templated)).toHaveLength(1);
+    });
+
+    test('still passes a parameterised typed raw call', () => {
+        const source = `db.connection.raw<Row>(${QUOTE}SELECT * FROM t WHERE slug = ?${QUOTE}, [slug])`;
+
+        expect(findSqlInjectionIssues(source)).toHaveLength(0);
+    });
+
     test('passes a parameterised quoted raw call', () => {
         const source = `db.connection.raw(${QUOTE}SELECT * FROM t WHERE slug = ?${QUOTE}, [slug])`;
 
