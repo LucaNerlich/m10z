@@ -7,7 +7,9 @@ const pathname = vi.hoisted(() => ({current: '/'}));
 
 vi.mock('next/navigation', () => ({usePathname: () => pathname.current}));
 vi.mock('next/script', () => ({
-    default: ({src}: {src: string}) => <span data-script-src={src} />,
+    default: ({src, ...rest}: {src: string; [key: string]: unknown}) => (
+        <span data-script-src={src} {...rest} />
+    ),
 }));
 
 import UmamiAnalytics from './UmamiAnalytics';
@@ -32,25 +34,43 @@ afterEach(async () => {
     vi.unstubAllEnvs();
 });
 
-async function renderAt(path: string): Promise<string[]> {
+async function renderAt(path: string): Promise<HTMLElement[]> {
     pathname.current = path;
     await act(async () => {
         root.render(<UmamiAnalytics />);
     });
-    return Array.from(container.querySelectorAll('[data-script-src]')).map(
-        (el) => el.getAttribute('data-script-src') ?? '',
-    );
+    return Array.from(container.querySelectorAll('[data-script-src]')) as HTMLElement[];
 }
 
 describe('UmamiAnalytics', () => {
-    test('loads the tracker and the recorder on a normal page', async () => {
-        const sources = await renderAt('/artikel/erstes-spiel-test');
-        expect(sources.some((src) => src.endsWith('/script.js'))).toBe(true);
-        expect(sources.some((src) => src.endsWith('/recorder.js'))).toBe(true);
+    test('loads the tracker and the recorder on a normal page without the query string', async () => {
+        const scripts = await renderAt('/artikel/erstes-spiel-test');
+        expect(scripts.some((el) => el.getAttribute('data-script-src')?.endsWith('/script.js'))).toBe(true);
+        expect(scripts.some((el) => el.getAttribute('data-script-src')?.endsWith('/recorder.js'))).toBe(true);
+        for (const el of scripts) {
+            expect(el.getAttribute('data-exclude-search')).toBe('true');
+        }
     });
 
     test('renders nothing on a preview route', async () => {
-        const sources = await renderAt('/preview/artikel/erstes-spiel-test');
-        expect(sources).toEqual([]);
+        expect(await renderAt('/preview/artikel/erstes-spiel-test')).toEqual([]);
+    });
+
+    test('reloads into a preview route when a tracker is already loaded', async () => {
+        const reload = vi.fn();
+        const originalLocation = window.location;
+        Object.defineProperty(window, 'location', {
+            configurable: true,
+            value: {...originalLocation, reload},
+        });
+        (window as unknown as {umami?: unknown}).umami = () => undefined;
+
+        try {
+            await renderAt('/preview/artikel/erstes-spiel-test');
+            expect(reload).toHaveBeenCalledTimes(1);
+        } finally {
+            delete (window as unknown as {umami?: unknown}).umami;
+            Object.defineProperty(window, 'location', {configurable: true, value: originalLocation});
+        }
     });
 });
