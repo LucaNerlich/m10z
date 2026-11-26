@@ -32,6 +32,12 @@ export const REHYPE_EXTERNAL_LINKS_OPTIONS: RehypeExternalLinksOptions = {
 export const REHYPE_SANITIZE_SCHEMA = {
     ...defaultSchema,
     clobberPrefix: '',
+    // `tel:` is a non-web scheme the anchor classifier deliberately keeps in the
+    // same tab; the default allow-list (http/https/irc/ircs/mailto/xmpp) drops it.
+    protocols: {
+        ...defaultSchema.protocols,
+        href: [...(defaultSchema.protocols?.href ?? []), 'tel'],
+    },
     tagNames: [...(defaultSchema.tagNames || []), 'ins', 'sup', 'sub', 'mark'],
     attributes: {
         ...defaultSchema.attributes,

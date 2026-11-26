@@ -157,3 +157,4 @@ describe('getMarkdownToHtmlState', () => {
         expect(after.sanitizer.allowedAttrCount).toBeGreaterThan(0);
     });
 });
+
