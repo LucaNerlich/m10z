@@ -172,6 +172,7 @@ export function getMarkdownToHtmlState() {
             engine: 'remark/rehype',
             remarkPlugins: ['remark-parse', 'remark-breaks', 'remark-gfm', 'remark-smartypants'],
             rehypePlugins: [
+                'rehype-slug',
                 'rehype-raw',
                 'rehype-resolve-feed-urls',
                 'rehype-sanitize',

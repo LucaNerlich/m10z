@@ -162,4 +162,9 @@ describe('getMarkdownToHtmlState', () => {
         expect(after.sanitizer.allowedTagsCount).toBeGreaterThan(0);
         expect(after.sanitizer.allowedAttrCount).toBeGreaterThan(0);
     });
+
+    test('reports the same rehype plugins the pipeline runs', () => {
+        // rehype-slug owns the heading ids the feed anchors depend on.
+        expect(getMarkdownToHtmlState().renderer.rehypePlugins[0]).toBe('rehype-slug');
+    });
 });
