@@ -105,11 +105,16 @@ describe('search-index metrics controller', () => {
 
     test('never passes a query-string token to verification', async () => {
         vi.stubEnv('DIAGNOSTICS_TOKEN', 'header-token');
-        const ctx = makeCtx({token: 'query-token'});
+        // The header check fails, so a header-then-query fallback would be reached
+        // and would accept the valid token in the query string.
+        mocks.verifySecret.mockReturnValueOnce(false);
+        const ctx = makeCtx({token: 'header-token'});
         ctx.request.headers = {};
 
         await createController().metrics(ctx);
 
+        expect(ctx.status).toBe(401);
+        expect(mocks.verifySecret).toHaveBeenCalledTimes(1);
         expect(mocks.verifySecret).toHaveBeenCalledWith(undefined, 'header-token');
     });
 
