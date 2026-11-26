@@ -27,6 +27,10 @@ export const MEDIA_FIELDS = [
     'alternativeText',
     'caption',
     'formats',
+    // Enclosure type/length and the audio-file size read these; a media object
+    // without a `medium` derivative has no `formats` entry to fall back on.
+    'mime',
+    'size',
 ] as const;
 
 const populateMedia = {fields: MEDIA_FIELDS};
