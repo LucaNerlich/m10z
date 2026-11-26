@@ -28,7 +28,7 @@
         "baseUrl": ".",
         "paths": {
             "@strapi/design-system": [
-                "../../node_modules/.pnpm/@strapi+design-system@2.2.4_@babel+runtime@7.29.10_@codemirror+autocomplete@6.20.0_@cod_eca388d792315e16f1ac2a7467af4c07/node_modules/@strapi/design-system"
+                "../../node_modules/.pnpm/@strapi+design-system@2.3.1_@babel+runtime@7.29.14_@codemirror+autocomplete@6.20.4_@cod_f2420811b295e8008f7594e6d2b25927/node_modules/@strapi/design-system"
             ]
         }
     },
