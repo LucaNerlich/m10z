@@ -19,7 +19,7 @@ export function ContentAuthors({authors, className}: ContentAuthorsProps) {
 
     return (
         <div className={classes}>
-            <AuthorList authors={authors} showAvatars={true} layout="inline" />
+            <AuthorList authors={authors} showAvatars={true} />
         </div>
     );
 }

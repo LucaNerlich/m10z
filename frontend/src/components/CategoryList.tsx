@@ -6,7 +6,6 @@ import styles from './CategoryList.module.css';
 
 type CategoryListProps = {
     categories: StrapiCategoryRef[];
-    maxDisplay?: number;
 };
 
 /**
@@ -15,15 +14,12 @@ type CategoryListProps = {
  * Renders categories as tag-like elements.
  * Supports horizontal scrolling on mobile and wrapped grid on desktop.
  */
-export function CategoryList({categories, maxDisplay}: CategoryListProps) {
+export function CategoryList({categories}: CategoryListProps) {
     if (categories.length === 0) return null;
-
-    const displayCategories = maxDisplay ? categories.slice(0, maxDisplay) : categories;
-    const remainingCount = maxDisplay && categories.length > maxDisplay ? categories.length - maxDisplay : 0;
 
     return (
         <div className={styles.list}>
-            {displayCategories.map((category, index) => {
+            {categories.map((category, index) => {
                 const categorySlug = category.slug ?? '';
                 const categoryUrl = routes.category(categorySlug);
                 const title = category.title ?? categorySlug;
@@ -34,9 +30,6 @@ export function CategoryList({categories, maxDisplay}: CategoryListProps) {
                     </Link>
                 );
             })}
-            {remainingCount > 0 ? (
-                <span className={styles.more}>...</span>
-            ) : null}
         </div>
     );
 }

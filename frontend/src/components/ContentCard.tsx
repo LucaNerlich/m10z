@@ -102,7 +102,7 @@ export function ContentCard({
                     </p>
                 ) : null}
                 {showAuthors && authors && authors.length > 0 ? (
-                    <AuthorList authors={authors} showAvatars={false} layout="inline" />
+                    <AuthorList authors={authors} showAvatars={false} />
                 ) : null}
                 {showCategories && categories && categories.length > 0 ? (
                     <CategoryList categories={categories} />
