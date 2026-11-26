@@ -113,3 +113,10 @@ describe('computeRevalidation — the /team list page', () => {
         },
     );
 });
+
+describe('computeRevalidation — category changes', () => {
+    test('stale-mark author pages, which embed category titles and counts', () => {
+        const {tags} = computeRevalidation({type: 'category', action: 'update', slug: 'x'});
+        expect(tags).toContain(typeTag('author'));
+    });
+});
