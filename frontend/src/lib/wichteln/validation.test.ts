@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
 
-import {validateName, validateProfileUrl, validateUniqueName} from './validation';
+import {findDuplicateNames, validateName, validateProfileUrl, validateUniqueName} from './validation';
 
 describe('validateName', () => {
     test('valid name returns null', () => {
@@ -97,5 +97,19 @@ describe('validateUniqueName', () => {
 
     test('returns null when the list is empty', () => {
         expect(validateUniqueName([], 'Alice')).toBeNull();
+    });
+});
+
+describe('findDuplicateNames', () => {
+    test('returns nothing for unique names', () => {
+        expect(findDuplicateNames(['Alice', 'Bob'])).toEqual([]);
+    });
+
+    test('finds duplicates case-insensitively and trimmed', () => {
+        expect(findDuplicateNames(['Anna', 'Bob', ' anna ', 'Bob'])).toEqual(['Anna', 'Bob']);
+    });
+
+    test('ignores an empty list', () => {
+        expect(findDuplicateNames([])).toEqual([]);
     });
 });

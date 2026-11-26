@@ -9,7 +9,7 @@ import {getItem, setItem, removeItem} from '@/src/lib/storage/localStorage';
 import {shuffleAndAssign} from '@/src/lib/wichteln/shuffle';
 import {parseWichtelnStorage} from '@/src/lib/wichteln/storage';
 import {downloadMarkdown, downloadMarkdownForGiver} from '@/src/lib/wichteln/export';
-import {validateName, validateProfileUrl, validateUniqueName} from '@/src/lib/wichteln/validation';
+import {validateName, validateProfileUrl, validateUniqueName, findDuplicateNames} from '@/src/lib/wichteln/validation';
 import {type Participant, type Assignment} from './types';
 
 import styles from './page.module.css';
@@ -42,6 +42,14 @@ export default function WichtelnPage() {
                 const parsed = parseWichtelnStorage(getItem<unknown>(STORAGE_KEY));
                 setParticipants(parsed ? parsed.participants : []);
                 setAssignments(parsed ? parsed.assignments : []);
+                // State written before duplicate-name validation can hydrate with
+                // two identical names, which would make the assignments ambiguous.
+                const duplicates = findDuplicateNames((parsed?.participants ?? []).map((p) => p.name));
+                if (duplicates.length > 0) {
+                    setError(
+                        `Mehrere Teilnehmer heißen "${duplicates.join('", "')}". Bitte vor dem Zuordnen eindeutige Namen vergeben.`
+                    );
+                }
             } catch {
                 removeItem(STORAGE_KEY);
             }
@@ -161,6 +169,13 @@ export default function WichtelnPage() {
     }, []);
 
     const handleShuffle = useCallback(() => {
+        const duplicates = findDuplicateNames(participants.map((p) => p.name));
+        if (duplicates.length > 0) {
+            setError(
+                `Mehrere Teilnehmer heißen "${duplicates.join('", "')}". Bitte vor dem Zuordnen eindeutige Namen vergeben.`
+            );
+            return;
+        }
         clearError();
         if (participants.length < 2) {
             setError('Mindestens 2 Teilnehmer für die Zuordnung erforderlich.');

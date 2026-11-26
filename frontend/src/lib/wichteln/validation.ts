@@ -27,6 +27,26 @@ export function validateUniqueName(existingNames: readonly string[], name: strin
     return isDuplicate ? 'Dieser Name ist bereits vergeben.' : null;
 }
 
+/**
+ * Names that appear more than once (trimmed, case-insensitive), in first-seen order.
+ * Used to reject hydrated state that predates `validateUniqueName`.
+ */
+export function findDuplicateNames(names: readonly string[]): string[] {
+    const firstSeen = new Map<string, string>();
+    const duplicates = new Map<string, string>();
+    for (const name of names) {
+        const trimmed = name.trim();
+        const key = trimmed.toLowerCase();
+        const first = firstSeen.get(key);
+        if (first === undefined) {
+            firstSeen.set(key, trimmed);
+        } else {
+            duplicates.set(key, first);
+        }
+    }
+    return [...duplicates.values()];
+}
+
 export function validateProfileUrl(url: string): string | null {
     const trimmed = url.trim();
     if (trimmed.length === 0) return null;
