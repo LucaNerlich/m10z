@@ -243,18 +243,16 @@ describe('registerShutdownHandlers', () => {
         };
     }
 
-    test('a requested stop exits 0, a fatal crash exits 1', () => {
+    test('leaves SIGTERM/SIGINT to Strapi and drains on a fatal crash', () => {
         const {handlers, processLike} = makeProcess();
         const log = makeLogger();
         const shutdown = vi.fn();
 
         registerShutdownHandlers(processLike, shutdown, log);
 
-        handlers.SIGTERM();
-        expect(shutdown).toHaveBeenLastCalledWith('SIGTERM', 0);
-
-        handlers.SIGINT();
-        expect(shutdown).toHaveBeenLastCalledWith('SIGINT', 0);
+        // Strapi's destroyOnSignal owns the signals; a second pair would race it.
+        expect(handlers.SIGTERM).toBeUndefined();
+        expect(handlers.SIGINT).toBeUndefined();
 
         handlers.uncaughtException(new Error('boom'));
         expect(shutdown).toHaveBeenLastCalledWith('uncaughtException', 1);

@@ -106,3 +106,24 @@ describe('production boot guard', () => {
         ).not.toThrow();
     });
 });
+
+describe('destroy lifecycle', () => {
+    test('drains the HTTP server before Strapi tears it down', async () => {
+        const close = vi.fn((callback: (err?: Error) => void) => callback());
+        const closeIdleConnections = vi.fn();
+        const log = {info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn()};
+        const exit = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
+
+        try {
+            await plugin.destroy({
+                strapi: {log, server: {httpServer: {close, closeIdleConnections}}} as never,
+            });
+
+            expect(close).toHaveBeenCalledTimes(1);
+            // Strapi exits after destroy resolves, so the drain must not.
+            expect(exit).not.toHaveBeenCalled();
+        } finally {
+            exit.mockRestore();
+        }
+    });
+});

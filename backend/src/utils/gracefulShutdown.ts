@@ -141,20 +141,22 @@ export async function runGracefulShutdown({
 }
 
 /**
- * Register the process shutdown hooks.
+ * Register the process crash hooks.
  *
- * A requested stop (SIGTERM/SIGINT) exits 0; a fatal `uncaughtException` is a
- * crash and exits 1 so supervisors restart the CMS and exit-code alerting
- * fires. Unhandled rejections are logged but never trigger a shutdown.
+ * SIGTERM/SIGINT are owned by Strapi: `createStrapi` installs its own handlers
+ * that call `strapi.destroy()`, which runs the app's `destroy` lifecycle and
+ * then tears down the server and the database. Registering a second pair here
+ * made the two drains race each other and aborted in-flight requests.
+ *
+ * A fatal `uncaughtException` remains ours: it destroys through the same drain
+ * and exits 1 so supervision and exit-code alerting see the failure. Unhandled
+ * rejections are logged but never trigger a shutdown.
  */
 export function registerShutdownHandlers(
     processLike: ShutdownProcess,
     shutdown: ShutdownTrigger,
     log: ShutdownLogger,
 ): void {
-    processLike.once('SIGTERM', () => shutdown('SIGTERM', 0));
-    processLike.once('SIGINT', () => shutdown('SIGINT', 0));
-
     processLike.on('uncaughtException', (error) => {
         log.error('Uncaught Exception:', error);
         shutdown('uncaughtException', 1);
