@@ -172,21 +172,21 @@ function walk(dir) {
 // Optional type arguments (`raw<Row>(\`…\`)`) are legal TypeScript and must not
 // slip past the detector.
 const OPENERS = [
-    {re: /(?:strapi\.db\.)?connection\.raw(?:<[^()]*>)?\s*\(\s*`/g, label: 'connection.raw(`...`)'},
-    {re: /\$queryRaw(?:<[^()]*>)?\s*`/g, label: '$queryRaw`...`'},
-    {re: /\$executeRaw(?:<[^()]*>)?\s*`/g, label: '$executeRaw`...`'},
-    {re: /\.query(?:<[^()]*>)?\s*\(\s*`/g, label: '.query(`...`)'},
-    {re: /\.(?:where|select|having|orderBy|groupBy|join)Raw(?:<[^()]*>)?\s*\(\s*`/g, label: '.*Raw(`...`)'},
+    {re: /(?:strapi\.db\.)?connection\.raw(?:<[^()]*?>)?\s*\(\s*`/g, label: 'connection.raw(`...`)'},
+    {re: /\$queryRaw(?:<[^()]*?>)?\s*`/g, label: '$queryRaw`...`'},
+    {re: /\$executeRaw(?:<[^()]*?>)?\s*`/g, label: '$executeRaw`...`'},
+    {re: /\.query(?:<[^()]*?>)?\s*\(\s*`/g, label: '.query(`...`)'},
+    {re: /\.(?:where|select|having|orderBy|groupBy|join)Raw(?:<[^()]*?>)?\s*\(\s*`/g, label: '.*Raw(`...`)'},
 ];
 
 // Raw calls whose first argument is a string literal — the concatenation form:
 // a raw call taking `'SELECT … WHERE name = '` followed by `+ userInput`.
 const CONCAT_OPENERS = [
-    {re: /(?:strapi\.db\.)?connection\.raw(?:<[^()]*>)?\s*\(\s*/g, label: 'connection.raw(...)'},
-    {re: /\$queryRaw(?:<[^()]*>)?\s*\(\s*/g, label: '$queryRaw(...)'},
-    {re: /\$executeRaw(?:<[^()]*>)?\s*\(\s*/g, label: '$executeRaw(...)'},
-    {re: /\.query(?:<[^()]*>)?\s*\(\s*/g, label: '.query(...)'},
-    {re: /\.(?:where|select|having|orderBy|groupBy|join)Raw(?:<[^()]*>)?\s*\(\s*/g, label: '.*Raw(...)'},
+    {re: /(?:strapi\.db\.)?connection\.raw(?:<[^()]*?>)?\s*\(\s*/g, label: 'connection.raw(...)'},
+    {re: /\$queryRaw(?:<[^()]*?>)?\s*\(\s*/g, label: '$queryRaw(...)'},
+    {re: /\$executeRaw(?:<[^()]*?>)?\s*\(\s*/g, label: '$executeRaw(...)'},
+    {re: /\.query(?:<[^()]*?>)?\s*\(\s*/g, label: '.query(...)'},
+    {re: /\.(?:where|select|having|orderBy|groupBy|join)Raw(?:<[^()]*?>)?\s*\(\s*/g, label: '.*Raw(...)'},
 ];
 
 /**

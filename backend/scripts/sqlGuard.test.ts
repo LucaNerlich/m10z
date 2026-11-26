@@ -59,6 +59,24 @@ describe('check-sql-injection-patterns', () => {
         expect(findSqlInjectionIssues(templated)).toHaveLength(1);
     });
 
+    test('does not let a later comparison swallow a safe typed call', () => {
+        const source = [
+            `const ok = ${DOLLAR}queryRaw<Row>${TICK}SELECT 1${TICK};`,
+            `const m = a > ${TICK}x${DOLLAR}{y}${TICK};`,
+        ].join('\n');
+
+        expect(findSqlInjectionIssues(source)).toHaveLength(0);
+    });
+
+    test('still flags an interpolated typed call followed by a comparison', () => {
+        const source = [
+            `const q = ${DOLLAR}queryRaw<Row>${TICK}SELECT * FROM t WHERE id = ${DOLLAR}{id}${TICK};`,
+            `const m = x > ${TICK}plain${TICK};`,
+        ].join('\n');
+
+        expect(findSqlInjectionIssues(source)).toHaveLength(1);
+    });
+
     test('still passes a parameterised typed raw call', () => {
         const source = `db.connection.raw<Row>(${QUOTE}SELECT * FROM t WHERE slug = ?${QUOTE}, [slug])`;
 
