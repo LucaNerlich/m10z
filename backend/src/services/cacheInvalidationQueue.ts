@@ -29,15 +29,11 @@ const queue = new AsyncTaskQueue<QueueItem, StrapiWithDb>({
             }
         }
     },
-    onAbandoned: (items, strapi) => {
-        // Dead-lettered items will never be delivered; drop their durable rows so the
-        // table does not accumulate rows for a permanently-down frontend.
-        for (const item of items) {
-            for (const dbId of item.dbIds) {
-                void removePending(strapi, dbId);
-            }
-        }
-    },
+    // No dead-letter cutoff: an abandoned event leaves the queue and nothing
+    // re-reads its row until the next Strapi restart, so a frontend-only outage
+    // would leave the caches stale. The capped 60s backoff keeps retrying until
+    // the frontend recovers; the durable rows remain as crash safety.
+    maxFailureRetries: Number.POSITIVE_INFINITY,
 });
 
 export function queueCacheInvalidation(event: InvalidationEvent, strapi: StrapiWithDb | undefined | null): void {

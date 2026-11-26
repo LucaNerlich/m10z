@@ -41,6 +41,38 @@ describe('AsyncTaskQueue', () => {
         expect(run).toHaveBeenCalledTimes(2);
     });
 
+    test('a batch with at least one success does not count toward the dead-letter cutoff', async () => {
+        const run = vi.fn(async (item: string) => item === 'good');
+        const onAbandoned = vi.fn();
+        const queue = new AsyncTaskQueue<string>({
+            name: 'test',
+            keyOf: (item) => item,
+            run,
+            debounceMs: 100,
+            maxFailureRetries: 2,
+            onAbandoned,
+        });
+
+        queue.enqueue('good', strapi);
+        queue.enqueue('bad', strapi);
+
+        // Round 1: one success and one failure. The success proves the target is
+        // reachable, so the counter resets instead of starting at 1.
+        await vi.advanceTimersByTimeAsync(100);
+        expect(onAbandoned).not.toHaveBeenCalled();
+
+        // Round 2: 'bad' alone fails -> counter 1. The pre-fix code abandoned here
+        // (counter 2), so the call count is the assertion that tells them apart.
+        await vi.advanceTimersByTimeAsync(200);
+        expect(run).toHaveBeenCalledTimes(3);
+        expect(onAbandoned).not.toHaveBeenCalled();
+
+        // Round 3: 'bad' alone fails again -> counter 2 -> abandoned.
+        await vi.advanceTimersByTimeAsync(400);
+        expect(onAbandoned).toHaveBeenCalledTimes(1);
+        expect(onAbandoned.mock.calls[0][0]).toEqual(['bad']);
+    });
+
     test('abandons an item after maxFailureRetries consecutive failures', async () => {
         const run = vi.fn().mockResolvedValue(false);
         const queue = new AsyncTaskQueue<string>({
