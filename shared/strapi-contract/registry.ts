@@ -94,7 +94,9 @@ export const CONTENT_TYPES: Record<ContentTypeKey, ContentTypeConfig> = {
         uid: 'api::category.category',
         kind: 'collection',
         invalidatesOn: ['create', 'update', 'delete'],
-        cascadeTags: [typeTag('article'), listTag('article'), typeTag('podcast'), listTag('podcast'), sitemapTag('categories')],
+        // Author pages embed category titles/counts, so a category change must
+        // stale-mark them too.
+        cascadeTags: [typeTag('article'), listTag('article'), typeTag('podcast'), listTag('podcast'), typeTag('author'), sitemapTag('categories')],
         searchIndex: true,
     },
     'article-feed': {
