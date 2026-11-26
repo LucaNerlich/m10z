@@ -70,14 +70,23 @@ async function resolvePreviewContext(
 
     const {token, status} = await searchParams;
     const secret = process.env.STRAPI_PREVIEW_SECRET;
+    const previewStatus: PreviewStatus = status === 'published' ? 'published' : 'draft';
     const expected = secret
-        ? crypto.createHmac('sha256', secret).update(`${previewTypeToUid(rawType)}:${slug}`).digest('hex')
+        ? previewToken(secret, previewTypeToUid(rawType), slug, previewStatus)
         : null;
     if (!verifySecret(token ?? null, expected)) {
         notFound();
     }
 
-    return {type: rawType, slug, status: status === 'published' ? 'published' : 'draft'};
+    return {type: rawType, slug, status: previewStatus};
+}
+
+/**
+ * HMAC binding a preview link to one document version. Must match the admin
+ * preview handler in `backend/config/admin.ts`.
+ */
+export function previewToken(secret: string, uid: string, slug: string, status: PreviewStatus): string {
+    return crypto.createHmac('sha256', secret).update(`${uid}:${slug}:${status}`).digest('hex');
 }
 
 // Only a genuine 404 means "this document does not exist". Everything else —

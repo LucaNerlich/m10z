@@ -27,3 +27,18 @@ describe('handlePreviewFetchError', () => {
         );
     });
 });
+
+describe('previewToken', () => {
+    test('binds the HMAC to the status and matches the admin handler format', async () => {
+        const {createHmac} = await import('node:crypto');
+        const {previewToken} = await import('./page');
+
+        const draft = previewToken('secret', 'api::article.article', 'slug', 'draft');
+        const published = previewToken('secret', 'api::article.article', 'slug', 'published');
+
+        expect(draft).toBe(
+            createHmac('sha256', 'secret').update('api::article.article:slug:draft').digest('hex'),
+        );
+        expect(draft).not.toBe(published);
+    });
+});

@@ -85,12 +85,13 @@ export default ({env}: any) => {
                     const secret = env('STRAPI_PREVIEW_SECRET');
                     if (!secret) return null;
 
-                    // Bind the token to this document (uid+slug) so a leaked link cannot be
-                    // reused to unlock any other draft article/podcast.
-                    const token = crypto.createHmac('sha256', secret).update(`${uid}:${slug}`).digest('hex');
+                    // Bind the token to this document AND the version the link is for
+                    // (uid+slug+status), so a published-preview link cannot be edited
+                    // into a draft link.
+                    const previewStatus = status === 'published' ? 'published' : 'draft';
+                    const token = crypto.createHmac('sha256', secret).update(`${uid}:${slug}:${previewStatus}`).digest('hex');
 
                     // Normalize Strapi's status values to the two states the frontend understands.
-                    const previewStatus = status === 'published' ? 'published' : 'draft';
                     const query = new URLSearchParams({
                         token,
                         status: previewStatus,
