@@ -10,6 +10,7 @@ import {sendPodcastDownloadEvent} from '@/src/lib/analytics/umamiServer';
 import {getErrorMessage} from '@/src/lib/errors';
 import {validateSlugSafe} from '@/src/lib/security/slugValidation';
 import {getClientIp} from '@/src/lib/net/getClientIp';
+import {createRateLimiter} from '@/src/lib/security/rateLimit';
 import {mediaUrlToAbsolute, normalizeStrapiMedia} from '@/src/lib/strapi/media';
 import {getStrapiApiBaseUrl} from '@/src/lib/strapiTransport';
 import {fetchPodcastBySlug} from '@/src/lib/strapiContent';
@@ -22,6 +23,12 @@ export const dynamic = 'force-dynamic';
 // treat the enclosure URL as a valid audio file. Strip it before slug validation/lookup. Since
 // `validateSlug` disallows dots, this is unambiguous and never affects a legitimate slug.
 const TRAILING_MP3_SUFFIX = /\.mp3$/i;
+
+// Per-IP cap on requests that can emit a download event. A normal listener
+// fetches a handful of episodes, so this is generous for podcatchers while a
+// client iterating the catalogue still cannot fabricate every count. HEAD and
+// range requests are not event-producing and are never throttled here.
+const downloadLimiter = createRateLimiter({windowMs: 60_000, max: 20});
 
 /**
  * Determines whether a download URL is allowed for redirection.
@@ -62,6 +69,8 @@ export async function GET(request: Request, {params}: SlugPageParams) {
         return new NextResponse('Not Found', {status: 404});
     }
 
+    const clientIp = getClientIp(request);
+
     let fileUrl: string | undefined;
     let title: string | null = null;
     let podcast: Awaited<ReturnType<typeof fetchPodcastBySlug>> = null;
@@ -95,10 +104,20 @@ export async function GET(request: Request, {params}: SlugPageParams) {
         // a download and must not consume the dedup slot of the real request.
         request.method !== 'HEAD' &&
         isPodcastDownloadTrackingEnabled() &&
-        shouldRecordDownloadForRange(request.headers.get('range')) &&
-        shouldRecordDownloadDeduped(slug, getClientIp(request))
+        shouldRecordDownloadForRange(request.headers.get('range'))
     ) {
-        after(() => sendPodcastDownloadEvent({slug, title, request}));
+        // The cap protects the counters, so it applies only to event-producing
+        // requests; an over-limit client gets 429 instead of an uncounted download.
+        const rl = downloadLimiter.check(`download:${clientIp}`);
+        if (!rl.ok) {
+            return new NextResponse('Too Many Requests', {
+                status: 429,
+                headers: {'Retry-After': String(rl.retryAfterSeconds), 'Cache-Control': 'no-store'},
+            });
+        }
+        if (shouldRecordDownloadDeduped(slug, clientIp)) {
+            after(() => sendPodcastDownloadEvent({slug, title, request}));
+        }
     }
 
     const response = NextResponse.redirect(fileUrl, 302);
