@@ -2,27 +2,11 @@
 
 import React, {useEffect} from 'react';
 
-import {applyTheme, getStoredTheme, persistTheme, subscribeToTheme, type Theme} from '@/src/lib/theme/initTheme';
+import {applyTheme, getStoredTheme, persistTheme, subscribeToTheme, THEME_OPTION_DEFINITIONS, type Theme} from '@/src/lib/theme/initTheme';
 import {useStoredPreference} from '@/src/hooks/useStoredPreference';
 
 import {PreferenceSelect} from './PreferenceSelect';
 import styles from './ThemeSelector.module.css';
-
-interface ThemeOption {
-    id: Theme;
-    displayName: string;
-}
-
-const THEME_OPTIONS: ThemeOption[] = [
-    {id: 'system', displayName: 'System'},
-    {id: 'light', displayName: 'Light'},
-    {id: 'dark', displayName: 'Dark'},
-    {id: 'night', displayName: 'Night'},
-    {id: 'paper', displayName: 'Paper'},
-    {id: 'hacker', displayName: 'Hacker'},
-    {id: 'rainbow', displayName: 'Rainbow'},
-    {id: 'oled', displayName: 'OLED'},
-];
 
 const DEFAULT_THEME: Theme = 'system';
 const getServerTheme = () => DEFAULT_THEME;
@@ -56,7 +40,7 @@ export default function ThemeSelector(): React.ReactElement | null {
 
     return (
         <PreferenceSelect
-            options={THEME_OPTIONS}
+            options={THEME_OPTION_DEFINITIONS}
             value={theme}
             onChange={(value) => setValue(value as Theme)}
             ariaLabel="Design auswählen"

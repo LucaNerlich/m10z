@@ -23,7 +23,8 @@ describe('theme list parity', () => {
             .map((entry) => entry.trim().replace(/^['"]|['"]$/g, ''))
             .filter(Boolean);
 
-        expect(scriptThemes).toEqual([...THEME_OPTIONS]);
+        // Membership, not order: the script only checks whether the stored value is supported.
+        expect([...scriptThemes].sort()).toEqual([...THEME_OPTIONS].sort());
     });
 
     test('the app list has no duplicates', () => {
