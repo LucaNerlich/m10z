@@ -1,7 +1,7 @@
 import {describe, expect, test} from 'vitest';
 
 import {sortByDateDesc} from '@/src/lib/effectiveDate';
-import {buildFeedEtagSeed, latestPublishedDate, resolveChannelImageUrl} from './feedDefinition';
+import {buildFeedEtagSeed, feedListPopulate, latestPublishedDate, resolveChannelImageUrl} from './feedDefinition';
 
 describe('buildFeedEtagSeed', () => {
     test('formats count and ISO date', () => {
@@ -64,5 +64,16 @@ describe('resolveChannelImageUrl', () => {
         expect(resolveChannelImageUrl({}, 'https://m10z.de/', '/fallback.jpg')).toBe(
             'https://m10z.de/fallback.jpg',
         );
+    });
+});
+
+describe('feedListPopulate', () => {
+    test('requests the media fields the enclosure needs', () => {
+        // A cover without a medium derivative falls back to the original media,
+        // so mime and the KB size must come from the top-level fields.
+        expect(feedListPopulate.cover.fields).toContain('mime');
+        expect(feedListPopulate.cover.fields).toContain('size');
+        expect(feedListPopulate.banner.fields).toContain('mime');
+        expect(feedListPopulate.banner.fields).toContain('size');
     });
 });
