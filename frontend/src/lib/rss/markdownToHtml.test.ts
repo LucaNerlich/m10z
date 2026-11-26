@@ -168,3 +168,4 @@ describe('getMarkdownToHtmlState', () => {
         expect(getMarkdownToHtmlState().renderer.rehypePlugins[0]).toBe('rehype-slug');
     });
 });
+

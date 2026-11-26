@@ -23,6 +23,7 @@ import {
 import {getMediaIndex} from '@/src/lib/media/mediaIndexSource';
 
 import {preprocessMarkdown} from './preprocess';
+import {markdownUrlTransform} from './urlTransform';
 import {
     REHYPE_EXTERNAL_LINKS_OPTIONS,
     REHYPE_SANITIZE_SCHEMA,
@@ -95,6 +96,7 @@ export async function Markdown({markdown, className}: MarkdownProps) {
     return (
         <FancyboxClient className={containerClassName}>
             <ReactMarkdown
+                urlTransform={markdownUrlTransform}
                 remarkPlugins={REMARK_PLUGINS}
                 remarkRehypeOptions={REMARK_REHYPE_OPTIONS}
                 rehypePlugins={[
