@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.2] - 2026-11-27
+
+### Fixed
+- Durable cache-invalidation events survive an outage: the queue keeps retrying until the frontend recovers, the retry backoff is independent of the dead-letter counter, and the boot drain pages through a large backlog.
+- Shutdown no longer races Strapi's own SIGTERM/SIGINT handling, and `destroy()` is safe on an app that was loaded but never started.
+- `FRONTEND_URL` must be an origin without a path or query, and an alias value can no longer build a `//api/invalidate` target.
+- The preview token is bound to the version being previewed, closing a published-link-to-draft escalation.
+- Category edits now stale-mark author pages, which embed category titles and counts.
+- The SQL-injection guard catches typed `raw<T>()` calls and no longer scans across unrelated comparisons.
+- The published-only route guard is one shared route config instead of four copies.
+- The diagnostics-token test now fails if the controller reads the token from a query string.
+- The admin typecheck points at the current Strapi store path.
+
+### Changed
+- Updated dependencies (Strapi group, music-metadata 12, vitest 5).
+
 ## [2.0.1] - 2026-10-24
 
 ### Changed
