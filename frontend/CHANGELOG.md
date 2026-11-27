@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.18.2] - 2026-11-27
+
+### Fixed
+- Feed content keeps working anchors: feed Markdown now emits heading IDs, and enclosures carry the real MIME type and byte length.
+- Preview pages are excluded from analytics and session replay, and the preview token is bound to the version being previewed.
+- `/team` refresh after article, podcast, author and category edits, and author pages no longer keep stale category names.
+- Podcast download counts are rate-limited per client, and HEAD probes no longer count as downloads.
+- Search no longer fails when the length cap lands inside an emoji.
+- The header menu keeps focus on the control clicked outside it, and its accessible name no longer contradicts an open menu.
+- `mailto:` and `tel:` links open in the same tab; `tel:` links render again.
+- Wichteln rejects duplicate participant names on hydration and asks before an edit discards a finished draw.
+- `/llms.txt` uses the fetch cache again (redundant `force-dynamic` removed).
+- The snapshot generators refuse to overwrite the committed media index or statistik snapshot with an empty result.
+
+### Changed
+- Removed unused `AuthorList`/`CategoryList` options, unified the theme picker with stored-value validation, and removed a write-only localStorage mirror.
+- Removed the redundant Spiele pro Monat card from the M12G dashboard.
+- Updated dependencies (Next.js 16.4.5, undici 8.12.4, vitest 5).
+- Refreshed the media index and statistik snapshot; finalized October 2026 content.
+
 ## [1.18.1] - 2026-11-12
 
 ### Added
