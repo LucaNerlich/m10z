@@ -43,20 +43,20 @@
         "serialize-javascript": "^7.1.4",
         "server-only": "^0.0.1",
         "swr": "^2.5.1",
-        "undici": "^8.13.0",
+        "undici": "^8.13.1",
         "unified": "11.0.5",
         "yaml": "^2.9.1"
     },
     "devDependencies": {
-        "@types/node": "^25.9.9",
+        "@types/node": "^25.9.12",
         "@types/qs": "^6.15.1",
-        "@types/react": "^19.3.0",
+        "@types/react": "^19.3.3",
         "@types/react-dom": "^19.3.0",
         "@types/serialize-javascript": "^5.0.4",
         "babel-plugin-react-compiler": "^1.0.0",
         "tsx": "^4.23.15",
         "typescript": "7.0.2",
-        "vitest": "^5.1.1"
+        "vitest": "^5.1.2"
     },
     "engines": {
         "node": "^24",

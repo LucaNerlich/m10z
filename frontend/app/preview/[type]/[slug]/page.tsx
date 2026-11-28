@@ -71,14 +71,52 @@ async function resolvePreviewContext(
     const {token, status} = await searchParams;
     const secret = process.env.STRAPI_PREVIEW_SECRET;
     const previewStatus: PreviewStatus = status === 'published' ? 'published' : 'draft';
-    const expected = secret
-        ? previewToken(secret, previewTypeToUid(rawType), slug, previewStatus)
-        : null;
-    if (!verifySecret(token ?? null, expected)) {
+    const uid = previewTypeToUid(rawType);
+
+    // Without the shared secret no link can ever verify. Fail as a configuration
+    // error instead of a 404, so a missing env var does not masquerade as a
+    // missing document.
+    if (!secret) {
+        console.error('STRAPI_PREVIEW_SECRET is not set; preview links cannot be verified.');
+        throw new Error('STRAPI_PREVIEW_SECRET is required for preview links');
+    }
+
+    const tokenResult = classifyPreviewToken(secret, uid, slug, previewStatus, token ?? null);
+    if (tokenResult !== 'valid') {
+        // A legacy token (HMAC over uid:slug, without the status) means the CMS
+        // still runs a release older than backend v2.0.2. It is not accepted
+        // (that would reopen the published-link-to-draft escalation this token
+        // binding closed), but the 404 is then a deployment skew, not a broken link.
+        if (tokenResult === 'legacy') {
+            console.error(
+                'Preview link is signed with the legacy (status-less) token: the Strapi backend ' +
+                'is running an older release. Rebuild and restart it so config/admin.ts signs ' +
+                'uid:slug:status (backend v2.0.2+).',
+            );
+        }
         notFound();
     }
 
     return {type: rawType, slug, status: previewStatus};
+}
+
+export type PreviewTokenResult = 'valid' | 'legacy' | 'invalid';
+
+/**
+ * Classify a preview token. `legacy` is not accepted anywhere; it only exists so
+ * a stale Strapi release (still signing `uid:slug`) produces a diagnosable log
+ * line instead of a silent 404.
+ */
+export function classifyPreviewToken(
+    secret: string,
+    uid: string,
+    slug: string,
+    status: PreviewStatus,
+    token: string | null,
+): PreviewTokenResult {
+    if (verifySecret(token, previewToken(secret, uid, slug, status))) return 'valid';
+    if (verifySecret(token, legacyPreviewToken(secret, uid, slug))) return 'legacy';
+    return 'invalid';
 }
 
 /**
@@ -87,6 +125,11 @@ async function resolvePreviewContext(
  */
 export function previewToken(secret: string, uid: string, slug: string, status: PreviewStatus): string {
     return crypto.createHmac('sha256', secret).update(`${uid}:${slug}:${status}`).digest('hex');
+}
+
+/** Token format used before the status binding; only used to recognise a stale backend. */
+function legacyPreviewToken(secret: string, uid: string, slug: string): string {
+    return crypto.createHmac('sha256', secret).update(`${uid}:${slug}`).digest('hex');
 }
 
 // Only a genuine 404 means "this document does not exist". Everything else —

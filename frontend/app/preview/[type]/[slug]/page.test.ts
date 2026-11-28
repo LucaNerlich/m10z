@@ -7,7 +7,7 @@ vi.mock('next/navigation', () => ({
 }));
 vi.mock('next/headers', () => ({headers: vi.fn()}));
 
-import {handlePreviewFetchError} from './page';
+import {classifyPreviewToken, handlePreviewFetchError, previewToken} from './page';
 
 describe('handlePreviewFetchError', () => {
     test('returns null only for a genuine 404', () => {
@@ -31,7 +31,6 @@ describe('handlePreviewFetchError', () => {
 describe('previewToken', () => {
     test('binds the HMAC to the status and matches the admin handler format', async () => {
         const {createHmac} = await import('node:crypto');
-        const {previewToken} = await import('./page');
 
         const draft = previewToken('secret', 'api::article.article', 'slug', 'draft');
         const published = previewToken('secret', 'api::article.article', 'slug', 'published');
@@ -40,5 +39,34 @@ describe('previewToken', () => {
             createHmac('sha256', 'secret').update('api::article.article:slug:draft').digest('hex'),
         );
         expect(draft).not.toBe(published);
+    });
+});
+
+describe('classifyPreviewToken', () => {
+    const uid = 'api::article.article';
+
+    test('accepts the status-bound token', () => {
+        expect(
+            classifyPreviewToken('secret', uid, 'slug', 'draft', previewToken('secret', uid, 'slug', 'draft')),
+        ).toBe('valid');
+    });
+
+    test('does not accept a token issued for the other status', () => {
+        expect(
+            classifyPreviewToken('secret', uid, 'slug', 'published', previewToken('secret', uid, 'slug', 'draft')),
+        ).toBe('invalid');
+    });
+
+    test('recognises the legacy status-less token of a stale backend without accepting it', async () => {
+        const {createHmac} = await import('node:crypto');
+        const token = createHmac('sha256', 'secret').update(`${uid}:slug`).digest('hex');
+
+        expect(classifyPreviewToken('secret', uid, 'slug', 'draft', token)).toBe('legacy');
+        expect(classifyPreviewToken('secret', uid, 'slug', 'published', token)).toBe('legacy');
+    });
+
+    test('rejects a missing or foreign token', () => {
+        expect(classifyPreviewToken('secret', uid, 'slug', 'draft', null)).toBe('invalid');
+        expect(classifyPreviewToken('secret', uid, 'slug', 'draft', 'f'.repeat(64))).toBe('invalid');
     });
 });
